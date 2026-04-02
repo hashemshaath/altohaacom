@@ -1354,19 +1354,23 @@ export default function Auth() {
 
               {signInMethod === "phone" ? (
                 <>
-                  <PhoneInputWithFlag
-                    phone={signInPhone}
-                    onPhoneChange={setSignInPhone}
-                    countryCode={signInCountry}
-                    phoneCode={signInPhoneCode}
-                    onCountryChange={(code, pc) => {
-                      setSignInCountry(code);
-                      setSignInPhoneCode(pc);
-                    }}
-                    error={errors.signInPhone}
-                    label={isAr ? "رقم الهاتف" : "Phone Number"}
-                    isAr={isAr}
-                  />
+                   <PhoneInputWithFlag
+                     phone={signInPhone}
+                     onPhoneChange={(val) => {
+                       setSignInPhone(val);
+                       setPinAvailable(false);
+                     }}
+                     countryCode={signInCountry}
+                     phoneCode={signInPhoneCode}
+                     onCountryChange={(code, pc) => {
+                       setSignInCountry(code);
+                       setSignInPhoneCode(pc);
+                       setPinAvailable(false);
+                     }}
+                     error={errors.signInPhone}
+                     label={isAr ? "رقم الهاتف" : "Phone Number"}
+                     isAr={isAr}
+                   />
 
                    <Button
                      className="w-full gap-2"
