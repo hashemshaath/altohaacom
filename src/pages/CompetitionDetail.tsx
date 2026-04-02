@@ -529,7 +529,7 @@ export default function CompetitionDetail() {
 
                 {competition.status === "completed" && (
                   <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">
-                    <Link to={`/competitions/${id}/results`}><Award className="me-1.5 h-3.5 w-3.5" />{isAr ? "النتائج" : "Results"}</Link>
+                    <Link to={`/competitions/${competition.slug || competitionId}/results`}><Award className="me-1.5 h-3.5 w-3.5" />{isAr ? "النتائج" : "Results"}</Link>
                   </Button>
                 )}
                 {isOrganizer && (
