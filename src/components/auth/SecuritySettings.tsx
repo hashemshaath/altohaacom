@@ -146,7 +146,7 @@ export const SecuritySettings = memo(function SecuritySettings() {
                 </div>
               </div>
               {pinStatus.is_locked && (
-                <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-50 dark:bg-amber-950/20 rounded-lg px-3 py-2">
+                <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-500/10 dark:bg-amber-500/10 rounded-lg px-3 py-2">
                   <AlertTriangle className="h-3.5 w-3.5" />
                   {isAr ? "الرمز مقفل مؤقتاً بسبب محاولات فاشلة" : "PIN temporarily locked due to failed attempts"}
                 </div>
