@@ -488,6 +488,9 @@ export default function SEODashboard() {
           }} />
         </Suspense>
       );
+      case "url-health": return renderUrlHealth();
+      case "sitemap-config": return renderSitemapConfig();
+      case "robots-txt": return renderRobotsTxt();
       default: return null;
     }
   };
