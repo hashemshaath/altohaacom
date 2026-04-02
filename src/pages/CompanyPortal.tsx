@@ -120,17 +120,17 @@ export default function CompanyPortalLayout() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      <div className="flex flex-1">
+      <div className="flex flex-1 items-start">
         {/* Desktop Sidebar */}
         <aside
           className={cn(
-            "sticky top-0 hidden h-[calc(100vh-64px)] shrink-0 border-e bg-card transition-all duration-300 md:block",
+            "hidden shrink-0 border-e bg-card transition-all duration-300 md:sticky md:top-14 md:block md:max-h-[calc(100dvh-3.5rem)] md:self-start md:overflow-y-auto",
             collapsed ? "w-16" : "w-64"
           )}
         >
-          <div className="flex h-full flex-col">
+          <div className="flex min-h-full flex-col">
             <div className="flex items-center justify-between border-b p-3">
               {!collapsed && (
                 <div className="flex items-center gap-2">
@@ -177,7 +177,7 @@ export default function CompanyPortalLayout() {
         </aside>
 
         {/* Main Content */}
-        <main className="min-w-0 flex-1 pb-20 md:pb-0">
+        <main className="min-w-0 flex-1 overflow-x-hidden pb-20 md:pb-0">
           <div className="container py-6">
             <Outlet />
           </div>

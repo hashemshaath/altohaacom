@@ -158,14 +158,22 @@
   * {
     @apply border-border;
   }
+  html, body, #root {
+    min-height: 100%;
+  }
   html {
     overflow-x: hidden;
+    overflow-y: auto;
     font-size: 16px;
+    scroll-behavior: smooth;
   }
   body {
     @apply bg-background text-foreground antialiased text-base leading-relaxed;
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow-x: hidden;
-    overscroll-behavior-y: contain;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
     -webkit-overflow-scrolling: touch;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
