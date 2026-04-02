@@ -21,7 +21,7 @@ import {
   CheckCircle2,
   Loader2,
   Home,
-  
+  Search,
   ArrowRight,
   LayoutGrid,
   Activity,
