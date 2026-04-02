@@ -66,7 +66,7 @@ export const ReEngagementPrompt = memo(function ReEngagementPrompt() {
 
   const handleExplore = () => {
     setOpen(false);
-    navigate("/competitions");
+    navigate(ROUTES.competitions);
   };
 
   if (!user || location.pathname === "/" || !open) return null;
