@@ -5921,6 +5921,7 @@ export type Database = {
           scoring_notes: string | null
           scoring_notes_ar: string | null
           series_id: string | null
+          slug: string | null
           status: Database["public"]["Enums"]["competition_status"]
           terms_conditions: string | null
           terms_conditions_ar: string | null
@@ -5990,6 +5991,7 @@ export type Database = {
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
           series_id?: string | null
+          slug?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
           terms_conditions?: string | null
           terms_conditions_ar?: string | null
@@ -6059,6 +6061,7 @@ export type Database = {
           scoring_notes?: string | null
           scoring_notes_ar?: string | null
           series_id?: string | null
+          slug?: string | null
           status?: Database["public"]["Enums"]["competition_status"]
           terms_conditions?: string | null
           terms_conditions_ar?: string | null
