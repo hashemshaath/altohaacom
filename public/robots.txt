@@ -52,4 +52,3 @@ Disallow: /settings
 Disallow: /membership-checkout
 
 Sitemap: https://altoha.com/sitemap.xml
-Sitemap: https://pbjhffdnzlekprmxfbnt.supabase.co/functions/v1/generate-sitemap
