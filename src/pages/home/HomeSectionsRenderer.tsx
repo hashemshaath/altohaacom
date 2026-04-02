@@ -38,6 +38,45 @@ const SECTION_ERROR_FALLBACK = (
   </div>
 );
 
+/** Number of sections to render immediately (above-fold) */
+const EAGER_SECTION_COUNT = 3;
+
+/** Wrapper that defers rendering until near viewport */
+function DeferredSection({ children, index }: { children: React.ReactNode; index: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    // Check if already in viewport
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight + 400) {
+      setInView(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px", threshold: 0 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  if (inView) return <>{children}</>;
+
+  return (
+    <div ref={ref}>
+      <HomeSectionSkeleton index={index} />
+    </div>
+  );
+}
+
 function normalizeEntries(entries: SectionEntry[]) {
   const deduped = new Map<string, SectionEntry>();
 
