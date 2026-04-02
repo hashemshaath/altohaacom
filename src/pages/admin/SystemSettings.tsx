@@ -252,6 +252,7 @@ export default function SystemSettings() {
                       if (tab.value === "layout-seo") return !!(settings.layout || settings.seo);
                       if (tab.value === "security") return !!(settings.security || settings.notifications);
                       if (tab.value === "tracking") return true;
+                      if (tab.value === "seo-analytics") return !!settings.seo_analytics;
                       return false;
                     })();
                     return (
