@@ -399,6 +399,228 @@ serve(async (req) => {
         });
       }
 
+      // ── PHONE OTP LOGIN (session creation after OTP verified) ──
+      case "phone_otp_login": {
+        const { phone: loginPhone } = body;
+        if (!loginPhone) {
+          return new Response(JSON.stringify({ error: "Phone number required" }), {
+            status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Look up user by phone
+        const { data: phoneProfile } = await serviceClient
+          .from("profiles")
+          .select("user_id, email")
+          .eq("phone", loginPhone)
+          .single();
+
+        if (!phoneProfile?.email) {
+          return new Response(JSON.stringify({ error: "No account found", code: "NO_ACCOUNT" }), {
+            status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Generate a magic link for this user
+        const { data: linkData, error: linkError } = await serviceClient.auth.admin.generateLink({
+          type: "magiclink",
+          email: phoneProfile.email,
+        });
+
+        if (linkError || !linkData) {
+          console.error("Generate link error:", linkError);
+          return new Response(JSON.stringify({ error: "Failed to create session" }), {
+            status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        await logAudit(serviceClient, phoneProfile.user_id, "phone_otp_login", req, { phone: loginPhone });
+
+        return new Response(JSON.stringify({
+          success: true,
+          token_hash: linkData.properties?.hashed_token,
+          email: phoneProfile.email,
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // ── PIN LOGIN (phone + PIN, no OTP needed) ──
+      case "pin_login": {
+        const { phone: pinPhone, pin, device_fingerprint } = body;
+        if (!pinPhone || !pin || !device_fingerprint) {
+          return new Response(JSON.stringify({ error: "Missing required fields" }), {
+            status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Look up user by phone
+        const { data: pinProfile } = await serviceClient
+          .from("profiles")
+          .select("user_id, email")
+          .eq("phone", pinPhone)
+          .single();
+
+        if (!pinProfile) {
+          return new Response(JSON.stringify({ error: "No account found", code: "NO_ACCOUNT" }), {
+            status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Now verify the PIN using existing logic
+        const { data: pinRec } = await serviceClient
+          .from("user_pins")
+          .select("*")
+          .eq("user_id", pinProfile.user_id)
+          .eq("is_active", true)
+          .single();
+
+        if (!pinRec) {
+          return new Response(JSON.stringify({ error: "PIN not set", code: "NO_PIN" }), {
+            status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Check lockout
+        if (pinRec.pin_locked_until && new Date(pinRec.pin_locked_until) > new Date()) {
+          const remainingMs = new Date(pinRec.pin_locked_until).getTime() - Date.now();
+          return new Response(JSON.stringify({
+            error: "PIN is locked", code: "PIN_LOCKED",
+            remaining_seconds: Math.ceil(remainingMs / 1000),
+          }), {
+            status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Check device trust
+        const { data: td } = await serviceClient
+          .from("trusted_devices")
+          .select("id")
+          .eq("user_id", pinProfile.user_id)
+          .eq("device_fingerprint", device_fingerprint)
+          .eq("is_active", true)
+          .single();
+
+        if (!td) {
+          return new Response(JSON.stringify({
+            error: "Unrecognized device", code: "UNTRUSTED_DEVICE",
+          }), {
+            status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Check expiry
+        const age = Date.now() - new Date(pinRec.pin_created_at).getTime();
+        if (age > PIN_EXPIRY_DAYS * 24 * 60 * 60 * 1000) {
+          return new Response(JSON.stringify({ error: "PIN expired", code: "PIN_EXPIRED" }), {
+            status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Verify PIN
+        const match = await bcrypt.compare(pin, pinRec.hashed_pin);
+        if (!match) {
+          const newAttempts = (pinRec.failed_pin_attempts || 0) + 1;
+          const upd: any = { failed_pin_attempts: newAttempts };
+          if (newAttempts >= MAX_PIN_ATTEMPTS) {
+            upd.pin_locked_until = new Date(Date.now() + PIN_LOCKOUT_MS).toISOString();
+          }
+          await serviceClient.from("user_pins").update(upd).eq("user_id", pinProfile.user_id);
+          await logAudit(serviceClient, pinProfile.user_id, "pin_login_failed", req, { attempts: newAttempts });
+          return new Response(JSON.stringify({
+            error: "Incorrect PIN", code: "WRONG_PIN",
+            remaining_attempts: Math.max(0, MAX_PIN_ATTEMPTS - newAttempts),
+          }), {
+            status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        // Reset attempts
+        await serviceClient.from("user_pins").update({ failed_pin_attempts: 0, pin_locked_until: null }).eq("user_id", pinProfile.user_id);
+        await serviceClient.from("trusted_devices").update({ last_used_at: new Date().toISOString() }).eq("user_id", pinProfile.user_id).eq("device_fingerprint", device_fingerprint);
+
+        // Generate magic link session
+        const { data: magicData, error: magicErr } = await serviceClient.auth.admin.generateLink({
+          type: "magiclink",
+          email: pinProfile.email!,
+        });
+
+        if (magicErr || !magicData) {
+          return new Response(JSON.stringify({ error: "Failed to create session" }), {
+            status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        await logAudit(serviceClient, pinProfile.user_id, "pin_login_success", req, { device_fingerprint });
+
+        return new Response(JSON.stringify({
+          success: true,
+          token_hash: magicData.properties?.hashed_token,
+          email: pinProfile.email,
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // ── CHECK PIN BY PHONE (unauthenticated) ──
+      case "check_pin_by_phone": {
+        const { phone: checkPhone, device_fingerprint: checkFp } = body;
+        if (!checkPhone) {
+          return new Response(JSON.stringify({ has_pin: false }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const { data: cpProfile } = await serviceClient
+          .from("profiles")
+          .select("user_id")
+          .eq("phone", checkPhone)
+          .single();
+
+        if (!cpProfile) {
+          return new Response(JSON.stringify({ has_pin: false }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const { data: cpPin } = await serviceClient
+          .from("user_pins")
+          .select("pin_created_at, is_active")
+          .eq("user_id", cpProfile.user_id)
+          .eq("is_active", true)
+          .single();
+
+        if (!cpPin) {
+          return new Response(JSON.stringify({ has_pin: false }), {
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+
+        const cpAge = Date.now() - new Date(cpPin.pin_created_at).getTime();
+        const cpExpired = cpAge > PIN_EXPIRY_DAYS * 24 * 60 * 60 * 1000;
+
+        // Check if device is trusted
+        let deviceTrusted = false;
+        if (checkFp) {
+          const { data: dtd } = await serviceClient
+            .from("trusted_devices")
+            .select("id")
+            .eq("user_id", cpProfile.user_id)
+            .eq("device_fingerprint", checkFp)
+            .eq("is_active", true)
+            .single();
+          deviceTrusted = !!dtd;
+        }
+
+        return new Response(JSON.stringify({
+          has_pin: true,
+          is_expired: cpExpired,
+          device_trusted: deviceTrusted,
+        }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
       default:
         return new Response(JSON.stringify({ error: "Unknown action" }), {
           status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
