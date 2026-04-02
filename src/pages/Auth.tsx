@@ -26,7 +26,8 @@ import {
   Phone, Mail, KeyRound, Gift, ChefHat, Heart, AlertCircle,
 } from "lucide-react";
 
-const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{2,29}$/;
+import { USERNAME_REGEX, validateUsername, isReservedUsername, detectLoginInputType } from "@/lib/usernameValidation";
+const usernameRegex = USERNAME_REGEX;
 
 const loginSchema = z.object({
   email: z.string().trim().email().max(255),
