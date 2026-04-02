@@ -67,6 +67,16 @@ function LegacyLinksRedirect() {
   return <Navigate to={`/bio/${username ?? ""}`} replace />;
 }
 
+function NewsSlugRedirect() {
+  const { slug } = useParams<{ slug: string }>();
+  return <Navigate to={`/blog/${slug ?? ""}`} replace />;
+}
+
+function ProfileRedirect() {
+  const { username } = useParams<{ username: string }>();
+  return <Navigate to={`/${username ?? ""}`} replace />;
+}
+
 export const publicRoutes = (
   <>
     <Route path="/" element={<Index />} />
