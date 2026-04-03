@@ -262,7 +262,7 @@ export default function ArticleDetail() {
             <h1 className="font-serif text-2xl font-bold mb-2">{isAr ? "المقال غير موجود" : "Article not found"}</h1>
             <p className="text-muted-foreground mb-6">{isAr ? "المقال الذي تبحث عنه غير موجود أو تم حذفه." : "The article you're looking for doesn't exist."}</p>
             <Button asChild className="rounded-xl">
-              <Link to="/news">{isAr ? "العودة للأخبار" : "Back to News"}</Link>
+              <Link to="/blog">{isAr ? "العودة للمقالات" : "Back to Articles"}</Link>
             </Button>
           </div>
         </main>
@@ -343,9 +343,9 @@ export default function ArticleDetail() {
                   {/* Breadcrumb trail */}
                   <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
                     <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all backdrop-blur-sm">
-                      <Link to="/news">
+                      <Link to="/blog">
                         <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
-                        {isAr ? "الأخبار" : "News"}
+                        {isAr ? "المقالات" : "Articles"}
                       </Link>
                     </Button>
                     <span className="text-white/25 text-sm">/</span>
@@ -408,9 +408,9 @@ export default function ArticleDetail() {
               <div className="container max-w-5xl mx-auto px-5 sm:px-8 pt-8 pb-10 md:pt-10 md:pb-14">
                 <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
                   <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 hover:bg-muted/80 active:scale-95 transition-all">
-                    <Link to="/news">
+                    <Link to="/blog">
                       <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
-                      {isAr ? "الأخبار" : "News"}
+                      {isAr ? "المقالات" : "Articles"}
                     </Link>
                   </Button>
                   <span className="text-muted-foreground/30 text-sm">/</span>
@@ -712,7 +712,7 @@ export default function ArticleDetail() {
                     </p>
                   </div>
                   <Button asChild size="sm" className="rounded-xl shadow-md shadow-primary/15 gap-1.5 shrink-0">
-                    <Link to="/news">
+                    <Link to="/blog">
                       {isAr ? "تصفح المزيد" : "Browse More"}
                       <ArrowUpRight className="h-3.5 w-3.5" />
                     </Link>
@@ -781,7 +781,7 @@ export default function ArticleDetail() {
                 <h2 className="font-serif text-xl font-bold">{isAr ? "مقالات ذات صلة" : "Related Articles"}</h2>
                 <div className="h-px flex-1 bg-border/30" />
                 <Button variant="ghost" size="sm" asChild className="rounded-xl text-xs gap-1 text-muted-foreground hover:text-primary">
-                  <Link to="/news">
+                  <Link to="/blog">
                     {isAr ? "عرض الكل" : "View All"}
                     <ArrowUpRight className="h-3 w-3" />
                   </Link>
