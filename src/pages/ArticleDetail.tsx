@@ -408,9 +408,9 @@ export default function ArticleDetail() {
               <div className="container max-w-5xl mx-auto px-5 sm:px-8 pt-8 pb-10 md:pt-10 md:pb-14">
                 <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
                   <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 hover:bg-muted/80 active:scale-95 transition-all">
-                    <Link to="/news">
+                    <Link to="/blog">
                       <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
-                      {isAr ? "الأخبار" : "News"}
+                      {isAr ? "المقالات" : "Articles"}
                     </Link>
                   </Button>
                   <span className="text-muted-foreground/30 text-sm">/</span>
