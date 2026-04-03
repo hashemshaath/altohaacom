@@ -1,11 +1,8 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 import * as XLSX from "https://esm.sh/xlsx@0.18.5";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { handleCors } from "../_shared/cors.ts";
+import { authenticateRequest, getServiceClient } from "../_shared/auth.ts";
+import { jsonResponse, errorResponse } from "../_shared/response.ts";
+import { callAI } from "../_shared/ai.ts";
 
 // Template definitions for each entity type with validation options
 const TEMPLATES: Record<string, {
@@ -337,29 +334,12 @@ const TEMPLATES: Record<string, {
   },
 };
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+Deno.serve(async (req) => {
+  const corsRes = handleCors(req);
+  if (corsRes) return corsRes;
 
   try {
-    // Authenticate user and verify admin role
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-    const authClient = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await authClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    await authenticateRequest(req);
 
     const url = new URL(req.url);
     const action = url.searchParams.get("action");
@@ -368,13 +348,8 @@ serve(async (req) => {
     // Generate downloadable template with instructions and options
     if (action === "template") {
       const template = TEMPLATES[entityType];
-      if (!template) {
-        return new Response(JSON.stringify({ error: `Unknown type: ${entityType}` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      if (!template) return jsonResponse({ error: `Unknown type: ${entityType}` }, 400);
 
-      // Pre-fill competition_number if provided
       const competitionNumber = url.searchParams.get("competition_number") || "";
 
       const wb = XLSX.utils.book_new();
@@ -388,16 +363,11 @@ serve(async (req) => {
         return "";
       });
       const dataSheet = XLSX.utils.aoa_to_sheet([headerRow, hintRow, exampleRow]);
-
-      // Set column widths
       dataSheet["!cols"] = template.columns.map(col => ({ wch: Math.max(col.length + 2, 18) }));
-
       XLSX.utils.book_append_sheet(wb, dataSheet, "Data");
 
       // Sheet 2: Instructions
-      const instructionRows: string[][] = [
-        ["Column Name", "Required?", "Instructions", "Allowed Values"],
-      ];
+      const instructionRows: string[][] = [["Column Name", "Required?", "Instructions", "Allowed Values"]];
       for (const col of template.columns) {
         const isReq = template.required.includes(col) ? "YES ⚠" : "No";
         const instr = template.instructions?.[col] || "";
@@ -422,7 +392,7 @@ serve(async (req) => {
       }
 
       const buf = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
-
+      const { corsHeaders } = await import("../_shared/cors.ts");
       return new Response(buf, {
         headers: {
           ...corsHeaders,
@@ -436,22 +406,13 @@ serve(async (req) => {
     if (action === "parse") {
       const formData = await req.formData();
       const file = formData.get("file") as File;
-      if (!file) {
-        return new Response(JSON.stringify({ error: "No file uploaded" }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      if (!file) return jsonResponse({ error: "No file uploaded" }, 400);
 
       const template = TEMPLATES[entityType];
-      if (!template) {
-        return new Response(JSON.stringify({ error: `Unknown type: ${entityType}` }), {
-          status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
+      if (!template) return jsonResponse({ error: `Unknown type: ${entityType}` }, 400);
 
       const arrayBuffer = await file.arrayBuffer();
       const wb = XLSX.read(new Uint8Array(arrayBuffer), { type: "array" });
-      // Read only the first sheet (Data sheet)
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rawRows: any[] = XLSX.utils.sheet_to_json(ws, { defval: "" });
 
@@ -490,14 +451,12 @@ serve(async (req) => {
         const cleaned: Record<string, any> = {};
         template.columns.forEach(col => {
           let val = row[col] !== undefined ? String(row[col]).trim() : "";
-          
-          // String length validation (max 2000 chars)
+
           if (val.length > 2000) {
             errors.push({ row: idx + 2, message: `Field ${col} exceeds max length of 2000 characters` });
             val = val.substring(0, 2000);
           }
 
-          // Email validation
           if (col.includes("email") && val) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(val) || val.length > 255) {
@@ -505,7 +464,6 @@ serve(async (req) => {
             }
           }
 
-          // URL validation - only allow http/https
           if ((col.includes("url") || col === "website") && val) {
             if (!/^https?:\/\//i.test(val)) {
               errors.push({ row: idx + 2, message: `Invalid URL for ${col}: must start with http:// or https://` });
@@ -513,21 +471,18 @@ serve(async (req) => {
             }
           }
 
-          // Phone validation
           if (col.includes("phone") && val) {
             if (!/^\+?[\d\s\-()]{6,20}$/.test(val)) {
               errors.push({ row: idx + 2, message: `Invalid phone format for ${col}: "${val}"` });
             }
           }
 
-          // Numeric validation
           if ((col === "amount" || col === "ticket_price" || col === "score") && val) {
             if (isNaN(Number(val)) || Number(val) < 0) {
               errors.push({ row: idx + 2, message: `Invalid numeric value for ${col}: "${val}"` });
             }
           }
 
-          // Integer validation
           if ((col === "max_participants" || col === "max_attendees" || col === "member_count" || col === "rank" || col === "edition_year" || col === "founded_year") && val) {
             if (!Number.isInteger(Number(val)) || Number(val) < 0) {
               errors.push({ row: idx + 2, message: `Invalid integer value for ${col}: "${val}"` });
@@ -545,22 +500,18 @@ serve(async (req) => {
         rows.push(cleaned);
       });
 
-      return new Response(JSON.stringify({
+      return jsonResponse({
         total: rows.length,
         valid: rows.filter(r => !r._has_errors).length,
         errors,
         rows,
         fileName: file.name,
-      }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     // AI optimize batch
     if (action === "ai-optimize") {
       const { rows, entityType: eType } = await req.json();
-      const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-      if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
       const optimizedRows = [];
       for (const row of rows) {
@@ -585,39 +536,23 @@ serve(async (req) => {
 
           if (enVal && !arVal) {
             try {
-              const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-                method: "POST",
-                headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  model: "google/gemini-3-flash-preview",
-                  messages: [
-                    { role: "system", content: "Translate the following English text to Arabic. Also optimize for SEO. Return ONLY the translated text. No markdown or special characters." },
-                    { role: "user", content: enVal },
-                  ],
-                }),
+              const result = await callAI({
+                messages: [
+                  { role: "system", content: "Translate the following English text to Arabic. Also optimize for SEO. Return ONLY the translated text. No markdown or special characters." },
+                  { role: "user", content: enVal },
+                ],
               });
-              if (resp.ok) {
-                const data = await resp.json();
-                optimized[arCol] = data.choices?.[0]?.message?.content?.trim() || "";
-              }
+              optimized[arCol] = result.content?.trim() || "";
             } catch { /* skip */ }
           } else if (arVal && !enVal) {
             try {
-              const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-                method: "POST",
-                headers: { Authorization: `Bearer ${LOVABLE_API_KEY}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  model: "google/gemini-3-flash-preview",
-                  messages: [
-                    { role: "system", content: "Translate the following Arabic text to English. Also optimize for SEO. Return ONLY the translated text. No markdown or special characters." },
-                    { role: "user", content: arVal },
-                  ],
-                }),
+              const result = await callAI({
+                messages: [
+                  { role: "system", content: "Translate the following Arabic text to English. Also optimize for SEO. Return ONLY the translated text. No markdown or special characters." },
+                  { role: "user", content: arVal },
+                ],
               });
-              if (resp.ok) {
-                const data = await resp.json();
-                optimized[enCol] = data.choices?.[0]?.message?.content?.trim() || "";
-              }
+              optimized[enCol] = result.content?.trim() || "";
             } catch { /* skip */ }
           }
         }
@@ -626,18 +561,12 @@ serve(async (req) => {
         optimizedRows.push(optimized);
       }
 
-      return new Response(JSON.stringify({ rows: optimizedRows }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return jsonResponse({ rows: optimizedRows });
     }
 
-    return new Response(JSON.stringify({ error: "Unknown action" }), {
-      status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return jsonResponse({ error: "Unknown action" }, 400);
   } catch (e) {
     console.error("bulk-import error:", e);
-    return new Response(JSON.stringify({ error: "Service temporarily unavailable" }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return errorResponse(e);
   }
 });
