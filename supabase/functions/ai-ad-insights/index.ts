@@ -1,54 +1,24 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { handleCors } from "../_shared/cors.ts";
+import { jsonResponse, errorResponse } from "../_shared/response.ts";
+import { authenticateAdmin, getServiceClient } from "../_shared/auth.ts";
+import { callAI, parseAIJson } from "../_shared/ai.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+Deno.serve(async (req) => {
+  const corsRes = handleCors(req);
+  if (corsRes) return corsRes;
 
   try {
-    // Authenticate user
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    const { adminClient } = await authenticateAdmin(req);
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const lovableKey = Deno.env.get("LOVABLE_API_KEY");
+    const headers = {
+      apikey: supabaseKey,
+      Authorization: `Bearer ${supabaseKey}`,
+      "Content-Type": "application/json",
+    };
 
-    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-    const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await userClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Verify admin role
-    const adminClient = createClient(supabaseUrl, supabaseKey);
-    const userId = claimsData.claims.sub as string;
-    const { data: isAdmin } = await adminClient.rpc("is_admin", { p_user_id: userId });
-    if (!isAdmin) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Fetch ad performance data
-    const headers = { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}`, "Content-Type": "application/json" };
-
+    // Fetch ad performance data in parallel
     const [impressionsRes, clicksRes, campaignsRes, behaviorsRes] = await Promise.all([
       fetch(`${supabaseUrl}/rest/v1/ad_impressions?select=id,created_at,device_type,page_url&order=created_at.desc&limit=500`, { headers }),
       fetch(`${supabaseUrl}/rest/v1/ad_clicks?select=id,created_at,device_type,page_url&order=created_at.desc&limit=500`, { headers }),
@@ -71,32 +41,38 @@ serve(async (req) => {
     const totalBudget = Array.isArray(campaigns) ? campaigns.reduce((s: number, c: any) => s + (c.budget || 0), 0) : 0;
     const totalSpent = Array.isArray(campaigns) ? campaigns.reduce((s: number, c: any) => s + (c.spent || 0), 0) : 0;
 
-    // Device breakdown
     const deviceBreakdown: Record<string, number> = {};
     if (Array.isArray(impressions)) {
-      impressions.forEach((i: any) => {
-        deviceBreakdown[i.device_type || "unknown"] = (deviceBreakdown[i.device_type || "unknown"] || 0) + 1;
-      });
+      for (const i of impressions) {
+        const key = i.device_type || "unknown";
+        deviceBreakdown[key] = (deviceBreakdown[key] || 0) + 1;
+      }
     }
 
-    // Page category engagement
     const categoryEngagement: Record<string, number> = {};
-    if (Array.isArray(behaviors)) {
-      behaviors.forEach((b: any) => {
-        if (b.page_category) categoryEngagement[b.page_category] = (categoryEngagement[b.page_category] || 0) + 1;
-      });
-    }
-
-    // Peak hours
     const hourCounts = new Array(24).fill(0);
     if (Array.isArray(behaviors)) {
-      behaviors.forEach((b: any) => {
+      for (const b of behaviors) {
+        if (b.page_category) categoryEngagement[b.page_category] = (categoryEngagement[b.page_category] || 0) + 1;
         if (b.created_at) hourCounts[new Date(b.created_at).getHours()]++;
-      });
+      }
     }
     const peakHour = hourCounts.indexOf(Math.max(...hourCounts));
 
-    const dataPrompt = `
+    const rawStats = { totalImpressions, totalClicks, overallCTR, activeCampaigns, totalBudget, totalSpent, deviceBreakdown, categoryEngagement, peakHour };
+
+    const fallbackInsights = {
+      summary: `Platform has ${totalImpressions} impressions and ${totalClicks} clicks with ${overallCTR}% CTR across ${activeCampaigns} active campaigns.`,
+      recommendations: ["Increase ad placements on high-traffic pages", "Optimize creatives for mobile devices", "Test different CTA variations"],
+      targeting: ["Focus on competition and exhibition enthusiasts", "Target mobile users preferentially"],
+      budget_advice: `${totalSpent} of ${totalBudget} SAR spent. Consider reallocating budget to top-performing placements.`,
+      timing: `Peak activity at ${peakHour}:00. Schedule important ad displays around this time.`,
+      retargeting: "Create segments for users who viewed competitions but didn't register.",
+    };
+
+    // Try AI insights
+    try {
+      const dataPrompt = `
 Ad Platform Analytics Summary:
 - Total Impressions: ${totalImpressions}
 - Total Clicks: ${totalClicks}
@@ -109,76 +85,31 @@ Ad Platform Analytics Summary:
 - Peak Activity Hour: ${peakHour}:00
 - Total Behavior Events: ${Array.isArray(behaviors) ? behaviors.length : 0}
 
-Provide actionable AI insights for this advertising platform. Include:
+Provide actionable AI insights. Include:
 1. Performance summary (2-3 sentences)
 2. Top 3 optimization recommendations
-3. Audience targeting suggestions based on behavior data
+3. Audience targeting suggestions
 4. Budget allocation advice
-5. Best times and placements for ads
+5. Best times and placements
 6. Retargeting opportunities
 
-Format as JSON with keys: summary, recommendations (array), targeting (array), budget_advice, timing, retargeting
-`;
+Format as JSON with keys: summary, recommendations (array), targeting (array), budget_advice, timing, retargeting`;
 
-    if (!lovableKey) {
-      // Return basic insights without AI
-      return new Response(JSON.stringify({
-        summary: `Platform has ${totalImpressions} impressions and ${totalClicks} clicks with ${overallCTR}% CTR across ${activeCampaigns} active campaigns.`,
-        recommendations: [
-          "Increase ad placements on high-traffic pages",
-          "Optimize creatives for mobile devices",
-          "Test different CTA variations",
+      const response = await callAI({
+        messages: [
+          { role: "system", content: "You are an advertising analytics AI. Analyze ad performance data and provide actionable insights in JSON format. Be specific and data-driven. Return ONLY valid JSON, no markdown." },
+          { role: "user", content: dataPrompt },
         ],
-        targeting: ["Focus on competition and exhibition enthusiasts", "Target mobile users preferentially"],
-        budget_advice: `${totalSpent} of ${totalBudget} SAR spent. Consider reallocating budget to top-performing placements.`,
-        timing: `Peak activity at ${peakHour}:00. Schedule important ad displays around this time.`,
-        retargeting: "Create segments for users who viewed competitions but didn't register.",
-        raw_stats: { totalImpressions, totalClicks, overallCTR, activeCampaigns, totalBudget, totalSpent, deviceBreakdown, categoryEngagement, peakHour },
-      }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-    }
-
-    // Call AI for deeper insights
-    let insights;
-    try {
-      const aiResponse = await fetch("https://api.lovable.dev/v1/chat/completions", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: "You are an advertising analytics AI. Analyze ad performance data and provide actionable insights in JSON format. Be specific and data-driven. Return ONLY valid JSON, no markdown." },
-            { role: "user", content: dataPrompt },
-          ],
-          temperature: 0.3,
-        }),
+        temperature: 0.3,
       });
 
-      const aiData = await aiResponse.json();
-      const content = aiData.choices?.[0]?.message?.content || "";
-      // Strip markdown code fences if present
-      const cleaned = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-      const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-      insights = jsonMatch ? JSON.parse(jsonMatch[0]) : { summary: cleaned };
-    } catch (aiErr) {
-      insights = {
-        summary: `Platform has ${totalImpressions} impressions and ${totalClicks} clicks with ${overallCTR}% CTR.`,
-        recommendations: ["Review campaign targeting", "Optimize ad creatives", "Adjust budget allocation"],
-        targeting: ["Focus on high-engagement categories"],
-        budget_advice: `${totalSpent} of ${totalBudget} SAR spent.`,
-        timing: `Peak activity at ${peakHour}:00.`,
-        retargeting: "Create segments for engaged but unconverted users.",
-      };
+      const insights = parseAIJson(response.content) || fallbackInsights;
+      return jsonResponse({ ...insights, raw_stats: rawStats });
+    } catch {
+      return jsonResponse({ ...fallbackInsights, raw_stats: rawStats });
     }
-
-    return new Response(JSON.stringify({
-      ...insights,
-      raw_stats: { totalImpressions, totalClicks, overallCTR, activeCampaigns, totalBudget, totalSpent, deviceBreakdown, categoryEngagement, peakHour },
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
-
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("ai-ad-insights error:", error);
+    return errorResponse(error);
   }
 });
