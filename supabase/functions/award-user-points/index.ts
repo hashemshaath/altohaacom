@@ -1,62 +1,20 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { handleCors } from "../_shared/cors.ts";
+import { authenticateRequest, getServiceClient } from "../_shared/auth.ts";
+import { jsonResponse, errorResponse } from "../_shared/response.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
-
-interface AwardPointsPayload {
-  actionType: string;
-  referenceType?: string;
-  referenceId?: string;
-  metadata?: Record<string, unknown>;
-}
-
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+Deno.serve(async (req) => {
+  const corsRes = handleCors(req);
+  if (corsRes) return corsRes;
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const { userId } = await authenticateRequest(req);
 
-    // Authenticate user
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const userClient = createClient(supabaseUrl, anonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await userClient.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    const userId = claimsData.claims.sub as string;
-    const payload: AwardPointsPayload = await req.json();
-    const { actionType, referenceType, referenceId, metadata } = payload;
-
+    const { actionType, referenceType, referenceId, metadata } = await req.json();
     if (!actionType) {
-      return new Response(JSON.stringify({ error: "actionType is required" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return jsonResponse({ error: "actionType is required" }, 400);
     }
 
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = getServiceClient();
 
     // Fetch the earning rule
     const { data: rule, error: ruleError } = await supabase
@@ -67,17 +25,13 @@ serve(async (req) => {
       .single();
 
     if (ruleError || !rule) {
-      return new Response(
-        JSON.stringify({ error: "No active earning rule for this action", awarded: false }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "No active earning rule for this action", awarded: false });
     }
 
     // Check daily limit
     if (rule.max_per_day) {
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
-
       const { count } = await supabase
         .from("points_ledger")
         .select("id", { count: "exact", head: true })
@@ -86,10 +40,7 @@ serve(async (req) => {
         .gte("created_at", todayStart.toISOString());
 
       if ((count || 0) >= rule.max_per_day) {
-        return new Response(
-          JSON.stringify({ error: "Daily limit reached", awarded: false, limit: rule.max_per_day }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return jsonResponse({ error: "Daily limit reached", awarded: false, limit: rule.max_per_day });
       }
     }
 
@@ -102,14 +53,11 @@ serve(async (req) => {
         .eq("action_type", actionType);
 
       if ((count || 0) >= rule.max_per_user) {
-        return new Response(
-          JSON.stringify({ error: "Lifetime limit reached", awarded: false }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return jsonResponse({ error: "Lifetime limit reached", awarded: false });
       }
     }
 
-    // Prevent duplicate for one-time actions (no daily limit = likely one-time per reference)
+    // Prevent duplicate for one-time actions
     if (!rule.max_per_day && referenceId) {
       const { count } = await supabase
         .from("points_ledger")
@@ -119,14 +67,11 @@ serve(async (req) => {
         .eq("reference_id", referenceId);
 
       if ((count || 0) > 0) {
-        return new Response(
-          JSON.stringify({ error: "Points already awarded for this action", awarded: false }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
+        return jsonResponse({ error: "Points already awarded for this action", awarded: false });
       }
     }
 
-    // Award points using the DB function
+    // Award points
     const { data: newBalance, error: awardError } = await supabase.rpc("award_points", {
       p_user_id: userId,
       p_action_type: actionType,
@@ -139,29 +84,20 @@ serve(async (req) => {
 
     if (awardError) {
       console.error("Award points error:", awardError);
-      return new Response(
-        JSON.stringify({ error: "Failed to award points. Please try again." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      return jsonResponse({ error: "Failed to award points. Please try again." }, 500);
     }
 
     console.log("Points awarded:", { userId, actionType, points: rule.points, newBalance });
 
-    return new Response(
-      JSON.stringify({
-        awarded: true,
-        points: rule.points,
-        newBalance,
-        actionLabel: rule.action_label,
-        actionLabelAr: rule.action_label_ar,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({
+      awarded: true,
+      points: rule.points,
+      newBalance,
+      actionLabel: rule.action_label,
+      actionLabelAr: rule.action_label_ar,
+    });
   } catch (error) {
     console.error("Award points error:", error);
-    return new Response(
-      JSON.stringify({ error: "Service temporarily unavailable" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return errorResponse(error);
   }
 });
