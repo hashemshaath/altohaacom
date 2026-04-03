@@ -1,37 +1,20 @@
-import { createClient } from "npm:@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
+import { handleCors } from "../_shared/cors.ts";
+import { authenticateRequest } from "../_shared/auth.ts";
+import { jsonResponse, errorResponse, validateRequired } from "../_shared/response.ts";
+import { callAI } from "../_shared/ai.ts";
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+  const corsRes = handleCors(req);
+  if (corsRes) return corsRes;
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
+    await authenticateRequest(req);
 
-    const client = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
+    const body = await req.json();
+    const validation = validateRequired(body, ["text", "from", "to"]);
+    if (validation) return validation;
 
-    const token = authHeader.replace("Bearer ", "");
-    const { data, error: authErr } = await client.auth.getClaims(token);
-    if (authErr || !data?.claims?.sub) throw new Error("Unauthorized");
-
-    const { text, from, to, context } = await req.json();
-    if (!text || !from || !to) {
-      return new Response(JSON.stringify({ error: "Missing text, from, or to" }), {
-        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("AI not configured");
-
+    const { text, from, to, context } = body;
     const fromLabel = from === "ar" ? "Arabic" : "English";
     const toLabel = to === "ar" ? "Arabic" : "English";
 
@@ -51,42 +34,14 @@ RULES:
 TEXT TO TRANSLATE:
 ${text}`;
 
-    const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.2,
-      }),
+    const response = await callAI({
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.2,
     });
 
-    if (!res.ok) {
-      const errBody = await res.text();
-      console.error("AI API error:", res.status, errBody);
-      if (res.status === 429) {
-        return new Response(JSON.stringify({ error: "Rate limited, try again later" }), {
-          status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-      }
-      throw new Error("AI translation failed");
-    }
-
-    const aiData = await res.json();
-    const translated = aiData.choices?.[0]?.message?.content?.trim() || "";
-
-    return new Response(JSON.stringify({ translated }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ translated: response.content });
   } catch (error) {
-    const msg = (error as Error).message;
-    console.error("smart-translate error:", msg);
-    const status = msg === "Unauthorized" ? 401 : 500;
-    return new Response(JSON.stringify({ error: msg }), {
-      status, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error("smart-translate error:", (error as Error).message);
+    return errorResponse(error);
   }
 });
