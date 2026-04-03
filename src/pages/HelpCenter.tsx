@@ -245,7 +245,7 @@ export default function HelpCenter() {
                       {articles.slice(0, 5).map((article) => (
                         <Link
                           key={article.id}
-                          to={`/help/article/${article.id}`}
+                          to={`/blog/${article.slug || article.id}`}
                           className="block p-4 rounded-xl border hover:bg-muted/30 hover:border-primary/20 hover:shadow-sm transition-all duration-200"
                         >
                           <h4 className="font-medium mb-1">
