@@ -265,7 +265,7 @@ Return JSON array: [{"name":"...","description":"short desc","rating":4.5,"total
 Rules: Every listing. No filtering. No hallucination. ONLY valid JSON array.`;
 
   // Use flash (not lite) with longer timeout for reliability
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 45000);
+  const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 45000);
   if (!content) return [];
   try {
     const jsonMatch = content.match(/\[[\s\S]*\]/);
