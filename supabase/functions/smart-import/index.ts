@@ -141,7 +141,7 @@ async function firecrawlScrapeWithBranding(url: string, apiKey: string, timeoutM
 }
 
 // ─── AI call with retry ───
-async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash-lite', temperature = 0.1, timeoutMs = 30000): Promise<string> {
+async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-3-flash-preview', temperature = 0.1, timeoutMs = 30000): Promise<string> {
   for (let attempt = 0; attempt < 2; attempt++) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -265,7 +265,7 @@ Return JSON array: [{"name":"...","description":"short desc","rating":4.5,"total
 Rules: Every listing. No filtering. No hallucination. ONLY valid JSON array.`;
 
   // Use flash (not lite) with longer timeout for reliability
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 45000);
+  const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 45000);
   if (!content) return [];
   try {
     const jsonMatch = content.match(/\[[\s\S]*\]/);
@@ -714,7 +714,7 @@ Return ONLY valid JSON:
   "tags": []
 }`;
 
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 45000);
+  const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 45000);
   let data: any = {};
   try {
     const jsonMatch = content.match(/\{[\s\S]*\}/);

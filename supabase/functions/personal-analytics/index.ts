@@ -174,7 +174,7 @@ serve(async (req) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "google/gemini-2.5-flash-lite",
+            model: "google/gemini-3-flash-preview",
             messages: [
               { role: "system", content: "You are a culinary social media analytics coach. Be concise and actionable." },
               { role: "user", content: `Analyze this chef's 30-day stats and give personalized growth tips:

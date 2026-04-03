@@ -144,7 +144,7 @@ Format as JSON with keys: summary, recommendations (array), targeting (array), b
         method: "POST",
         headers: { Authorization: `Bearer ${lovableKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "google/gemini-3-flash-preview",
           messages: [
             { role: "system", content: "You are an advertising analytics AI. Analyze ad performance data and provide actionable insights in JSON format. Be specific and data-driven. Return ONLY valid JSON, no markdown." },
             { role: "user", content: dataPrompt },
