@@ -33,7 +33,7 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
   const readTime = estimateReadTime(excerpt);
 
   return (
-    <Link to={`/news/${article.slug}`} className="group block" role="listitem">
+    <Link to={`/blog/${article.slug}`} className="group block" role="listitem">
       <article>
         <Card className="overflow-hidden rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
           <div className="flex gap-4 p-4">

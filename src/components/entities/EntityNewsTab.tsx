@@ -70,7 +70,7 @@ export const EntityNewsTab = memo(function EntityNewsTab({ entityId, entityName,
         const excerpt = isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt;
 
         return (
-          <Link key={article.id} to={`/news/${article.slug}`} className="block">
+          <Link key={article.id} to={`/blog/${article.slug}`} className="block">
             <Card className="group overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
               <CardContent className="flex items-start gap-4 p-4">
                 {article.featured_image_url ? (

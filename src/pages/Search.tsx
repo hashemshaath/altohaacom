@@ -639,7 +639,7 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
 
   return (
     <Link
-      to={`/news/${data.slug}`}
+      to={`/blog/${data.slug}`}
       className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40"
     >
       <div className="flex items-start gap-3">

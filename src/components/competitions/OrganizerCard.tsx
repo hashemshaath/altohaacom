@@ -161,7 +161,7 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
             </div>
           </div>
           <Button asChild variant="outline" size="sm" className="w-full mt-4 rounded-xl h-9 text-xs font-semibold">
-            <Link to={`/profile/${profileOrganizer.username || profileOrganizer.user_id}`}>
+            <Link to={`/${profileOrganizer.username || profileOrganizer.user_id}`}>
               <ExternalLink className="me-1.5 h-3.5 w-3.5" />
               {isAr ? "عرض الملف الشخصي" : "View Profile"}
             </Link>

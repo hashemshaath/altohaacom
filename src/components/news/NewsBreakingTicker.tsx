@@ -92,7 +92,7 @@ export const NewsBreakingTicker = memo(function NewsBreakingTicker({ isAr }: { i
 
           {/* Title */}
           <Link
-            to={`/news/${current.slug}`}
+            to={`/blog/${current.slug}`}
             className="flex-1 text-xs sm:text-sm font-medium truncate hover:text-primary transition-colors"
           >
             <span

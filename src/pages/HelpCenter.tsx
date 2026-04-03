@@ -243,10 +243,9 @@ export default function HelpCenter() {
                   <CardContent>
                     <div className="space-y-4">
                       {articles.slice(0, 5).map((article) => (
-                        <Link
+                        <div
                           key={article.id}
-                          to={`/help/article/${article.id}`}
-                          className="block p-4 rounded-xl border hover:bg-muted/30 hover:border-primary/20 hover:shadow-sm transition-all duration-200"
+                          className="block p-4 rounded-xl border hover:bg-muted/30 hover:border-primary/20 hover:shadow-sm transition-all duration-200 cursor-default"
                         >
                           <h4 className="font-medium mb-1">
                             {language === "ar" && article.title_ar ? article.title_ar : article.title}
@@ -263,7 +262,7 @@ export default function HelpCenter() {
                               </Badge>
                             ))}
                           </div>
-                        </Link>
+                        </div>
                       ))}
                     </div>
                   </CardContent>
