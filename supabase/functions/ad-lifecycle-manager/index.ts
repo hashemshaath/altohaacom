@@ -1,143 +1,99 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { handleCors } from "../_shared/cors.ts";
+import { getServiceClient } from "../_shared/auth.ts";
+import { jsonResponse, errorResponse } from "../_shared/response.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
-
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+Deno.serve(async (req) => {
+  const corsRes = handleCors(req);
+  if (corsRes) return corsRes;
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const headers = {
-      apikey: supabaseKey,
-      Authorization: `Bearer ${supabaseKey}`,
-      "Content-Type": "application/json",
-      Prefer: "return=representation",
-    };
-
+    const supabase = getServiceClient();
     const now = new Date().toISOString();
     const results = { paused_expired: 0, paused_budget: 0, notifications_sent: 0, errors: [] as string[] };
 
-    // 1. Auto-pause expired campaigns
-    const expiredRes = await fetch(
-      `${supabaseUrl}/rest/v1/ad_campaigns?status=eq.active&end_date=lt.${now}&select=id,name,name_ar,company_id`,
-      { headers }
-    );
-    const expiredCampaigns = await expiredRes.json();
+    // 1. Auto-complete expired campaigns
+    const { data: expiredCampaigns } = await supabase
+      .from("ad_campaigns")
+      .select("id, name, name_ar, company_id")
+      .eq("status", "active")
+      .lt("end_date", now);
 
-    if (Array.isArray(expiredCampaigns)) {
-      for (const campaign of expiredCampaigns) {
-        const updateRes = await fetch(
-          `${supabaseUrl}/rest/v1/ad_campaigns?id=eq.${campaign.id}`,
-          {
-            method: "PATCH",
-            headers: { ...headers, Prefer: "return=minimal" },
-            body: JSON.stringify({ status: "completed" }),
-          }
-        );
-        if (updateRes.ok) {
-          results.paused_expired++;
-          // Send notification
-          await fetch(`${supabaseUrl}/rest/v1/notifications`, {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-              user_id: null,
-              title: `Campaign "${campaign.name}" has ended`,
-              title_ar: `انتهت الحملة "${campaign.name_ar || campaign.name}"`,
-              body: `The campaign has reached its end date and was automatically completed.`,
-              body_ar: `وصلت الحملة إلى تاريخ انتهائها وتم إكمالها تلقائياً.`,
-              type: "ad_lifecycle",
-              metadata: { campaign_id: campaign.id, action: "auto_completed" },
-            }),
-          });
-          results.notifications_sent++;
-        }
+    for (const campaign of expiredCampaigns || []) {
+      const { error } = await supabase
+        .from("ad_campaigns")
+        .update({ status: "completed" })
+        .eq("id", campaign.id);
+
+      if (!error) {
+        results.paused_expired++;
+        await supabase.from("notifications").insert({
+          user_id: null,
+          title: `Campaign "${campaign.name}" has ended`,
+          title_ar: `انتهت الحملة "${campaign.name_ar || campaign.name}"`,
+          body: `The campaign has reached its end date and was automatically completed.`,
+          body_ar: `وصلت الحملة إلى تاريخ انتهائها وتم إكمالها تلقائياً.`,
+          type: "ad_lifecycle",
+          metadata: { campaign_id: campaign.id, action: "auto_completed" },
+        });
+        results.notifications_sent++;
       }
     }
 
-    // 2. Auto-pause over-budget campaigns
-    const overBudgetRes = await fetch(
-      `${supabaseUrl}/rest/v1/ad_campaigns?status=eq.active&select=id,name,name_ar,company_id,budget,spent`,
-      { headers }
-    );
-    const activeCampaigns = await overBudgetRes.json();
+    // 2. Auto-pause over-budget campaigns + 80% warnings
+    const { data: activeCampaigns } = await supabase
+      .from("ad_campaigns")
+      .select("id, name, name_ar, company_id, budget, spent")
+      .eq("status", "active");
 
-    if (Array.isArray(activeCampaigns)) {
-      for (const campaign of activeCampaigns) {
-        if (campaign.budget && campaign.spent && campaign.spent >= campaign.budget) {
-          const updateRes = await fetch(
-            `${supabaseUrl}/rest/v1/ad_campaigns?id=eq.${campaign.id}`,
-            {
-              method: "PATCH",
-              headers: { ...headers, Prefer: "return=minimal" },
-              body: JSON.stringify({ status: "paused" }),
-            }
-          );
-          if (updateRes.ok) {
-            results.paused_budget++;
-            await fetch(`${supabaseUrl}/rest/v1/notifications`, {
-              method: "POST",
-              headers,
-              body: JSON.stringify({
-                user_id: null,
-                title: `Campaign "${campaign.name}" paused - Budget exhausted`,
-                title_ar: `تم إيقاف الحملة "${campaign.name_ar || campaign.name}" - استنفاد الميزانية`,
-                body: `Spending (${campaign.spent} SAR) has reached the budget limit (${campaign.budget} SAR).`,
-                body_ar: `وصل الإنفاق (${campaign.spent} ر.س) إلى حد الميزانية (${campaign.budget} ر.س).`,
-                type: "ad_lifecycle",
-                metadata: { campaign_id: campaign.id, action: "budget_exhausted" },
-              }),
-            });
-            results.notifications_sent++;
-          }
-        }
+    for (const campaign of activeCampaigns || []) {
+      if (!campaign.budget || !campaign.spent) continue;
 
-        // 3. Budget warning at 80%
-        if (campaign.budget && campaign.spent && campaign.spent >= campaign.budget * 0.8 && campaign.spent < campaign.budget) {
-          await fetch(`${supabaseUrl}/rest/v1/notifications`, {
-            method: "POST",
-            headers,
-            body: JSON.stringify({
-              user_id: null,
-              title: `Campaign "${campaign.name}" - 80% budget used`,
-              title_ar: `الحملة "${campaign.name_ar || campaign.name}" - تم استخدام 80% من الميزانية`,
-              body: `Spending is at ${Math.round((campaign.spent / campaign.budget) * 100)}% of budget. Consider increasing the budget.`,
-              body_ar: `الإنفاق عند ${Math.round((campaign.spent / campaign.budget) * 100)}% من الميزانية. فكر في زيادة الميزانية.`,
-              type: "ad_budget_warning",
-              metadata: { campaign_id: campaign.id, action: "budget_warning", percent_used: Math.round((campaign.spent / campaign.budget) * 100) },
-            }),
+      if (campaign.spent >= campaign.budget) {
+        const { error } = await supabase
+          .from("ad_campaigns")
+          .update({ status: "paused" })
+          .eq("id", campaign.id);
+
+        if (!error) {
+          results.paused_budget++;
+          await supabase.from("notifications").insert({
+            user_id: null,
+            title: `Campaign "${campaign.name}" paused - Budget exhausted`,
+            title_ar: `تم إيقاف الحملة "${campaign.name_ar || campaign.name}" - استنفاد الميزانية`,
+            body: `Spending (${campaign.spent} SAR) has reached the budget limit (${campaign.budget} SAR).`,
+            body_ar: `وصل الإنفاق (${campaign.spent} ر.س) إلى حد الميزانية (${campaign.budget} ر.س).`,
+            type: "ad_lifecycle",
+            metadata: { campaign_id: campaign.id, action: "budget_exhausted" },
           });
           results.notifications_sent++;
         }
+      } else if (campaign.spent >= campaign.budget * 0.8) {
+        const pct = Math.round((campaign.spent / campaign.budget) * 100);
+        await supabase.from("notifications").insert({
+          user_id: null,
+          title: `Campaign "${campaign.name}" - 80% budget used`,
+          title_ar: `الحملة "${campaign.name_ar || campaign.name}" - تم استخدام 80% من الميزانية`,
+          body: `Spending is at ${pct}% of budget. Consider increasing the budget.`,
+          body_ar: `الإنفاق عند ${pct}% من الميزانية. فكر في زيادة الميزانية.`,
+          type: "ad_budget_warning",
+          metadata: { campaign_id: campaign.id, action: "budget_warning", percent_used: pct },
+        });
+        results.notifications_sent++;
       }
     }
 
     // Log automation run
-    await fetch(`${supabaseUrl}/rest/v1/automation_runs`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        action: "ad_lifecycle_management",
-        status: "completed",
-        started_at: now,
-        completed_at: new Date().toISOString(),
-        results,
-      }),
+    await supabase.from("automation_runs").insert({
+      action: "ad_lifecycle_management",
+      status: "completed",
+      started_at: now,
+      completed_at: new Date().toISOString(),
+      results,
     });
 
-    return new Response(JSON.stringify(results), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return jsonResponse(results);
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("Ad lifecycle error:", error);
+    return errorResponse(error);
   }
 });
