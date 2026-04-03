@@ -343,9 +343,9 @@ export default function ArticleDetail() {
                   {/* Breadcrumb trail */}
                   <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
                     <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all backdrop-blur-sm">
-                      <Link to="/news">
+                      <Link to="/blog">
                         <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
-                        {isAr ? "الأخبار" : "News"}
+                        {isAr ? "المقالات" : "Articles"}
                       </Link>
                     </Button>
                     <span className="text-white/25 text-sm">/</span>
