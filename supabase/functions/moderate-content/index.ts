@@ -114,7 +114,7 @@ ${image_urls?.length ? `\nATTACHED IMAGES: ${image_urls.length} image(s) attache
         Authorization: `Bearer ${LOVABLE_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-3-flash-preview",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.1,
         max_tokens: 500,
