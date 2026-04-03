@@ -262,7 +262,7 @@ export default function ArticleDetail() {
             <h1 className="font-serif text-2xl font-bold mb-2">{isAr ? "المقال غير موجود" : "Article not found"}</h1>
             <p className="text-muted-foreground mb-6">{isAr ? "المقال الذي تبحث عنه غير موجود أو تم حذفه." : "The article you're looking for doesn't exist."}</p>
             <Button asChild className="rounded-xl">
-              <Link to="/news">{isAr ? "العودة للأخبار" : "Back to News"}</Link>
+              <Link to="/blog">{isAr ? "العودة للمقالات" : "Back to Articles"}</Link>
             </Button>
           </div>
         </main>
