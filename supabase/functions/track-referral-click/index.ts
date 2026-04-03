@@ -1,67 +1,31 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { handleCors } from "../_shared/cors.ts";
+import { getServiceClient } from "../_shared/auth.ts";
+import { jsonResponse, errorResponse } from "../_shared/response.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
-
-serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+Deno.serve(async (req) => {
+  const corsRes = handleCors(req);
+  if (corsRes) return corsRes;
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
+    const supabase = getServiceClient();
     const { code, source } = await req.json();
 
-    if (!code) {
-      return new Response(
-        JSON.stringify({ error: "code is required" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    if (!code) return jsonResponse({ error: "code is required" }, 400);
 
-    // Find referral code
     const { data: refData, error: refError } = await supabase
-      .from("referral_codes")
-      .select("id, total_clicks")
-      .eq("code", code.toUpperCase())
-      .eq("is_active", true)
-      .maybeSingle();
+      .from("referral_codes").select("id, total_clicks")
+      .eq("code", code.toUpperCase()).eq("is_active", true).maybeSingle();
 
-    if (refError || !refData) {
-      return new Response(
-        JSON.stringify({ error: "Invalid referral code" }),
-        { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    if (refError || !refData) return jsonResponse({ error: "Invalid referral code" }, 404);
 
-    // Increment click count
-    await supabase
-      .from("referral_codes")
-      .update({ total_clicks: (refData.total_clicks || 0) + 1 })
-      .eq("id", refData.id);
+    await Promise.all([
+      supabase.from("referral_codes").update({ total_clicks: (refData.total_clicks || 0) + 1 }).eq("id", refData.id),
+      supabase.from("referral_clicks").insert({ referral_code_id: refData.id, source: source || "direct", clicked_at: new Date().toISOString() }),
+    ]);
 
-    // Log click event for analytics
-    await supabase.from("referral_clicks").insert({
-      referral_code_id: refData.id,
-      source: source || "direct",
-      clicked_at: new Date().toISOString(),
-    });
-
-    return new Response(
-      JSON.stringify({ tracked: true }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return jsonResponse({ tracked: true });
   } catch (error) {
     console.error("Track referral click error:", error);
-    return new Response(
-      JSON.stringify({ error: "Service temporarily unavailable" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    return errorResponse(error);
   }
 });
