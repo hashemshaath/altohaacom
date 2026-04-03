@@ -712,7 +712,7 @@ export default function ArticleDetail() {
                     </p>
                   </div>
                   <Button asChild size="sm" className="rounded-xl shadow-md shadow-primary/15 gap-1.5 shrink-0">
-                    <Link to="/news">
+                    <Link to="/blog">
                       {isAr ? "تصفح المزيد" : "Browse More"}
                       <ArrowUpRight className="h-3.5 w-3.5" />
                     </Link>
