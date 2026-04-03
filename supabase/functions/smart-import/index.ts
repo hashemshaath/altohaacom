@@ -1,9 +1,7 @@
+import { handleCors, corsHeaders } from "../_shared/cors.ts";
+import { jsonResponse, errorResponse } from "../_shared/response.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
-};
 const jsonHeaders = { ...corsHeaders, 'Content-Type': 'application/json' };
 
 // ─── Types ───
@@ -118,7 +116,6 @@ async function firecrawlScrape(url: string, apiKey: string, timeoutMs = 15000, f
   return md;
 }
 
-// Scrape with branding format for auto logo detection
 async function firecrawlScrapeWithBranding(url: string, apiKey: string, timeoutMs = 18000): Promise<any> {
   const cacheKey = `scrape_branding:${url}`;
   const cached = getCached(cacheKey);
@@ -184,7 +181,6 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
   console.log('[SmartImport] Searching:', searchTerm);
   const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
 
-  // Parallel: scrape maps + fallback search + web search
   const [scraped, fallbackResults, webResults] = await Promise.all([
     firecrawlScrape(mapsUrl, apiKey, 18000),
     firecrawlSearch(`"${query}" ${location || ''} site:google.com/maps`, apiKey, 20, 10000),
@@ -192,16 +188,12 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
   ]);
 
   let results: SearchResult[] = [];
-
-  // Build fallback results from search APIs first (always available as backup)
   const fallbackParsed = fallbackResults.length ? extractEntitiesFromSearchResults(fallbackResults) : [];
   const webParsed = webResults.length ? extractEntitiesFromSearchResults(webResults) : [];
 
   if (scraped && scraped.length >= 50) {
     const aiResults = await extractEntitiesWithAI(scraped, searchTerm, lovableKey);
-    // If AI succeeded, use its results; otherwise fall back
     results = aiResults.length > 0 ? aiResults : fallbackParsed;
-    // Merge any extras from fallback
     if (aiResults.length > 0 && fallbackParsed.length) {
       const existingNames = new Set(results.map(r => r.name.toLowerCase()));
       for (const fb of fallbackParsed) {
@@ -214,7 +206,6 @@ async function handleSearch(query: string, apiKey: string, lovableKey: string, l
     results = webParsed;
   }
 
-  // Last resort: merge web results
   if (results.length === 0 && webParsed.length) {
     results = webParsed;
   } else if (webParsed.length) {
@@ -254,7 +245,6 @@ function extractEntitiesFromSearchResults(raw: any[]): SearchResult[] {
 }
 
 async function extractEntitiesWithAI(scraped: string, searchTerm: string, lovableKey: string): Promise<SearchResult[]> {
-  // Use less content to avoid timeouts
   const truncated = scraped.substring(0, 10000);
   const prompt = `Extract ALL business/entity listings from this Google Maps page.
 SEARCH: "${searchTerm}"
@@ -264,7 +254,6 @@ ${truncated}
 Return JSON array: [{"name":"...","description":"short desc","rating":4.5,"total_reviews":100,"place_type":"...","address":"..."}]
 Rules: Every listing. No filtering. No hallucination. ONLY valid JSON array.`;
 
-  // Use flash (not lite) with longer timeout for reliability
   const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 45000);
   if (!content) return [];
   try {
@@ -295,11 +284,8 @@ async function handleDetails(
   if (cached) return cached;
 
   const sources = { google_maps: false, web_search: false, website: false, ai: true };
-
-  // Auto-detect website from result page if not provided
   let effectiveWebsiteUrl = websiteUrl;
 
-  // Scrape website with branding format for automatic logo detection
   const [scrapedRaw, searchRaw, websiteRaw] = await Promise.all([
     resultUrl ? firecrawlScrape(resultUrl, apiKey, 18000, ['markdown', 'links']).catch(() => null) : Promise.resolve(null),
     firecrawlSearch(
@@ -312,13 +298,11 @@ async function handleDetails(
   const scraped = typeof scrapedRaw === 'string' ? scrapedRaw : scrapedRaw?.markdown || null;
   const websiteContent = typeof websiteRaw === 'string' ? websiteRaw : websiteRaw?.markdown || null;
   
-  // Extract image URLs from scraped pages for logo/cover detection
   const allLinks: string[] = [];
   if (scrapedRaw?.links) allLinks.push(...scrapedRaw.links);
   if (websiteRaw?.links) allLinks.push(...websiteRaw.links);
   const imageUrls = allLinks.filter((l: string) => /\.(png|jpg|jpeg|svg|webp|gif)/i.test(l)).slice(0, 20);
 
-  // Extract branding data (logo from Firecrawl's branding format)
   const brandingLogo = websiteRaw?.branding?.logo || websiteRaw?.branding?.images?.logo || null;
   const brandingFavicon = websiteRaw?.branding?.images?.favicon || null;
   const brandingOgImage = websiteRaw?.branding?.images?.ogImage || null;
@@ -326,12 +310,10 @@ async function handleDetails(
   if (scraped) sources.google_maps = true;
   if (websiteContent) sources.website = true;
 
-  // If no website was scraped, try to find official website from search results
   let extraWebsite: string | null = null;
   let searchContent: string | null = null;
   if (searchRaw.length) {
     sources.web_search = true;
-    // Find official website (not google maps, not social media)
     const officialSite = searchRaw.find((r: any) => {
       const u = (r.url || '').toLowerCase();
       return !u.includes('google.com/maps') && !u.includes('facebook.com') && !u.includes('instagram.com') && !u.includes('twitter.com') && !u.includes('linkedin.com') && !u.includes('yelp.com') && !u.includes('tripadvisor.com');
@@ -348,7 +330,6 @@ async function handleDetails(
   const lovableKey = Deno.env.get('LOVABLE_API_KEY')!;
   const enriched = await enrichWithAI(scraped, searchContent, websiteContent || extraWebsite, query, latitude, longitude, lovableKey, imageUrls);
   
-  // Apply branding logo/cover if AI didn't find them
   if (!enriched.logo_url && brandingLogo) enriched.logo_url = brandingLogo;
   if (!enriched.logo_url && brandingFavicon) enriched.logo_url = brandingFavicon;
   if (!enriched.cover_url && brandingOgImage) enriched.cover_url = brandingOgImage;
@@ -404,7 +385,6 @@ async function handleUrlImport(url: string, apiKey: string, lovableKey: string):
   const titleMatch = scraped.match(/^#\s*(.+)$/m);
   const entityName = titleMatch?.[1] || url.replace(/^https?:\/\//, '').split('/')[0];
 
-  // Parallel: search + maps check
   const [searchRaw, mapsResult] = await Promise.all([
     firecrawlSearch(`${entityName} contact phone email`, apiKey, 5, 8000).catch(() => []),
     firecrawlSearch(`${entityName} site:google.com/maps`, apiKey, 3, 8000).catch(() => []),
@@ -437,7 +417,6 @@ async function handleUrlImport(url: string, apiKey: string, lovableKey: string):
 // ─── MODE: BULK URL ───
 async function handleBulkUrl(urls: string[], apiKey: string, lovableKey: string): Promise<{ results: any[] }> {
   const results: any[] = [];
-  // Process up to 5 URLs in parallel
   for (let i = 0; i < urls.length; i += 5) {
     const batch = urls.slice(i, i + 5);
     const batchResults = await Promise.allSettled(
@@ -510,15 +489,7 @@ Return ONLY valid JSON:
   "country_en": null, "country_ar": null, "country_code": null,
   "phone": null, "phone_secondary": null, "fax": null,
   "email": null, "website": null,
-  "business_hours": [
-    {"day_en":"Saturday","day_ar":"السبت","open":"09:00","close":"17:00","is_closed":false},
-    {"day_en":"Sunday","day_ar":"الأحد","open":"09:00","close":"17:00","is_closed":false},
-    {"day_en":"Monday","day_ar":"الاثنين","open":"09:00","close":"17:00","is_closed":false},
-    {"day_en":"Tuesday","day_ar":"الثلاثاء","open":"09:00","close":"17:00","is_closed":false},
-    {"day_en":"Wednesday","day_ar":"الأربعاء","open":"09:00","close":"17:00","is_closed":false},
-    {"day_en":"Thursday","day_ar":"الخميس","open":"09:00","close":"17:00","is_closed":false},
-    {"day_en":"Friday","day_ar":"الجمعة","open":"09:00","close":"17:00","is_closed":true}
-  ],
+  "business_hours": [],
   "business_type_en": null, "business_type_ar": null,
   "rating": null, "total_reviews": null,
   "latitude": ${lat || 'null'}, "longitude": ${lng || 'null'},
@@ -548,19 +519,18 @@ Return ONLY valid JSON:
   "registration_fee": null,
   "rules_summary_en": null, "rules_summary_ar": null,
   "edition_year": null,
-  "activities_en": ["Workshop on...", "Live cooking demo", "Panel discussion on..."],
-  "activities_ar": ["ورشة عمل حول...", "عرض طهي مباشر", "حلقة نقاش حول..."],
-  "reasons_to_attend": [{"reason":"...","reason_ar":"..."}],
-  "unique_features": [{"feature":"...","feature_ar":"..."}],
+  "activities_en": [], "activities_ar": [],
+  "reasons_to_attend": [],
+  "unique_features": [],
   "targeted_sectors": [],
   "categories": [],
-  "highlights": [{"label":"...","label_ar":"...","value":"..."}],
+  "highlights": [],
   "edition_stats": {"exhibitors":null,"visitors":null,"countries":null,"brands":null,"sessions":null,"area_sqm":null,"speakers":null,"workshops":null},
   "entry_details": {"type":null,"ticket_types":[],"early_bird_price":null,"vip_price":null,"group_discount":null},
   "venue_details": {"capacity":null,"halls":null,"area_sqm":null,"parking":null,"accessibility":null,"facilities":[]},
-  "sponsors": [{"name":"...","name_ar":"...","tier":"platinum|gold|silver|bronze|partner","logo_url":null,"website_url":null}],
-  "speakers": [{"name":"...","name_ar":"...","title":"...","title_ar":"...","photo_url":null}],
-  "schedule_items": [{"time":"09:00","title":"Opening ceremony","title_ar":"حفل الافتتاح","description":"...","description_ar":"..."}],
+  "sponsors": [],
+  "speakers": [],
+  "schedule_items": [],
   "gallery_urls": [],
   "includes_competitions": null,
   "includes_seminars": null,
@@ -569,19 +539,7 @@ Return ONLY valid JSON:
   "early_bird_deadline": null
 }
 
-Extract ALL data comprehensively. For exhibitions/conferences:
-- Write SHORT description (card-friendly, 50-100 words) and LONG description (comprehensive, 200-500 words)
-- List ALL activities within the event (workshops, demos, panels, tastings, etc.)
-- Extract ALL sponsors/partners with tier classification (platinum, gold, silver, bronze, partner)
-- Extract speaker information if available
-- Extract schedule/agenda items
-- Extract edition statistics (exhibitors count, visitors count, countries, brands, area sqm)
-- Extract entry/ticket details (free/paid, types, pricing)
-- Extract venue details (capacity, halls, area, parking, facilities)
-- Extract target audience segments
-- Extract targeted industry sectors
-- Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
-
+Extract ALL data comprehensively. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
 
   const content = await callAI(prompt, apiKey, 'google/gemini-3-flash-preview', 0.1, 30000);
   try {
@@ -597,7 +555,6 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
   const name = (data.name_en || '').toLowerCase();
   const all = `${bt} ${name}`;
 
-  // Exhibition / Conference patterns (check first - higher priority)
   const exhibitionPatterns: Record<string, string[]> = {
     exhibition: ['exhibition', 'expo', 'trade show', 'trade fair', 'fair', 'showcase', 'food show'],
     conference: ['conference', 'congress', 'forum', 'symposium', 'convention'],
@@ -611,7 +568,6 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
     if (keywords.some(k => all.includes(k))) return { table: 'exhibitions', sub_type: type, confidence: 0.85 };
   }
 
-  // Competition patterns
   const competitionKeywords = ['competition', 'championship', 'contest', 'culinary competition', 'cooking competition', 'chef competition', 'bake off', 'cook off', 'challenge', 'cup', 'prix', 'award ceremony'];
   if (competitionKeywords.some(k => all.includes(k))) return { table: 'competitions', sub_type: 'competition', confidence: 0.85 };
 
@@ -679,11 +635,9 @@ Return ONLY valid JSON:
 {
   "name_en": null, "name_ar": null,
   "description_en": null, "description_ar": null,
-  "competition_type": null,
-  "edition_year": null,
+  "competition_type": null, "edition_year": null,
   "start_date": null, "end_date": null,
-  "registration_deadline": null,
-  "registration_fee": null, "currency": null,
+  "registration_deadline": null, "registration_fee": null, "currency": null,
   "venue_en": null, "venue_ar": null,
   "city_en": null, "city_ar": null,
   "country_en": null, "country_ar": null, "country_code": null,
@@ -693,15 +647,13 @@ Return ONLY valid JSON:
   "participation_requirements_en": [], "participation_requirements_ar": [],
   "scoring_method_en": null, "scoring_method_ar": null,
   "max_team_size": null, "min_team_size": null,
-  "allowed_entry_types": [],
-  "blind_judging": null,
-  "max_attendees": null,
-  "competition_versions": [{"name":"...","name_ar":"...","description":"...","max_participants":null}],
-  "judging_criteria": [{"criterion":"...","criterion_ar":"...","weight":null,"description":"..."}],
-  "judging_committee": [{"name":"...","name_ar":"...","title":"...","title_ar":"...","role":"..."}],
-  "prizes": [{"place":"1st","place_ar":"الأول","prize":"...","prize_ar":"...","value":null}],
-  "competition_schedule": [{"time":"09:00","date":"...","activity":"...","activity_ar":"..."}],
-  "competition_rounds": [{"name":"...","name_ar":"...","description":"...","duration":"..."}],
+  "allowed_entry_types": [], "blind_judging": null, "max_attendees": null,
+  "competition_versions": [],
+  "judging_criteria": [],
+  "judging_committee": [],
+  "prizes": [],
+  "competition_schedule": [],
+  "competition_rounds": [],
   "dress_code": null, "dress_code_ar": null,
   "age_restrictions": null,
   "equipment_provided": [], "equipment_required": [],
@@ -751,9 +703,7 @@ async function handleStats(client: any): Promise<any> {
       competitions: competitions.count || 0,
     },
     imports: {
-      today: todayImports,
-      week: weekImports,
-      total: logsData.length,
+      today: todayImports, week: weekImports, total: logsData.length,
       by_table: {
         culinary_entities: logsData.filter((l: any) => l.target_table === 'culinary_entities').length,
         companies: logsData.filter((l: any) => l.target_table === 'companies').length,
@@ -772,7 +722,8 @@ async function handleStats(client: any): Promise<any> {
 
 // ─── Main handler ───
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+  const corsRes = handleCors(req);
+  if (corsRes) return corsRes;
 
   try {
     const client = await authenticateAdmin(req);
@@ -782,55 +733,49 @@ Deno.serve(async (req) => {
     const firecrawlKey = Deno.env.get('FIRECRAWL_API_KEY');
     const lovableKey = Deno.env.get('LOVABLE_API_KEY');
 
-    // Stats mode doesn't need API keys
     if (mode === 'stats') {
       const stats = await handleStats(client);
-      return new Response(JSON.stringify({ success: true, stats }), { headers: jsonHeaders });
+      return jsonResponse({ success: true, stats });
     }
 
-    if (!firecrawlKey) return new Response(JSON.stringify({ success: false, error: "Firecrawl not configured." }), { status: 400, headers: jsonHeaders });
-    if (!lovableKey) return new Response(JSON.stringify({ success: false, error: "AI service not configured." }), { status: 400, headers: jsonHeaders });
+    if (!firecrawlKey) return jsonResponse({ success: false, error: "Firecrawl not configured." }, 400);
+    if (!lovableKey) return jsonResponse({ success: false, error: "AI service not configured." }, 400);
 
-    // Bulk URL import
     if (mode === 'bulk_url') {
-      if (!urls?.length) return new Response(JSON.stringify({ success: false, error: "URLs required" }), { status: 400, headers: jsonHeaders });
+      if (!urls?.length) return jsonResponse({ success: false, error: "URLs required" }, 400);
       const result = await handleBulkUrl(urls.slice(0, 10), firecrawlKey, lovableKey);
-      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
+      return jsonResponse({ success: true, ...result });
     }
 
-    // Direct URL
     if (mode === 'url') {
-      if (!url?.trim()) return new Response(JSON.stringify({ success: false, error: "URL required" }), { status: 400, headers: jsonHeaders });
+      if (!url?.trim()) return jsonResponse({ success: false, error: "URL required" }, 400);
       const result = await handleUrlImport(url.trim(), firecrawlKey, lovableKey);
       const suggestion = autoDetectTargetTable(result.data);
-      return new Response(JSON.stringify({ success: true, ...result, suggested_target: suggestion }), { headers: jsonHeaders });
+      return jsonResponse({ success: true, ...result, suggested_target: suggestion });
     }
 
-    // Competition text/PDF content extraction
     if (mode === 'competition_text') {
       const textContent = body.text_content;
-      if (!textContent?.trim()) return new Response(JSON.stringify({ success: false, error: "Text content required" }), { status: 400, headers: jsonHeaders });
+      if (!textContent?.trim()) return jsonResponse({ success: false, error: "Text content required" }, 400);
       const result = await handleCompetitionText(textContent.trim(), lovableKey);
-      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
+      return jsonResponse({ success: true, ...result });
     }
 
-    if (!query?.trim()) return new Response(JSON.stringify({ success: false, error: "Query required" }), { status: 400, headers: jsonHeaders });
+    if (!query?.trim()) return jsonResponse({ success: false, error: "Query required" }, 400);
 
     if (mode === 'search') {
       const results = await handleSearch(query.trim(), firecrawlKey, lovableKey, location?.trim());
-      return new Response(JSON.stringify({ success: true, results }), { headers: jsonHeaders });
+      return jsonResponse({ success: true, results });
     }
 
     if (mode === 'details') {
       const result = await handleDetails(query.trim(), firecrawlKey, result_url, website_url, location?.trim(), latitude, longitude);
-      return new Response(JSON.stringify({ success: true, ...result }), { headers: jsonHeaders });
+      return jsonResponse({ success: true, ...result });
     }
 
-    return new Response(JSON.stringify({ success: false, error: "Invalid mode." }), { status: 400, headers: jsonHeaders });
+    return jsonResponse({ success: false, error: "Invalid mode." }, 400);
   } catch (error) {
     console.error('[SmartImport] Error:', error);
-    const msg = (error as Error).message;
-    const status = msg === "Unauthorized" ? 401 : msg === "Admin access required" ? 403 : 500;
-    return new Response(JSON.stringify({ success: false, error: msg }), { status, headers: jsonHeaders });
+    return errorResponse(error);
   }
 });
