@@ -714,7 +714,7 @@ Return ONLY valid JSON:
   "tags": []
 }`;
 
-  const content = await callAI(prompt, lovableKey, 'google/gemini-2.5-flash', 0.1, 45000);
+  const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 45000);
   let data: any = {};
   try {
     const jsonMatch = content.match(/\{[\s\S]*\}/);
