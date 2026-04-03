@@ -113,7 +113,7 @@ export default function MembershipGift() {
   };
 
   if (!user) {
-    navigate("/auth");
+    navigate("/login");
     return null;
   }
 

@@ -55,7 +55,7 @@ export const ChefsTableHero = memo(function ChefsTableHero({ isAr, user, onReque
               </Button>
             ) : (
               <Button size="lg" className="gap-2 rounded-2xl py-7 px-10 text-lg font-bold" asChild>
-                <a href="/auth">
+                <a href="/login">
                   {isAr ? "سجّل الآن لتبدأ" : "Sign Up to Get Started"}
                   <ArrowRight className="h-5 w-5" />
                 </a>
