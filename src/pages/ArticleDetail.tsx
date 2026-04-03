@@ -792,7 +792,7 @@ export default function ArticleDetail() {
                   const rTitle = isAr && r.title_ar ? r.title_ar : r.title;
                   const rExcerpt = isAr && r.excerpt_ar ? r.excerpt_ar : r.excerpt;
                   return (
-                    <Link key={r.id} to={`/news/${r.slug}`} className="group">
+                    <Link key={r.id} to={`/blog/${r.slug}`} className="group">
                       <Card className="overflow-hidden rounded-2xl border-border/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-row">
                         {r.featured_image_url ? (
                           <div className="w-36 sm:w-44 relative overflow-hidden shrink-0">

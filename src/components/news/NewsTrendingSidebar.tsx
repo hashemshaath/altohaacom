@@ -34,7 +34,7 @@ export const NewsTrendingSidebar = memo(function NewsTrendingSidebar({ articles,
           return (
             <Link
               key={article.id}
-              to={`/news/${article.slug}`}
+              to={`/blog/${article.slug}`}
               className="group flex items-start gap-3 rounded-xl p-2.5 transition-colors hover:bg-muted/50"
             >
               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-xs font-black text-primary">

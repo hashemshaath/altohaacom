@@ -46,7 +46,7 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
   const readTime = estimateReadTime(excerpt);
 
   return (
-    <Link to={`/news/${article.slug}`} className="group block h-full">
+    <Link to={`/blog/${article.slug}`} className="group block h-full">
       <Card className="h-full overflow-hidden rounded-2xl border-border/40 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 relative">
         <div className="relative aspect-[16/10] overflow-hidden">
           {article.featured_image_url ? (

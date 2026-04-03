@@ -88,7 +88,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
                 {isAr ? "اختيار المحرر" : "Editor's Pick"}
               </span>
             </div>
-            <Link to={`/news/${digest.editorPick.slug}`} className="group block">
+            <Link to={`/blog/${digest.editorPick.slug}`} className="group block">
               <div className="rounded-xl border border-border/30 p-2.5 hover:bg-muted/30 transition-colors">
                 <div className="flex gap-2.5">
                   {digest.editorPick.featured_image_url && (
@@ -127,7 +127,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
                 return (
                   <Link
                     key={article.id}
-                    to={`/news/${article.slug}`}
+                    to={`/blog/${article.slug}`}
                     className="group flex items-center gap-2.5 rounded-lg p-1.5 hover:bg-muted/40 transition-colors"
                   >
                     <span className={cn(

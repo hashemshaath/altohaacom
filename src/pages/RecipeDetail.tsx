@@ -329,7 +329,7 @@ export default function RecipeDetail() {
                   <div>
                     <p className="font-medium text-sm">{recipe.author_name || "Chef"}</p>
                     {recipe.author_username && (
-                      <Link to={`/profile/${recipe.author_username}`} className="text-xs text-primary hover:underline">
+                      <Link to={`/${recipe.author_username}`} className="text-xs text-primary hover:underline">
                         @{recipe.author_username}
                       </Link>
                     )}

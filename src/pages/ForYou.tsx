@@ -148,7 +148,7 @@ export default function ForYou() {
       bg: "bg-chart-2/10",
       items: data?.articles || [],
       renderItem: (a: any) => (
-        <Link key={a.id} to={`/news/${a.slug}`} className="group">
+        <Link key={a.id} to={`/blog/${a.slug}`} className="group">
           <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 border-border/40">
             <CardContent className="p-0">
               {a.featured_image_url && (

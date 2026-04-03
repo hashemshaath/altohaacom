@@ -91,7 +91,7 @@ export const NewsRelatedTopics = memo(function NewsRelatedTopics({
           return (
             <Link
               key={article.id}
-              to={`/news/${article.slug}`}
+              to={`/blog/${article.slug}`}
               className="group"
             >
               <Card className="h-full overflow-hidden rounded-xl border-border/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">

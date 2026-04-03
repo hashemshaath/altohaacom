@@ -130,7 +130,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
 
     if (username) {
       return (
-        <Link key={pos.id} to={`/profile/${username}`} className="block">
+        <Link key={pos.id} to={`/${username}`} className="block">
           {content}
         </Link>
       );
@@ -170,7 +170,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
 
     if (username) {
       return (
-        <Link key={pos.id} to={`/profile/${username}`} className="block">
+        <Link key={pos.id} to={`/${username}`} className="block">
           {content}
         </Link>
       );

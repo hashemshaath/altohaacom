@@ -55,7 +55,7 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
 
   if (compact) {
     return (
-      <Link to={`/news/${article.slug}`} className="group block" role="listitem">
+      <Link to={`/blog/${article.slug}`} className="group block" role="listitem">
         <article>
           <Card className="h-full overflow-hidden rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
             <div className="flex gap-3 p-3">
@@ -94,7 +94,7 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
   }
 
   return (
-    <Link to={`/news/${article.slug}`} className="group block" role="listitem">
+    <Link to={`/blog/${article.slug}`} className="group block" role="listitem">
       <article>
         <Card className="h-full overflow-hidden rounded-2xl border-border/40 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 flex flex-col">
           <div className="relative aspect-video overflow-hidden bg-muted">

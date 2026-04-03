@@ -107,7 +107,7 @@ export const HomeTrendingContent = function HomeTrendingContent() {
               {filtered.map((article: any, i: number) => (
                 <Link
                   key={article.id}
-                  to={`/news/${article.slug}`}
+                  to={`/blog/${article.slug}`}
                   className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
                 >
                   <Card className="overflow-hidden h-full border-border/40 rounded-2xl hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.98]">

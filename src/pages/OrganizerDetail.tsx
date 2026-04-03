@@ -1204,7 +1204,7 @@ export default function OrganizerDetail() {
               <TabsContent value="news" className="mt-4">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {articles.map(article => (
-                    <Link key={article.id} to={`/news/${article.slug}`} className="group">
+                    <Link key={article.id} to={`/blog/${article.slug}`} className="group">
                       <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                         {article.featured_image_url && (
                           <img src={article.featured_image_url} alt={isAr && article.title_ar ? article.title_ar : article.title} className="w-full h-36 object-cover" loading="lazy" decoding="async" />

@@ -127,7 +127,7 @@ export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Pro
               );
 
               return username ? (
-                <Link key={pos.id} to={`/profile/${username}`} className="block">{card}</Link>
+                <Link key={pos.id} to={`/${username}`} className="block">{card}</Link>
               ) : (
                 <div key={pos.id}>{card}</div>
               );

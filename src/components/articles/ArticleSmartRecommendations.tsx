@@ -132,7 +132,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
           const matchPct = Math.min(Math.round(article.score), 99);
           
           return (
-            <Link key={article.id} to={`/news/${article.slug}`} className="group block">
+            <Link key={article.id} to={`/blog/${article.slug}`} className="group block">
               <Card className="overflow-hidden rounded-2xl border-border/30 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
                 <CardContent className="p-0 flex">
                   {article.featured_image_url ? (
