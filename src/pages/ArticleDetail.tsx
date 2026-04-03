@@ -781,7 +781,7 @@ export default function ArticleDetail() {
                 <h2 className="font-serif text-xl font-bold">{isAr ? "مقالات ذات صلة" : "Related Articles"}</h2>
                 <div className="h-px flex-1 bg-border/30" />
                 <Button variant="ghost" size="sm" asChild className="rounded-xl text-xs gap-1 text-muted-foreground hover:text-primary">
-                  <Link to="/news">
+                  <Link to="/blog">
                     {isAr ? "عرض الكل" : "View All"}
                     <ArrowUpRight className="h-3 w-3" />
                   </Link>

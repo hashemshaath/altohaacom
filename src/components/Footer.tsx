@@ -22,7 +22,7 @@ const navColumns = [
       { to: "/competitions", en: "Competitions", ar: "المسابقات" },
       { to: "/exhibitions", en: "Exhibitions", ar: "المعارض" },
       { to: "/community", en: "Community", ar: "المجتمع" },
-      { to: "/news", en: "News", ar: "الأخبار" },
+      { to: "/blog", en: "News", ar: "الأخبار" },
       { to: "/jobs", en: "Jobs", ar: "الوظائف" },
       { to: "/recipes", en: "Recipes", ar: "الوصفات" },
     ],

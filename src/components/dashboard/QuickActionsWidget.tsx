@@ -98,7 +98,7 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
       icon: Users,
       label: "Find Chefs",
       labelAr: "ابحث عن طهاة",
-      href: "/explore",
+      href: "/search",
       color: "text-chart-5",
       bg: "bg-chart-5/10",
     },
