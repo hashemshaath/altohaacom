@@ -262,7 +262,7 @@ export default function HelpCenter() {
                               </Badge>
                             ))}
                           </div>
-                        </Link>
+                        </div>
                       ))}
                     </div>
                   </CardContent>
