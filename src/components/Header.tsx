@@ -24,7 +24,7 @@ export const primaryNav = [
   { to: "/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
   { to: "/exhibitions", icon: Landmark, labelEn: "Exhibitions", labelAr: "المعارض" },
   { to: "/community", icon: Users, labelEn: "Community", labelAr: "المجتمع" },
-  { to: "/news", icon: Newspaper, labelEn: "News", labelAr: "الأخبار" },
+  { to: "/blog", icon: Newspaper, labelEn: "News", labelAr: "الأخبار" },
 ];
 
 export const moreLinks = [
