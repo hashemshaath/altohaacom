@@ -141,7 +141,7 @@ async function firecrawlScrapeWithBranding(url: string, apiKey: string, timeoutM
 }
 
 // ─── AI call with retry ───
-async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-2.5-flash-lite', temperature = 0.1, timeoutMs = 30000): Promise<string> {
+async function callAI(prompt: string, lovableKey: string, model = 'google/gemini-3-flash-preview', temperature = 0.1, timeoutMs = 30000): Promise<string> {
   for (let attempt = 0; attempt < 2; attempt++) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeoutMs);
