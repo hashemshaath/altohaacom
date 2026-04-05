@@ -273,7 +273,7 @@ export default function ExhibitionsAdmin() {
   });
 
   const duplicateMutation = useMutation({
-    mutationFn: async (ex) => {
+    mutationFn: async (ex: any) => {
       const { id, created_at, updated_at, view_count, slug, ...rest } = ex;
       const newSlug = (slug || "") + "-copy-" + Date.now().toString(36);
       const payload = {

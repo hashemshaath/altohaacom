@@ -278,7 +278,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-catalog", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_catalog").select("id, company_id, name, name_ar, category, description, description_ar, price, currency, image_url, is_active, created_at").eq("company_id", selectedCompany).order("category").order("name");
+      const { data, error } = await supabase.from("company_catalog").select("id, company_id, name, name_ar, category, description, description_ar, unit_price, currency, image_url, is_active, sku, unit, quantity_available, shop_product_id, created_at").eq("company_id", selectedCompany).order("category").order("name");
       if (error) throw error;
       return data;
     },
@@ -289,7 +289,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-drivers", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_drivers").select("id, company_id, name, name_ar, phone, email, license_number, vehicle_type, vehicle_plate, is_active, created_at").eq("company_id", selectedCompany).order("name");
+      const { data, error } = await supabase.from("company_drivers").select("id, company_id, name, name_ar, phone, license_number, vehicle_type, vehicle_plate, is_available, is_active, created_at").eq("company_id", selectedCompany).order("name");
       if (error) throw error;
       return data;
     },
@@ -311,7 +311,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-media", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, file_name, category, media_type, description, created_at").eq("company_id", selectedCompany).order("category").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, file_type, file_size, title, category, description, created_at").eq("company_id", selectedCompany).order("category").order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },

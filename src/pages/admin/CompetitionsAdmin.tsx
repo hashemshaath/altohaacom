@@ -211,7 +211,7 @@ export default function CompetitionsAdmin() {
   });
 
   const approveCompetition = useMutation({
-    mutationFn: async (comp) => {
+    mutationFn: async (comp: any) => {
       const { error } = await supabase.from("competitions").update({ status: "draft" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_competition", details: { competition_id: comp.id } });
@@ -229,7 +229,7 @@ export default function CompetitionsAdmin() {
   });
 
   const rejectCompetition = useMutation({
-    mutationFn: async (comp) => {
+    mutationFn: async (comp: any) => {
       const { error } = await supabase.from("competitions").update({ status: "cancelled" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_competition", details: { competition_id: comp.id } });
@@ -243,7 +243,7 @@ export default function CompetitionsAdmin() {
   });
 
   const duplicateMutation = useMutation({
-    mutationFn: async (comp) => {
+    mutationFn: async (comp: any) => {
       const { id, created_at, updated_at, organizer, exhibition, competition_number, slug, view_count, ...rest } = comp;
       const { error } = await supabase.from("competitions").insert({
         ...rest,
