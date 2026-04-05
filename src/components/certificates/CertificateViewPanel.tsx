@@ -2,6 +2,7 @@ import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +10,12 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { CertificatePreview } from "./CertificatePreview";
 import { defaultDesign } from "./types";
-import { PenTool, CheckCircle, Send, Printer, Copy, XCircle, X, Award } from "lucide-react";
+import {
+  PenTool, CheckCircle, Send, Download, Printer, Copy,
+  XCircle, X, Award,
+} from "lucide-react";
 import { format } from "date-fns";
 import { useRef, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Certificate {
   id: string;

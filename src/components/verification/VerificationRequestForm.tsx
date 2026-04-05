@@ -1,17 +1,17 @@
-import React from "react";
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSubmitVerification, useMyVerificationRequests } from "@/hooks/useVerification";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ShieldCheck, Upload, Loader2, CheckCircle, Clock, XCircle, AlertTriangle } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 const documentTypes = [
   { value: "national_id", en: "National ID", ar: "بطاقة الهوية الوطنية" },

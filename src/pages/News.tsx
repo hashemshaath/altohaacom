@@ -2,7 +2,7 @@ import { useState, useMemo, useCallback, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router-dom";
 import { useAdTracking } from "@/hooks/useAdTracking";
-import { Search, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, Sparkles, Filter, ArrowDown, SlidersHorizontal, Home } from "lucide-react";
+import { Search, Calendar, Eye, Newspaper, Building2, ChefHat, Award, TrendingUp, Sparkles, Filter, ArrowDown, SlidersHorizontal, Home } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

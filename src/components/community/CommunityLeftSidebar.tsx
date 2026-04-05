@@ -6,7 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Newspaper, CalendarDays, UsersRound, UserPlus, Users, BookOpen, PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark } from "lucide-react";
+import {
+  Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
+  PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { OnlineCountBadge } from "./PresenceIndicator";

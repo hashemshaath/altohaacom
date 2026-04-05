@@ -22,7 +22,11 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Globe, Plus, Search, Languages, Check, Trash2, Edit2, Download, Upload, Sparkles, Filter, RefreshCw, CheckCircle2, AlertCircle, BarChart3, FileText, X } from "lucide-react";
+import {
+  Globe, Save, Plus, Search, Languages, Check, Trash2, Edit2, Download, Upload,
+  Sparkles, Filter, RefreshCw, CheckCircle2, AlertCircle, BarChart3, FileText,
+  Copy, Eye, X
+} from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";

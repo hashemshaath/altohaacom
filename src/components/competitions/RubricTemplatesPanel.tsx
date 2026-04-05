@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   ClipboardList, Plus, Trash2, Save, X, Pencil, ChevronDown, ChevronUp, GripVertical
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 interface CriterionItem {
   name: string;

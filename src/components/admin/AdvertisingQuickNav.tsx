@@ -2,10 +2,13 @@ import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Megaphone, Building2, DollarSign, BarChart3, Users } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  Megaphone, FileText, Building2, DollarSign, BarChart3,
+  Globe, Users, AlertTriangle,
+} from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/admin/advertising", icon: Megaphone, labelEn: "Advertising", labelAr: "الإعلانات", countKey: "pending" },

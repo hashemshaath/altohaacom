@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, MapPin, Building2, Globe, Check, X, Search, ChefHat, Users } from "lucide-react";
+import { Calendar, MapPin, Building2, Globe, Check, X, Search, ChefHat, Users, Utensils } from "lucide-react";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useCountries } from "@/hooks/useCountries";

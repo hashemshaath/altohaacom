@@ -1,15 +1,16 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area } from "recharts";
-import { Download, Users, Ticket, DollarSign, BarChart3, Eye, Star, MapPin } from "lucide-react";
+import { Download, TrendingUp, Users, Ticket, DollarSign, BarChart3, Eye, Star, MapPin, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, differenceInDays } from "date-fns";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Props { exhibitionId: string; exhibitionTitle: string; isAr: boolean; }
 

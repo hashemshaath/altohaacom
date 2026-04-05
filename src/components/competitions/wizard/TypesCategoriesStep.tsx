@@ -1,4 +1,3 @@
-import React from "react";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,10 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Flame, Cake, Eye, Monitor, Check, Plus, Trash2 } from "lucide-react";
 import type { CategoryForm } from "./types";
-import { categoryBadgeText } from "@/lib/categoryUtils";
+import { emptyCategory } from "./types";
+import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, categoryBadgeText } from "@/lib/categoryUtils";
 
 const iconMap: Record<string, React.ReactNode> = {
   flame: <Flame className="h-5 w-5" />,

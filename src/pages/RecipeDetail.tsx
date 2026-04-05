@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useState, lazy } from "react";
+import { useState, lazy, Suspense } from "react";
 
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { RecipeActionBar } from "@/components/recipes/RecipeActionBar";
 import { CookingTimer } from "@/components/recipes/CookingTimer";
+
 
 
 const difficultyColor = (d: string) => {

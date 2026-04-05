@@ -1,5 +1,6 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +22,7 @@ import {
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
 import type { SectionConfig, CareerRecord } from "./career-timeline/constants";
-import { ICON_MAP } from "./career-timeline/constants";
+import { ICON_MAP, AVAILABLE_ICONS } from "./career-timeline/constants";
 import {
   TranslateInlineButton, SortableSectionItem, SectionDragHandle,
 } from "./career-timeline/shared-ui";
@@ -29,8 +30,6 @@ import { SectionContent } from "./career-timeline/section-renderer";
 import { useCareerData } from "./career-timeline/useCareerData";
 import { useCareerMutations } from "./career-timeline/useCareerMutations";
 import { CareerTimelineSkeleton } from "./career-timeline/CareerTimelineSkeleton";
-import { supabase } from "@/integrations/supabase/client";
-import { AVAILABLE_ICONS } from "@/components/admin/career-timeline/constants";
 
 interface Props { userId: string; isAr: boolean; }
 

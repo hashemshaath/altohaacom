@@ -1,12 +1,13 @@
-import { useState, useRef, useEffect, memo } from "react";
+import { useState, useCallback, useRef, useEffect, memo } from "react";
+import { ROUTES } from "@/config/routes";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Search, Trophy, UtensilsCrossed, FileText, Users, ArrowRight, X, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface SearchResult {
   id: string;

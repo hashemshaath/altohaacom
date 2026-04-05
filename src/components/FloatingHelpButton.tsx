@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { HelpCircle, Ticket } from "lucide-react";
+import { HelpCircle, MessageCircle, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { forwardRef } from "react";
 
 export const FloatingHelpButton = forwardRef<HTMLDivElement>(function FloatingHelpButton(_props, _ref) {

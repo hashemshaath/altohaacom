@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowUpRight, ArrowDownRight, Wallet, Users } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Wallet, TrendingUp, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap() {

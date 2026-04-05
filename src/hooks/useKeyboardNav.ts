@@ -1,4 +1,4 @@
-import { useCallback, useRef, KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, KeyboardEvent } from "react";
 
 /**
  * Hook that provides keyboard navigation (arrow keys, Home, End)

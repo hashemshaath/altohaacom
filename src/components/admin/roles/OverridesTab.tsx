@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
-import { AlertTriangle, ShieldCheck, ShieldOff, XCircle, Trash2, Loader2 } from "lucide-react";
+import { AlertTriangle, ShieldCheck, ShieldOff, XCircle, Trash2, Loader2, Info } from "lucide-react";
 
 interface Props {
   isAr: boolean;

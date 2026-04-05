@@ -7,8 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { ArrowRight, Route, Map, TrendingDown, Users, Clock, Footprints, Layers, AlertTriangle, ChevronRight, Eye } from "lucide-react";
-import { Tooltip as RechartsTooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
+import {
+  ArrowRight, Route, Map, TrendingDown, Users, Clock, Footprints,
+  BarChart3, Layers, AlertTriangle, ArrowDown, ChevronRight, Eye
+} from "lucide-react";
+import {
+  Sankey, Tooltip as RechartsTooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell,
+} from "recharts";
 import { cn } from "@/lib/utils";
 
 // Friendly page labels

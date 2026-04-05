@@ -1,7 +1,7 @@
-import React from "react";
 import { useRef, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,6 @@ import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
 import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPanel";
 import { Image, Languages, Loader2, MapPin, Search, Upload, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
-import { supabase } from "@/integrations/supabase/client";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];

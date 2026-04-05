@@ -2,12 +2,12 @@ import { useMemo, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import {
   BarChart3, TrendingUp, Target, Globe, Users, Eye,
   Ticket, Star, MapPin, Calendar, Percent,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { CHART_COLORS } from "@/lib/chartConfig";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid,

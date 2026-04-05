@@ -17,7 +17,7 @@ import { format, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeek
 import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
-import { ICONS, type ViewMode } from "./events-calendar/constants";
+import { EVENT_TYPES, COUNTRIES, ICONS, type ViewMode } from "./events-calendar/constants";
 import { StatPill } from "./events-calendar/StatPill";
 import { MonthView } from "./events-calendar/MonthView";
 import { WeekView } from "./events-calendar/WeekView";

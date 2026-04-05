@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, MapPin, Users, Scale, Layers, Globe, Building2, Shield, Gavel, Flame } from "lucide-react";
+import { Calendar, MapPin, Users, Scale, Layers, Globe, Image, Building2, Shield, Gavel, Flame } from "lucide-react";
 import { format } from "date-fns";
 import type { CompetitionFormData } from "./types";
 

@@ -1,12 +1,16 @@
 import { useMemo, memo } from "react";
 import { CostEstimate, MODULE_TYPES, ESTIMATE_STATUS_CONFIG, type CostModuleType } from "@/hooks/useCostCenter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
 } from "recharts";
-import { TrendingUp, Target, AlertTriangle, Trophy, ChefHat, Landmark, Calendar, FileText, BarChart3, Wallet } from "lucide-react";
+import {
+  TrendingUp, TrendingDown, DollarSign, Target, AlertTriangle,
+  Trophy, ChefHat, Landmark, Calendar, FileText, BarChart3, Wallet,
+} from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {

@@ -1,12 +1,13 @@
 import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Link2, Copy, Check, Share2, ExternalLink, Sparkles, Users, UserPlus } from "lucide-react";
+import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award, Link2, Copy, Check, Share2, ExternalLink, Sparkles, Users, UserPlus } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -14,7 +15,6 @@ import { Link } from "react-router-dom";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { FeatureGate } from "@/components/membership/FeatureGate";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { supabase } from "@/integrations/supabase/client";
 
 interface ProfileHeaderProps {
   profile: any;

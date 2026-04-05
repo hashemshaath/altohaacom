@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
-import { Search, Plus, Building2, X, Check, User, Briefcase } from "lucide-react";
+import { Search, Plus, Building2, X, Globe, Check, User, Briefcase } from "lucide-react";
 
 type OrganizerType = "entity" | "company" | "chef" | "custom";
 

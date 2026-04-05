@@ -5,14 +5,17 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
-import { BookOpen, Link, FileText, Image, Scale, Search, GalleryHorizontalEnd, ExternalLink } from "lucide-react";
+import {
+  BookOpen, Link, FileText, Image, Scale, Search, Folder,
+  GalleryHorizontalEnd, ExternalLink, Star
+} from "lucide-react";
 
 export default function KnowledgePortal() {
   const { language } = useLanguage();

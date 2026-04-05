@@ -5,8 +5,16 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet, TrendingUp, RefreshCw, Send, BarChart3, AlertTriangle, CheckCircle2, Activity, Gauge, Zap, Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus, Shield, Settings2, FileText, Sparkles, Code2, Lightbulb, Link2, Users, ChevronRight, LayoutDashboard, Route, Map, FileCode, Save } from "lucide-react";
+import {
+  Search, Globe, Eye, Clock, Smartphone, Monitor, Tablet,
+  TrendingUp, RefreshCw, Send, BarChart3, ArrowUpRight,
+  AlertTriangle, CheckCircle2, ExternalLink, Activity, Gauge, Zap, Wifi,
+  Bot, Target, FileSearch, Plus, Trash2, ArrowUp, ArrowDown, Minus, Shield,
+  Settings2, FileText, Sparkles, Code2, Lightbulb, Link2, Users,
+  ChevronRight, LayoutDashboard, Route, Map, FileCode, Save,
+} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { format, subDays, startOfDay } from "date-fns";
@@ -17,8 +25,6 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { SEOScoreGauge } from "@/components/admin/seo/SEOScoreGauge";
 import { cn } from "@/lib/utils";
-import { CHART_COLORS } from "@/lib/chartConfig";
-import { toast } from "sonner";
 
 const DEFAULT_ROBOTS_TXT = `User-agent: *
 Disallow: /admin/

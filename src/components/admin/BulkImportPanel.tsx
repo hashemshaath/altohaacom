@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,9 +9,13 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Download, FileSpreadsheet, CheckCircle, XCircle, Loader2, Sparkles, Save, AlertTriangle, ArrowRight, Trash2, Languages, ShieldAlert } from "lucide-react";
+import {
+  Upload, Download, FileSpreadsheet, CheckCircle, XCircle, Loader2,
+  Sparkles, Eye, Save, AlertTriangle, ArrowRight, Trash2, Languages, ShieldAlert,
+} from "lucide-react";
 
 type EntityType = "exhibition" | "competition" | "participant" | "judge" | "winner" | "company" | "entity" | "volunteer" | "sponsor" | "organizer";
 type ImportStep = "upload" | "preview" | "optimize" | "review" | "saving";

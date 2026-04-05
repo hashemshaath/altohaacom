@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, lazy, Suspense, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";

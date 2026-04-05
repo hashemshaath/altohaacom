@@ -13,9 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SEOHead } from "@/components/SEOHead";
+import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { QRScanner } from "@/components/qr/QRScanner";
-import { generateVCard, downloadVCard } from "@/lib/qrCode";
-import { Search, Shield, CheckCircle, AlertTriangle, User, Award, FileText, Building, Calendar, QrCode, UserPlus, ExternalLink } from "lucide-react";
+import { generateVCard, downloadVCard, getVerificationUrl } from "@/lib/qrCode";
+import {
+  Search, Shield, CheckCircle, XCircle, AlertTriangle,
+  User, Award, FileText, Building, Calendar, QrCode,
+  UserPlus, ExternalLink,
+} from "lucide-react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 

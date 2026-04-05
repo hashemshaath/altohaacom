@@ -1,11 +1,12 @@
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AnalyticsKPICards } from "./AnalyticsKPICards";
-import { supabase } from "@/integrations/supabase/client";
 import {
   RegistrationTrendChart,
   MonthlyCompetitionsChart,

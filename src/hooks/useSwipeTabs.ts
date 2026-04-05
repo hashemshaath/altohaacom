@@ -1,4 +1,3 @@
-import React from "react";
 import { useRef, useCallback, useState } from "react";
 
 interface UseSwipeTabsOptions {

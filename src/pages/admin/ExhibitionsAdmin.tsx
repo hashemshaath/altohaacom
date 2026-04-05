@@ -10,7 +10,7 @@ import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner"
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
 import { ExhibitionTicketStatsWidget } from "@/components/admin/ExhibitionTicketStatsWidget";
-import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
+import { deriveExhibitionStatus, EXHIBITION_STATUS_LEGEND } from "@/lib/exhibitionStatus";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ExhibitionLiveStatsWidget } from "@/components/admin/ExhibitionLiveStatsWidget";
 import { ExhibitionManagementWidget } from "@/components/admin/ExhibitionManagementWidget";
@@ -36,7 +36,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers, Download, TrendingUp, Clock } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X, Loader2, Search, Trophy, GraduationCap, Mic, Image, Users, FileText, Bot, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers, Download, TrendingUp, Clock } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { EventSeriesManager } from "@/components/admin/EventSeriesManager";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";

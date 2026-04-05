@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useRef, useCallback, useMemo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
@@ -6,6 +6,7 @@ import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -25,6 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { CertificateDesigner } from "@/components/certificates/CertificateDesigner";
 import { CertificateViewPanel } from "@/components/certificates/CertificateViewPanel";
@@ -34,8 +36,12 @@ import { CertificateAnalyticsWidget } from "@/components/admin/CertificateAnalyt
 import { CertificatesLiveWidget } from "@/components/admin/CertificatesLiveWidget";
 import { CertificateWorkflowTracker } from "@/components/admin/CertificateWorkflowTracker";
 import { CertificateIssuanceWidget } from "@/components/admin/CertificateIssuanceWidget";
-import { Award, FileText, Download, Search, Plus, Edit, Eye, CheckCircle, XCircle, Clock, ChevronLeft, Save, X, Copy, Palette, LayoutTemplate, PenTool, Sparkles } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  Award, FileText, Users, Send, Download, Search, Plus, Edit, Trash2, Eye,
+  CheckCircle, XCircle, Clock, ChevronLeft, Save, X, Copy, Palette,
+  LayoutTemplate, PenTool, Sparkles, Trophy, Printer, RefreshCw,
+} from "lucide-react";
+import { format } from "date-fns";
 
 type CertificateType = "participation" | "winner_gold" | "winner_silver" | "winner_bronze" | "appreciation" | "organizer" | "judge" | "sponsor" | "volunteer";
 type CertificateStatus = "draft" | "pending_signature" | "signed" | "issued" | "revoked";

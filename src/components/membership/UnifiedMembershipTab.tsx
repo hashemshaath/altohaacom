@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,7 +16,13 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Crown, Star, Shield, Check, ArrowUpCircle, Calendar, AlertTriangle, RefreshCw, Clock, Loader2, Printer, RotateCw, Eye, EyeOff, Award, Gift, ChevronDown, HelpCircle, Headphones, Zap, Users, Globe, ShoppingBag, BarChart3, MessageSquare, BookOpen, Percent, Bell, Download, XCircle, Sparkles, TrendingUp } from "lucide-react";
+import {
+  Crown, Star, Shield, Check, ArrowUpCircle, Calendar, AlertTriangle,
+  RefreshCw, Clock, Loader2, Printer, RotateCw, Eye, EyeOff,
+  Award, Gift, ChevronDown, HelpCircle, Headphones, Zap, Users,
+  Globe, Newspaper, ShoppingBag, BarChart3, MessageSquare, BookOpen, Percent, Bell,
+  Download, XCircle, Sparkles, TrendingUp,
+} from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";

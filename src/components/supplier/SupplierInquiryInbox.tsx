@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { MessageSquare, Mail, Reply, CheckCircle, Eye } from "lucide-react";
+import { MessageSquare, Mail, Reply, CheckCircle, Clock, Eye } from "lucide-react";
 import { format } from "date-fns";
 
 export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, Award, GraduationCap, Clock, MessageCircle } from "lucide-react";
+import { Trophy, Award, GraduationCap, FileCheck, Clock, MessageCircle, Heart, Users } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 

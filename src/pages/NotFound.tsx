@@ -3,9 +3,11 @@ import { SEOHead } from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { SearchX, Home, ArrowLeft, AlertTriangle, RefreshCw, ExternalLink, Lock, FileQuestion } from "lucide-react";
+import {
+  SearchX, Home, HelpCircle, ArrowLeft, AlertTriangle,
+  RefreshCw, ExternalLink, WifiOff, Lock, FileQuestion,
+} from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import React from "react";
 
 interface DiagnosisItem {
   icon: React.ElementType;

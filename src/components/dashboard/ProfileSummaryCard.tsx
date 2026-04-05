@@ -3,12 +3,12 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Star, Users, ArrowRight, BadgeCheck, Briefcase } from "lucide-react";
+import { Crown, Shield, MapPin, Star, Users, ArrowRight, BadgeCheck, Briefcase } from "lucide-react";
 import { MembershipBadge } from "@/components/membership/MembershipBadge";
 
 export const ProfileSummaryCard = memo(function ProfileSummaryCard() {

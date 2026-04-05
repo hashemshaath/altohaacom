@@ -17,7 +17,21 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { SEOHead } from "@/components/SEOHead";
-import { Building2, Phone, Mail, Globe, FileText, Users, ArrowLeft, ArrowRight, CheckCircle, Loader2, Shield, Package } from "lucide-react";
+import {
+  Building2,
+  Phone,
+  Mail,
+  Globe,
+  MapPin,
+  FileText,
+  Users,
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle,
+  Loader2,
+  Shield,
+  Package,
+} from "lucide-react";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 

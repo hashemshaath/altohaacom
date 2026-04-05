@@ -14,7 +14,10 @@ import PrintableInvoice from "@/components/invoices/PrintableInvoice";
 import { EmptyState } from "@/components/ui/empty-state";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { StaggeredList } from "@/components/ui/staggered-list";
-import { FileText, Search, Eye, Clock, CheckCircle, XCircle, AlertTriangle, RotateCcw, Ban, Printer } from "lucide-react";
+import {
+  FileText, Search, Eye, DollarSign, Clock,
+  CheckCircle, XCircle, AlertTriangle, RotateCcw, Ban, Printer,
+} from "lucide-react";
 import { format } from "date-fns";
 
 interface ProfileInvoicesTabProps {

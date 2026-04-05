@@ -1,10 +1,12 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Database, HardDrive, Users, FileText, MessageSquare, Trophy } from "lucide-react";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Database, HardDrive, Users, FileText, Image, MessageSquare, Trophy } from "lucide-react";
+import { formatNumber } from "@/lib/formatNumber";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 /**
  * Shows database table row counts for key tables — 

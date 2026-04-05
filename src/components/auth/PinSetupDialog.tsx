@@ -1,5 +1,6 @@
-import { useState, useRef, memo } from "react";
+import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
 import { validatePin } from "@/lib/pinValidation";
@@ -9,8 +10,7 @@ import { Label } from "@/components/ui/label";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
-import { Loader2, CheckCircle, AlertCircle, KeyRound } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { Loader2, ShieldCheck, CheckCircle, AlertCircle, KeyRound } from "lucide-react";
 
 interface PinSetupDialogProps {
   open: boolean;

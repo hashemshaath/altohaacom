@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { useFollowStats, useIsFollowing, useToggleFollow, usePendingFollowRequest } from "@/hooks/useFollow";
 import { countryFlag } from "@/lib/countryFlag";
@@ -25,8 +26,10 @@ import {
 } from "@/lib/socialLinksConstants";
 
 // Extracted modules
-import { type LangCode, SOCIAL_ICONS, tl, pickLocalizedText, formatCompact } from "@/lib/socialLinksTranslations";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  SUPPORTED_LANGUAGES, type LangCode, SOCIAL_ICONS, tl,
+  pickLocalizedText, formatCompact,
+} from "@/lib/socialLinksTranslations";
 import {
   AnimatedNumber, FloatingParticles, TypingText, VideoEmbed,
   SectionDivider, ContactFormSection, EmailSubscriptionSection,

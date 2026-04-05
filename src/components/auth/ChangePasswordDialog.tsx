@@ -1,5 +1,7 @@
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, AlertCircle, CheckCircle, Lock, Eye, EyeOff } from "lucide-react";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
-import { supabase } from "@/integrations/supabase/client";
 
 interface ChangePasswordDialogProps {
   open: boolean;

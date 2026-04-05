@@ -1,16 +1,16 @@
-import React from "react";
-import { useState, useMemo, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SEOHead } from "@/components/SEOHead";
 import { format } from "date-fns";
+import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { RegistrationStatusBanner } from "@/components/competitions/RegistrationStatusBanner";
 import { CompetitionCountdown } from "@/components/competitions/CompetitionCountdown";
@@ -38,7 +39,6 @@ import { ParticipantStatsCard } from "@/components/competitions/ParticipantStats
 import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import type { Database } from "@/integrations/supabase/types";
-import { supabase } from "@/integrations/supabase/client";
 
 // Lazy-loaded tab panels (only loaded when user opens the tab)
 const CompetitionStatusManager = lazy(() => import("@/components/competitions/CompetitionStatusManager").then(m => ({ default: m.CompetitionStatusManager })));

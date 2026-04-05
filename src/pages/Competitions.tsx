@@ -15,9 +15,10 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Search, MapPin, Plus, Globe, Trophy, Flame, Users, ArrowUpDown, LayoutGrid, List } from "lucide-react";
+import { Search, MapPin, Plus, Globe, Trophy, Flame, Sparkles, Users, TrendingUp, ArrowUpDown, LayoutGrid, List } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { countryFlag } from "@/lib/countryFlag";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   CompetitionCard,

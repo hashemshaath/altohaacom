@@ -1,6 +1,6 @@
-import React from "react";
 import { useState, useRef, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -24,7 +24,6 @@ import {
 import { cn } from "@/lib/utils";
 import { HERO_TEMPLATES, templateLabels } from "./heroTemplates";
 import { HeroSlidePreview } from "./HeroSlidePreview";
-import { supabase } from "@/integrations/supabase/client";
 
 export type HeroSlide = {
   id: string;

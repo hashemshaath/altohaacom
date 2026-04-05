@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,8 +15,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { X_AXIS_PROPS, CHART_COLORS, BAR_RADIUS, TOOLTIP_STYLE } from "@/lib/chartConfig";
-import { supabase } from "@/integrations/supabase/client";
+import { CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, BAR_RADIUS } from "@/lib/chartConfig";
 
 export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
   const { language } = useLanguage();

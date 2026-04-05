@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, TrendingUp, TrendingDown, UserMinus, BarChart3, AlertTriangle, Target } from "lucide-react";
 
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ComposedChart, Line } from "recharts";
+import {
+  AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Legend, Cell, ComposedChart, Line,
+} from "recharts";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";

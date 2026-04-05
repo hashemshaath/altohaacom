@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { Trophy, Users, Globe, TrendingUp, CheckCircle, ArrowRight, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -11,8 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { SEOHead } from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
+import { SEOHead } from "@/components/SEOHead";
 
 const benefits = [
   {

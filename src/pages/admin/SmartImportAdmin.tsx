@@ -22,7 +22,14 @@ import { ImportStats } from "@/components/smart-import/ImportStats";
 import { BulkUrlImport } from "@/components/smart-import/BulkUrlImport";
 import { EditableField } from "@/components/smart-import/EditableField";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
-import { type SearchResultItem, type ExistingRecord, type Step, type TargetTable, type EntityType, type CompanyType, type ExhibitionType, SOURCE_CHANNELS, ENTITY_TYPE_LABELS, COMPANY_TYPE_LABELS, countFields } from "@/components/smart-import/types";
+import {
+  type SearchResultItem, type ExistingRecord, type Step,
+  type TargetTable, type EntityType, type CompanyType, type ExhibitionType,
+  SOURCE_CHANNELS, TARGET_TABLE_OPTIONS,
+  ENTITY_TYPE_LABELS, COMPANY_TYPE_LABELS,
+  EXHIBITION_TYPE_LABELS,
+  countFields,
+} from "@/components/smart-import/types";
 import {
   Search, Loader2, MapPin, Globe, Sparkles, CheckCircle,
   Star, ChevronRight, ArrowLeft, AlertCircle,

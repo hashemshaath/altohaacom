@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 import { PageShell } from "@/components/PageShell";
 import { useLanguage } from "@/i18n/LanguageContext";

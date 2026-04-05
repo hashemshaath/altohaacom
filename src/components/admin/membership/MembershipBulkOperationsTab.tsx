@@ -1,5 +1,5 @@
 import { useState, memo } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +24,11 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { createMembershipInvoice } from "@/lib/membershipInvoice";
-import { Users, Search, Mail, ArrowUpCircle, Bell, RefreshCw, Send, Loader2, CheckCircle2, AlertTriangle, Clock, Zap, Shield, Receipt, Download } from "lucide-react";
+import {
+  Users, Search, Mail, ArrowUpCircle, ArrowDownCircle, Bell,
+  RefreshCw, Send, Loader2, CheckCircle2, AlertTriangle, Clock,
+  Zap, Shield, Receipt, Download, UserX,
+} from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { Database } from "@/integrations/supabase/types";

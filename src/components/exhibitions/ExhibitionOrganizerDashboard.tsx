@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download, HandHeart, ChefHat, Bell } from "lucide-react";
+import { Users, Ticket, Star, TrendingUp, CheckCircle2, Clock, BarChart3, LayoutGrid, ClipboardList, Award, CalendarClock, Tags, Download, HandHeart, ChefHat, Bell, Megaphone } from "lucide-react";
 import { format } from "date-fns";
 import { ExhibitionTicketCheckin } from "./detail/ExhibitionTicketCheckin";
 import { ExhibitionOrganizerAnalytics } from "./detail/ExhibitionOrganizerAnalytics";

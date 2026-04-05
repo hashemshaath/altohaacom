@@ -1,3 +1,6 @@
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import { initErrorTracking } from "./utils/errorTracking";
 import "./index.css";
 
 // Initialize global error tracking

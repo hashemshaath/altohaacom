@@ -18,7 +18,11 @@ import {
   BarChart, Bar, PieChart, Pie, Cell,
 } from "recharts";
 import { subDays } from "date-fns";
-import { Eye, Star, MapPin, Globe, Mail, Phone, Calendar, ExternalLink, Ticket, TrendingUp, Building, Users, BarChart3, CheckCircle2, Info, Shield } from "lucide-react";
+import {
+  Landmark, Eye, Star, MapPin, Globe, Mail, Phone, Calendar,
+  ExternalLink, Ticket, TrendingUp, Clock, Building, Users,
+  BarChart3, CheckCircle2, ArrowUpRight, Info, Shield,
+} from "lucide-react";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
 
 const COLORS = [

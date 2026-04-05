@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Calendar, Trophy, Award } from "lucide-react";
+import { Bell, Calendar, Trophy, Award, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 
 interface Props {

@@ -11,8 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { Search, UserCog, Download, Loader2, Filter } from "lucide-react";
-import { ROLE_META, type AppRole } from "./types";
-import { ALL_ROLES } from "@/components/admin/roles/types";
+import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
 
 interface Props {
   isAr: boolean;

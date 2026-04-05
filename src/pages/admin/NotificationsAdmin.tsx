@@ -26,11 +26,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { format } from "date-fns";
-import { Bell, Send, Mail, MessageSquare, Smartphone, Clock, Check, X, AlertCircle, BarChart3, RefreshCw, Megaphone, Filter, ChevronDown, ChevronUp, Trash2, RotateCcw, Eye, Users, Zap, Target, TrendingUp, XSquare, Download, Sparkles } from "lucide-react";
+import {
+  Bell, Send, Plus, Mail, MessageSquare, Smartphone, Clock, Check, X,
+  AlertCircle, BarChart3, RefreshCw, Megaphone, Search, Filter, ChevronDown,
+  ChevronUp, Trash2, RotateCcw, Eye, Users, Zap, Target, TrendingUp,
+  CheckSquare, XSquare, Download, Sparkles,
+} from "lucide-react";
 import { SmartNotificationRules } from "@/components/admin/SmartNotificationRules";
 import { NotificationAnalyticsWidget } from "@/components/admin/NotificationAnalyticsWidget";
 import { NotificationDeliveryWidget } from "@/components/admin/NotificationDeliveryWidget";

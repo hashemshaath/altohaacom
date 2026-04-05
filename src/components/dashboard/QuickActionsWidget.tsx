@@ -1,4 +1,3 @@
-import React from "react";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,8 +6,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
-import { Zap, Trophy, FileText, Users, ShoppingBag, MessageSquare, ArrowRight, TrendingUp } from "lucide-react";
+import {
+  Zap, Trophy, FileText, Users, ShoppingBag,
+  MessageSquare, ArrowRight, Flame, TrendingUp, Clock,
+} from "lucide-react";
 
 interface QuickAction {
   icon: React.ElementType;

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -18,11 +19,14 @@ import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
-import { BarChart3, TrendingUp, ShoppingCart, CreditCard, Download, Calendar, Activity, Receipt, PieChart as PieIcon, Package } from "lucide-react";
-import { format, subMonths, subDays, startOfMonth, endOfMonth, eachMonthOfInterval } from "date-fns";
+import {
+  BarChart3, TrendingUp, TrendingDown, ShoppingCart, FileText,
+  CreditCard, Users, Download, Calendar, Activity, Receipt, PieChart as PieIcon,
+  ArrowUpRight, ArrowDownRight, Package,
+} from "lucide-react";
+import { format, subMonths, subDays, startOfMonth, endOfMonth, startOfDay, endOfDay, eachMonthOfInterval, eachWeekOfInterval, parseISO } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { CHART_COLORS } from "@/lib/chartConfig";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",

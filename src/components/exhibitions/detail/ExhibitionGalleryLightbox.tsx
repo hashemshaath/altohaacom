@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, X, Download } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, ZoomIn, Download } from "lucide-react";
 
 interface Props {
   images: string[];

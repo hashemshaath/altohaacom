@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback, useEffect, memo } from "react";
-import { Mic, Square, Send, Trash2 } from "lucide-react";
+import { Mic, Square, Send, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { cn } from "@/lib/utils";
 
 interface VoiceMessageRecorderProps {
   onSend: (blob: Blob, duration: number) => void;

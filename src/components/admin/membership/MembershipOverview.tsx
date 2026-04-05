@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,7 +11,11 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
-import { Users, Star, TrendingUp, AlertTriangle, Clock, ArrowUpCircle, UserX, Play, Loader2, CheckCircle2, DollarSign, Wallet, Receipt, ShieldCheck, Activity } from "lucide-react";
+import {
+  Users, CreditCard, Star, TrendingUp, AlertTriangle, Clock,
+  ArrowUpCircle, UserCheck, UserX, RefreshCw, Play, Loader2, CheckCircle2,
+  DollarSign, Wallet, Receipt, ShieldCheck, Activity,
+} from "lucide-react";
 import { format, differenceInDays, subMonths, startOfMonth } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ActivityPulse } from "@/components/ui/activity-pulse";

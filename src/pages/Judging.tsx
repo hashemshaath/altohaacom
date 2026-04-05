@@ -15,7 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, Flag, BarChart3, ArrowLeftRight, LayoutDashboard, Scale } from "lucide-react";
+import { Trophy, User, CheckCircle, Star, AlertCircle, X, Save, ArrowLeft, BookOpen, Flag, BarChart3, ArrowLeftRight, LayoutDashboard, Scale } from "lucide-react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import type { Database } from "@/integrations/supabase/types";

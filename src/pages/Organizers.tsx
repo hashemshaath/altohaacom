@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo, memo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,13 +6,18 @@ import { Header } from "@/components/Header";
 import { SEOHead } from "@/components/SEOHead";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
-import { Building2, Search, MapPin, Globe, CheckCircle2, Star, Landmark, ArrowUpRight, Mail, Phone, LayoutGrid, List, Eye, SlidersHorizontal, TrendingUp, Award, X, Map } from "lucide-react";
+import {
+  Building2, Search, MapPin, Globe, CheckCircle2, Star, Landmark,
+  ArrowUpRight, Mail, Phone, LayoutGrid, List, Calendar, Eye,
+  SlidersHorizontal, TrendingUp, Award, X, Map,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Footer } from "@/components/Footer";

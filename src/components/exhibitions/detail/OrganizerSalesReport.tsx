@@ -6,7 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useCSVExport } from "@/hooks/useCSVExport";
-import { Ticket, Users, CheckCircle2, Download, BarChart3, Clock, XCircle } from "lucide-react";
+import {
+  TrendingUp, Ticket, DollarSign, Users, CheckCircle2,
+  Download, BarChart3, Clock, XCircle,
+} from "lucide-react";
 import { format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 

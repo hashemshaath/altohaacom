@@ -2,15 +2,18 @@ import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { ChefHat, Clock, Check, X, MapPin, Calendar, DollarSign, Timer, Mail, Star } from "lucide-react";
-import { format } from "date-fns";
 import { toast } from "sonner";
+import {
+  ChefHat, Clock, Check, X, MapPin, Calendar,
+  DollarSign, Timer, Package, Mail, Star,
+} from "lucide-react";
+import { format } from "date-fns";
 
 interface Invitation {
   id: string;

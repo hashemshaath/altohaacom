@@ -18,7 +18,10 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText, Trash2, ShieldAlert, Download, Activity, BarChart3, FileSearch } from "lucide-react";
+import {
+  FileText, Trash2, ShieldAlert, Search, Download, Filter,
+  Clock, AlertTriangle, CheckCircle2, Activity, BarChart3, Eye, FileSearch,
+} from "lucide-react";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Checkbox } from "@/components/ui/checkbox";

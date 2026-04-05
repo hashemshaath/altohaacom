@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
@@ -21,7 +22,10 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Checkbox } from "@/components/ui/checkbox";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { cn } from "@/lib/utils";
-import { BookOpen, Plus, Trash2, Link, FileText, Image, Scale, Folder, Eye, EyeOff, Save, X, GalleryHorizontalEnd, Globe, Loader2 } from "lucide-react";
+import {
+  BookOpen, Plus, Trash2, Edit, Link, FileText, Image, Scale, Upload,
+  Folder, Star, Eye, EyeOff, Save, X, GalleryHorizontalEnd, Globe, Loader2
+} from "lucide-react";
 
 type ResourceType = "link" | "file" | "document" | "image" | "video" | "law" | "scraped_content";
 
