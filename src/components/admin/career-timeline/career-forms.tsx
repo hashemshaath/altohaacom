@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { FormActions, BilingualFieldPair } from "./shared-ui";
 import { formatDateShort } from "./constants";
+import { EDUCATION_LEVELS, EMPLOYMENT_TYPES, JUDGING_POSITIONS, COUNTRIES, MEMBERSHIP_TYPES, COMPETITION_ROLES, MEDAL_TYPES, CERTIFICATE_TYPES } from "@/components/admin/career-timeline/constants";
 
 // ── Career Form (Education / Work / Judging / Media / Organizing / Custom) ──
 

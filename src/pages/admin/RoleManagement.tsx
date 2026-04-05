@@ -8,7 +8,7 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Lock, Users, Grid3X3, ShieldCheck, UserCog, AlertTriangle, Activity } from "lucide-react";
 
-import { type AppRole } from "@/components/admin/roles/types";
+import { type AppRole, ALL_ROLES } from "@/components/admin/roles/types";
 import RoleStatsCards from "@/components/admin/roles/RoleStatsCards";
 import MatrixTab from "@/components/admin/roles/MatrixTab";
 import PermissionsTab from "@/components/admin/roles/PermissionsTab";

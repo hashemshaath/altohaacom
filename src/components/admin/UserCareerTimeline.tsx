@@ -30,6 +30,7 @@ import { useCareerData } from "./career-timeline/useCareerData";
 import { useCareerMutations } from "./career-timeline/useCareerMutations";
 import { CareerTimelineSkeleton } from "./career-timeline/CareerTimelineSkeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { AVAILABLE_ICONS } from "@/components/admin/career-timeline/constants";
 
 interface Props { userId: string; isAr: boolean; }
 

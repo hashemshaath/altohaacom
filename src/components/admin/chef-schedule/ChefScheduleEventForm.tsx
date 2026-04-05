@@ -2,7 +2,7 @@ import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useCreateScheduleEvent, useUpdateScheduleEvent, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType, type ScheduleVisibility, type ScheduleStatus } from "@/hooks/useChefSchedule";
+import { PARTICIPATION_TYPES, type ChefScheduleEvent, type ScheduleStatus, useCreateScheduleEvent, EVENT_TYPE_CONFIG, useUpdateScheduleEvent, type ScheduleVisibility, BROADCAST_TYPES, type ScheduleEventType } from "@/hooks/useChefSchedule";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
