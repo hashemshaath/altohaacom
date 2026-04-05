@@ -10,7 +10,7 @@ import {
   type GlobalEventRecord,
 } from "@/hooks/useGlobalEvents";
 import { GLOBAL_EVENT_LABELS, GLOBAL_EVENT_COLORS, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,22 +20,16 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
-import { downloadCSV } from "@/lib/exportUtils";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import {
-  Globe, Plus, Search, Edit2, Trash2, Save, X, Calendar, MapPin,
-  Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, Plane, Users,
-  MoreHorizontal, BookOpen, UtensilsCrossed, Palmtree, Ban, ExternalLink,
-  CheckCircle, XCircle, RefreshCw, Eye, Download, Filter,
-} from "lucide-react";
+import { Globe, Plus, Search, Edit2, Trash2, Save, X, Calendar, MapPin, Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, Plane, Users, MoreHorizontal, BookOpen, UtensilsCrossed, Palmtree, Ban, CheckCircle, RefreshCw, Eye, Download } from "lucide-react";
+import { toast } from "sonner";
 
 const ICONS: Record<string, any> = {
   Trophy, Landmark, ChefHat, Tv, Mic, GraduationCap, MapPin, Plane, Users,

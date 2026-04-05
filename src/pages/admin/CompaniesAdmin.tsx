@@ -15,7 +15,6 @@ import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { CompanyClassificationsPanel } from "@/components/admin/CompanyClassificationsPanel";
 import { CompanySponsorshipPanelEnhanced } from "@/components/admin/CompanySponsorshipPanelEnhanced";
@@ -30,7 +29,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
@@ -38,17 +37,13 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Building2, Users, Package, FileText, Send, Search, Plus, Edit, Trash2, Eye,
-  CheckCircle, XCircle, Clock, MapPin, Phone, Mail, Globe, ChevronLeft, Save, X,
-  Truck, DollarSign, Star, Image, CalendarCheck, MessageSquare, UserPlus, Building,
-  Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet, Factory,
-} from "lucide-react";
+import { Building2, Users, Package, FileText, Send, Search, Plus, Trash2, Eye, CheckCircle, XCircle, Clock, Phone, Mail, ChevronLeft, Save, X, Truck, DollarSign, Star, Image, CalendarCheck, MessageSquare, UserPlus, Building, Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet, Factory } from "lucide-react";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { CompanyAnalyticsWidget } from "@/components/admin/CompanyAnalyticsWidget";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { CompanyLiveStatsWidget } from "@/components/admin/CompanyLiveStatsWidget";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 type CompanyStatus = "active" | "inactive" | "pending" | "suspended";

@@ -22,15 +22,9 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
-import { BulkActionBar } from "@/components/admin/BulkActionBar";
-import {
-  MessageSquare, Send, Inbox, ArrowUpRight, ArrowDownLeft, Clock, CheckCheck,
-  Reply, AlertCircle, Search, Building2, Plus, Star, StarOff, Archive,
-  Tag, StickyNote, BarChart3, Trash2, Eye, EyeOff, Filter, Download,
-} from "lucide-react";
-import { format, differenceInMinutes, differenceInHours } from "date-fns";
+import { MessageSquare, Send, Inbox, ArrowUpRight, ArrowDownLeft, Clock, CheckCheck, Reply, AlertCircle, Search, Building2, Plus, Star, StarOff, Archive, Tag, StickyNote, BarChart3, Trash2, Eye, Download } from "lucide-react";
+import { format, differenceInMinutes } from "date-fns";
 
 // ─── Types ───────────────────────────────────────────────────
 interface Communication {

@@ -6,7 +6,7 @@ import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Gavel, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { Gavel, Users, CheckCircle } from "lucide-react";
 
 export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker() {
   const { language } = useLanguage();

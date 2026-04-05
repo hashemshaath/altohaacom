@@ -15,7 +15,7 @@ import {
   useCreateMatch,
   useMentorshipAnalytics,
 } from "@/hooks/useMentorship";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,22 +28,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
-import {
-  GraduationCap,
-  Users,
-  ClipboardList,
-  Plus,
-  Handshake,
-  CheckCircle,
-  XCircle,
-  Clock,
-  BookOpen,
-  BarChart3,
-  Star,
-  UserPlus,
-  User,
-  TrendingUp,
-} from "lucide-react";
+import { GraduationCap, Users, ClipboardList, Plus, Handshake, CheckCircle, XCircle, BookOpen, Star, UserPlus, User, TrendingUp } from "lucide-react";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";

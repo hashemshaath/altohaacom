@@ -1,6 +1,7 @@
+import React from "react";
 import { useRef, useState, useCallback, memo } from "react";
 import { cn } from "@/lib/utils";
-import { Heart, Bookmark, MessageCircle } from "lucide-react";
+import { Heart, Bookmark } from "lucide-react";
 
 interface SwipeablePostWrapperProps {
   children: React.ReactNode;

@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 // VAPID public key - generated for this project
 const VAPID_PUBLIC_KEY = "BNpKhfYGzVfr_FEBXxGefORo8gJNGMZdaQ0FGKC0SJYE-YyT_mu1HGqWAXvWrFPOdGWGKGEP9fVnJpMGx_GQWM";

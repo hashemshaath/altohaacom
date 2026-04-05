@@ -12,16 +12,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Plus, MoreHorizontal, Trash2, Send, Share2, UserPlus, ClipboardList,
-  Package, ShieldCheck, UtensilsCrossed, Flame, Lightbulb, Droplets, MapPin
-} from "lucide-react";
+import { Plus, MoreHorizontal, Trash2, ClipboardList } from "lucide-react";
 import { RequirementListItems } from "./RequirementListItems";
 import { SponsorshipRequestPanel } from "./SponsorshipRequestPanel";
-import { ORDER_CATEGORIES } from "./order-center/OrderCenterCategories";
 
 const LIST_CATEGORIES = ORDER_CATEGORIES.map(c => ({
   value: c.value,

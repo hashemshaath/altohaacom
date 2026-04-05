@@ -1,4 +1,3 @@
-import React from "react";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,20 +8,9 @@ import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
-import {
-  Phone,
-  Mail,
-  MapPin,
-  Globe,
-  Building2,
-  CreditCard,
-  FileText,
-  Hash,
-  Shield,
-  Earth,
-} from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { Phone, Mail, MapPin, Globe, Building2, CreditCard, Hash, Shield, Earth } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import React from "react";
 
 export default function CompanyProfile() {
   const { language } = useLanguage();

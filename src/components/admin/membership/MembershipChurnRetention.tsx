@@ -7,18 +7,12 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  LineChart, Line, CartesianGrid, Legend, AreaChart, Area, Cell
-} from "recharts";
-import {
-  TrendingDown, TrendingUp, Users, AlertTriangle, ShieldAlert,
-  Clock, UserMinus, RefreshCcw, ArrowRight, Crown, Send, Loader2
-} from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, AreaChart, Area } from "recharts";
+import { TrendingDown, Users, AlertTriangle, ShieldAlert, UserMinus, RefreshCcw, Crown, Send, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, differenceInDays, startOfMonth, endOfMonth, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";

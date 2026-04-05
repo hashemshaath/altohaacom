@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams, useNavigate } from "react-router-dom";
@@ -10,11 +10,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import {
-  Gift, Star, Crown, Check, Loader2, Heart, AlertCircle, Clock, User,
-} from "lucide-react";
+import { Gift, Star, Crown, Check, Loader2, Heart, AlertCircle, User } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 const TIER_NAMES: Record<string, { en: string; ar: string }> = {
   professional: { en: "Professional", ar: "الاحترافي" },

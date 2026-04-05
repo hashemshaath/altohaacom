@@ -1,7 +1,7 @@
-import { useState, memo } from "react";
+import React from "react";
+import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +12,7 @@ import {
   Brain, RefreshCw, TrendingUp, TrendingDown, Users, Trophy,
   DollarSign, AlertTriangle, Target, Sparkles, Lightbulb, ShieldAlert, Activity,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ComposedChart, Area, Line, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid,

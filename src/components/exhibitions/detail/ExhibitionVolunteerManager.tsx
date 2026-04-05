@@ -1,3 +1,4 @@
+import React from "react";
 import { memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,8 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { HandHeart, CheckCircle2, XCircle, Clock, ClipboardList, Plus, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
-import { toast } from "sonner";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface Props {
   exhibitionId: string;

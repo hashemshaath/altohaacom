@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { GraduationCap, BookOpen, Users, Sparkles } from "lucide-react";
+import { GraduationCap, BookOpen, Users } from "lucide-react";
 
 interface MasterclassHeroProps {
   totalCount: number;

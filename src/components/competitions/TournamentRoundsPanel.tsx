@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Trophy, Users, ArrowRight, ChevronDown, ChevronUp, Play, CheckCircle, Clock, Swords } from "lucide-react";
+import { Plus, Users, ArrowRight, ChevronDown, ChevronUp, Play, CheckCircle, Clock, Swords } from "lucide-react";
 
 interface Props {
   competitionId: string;

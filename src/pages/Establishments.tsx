@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Building2, MapPin, Star, Search, Plus, Globe, Phone, Mail, Sparkles } from "lucide-react";
+import { Building2, MapPin, Star, Search, Plus, Globe, Phone, Sparkles } from "lucide-react";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
 
 const establishmentTypes = [

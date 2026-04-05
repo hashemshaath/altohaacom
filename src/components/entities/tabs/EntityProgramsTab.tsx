@@ -1,6 +1,5 @@
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { BookOpen, Plus, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const programTypes = ["diploma", "degree", "certificate", "course", "workshop", "bootcamp", "apprenticeship"];
 const programLevels = ["beginner", "intermediate", "advanced", "professional", "bachelor", "master", "doctorate"];

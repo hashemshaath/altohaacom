@@ -17,13 +17,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  ArrowLeft, User, Phone, Mail, MapPin, Globe, Calendar, Clock,
-  ShoppingCart, DollarSign, Heart, Star, Wallet, Gift, Users,
-  Plus, Edit, Send, CreditCard, Package, AlertCircle, ShieldCheck,
-} from "lucide-react";
+import { ArrowLeft, User, Phone, MapPin, Globe, Calendar, Clock, ShoppingCart, DollarSign, Heart, Star, Wallet, Gift, Users, Send, CreditCard, Package, AlertCircle, ShieldCheck } from "lucide-react";
 import { format } from "date-fns";
 
 export default function CRMCustomerDetail() {

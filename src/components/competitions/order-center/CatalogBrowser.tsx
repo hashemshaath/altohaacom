@@ -10,9 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Search, Package, Image as ImageIcon, Filter, Plus, ListPlus } from "lucide-react";
-import { ORDER_CATEGORIES } from "./OrderCenterCategories";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { Search, Package, Image as ImageIcon, Filter, ListPlus } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {

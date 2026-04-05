@@ -1,6 +1,6 @@
 import { useState, memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,12 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAllMembershipFeatures } from "@/hooks/useMembershipFeatures";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  Loader2, Search, Shield, Zap, Star, Crown, Layout, Users, MessageCircle,
-  ToggleLeft, ToggleRight, CheckCircle2, XCircle,
-} from "lucide-react";
+import { Loader2, Search, Shield, Zap, Star, Crown, Layout, MessageCircle, CheckCircle2, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 

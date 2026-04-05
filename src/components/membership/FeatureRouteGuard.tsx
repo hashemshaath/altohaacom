@@ -1,3 +1,4 @@
+import React from "react";
 import { memo } from "react";
 import { Navigate } from "react-router-dom";
 import { useHasFeature } from "@/hooks/useMembershipFeatures";

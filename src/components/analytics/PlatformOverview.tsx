@@ -1,20 +1,16 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Trophy, Newspaper, GraduationCap, MessageSquare, Award } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
 import { SparklineCard } from "./SparklineCard";
-import {
-  CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS,
-  GRID_PROPS, LEGEND_STYLE, BAR_RADIUS, CHART_HEIGHT, getNoDataText,
-  translateRole, translateStatus, getTooltipStyle,
-} from "@/lib/chartConfig";
+import { X_AXIS_PROPS, BAR_RADIUS, getTooltipStyle, LEGEND_STYLE, getNoDataText, CHART_COLORS, translateStatus, translateRole, Y_AXIS_PROPS } from "@/lib/chartConfig";
 import type { DataPoint } from "@/lib/trendPrediction";
 import type { DateRange } from "./AnalyticsDateRange";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   dateRange?: DateRange;

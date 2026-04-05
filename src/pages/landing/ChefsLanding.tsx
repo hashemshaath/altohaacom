@@ -1,13 +1,9 @@
 import { Link } from "react-router-dom";
-import {
-  ChefHat, Trophy, Award, Users, Globe, GraduationCap, ArrowRight,
-  Sparkles, Star, BarChart3, BookOpen, ShieldCheck, CheckCircle,
-} from "lucide-react";
+import { ChefHat, Trophy, Award, Users, GraduationCap, ArrowRight, Sparkles, BarChart3, BookOpen, CheckCircle } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";

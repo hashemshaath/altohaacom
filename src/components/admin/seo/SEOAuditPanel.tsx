@@ -5,13 +5,10 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import {
-  Shield, Play, Loader2, CheckCircle2, AlertTriangle, Info,
-  ChevronDown, ChevronUp, Clock, FileSearch,
-} from "lucide-react";
+import { Play, Loader2, AlertTriangle, Info, ChevronDown, ChevronUp, Clock, FileSearch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const SEVERITY_CONFIG = {
   error: { icon: AlertTriangle, class: "text-destructive bg-destructive/10 border-destructive/20", label: "Error", labelAr: "خطأ" },

@@ -10,13 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { CertificatePreview } from "./CertificatePreview";
 import { defaultDesign } from "./types";
-import {
-  Sparkles, Trophy, Users, FileText, Eye, Loader2, CheckCircle, AlertCircle,
-} from "lucide-react";
+import { Sparkles, Trophy, Users, Eye, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 
 interface CandidateResult {
   registrationId: string;

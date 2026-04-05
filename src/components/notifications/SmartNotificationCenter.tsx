@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Bell, CheckCheck, BellOff, Clock, Settings, Trash2, Search, AlarmClock, MoreVertical, Pin, Archive } from "lucide-react";
+import { Bell, CheckCheck, BellOff, Clock, Settings, Trash2, Search, AlarmClock, MoreVertical } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";

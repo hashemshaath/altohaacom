@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useCallback, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
@@ -16,7 +17,6 @@ import {
   Loader2, Search, RotateCcw, Filter,
   CheckSquare, Square, ArrowUpDown,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { SectionRow } from "./homepage/SectionRow";
 

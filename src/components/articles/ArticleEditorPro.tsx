@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -20,6 +18,7 @@ import { ArticleImageUpload } from "./ArticleImageUpload";
 import { ArticleSEOPanel } from "./ArticleSEOPanel";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 import {
   ArrowLeft, Save, Eye, Calendar, Star, Loader2, CheckCircle2, Globe,
   Sparkles, Link2, Tag, FolderOpen, Wand2, RotateCcw, Languages, Search,

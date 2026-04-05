@@ -1,9 +1,8 @@
+import React from "react";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
-import { ROUTES } from "@/config/routes";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +13,7 @@ import {
   Mic, MicOff, Sparkles,
 } from "lucide-react";
 import { addRecentSearch } from "@/lib/recentSearches";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Result {
   id: string;

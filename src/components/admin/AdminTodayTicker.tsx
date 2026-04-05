@@ -1,10 +1,10 @@
 import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
-import { UserPlus, ShoppingBag, MessageSquare, Flag, Trophy, TrendingUp, Sparkles } from "lucide-react";
+import { UserPlus, ShoppingBag, MessageSquare, Flag, Trophy, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Compact horizontal ticker showing today's key metrics.

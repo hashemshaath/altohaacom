@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Eye, Globe, Instagram, Twitter, Facebook, Linkedin, Youtube, Users, UserCheck } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = {

@@ -1,16 +1,13 @@
 import { memo, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import {
-  MoreHorizontal, UserCheck, Shield, KeyRound, Mail, Ban,
-  Eye, MessageSquare, Copy, Check,
-} from "lucide-react";
+import { MoreHorizontal, UserCheck, Shield, KeyRound, Ban, Eye, MessageSquare, Copy, Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UserQuickActionsProps {
   userId: string;

@@ -14,7 +14,6 @@ import {
   Plus, Trash2, ChevronUp, ChevronDown, AlignLeft, AlignCenter, AlignRight, GripVertical, Type,
 } from "lucide-react";
 import type { CertificateLine } from "./types";
-import { fontOptions } from "./types";
 
 interface CertificateLineEditorProps {
   lines: CertificateLine[];

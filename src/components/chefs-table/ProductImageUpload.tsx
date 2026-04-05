@@ -1,8 +1,8 @@
+import React from "react";
 import { useState, useCallback, memo } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ImagePlus, X, Loader2, Camera } from "lucide-react";
+import { X, Loader2, Camera } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface Props {

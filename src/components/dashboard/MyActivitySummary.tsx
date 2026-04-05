@@ -2,11 +2,10 @@ import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, MessageSquare, Heart, BookOpen } from "lucide-react";
-import { formatNumber } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const MyActivitySummary = memo(function MyActivitySummary() {
   const { language } = useLanguage();

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Edit, Trash2, Package } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { CatalogItem, categories } from "./catalogTypes";
+import { CatalogItem } from "./catalogTypes";
 
 interface CatalogTableProps {
   items: CatalogItem[];

@@ -4,8 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, FileText, Clock, Eye, TrendingUp, BarChart3 } from "lucide-react";
-import { format, startOfWeek, addDays, isToday, isSameDay, parseISO } from "date-fns";
+import { Calendar, Clock, Eye, BarChart3 } from "lucide-react";
+import { format, startOfWeek, addDays, isToday, parseISO } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 

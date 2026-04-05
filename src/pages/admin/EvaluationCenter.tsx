@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,7 +7,7 @@ import { Settings2, FileText, ChefHat, Trophy, Wrench, UtensilsCrossed, Printer,
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useEvaluationDomains, useEvaluationCriteriaByDomain } from "@/hooks/useEvaluationSystem";
+import { useEvaluationDomains } from "@/hooks/useEvaluationSystem";
 import { CriteriaManager } from "@/components/evaluation/CriteriaManager";
 import { TemplatesManager } from "@/components/evaluation/TemplatesManager";
 import { useCSVExport } from "@/hooks/useCSVExport";

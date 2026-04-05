@@ -1,12 +1,12 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Badge } from "@/components/ui/badge";
-import { Activity, UserPlus, MessageSquare, AlertTriangle, TrendingUp } from "lucide-react";
+import { Activity, UserPlus, MessageSquare, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * A compact real-time activity bar for the admin dashboard.

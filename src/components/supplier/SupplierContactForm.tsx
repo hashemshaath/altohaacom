@@ -1,6 +1,6 @@
+import React from "react";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Send, Mail } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SupplierContactFormProps {
   companyId: string;

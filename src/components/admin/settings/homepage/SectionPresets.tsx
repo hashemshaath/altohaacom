@@ -1,3 +1,4 @@
+import React from "react";
 import { memo } from "react";
 import { type HomepageSection } from "@/hooks/useHomepageSections";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

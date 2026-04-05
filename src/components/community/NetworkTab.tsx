@@ -5,7 +5,6 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useNewFollowers, useFollowRecommendations, useIncomingFollowRequests } from "@/hooks/useFollow";
 import { useUpdateFollowPrivacy } from "@/hooks/useFollow";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +21,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { FollowButton } from "./FollowButton";
+import { supabase } from "@/integrations/supabase/client";
 
 export const NetworkTab = memo(function NetworkTab() {
   const { user } = useAuth();

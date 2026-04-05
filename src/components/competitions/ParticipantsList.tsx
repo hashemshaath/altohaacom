@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, memo } from "react";
 import { ParticipantBadgeCard } from "./ParticipantBadgeCard";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -44,7 +45,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ParticipantsListProps {
   competitionId: string;

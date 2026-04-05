@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,11 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Briefcase, MapPin, DollarSign, Clock, Building2, Users, ArrowLeft, Send,
-  CheckCircle2, Share2, Eye, Award, Star, Globe, ChefHat, ArrowRight, Sparkles, Heart,
-  Home, ChevronRight, Bookmark, AlertCircle, Calendar
-} from "lucide-react";
+import { Briefcase, MapPin, DollarSign, Clock, Building2, Users, ArrowLeft, Send, CheckCircle2, Share2, Eye, Award, ChefHat, ArrowRight, Sparkles, Home, ChevronRight, AlertCircle, Calendar } from "lucide-react";
 import { format } from "date-fns";
 
 const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {

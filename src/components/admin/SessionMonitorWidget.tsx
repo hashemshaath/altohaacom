@@ -1,14 +1,14 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Monitor, Smartphone, Globe, Shield, Clock, Activity, Wifi, WifiOff } from "lucide-react";
+import { Monitor, Smartphone, Globe, Shield, Activity, Wifi, WifiOff } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SessionMonitorWidget = memo(function SessionMonitorWidget() {
   const { language } = useLanguage();

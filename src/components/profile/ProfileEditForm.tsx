@@ -1,6 +1,5 @@
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Save, Loader2, CheckCircle2 } from "lucide-react";
@@ -12,6 +11,7 @@ import { LocationSection } from "./edit/LocationSection";
 import { SocialMediaSection } from "./edit/SocialMediaSection";
 import { useAccountType } from "@/hooks/useAccountType";
 import { AccountTypeCard } from "./AccountTypeCard";
+import { supabase } from "@/integrations/supabase/client";
 
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
 

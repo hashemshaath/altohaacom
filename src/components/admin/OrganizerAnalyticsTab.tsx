@@ -1,20 +1,16 @@
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { StatsCard } from "@/components/ui/stats-card";
-import { TrendIndicator } from "@/components/ui/trend-indicator";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line, CartesianGrid,
 } from "recharts";
 import { format, subMonths, parseISO, startOfMonth } from "date-fns";
-import {
-  Landmark, Eye, Star, Ticket, MapPin, TrendingUp,
-  Users, BarChart3, Globe,
-} from "lucide-react";
+import { Eye, Star, Ticket, MapPin, Users, BarChart3, Globe } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",

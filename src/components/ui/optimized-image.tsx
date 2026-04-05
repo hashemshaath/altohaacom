@@ -1,6 +1,7 @@
 import { useState, ImgHTMLAttributes, useRef, useEffect, memo } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./skeleton";
+import { supabase } from "@/integrations/supabase/client";
 
 interface OptimizedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   fallback?: string;

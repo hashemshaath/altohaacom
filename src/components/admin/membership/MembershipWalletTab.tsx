@@ -23,11 +23,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
-import {
-  Wallet, Search, Coins, Users, CreditCard, Download,
-  Plus, Minus, ArrowUpRight, ArrowDownRight, History,
-  Loader2, RefreshCw,
-} from "lucide-react";
+import { Wallet, Search, Coins, Users, CreditCard, Download, Plus, Minus, ArrowUpRight, ArrowDownRight, History, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Users, Trophy, BookOpen, Calendar, Eye, Globe, Briefcase } from "lucide-react";

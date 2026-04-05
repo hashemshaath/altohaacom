@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useRef, useEffect, memo } from "react";
 import { Send, Bot, User, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

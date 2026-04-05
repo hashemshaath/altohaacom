@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import type { SectionConfig, CareerRecord } from "./constants";
+import type { SectionConfig } from "./constants";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MutationDeps {
   userId: string;

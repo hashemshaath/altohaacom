@@ -2,7 +2,7 @@ import { memo, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Link2, AlertTriangle, CheckCircle2, ArrowRight, RefreshCw, ExternalLink, FileText, Zap } from "lucide-react";
+import { Link2, AlertTriangle, CheckCircle2, ArrowRight, RefreshCw, FileText, Zap } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,
 } from "recharts";

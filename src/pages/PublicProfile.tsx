@@ -17,10 +17,7 @@ import { FeatureGateForUser } from "@/components/membership/FeatureGate";
 import { ProfileCertificates } from "@/components/profile/ProfileCertificates";
 import { SEOHead } from "@/components/SEOHead";
 import { SectionReveal } from "@/components/ui/section-reveal";
-import {
-  User, Award, BadgeCheck, ArrowLeft, Building2,
-  ExternalLink, Trophy, Medal, ImageIcon,
-} from "lucide-react";
+import { User, Award, BadgeCheck, ArrowLeft, Building2, Trophy, Medal, ImageIcon } from "lucide-react";
 import { useAllCountries } from "@/hooks/useCountries";
 
 import { PublicProfileHero } from "@/components/public-profile/PublicProfileHero";
@@ -43,7 +40,7 @@ import { ProfilePortfolioGallery } from "@/components/public-profile/ProfilePort
 import { ProfileResumeExport } from "@/components/public-profile/ProfileResumeExport";
 
 import { pickLocalizedText, formatPeriodRange, roleLabels } from "@/components/public-profile/profileHelpers";
-import { CAREER_SECTIONS, categorizeCareerRecords } from "@/components/public-profile/careerSections";
+import { categorizeCareerRecords } from "@/components/public-profile/careerSections";
 
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();

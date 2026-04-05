@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Trophy, Globe, Coffee, Calendar, MapPin, Users, Flame, Zap } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";

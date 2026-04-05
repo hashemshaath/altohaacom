@@ -1,3 +1,4 @@
+import React from "react";
 import { memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useLanguage } from "@/i18n/LanguageContext";

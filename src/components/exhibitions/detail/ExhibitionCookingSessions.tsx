@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,10 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import {
-  ChefHat, Clock, Users, Radio, Send, MessageCircle,
-  CalendarClock, UserPlus, Check, Utensils,
-} from "lucide-react";
+import { ChefHat, Clock, Radio, Send, MessageCircle, CalendarClock, UserPlus, Check, Utensils } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 

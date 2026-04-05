@@ -1,3 +1,4 @@
+import React from "react";
 import { forwardRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";

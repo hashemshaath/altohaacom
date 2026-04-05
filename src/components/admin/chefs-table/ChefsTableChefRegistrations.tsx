@@ -7,10 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-import { UserPlus, Check, Calendar, MapPin, Star, Clock } from "lucide-react";
+import { UserPlus, Check, Calendar, Star, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface ChefRegistration {
   id: string;

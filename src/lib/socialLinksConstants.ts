@@ -1,4 +1,5 @@
 import type React from "react";
+import React from "react";
 // ── Shared constants for Social Links bio page & editor ──
 
 export interface ThemeColors {

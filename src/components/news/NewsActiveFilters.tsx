@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { X, Calendar as CalendarIcon, Tag, FolderOpen } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface ContentTag {
   id: string;

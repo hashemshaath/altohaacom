@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "./skeleton";

@@ -26,12 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
-import {
-  ArrowLeft, Calendar, MapPin, Eye, Plus, UtensilsCrossed, ClipboardList,
-  BarChart3, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, FileEdit,
-  Trophy, ArrowLeftRight, Coffee, Wine, Palette, Globe, ChefHat
-} from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Eye, Plus, UtensilsCrossed, ClipboardList, BarChart3, Settings2, Trash2, RefreshCw, FileEdit, Trophy, ArrowLeftRight, Coffee, Wine, Palette, Globe, ChefHat } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 

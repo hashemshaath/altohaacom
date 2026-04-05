@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
-import { History, Search, User, Clock } from "lucide-react";
+import { History, Search, Clock } from "lucide-react";
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
 

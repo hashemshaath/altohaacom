@@ -1,8 +1,4 @@
-import {
-  GlassWater, Flame, Pizza, Salad, Sandwich, CookingPot, Wheat, Beef,
-  Leaf, Droplets, UtensilsCrossed, Refrigerator, Plug, Package,
-  Snowflake, Cherry, Carrot, Egg, Fish, Milk, Apple, Citrus,
-} from "lucide-react";
+import { GlassWater, Flame, Pizza, Salad, Sandwich, CookingPot, Wheat, Beef, Leaf, Droplets, UtensilsCrossed, Refrigerator, Package, Snowflake, Cherry, Carrot, Egg, Milk, Apple, Citrus } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export interface IngredientItem {

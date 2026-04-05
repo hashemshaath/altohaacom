@@ -6,11 +6,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, Bookmark, BookmarkCheck, Trophy, Landmark, Calendar, MapPin, Loader2 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Eye, Bookmark, BookmarkCheck, Trophy, Landmark, Calendar, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { formatDistanceToNow } from "date-fns";
-import { ar, enUS } from "date-fns/locale";
+import { ar } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
 
 export const FanEventWatchlist = memo(function FanEventWatchlist() {

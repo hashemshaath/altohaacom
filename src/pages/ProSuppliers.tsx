@@ -1,3 +1,4 @@
+import React from "react";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -13,11 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { countryFlag } from "@/lib/countryFlag";
-import {
-  Building2, Search, ChefHat, UtensilsCrossed, Package, Shirt,
-  Wrench, Boxes, Grid3X3, CheckCircle, ArrowRight, Sparkles,
-  Factory, Globe, ArrowUpDown, Star, Scale, Trophy,
-} from "lucide-react";
+import { Building2, Search, ChefHat, UtensilsCrossed, Package, Shirt, Wrench, Boxes, Grid3X3, ArrowRight, Sparkles, Factory, Globe, ArrowUpDown, Scale, Trophy } from "lucide-react";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 
 const SUPPLIER_CATEGORIES = [

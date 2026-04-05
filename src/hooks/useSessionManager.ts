@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ActiveSession {
   id: string;

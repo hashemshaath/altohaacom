@@ -1,3 +1,4 @@
+import React from "react";
 import { Suspense, useMemo, useState, useEffect, useRef } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
@@ -5,7 +6,7 @@ import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
 import GenericHomepageSection from "@/components/home/sections/GenericHomepageSection";
 import { type HomepageSection } from "@/hooks/useHomepageSections";
 import { HomeSectionSkeleton } from "./HomeSectionSkeleton";
-import { DEFAULT_HOME_SECTION_KEYS, HOME_SECTION_COMPONENTS } from "./homeSectionRegistry";
+import { HOME_SECTION_COMPONENTS } from "./homeSectionRegistry";
 
 interface HomeSectionsRendererProps {
   sections: HomepageSection[];
@@ -61,7 +62,6 @@ function DeferredSection({ children, index }: { children: React.ReactNode; index
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
-
 
 
   if (inView) return <>{children}</>;

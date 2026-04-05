@@ -20,7 +20,6 @@ import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/Exhibi
 import { ExhibitionListItem } from "@/components/exhibitions/ExhibitionListItem";
 import { NextEventHighlight } from "@/components/exhibitions/NextEventHighlight";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { Database } from "@/integrations/supabase/types";
 

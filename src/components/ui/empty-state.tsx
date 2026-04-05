@@ -1,3 +1,4 @@
+import React from "react";
 import { forwardRef } from "react";
 import { LucideIcon, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";

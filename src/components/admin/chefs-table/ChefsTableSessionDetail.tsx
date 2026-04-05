@@ -1,17 +1,12 @@
-import { useState, memo } from "react";
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  Package, Calendar, MapPin, ChefHat, Users, Eye,
-  Clock, CheckCircle2, XCircle, PlayCircle, Receipt,
-  Globe, Copy, ExternalLink
-} from "lucide-react";
+import { Package, Calendar, MapPin, Users, Eye, CheckCircle2, XCircle, PlayCircle, Globe, Copy, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
-import { toast } from "sonner";
 import { ChefsTableInvoiceGenerator } from "./ChefsTableInvoiceGenerator";
 import type { ChefsTableSession } from "@/hooks/useChefsTable";
+import { toast } from "sonner";
 
 interface Props {
   session: ChefsTableSession;

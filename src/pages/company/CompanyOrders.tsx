@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ShoppingCart, Plus, Search, Filter } from "lucide-react";
-import { CompanyOrder, OrderFormData, defaultOrderForm, ORDER_STATUSES, ORDER_CATEGORIES } from "@/components/company/orders/orderTypes";
+import { CompanyOrder, OrderFormData, defaultOrderForm } from "@/components/company/orders/orderTypes";
 import { OrderStats } from "@/components/company/orders/OrderStats";
 import { OrdersTable } from "@/components/company/orders/OrdersTable";
 import { OrderFormDialog } from "@/components/company/orders/OrderFormDialog";

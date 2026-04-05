@@ -8,7 +8,6 @@ import {
   Globe, FileText, Code2, Smartphone, Link2, Image, Zap, Lock,
   Languages, Search, Loader2,
 } from "lucide-react";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface CheckItem {
   id: string;

@@ -14,7 +14,6 @@ import {
   Plug, Wind, Cable, Truck, ClipboardList, MapPin, Refrigerator, ChefHat,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { DISH_TEMPLATES } from "@/data/dishTemplates";
 
 const AISLES = [
   { key: "all", labelEn: "All", labelAr: "الكل", icon: Store },

@@ -3,16 +3,14 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useProfileAnalytics } from "@/hooks/useProfileViews";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Eye, Users, Monitor, Smartphone, TrendingUp, Globe, Clock, UserPlus, Calendar } from "lucide-react";
-import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, BarChart, Bar, LineChart, Line,
-} from "recharts";
+import { Eye, Users, Monitor, TrendingUp, Globe, Clock, UserPlus, Calendar } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Line } from "recharts";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 interface ProfileAnalyticsDashboardProps {
   userId: string;

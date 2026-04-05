@@ -1,6 +1,6 @@
+import React from "react";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -13,6 +13,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { UserDataExport } from "./UserDataExport";
 import { AccountDeletion } from "./AccountDeletion";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProfilePrivacySettingsProps {
   profile: any;

@@ -23,7 +23,6 @@ import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { EventComments } from "@/components/fan/EventComments";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { useSwipeTabs } from "@/hooks/useSwipeTabs";
 
 // Static imports for critical path
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";

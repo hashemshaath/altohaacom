@@ -1,11 +1,11 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 function getScoreLevel(score: number, isAr: boolean): { label: string; color: string; emoji: string } {
   if (score >= 80) return { label: isAr ? "متميّز" : "Outstanding", color: "text-chart-2", emoji: "🏆" };

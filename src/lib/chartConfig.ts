@@ -1,3 +1,4 @@
+import React from "react";
 /**
  * Shared chart configuration for all Recharts components.
  * Ensures consistent styling, RTL support, and proper theming across all admin analytics.

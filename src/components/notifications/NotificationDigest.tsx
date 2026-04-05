@@ -8,7 +8,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Bell, TrendingUp, TrendingDown, Minus, ChevronRight, AlertTriangle } from "lucide-react";
+import { Sparkles, TrendingUp, TrendingDown, Minus, ChevronRight, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { inferPriority } from "./NotificationPriorityBadge";

@@ -4,14 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  Shield, Save, Loader2, Lock, Search, Copy, ChevronDown, ChevronUp, CheckCircle2,
-} from "lucide-react";
-import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
+import { Save, Loader2, Lock, Search, Copy, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react";
+import { ROLE_META, type AppRole } from "./types";
+import { supabase } from "@/integrations/supabase/client";
+import { ALL_ROLES } from "@/components/admin/roles/types";
 
 interface Props {
   permissions: any[];

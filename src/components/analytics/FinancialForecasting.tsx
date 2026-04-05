@@ -1,24 +1,18 @@
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  TrendingUp, TrendingDown, DollarSign, Target, Wallet,
-  ArrowUpRight, ArrowDownRight, Scale, PiggyBank, BarChart3,
-} from "lucide-react";
-import {
-  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Area, Legend, ReferenceLine,
-} from "recharts";
+import { TrendingUp, DollarSign, Target, Wallet, ArrowUpRight, ArrowDownRight, Scale, PiggyBank, BarChart3 } from "lucide-react";
+import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from "recharts";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { format, subMonths, eachMonthOfInterval, startOfMonth } from "date-fns";
+import { format, subMonths } from "date-fns";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 export const FinancialForecasting = memo(function FinancialForecasting() {
   const { language } = useLanguage();

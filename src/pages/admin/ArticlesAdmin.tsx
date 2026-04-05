@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -28,11 +28,7 @@ import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import {
-  Plus, Pencil, Trash2, Eye, FileText, 
-  Calendar, Clock, Star, Download, BarChart3, TrendingUp, ToggleLeft, ToggleRight,
-  Timer, Sparkles,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, FileText, Clock, Star, Download, BarChart3, TrendingUp, ToggleLeft, ToggleRight, Timer, Sparkles } from "lucide-react";
 
 type ViewMode = "list" | "create" | "edit";
 

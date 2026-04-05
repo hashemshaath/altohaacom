@@ -18,15 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Footer } from "@/components/Footer";
-import {
-  Building2, Mail, Phone, Globe, MapPin, Calendar, Eye, Landmark,
-  Users, TrendingUp, ExternalLink, Newspaper, ChevronRight,
-  Award, Target, Sparkles, BarChart3, Clock, Star,
-  Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight, Heart,
-  CalendarDays, Ticket, GraduationCap, Swords, Mic2, BookOpen,
-  Copy, Check, Image as ImageIcon, UserCircle2, ChevronLeft,
-  CircleDot, AlertCircle, X,
-} from "lucide-react";
+import { Building2, Mail, Phone, Globe, MapPin, Calendar, Eye, Landmark, Users, ExternalLink, Newspaper, ChevronRight, Award, Target, Sparkles, BarChart3, Clock, Star, Share2, Twitter, Facebook, Linkedin, Instagram, ArrowUpRight, Heart, CalendarDays, Ticket, GraduationCap, Swords, Mic2, Check, Image as ImageIcon, UserCircle2, ChevronLeft, X } from "lucide-react";
 import { format, formatDistanceToNow, differenceInDays, isPast, isFuture } from "date-fns";
 import { ar } from "date-fns/locale";
 import { useMemo, useState, useEffect, useCallback } from "react";

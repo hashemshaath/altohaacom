@@ -1,3 +1,4 @@
+import React from "react";
 import { memo } from "react";
 import { Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";

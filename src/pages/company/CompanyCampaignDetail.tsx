@@ -17,17 +17,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  ArrowLeft, Eye, MousePointer, DollarSign, TrendingUp, Plus,
-  Image, Video, ExternalLink, Pause, Play, BarChart3, Megaphone,
-  Clock, CheckCircle2, XCircle, AlertCircle,
-} from "lucide-react";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, PieChart, Pie, Cell,
-} from "recharts";
+import { ArrowLeft, Eye, MousePointer, DollarSign, TrendingUp, Plus, Image, Video, ExternalLink, Pause, Play, BarChart3, Clock, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",

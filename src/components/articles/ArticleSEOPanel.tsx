@@ -2,7 +2,7 @@ import { memo, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Search, Clock, FileText, Hash, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Lightbulb, Image, Tag, Link2 } from "lucide-react";
+import { Clock, CheckCircle2, AlertTriangle, XCircle, TrendingUp, Lightbulb, Image, Tag, Link2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {

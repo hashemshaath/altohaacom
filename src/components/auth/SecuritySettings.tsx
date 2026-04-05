@@ -1,6 +1,5 @@
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSessionManager } from "@/hooks/useSessionManager";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SecuritySettings = memo(function SecuritySettings() {
   const { language } = useLanguage();

@@ -2,7 +2,6 @@ import { useState, forwardRef, useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,12 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdvertisingQuickNav } from "@/components/admin/AdvertisingQuickNav";
-import {
-  Megaphone, BarChart3, Package, Target, FileText,
-  Brain, Globe, Sparkles, FileBarChart, LayoutGrid,
-  Eye, MousePointer, DollarSign, TrendingUp, Clock,
-  Home, ExternalLink, AlertTriangle,
-} from "lucide-react";
+import { Megaphone, BarChart3, Package, Target, FileText, Brain, Globe, Sparkles, FileBarChart, LayoutGrid, Eye, MousePointer, DollarSign, ExternalLink, AlertTriangle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AdCampaignOverviewWidget } from "@/components/admin/AdCampaignOverviewWidget";
 import { CampaignPerformanceTracker } from "@/components/admin/CampaignPerformanceTracker";
@@ -31,6 +25,7 @@ import { AdCreativesTab } from "@/components/admin/advertising/AdCreativesTab";
 import { AdPlacementsTab } from "@/components/admin/advertising/AdPlacementsTab";
 import { AdPackagesTab } from "@/components/admin/advertising/AdPackagesTab";
 import { AdIntegrationsTab } from "@/components/admin/advertising/AdIntegrationsTab";
+import { supabase } from "@/integrations/supabase/client";
 
 // Lazy analytics tabs
 const AdAnalyticsDashboard = lazy(() => import("@/components/ads/AdAnalyticsDashboard").then(m => ({ default: m.AdAnalyticsDashboard })));
