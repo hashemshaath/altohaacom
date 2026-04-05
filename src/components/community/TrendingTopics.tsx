@@ -18,7 +18,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
       const { data: posts } = await supabase
         .from("posts")
-        .select("content, likes_count, comments_count, created_at")
+        .select("content, replies_count, reposts_count, created_at")
         .eq("moderation_status", "approved")
         .gte("created_at", weekAgo)
         .order("created_at", { ascending: false })
@@ -35,7 +35,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
             const clean = tag.toLowerCase();
             const existing = tagMap.get(clean) || { count: 0, engagement: 0 };
             existing.count++;
-            existing.engagement += (post.likes_count || 0) * 2 + (post.comments_count || 0) * 3;
+            existing.engagement += (post.reposts_count || 0) * 2 + (post.replies_count || 0) * 3;
             tagMap.set(clean, existing);
           });
         }

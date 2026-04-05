@@ -43,7 +43,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
         .from("site_settings")
         .select("*")
         .like("key", "seo_meta_%");
-      return (data || []).map((d) => ({ path: d.key.replace("seo_meta_", "").replace(/_/g, "/"), ...d.value }));
+      return (data || []).map((d) => ({ path: d.key.replace("seo_meta_", "").replace(/_/g, "/"), ...(typeof d.value === 'object' && d.value !== null && !Array.isArray(d.value) ? d.value as Record<string, unknown> : {}) }));
     },
   });
 

@@ -42,7 +42,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_conversions")
-        .select("*, referrer:referrer_id(full_name, username, email), referred:referred_user_id(full_name, username, email)")
+        .select("*")
         .order("converted_at", { ascending: false })
         .limit(100);
       if (error) throw error;
@@ -56,7 +56,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
     queryFn: async () => {
       let query = supabase
         .from("membership_referrals")
-        .select("*, referrer:referrer_id(full_name, username, email), referred:referred_id(full_name, username, email)")
+        .select("*")
         .order("created_at", { ascending: false })
         .limit(100);
       if (statusFilter !== "all") {
@@ -79,13 +79,9 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
   const filteredCodes = referralCodes?.filter((code) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
-    const profile = code.profiles;
     return (
       code.code?.toLowerCase().includes(term) ||
-      code.custom_slug?.toLowerCase().includes(term) ||
-      profile?.full_name?.toLowerCase().includes(term) ||
-      profile?.username?.toLowerCase().includes(term) ||
-      profile?.email?.toLowerCase().includes(term)
+      code.custom_slug?.toLowerCase().includes(term)
     );
   });
 

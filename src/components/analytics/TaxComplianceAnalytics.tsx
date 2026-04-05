@@ -256,7 +256,7 @@ export const TaxComplianceAnalytics = memo(function TaxComplianceAnalytics() {
                     <TableCell className="font-medium">{r.report_type}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{r.period_start} → {r.period_end}</TableCell>
                     <TableCell className="text-end">{formatCurrency(Number(r.total_revenue), language as "en" | "ar")}</TableCell>
-                    <TableCell className="text-end font-medium text-primary">{formatCurrency(Number(r.tax_amount) + Number(r.zakat_amount || 0), language as "en" | "ar")}</TableCell>
+                    <TableCell className="text-end font-medium text-primary">{formatCurrency(Number(r.tax_amount) + Number((r as any).zakat_amount || 0), language as "en" | "ar")}</TableCell>
                     <TableCell>{getStatusBadge(r.status)}</TableCell>
                   </TableRow>
                 ))}

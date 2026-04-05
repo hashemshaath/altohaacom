@@ -35,7 +35,7 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
         supabase.from("competition_scores").select("*", { count: "exact", head: true }),
         supabase.from("competitions").select("id, title, status, competition_start, country_code"),
         supabase.from("competition_scores").select("score"),
-        supabase.from("competition_registrations").select("created_at"),
+        supabase.from("competition_registrations").select("registered_at"),
       ]);
 
       const scoreBuckets: Record<string, number> = { "0-20": 0, "21-40": 0, "41-60": 0, "61-80": 0, "81-100": 0 };
@@ -67,12 +67,12 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
 
       const regMonths: Record<string, number> = {};
       (registrations || []).forEach((r) => {
-        const m = r.created_at?.substring(0, 7);
+        const m = r.registered_at?.substring(0, 7);
         if (m) regMonths[m] = (regMonths[m] || 0) + 1;
       });
 
       const uniqueCountries = new Set((competitions || []).map((c) => c.country_code).filter(Boolean));
-      const activeCount = (competitions || []).filter((c) => c.status === "active" || c.status === "in_progress").length;
+      const activeCount = (competitions || []).filter((c) => c.status === "registration_open" || c.status === "in_progress").length;
 
       return {
         totalRegistrations: totalRegistrations || 0,

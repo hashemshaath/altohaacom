@@ -180,9 +180,9 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
                           )}
                         </div>
 
-                        {round.description && (
+                        {round.name && (
                           <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">
-                            {isAr && round.description_ar ? round.description_ar : round.description}
+                            {isAr && round.name_ar ? round.name_ar : round.name}
                           </p>
                         )}
                       </div>
