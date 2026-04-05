@@ -116,7 +116,7 @@ export default function CompanyDrivers() {
     setForm({ name: "", name_ar: "", phone: "", vehicle_type: "", vehicle_plate: "", license_number: "" });
   };
 
-  const openEdit = (d: any) => {
+  const openEdit = (d) => {
     setEditingDriver(d);
     setForm({
       name: d.name || "", name_ar: d.name_ar || "", phone: d.phone || "",

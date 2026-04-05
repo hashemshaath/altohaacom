@@ -111,7 +111,7 @@ export function useMessagesData() {
       if (!messages) return [];
 
       const partnerMap = new Map<string, { messages: Message[]; unread: number }>();
-      messages.forEach((msg: any) => {
+      messages.forEach((msg) => {
         const partnerId = msg.sender_id === user.id ? msg.receiver_id : msg.sender_id;
         const existing = partnerMap.get(partnerId) || { messages: [], unread: 0 };
         existing.messages.push(msg as Message);
@@ -244,7 +244,7 @@ export function useMessagesData() {
       queryClient.invalidateQueries({ queryKey: ["messages"] });
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ variant: "destructive", title: isAr ? "فشل الإرسال" : "Failed to send", description: error.message });
     },
   });

@@ -107,7 +107,7 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
     setDialogOpen(false);
   };
 
-  const openEdit = (item: any) => {
+  const openEdit = (item) => {
     setForm({
       title: item.title, title_ar: item.title_ar || "", description: item.description || "",
       description_ar: item.description_ar || "", speaker_name: item.speaker_name || "",
@@ -199,7 +199,7 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
           </div>
         ) : (
           <div className="divide-y divide-border/40">
-            {items.map((item: any) => (
+            {items.map((item) => (
               <div key={item.id} className="flex items-start gap-3 px-4 py-3 hover:bg-muted/20 transition-colors">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shrink-0 mt-0.5">
                   <Clock className="h-3.5 w-3.5 text-primary" />

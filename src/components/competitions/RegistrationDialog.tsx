@@ -286,7 +286,7 @@ export const RegistrationForm = memo(function RegistrationForm({
       resetForm();
       onSuccess();
     },
-    onError: (error: any) => {
+    onError: (error) => {
       const msg = error?.message || "";
       if (msg.includes("idx_unique_registration") || msg.includes("duplicate")) {
         toast({ variant: "destructive", title: isAr ? "أنت مسجل بالفعل" : "Already registered", description: isAr ? "لا يمكن التسجيل مرتين في نفس المسابقة والفئة" : "You cannot register twice for the same competition and category" });
@@ -395,8 +395,8 @@ export const RegistrationForm = memo(function RegistrationForm({
                 {searchResults.length > 0 && (
                   <div className="border rounded-xl divide-y max-h-32 overflow-y-auto">
                     {searchResults
-                      .filter((r: any) => !teamMembers.some((m) => m.user_id === r.user_id))
-                      .map((r: any) => (
+                      .filter((r) => !teamMembers.some((m) => m.user_id === r.user_id))
+                      .map((r) => (
                         <button
                           key={r.user_id}
                           type="button"

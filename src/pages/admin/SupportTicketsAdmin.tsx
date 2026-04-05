@@ -266,12 +266,12 @@ export default function SupportTicketsAdmin() {
 
   const { exportCSV: exportTicketsCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الرقم" : "Ticket #", accessor: (t: any) => t.ticket_number },
-      { header: isAr ? "الموضوع" : "Subject", accessor: (t: any) => t.subject },
-      { header: isAr ? "المستخدم" : "User", accessor: (t: any) => profileMap.get(t.user_id)?.full_name || "Unknown" },
-      { header: isAr ? "الحالة" : "Status", accessor: (t: any) => t.status },
-      { header: isAr ? "الأولوية" : "Priority", accessor: (t: any) => t.priority },
-      { header: isAr ? "التاريخ" : "Date", accessor: (t: any) => t.created_at?.split("T")[0] || "" },
+      { header: isAr ? "الرقم" : "Ticket #", accessor: (t) => t.ticket_number },
+      { header: isAr ? "الموضوع" : "Subject", accessor: (t) => t.subject },
+      { header: isAr ? "المستخدم" : "User", accessor: (t) => profileMap.get(t.user_id)?.full_name || "Unknown" },
+      { header: isAr ? "الحالة" : "Status", accessor: (t) => t.status },
+      { header: isAr ? "الأولوية" : "Priority", accessor: (t) => t.priority },
+      { header: isAr ? "التاريخ" : "Date", accessor: (t) => t.created_at?.split("T")[0] || "" },
     ],
     filename: "support-tickets",
   });

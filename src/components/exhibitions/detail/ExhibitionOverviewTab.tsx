@@ -106,7 +106,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
           </div>
           <CardContent className="p-4">
             <div className="space-y-2.5">
-              {reasonsToAttend.map((r: any, i: number) => (
+              {reasonsToAttend.map((r, i) => (
                 <div key={i} className="flex items-start gap-3 rounded-xl border p-3">
                   <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-chart-2/10 text-chart-2 text-xs font-bold">{i + 1}</div>
                   <p className="text-sm">{isAr && r.reason_ar ? r.reason_ar : r.reason}</p>
@@ -128,7 +128,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
           </div>
           <CardContent className="p-4">
             <div className="grid gap-3 sm:grid-cols-2">
-              {uniqueFeatures.map((f: any, i: number) => (
+              {uniqueFeatures.map((f, i) => (
                 <div key={i} className="flex items-start gap-2 rounded-xl border p-3">
                   <Sparkles className="h-4 w-4 shrink-0 text-chart-4 mt-0.5" />
                   <p className="text-sm">{isAr && f.feature_ar ? f.feature_ar : f.feature}</p>
@@ -204,7 +204,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
           </div>
           <CardContent className="p-4">
             <div className="space-y-2.5">
-              {linkedCompetitions!.slice(0, 3).map((comp: any) => {
+              {linkedCompetitions!.slice(0, 3).map((comp) => {
                 const compTitle = isAr && comp.title_ar ? comp.title_ar : comp.title;
                 const regCount = comp.competition_registrations?.length || 0;
                 const compStart = new Date(comp.competition_start);
@@ -265,7 +265,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
           </div>
           <CardContent className="p-4">
             <div className="grid gap-2 sm:grid-cols-2">
-              {highlights.map((h: any, i: number) => (
+              {highlights.map((h, i) => (
                 <div key={i} className="flex items-center justify-between rounded-xl border p-3">
                   <span className="text-sm font-medium">{isAr && h.label_ar ? h.label_ar : h.label}</span>
                   <Badge variant="secondary">{h.value}</Badge>

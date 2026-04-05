@@ -122,10 +122,10 @@ export default function LoyaltyAdmin() {
 
   const { exportCSV: exportRedemptions } = useCSVExport({
     columns: [
-      { header: isAr ? "الكود" : "Code", accessor: (r: any) => r.redemption_code || "" },
-      { header: isAr ? "النقاط" : "Points", accessor: (r: any) => r.points_spent },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => new Date(r.created_at).toLocaleDateString() },
+      { header: isAr ? "الكود" : "Code", accessor: (r) => r.redemption_code || "" },
+      { header: isAr ? "النقاط" : "Points", accessor: (r) => r.points_spent },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r) => new Date(r.created_at).toLocaleDateString() },
     ],
     filename: "redemptions",
   });
@@ -205,7 +205,7 @@ export default function LoyaltyAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {tiers.map((t: any) => (
+                  {tiers.map((t) => (
                     <TableRow key={t.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell>
                         <div className="flex items-center gap-2.5">
@@ -248,7 +248,7 @@ export default function LoyaltyAdmin() {
                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {chPagination.paginated.map((c: any) => (
+                  {chPagination.paginated.map((c) => (
                     <TableRow key={c.id} className="transition-colors duration-200 hover:bg-muted/40 group">
                       <TableCell>
                         <div className="flex items-center gap-2.5">
@@ -289,7 +289,7 @@ export default function LoyaltyAdmin() {
                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rwPagination.paginated.map((r: any) => (
+                  {rwPagination.paginated.map((r) => (
                     <TableRow key={r.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell className="font-medium text-sm">{isAr ? r.name_ar : r.name}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{r.category}</Badge></TableCell>
@@ -331,7 +331,7 @@ export default function LoyaltyAdmin() {
                    </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {rdPagination.paginated.map((r: any) => (
+                  {rdPagination.paginated.map((r) => (
                     <TableRow key={r.id} className={`transition-colors duration-200 hover:bg-muted/40 ${bulkRedemptions.isSelected(r.id) ? "bg-primary/5" : ""}`}>
                       <TableCell>
                         <Checkbox checked={bulkRedemptions.isSelected(r.id)} onCheckedChange={() => bulkRedemptions.toggleOne(r.id)} />

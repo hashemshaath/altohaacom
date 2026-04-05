@@ -447,7 +447,7 @@ export default function OrdersAdmin() {
     });
   };
 
-  const openEditForm = (order: any) => {
+  const openEditForm = (order) => {
     setEditingOrder(order.id);
     setOrderForm({
       company_id: order.company_id,
@@ -477,15 +477,15 @@ export default function OrdersAdmin() {
 
   const { exportCSV: exportOrdersCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "رقم الطلب" : "Order #", accessor: (o: any) => o.order_number },
-      { header: isAr ? "الشركة" : "Company", accessor: (o: any) => o.companies?.name || "" },
-      { header: isAr ? "العنوان" : "Title", accessor: (o: any) => o.title },
-      { header: isAr ? "الاتجاه" : "Direction", accessor: (o: any) => o.direction },
-      { header: isAr ? "الفئة" : "Category", accessor: (o: any) => getCategoryLabel(o.category) },
-      { header: isAr ? "المبلغ" : "Amount", accessor: (o: any) => o.total_amount },
-      { header: isAr ? "العملة" : "Currency", accessor: (o: any) => o.currency },
-      { header: isAr ? "الحالة" : "Status", accessor: (o: any) => getStatusLabel(o.status) },
-      { header: isAr ? "التاريخ" : "Date", accessor: (o: any) => o.created_at?.split("T")[0] || "" },
+      { header: isAr ? "رقم الطلب" : "Order #", accessor: (o) => o.order_number },
+      { header: isAr ? "الشركة" : "Company", accessor: (o) => o.companies?.name || "" },
+      { header: isAr ? "العنوان" : "Title", accessor: (o) => o.title },
+      { header: isAr ? "الاتجاه" : "Direction", accessor: (o) => o.direction },
+      { header: isAr ? "الفئة" : "Category", accessor: (o) => getCategoryLabel(o.category) },
+      { header: isAr ? "المبلغ" : "Amount", accessor: (o) => o.total_amount },
+      { header: isAr ? "العملة" : "Currency", accessor: (o) => o.currency },
+      { header: isAr ? "الحالة" : "Status", accessor: (o) => getStatusLabel(o.status) },
+      { header: isAr ? "التاريخ" : "Date", accessor: (o) => o.created_at?.split("T")[0] || "" },
     ],
     filename: "orders",
   });
@@ -515,19 +515,19 @@ export default function OrdersAdmin() {
 
   const companyStats = {
     total: orders.length,
-    pending: orders.filter((o: any) => o.status === "pending").length,
-    inProgress: orders.filter((o: any) => o.status === "in_progress" || o.status === "approved").length,
-    completed: orders.filter((o: any) => o.status === "completed").length,
-    incoming: orders.filter((o: any) => o.direction === "incoming").length,
-    outgoing: orders.filter((o: any) => o.direction === "outgoing").length,
+    pending: orders.filter((o) => o.status === "pending").length,
+    inProgress: orders.filter((o) => o.status === "in_progress" || o.status === "approved").length,
+    completed: orders.filter((o) => o.status === "completed").length,
+    incoming: orders.filter((o) => o.direction === "incoming").length,
+    outgoing: orders.filter((o) => o.direction === "outgoing").length,
   };
 
   const shopStats = {
     total: shopOrders.length,
-    pending: shopOrders.filter((o: any) => o.status === "pending").length,
-    confirmed: shopOrders.filter((o: any) => ["confirmed", "processing"].includes(o.status)).length,
-    shipped: shopOrders.filter((o: any) => o.status === "shipped").length,
-    delivered: shopOrders.filter((o: any) => o.status === "delivered").length,
+    pending: shopOrders.filter((o) => o.status === "pending").length,
+    confirmed: shopOrders.filter((o) => ["confirmed", "processing"].includes(o.status)).length,
+    shipped: shopOrders.filter((o) => o.status === "shipped").length,
+    delivered: shopOrders.filter((o) => o.status === "delivered").length,
   };
 
   // ============ COMPANY ORDER DETAIL VIEW ============
@@ -763,7 +763,7 @@ export default function OrdersAdmin() {
               <CardContent>
                 <ScrollArea className="h-[300px] mb-4">
                   <div className="space-y-4">
-                    {communications.map((msg: any) => (
+                    {communications.map((msg) => (
                       <div key={msg.id} className={`flex ${msg.sender_type === "admin" ? "justify-end" : "justify-start"}`}>
                         <div className={`max-w-[80%] rounded-xl p-3 ${
                           msg.sender_type === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"
@@ -952,7 +952,7 @@ export default function OrdersAdmin() {
                 <div>
                   <p className="text-sm text-muted-foreground mb-2">{isAr ? "المنتجات" : "Products"}</p>
                   <div className="space-y-3">
-                    {shopOrderDetails.shop_order_items?.map((item: any) => (
+                    {shopOrderDetails.shop_order_items?.map((item) => (
                       <div key={item.id} className="flex items-center gap-3">
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
                           {item.shop_products?.image_url ? (
@@ -1046,7 +1046,7 @@ export default function OrdersAdmin() {
                 <Select value={orderForm.company_id} onValueChange={(v) => setOrderForm(prev => ({ ...prev, company_id: v }))}>
                   <SelectTrigger><SelectValue placeholder={isAr ? "اختر شركة" : "Select company"} /></SelectTrigger>
                   <SelectContent>
-                    {companies.map((c: any) => (
+                    {companies.map((c) => (
                       <SelectItem key={c.id} value={c.id}>{isAr ? c.name_ar || c.name : c.name}</SelectItem>
                     ))}
                   </SelectContent>
@@ -1360,7 +1360,7 @@ export default function OrdersAdmin() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {orderPagination.paginated.map((order: any) => (
+                          {orderPagination.paginated.map((order) => (
                             <TableRow key={order.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulk.isSelected(order.id) ? "bg-primary/5" : ""}`} onClick={() => setSelectedOrder(order.id)}>
                               <TableCell onClick={(e) => e.stopPropagation()}>
                                 <Checkbox checked={bulk.isSelected(order.id)} onCheckedChange={() => bulk.toggleOne(order.id)} />
@@ -1491,7 +1491,7 @@ export default function OrdersAdmin() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {shopOrders.map((order: any) => (
+                    {shopOrders.map((order) => (
                       <TableRow key={order.id} className="cursor-pointer transition-colors duration-150 hover:bg-muted/40" onClick={() => setSelectedShopOrder(order.id)}>
                         <TableCell className="font-mono text-sm">{order.order_number}</TableCell>
                         <TableCell>

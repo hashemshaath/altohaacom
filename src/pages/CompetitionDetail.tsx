@@ -633,7 +633,7 @@ export default function CompetitionDetail() {
                   {competitionTypes && competitionTypes.length > 0 && (
                     <Section icon={<Flame className="h-4 w-4" />} title={isAr ? "تخصص المسابقة" : "Competition Specialty"} badge={<Badge variant="secondary" className="text-[10px]">{competitionTypes.length}</Badge>}>
                       <div className="grid gap-3 sm:grid-cols-2">
-                        {competitionTypes.map((type: any) => (
+                        {competitionTypes.map((type) => (
                           <div key={type.id} className="group relative overflow-hidden rounded-2xl border border-border/40 bg-muted/20 hover:bg-muted/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
                             {type.cover_image_url ? (
                               <div className="relative h-32">

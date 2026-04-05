@@ -46,12 +46,12 @@ export default function Shop() {
   });
 
   const categories = useMemo(
-    () => [...new Set(products.map((p: any) => p.category))].sort(),
+    () => [...new Set(products.map((p) => p.category))].sort(),
     [products]
   );
 
   const filtered = useMemo(() => {
-    let result = products.filter((p: any) => {
+    let result = products.filter((p) => {
       const title = isAr && p.title_ar ? p.title_ar : p.title;
       const matchesSearch = !search || title.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = categoryFilter === "all" || p.category === categoryFilter;
@@ -80,7 +80,7 @@ export default function Shop() {
   // Track product list view when filtered results change
   useEffect(() => {
     if (filtered.length > 0) {
-      trackProductListView("shop_main", filtered.slice(0, 10).map((p: any) => ({
+      trackProductListView("shop_main", filtered.slice(0, 10).map((p) => ({
         product_id: p.id,
         title: p.title,
         price: p.price,
@@ -89,7 +89,7 @@ export default function Shop() {
     }
   }, [filtered.length, categoryFilter, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleAddToCart = useCallback((product: any) => {
+  const handleAddToCart = useCallback((product) => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
       return;
@@ -160,7 +160,7 @@ export default function Shop() {
           <ShopEmptyState search={search} onClearSearch={() => setSearch("")} />
         ) : (
           <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((product: any) => (
+            {filtered.map((product) => (
               <ShopProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
             ))}
           </div>

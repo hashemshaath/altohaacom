@@ -84,7 +84,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .select("schedule_item_id")
         .in("schedule_item_id", itemIds);
       const regCounts = new Map<string, number>();
-      (regs || []).forEach((r: any) => regCounts.set(r.schedule_item_id, (regCounts.get(r.schedule_item_id) || 0) + 1));
+      (regs || []).forEach((r) => regCounts.set(r.schedule_item_id, (regCounts.get(r.schedule_item_id) || 0) + 1));
       return data.map(d => ({ ...d, registrations: regCounts.get(d.id) || 0 }));
     },
     staleTime: 1000 * 60,
@@ -119,7 +119,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .select("session_id")
         .in("session_id", sessionIds);
       const regCounts = new Map<string, number>();
-      (regs || []).forEach((r: any) => regCounts.set(r.session_id, (regCounts.get(r.session_id) || 0) + 1));
+      (regs || []).forEach((r) => regCounts.set(r.session_id, (regCounts.get(r.session_id) || 0) + 1));
       return data.map(d => ({ ...d, registrations: regCounts.get(d.id) || 0 }));
     },
     staleTime: 1000 * 60,
@@ -141,7 +141,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
   // Revenue
   const revenue = useMemo(() => {
     let total = 0;
-    ticketsOverTime.forEach((t: any) => { total += (t.price_paid || 0); });
+    ticketsOverTime.forEach((t) => { total += (t.price_paid || 0); });
     return total;
   }, [ticketsOverTime]);
 
@@ -151,7 +151,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
     const days = eachDayOfInterval({ start: subDays(new Date(), 29), end: new Date() });
     const counts = new Map<string, { bookings: number; checkins: number }>();
     days.forEach(d => counts.set(format(d, "yyyy-MM-dd"), { bookings: 0, checkins: 0 }));
-    ticketsOverTime.forEach((t: any) => {
+    ticketsOverTime.forEach((t) => {
       const day = format(parseISO(t.created_at), "yyyy-MM-dd");
       if (counts.has(day)) counts.get(day)!.bookings++;
       if (t.checked_in_at) {
@@ -170,7 +170,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
   const cumulativeData = useMemo(() => {
     if (dailyRegistrations.length === 0) return [];
     let cum = 0;
-    return dailyRegistrations.map((d: any) => {
+    return dailyRegistrations.map((d) => {
       cum += d[t("Bookings", "حجوزات")];
       return { ...d, [t("Total", "الإجمالي")]: cum };
     });
@@ -179,7 +179,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
   // Check-in hourly
   const hourlyCheckins = useMemo(() => {
     const hours = Array.from({ length: 24 }, (_, i) => ({ hour: `${String(i).padStart(2, "0")}:00`, count: 0 }));
-    ticketsOverTime.forEach((t: any) => {
+    ticketsOverTime.forEach((t) => {
       if (t.checked_in_at) {
         const h = new Date(t.checked_in_at).getHours();
         hours[h].count++;
@@ -191,19 +191,19 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
   const ratingDistribution = useMemo(() => {
     return [1, 2, 3, 4, 5].map(r => ({
       rating: `${r}⭐`,
-      count: reviewsData.filter((rev: any) => rev.rating === r).length,
+      count: reviewsData.filter((rev) => rev.rating === r).length,
     }));
   }, [reviewsData]);
 
   const boothCategories = useMemo(() => {
     const catMap = new Map<string, number>();
-    boothStats.forEach((b: any) => catMap.set(b.category || "general", (catMap.get(b.category || "general") || 0) + 1));
+    boothStats.forEach((b) => catMap.set(b.category || "general", (catMap.get(b.category || "general") || 0) + 1));
     return Array.from(catMap.entries()).map(([name, value]) => ({ name, value }));
   }, [boothStats]);
 
   const boothStatusData = useMemo(() => {
     const statusMap = new Map<string, number>();
-    boothStats.forEach((b: any) => statusMap.set(b.status || "available", (statusMap.get(b.status || "available") || 0) + 1));
+    boothStats.forEach((b) => statusMap.set(b.status || "available", (statusMap.get(b.status || "available") || 0) + 1));
     return Array.from(statusMap.entries()).map(([name, value]) => ({ name, value }));
   }, [boothStats]);
 
@@ -215,7 +215,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
   const funnelData = useMemo(() => {
     const followers = followerTimeline.length;
     const tickets = ticketsOverTime.length;
-    const checkins = ticketsOverTime.filter((t: any) => t.checked_in_at).length;
+    const checkins = ticketsOverTime.filter((t) => t.checked_in_at).length;
     const reviewed = reviewsData.length;
     return [
       { name: t("Followers", "المتابعين"), value: followers, fill: CHART_COLORS[0] },
@@ -231,7 +231,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
     const days = eachDayOfInterval({ start: subDays(new Date(), 29), end: new Date() });
     const counts = new Map<string, number>();
     days.forEach(d => counts.set(format(d, "yyyy-MM-dd"), 0));
-    followerTimeline.forEach((f: any) => {
+    followerTimeline.forEach((f) => {
       const day = format(parseISO(f.created_at), "yyyy-MM-dd");
       if (counts.has(day)) counts.set(day, counts.get(day)! + 1);
     });
@@ -257,8 +257,8 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
   }, [followerTimeline, ticketsOverTime, reviewsData, boothStats, scheduleRegs, cookingSessionStats]);
 
   const kpiStats = useMemo(() => {
-    const checkedInCount = ticketsOverTime.filter((t: any) => t.checked_in_at).length;
-    const avgRatingVal = reviewsData.length > 0 ? (reviewsData.reduce((s: number, r: any) => s + r.rating, 0) / reviewsData.length).toFixed(1) : "—";
+    const checkedInCount = ticketsOverTime.filter((t) => t.checked_in_at).length;
+    const avgRatingVal = reviewsData.length > 0 ? (reviewsData.reduce((s, r) => s + r.rating, 0) / reviewsData.length).toFixed(1) : "—";
     return [
       { label: t("Total Tickets", "إجمالي التذاكر"), value: ticketsOverTime.length, icon: Ticket, color: "text-primary" },
       { label: t("Checked In", "تم الحضور"), value: checkedInCount, icon: Users, color: "text-chart-3" },

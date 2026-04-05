@@ -310,7 +310,7 @@ export default function JobDetail() {
               <div className="space-y-3">
                 <h3 className="font-bold text-sm">{isAr ? "وظائف مشابهة" : "Similar Jobs"}</h3>
                 <div className="grid sm:grid-cols-2 gap-3">
-                  {relatedJobs.map((rj: any) => {
+                  {relatedJobs.map((rj) => {
                     const rjDaysAgo = Math.floor((Date.now() - new Date(rj.created_at).getTime()) / 86400000);
                     return (
                       <Link key={rj.id} to={`/jobs/${rj.id}`}>

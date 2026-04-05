@@ -132,7 +132,7 @@ export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
     setIsAdding(false);
   };
 
-  const startEdit = (crit: any) => {
+  const startEdit = (crit) => {
     setForm({
       name: crit.name || "",
       name_ar: crit.name_ar || "",

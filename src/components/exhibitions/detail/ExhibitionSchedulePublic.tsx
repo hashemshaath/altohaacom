@@ -52,14 +52,14 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
     queryKey: ["schedule-registrations", exhibitionId, user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const itemIds = items.map((i: any) => i.id);
+      const itemIds = items.map((i) => i.id);
       if (itemIds.length === 0) return [];
       const { data } = await supabase
         .from("exhibition_schedule_registrations")
         .select("schedule_item_id")
         .eq("user_id", user.id)
         .in("schedule_item_id", itemIds);
-      return (data || []).map((r: any) => r.schedule_item_id);
+      return (data || []).map((r) => r.schedule_item_id);
     },
     enabled: !!user && items.length > 0,
   });
@@ -83,7 +83,7 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
   // Group items by day
   const days = useMemo(() => {
     const grouped = new Map<string, any[]>();
-    items.forEach((item: any) => {
+    items.forEach((item) => {
       const dayKey = format(parseISO(item.start_time), "yyyy-MM-dd");
       if (!grouped.has(dayKey)) grouped.set(dayKey, []);
       grouped.get(dayKey)!.push(item);
@@ -134,7 +134,7 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
 
       {/* Timeline */}
       <div className="space-y-2">
-        {activeDayItems.map((item: any) => {
+        {activeDayItems.map((item) => {
           const isRegistered = myRegistrations.includes(item.id);
           const CatIcon = CAT_ICONS[item.category] || Clock;
           const catColor = CAT_COLORS[item.category] || CAT_COLORS.session;

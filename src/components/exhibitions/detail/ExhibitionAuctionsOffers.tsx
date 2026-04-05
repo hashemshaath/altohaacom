@@ -93,7 +93,7 @@ export const ExhibitionAuctionsOffers = memo(function ExhibitionAuctionsOffers({
     return `${hrs}h ${mins}m ${secs}s`;
   };
 
-  const isLive = (auction: any) => {
+  const isLive = (auction) => {
     const start = new Date(auction.starts_at).getTime();
     const end = new Date(auction.ends_at).getTime();
     return now >= start && now <= end;

@@ -102,7 +102,7 @@ export const EXHIBITION_TYPE_LABELS: Record<ExhibitionType, { en: string; ar: st
 export const countFields = (d: ImportedData | null) => {
   if (!d) return 0;
   let count = 0;
-  const check = (v: any) => {
+  const check = (v) => {
     if (v !== null && v !== undefined && v !== '' && !(Array.isArray(v) && v.length === 0)) count++;
   };
   Object.values(d).forEach(v => {

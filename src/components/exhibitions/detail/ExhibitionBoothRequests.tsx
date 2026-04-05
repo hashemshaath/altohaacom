@@ -61,7 +61,7 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
     },
   });
 
-  const pendingCount = requests.filter((r: any) => r.status === "pending").length;
+  const pendingCount = requests.filter((r) => r.status === "pending").length;
 
   const statusBadge = (status: string) => {
     switch (status) {
@@ -107,7 +107,7 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
               </TableRow>
             </TableHeader>
             <TableBody>
-              {requests.map((req: any) => (
+              {requests.map((req) => (
                 <>
                   <TableRow key={req.id} className={expandedId === req.id ? "bg-muted/30" : ""}>
                     <TableCell className="text-xs font-medium">{req.company_name}</TableCell>

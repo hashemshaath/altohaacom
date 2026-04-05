@@ -40,7 +40,7 @@ export const BulkUrlImport = React.memo(({ isAr, onComplete, userId }: BulkUrlIm
       setResults(bulkResults);
       setProgress(100);
 
-      const successes = bulkResults.filter((r: any) => r.success).length;
+      const successes = bulkResults.filter((r) => r.success).length;
       const failures = bulkResults.length - successes;
 
       toast({

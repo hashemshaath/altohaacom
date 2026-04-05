@@ -36,7 +36,7 @@ export const FollowButton = forwardRef<HTMLDivElement, FollowButtonProps>(functi
       return;
     }
     toggleFollow.mutate(false, {
-      onSuccess: (result: any) => {
+      onSuccess: (result) => {
         if (result?.type === "request_sent") {
           toast({ title: isAr ? "تم إرسال طلب المتابعة" : "Follow request sent" });
         }

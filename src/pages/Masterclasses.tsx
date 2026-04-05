@@ -54,7 +54,7 @@ export default function Masterclasses() {
   });
 
   const countryCodes = useMemo(() => Array.from(
-    new Set(masterclasses.map((mc: any) => mc.country_code).filter(Boolean) as string[])
+    new Set(masterclasses.map((mc) => mc.country_code).filter(Boolean) as string[])
   ).sort(), [masterclasses]);
 
   const getCountryName = useCallback((code: string) => {
@@ -62,7 +62,7 @@ export default function Masterclasses() {
     return c ? (isAr ? c.name_ar || c.name : c.name) : code;
   }, [allCountries, isAr]);
 
-  const filtered = useMemo(() => masterclasses.filter((mc: any) => {
+  const filtered = useMemo(() => masterclasses.filter((mc) => {
     const matchesSearch =
       !search ||
       mc.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -74,10 +74,10 @@ export default function Masterclasses() {
     return matchesSearch && matchesLevel && matchesCategory && matchesCountry;
   }), [masterclasses, search, levelFilter, categoryFilter, countryFilter]);
 
-  const categories = useMemo(() => [...new Set(masterclasses.map((mc: any) => mc.category))], [masterclasses]);
+  const categories = useMemo(() => [...new Set(masterclasses.map((mc) => mc.category))], [masterclasses]);
 
   const totalEnrollments = useMemo(() => masterclasses.reduce(
-    (sum: number, mc: any) => sum + (mc.masterclass_enrollments?.length || 0), 0
+    (sum, mc) => sum + (mc.masterclass_enrollments?.length || 0), 0
   ), [masterclasses]);
 
   return (
@@ -148,7 +148,7 @@ export default function Masterclasses() {
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((mc: any) => (
+            {filtered.map((mc) => (
               <MasterclassCard
                 key={mc.id}
                 mc={mc}

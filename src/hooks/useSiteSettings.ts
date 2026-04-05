@@ -19,7 +19,7 @@ export function useSiteSettings() {
         .select("key, value, category");
       if (error) throw error;
       const map: SiteSettingsMap = {};
-      (data || []).forEach((row: any) => {
+      (data || []).forEach((row) => {
         map[row.key] = typeof row.value === "string" ? JSON.parse(row.value) : row.value;
       });
       return map;

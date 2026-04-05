@@ -65,17 +65,17 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
     },
   });
 
-  const issuedUserIds = new Set(existingCerts.map((c: any) => c.recipient_id));
-  const eligibleAttendees = checkedInTickets.filter((t: any) => t.user_id && !issuedUserIds.has(t.user_id));
+  const issuedUserIds = new Set(existingCerts.map((c) => c.recipient_id));
+  const eligibleAttendees = checkedInTickets.filter((t) => t.user_id && !issuedUserIds.has(t.user_id));
 
   const generateCertificates = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Not authenticated");
       
-      const template = templates.find((t: any) => t.type === certType);
+      const template = templates.find((t) => t.type === certType);
       if (!template) throw new Error("No template found for this type");
 
-      const certs = eligibleAttendees.map((ticket: any) => ({
+      const certs = eligibleAttendees.map((ticket) => ({
         template_id: template.id,
         type: certType as "participation" | "appreciation" | "organizer" | "volunteer",
         status: "issued" as const,
@@ -149,7 +149,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {templates.map((tmpl: any) => (
+                {templates.map((tmpl) => (
                   <SelectItem key={tmpl.id} value={tmpl.type} className="text-xs">
                     {isAr && tmpl.name_ar ? tmpl.name_ar : tmpl.name}
                   </SelectItem>

@@ -72,7 +72,7 @@ export const AdminCatalogManager = memo(function AdminCatalogManager() {
   });
 
   const saveMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data) => {
       if (editId) {
         const { error } = await supabase.from("requirement_items").update(data).eq("id", editId);
         if (error) throw error;

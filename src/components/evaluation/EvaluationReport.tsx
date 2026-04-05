@@ -97,7 +97,7 @@ export const EvaluationReport = memo(function EvaluationReport({ session, evalua
 
   // Compute averages
   const avgScores = scoreLabels.map(s => {
-    const scores = submitted.map(e => (e as any)[s.key]).filter((v: any) => v != null);
+    const scores = submitted.map(e => (e as any)[s.key]).filter((v) => v != null);
     return { ...s, avg: scores.length ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0 };
   });
   const overallAvg = avgScores.filter(s => s.avg > 0).length

@@ -92,15 +92,15 @@ export default function ChefScheduleAdmin() {
 
   const { exportCSV: exportScheduleCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الشيف" : "Chef", accessor: (r: any) => profileMap[r.chef_id]?.full_name || "" },
-      { header: isAr ? "النوع" : "Type", accessor: (r: any) => EVENT_TYPE_CONFIG[r.event_type as ScheduleEventType]?.en || r.event_type },
-      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => r.title },
-      { header: isAr ? "تاريخ البدء" : "Start Date", accessor: (r: any) => r.start_date },
-      { header: isAr ? "تاريخ الانتهاء" : "End Date", accessor: (r: any) => r.end_date },
-      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "الظهور" : "Visibility", accessor: (r: any) => r.visibility },
-      { header: isAr ? "الرسوم" : "Fee", accessor: (r: any) => r.fee_amount || "" },
+      { header: isAr ? "الشيف" : "Chef", accessor: (r) => profileMap[r.chef_id]?.full_name || "" },
+      { header: isAr ? "النوع" : "Type", accessor: (r) => EVENT_TYPE_CONFIG[r.event_type as ScheduleEventType]?.en || r.event_type },
+      { header: isAr ? "العنوان" : "Title", accessor: (r) => r.title },
+      { header: isAr ? "تاريخ البدء" : "Start Date", accessor: (r) => r.start_date },
+      { header: isAr ? "تاريخ الانتهاء" : "End Date", accessor: (r) => r.end_date },
+      { header: isAr ? "المدينة" : "City", accessor: (r) => r.city || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "الظهور" : "Visibility", accessor: (r) => r.visibility },
+      { header: isAr ? "الرسوم" : "Fee", accessor: (r) => r.fee_amount || "" },
     ],
     filename: "chef-schedule",
   });

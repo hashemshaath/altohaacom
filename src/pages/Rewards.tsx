@@ -222,7 +222,7 @@ export default function Rewards() {
                 </p>
               ) : (
                 <div className="space-y-2 max-h-[400px] overflow-y-auto">
-                  {redemptions.map((r: any) => (
+                  {redemptions.map((r) => (
                     <div key={r.id} className="flex items-center justify-between rounded-xl border p-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10">

@@ -78,9 +78,9 @@ export const CommandPalette = memo(function CommandPalette() {
     recognition.lang = isAr ? "ar-SA" : "en-US";
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       const transcript = Array.from(event.results)
-        .map((r: any) => r[0].transcript)
+        .map((r) => r[0].transcript)
         .join("");
       setQuery(transcript);
     };

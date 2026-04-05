@@ -58,10 +58,10 @@ export default function EvaluationCenter() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => isAr && r.name_ar ? r.name_ar : r.name },
-      { header: "Slug", accessor: (r: any) => r.slug },
-      { header: isAr ? "الوصف" : "Description", accessor: (r: any) => isAr && r.description_ar ? r.description_ar : r.description || "" },
-      { header: isAr ? "نشط" : "Active", accessor: (r: any) => r.is_active ? "Yes" : "No" },
+      { header: isAr ? "الاسم" : "Name", accessor: (r) => isAr && r.name_ar ? r.name_ar : r.name },
+      { header: "Slug", accessor: (r) => r.slug },
+      { header: isAr ? "الوصف" : "Description", accessor: (r) => isAr && r.description_ar ? r.description_ar : r.description || "" },
+      { header: isAr ? "نشط" : "Active", accessor: (r) => r.is_active ? "Yes" : "No" },
     ],
     filename: "evaluation-domains",
   });

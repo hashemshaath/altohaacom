@@ -64,7 +64,7 @@ export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget
           </div>
         ) : (
           <div className="space-y-3">
-            {orders.map((order: any) => {
+            {orders.map((order) => {
               const title = isAr && order.title_ar ? order.title_ar : order.title;
               return (
                 <Link

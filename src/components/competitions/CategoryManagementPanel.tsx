@@ -157,7 +157,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
     },
   });
 
-  const filtered = categories.filter((cat: any) => {
+  const filtered = categories.filter((cat) => {
     if (filterGender !== "all" && cat.gender !== filterGender) return false;
     if (filterStatus !== "all" && cat.status !== filterStatus) return false;
     if (searchQuery) {
@@ -168,7 +168,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
   });
 
   const getCategoryRegistrations = (catId: string) =>
-    registrations.filter((r: any) => r.category_id === catId);
+    registrations.filter((r) => r.category_id === catId);
 
   const genderLabel = (g: string) => {
     const d = genderDisplay(g, isAr);
@@ -184,7 +184,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
     return <Badge className={map[s] || ""} variant="outline">{isAr ? (s === "active" ? "نشط" : s === "draft" ? "مسودة" : "معلق") : s}</Badge>;
   };
 
-  const openEdit = (cat: any) => {
+  const openEdit = (cat) => {
     setEditingId(cat.id);
     setForm({
       name: cat.name, name_ar: cat.name_ar || "", description: cat.description || "",
@@ -210,11 +210,11 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
 
   // ---- DETAIL VIEW ----
   if (view === "detail" && selectedCategoryId) {
-    const cat = categories.find((c: any) => c.id === selectedCategoryId);
+    const cat = categories.find((c) => c.id === selectedCategoryId);
     if (!cat) return null;
     const catRegs = getCategoryRegistrations(cat.id);
-    const approved = catRegs.filter((r: any) => r.status === "approved");
-    const pending = catRegs.filter((r: any) => r.status === "pending");
+    const approved = catRegs.filter((r) => r.status === "approved");
+    const pending = catRegs.filter((r) => r.status === "pending");
     const fill = cat.max_participants ? (approved.length / cat.max_participants) * 100 : 0;
 
     return (
@@ -261,7 +261,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
               </h4>
               {approved.length > 0 ? (
                 <div className="space-y-2">
-                  {approved.map((reg: any) => (
+                  {approved.map((reg) => (
                     <div key={reg.id} className="flex items-center justify-between rounded-xl border p-3">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-medium text-primary">
@@ -288,7 +288,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
               <div>
                 <h4 className="font-medium text-sm mb-2">{isAr ? `طلبات معلقة (${pending.length})` : `Pending Requests (${pending.length})`}</h4>
                 <div className="space-y-2">
-                  {pending.map((reg: any) => (
+                  {pending.map((reg) => (
                     <div key={reg.id} className="flex items-center justify-between rounded-xl border border-dashed p-3">
                       <div className="flex items-center gap-3">
                         <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-xs font-medium">
@@ -313,9 +313,9 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
                 </h4>
                 {approved.length > 0 ? (
                   <div className="space-y-2">
-                    {approved.map((reg: any, idx: number) => {
-                      const regScores = scores.filter((s: any) => s.registration?.registration_id === reg.id || s.registration_id === reg.id);
-                      const totalScore = regScores.reduce((sum: number, s: any) => sum + (s.score || 0), 0);
+                    {approved.map((reg, idx) => {
+                      const regScores = scores.filter((s) => s.registration?.registration_id === reg.id || s.registration_id === reg.id);
+                      const totalScore = regScores.reduce((sum, s) => sum + (s.score || 0), 0);
                       return (
                         <div key={reg.id} className="flex items-center justify-between rounded-xl border p-3">
                           <div className="flex items-center gap-3">
@@ -507,10 +507,10 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
-          {filtered.map((cat: any) => {
+          {filtered.map((cat) => {
             const catRegs = getCategoryRegistrations(cat.id);
-            const approvedCount = catRegs.filter((r: any) => r.status === "approved").length;
-            const pendingCount = catRegs.filter((r: any) => r.status === "pending").length;
+            const approvedCount = catRegs.filter((r) => r.status === "approved").length;
+            const pendingCount = catRegs.filter((r) => r.status === "pending").length;
             const fill = cat.max_participants ? (approvedCount / cat.max_participants) * 100 : 0;
 
             return (

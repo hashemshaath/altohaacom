@@ -47,11 +47,11 @@ function useCookingData(exhibitionId: string, userId?: string) {
   const { data: profiles = {} } = useQuery({
     queryKey: ["cs-profiles", exhibitionId],
     queryFn: async () => {
-      const chefIds = [...new Set(sessions.map((s: any) => s.chef_id))];
+      const chefIds = [...new Set(sessions.map((s) => s.chef_id))];
       if (!chefIds.length) return {};
       const { data } = await supabase.from("profiles").select("user_id, full_name, username, avatar_url").in("user_id", chefIds);
       const map: Record<string, any> = {};
-      (data || []).forEach((p: any) => { map[p.user_id] = p; });
+      (data || []).forEach((p) => { map[p.user_id] = p; });
       return map;
     },
     enabled: sessions.length > 0,
@@ -65,7 +65,7 @@ function useCookingData(exhibitionId: string, userId?: string) {
         .from("exhibition_session_registrations")
         .select("session_id")
         .eq("user_id", userId);
-      return (data || []).map((r: any) => r.session_id);
+      return (data || []).map((r) => r.session_id);
     },
     enabled: !!userId,
   });
@@ -144,9 +144,9 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
 
   const chef = profiles[session.chef_id];
   const st = getStatus(session, t);
-  const questions = interactions.filter((i: any) => i.type === "question");
+  const questions = interactions.filter((i) => i.type === "question");
   const reactionCounts: Record<string, number> = {};
-  interactions.filter((i: any) => i.type === "reaction").forEach((i: any) => {
+  interactions.filter((i) => i.type === "reaction").forEach((i) => {
     reactionCounts[i.emoji] = (reactionCounts[i.emoji] || 0) + 1;
   });
 
@@ -214,7 +214,7 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
           <div>
             <p className="text-xs font-semibold mb-2 flex items-center gap-1"><MessageCircle className="h-3 w-3" /> {t("Questions", "الأسئلة")} ({questions.length})</p>
             <ScrollArea className="h-48 border rounded-md p-2">
-              {questions.map((q: any) => (
+              {questions.map((q) => (
                 <div key={q.id} className="flex items-start gap-2 py-1.5 text-xs">
                   <MessageCircle className="h-3 w-3 mt-0.5 text-primary shrink-0" />
                   <div className="flex-1">
@@ -308,7 +308,7 @@ function SessionGroup({ title, icon, sessions, profiles, myRegs, isAr, onSelect,
     <div>
       <h3 className="text-sm font-semibold flex items-center gap-2 mb-3">{icon}{title}</h3>
       <div className="grid gap-3 sm:grid-cols-2">
-        {sessions.map((s: any) => (
+        {sessions.map((s) => (
           <SessionCard
             key={s.id} session={s} profiles={profiles}
             isRegistered={myRegs.includes(s.id)} isAr={isAr}
@@ -344,12 +344,12 @@ export const ExhibitionCookingSessions = memo(function ExhibitionCookingSessions
   });
 
   const { liveSessions, upcomingSessions, pastSessions } = useMemo(() => ({
-    liveSessions: sessions.filter((s: any) => s.status === "live"),
-    upcomingSessions: sessions.filter((s: any) => s.status === "scheduled"),
-    pastSessions: sessions.filter((s: any) => s.status === "completed"),
+    liveSessions: sessions.filter((s) => s.status === "live"),
+    upcomingSessions: sessions.filter((s) => s.status === "scheduled"),
+    pastSessions: sessions.filter((s) => s.status === "completed"),
   }), [sessions]);
 
-  const selected = sessions.find((s: any) => s.id === selectedSession);
+  const selected = sessions.find((s) => s.id === selectedSession);
 
   if (selectedSession && selected) {
     return (

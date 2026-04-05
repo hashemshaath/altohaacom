@@ -81,7 +81,7 @@ export default function ProSupplierDetail() {
       const ratings = data || [];
       return {
         count: ratings.length,
-        avg: ratings.length > 0 ? ratings.reduce((s: number, r: any) => s + r.rating, 0) / ratings.length : 0,
+        avg: ratings.length > 0 ? ratings.reduce((s, r) => s + r.rating, 0) / ratings.length : 0,
       };
     },
     enabled: !!id,
@@ -454,7 +454,7 @@ export default function ProSupplierDetail() {
                     </Button>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    {products.slice(0, 4).map((p: any) => (
+                    {products.slice(0, 4).map((p) => (
                       <Card key={p.id} className="rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onClick={() => setQuickViewProduct(p)}>
                         {p.image_url ? (
                           <div className="h-32 bg-muted">
@@ -500,7 +500,7 @@ export default function ProSupplierDetail() {
                         <Badge variant="secondary" className="text-[9px]">{items.length}</Badge>
                       </h3>
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                        {items.map((p: any) => (
+                        {items.map((p) => (
                           <Card key={p.id} className="rounded-xl overflow-hidden group cursor-pointer" onClick={() => setQuickViewProduct(p)}>
                             {p.image_url ? (
                               <div className="h-40 bg-muted overflow-hidden">
@@ -552,7 +552,7 @@ export default function ProSupplierDetail() {
                 </div>
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {sponsorships.map((s: any) => {
+                  {sponsorships.map((s) => {
                     const title = isAr && s.competitions?.title_ar ? s.competitions.title_ar : s.competitions?.title;
                     return (
                       <Card key={s.id} className="cursor-pointer rounded-xl transition-all hover:shadow-md hover:-translate-y-0.5"
@@ -580,7 +580,7 @@ export default function ProSupplierDetail() {
                     {isAr ? "الحملات الإعلانية النشطة" : "Active Ad Campaigns"}
                   </h3>
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {adCampaigns.map((c: any) => (
+                    {adCampaigns.map((c) => (
                       <Card key={c.id} className="rounded-xl">
                         <CardContent className="p-4">
                           <p className="font-medium text-sm">{isAr && c.name_ar ? c.name_ar : c.name}</p>

@@ -593,7 +593,7 @@ export default function SocialLinksEditor() {
     }
   }, [page, user, form, extra, items.length, isAr, toast, upsertPage, addItem]);
 
-  const startEditing = useCallback((item: any) => {
+  const startEditing = useCallback((item) => {
     setEditingItem(item.id);
     setEditForm({ title: item.title, title_ar: item.title_ar || "", url: item.url, icon: item.icon || "", scheduled_start: item.scheduled_start ? new Date(item.scheduled_start).toISOString().slice(0, 16) : "", scheduled_end: item.scheduled_end ? new Date(item.scheduled_end).toISOString().slice(0, 16) : "", page_tab: (item as any).page_tab || "main" });
   }, []);
@@ -3039,9 +3039,9 @@ export default function SocialLinksEditor() {
                             <Bell className="h-3.5 w-3.5 text-chart-4" />
                           </div>
                           {isAr ? "الإشعارات" : "Notifications"}
-                          {bioNotifications && bioNotifications.filter((n: any) => !n.is_read).length > 0 && (
+                          {bioNotifications && bioNotifications.filter((n) => !n.is_read).length > 0 && (
                             <Badge variant="destructive" className="text-[10px] h-4 px-1.5 ms-auto">
-                              {bioNotifications.filter((n: any) => !n.is_read).length}
+                              {bioNotifications.filter((n) => !n.is_read).length}
                             </Badge>
                           )}
                         </CardTitle>
@@ -3057,7 +3057,7 @@ export default function SocialLinksEditor() {
                           </div>
                         ) : (
                           <div className="space-y-2 max-h-[360px] overflow-y-auto">
-                            {bioNotifications.map((n: any) => {
+                            {bioNotifications.map((n) => {
                               const timeAgo = (() => {
                                 const diff = Date.now() - new Date(n.created_at).getTime();
                                 const mins = Math.floor(diff / 60000);
@@ -3085,13 +3085,13 @@ export default function SocialLinksEditor() {
                             })}
                           </div>
                         )}
-                        {bioNotifications && bioNotifications.filter((n: any) => !n.is_read).length > 0 && (
+                        {bioNotifications && bioNotifications.filter((n) => !n.is_read).length > 0 && (
                           <Button
                             variant="ghost"
                             size="sm"
                             className="w-full mt-3 text-xs text-muted-foreground"
                             onClick={async () => {
-                              const unreadIds = bioNotifications.filter((n: any) => !n.is_read).map((n: any) => n.id);
+                              const unreadIds = bioNotifications.filter((n) => !n.is_read).map((n) => n.id);
                               if (unreadIds.length === 0) return;
                               await supabase.from("notifications").update({ is_read: true } as any).in("id", unreadIds);
                             }}

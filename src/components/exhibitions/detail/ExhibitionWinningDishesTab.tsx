@@ -11,7 +11,7 @@ interface Props {
 export const ExhibitionWinningDishesTab = memo(function ExhibitionWinningDishesTab({ winningDishes, isAr }: Props) {
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      {winningDishes.map((dish: any, i: number) => {
+      {winningDishes.map((dish, i) => {
         const comp = dish.competition;
         const compTitle = comp ? (isAr && comp.title_ar ? comp.title_ar : comp.title) : "";
         const participantName = dish.participant?.full_name || dish.team_name || (isAr ? "متسابق" : "Contestant");

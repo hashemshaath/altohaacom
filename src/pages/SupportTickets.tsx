@@ -178,7 +178,7 @@ export default function SupportTickets() {
       setNewPriority("normal");
       toast({ title: isAr ? "تم إنشاء التذكرة بنجاح" : "Ticket created successfully" });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ variant: "destructive", title: "Error", description: error.message });
     },
   });

@@ -432,7 +432,7 @@ export function useGlobalSearch() {
           .limit(15),
       ]);
 
-      const entities: EntityResult[] = (entRes.data || []).map((e: any) => ({
+      const entities: EntityResult[] = (entRes.data || []).map((e) => ({
         id: e.id,
         name: e.name,
         name_ar: e.name_ar,
@@ -447,7 +447,7 @@ export function useGlobalSearch() {
         _relevance: countMatchingWords(searchWords, e.name, e.name_ar, e.description, e.description_ar, e.city, e.country),
       }));
 
-      const establishments: EntityResult[] = (estRes.data || []).map((e: any) => ({
+      const establishments: EntityResult[] = (estRes.data || []).map((e) => ({
         id: e.id,
         name: e.name,
         name_ar: e.name_ar,
@@ -462,7 +462,7 @@ export function useGlobalSearch() {
         _relevance: countMatchingWords(searchWords, e.name, e.name_ar, e.description, e.description_ar, e.city),
       }));
 
-      const companies: EntityResult[] = (compRes.data || []).map((e: any) => ({
+      const companies: EntityResult[] = (compRes.data || []).map((e) => ({
         id: e.id,
         name: e.name,
         name_ar: e.name_ar,
@@ -499,7 +499,7 @@ export function useGlobalSearch() {
       if (error) throw error;
       if (!data) return [];
       return sortByRelevance(
-        data.map((r: any) => ({
+        data.map((r) => ({
           ...r,
           _relevance: countMatchingWords(searchWords, r.title, r.title_ar, r.description, r.description_ar),
         }))
@@ -524,7 +524,7 @@ export function useGlobalSearch() {
       if (error) throw error;
       if (!data) return [];
       return sortByRelevance(
-        data.map((r: any) => ({
+        data.map((r) => ({
           ...r,
           _relevance: countMatchingWords(searchWords, r.title, r.title_ar, r.description, r.description_ar, r.venue, r.city, r.country),
         }))

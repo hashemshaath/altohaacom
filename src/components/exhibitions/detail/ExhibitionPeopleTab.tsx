@@ -48,7 +48,7 @@ export const ExhibitionPeopleTab = memo(function ExhibitionPeopleTab({ judgeProf
             </Badge>
           </h2>
           <div className="grid gap-4 sm:grid-cols-2">
-            {judgeProfiles!.map((judge: any) => {
+            {judgeProfiles!.map((judge) => {
               const judgeName = judge.full_name;
               const jp = judge.judgeExtra;
               const photo = jp?.profile_photo_url || judge.avatar_url;

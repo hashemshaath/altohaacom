@@ -254,13 +254,13 @@ const ExportTab = memo(function ExportTab() {
 
       if (exportFormat === "csv") {
         const headers = selectedColDefs.map(c => `"${isAr ? c.labelAr : c.label}"`).join(",");
-        const rows = data.map((row: any) =>
+        const rows = data.map((row) =>
           selectedColDefs.map(c => `"${String(row[c.key] ?? "").replace(/"/g, '""')}"`).join(",")
         );
         const blob = new Blob(["\uFEFF" + headers + "\n" + rows.join("\n")], { type: "text/csv;charset=utf-8;" });
         downloadBlob(blob, `${filename}.csv`);
       } else {
-        const mapped = data.map((row: any) => {
+        const mapped = data.map((row) => {
           const obj: Record<string, unknown> = {};
           selectedColDefs.forEach(c => { obj[c.key] = row[c.key]; });
           return obj;

@@ -70,7 +70,7 @@ export default function SupplierLeaderboard() {
     // Build stats maps
     const reviewStats: Record<string, { count: number; avg: number }> = {};
     const reviewsByCompany: Record<string, number[]> = {};
-    reviewData.forEach((r: any) => {
+    reviewData.forEach((r) => {
       if (!reviewsByCompany[r.company_id]) reviewsByCompany[r.company_id] = [];
       reviewsByCompany[r.company_id].push(r.rating);
     });
@@ -79,17 +79,17 @@ export default function SupplierLeaderboard() {
     });
 
     const productCounts: Record<string, number> = {};
-    productData.forEach((p: any) => {
+    productData.forEach((p) => {
       productCounts[p.company_id] = (productCounts[p.company_id] || 0) + 1;
     });
 
     const viewCounts: Record<string, number> = {};
-    viewData.forEach((v: any) => {
+    viewData.forEach((v) => {
       viewCounts[v.company_id] = (viewCounts[v.company_id] || 0) + 1;
     });
 
     return suppliers
-      .map((s: any) => ({
+      .map((s) => ({
         ...s,
         reviewCount: reviewStats[s.id]?.count || 0,
         avgRating: reviewStats[s.id]?.avg || 0,

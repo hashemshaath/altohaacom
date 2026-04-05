@@ -196,7 +196,7 @@ export default function JobSearch() {
   // Top hiring companies
   const topCompanies = useMemo(() => {
     const counts: Record<string, { name: string; nameAr: string; logo: string | null; slug: string | null; count: number }> = {};
-    jobPostings.forEach((j: any) => {
+    jobPostings.forEach((j) => {
       const c = j.companies;
       if (!c?.name) return;
       const key = c.name;
@@ -208,7 +208,7 @@ export default function JobSearch() {
 
   // Salary insights
   const salaryInsights = useMemo(() => {
-    const salaries = jobPostings.filter((j: any) => j.is_salary_visible && j.salary_min).map((j: any) => j.salary_min as number);
+    const salaries = jobPostings.filter((j) => j.is_salary_visible && j.salary_min).map((j) => j.salary_min as number);
     if (salaries.length < 2) return null;
     const sorted = [...salaries].sort((a, b) => a - b);
     return {
@@ -221,12 +221,12 @@ export default function JobSearch() {
 
   const stats = useMemo(() => {
     const totalJobs = jobPostings.length;
-    const featuredCount = jobPostings.filter((j: any) => j.is_featured).length;
-    const newThisWeek = jobPostings.filter((j: any) => {
+    const featuredCount = jobPostings.filter((j) => j.is_featured).length;
+    const newThisWeek = jobPostings.filter((j) => {
       const d = Math.floor((Date.now() - new Date(j.created_at).getTime()) / 86400000);
       return d <= 7;
     }).length;
-    const urgentCount = jobPostings.filter((j: any) => {
+    const urgentCount = jobPostings.filter((j) => {
       if (!j.application_deadline) return false;
       const diff = new Date(j.application_deadline).getTime() - Date.now();
       return diff > 0 && diff < 7 * 86400000;
@@ -237,7 +237,7 @@ export default function JobSearch() {
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     CULINARY_CATEGORIES.forEach(c => { counts[c.key] = 0; });
-    jobPostings.forEach((j: any) => {
+    jobPostings.forEach((j) => {
       CULINARY_CATEGORIES.forEach(c => {
         if (j.specialization?.toLowerCase().includes(c.key) || j.title?.toLowerCase().includes(c.key)) counts[c.key]++;
       });
@@ -247,7 +247,7 @@ export default function JobSearch() {
 
   const cities = useMemo(() => {
     const map: Record<string, number> = {};
-    jobPostings.forEach((j: any) => { if (j.city) map[j.city] = (map[j.city] || 0) + 1; });
+    jobPostings.forEach((j) => { if (j.city) map[j.city] = (map[j.city] || 0) + 1; });
     return Object.entries(map).sort(([, a], [, b]) => b - a).map(([city, count]) => ({ city, count }));
   }, [jobPostings]);
 
@@ -270,17 +270,17 @@ export default function JobSearch() {
     let results = jobPostings;
     if (search.trim()) {
       const q = search.toLowerCase();
-      results = results.filter((j: any) =>
+      results = results.filter((j) =>
         j.title?.toLowerCase().includes(q) || j.title_ar?.includes(q) ||
         (j.companies as any)?.name?.toLowerCase().includes(q) || j.location?.toLowerCase().includes(q) ||
         j.specialization?.toLowerCase().includes(q) || j.description?.toLowerCase().includes(q)
       );
     }
-    if (cityFilter !== "all") results = results.filter((j: any) => j.city === cityFilter);
-    if (expFilter !== "all") results = results.filter((j: any) => j.experience_level === expFilter);
-    if (showSalaryOnly) results = results.filter((j: any) => j.is_salary_visible && j.salary_min);
+    if (cityFilter !== "all") results = results.filter((j) => j.city === cityFilter);
+    if (expFilter !== "all") results = results.filter((j) => j.experience_level === expFilter);
+    if (showSalaryOnly) results = results.filter((j) => j.is_salary_visible && j.salary_min);
     if (salaryFilter !== "all") {
-      results = results.filter((j: any) => {
+      results = results.filter((j) => {
         if (!j.salary_min) return false;
         if (salaryFilter === "0-3000") return j.salary_min <= 3000;
         if (salaryFilter === "3000-5000") return j.salary_min >= 3000 && j.salary_min <= 5000;
@@ -290,7 +290,7 @@ export default function JobSearch() {
       });
     }
     if (selectedCategory) {
-      results = results.filter((j: any) =>
+      results = results.filter((j) =>
         j.specialization?.toLowerCase().includes(selectedCategory) ||
         j.title?.toLowerCase().includes(selectedCategory)
       );
@@ -309,12 +309,12 @@ export default function JobSearch() {
     let results = availableChefs;
     if (search.trim()) {
       const q = search.toLowerCase();
-      results = results.filter((c: any) =>
+      results = results.filter((c) =>
         c.full_name?.toLowerCase().includes(q) || c.full_name_ar?.includes(q) ||
         c.specialization?.toLowerCase().includes(q) || c.city?.toLowerCase().includes(q)
       );
     }
-    if (expFilter !== "all") results = results.filter((c: any) => c.experience_level === expFilter);
+    if (expFilter !== "all") results = results.filter((c) => c.experience_level === expFilter);
     return results;
   }, [availableChefs, search, expFilter]);
 
@@ -544,7 +544,7 @@ export default function JobSearch() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Select value={sortBy} onValueChange={(v: any) => setSortBy(v)}>
+                <Select value={sortBy} onValueChange={(v) => setSortBy(v)}>
                   <SelectTrigger className="w-[140px] rounded-xl border-border/20 bg-card text-xs h-10">
                     <ArrowUpDown className="h-3 w-3 me-1 text-muted-foreground/50" /><SelectValue />
                   </SelectTrigger>
@@ -663,7 +663,7 @@ export default function JobSearch() {
                       ) : (
                         <>
                           <div className={cn(viewMode === "grid" ? "grid sm:grid-cols-2 gap-3" : "space-y-3")}>
-                            {paginatedPostings.map((job: any) => (
+                            {paginatedPostings.map((job) => (
                               <JobPostingCard
                                 key={job.id}
                                 job={job}
@@ -700,7 +700,7 @@ export default function JobSearch() {
                         <EmptyState isAr={isAr} type="chefs" onClear={clearAllFilters} />
                       ) : (
                         <div className="grid gap-3 sm:grid-cols-2">
-                          {filteredChefs.map((chef: any) => <AvailableChefCard key={chef.user_id} chef={chef} isAr={isAr} />)}
+                          {filteredChefs.map((chef) => <AvailableChefCard key={chef.user_id} chef={chef} isAr={isAr} />)}
                         </div>
                       )}
                     </TabsContent>

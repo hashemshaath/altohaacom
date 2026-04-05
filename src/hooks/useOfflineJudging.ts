@@ -146,19 +146,19 @@ export function useOfflineJudging() {
       const existingScores = scoresRes.data || [];
 
       // Group by competition
-      const judgingDataItems: CachedJudgingData[] = competitions.map((comp: any) => ({
+      const judgingDataItems: CachedJudgingData[] = competitions.map((comp) => ({
         id: comp.id,
         competition: comp,
         registrations: registrations
-          .filter((r: any) => r.competition_id === comp.id)
-          .map((r: any) => ({
+          .filter((r) => r.competition_id === comp.id)
+          .map((r) => ({
             ...r,
             profile: r.profiles || undefined,
             category: r.competition_categories || undefined,
           })),
-        criteria: criteria.filter((c: any) => c.competition_id === comp.id),
-        existingScores: existingScores.filter((s: any) =>
-          registrations.some((r: any) => r.id === s.registration_id && r.competition_id === comp.id)
+        criteria: criteria.filter((c) => c.competition_id === comp.id),
+        existingScores: existingScores.filter((s) =>
+          registrations.some((r) => r.id === s.registration_id && r.competition_id === comp.id)
         ),
       }));
 

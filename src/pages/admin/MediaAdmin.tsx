@@ -143,11 +143,11 @@ export default function MediaAdmin() {
 
   const { exportCSV: exportMedia } = useCSVExport({
     columns: [
-      { header: language === "ar" ? "الملف" : "Filename", accessor: (r: any) => r.original_filename || r.filename },
-      { header: language === "ar" ? "النوع" : "Type", accessor: (r: any) => r.file_type },
-      { header: language === "ar" ? "الحجم" : "Size", accessor: (r: any) => r.file_size || 0 },
-      { header: language === "ar" ? "الرابط" : "URL", accessor: (r: any) => r.file_url },
-      { header: language === "ar" ? "التاريخ" : "Date", accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd") },
+      { header: language === "ar" ? "الملف" : "Filename", accessor: (r) => r.original_filename || r.filename },
+      { header: language === "ar" ? "النوع" : "Type", accessor: (r) => r.file_type },
+      { header: language === "ar" ? "الحجم" : "Size", accessor: (r) => r.file_size || 0 },
+      { header: language === "ar" ? "الرابط" : "URL", accessor: (r) => r.file_url },
+      { header: language === "ar" ? "التاريخ" : "Date", accessor: (r) => format(new Date(r.created_at), "yyyy-MM-dd") },
     ],
     filename: "media",
   });

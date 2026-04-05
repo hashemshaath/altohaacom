@@ -188,7 +188,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1.5">
-            {stats.recent.map((r: any) => (
+            {stats.recent.map((r) => (
               <div key={r.id} className="flex items-center justify-between text-xs p-2 rounded-xl bg-muted/30">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-3 w-3 text-chart-3" />

@@ -75,7 +75,7 @@ export default function PublicProfile() {
   const isOwnProfile = user?.id === profile?.user_id;
   const visibility = (profile as any)?.section_visibility || {};
   const isVisible = useCallback((section: string) => visibility[section] !== false, [visibility]);
-  const currentWork = categorizedRecords.work.find((r: any) => r.is_current) || categorizedRecords.work[0];
+  const currentWork = categorizedRecords.work.find((r) => r.is_current) || categorizedRecords.work[0];
 
   // ── LOADING ──
   if (isLoading) {
@@ -250,7 +250,7 @@ export default function PublicProfile() {
                   >
                     {records.length > 0 ? (
                       <div className="space-y-2.5">
-                        {records.map((record: any) => (
+                        {records.map((record) => (
                           <CareerRecordCard
                             key={record.id}
                             record={record}
@@ -277,7 +277,7 @@ export default function PublicProfile() {
                 <CollapsibleProfileSection icon={Building2} label={isAr ? "العضويات والجهات" : "Memberships & Entities"} count={memberships.length} defaultOpen isEmpty={memberships.length === 0}>
                   {memberships.length > 0 ? (
                     <div className="grid gap-2.5 sm:grid-cols-2">
-                      {memberships.map((m: any) => (
+                      {memberships.map((m) => (
                         <Card key={m.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
                           <CardContent className="p-4 flex items-center gap-3">
                             {m.culinary_entities?.logo_url ? (
@@ -396,7 +396,7 @@ export default function PublicProfile() {
               {followersList.length === 0 ? (
                 <p className="py-10 text-center text-sm text-muted-foreground/60">{isAr ? "لا يوجد" : "No users yet"}</p>
               ) : (
-                followersList.map((p: any) => (
+                followersList.map((p) => (
                   <Link key={p.user_id} to={`/${p.username}`} onClick={() => setFollowListOpen(null)}
                     className="flex items-center gap-3 rounded-xl p-2.5 hover:bg-muted/40 transition-all duration-200">
                     <Avatar className="h-10 w-10 ring-2 ring-border/20">

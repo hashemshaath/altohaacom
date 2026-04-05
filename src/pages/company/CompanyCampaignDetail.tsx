@@ -128,12 +128,12 @@ export default function CompanyCampaignDetail() {
         .order("created_at");
 
       const dayMap: Record<string, { date: string; impressions: number; clicks: number }> = {};
-      (impressions || []).forEach((i: any) => {
+      (impressions || []).forEach((i) => {
         const d = new Date(i.created_at).toISOString().split("T")[0];
         if (!dayMap[d]) dayMap[d] = { date: d, impressions: 0, clicks: 0 };
         dayMap[d].impressions++;
       });
-      (clicks || []).forEach((c: any) => {
+      (clicks || []).forEach((c) => {
         const d = new Date(c.created_at).toISOString().split("T")[0];
         if (!dayMap[d]) dayMap[d] = { date: d, impressions: 0, clicks: 0 };
         dayMap[d].clicks++;
@@ -213,8 +213,8 @@ export default function CompanyCampaignDetail() {
 
   // Creative performance for pie chart
   const creativePieData = creatives
-    .filter((c: any) => (c.impressions || 0) > 0)
-    .map((c: any) => ({
+    .filter((c) => (c.impressions || 0) > 0)
+    .map((c) => ({
       name: isAr ? c.title_ar || c.title || c.format : c.title || c.format,
       value: c.impressions || 0,
     }));
@@ -363,7 +363,7 @@ export default function CompanyCampaignDetail() {
                     <Select value={form.placement_id} onValueChange={v => setForm(f => ({ ...f, placement_id: v }))}>
                       <SelectTrigger><SelectValue placeholder={isAr ? "اختر الموضع" : "Select placement"} /></SelectTrigger>
                       <SelectContent>
-                        {placements.map((p: any) => (
+                        {placements.map((p) => (
                           <SelectItem key={p.id} value={p.id}>
                             {isAr ? p.name_ar || p.name : p.name} ({p.width}×{p.height})
                           </SelectItem>
@@ -434,7 +434,7 @@ export default function CompanyCampaignDetail() {
             </Card>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {creatives.map((c: any, idx: number) => {
+              {creatives.map((c, idx) => {
                 const placement = c.ad_placements;
                 const creativeCtr = c.impressions > 0 ? ((c.clicks / c.impressions) * 100).toFixed(2) : "0.00";
                 return (

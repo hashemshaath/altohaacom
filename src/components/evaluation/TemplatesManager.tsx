@@ -189,7 +189,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
   if (editingTemplate) {
     const snapshot = editingTemplate.criteria_snapshot || [];
     const totalCriteria = Array.isArray(snapshot)
-      ? snapshot.reduce((sum: number, cat: any) => sum + (cat.criteria?.length || 0), 0)
+      ? snapshot.reduce((sum, cat) => sum + (cat.criteria?.length || 0), 0)
       : 0;
 
     return (
@@ -244,7 +244,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
             <Layers className="h-4 w-4" />
             {isAr ? "معايير التقييم المحفوظة" : "Saved Criteria"} ({totalCriteria})
           </h4>
-          {Array.isArray(snapshot) && snapshot.map((cat: any, ci: number) => (
+          {Array.isArray(snapshot) && snapshot.map((cat, ci) => (
             <Card key={ci} className="mb-3 border-border/40">
               <CardHeader className="py-3 px-4">
                 <CardTitle className="text-sm">{isAr && cat.category?.name_ar ? cat.category.name_ar : cat.category?.name}</CardTitle>
@@ -260,7 +260,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {cat.criteria?.map((cr: any, cri: number) => (
+                    {cat.criteria?.map((cr, cri) => (
                       <TableRow key={cri}>
                         <TableCell className="text-sm">{isAr && cr.name_ar ? cr.name_ar : cr.name}</TableCell>
                         <TableCell className="text-sm font-bold">{cr.max_score}</TableCell>
@@ -337,7 +337,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
             const emoji = CATEGORY_ICONS[t.product_category || "general"] || "📦";
             const totalWeight = Array.isArray(t.criteria_snapshot)
               ? (t.criteria_snapshot as any[]).reduce((sum, cat: any) =>
-                  sum + (cat.criteria || []).reduce((cs: number, cr: any) => cs + (cr.weight || 0), 0), 0)
+                  sum + (cat.criteria || []).reduce((cs, cr) => cs + (cr.weight || 0), 0), 0)
               : 0;
 
             return (
@@ -389,8 +389,8 @@ export const TemplatesManager = memo(function TemplatesManager() {
 
                   {/* Category breakdown mini-bars */}
                   <div className="space-y-1.5 mb-4">
-                    {Array.isArray(t.criteria_snapshot) && (t.criteria_snapshot as any[]).slice(0, 4).map((cat: any, i: number) => {
-                      const catWeight = (cat.criteria || []).reduce((s: number, c: any) => s + (c.weight || 0), 0);
+                    {Array.isArray(t.criteria_snapshot) && (t.criteria_snapshot as any[]).slice(0, 4).map((cat, i) => {
+                      const catWeight = (cat.criteria || []).reduce((s, c) => s + (c.weight || 0), 0);
                       return (
                         <div key={i} className="flex items-center gap-2">
                           <span className="text-[9px] text-muted-foreground truncate flex-1 min-w-0">

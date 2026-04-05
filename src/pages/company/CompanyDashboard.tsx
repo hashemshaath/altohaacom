@@ -277,7 +277,7 @@ function SponsorshipWidget({ companyId, language }: { companyId: string | null; 
 
   return (
     <div className="space-y-3">
-      {opportunities.map((comp: any) => {
+      {opportunities.map((comp) => {
         const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
         return (
           <Link

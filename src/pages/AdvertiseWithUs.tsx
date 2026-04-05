@@ -393,7 +393,7 @@ export default function AdvertiseWithUs() {
                     <CardTitle className="text-sm">{isAr ? "طلباتي السابقة" : "My Previous Requests"}</CardTitle>
                   </CardHeader>
                   <CardContent className="divide-y">
-                    {myRequests.slice(0, 5).map((req: any) => {
+                    {myRequests.slice(0, 5).map((req) => {
                       const sc = statusConfig[req.status] || statusConfig.pending;
                       return (
                         <div key={req.id} className="flex items-center justify-between gap-3 py-2.5 first:pt-0 last:pb-0">

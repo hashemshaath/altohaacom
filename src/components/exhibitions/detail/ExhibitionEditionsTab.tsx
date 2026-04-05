@@ -86,7 +86,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
         .select("exhibition_id, id")
         .in("exhibition_id", editionIds);
       const counts: Record<string, number> = {};
-      (data || []).forEach((c: any) => {
+      (data || []).forEach((c) => {
         counts[c.exhibition_id] = (counts[c.exhibition_id] || 0) + 1;
       });
       return counts;

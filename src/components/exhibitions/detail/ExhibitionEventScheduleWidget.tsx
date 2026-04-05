@@ -40,7 +40,7 @@ export const ExhibitionEventScheduleWidget = memo(function ExhibitionEventSchedu
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2">
-        {items.map((item: any) => {
+        {items.map((item) => {
           const startTime = parseISO(item.start_time);
           const title = isAr && item.title_ar ? item.title_ar : item.title;
           const dayLabel = isToday(startTime) ? t("Today", "اليوم") : isTomorrow(startTime) ? t("Tomorrow", "غداً") : format(startTime, "MMM d");

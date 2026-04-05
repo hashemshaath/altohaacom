@@ -72,7 +72,7 @@ export const ProfileOrdersTab = memo(function ProfileOrdersTab({ userId, isAr }:
           </Button>
         </Link>
       </div>
-      {orders.map((order: any) => (
+      {orders.map((order) => (
         <Card key={order.id} className="border-border/50 hover:shadow-sm transition-shadow">
           <CardContent className="flex items-center gap-3 p-4">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">

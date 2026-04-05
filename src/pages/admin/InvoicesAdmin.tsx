@@ -285,14 +285,14 @@ export default function InvoicesAdmin() {
 
   const { exportCSV: exportInvoicesCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (i: any) => i.invoice_number },
-      { header: isAr ? "العنوان" : "Title", accessor: (i: any) => i.title || "" },
-      { header: isAr ? "الشركة" : "Company", accessor: (i: any) => i.companies?.name || "" },
-      { header: isAr ? "الحالة" : "Status", accessor: (i: any) => getStatusLabel(i.status || "draft") },
-      { header: isAr ? "المبلغ" : "Amount", accessor: (i: any) => Number(i.amount) },
-      { header: isAr ? "العملة" : "Currency", accessor: (i: any) => i.currency },
-      { header: isAr ? "الاستحقاق" : "Due", accessor: (i: any) => i.due_date || "" },
-      { header: isAr ? "التاريخ" : "Created", accessor: (i: any) => i.created_at?.split("T")[0] || "" },
+      { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (i) => i.invoice_number },
+      { header: isAr ? "العنوان" : "Title", accessor: (i) => i.title || "" },
+      { header: isAr ? "الشركة" : "Company", accessor: (i) => i.companies?.name || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (i) => getStatusLabel(i.status || "draft") },
+      { header: isAr ? "المبلغ" : "Amount", accessor: (i) => Number(i.amount) },
+      { header: isAr ? "العملة" : "Currency", accessor: (i) => i.currency },
+      { header: isAr ? "الاستحقاق" : "Due", accessor: (i) => i.due_date || "" },
+      { header: isAr ? "التاريخ" : "Created", accessor: (i) => i.created_at?.split("T")[0] || "" },
     ],
     filename: "invoices",
   });

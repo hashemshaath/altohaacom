@@ -141,7 +141,7 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
           <div className="absolute start-5 top-0 bottom-0 w-0.5 bg-border" />
           
           <div className="space-y-4">
-            {rounds.map((round: any, idx: number) => (
+            {rounds.map((round, idx) => (
               <div key={round.id} className="relative ps-12">
                 {/* Timeline dot */}
                 <div className={`absolute start-3 top-4 h-4 w-4 rounded-full border-2 ${
@@ -206,7 +206,7 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
           </CardHeader>
           <CardContent>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {stations.map((station: any) => (
+              {stations.map((station) => (
                 <div
                   key={station.id}
                   className="flex items-center gap-3 rounded-xl border p-3 transition-colors hover:bg-muted/50"
@@ -263,7 +263,7 @@ function detectConflicts(rounds: any[], stations: any[]): string[] {
   }
 
   // Check station capacity
-  const overloaded = stations.filter((s: any) => s.status === "maintenance");
+  const overloaded = stations.filter((s) => s.status === "maintenance");
   if (overloaded.length > 0) {
     conflicts.push(`${overloaded.length} station(s) under maintenance`);
   }

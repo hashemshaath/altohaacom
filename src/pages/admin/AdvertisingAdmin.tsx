@@ -168,7 +168,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   });
 
   const generateInvoice = useMutation({
-    mutationFn: async (campaign: any) => {
+    mutationFn: async (campaign) => {
       const amount = campaign.spent || 0;
       if (amount <= 0) throw new Error("No spend to invoice");
       const { data: { user } } = await supabase.auth.getUser();
@@ -203,14 +203,14 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const bulkCampaigns = useAdminBulkActions(campaigns);
   const { exportCSV: exportCampaignsCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الشركة" : "Company", accessor: (r: any) => isAr ? r.companies?.name_ar : r.companies?.name },
-      { header: isAr ? "الحملة" : "Campaign", accessor: (r: any) => isAr ? r.name_ar || r.name : r.name },
-      { header: isAr ? "النموذج" : "Model", accessor: (r: any) => r.billing_model },
-      { header: isAr ? "الميزانية" : "Budget", accessor: (r: any) => r.budget },
-      { header: isAr ? "المصروف" : "Spent", accessor: (r: any) => r.spent },
-      { header: isAr ? "المشاهدات" : "Impressions", accessor: (r: any) => r.total_impressions || 0 },
-      { header: isAr ? "النقرات" : "Clicks", accessor: (r: any) => r.total_clicks || 0 },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "الشركة" : "Company", accessor: (r) => isAr ? r.companies?.name_ar : r.companies?.name },
+      { header: isAr ? "الحملة" : "Campaign", accessor: (r) => isAr ? r.name_ar || r.name : r.name },
+      { header: isAr ? "النموذج" : "Model", accessor: (r) => r.billing_model },
+      { header: isAr ? "الميزانية" : "Budget", accessor: (r) => r.budget },
+      { header: isAr ? "المصروف" : "Spent", accessor: (r) => r.spent },
+      { header: isAr ? "المشاهدات" : "Impressions", accessor: (r) => r.total_impressions || 0 },
+      { header: isAr ? "النقرات" : "Clicks", accessor: (r) => r.total_clicks || 0 },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
     ],
     filename: "ad-campaigns",
   });

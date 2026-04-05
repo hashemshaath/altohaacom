@@ -509,7 +509,7 @@ export default function CompaniesAdmin() {
   const replyMutation = useMutation({
     mutationFn: async ({ parentId, message }: { parentId: string; message: string }) => {
       if (!selectedCompany) throw new Error("No company");
-      const parent = communications.find((c: any) => c.id === parentId);
+      const parent = communications.find((c) => c.id === parentId);
       const { error } = await supabase.from("company_communications").insert({
         company_id: selectedCompany,
         sender_id: (await supabase.auth.getUser()).data.user?.id || "",
@@ -796,7 +796,7 @@ export default function CompaniesAdmin() {
           <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><DollarSign className="h-8 w-8 text-chart-5" /><div><p className="text-sm text-muted-foreground">{isAr ? "الرصيد" : "Balance"}</p><p className={`text-xl font-bold ${companyBalance >= 0 ? "text-chart-5" : "text-destructive"}`}>{companyBalance.toLocaleString()} {companyDetails.currency || "SAR"}</p></div></div></CardContent></Card>
           <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><Package className="h-8 w-8 text-primary" /><div><p className="text-sm text-muted-foreground">{isAr ? "الطلبات" : "Orders"}</p><p className="text-xl font-bold">{orders.length}</p></div></div></CardContent></Card>
           <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><CalendarCheck className="h-8 w-8 text-chart-3" /><div><p className="text-sm text-muted-foreground">{isAr ? "الدعوات" : "Invitations"}</p><p className="text-xl font-bold">{invitations.length}</p></div></div></CardContent></Card>
-          <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><Star className="h-8 w-8 text-chart-4" /><div><p className="text-sm text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p><p className="text-xl font-bold">{evaluations.length > 0 ? (evaluations.reduce((a: number, e: any) => a + Number(e.overall_rating || 0), 0) / evaluations.length).toFixed(1) : "-"}</p></div></div></CardContent></Card>
+          <Card><CardContent className="pt-4"><div className="flex items-center gap-3"><Star className="h-8 w-8 text-chart-4" /><div><p className="text-sm text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p><p className="text-xl font-bold">{evaluations.length > 0 ? (evaluations.reduce((a, e) => a + Number(e.overall_rating || 0), 0) / evaluations.length).toFixed(1) : "-"}</p></div></div></CardContent></Card>
         </div>
 
         {/* Detail Tabs */}
@@ -904,7 +904,7 @@ export default function CompaniesAdmin() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {contacts.map((contact: any) => (
+              {contacts.map((contact) => (
                 <Card key={contact.id}>
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between">
@@ -1003,7 +1003,7 @@ export default function CompaniesAdmin() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {branches.map((branch: any) => (
+              {branches.map((branch) => (
                 <Card key={branch.id}>
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between">
@@ -1057,7 +1057,7 @@ export default function CompaniesAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orders.map((order: any) => (
+                  {orders.map((order) => (
                     <TableRow key={order.id}>
                       <TableCell className="font-mono">{order.order_number}</TableCell>
                       <TableCell>{order.title}</TableCell>
@@ -1091,7 +1091,7 @@ export default function CompaniesAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {transactions.map((t: any) => (
+                  {transactions.map((t) => (
                     <TableRow key={t.id}>
                       <TableCell className="font-mono">{t.transaction_number}</TableCell>
                       <TableCell><Badge variant={["payment", "credit", "refund"].includes(t.type) ? "default" : "secondary"}>{t.type}</Badge></TableCell>
@@ -1166,7 +1166,7 @@ export default function CompaniesAdmin() {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {invitations.map((inv: any) => (
+              {invitations.map((inv) => (
                 <Card key={inv.id}>
                   <CardContent className="pt-6">
                     <div className="flex items-start justify-between">
@@ -1198,7 +1198,7 @@ export default function CompaniesAdmin() {
           <TabsContent value="evaluations" className="space-y-4">
             <h3 className="text-lg font-semibold">{isAr ? "التقييمات" : "Evaluations"}</h3>
             <div className="space-y-4">
-              {evaluations.map((ev: any) => (
+              {evaluations.map((ev) => (
                 <Card key={ev.id}>
                   <CardContent className="pt-6">
                     <div className="grid grid-cols-4 gap-4 mb-4">
@@ -1266,7 +1266,7 @@ export default function CompaniesAdmin() {
                         <SelectTrigger><SelectValue placeholder={isAr ? "اختياري - ربط بالمتجر" : "Optional - Link to shop"} /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="none">{isAr ? "بدون ربط" : "No link"}</SelectItem>
-                          {shopProducts.map((p: any) => (
+                          {shopProducts.map((p) => (
                             <SelectItem key={p.id} value={p.id}>{p.title} {p.sku ? `(${p.sku})` : ""}</SelectItem>
                           ))}
                         </SelectContent>
@@ -1296,7 +1296,7 @@ export default function CompaniesAdmin() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {catalogItems.map((item: any) => (
+                    {catalogItems.map((item) => (
                       <TableRow key={item.id}>
                         <TableCell><div><p className="font-medium">{item.name}</p>{item.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{item.name_ar}</p>}</div></TableCell>
                         <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
@@ -1380,7 +1380,7 @@ export default function CompaniesAdmin() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {drivers.map((driver: any) => (
+                    {drivers.map((driver) => (
                       <TableRow key={driver.id}>
                         <TableCell className="font-medium">{driver.name}</TableCell>
                         <TableCell>{driver.phone}</TableCell>
@@ -1402,8 +1402,8 @@ export default function CompaniesAdmin() {
           <TabsContent value="communications" className="space-y-4">
             <h3 className="text-lg font-semibold">
               {isAr ? "سجل التواصل" : "Communication Log"}
-              {communications.filter((c: any) => c.direction === "outgoing" && c.status === "unread").length > 0 && (
-                <Badge variant="destructive" className="ms-2">{communications.filter((c: any) => c.direction === "outgoing" && c.status === "unread").length}</Badge>
+              {communications.filter((c) => c.direction === "outgoing" && c.status === "unread").length > 0 && (
+                <Badge variant="destructive" className="ms-2">{communications.filter((c) => c.direction === "outgoing" && c.status === "unread").length}</Badge>
               )}
             </h3>
             {communications.length === 0 ? (
@@ -1411,7 +1411,7 @@ export default function CompaniesAdmin() {
             ) : (
               <ScrollArea className="h-[500px]">
                 <div className="space-y-3">
-                  {communications.map((msg: any) => (
+                  {communications.map((msg) => (
                     <Card key={msg.id} className={msg.status === "unread" ? "border-primary/30" : ""}>
                       <CardContent className="pt-4 pb-4">
                         <div className="flex items-start justify-between gap-4">
@@ -1498,7 +1498,7 @@ export default function CompaniesAdmin() {
 
             {/* Categorized sections */}
             {MEDIA_CATEGORIES.map(cat => {
-              const catMedia = media.filter((m: any) => m.category === cat.value);
+              const catMedia = media.filter((m) => m.category === cat.value);
               if (catMedia.length === 0 && !showMediaUpload) return null;
               const CatIcon = cat.icon;
               return (
@@ -1513,7 +1513,7 @@ export default function CompaniesAdmin() {
                   {catMedia.length > 0 && (
                     <CardContent>
                       <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-                        {catMedia.map((item: any) => (
+                        {catMedia.map((item) => (
                           <div key={item.id} className="relative group rounded-xl border overflow-hidden">
                             {item.file_type?.startsWith("image") ? (
                               <img src={item.file_url} alt={item.title || item.filename} className="h-32 w-full object-cover" loading="lazy" />

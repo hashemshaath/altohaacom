@@ -25,22 +25,22 @@ export const CAREER_SECTIONS: SectionDef[] = [
 
 /** Categorize career records into logical sections */
 export function categorizeCareerRecords(careerRecords: any[]) {
-  const isJudging = (r: any) => /Role:\s*Judge|Head.?Judge/i.test(r.description || "") || /Role:\s*Judge|Head.?Judge/i.test(r.description_ar || "");
-  const isMediaInWork = (r: any) => /^📺|^📻|^🎙️|^📰|^📖|^🌐|TV\b|Radio\b|Podcast\b|interview/i.test(r.description || "");
-  const isParticipation = (r: any) => /Role:\s*(Organizer|Participant)/i.test(r.description || "");
+  const isJudging = (r) => /Role:\s*Judge|Head.?Judge/i.test(r.description || "") || /Role:\s*Judge|Head.?Judge/i.test(r.description_ar || "");
+  const isMediaInWork = (r) => /^📺|^📻|^🎙️|^📰|^📖|^🌐|TV\b|Radio\b|Podcast\b|interview/i.test(r.description || "");
+  const isParticipation = (r) => /Role:\s*(Organizer|Participant)/i.test(r.description || "");
 
-  const allWork = careerRecords.filter((r: any) => r.record_type === "work");
+  const allWork = careerRecords.filter((r) => r.record_type === "work");
   const judging = allWork.filter(isJudging);
-  const mediaInWork = allWork.filter((r: any) => !isJudging(r) && isMediaInWork(r));
-  const participation = allWork.filter((r: any) => !isJudging(r) && !isMediaInWork(r) && isParticipation(r));
-  const work = allWork.filter((r: any) => !isJudging(r) && !isMediaInWork(r) && !isParticipation(r));
+  const mediaInWork = allWork.filter((r) => !isJudging(r) && isMediaInWork(r));
+  const participation = allWork.filter((r) => !isJudging(r) && !isMediaInWork(r) && isParticipation(r));
+  const work = allWork.filter((r) => !isJudging(r) && !isMediaInWork(r) && !isParticipation(r));
 
   return {
     work,
     judging,
     participation,
-    education: careerRecords.filter((r: any) => r.record_type === "education"),
-    media: [...careerRecords.filter((r: any) => r.record_type === "media"), ...mediaInWork],
-    certification: careerRecords.filter((r: any) => r.record_type === "certification"),
+    education: careerRecords.filter((r) => r.record_type === "education"),
+    media: [...careerRecords.filter((r) => r.record_type === "media"), ...mediaInWork],
+    certification: careerRecords.filter((r) => r.record_type === "certification"),
   };
 }

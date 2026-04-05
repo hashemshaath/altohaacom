@@ -35,7 +35,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .order("created_at", { ascending: false });
         if (error) throw error;
         downloadCSV(
-          (data || []).map((t: any) => ({
+          (data || []).map((t) => ({
             ticket_number: t.ticket_number,
             name: t.attendee_name || "",
             email: t.attendee_email || "",
@@ -65,7 +65,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .order("booth_number");
         if (error) throw error;
         downloadCSV(
-          (data || []).map((b: any) => ({
+          (data || []).map((b) => ({
             booth_number: b.booth_number,
             name: isAr ? (b.name_ar || b.name) : b.name,
             category: b.category || "",
@@ -99,7 +99,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .order("start_time");
         if (error) throw error;
         downloadCSV(
-          (data || []).map((s: any) => ({
+          (data || []).map((s) => ({
             title: isAr ? (s.title_ar || s.title) : s.title,
             category: s.category,
             speaker: s.speaker_name || "",
@@ -129,7 +129,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .order("sort_order");
         if (error) throw error;
         downloadCSV(
-          (data || []).map((tt: any) => ({
+          (data || []).map((tt) => ({
             name: isAr ? (tt.name_ar || tt.name) : tt.name,
             price: tt.price,
             currency: tt.currency,
@@ -163,7 +163,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
         }
         downloadCSV(
-          (data || []).map((r: any) => {
+          (data || []).map((r) => {
             const p = profileMap.get(r.user_id);
             return {
               reviewer: p?.full_name || p?.username || "—",
@@ -194,9 +194,9 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           supabase.from("exhibition_booths").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibitionId),
           supabase.from("exhibition_followers").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibitionId),
         ]);
-        const revenue = (tickets.data || []).reduce((s: number, t: any) => s + (t.price_paid || 0), 0);
+        const revenue = (tickets.data || []).reduce((s, t) => s + (t.price_paid || 0), 0);
         const avgRating = (reviews.data || []).length > 0
-          ? (reviews.data || []).reduce((s: number, r: any) => s + r.rating, 0) / (reviews.data || []).length
+          ? (reviews.data || []).reduce((s, r) => s + r.rating, 0) / (reviews.data || []).length
           : 0;
         const checkinRate = (tickets.count || 0) > 0 ? Math.round(((checkins.count || 0) / (tickets.count || 0)) * 100) : 0;
         downloadCSV(

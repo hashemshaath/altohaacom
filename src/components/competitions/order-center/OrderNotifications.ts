@@ -14,7 +14,7 @@ async function getCompetitionOrganizerIds(competitionId: string): Promise<string
     .eq("competition_id", competitionId)
     .in("role", ["organizer", "coordinator", "head_judge"])
     .eq("status", "active");
-  return [...new Set((data || []).map((r: any) => r.user_id as string))];
+  return [...new Set((data || []).map((r) => r.user_id as string))];
 }
 
 export async function notifyVendorAssigned(params: {

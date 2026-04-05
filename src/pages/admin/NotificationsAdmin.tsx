@@ -250,14 +250,14 @@ export default function NotificationsAdmin() {
     let items = recentNotifications;
     if (recentSearch) {
       const q = recentSearch.toLowerCase();
-      items = items.filter((n: any) =>
+      items = items.filter((n) =>
         (n.title || "").toLowerCase().includes(q) || (n.body || "").toLowerCase().includes(q) ||
         (n.title_ar || "").toLowerCase().includes(q)
       );
     }
-    if (recentTypeFilter !== "all") items = items.filter((n: any) => n.type === recentTypeFilter);
-    if (recentChannelFilter !== "all") items = items.filter((n: any) => (n.channel || "in_app") === recentChannelFilter);
-    if (recentStatusFilter !== "all") items = items.filter((n: any) => (n.status || "pending") === recentStatusFilter);
+    if (recentTypeFilter !== "all") items = items.filter((n) => n.type === recentTypeFilter);
+    if (recentChannelFilter !== "all") items = items.filter((n) => (n.channel || "in_app") === recentChannelFilter);
+    if (recentStatusFilter !== "all") items = items.filter((n) => (n.status || "pending") === recentStatusFilter);
     return items;
   }, [recentNotifications, recentSearch, recentTypeFilter, recentChannelFilter, recentStatusFilter]);
 
@@ -265,8 +265,8 @@ export default function NotificationsAdmin() {
 
   const filteredQueue = useMemo(() => {
     let items = queueItems;
-    if (queueStatusFilter !== "all") items = items.filter((i: any) => i.status === queueStatusFilter);
-    if (queueChannelFilter !== "all") items = items.filter((i: any) => i.channel === queueChannelFilter);
+    if (queueStatusFilter !== "all") items = items.filter((i) => i.status === queueStatusFilter);
+    if (queueChannelFilter !== "all") items = items.filter((i) => i.channel === queueChannelFilter);
     return items;
   }, [queueItems, queueStatusFilter, queueChannelFilter]);
 
@@ -275,36 +275,36 @@ export default function NotificationsAdmin() {
     if (recentNotifications.length === 0 && queueItems.length === 0) return null;
 
     const allItems = [...recentNotifications, ...queueItems];
-    const totalSent = recentNotifications.filter((n: any) => n.status === "sent").length;
-    const totalRead = recentNotifications.filter((n: any) => n.status === "read").length;
+    const totalSent = recentNotifications.filter((n) => n.status === "sent").length;
+    const totalRead = recentNotifications.filter((n) => n.status === "read").length;
     const readRate = totalSent > 0 ? Math.round((totalRead / totalSent) * 100) : 0;
 
     // Channel distribution
     const byChannel: Record<string, number> = {};
-    recentNotifications.forEach((n: any) => {
+    recentNotifications.forEach((n) => {
       const ch = n.channel || "in_app";
       byChannel[ch] = (byChannel[ch] || 0) + 1;
     });
 
     // Type distribution
     const byType: Record<string, number> = {};
-    recentNotifications.forEach((n: any) => {
+    recentNotifications.forEach((n) => {
       const t = n.type || "info";
       byType[t] = (byType[t] || 0) + 1;
     });
 
     // Hourly volume
     const byHour: Record<number, number> = {};
-    recentNotifications.forEach((n: any) => {
+    recentNotifications.forEach((n) => {
       const h = new Date(n.created_at).getHours();
       byHour[h] = (byHour[h] || 0) + 1;
     });
     const peakHour = Object.entries(byHour).sort(([, a], [, b]) => (b as number) - (a as number))[0];
 
     // Queue failure reasons
-    const failedItems = queueItems.filter((i: any) => i.status === "failed");
+    const failedItems = queueItems.filter((i) => i.status === "failed");
     const failureReasons: Record<string, number> = {};
-    failedItems.forEach((i: any) => {
+    failedItems.forEach((i) => {
       const reason = (i as any).error_message || "Unknown";
       const shortReason = reason.length > 40 ? reason.substring(0, 40) + "..." : reason;
       failureReasons[shortReason] = (failureReasons[shortReason] || 0) + 1;
@@ -315,14 +315,14 @@ export default function NotificationsAdmin() {
       ? ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]
       : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
     const byDay: Record<number, number> = {};
-    recentNotifications.forEach((n: any) => {
+    recentNotifications.forEach((n) => {
       const d = new Date(n.created_at).getDay();
       byDay[d] = (byDay[d] || 0) + 1;
     });
 
     // Delivery success rate
     const queueTotal = queueItems.length;
-    const queueSuccess = queueItems.filter((i: any) => i.status === "sent").length;
+    const queueSuccess = queueItems.filter((i) => i.status === "sent").length;
     const deliveryRate = queueTotal > 0 ? Math.round((queueSuccess / queueTotal) * 100) : 100;
 
     return {
@@ -386,12 +386,12 @@ export default function NotificationsAdmin() {
 
   const { exportCSV: exportNotifications } = useCSVExport({
     columns: [
-      { header: isAr ? "العنوان" : "Title", accessor: (n: any) => n.title || "" },
-      { header: isAr ? "العنوان (عربي)" : "Title (AR)", accessor: (n: any) => n.title_ar || "" },
-      { header: isAr ? "النوع" : "Type", accessor: (n: any) => n.type || "info" },
-      { header: isAr ? "القناة" : "Channel", accessor: (n: any) => n.channel || "in_app" },
-      { header: isAr ? "الحالة" : "Status", accessor: (n: any) => n.status || "pending" },
-      { header: isAr ? "التاريخ" : "Date", accessor: (n: any) => format(new Date(n.created_at), "yyyy-MM-dd HH:mm") },
+      { header: isAr ? "العنوان" : "Title", accessor: (n) => n.title || "" },
+      { header: isAr ? "العنوان (عربي)" : "Title (AR)", accessor: (n) => n.title_ar || "" },
+      { header: isAr ? "النوع" : "Type", accessor: (n) => n.type || "info" },
+      { header: isAr ? "القناة" : "Channel", accessor: (n) => n.channel || "in_app" },
+      { header: isAr ? "الحالة" : "Status", accessor: (n) => n.status || "pending" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (n) => format(new Date(n.created_at), "yyyy-MM-dd HH:mm") },
     ],
     filename: "notifications",
   });
@@ -531,7 +531,7 @@ export default function NotificationsAdmin() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {recentPagination.paginated.map((notif: any) => (
+                          {recentPagination.paginated.map((notif) => (
                             <>
                               <TableRow key={notif.id} className={`cursor-pointer transition-colors duration-150 hover:bg-muted/40 ${bulkRecent.isSelected(notif.id) ? "bg-primary/5" : ""}`} onClick={() => setExpandedNotifId(expandedNotifId === notif.id ? null : notif.id)}>
                                 <TableCell onClick={e => e.stopPropagation()}>
@@ -692,7 +692,7 @@ export default function NotificationsAdmin() {
                             checked={selectedQueueIds.size === filteredQueue.length && filteredQueue.length > 0}
                             onCheckedChange={() => {
                               if (selectedQueueIds.size === filteredQueue.length) setSelectedQueueIds(new Set());
-                              else setSelectedQueueIds(new Set(filteredQueue.map((i: any) => i.id)));
+                              else setSelectedQueueIds(new Set(filteredQueue.map((i) => i.id)));
                             }}
                           />
                         </TableHead>
@@ -705,7 +705,7 @@ export default function NotificationsAdmin() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredQueue.map((item: any) => (
+                      {filteredQueue.map((item) => (
                         <TableRow key={item.id}>
                           <TableCell>
                             <Checkbox checked={selectedQueueIds.has(item.id)} onCheckedChange={() => toggleQueueSelect(item.id)} />
@@ -898,7 +898,7 @@ export default function NotificationsAdmin() {
             <CardContent>
               {commTemplates.length > 0 ? (
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {commTemplates.map((t: any) => (
+                  {commTemplates.map((t) => (
                     <Card key={t.id} className="hover:shadow-md transition-shadow">
                       <CardContent className="p-4 space-y-2">
                         <div className="flex items-center justify-between">
@@ -935,7 +935,7 @@ export default function NotificationsAdmin() {
               </CardHeader>
               <CardContent>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {templates.map((template: any) => (
+                  {templates.map((template) => (
                     <Card key={template.id}>
                       <CardContent className="p-4">
                         <h4 className="font-medium">{template.name}</h4>

@@ -65,20 +65,20 @@ export default function Organizers() {
   });
 
   const countries = useMemo(() =>
-    [...new Set((organizers || []).map((o: any) => o.country).filter(Boolean))] as string[],
+    [...new Set((organizers || []).map((o) => o.country).filter(Boolean))] as string[],
     [organizers]
   );
 
   const allCategories = useMemo(() => {
     const cats = new Set<string>();
-    (organizers || []).forEach((o: any) => {
+    (organizers || []).forEach((o) => {
       (o.categories || []).forEach((c: string) => cats.add(c));
     });
     return [...cats].sort();
   }, [organizers]);
 
   const filtered = useMemo(() => {
-    let list = (organizers || []).filter((o: any) => {
+    let list = (organizers || []).filter((o) => {
       const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.city?.toLowerCase().includes(search.toLowerCase());
       const matchCountry = countryFilter === "all" || o.country === countryFilter;
       const matchCategory = categoryFilter === "all" || (o.categories || []).includes(categoryFilter);
@@ -104,17 +104,17 @@ export default function Organizers() {
     return list;
   }, [organizers, search, countryFilter, categoryFilter, sortBy]);
 
-  const featured = useMemo(() => filtered.filter((o: any) => o.is_featured), [filtered]);
-  const regular = useMemo(() => filtered.filter((o: any) => !o.is_featured), [filtered]);
+  const featured = useMemo(() => filtered.filter((o) => o.is_featured), [filtered]);
+  const regular = useMemo(() => filtered.filter((o) => !o.is_featured), [filtered]);
 
   const { totalEvents, totalOrgs, totalCountries, avgRating } = useMemo(() => {
     const orgs = organizers || [];
-    const rated = orgs.filter((o: any) => o.average_rating > 0);
+    const rated = orgs.filter((o) => o.average_rating > 0);
     return {
-      totalEvents: orgs.reduce((s: number, o: any) => s + (o.total_exhibitions || 0), 0),
+      totalEvents: orgs.reduce((s, o) => s + (o.total_exhibitions || 0), 0),
       totalOrgs: orgs.length,
       totalCountries: countries.length,
-      avgRating: rated.length > 0 ? (rated.reduce((s: number, o: any) => s + o.average_rating, 0) / rated.length).toFixed(1) : "0",
+      avgRating: rated.length > 0 ? (rated.reduce((s, o) => s + o.average_rating, 0) / rated.length).toFixed(1) : "0",
     };
   }, [organizers, countries]);
 
@@ -323,11 +323,11 @@ export default function Organizers() {
                       </div>
                       {viewMode === "grid" ? (
                         <div className="grid gap-4 sm:grid-cols-2">
-                          {featured.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                          {featured.map((org) => <OrganizerCard key={org.id} org={org} isAr={isAr} featured isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          {featured.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                          {featured.map((org) => <OrganizerListItem key={org.id} org={org} isAr={isAr} featured isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                         </div>
                       )}
                     </section>
@@ -352,11 +352,11 @@ export default function Organizers() {
                     }
                     return viewMode === "grid" ? (
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {items.map((org: any) => <OrganizerCard key={org.id} org={org} isAr={isAr} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                        {items.map((org) => <OrganizerCard key={org.id} org={org} isAr={isAr} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     ) : (
                       <div className="space-y-3">
-                        {items.map((org: any) => <OrganizerListItem key={org.id} org={org} isAr={isAr} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
+                        {items.map((org) => <OrganizerListItem key={org.id} org={org} isAr={isAr} isFollowed={followedIds.includes(org.id)} onToggleFollow={id => toggleFollow(id, isAr)} />)}
                       </div>
                     );
                   })()}

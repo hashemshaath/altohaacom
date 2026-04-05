@@ -84,7 +84,7 @@ function getAuditChecks(settings: Record<string, any>, homepageSections: any[], 
     { id: "typo", pass: !!ty.bodyFont && !!ty.headingFont, en: "Typography configured", ar: "تم تهيئة الخطوط" },
     { id: "social", pass: !!ft.instagramUrl || !!ft.xUrl, en: "Social links added", ar: "تمت إضافة روابط التواصل" },
     { id: "cover", pass: !!cv.gradientColor, en: "Cover gradient configured", ar: "تم تهيئة تدرج الغلاف" },
-    { id: "homepage", pass: homepageSections.filter((s: any) => s.is_visible).length >= 3, en: "3+ homepage sections visible", ar: "3+ أقسام مرئية بالصفحة الرئيسية" },
+    { id: "homepage", pass: homepageSections.filter((s) => s.is_visible).length >= 3, en: "3+ homepage sections visible", ar: "3+ أقسام مرئية بالصفحة الرئيسية" },
     { id: "contact", pass: !!br.contactEmail, en: "Contact email set", ar: "تم تعيين بريد التواصل" },
   ];
 }
@@ -105,7 +105,7 @@ export default function DesignIdentityAdmin() {
     return {
       configuredCount: cc,
       completionPercent: Math.round((cc / designSections.length) * 100),
-      visibleSections: homepageSections.filter((s: any) => s.is_visible).length,
+      visibleSections: homepageSections.filter((s) => s.is_visible).length,
       totalSections: homepageSections.length,
       auditChecks: checks,
       auditScore: Math.round((checks.filter(c => c.pass).length / checks.length) * 100),

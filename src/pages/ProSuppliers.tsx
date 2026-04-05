@@ -58,7 +58,7 @@ export default function ProSuppliers() {
 
   // Derive unique countries
   const availableCountries = useMemo(() => {
-    const codes = new Set(companies.map((c: any) => c.country_code).filter(Boolean));
+    const codes = new Set(companies.map((c) => c.country_code).filter(Boolean));
     return Array.from(codes) as string[];
   }, [companies]);
 
@@ -67,15 +67,15 @@ export default function ProSuppliers() {
     let result = [...companies];
     if (search) {
       const s = search.toLowerCase();
-      result = result.filter((c: any) =>
+      result = result.filter((c) =>
         c.name?.toLowerCase().includes(s) || c.name_ar?.toLowerCase().includes(s) || c.description?.toLowerCase().includes(s)
       );
     }
     if (category !== "all") {
-      result = result.filter((c: any) => c.supplier_category === category);
+      result = result.filter((c) => c.supplier_category === category);
     }
     if (countryFilter !== "all") {
-      result = result.filter((c: any) => c.country_code === countryFilter);
+      result = result.filter((c) => c.country_code === countryFilter);
     }
     if (sortBy === "name") {
       result.sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
@@ -92,7 +92,7 @@ export default function ProSuppliers() {
         .select("company_id")
         .eq("is_active", true);
       const counts: Record<string, number> = {};
-      (data || []).forEach((r: any) => {
+      (data || []).forEach((r) => {
         counts[r.company_id] = (counts[r.company_id] || 0) + 1;
       });
       return counts;
@@ -258,7 +258,7 @@ export default function ProSuppliers() {
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredCompanies.map((company: any) => {
+              {filteredCompanies.map((company) => {
                 const productCount = catalogCounts[company.id] || 0;
                 return (
                   <Card

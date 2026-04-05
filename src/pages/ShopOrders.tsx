@@ -107,7 +107,7 @@ export default function ShopOrders() {
           </div>
         ) : (
           <div className="space-y-4">
-            {orders.map((order: any) => (
+            {orders.map((order) => (
               <Card key={order.id} className="overflow-hidden">
                 <CardHeader className="border-b bg-muted/30 px-4 py-3">
                   <div className="flex flex-wrap items-center justify-between gap-2">
@@ -125,7 +125,7 @@ export default function ShopOrders() {
                 </CardHeader>
                 <CardContent className="p-4">
                   <div className="space-y-2">
-                    {order.shop_order_items?.map((item: any) => {
+                    {order.shop_order_items?.map((item) => {
                       const itemTitle = isAr && item.product_snapshot?.title_ar
                         ? item.product_snapshot.title_ar
                         : item.product_snapshot?.title || item.shop_products?.title;

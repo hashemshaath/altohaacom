@@ -147,7 +147,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
     setForm({ name: "", name_ar: "", description: "", description_ar: "", competition_type: "", category_type: "", is_active: true, criteria: [] });
   };
 
-  const startEdit = (rubric: any) => {
+  const startEdit = (rubric) => {
     setEditingId(rubric.id);
     setForm({
       name: rubric.name, name_ar: rubric.name_ar || "",

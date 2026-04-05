@@ -33,7 +33,7 @@ export const DatesLocationStep = memo(function DatesLocationStep({ data, onChang
     const name = isAr ? (country?.name_ar || country?.name || "") : (country?.name || "");
     const updates: Partial<CompetitionFormData> = { countryCode: code, country: name };
     if (country) {
-      const countryData = countries?.find((c: any) => c.code === code);
+      const countryData = countries?.find((c) => c.code === code);
       if (countryData) {
         updates.registrationCurrency = countryData.currency_code || "SAR";
         updates.registrationTaxRate = Number(countryData.tax_rate) || 0;

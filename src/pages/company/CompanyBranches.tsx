@@ -127,7 +127,7 @@ export default function CompanyBranches() {
     setDialogOpen(true);
   };
 
-  const openEdit = (branch: any) => {
+  const openEdit = (branch) => {
     setEditingId(branch.id);
     setForm({
       name: branch.name || "",

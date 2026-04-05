@@ -104,17 +104,17 @@ export default function ChefsTableAdmin() {
 
   const { exportCSV: exportSessionsCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الجلسة" : "Session", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
-      { header: isAr ? "المنتج" : "Product", accessor: (r: any) => isAr && r.product_name_ar ? r.product_name_ar : r.product_name },
-      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.experience_type },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.session_date ? format(new Date(r.session_date), "yyyy-MM-dd") : "" },
-      { header: isAr ? "الطهاة" : "Max Chefs", accessor: (r: any) => r.max_chefs },
+      { header: isAr ? "الجلسة" : "Session", accessor: (r) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "المنتج" : "Product", accessor: (r) => isAr && r.product_name_ar ? r.product_name_ar : r.product_name },
+      { header: isAr ? "النوع" : "Type", accessor: (r) => r.experience_type },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r) => r.session_date ? format(new Date(r.session_date), "yyyy-MM-dd") : "" },
+      { header: isAr ? "الطهاة" : "Max Chefs", accessor: (r) => r.max_chefs },
     ],
     filename: "chefs-table-sessions",
   });
 
-  const handleApprove = async (req: any) => {
+  const handleApprove = async (req) => {
     setProcessingId(req.id);
     try {
       await approveRequest.mutateAsync({ id: req.id });
@@ -127,7 +127,7 @@ export default function ChefsTableAdmin() {
     }
   };
 
-  const handleReject = async (req: any) => {
+  const handleReject = async (req) => {
     if (!rejectionReason.trim()) return;
     setProcessingId(req.id);
     try {

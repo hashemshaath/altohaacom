@@ -350,14 +350,14 @@ export default function CommunicationsAdmin() {
   const analytics = useMemo(() => {
     if (allMessagesForAnalytics.length === 0) return null;
     const total = allMessagesForAnalytics.length;
-    const incoming = allMessagesForAnalytics.filter((m: any) => m.direction === "outgoing").length;
-    const outgoing = allMessagesForAnalytics.filter((m: any) => m.direction === "incoming").length;
-    const urgent = allMessagesForAnalytics.filter((m: any) => m.priority === "urgent").length;
+    const incoming = allMessagesForAnalytics.filter((m) => m.direction === "outgoing").length;
+    const outgoing = allMessagesForAnalytics.filter((m) => m.direction === "incoming").length;
+    const urgent = allMessagesForAnalytics.filter((m) => m.priority === "urgent").length;
 
     // Response times
     const responseTimes = allMessagesForAnalytics
-      .filter((m: any) => m.response_time_minutes != null)
-      .map((m: any) => m.response_time_minutes as number);
+      .filter((m) => m.response_time_minutes != null)
+      .map((m) => m.response_time_minutes as number);
     const avgResponseTime = responseTimes.length > 0
       ? Math.round(responseTimes.reduce((a: number, b: number) => a + b, 0) / responseTimes.length)
       : 0;
@@ -365,7 +365,7 @@ export default function CommunicationsAdmin() {
 
     // Messages by hour
     const byHour: Record<number, number> = {};
-    allMessagesForAnalytics.forEach((m: any) => {
+    allMessagesForAnalytics.forEach((m) => {
       const hour = new Date(m.created_at).getHours();
       byHour[hour] = (byHour[hour] || 0) + 1;
     });
@@ -376,7 +376,7 @@ export default function CommunicationsAdmin() {
     const dayNames = isAr
       ? ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"]
       : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    allMessagesForAnalytics.forEach((m: any) => {
+    allMessagesForAnalytics.forEach((m) => {
       const day = new Date(m.created_at).getDay();
       byDay[day] = (byDay[day] || 0) + 1;
     });
@@ -388,10 +388,10 @@ export default function CommunicationsAdmin() {
 
     // Priority breakdown
     const byPriority = {
-      urgent: allMessagesForAnalytics.filter((m: any) => m.priority === "urgent").length,
-      high: allMessagesForAnalytics.filter((m: any) => m.priority === "high").length,
-      normal: allMessagesForAnalytics.filter((m: any) => m.priority === "normal" || !m.priority).length,
-      low: allMessagesForAnalytics.filter((m: any) => m.priority === "low").length,
+      urgent: allMessagesForAnalytics.filter((m) => m.priority === "urgent").length,
+      high: allMessagesForAnalytics.filter((m) => m.priority === "high").length,
+      normal: allMessagesForAnalytics.filter((m) => m.priority === "normal" || !m.priority).length,
+      low: allMessagesForAnalytics.filter((m) => m.priority === "low").length,
     };
 
     return { total, incoming, outgoing, urgent, avgResponseTime, maxResponseTime, busiestHour, byDay, dayNames, slaPercent, slaTarget, byPriority, responseTimes };

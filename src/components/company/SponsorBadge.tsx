@@ -43,7 +43,7 @@ export const CompetitionSponsorBadges = memo(function CompetitionSponsorBadges({
 
   return (
     <div className="flex flex-wrap items-center gap-1.5">
-      {displaySponsors.map((sponsor: any) => {
+      {displaySponsors.map((sponsor) => {
         const company = sponsor.companies;
         const tier = tierConfig[sponsor.tier] || tierConfig.silver;
         const name = isAr && company?.name_ar ? company.name_ar : company?.name;

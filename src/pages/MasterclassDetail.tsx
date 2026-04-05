@@ -141,7 +141,7 @@ export default function MasterclassDetail() {
       if (error) throw error;
 
       // Update progress percentage
-      const totalLessons = modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0);
+      const totalLessons = modules.reduce((sum, m) => sum + (m.masterclass_lessons?.length || 0), 0);
       const completedCount = lessonProgress.filter((lp) => lp.completed).length + 1;
       const newPercent = Math.round((completedCount / totalLessons) * 100);
 
@@ -204,7 +204,7 @@ export default function MasterclassDetail() {
     },
   });
 
-  const totalLessons = useMemo(() => modules.reduce((sum: number, m: any) => sum + (m.masterclass_lessons?.length || 0), 0), [modules]);
+  const totalLessons = useMemo(() => modules.reduce((sum, m) => sum + (m.masterclass_lessons?.length || 0), 0), [modules]);
   const completedLessons = useMemo(() => lessonProgress.filter((lp) => lp.completed).length, [lessonProgress]);
   const isCompleted = enrollment?.status === "completed";
   const completedLessonIds = useMemo(() => new Set(lessonProgress.filter((lp) => lp.completed).map((lp) => lp.lesson_id)), [lessonProgress]);
@@ -395,8 +395,8 @@ export default function MasterclassDetail() {
 
         {/* Lesson Viewer */}
         {selectedLessonId && (() => {
-          const allLessons = modules.flatMap((m: any) => (m.masterclass_lessons || []).map((l: any) => ({ ...l, modulePreview: m.is_free_preview })));
-          const lesson = allLessons.find((l: any) => l.id === selectedLessonId);
+          const allLessons = modules.flatMap((m) => (m.masterclass_lessons || []).map((l) => ({ ...l, modulePreview: m.is_free_preview })));
+          const lesson = allLessons.find((l) => l.id === selectedLessonId);
           if (!lesson) return null;
           return (
             <div className="container pb-12">
@@ -418,10 +418,10 @@ export default function MasterclassDetail() {
               {language === "ar" ? "محتوى الدورة" : "Course Content"}
             </h2>
             <Accordion type="multiple" className="space-y-2">
-              {modules.map((module: any) => {
+              {modules.map((module) => {
                 const lessons = module.masterclass_lessons || [];
                 const sortedLessons = [...lessons].sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
-                const moduleCompletedCount = sortedLessons.filter((l: any) => completedLessonIds.has(l.id)).length;
+                const moduleCompletedCount = sortedLessons.filter((l) => completedLessonIds.has(l.id)).length;
 
                 return (
                   <AccordionItem key={module.id} value={module.id} className="border rounded-xl px-4">
@@ -445,7 +445,7 @@ export default function MasterclassDetail() {
                     </AccordionTrigger>
                     <AccordionContent>
                       <div className="space-y-2 pt-2">
-                        {sortedLessons.map((lesson: any) => {
+                        {sortedLessons.map((lesson) => {
                           const isLessonCompleted = completedLessonIds.has(lesson.id);
                           const canAccess = enrollment || module.is_free_preview;
 

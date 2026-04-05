@@ -38,7 +38,7 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
         .eq("participant_id", userId)
         .in("status", ["approved", "pending"]);
 
-      (compRegs || []).forEach((reg: any) => {
+      (compRegs || []).forEach((reg) => {
         const comp = reg.competitions;
         if (comp?.competition_start && comp.competition_start >= now) {
           items.push({
@@ -57,7 +57,7 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
         .eq("user_id", userId)
         .in("status", ["active", "enrolled"]);
 
-      (enrollments || []).forEach((enr: any) => {
+      (enrollments || []).forEach((enr) => {
         const mc = enr.masterclasses;
         if (mc?.start_date && mc.start_date >= now) {
           items.push({
@@ -70,7 +70,7 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
       });
 
       // Merge public chef schedule events
-      chefEvents.forEach((ev: any) => {
+      chefEvents.forEach((ev) => {
         const config = EVENT_TYPE_CONFIG[(ev.event_type as ScheduleEventType) || "other"];
         items.push({
           id: ev.id,

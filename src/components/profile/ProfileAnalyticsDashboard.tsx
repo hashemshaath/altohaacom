@@ -108,7 +108,7 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
   const last7 = analytics.last7Days;
   const prev7 = analytics.dailyViews
     ?.slice(0, analytics.dailyViews.length - 7)
-    ?.reduce((s: number, d: any) => s + (d.views || 0), 0) || 0;
+    ?.reduce((s, d) => s + (d.views || 0), 0) || 0;
   const viewsTrend = prev7 > 0 ? Math.round(((last7 - prev7) / prev7) * 100) : last7 > 0 ? 100 : 0;
 
   const statCards = [

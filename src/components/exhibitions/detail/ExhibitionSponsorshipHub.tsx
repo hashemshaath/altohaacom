@@ -114,7 +114,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
               <Badge variant="outline" className="text-[9px]">{sponsorsByTier[tier].length}</Badge>
             </h3>
             <div className={`grid gap-3 ${tier === "patron" || tier === "platinum" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"}`}>
-              {sponsorsByTier[tier].map((sponsor: any) => (
+              {sponsorsByTier[tier].map((sponsor) => (
                 <Card key={sponsor.id} className={`overflow-hidden border-2 bg-gradient-to-br ${color} transition-all hover:shadow-lg hover:-translate-y-0.5`}>
                   <CardContent className={`flex items-center gap-3 ${tier === "patron" || tier === "platinum" ? "p-5" : "p-3"}`}>
                     {sponsor.logo_url ? (
@@ -153,7 +153,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
           </CardHeader>
           <CardContent className="p-4">
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {packages.map((pkg: any) => {
+              {packages.map((pkg) => {
                 const Icon = TIER_ICONS[pkg.tier] || Star;
                 const color = TIER_COLORS[pkg.tier] || TIER_COLORS.partner;
                 const benefits = Array.isArray(pkg.benefits) ? pkg.benefits : [];

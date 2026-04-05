@@ -89,7 +89,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
             </TabsList>
 
             <TabsContent value="competitions" className="mt-2 space-y-1.5">
-              {data?.competitions?.length ? data.competitions.map((c: any) => (
+              {data?.competitions?.length ? data.competitions.map((c) => (
                 <Link key={c.id} to={`/competitions/${c.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
                   {c.image_url && <img src={c.image_url} alt={isAr ? c.title_ar || c.title : c.title} className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" decoding="async" />}
                   <div className="flex-1 min-w-0">
@@ -103,7 +103,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
             </TabsContent>
 
             <TabsContent value="exhibitions" className="mt-2 space-y-1.5">
-              {data?.exhibitions?.length ? data.exhibitions.map((e: any) => (
+              {data?.exhibitions?.length ? data.exhibitions.map((e) => (
                 <Link key={e.id} to={`/exhibitions/${e.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
                   {e.image_url && <img src={e.image_url} alt={isAr ? e.title_ar || e.title : e.title} className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" decoding="async" />}
                   <div className="flex-1 min-w-0">
@@ -119,7 +119,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
             </TabsContent>
 
             <TabsContent value="recipes" className="mt-2 space-y-1.5">
-              {data?.recipes?.length ? data.recipes.map((r: any) => (
+              {data?.recipes?.length ? data.recipes.map((r) => (
                 <Link key={r.id} to={`/recipes/${r.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
                   {r.image_url && <img src={r.image_url} alt={isAr ? r.title_ar || r.title : r.title} className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" decoding="async" />}
                   <div className="flex-1 min-w-0">
@@ -136,7 +136,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
             </TabsContent>
 
             <TabsContent value="articles" className="mt-2 space-y-1.5">
-              {data?.articles?.length ? data.articles.map((a: any) => (
+              {data?.articles?.length ? data.articles.map((a) => (
                 <Link key={a.id} to={`/blog/${a.slug}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
                   {a.featured_image_url && <img src={a.featured_image_url} alt={isAr ? a.title_ar || a.title : a.title} className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" decoding="async" />}
                   <div className="flex-1 min-w-0">
@@ -150,7 +150,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
             </TabsContent>
 
             <TabsContent value="chefs" className="mt-2 space-y-1.5">
-              {data?.chefs?.length ? data.chefs.map((c: any) => (
+              {data?.chefs?.length ? data.chefs.map((c) => (
                 <Link key={c.user_id} to={`/${c.username || c.user_id}`} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-muted/50 transition-colors group">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={c.avatar_url || ""} />

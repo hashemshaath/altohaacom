@@ -81,11 +81,11 @@ export default function MentorshipAdmin() {
 
   const { exportCSV: exportAppsCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => r.profile?.full_name || "" },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "سنوات الخبرة" : "Experience", accessor: (r: any) => r.years_experience },
-      { header: isAr ? "التخصصات" : "Expertise", accessor: (r: any) => (r.expertise || []).join(", ") },
-      { header: isAr ? "النبذة" : "Bio", accessor: (r: any) => r.bio || "" },
+      { header: isAr ? "الاسم" : "Name", accessor: (r) => r.profile?.full_name || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "سنوات الخبرة" : "Experience", accessor: (r) => r.years_experience },
+      { header: isAr ? "التخصصات" : "Expertise", accessor: (r) => (r.expertise || []).join(", ") },
+      { header: isAr ? "النبذة" : "Bio", accessor: (r) => r.bio || "" },
     ],
     filename: "mentor-applications",
   });

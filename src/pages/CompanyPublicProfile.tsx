@@ -266,7 +266,7 @@ export default function CompanyPublicProfile() {
                 {isAr ? "المسابقات المُرعاة" : "Sponsored Competitions"}
               </h2>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {sponsorships.map((s: any) => {
+                {sponsorships.map((s) => {
                   const title = isAr && s.competitions?.title_ar ? s.competitions.title_ar : s.competitions?.title;
                   return (
                     <Card key={s.id} className="cursor-pointer rounded-xl border-border/40 transition-all hover:shadow-md hover:-translate-y-0.5"

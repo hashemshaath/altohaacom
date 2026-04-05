@@ -187,13 +187,13 @@ export default function CompetitionsAdmin() {
 
   // Unique organizers for filter (derived from exhibition)
   const uniqueOrganizers = competitions?.reduce((acc, c) => {
-    if (c.derivedOrganizer && !acc.find((o: any) => o.name === c.derivedOrganizer.name)) acc.push(c.derivedOrganizer);
+    if (c.derivedOrganizer && !acc.find((o) => o.name === c.derivedOrganizer.name)) acc.push(c.derivedOrganizer);
     return acc;
   }, [] as any[]) || [];
 
   // Unique exhibitions for filter
   const uniqueExhibitions = competitions?.reduce((acc, c) => {
-    if (c.exhibition && !acc.find((e: any) => e.id === c.exhibition.id)) acc.push(c.exhibition);
+    if (c.exhibition && !acc.find((e) => e.id === c.exhibition.id)) acc.push(c.exhibition);
     return acc;
   }, [] as any[]) || [];
 
@@ -211,7 +211,7 @@ export default function CompetitionsAdmin() {
   });
 
   const approveCompetition = useMutation({
-    mutationFn: async (comp: any) => {
+    mutationFn: async (comp) => {
       const { error } = await supabase.from("competitions").update({ status: "draft" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_competition", details: { competition_id: comp.id } });
@@ -229,7 +229,7 @@ export default function CompetitionsAdmin() {
   });
 
   const rejectCompetition = useMutation({
-    mutationFn: async (comp: any) => {
+    mutationFn: async (comp) => {
       const { error } = await supabase.from("competitions").update({ status: "cancelled" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_competition", details: { competition_id: comp.id } });
@@ -243,7 +243,7 @@ export default function CompetitionsAdmin() {
   });
 
   const duplicateMutation = useMutation({
-    mutationFn: async (comp: any) => {
+    mutationFn: async (comp) => {
       const { id, created_at, updated_at, organizer, exhibition, competition_number, slug, view_count, ...rest } = comp;
       const { error } = await supabase.from("competitions").insert({
         ...rest,
@@ -276,13 +276,13 @@ export default function CompetitionsAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "التاريخ" : "Start Date", accessor: (r: any) => r.competition_start || "" },
-      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
-      { header: isAr ? "الدولة" : "Country", accessor: (r: any) => r.country || "" },
-      { header: isAr ? "الحد الأقصى" : "Max Participants", accessor: (r: any) => r.max_participants || "" },
-      { header: isAr ? "رقم المسابقة" : "Competition #", accessor: (r: any) => r.competition_number || "" },
+      { header: isAr ? "العنوان" : "Title", accessor: (r) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "التاريخ" : "Start Date", accessor: (r) => r.competition_start || "" },
+      { header: isAr ? "المدينة" : "City", accessor: (r) => r.city || "" },
+      { header: isAr ? "الدولة" : "Country", accessor: (r) => r.country || "" },
+      { header: isAr ? "الحد الأقصى" : "Max Participants", accessor: (r) => r.max_participants || "" },
+      { header: isAr ? "رقم المسابقة" : "Competition #", accessor: (r) => r.competition_number || "" },
     ],
     filename: "competitions",
   });
@@ -318,7 +318,7 @@ export default function CompetitionsAdmin() {
   const compPagination = usePagination(sortedCompetitions || []);
 
   const getCategoriesForComp = (compId: string) => allCategories?.filter(c => c.competition_id === compId) || [];
-  const getTypesForComp = (compId: string) => typeAssignments?.filter((t: any) => t.competition_id === compId) || [];
+  const getTypesForComp = (compId: string) => typeAssignments?.filter((t) => t.competition_id === compId) || [];
 
   // Smart Import handler with create/update support and related data saving
   const handleSmartImport = useCallback(async (data: ImportedData, mode: "create" | "update", existingId?: string) => {
@@ -611,7 +611,7 @@ export default function CompetitionsAdmin() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع المنظمين" : "All Organizers"}</SelectItem>
-                {uniqueOrganizers.map((org: any, i: number) => (
+                {uniqueOrganizers.map((org, i) => (
                   <SelectItem key={org.name + i} value={org.name}>
                     {isAr && org.name_ar ? org.name_ar : org.name}
                   </SelectItem>
@@ -627,7 +627,7 @@ export default function CompetitionsAdmin() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "جميع المعارض" : "All Exhibitions"}</SelectItem>
-                {uniqueExhibitions.map((ex: any) => (
+                {uniqueExhibitions.map((ex) => (
                   <SelectItem key={ex.id} value={ex.id}>
                     {isAr && ex.title_ar ? ex.title_ar : ex.title}
                   </SelectItem>
@@ -732,7 +732,7 @@ export default function CompetitionsAdmin() {
                           </p>
                           {types.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
-                              {types.slice(0, 2).map((t: any) => (
+                              {types.slice(0, 2).map((t) => (
                                 <Badge key={t.type?.id} variant="outline" className="text-[9px] px-1.5 py-0">
                                   {isAr && t.type?.name_ar ? t.type.name_ar : t.type?.name}
                                 </Badge>
@@ -934,8 +934,8 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
   return (
     <div className="space-y-4">
       {judgingComps.map(comp => {
-        const regs = judgingData.filter((s: any) => s.competition_id === comp.id);
-        const approvedRegs = regs.filter((s: any) => s.status === "approved");
+        const regs = judgingData.filter((s) => s.competition_id === comp.id);
+        const approvedRegs = regs.filter((s) => s.status === "approved");
         const uniqueParticipants = approvedRegs.length;
         const progress = comp.max_participants ? Math.round((uniqueParticipants / comp.max_participants) * 100) : 50;
 
@@ -961,7 +961,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
                   <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدين" : "Approved"}</p>
                 </div>
                 <div className="text-center rounded-xl border border-border/40 p-2.5 bg-chart-4/5">
-                  <AnimatedCounter value={regs.filter((r: any) => r.status === "pending").length} className="text-lg font-bold text-chart-4" />
+                  <AnimatedCounter value={regs.filter((r) => r.status === "pending").length} className="text-lg font-bold text-chart-4" />
                   <p className="text-[10px] text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
                 </div>
               </div>
@@ -1027,7 +1027,7 @@ function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
               </div>
               {compResults.length > 0 ? (
                 <div className="space-y-2">
-                  {compResults.slice(0, 5).map((result: any) => {
+                  {compResults.slice(0, 5).map((result) => {
                     return (
                       <div key={result.id} className="flex items-center gap-3 rounded-xl border p-2.5">
                         <span className="text-lg w-8 text-center">{medalEmoji(result.final_rank)}</span>

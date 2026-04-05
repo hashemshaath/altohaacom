@@ -159,7 +159,7 @@ export default function AdminDashboard() {
       return ranges.map((range) => {
         const row: Record<string, any> = { day: range.day };
         tables.forEach((_, ti) => {
-          row[keys[ti]] = tableData[ti].filter((r: any) => r.created_at >= range.start && r.created_at <= range.end).length;
+          row[keys[ti]] = tableData[ti].filter((r) => r.created_at >= range.start && r.created_at <= range.end).length;
         });
         return row;
       });
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
       <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
         {statCards.map((stat) => {
           const sparkKey = sparklineKeys[stat.title];
-          const sparkPoints = sparkKey && sparkData ? sparkData.map((d: any) => ({ v: d[sparkKey] || 0 })) : null;
+          const sparkPoints = sparkKey && sparkData ? sparkData.map((d) => ({ v: d[sparkKey] || 0 })) : null;
           const trend = sparkPoints && sparkPoints.length >= 2 ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v : 0;
 
           return (
@@ -466,7 +466,7 @@ export default function AdminDashboard() {
               <p className="text-sm text-muted-foreground text-center py-6">{isAr ? "لا توجد إجراءات حديثة" : "No recent actions"}</p>
             ) : (
               <div className="space-y-2">
-                {stats?.recentActions?.map((action: any) => (
+                {stats?.recentActions?.map((action) => (
                   <div key={action.id} className="flex items-center justify-between rounded-lg border border-border/30 p-2.5">
                     {getActionBadge(action.action_type)}
                     <span className="text-[11px] text-muted-foreground tabular-nums">
@@ -494,7 +494,7 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {stats?.recentUsers?.map((user: any) => (
+              {stats?.recentUsers?.map((user) => (
                 <Link key={user.id} to={`/${user.username || user.id}`} className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50">
                   <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden bg-primary/10">
                     {user.avatar_url ? (

@@ -176,7 +176,7 @@ export default function ExhibitionDetail() {
     staleTime: 1000 * 60 * 3,
   });
 
-  const competitionIds = useMemo(() => linkedCompetitions?.map((c: any) => c.id) || [], [linkedCompetitions]);
+  const competitionIds = useMemo(() => linkedCompetitions?.map((c) => c.id) || [], [linkedCompetitions]);
 
   const { data: winningDishes } = useQuery({
     queryKey: ["exhibition-winning-dishes", competitionIds],
@@ -191,19 +191,19 @@ export default function ExhibitionDetail() {
       if (error) throw error;
 
       const scored = (regs || [])
-        .map((r: any) => ({ ...r, totalScore: (r.competition_scores || []).reduce((sum: number, s: any) => sum + Number(s.score || 0), 0), scoreCount: (r.competition_scores || []).length }))
-        .filter((r: any) => r.scoreCount > 0)
+        .map((r) => ({ ...r, totalScore: (r.competition_scores || []).reduce((sum, s) => sum + Number(s.score || 0), 0), scoreCount: (r.competition_scores || []).length }))
+        .filter((r) => r.scoreCount > 0)
         .sort((a: any, b: any) => b.totalScore - a.totalScore);
 
-      const participantIds = [...new Set(scored.map((r: any) => r.participant_id))];
+      const participantIds = [...new Set(scored.map((r) => r.participant_id))];
       if (participantIds.length > 0) {
         const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username, avatar_url").in("user_id", participantIds);
         const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
-        scored.forEach((r: any) => { r.participant = profileMap.get(r.participant_id) || null; });
+        scored.forEach((r) => { r.participant = profileMap.get(r.participant_id) || null; });
       }
 
-      const compMap = new Map(linkedCompetitions!.map((c: any) => [c.id, c]));
-      scored.forEach((r: any) => { r.competition = compMap.get(r.competition_id) || null; });
+      const compMap = new Map(linkedCompetitions!.map((c) => [c.id, c]));
+      scored.forEach((r) => { r.competition = compMap.get(r.competition_id) || null; });
       return scored;
     },
     enabled: competitionIds.length > 0,
@@ -213,7 +213,7 @@ export default function ExhibitionDetail() {
   const allJudgeIds = useMemo(() => {
     if (!linkedCompetitions) return [];
     const ids = new Set<string>();
-    linkedCompetitions.forEach((c: any) => { c.competition_judges?.forEach((j: any) => ids.add(j.judge_id)); });
+    linkedCompetitions.forEach((c) => { c.competition_judges?.forEach((j) => ids.add(j.judge_id)); });
     return Array.from(ids);
   }, [linkedCompetitions]);
 

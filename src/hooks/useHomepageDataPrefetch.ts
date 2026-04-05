@@ -145,7 +145,7 @@ export function useHomepageDataPrefetch() {
 
         // SponsorshipOpportunities
         if (competitions.data) {
-          qc.setQueryData(["home-sponsorship-opportunities"], competitions.data.map((c: any) => ({
+          qc.setQueryData(["home-sponsorship-opportunities"], competitions.data.map((c) => ({
             ...c,
             currentSponsors: c.competition_sponsors?.length || 0,
             packages: [], // packages fetched separately if needed
@@ -179,16 +179,16 @@ export function useHomepageDataPrefetch() {
 
         // Partner logos — seed for both sponsors and partners sections
         if (partnerLogos.data) {
-          const sponsorLogos = partnerLogos.data.filter((p: any) => p.category === "sponsor");
-          const partnerOnlyLogos = partnerLogos.data.filter((p: any) => p.category !== "sponsor");
-          qc.setQueryData(["section-logos", "sponsors", 12], sponsorLogos.length > 0 ? sponsorLogos.slice(0, 12).map((p: any) => ({
+          const sponsorLogos = partnerLogos.data.filter((p) => p.category === "sponsor");
+          const partnerOnlyLogos = partnerLogos.data.filter((p) => p.category !== "sponsor");
+          qc.setQueryData(["section-logos", "sponsors", 12], sponsorLogos.length > 0 ? sponsorLogos.slice(0, 12).map((p) => ({
             id: p.id, name: p.name, logo_url: p.logo_url, website_url: p.website_url, category: p.category,
-          })) : partnerLogos.data.slice(0, 12).map((p: any) => ({
+          })) : partnerLogos.data.slice(0, 12).map((p) => ({
             id: p.id, name: p.name, logo_url: p.logo_url, website_url: p.website_url, category: p.category,
           })));
-          qc.setQueryData(["section-logos", "partners", 12], partnerOnlyLogos.length > 0 ? partnerOnlyLogos.slice(0, 12).map((p: any) => ({
+          qc.setQueryData(["section-logos", "partners", 12], partnerOnlyLogos.length > 0 ? partnerOnlyLogos.slice(0, 12).map((p) => ({
             id: p.id, name: p.name, logo_url: p.logo_url, website_url: p.website_url, category: p.category,
-          })) : partnerLogos.data.slice(0, 12).map((p: any) => ({
+          })) : partnerLogos.data.slice(0, 12).map((p) => ({
             id: p.id, name: p.name, logo_url: p.logo_url, website_url: p.website_url, category: p.category,
           })));
         }
@@ -200,11 +200,11 @@ export function useHomepageDataPrefetch() {
 
         // Featured chefs — seed with rankings + profiles merged
         if (chefRankings.data && chefRankings.data.length > 0 && profiles.data) {
-          const profileMap = new Map((profiles.data || []).map((p: any) => [p.user_id, p]));
-          const merged = chefRankings.data.map((r: any) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
+          const profileMap = new Map((profiles.data || []).map((p) => [p.user_id, p]));
+          const merged = chefRankings.data.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
           qc.setQueryData(["featured-chefs-home", 8], merged);
         } else if (profiles.data) {
-          qc.setQueryData(["featured-chefs-home", 8], profiles.data.map((p: any) => ({
+          qc.setQueryData(["featured-chefs-home", 8], profiles.data.map((p) => ({
             ...p, total_points: p.loyalty_points || 0,
             gold_medals: 0, silver_medals: 0, bronze_medals: 0,
           })));
@@ -216,7 +216,7 @@ export function useHomepageDataPrefetch() {
         }
 
         // Stats
-        const getCount = (r: any) => r?.count ?? 0;
+        const getCount = (r) => r?.count ?? 0;
         qc.setQueryData(["home-stats"], {
           members: getCount(stats[0]),
           competitions: getCount(stats[1]),

@@ -84,8 +84,8 @@ const TrackingStatusCard = memo(function TrackingStatusCard() {
         .select("integration_type, is_active")
         .in("integration_type", ALL_TRACKING_TYPES);
       return (data || [])
-        .filter((r: any) => r.is_active)
-        .map((r: any) => r.integration_type);
+        .filter((r) => r.is_active)
+        .map((r) => r.integration_type);
     },
     staleTime: 30_000,
   });

@@ -51,13 +51,13 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
     queryKey: ["mgmt-cooking-reg-counts", exhibitionId],
     queryFn: async () => {
       if (!sessions.length) return {};
-      const ids = sessions.map((s: any) => s.id);
+      const ids = sessions.map((s) => s.id);
       const { data } = await supabase
         .from("exhibition_session_registrations")
         .select("session_id")
         .in("session_id", ids);
       const counts: Record<string, number> = {};
-      (data || []).forEach((r: any) => counts[r.session_id] = (counts[r.session_id] || 0) + 1);
+      (data || []).forEach((r) => counts[r.session_id] = (counts[r.session_id] || 0) + 1);
       return counts;
     },
     enabled: sessions.length > 0,
@@ -124,7 +124,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
     setForm({ title: "", title_ar: "", description: "", description_ar: "", chef_id: "", difficulty: "intermediate", scheduled_start: "", scheduled_end: "", max_participants: 30, cuisine_type: "", ingredients: "" });
   };
 
-  const editSession = (s: any) => {
+  const editSession = (s) => {
     setForm({
       title: s.title || "",
       title_ar: s.title_ar || "",
@@ -216,7 +216,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sessions.map((s: any) => (
+                {sessions.map((s) => (
                   <TableRow key={s.id}>
                     <TableCell className="text-xs font-medium">{isAr ? s.title_ar || s.title : s.title}</TableCell>
                     <TableCell className="text-[10px] text-muted-foreground">

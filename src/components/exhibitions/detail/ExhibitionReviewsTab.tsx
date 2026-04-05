@@ -183,7 +183,7 @@ function ReviewReplySection({ reviewId, isAr, isOrganizer, exhibitionCreatorId }
 
   return (
     <div className="mt-2 space-y-2">
-      {replies.map((r: any) => {
+      {replies.map((r) => {
         const isOrganizerReply = exhibitionCreatorId && r.user_id === exhibitionCreatorId;
         return (
           <div key={r.id} className={`ms-6 rounded-xl p-2.5 border-s-2 ${isOrganizerReply ? "bg-primary/5 border-primary/40" : "bg-muted/40 border-primary/20"}`}>
@@ -513,7 +513,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
 
       {/* Reviews list */}
       <div className="space-y-3">
-        {sortedReviews.map((review: any) => (
+        {sortedReviews.map((review) => (
           <Card key={review.id} className="border-border/50 transition-all hover:shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">

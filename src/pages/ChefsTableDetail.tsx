@@ -54,7 +54,7 @@ export default function ChefsTableDetail() {
   const submittedEvaluations = evaluations.filter(e => e.status === "submitted");
   const recommendedCount = submittedEvaluations.filter(e => e.is_recommended).length;
   const avgScores = scoreLabels.map(s => {
-    const scores = submittedEvaluations.map(e => (e as any)[s.key]).filter((v: any) => v != null);
+    const scores = submittedEvaluations.map(e => (e as any)[s.key]).filter((v) => v != null);
     return { ...s, avg: scores.length ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0 };
   });
 

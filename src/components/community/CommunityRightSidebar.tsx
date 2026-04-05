@@ -84,7 +84,7 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
                 {isAr ? "من تتابع" : "Who to Follow"}
               </h3>
               <div className="divide-y divide-border/20">
-                {suggestedUsers.slice(0, 3).map((profile: any) => {
+                {suggestedUsers.slice(0, 3).map((profile) => {
                   const name = isAr
                     ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || profile.username)
                     : (profile.display_name || profile.full_name || profile.username);
