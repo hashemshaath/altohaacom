@@ -126,7 +126,7 @@ export const BulkUserImport = memo(function BulkUserImport() {
         success++;
       } catch (err: unknown) {
         failed++;
-        errors.push(`${u.email}: ${err.message}`);
+        errors.push(`${u.email}: ${err instanceof Error ? err.message : String(err)}`);
       }
       setImportProgress(Math.round(((i + 1) / validUsers.length) * 100));
     }

@@ -92,7 +92,7 @@ export const SEOCompetitorTracker = memo(function SEOCompetitorTracker({ isAr }:
       qc.invalidateQueries({ queryKey: ["seo-competitors"] });
       toast.success(isAr ? "تمت إضافة المنافس" : "Competitor added");
     } catch (e: unknown) {
-      toast.error(e.message);
+      toast.error(e instanceof Error ? e.message : String(e));
     } finally {
       setAdding(false);
     }

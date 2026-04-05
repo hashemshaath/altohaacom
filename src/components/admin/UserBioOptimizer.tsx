@@ -37,7 +37,7 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
         toast({ title: isAr ? "تم تحسين النبذة" : "Bio optimized successfully" });
       }
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في التحسين" : "Optimization Error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ في التحسين" : "Optimization Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setOptimizing(false);
     }
@@ -66,7 +66,7 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
         });
       }
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في الترجمة" : "Translation Error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ في الترجمة" : "Translation Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setTranslating(false);
     }

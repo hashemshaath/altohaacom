@@ -158,7 +158,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
         toast({ title: isAr ? "تمت الترجمة + SEO" : "Translated + SEO optimized" });
       }
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setTranslatingField(null);
     }
@@ -179,7 +179,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
         toast({ title: isAr ? "تم تحسين النص" : "Text optimized for SEO" });
       }
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setTranslatingField(null);
     }
@@ -198,7 +198,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
       onUpdate(field, urlData.publicUrl);
       toast({ title: isAr ? "تم الرفع" : "Upload successful" });
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setter(false);
     }

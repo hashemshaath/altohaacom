@@ -46,7 +46,7 @@ export const BilingualField = memo(function BilingualField({
         toast.success(from === "en" ? "تمت الترجمة ✓" : "Translated ✓");
       }
     } catch (err: unknown) {
-      toast.error(err.message || "فشلت الترجمة");
+      toast.error(err instanceof Error ? err.message : "فشلت الترجمة");
     } finally {
       setLoading(false);
     }

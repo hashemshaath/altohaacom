@@ -76,7 +76,7 @@ export const ExhibitionMediaUploader = memo(function ExhibitionMediaUploader({ e
       queryClient.invalidateQueries({ queryKey: ["exhibition-media", exhibitionId] });
       toast({ title: t("Uploaded successfully", "تم الرفع بنجاح") });
     } catch (err: unknown) {
-      toast({ title: t("Upload failed", "فشل الرفع"), description: err.message, variant: "destructive" });
+      toast({ title: t("Upload failed", "فشل الرفع"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setUploading(false);
       e.target.value = "";

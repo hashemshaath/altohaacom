@@ -123,7 +123,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       URL.revokeObjectURL(url);
       toast({ title: t("Template downloaded", "تم تنزيل القالب") });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err.message });
+      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setLoading(false);
     }
@@ -161,7 +161,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
         description: t(`${data.valid} valid, ${data.errors?.length || 0} errors`, `${data.valid} صالح، ${data.errors?.length || 0} أخطاء`),
       });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("Parse error", "خطأ في التحليل"), description: err.message });
+      toast({ variant: "destructive", title: t("Parse error", "خطأ في التحليل"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setLoading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -205,7 +205,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       setStep("review");
       toast({ title: t("AI optimization complete", "اكتمل التحسين بالذكاء الاصطناعي") });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("AI Error", "خطأ AI"), description: err.message });
+      toast({ variant: "destructive", title: t("AI Error", "خطأ AI"), description: err instanceof Error ? err.message : String(err) });
       setStep("preview");
     } finally {
       setOptimizing(false);
@@ -248,7 +248,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       onImportComplete?.();
       resetState();
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("Save error", "خطأ في الحفظ"), description: err.message });
+      toast({ variant: "destructive", title: t("Save error", "خطأ في الحفظ"), description: err instanceof Error ? err.message : String(err) });
       setStep("review");
     } finally {
       setSaving(false);
@@ -299,7 +299,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       onImportComplete?.();
       resetState();
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("Import error", "خطأ في الاستيراد"), description: err.message });
+      toast({ variant: "destructive", title: t("Import error", "خطأ في الاستيراد"), description: err instanceof Error ? err.message : String(err) });
       setStep("review");
     } finally {
       setSaving(false);

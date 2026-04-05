@@ -38,7 +38,7 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
         toast({ title: isAr ? "تم التحسين بنجاح" : "Optimized successfully" });
       }
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setOptimizing(false);
     }
@@ -60,7 +60,7 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
         });
       }
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setTranslating(false);
     }

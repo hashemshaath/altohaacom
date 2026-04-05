@@ -81,7 +81,7 @@ export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({
       setForm(emptyOfficial);
       setShowForm(false);
     } catch (err: unknown) {
-      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setSaving(false);
     }
