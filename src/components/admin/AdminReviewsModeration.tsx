@@ -35,16 +35,19 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
   });
 
   // Fetch company names and reviewer profiles
-  const companyIds = [...new Set(reviews.map((r: any) => r.company_id))];
-  const userIds = [...new Set(reviews.map((r: any) => r.user_id))];
+  const companyIds = [...new Set(reviews.map((r) => r.company_id))];
+  const userIds = [...new Set(reviews.map((r) => r.user_id))];
+
+  interface CompanyInfo { id: string; name: string; name_ar: string | null }
+  interface ProfileInfo { user_id: string; full_name: string | null; username: string | null }
 
   const { data: companies = {} } = useQuery({
     queryKey: ["adminReviewCompanies", companyIds],
     queryFn: async () => {
       if (companyIds.length === 0) return {};
       const { data } = await supabase.from("companies").select("id, name, name_ar").in("id", companyIds);
-      const map: Record<string, any> = {};
-      (data || []).forEach((c: any) => { map[c.id] = c; });
+      const map: Record<string, CompanyInfo> = {};
+      (data || []).forEach((c) => { map[c.id] = c; });
       return map;
     },
     enabled: companyIds.length > 0,
@@ -55,8 +58,8 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
     queryFn: async () => {
       if (userIds.length === 0) return {};
       const { data } = await supabase.from("profiles").select("user_id, full_name, username").in("user_id", userIds);
-      const map: Record<string, any> = {};
-      (data || []).forEach((p: any) => { map[p.user_id] = p; });
+      const map: Record<string, ProfileInfo> = {};
+      (data || []).forEach((p) => { map[p.user_id] = p; });
       return map;
     },
     enabled: userIds.length > 0,
@@ -75,13 +78,13 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
 
   const stats = {
     total: reviews.length,
-    published: reviews.filter((r: any) => r.status === "published").length,
-    flagged: reviews.filter((r: any) => r.status === "flagged").length,
-    hidden: reviews.filter((r: any) => r.status === "hidden").length,
+    published: reviews.filter((r) => r.status === "published").length,
+    flagged: reviews.filter((r) => r.status === "flagged").length,
+    hidden: reviews.filter((r) => r.status === "hidden").length,
   };
 
   const filteredReviews = search
-    ? reviews.filter((r: any) => {
+    ? reviews.filter((r) => {
         const companyName = companies[r.company_id]?.name?.toLowerCase() || "";
         const userName = profiles[r.user_id]?.full_name?.toLowerCase() || "";
         const s = search.toLowerCase();
@@ -135,7 +138,7 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredReviews.map((r: any) => {
+              {filteredReviews.map((r) => {
                 const company = companies[r.company_id];
                 const profile = profiles[r.user_id];
                 return (

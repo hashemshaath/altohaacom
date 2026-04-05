@@ -44,7 +44,7 @@ export const AdminSupplierControls = memo(function AdminSupplierControls() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, unknown> }) => {
       const { error } = await supabase.from("companies").update(updates).eq("id", id);
       if (error) throw error;
     },
@@ -54,7 +54,7 @@ export const AdminSupplierControls = memo(function AdminSupplierControls() {
     },
   });
 
-  const proSuppliers = companies.filter((c: any) => c.is_pro_supplier);
+  const proSuppliers = companies.filter((c) => c.is_pro_supplier);
 
   return (
     <div className="space-y-6">
@@ -96,7 +96,7 @@ export const AdminSupplierControls = memo(function AdminSupplierControls() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {companies.map((c: any) => (
+              {companies.map((c) => (
                 <TableRow key={c.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
