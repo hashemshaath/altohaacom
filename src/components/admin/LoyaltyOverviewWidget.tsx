@@ -34,14 +34,14 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
 
       // Tier distribution
       const tiers: Record<string, number> = {};
-      tierDistribution?.forEach((m: any) => {
+      tierDistribution?.forEach((m) => {
         const t = m.tier || "bronze";
         tiers[t] = (tiers[t] || 0) + 1;
       });
 
       // Points stats
-      const totalAwarded = recentPoints?.filter((p: any) => p.points > 0).reduce((s: number, p: any) => s + p.points, 0) || 0;
-      const totalRedeemed = Math.abs(recentPoints?.filter((p: any) => p.points < 0).reduce((s: number, p: any) => s + p.points, 0) || 0);
+      const totalAwarded = recentPoints?.filter((p) => p.points > 0).reduce((s, p) => s + p.points, 0) || 0;
+      const totalRedeemed = Math.abs(recentPoints?.filter((p) => p.points < 0).reduce((s, p) => s + p.points, 0) || 0);
 
       return {
         totalMembers: totalMembers || 0,

@@ -103,7 +103,7 @@ export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidg
         {data?.upcoming && data.upcoming.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">{isAr ? "مواعيد نهائية قادمة" : "Upcoming Deadlines"}</p>
-            {data.upcoming.map((comp: any) => {
+            {data.upcoming.map((comp) => {
               const daysLeft = comp.registration_deadline ? differenceInDays(new Date(comp.registration_deadline), new Date()) : null;
               return (
                 <div key={comp.id} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/30">

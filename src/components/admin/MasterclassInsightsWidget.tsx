@@ -17,10 +17,10 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
     queryKey: ["admin-masterclass-insights"],
     queryFn: async () => {
       const r1 = await supabase.from("masterclasses").select("*", { count: "exact", head: true });
-      const r2 = await (supabase as any).from("masterclasses").select("*", { count: "exact", head: true }).eq("is_published", true);
-      const r3 = await (supabase as any).from("masterclass_modules").select("*", { count: "exact", head: true });
-      const r4 = await (supabase as any).from("masterclass_enrollments").select("progress_percentage, completed_at");
-      const r5 = await (supabase as any).from("masterclasses").select("id, title, title_ar, enrollment_count, average_rating")
+      const r2 = await supabase.from("masterclasses").select("*", { count: "exact", head: true }).eq("is_published", true);
+      const r3 = await supabase.from("masterclass_modules").select("*", { count: "exact", head: true });
+      const r4 = await supabase.from("masterclass_enrollments").select("progress_percentage, completed_at");
+      const r5 = await supabase.from("masterclasses").select("id, title, title_ar, enrollment_count, average_rating")
         .eq("is_published", true).order("enrollment_count", { ascending: false }).limit(5);
 
       const totalCourses = r1.count || 0;
@@ -31,10 +31,10 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
       const topCourses = r5.data || [];
 
       const completionRate = totalEnrollments
-        ? Math.round((enrollments.filter((e: any) => e.completed_at).length / totalEnrollments) * 100)
+        ? Math.round((enrollments.filter((e) => e.completed_at).length / totalEnrollments) * 100)
         : 0;
       const avgProgress = totalEnrollments
-        ? Math.round(enrollments.reduce((s: number, e: any) => s + (e.progress_percentage || 0), 0) / totalEnrollments)
+        ? Math.round(enrollments.reduce((s, e) => s + (e.progress_percentage || 0), 0) / totalEnrollments)
         : 0;
 
       return {
@@ -96,7 +96,7 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
         {data?.topCourses && data.topCourses.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">{isAr ? "الأكثر تسجيلاً" : "Top Courses"}</p>
-            {data.topCourses.map((course: any) => (
+            {data.topCourses.map((course) => (
               <div key={course.id} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/20">
                 <span className="truncate flex-1">{isAr && course.title_ar ? course.title_ar : course.title}</span>
                 <div className="flex items-center gap-1.5 shrink-0 ms-2">
