@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { User, Shield, Mail, Phone, Calendar, Globe, Award, Clock, CreditCard, FileText, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface Props {
   userId: string | null;

@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Save, Infinity, RotateCcw } from "lucide-react";
 import { useState, useEffect, memo } from "react";
+import { toast } from "sonner";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 const TIER_LABELS: Record<string, { en: string; ar: string }> = {

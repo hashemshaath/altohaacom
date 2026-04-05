@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { ChefHat, Clock, Check, X, MapPin, Calendar, DollarSign, Timer, Mail, Star } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface Invitation {
   id: string;

@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, ArrowRight, ChefHat, Building2, Package, MapPin, Send, Globe, Sparkles, CheckCircle2, Users, FileText, Camera, Utensils, Flame, Leaf } from "lucide-react";
 import { ProductImageUpload } from "@/components/chefs-table/ProductImageUpload";
+import { toast } from "sonner";
 
 // ─── Step Configuration ─────────────────────────
 

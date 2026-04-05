@@ -12,6 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Link as LinkIcon, Plus, X, Search, Calendar, MapPin, Building2, Unlink } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface OrganizerExhibitionsPanelProps {
   open: boolean;

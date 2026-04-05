@@ -12,6 +12,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Star, CheckCircle2, XCircle, Send, Eye, Wrench, Users, HelpCircle, ChevronDown, ImageIcon } from "lucide-react";
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer } from "recharts";
+import { toast } from "sonner";
 
 interface Props {
   sessionId: string;

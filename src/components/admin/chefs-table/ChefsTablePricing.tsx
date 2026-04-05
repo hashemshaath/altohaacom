@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { DollarSign, Plus, Save, Edit2, Trash2, Calculator } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { toast } from "sonner";
 
 interface PricingPlan {
   id: string;

@@ -12,6 +12,7 @@ import { FileText, Receipt, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { executeEvaluationWorkflow } from "@/lib/evaluationWorkflows";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { toast } from "sonner";
 
 interface PricingPlan {
   id: string; name: string; name_ar: string | null;

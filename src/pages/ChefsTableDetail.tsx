@@ -23,6 +23,7 @@ import {
   Users, Image, FileText, Check, X, Clock, BarChart3, ClipboardCheck, ScrollText
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const scoreLabels = [
   { key: "taste_score", en: "Taste & Flavor", ar: "المذاق والنكهة", color: "bg-chart-1" },

@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Loader2, Search, Shield, Zap, Star, Crown, Layout, MessageCircle, CheckCircle2, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 

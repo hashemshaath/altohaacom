@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Play, Pause, RotateCcw, Timer } from "lucide-react";
+import { toast } from "sonner";
 
 interface CookingTimerProps {
   prepMinutes?: number;

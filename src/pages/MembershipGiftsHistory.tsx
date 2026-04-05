@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Gift, Send, Inbox, ArrowLeft, Copy, CheckCircle, Clock, XCircle, ExternalLink } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const STATUS_MAP: Record<string, { en: string; ar: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   pending: { en: "Pending", ar: "في الانتظار", variant: "secondary" },

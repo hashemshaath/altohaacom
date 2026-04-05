@@ -21,6 +21,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+import { toast } from "sonner";
   Plus, Pencil, Trash2, GripVertical, ChefHat, Trophy, Wrench, Coffee,
   ClipboardCheck, Scale, Settings2, Layers, X, Save,
 } from "lucide-react";

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Play, Loader2, AlertTriangle, Info, ChevronDown, ChevronUp, Clock, FileSearch } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const SEVERITY_CONFIG = {
   error: { icon: AlertTriangle, class: "text-destructive bg-destructive/10 border-destructive/20", label: "Error", labelAr: "خطأ" },

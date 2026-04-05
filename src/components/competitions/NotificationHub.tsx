@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Bell, Send, Megaphone, MessageSquare, Users } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   competitionId: string;

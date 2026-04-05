@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Star, Send, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface TicketSatisfactionRatingProps {
   ticketId: string;

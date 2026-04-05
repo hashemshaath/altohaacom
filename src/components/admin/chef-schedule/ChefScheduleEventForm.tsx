@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { X, Save, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   event?: ChefScheduleEvent | null;

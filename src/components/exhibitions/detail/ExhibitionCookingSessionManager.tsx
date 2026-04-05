@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChefHat, Plus, Edit, Trash2, Radio, Check, Clock, Users } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface Props {
   exhibitionId: string;

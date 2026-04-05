@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Plus, Copy, Pencil, Trash2, Save, FileText, ChefHat, Trophy, Wrench, Coffee, Layers, Eye } from "lucide-react";
+import { toast } from "sonner";
 
 const DOMAIN_ICONS: Record<string, React.ElementType> = {
   chefs_table: ChefHat,

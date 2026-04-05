@@ -3,6 +3,7 @@ import { useState, useCallback, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { X, Loader2, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 interface Props {
   images: string[];

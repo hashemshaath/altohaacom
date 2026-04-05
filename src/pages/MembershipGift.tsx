@@ -17,6 +17,7 @@ import {
   User, Mail, Sparkles, Heart, Loader2, Share2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const TIERS = [
   { id: "professional", icon: Star, color: "text-primary", bg: "bg-primary/10", monthly: 19, yearly: 190 },

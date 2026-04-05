@@ -32,6 +32,7 @@ import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
 
 const JudgesAdmin = lazy(() => import("./JudgesAdmin"));
 

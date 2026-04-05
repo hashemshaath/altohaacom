@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Check, LayoutGrid, Newspaper } from "lucide-react";
+import { toast } from "sonner";
 
 const TEMPLATES = [
   {

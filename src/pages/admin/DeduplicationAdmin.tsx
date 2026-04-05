@@ -21,6 +21,7 @@ import { useEntityDedup, type DupGroup } from "@/hooks/useEntityDedup";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const TABLE_OPTIONS = [
   { value: "organizers", label_en: "Organizers", label_ar: "المنظمون", icon: "🏢" },

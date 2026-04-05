@@ -48,6 +48,7 @@ import {
   Twitter, Facebook, Linkedin, Instagram, AlertCircle, Link2, ArrowUpDown, ArrowUp, ArrowDown,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 interface OrganizerForm {
   name: string;

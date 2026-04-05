@@ -24,6 +24,7 @@ import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,

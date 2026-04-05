@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
+import { toast } from "sonner";
   ArrowLeft, ArrowRight, Check, Trophy, Layers,
   Hash, Star, CheckCircle2, Eye, Wrench, Zap,
   ClipboardList, Info

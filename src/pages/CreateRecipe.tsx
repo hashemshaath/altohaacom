@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Plus, Trash2, UtensilsCrossed, GripVertical, Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const categoryOptions = [
   { value: "appetizer", en: "Appetizer", ar: "مقبلات" },

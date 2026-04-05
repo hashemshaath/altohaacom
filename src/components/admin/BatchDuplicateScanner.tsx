@@ -13,6 +13,7 @@ import {
 import { ScanSearch, Merge, CheckCircle2, Loader2 } from "lucide-react";
 import { useEntityDedup, type DupGroup } from "@/hooks/useEntityDedup";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const TABLE_OPTIONS = [
   { value: "organizers", label_en: "Organizers", label_ar: "المنظمون" },

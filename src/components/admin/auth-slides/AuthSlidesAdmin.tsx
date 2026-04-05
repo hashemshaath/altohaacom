@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Plus, Trash2, GripVertical, Image, Save, Loader2, Layers } from "lucide-react";
+import { toast } from "sonner";
 
 interface Slide {
   id: string;
