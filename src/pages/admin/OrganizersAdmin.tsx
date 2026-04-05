@@ -521,7 +521,7 @@ export default function OrganizersAdmin() {
                 </SelectContent>
               </Select>
             )}
-            <Select value={verifiedFilter} onValueChange={(v) => setVerifiedFilter(v)}>
+            <Select value={verifiedFilter} onValueChange={(v) => setVerifiedFilter(v as "all" | "verified" | "unverified")}>
               <SelectTrigger className="w-28 h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>

@@ -98,7 +98,7 @@ export default function NotificationsAdmin() {
     queryKey: ["recent-notifications"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("notifications").select("id, user_id, title, title_ar, body, body_ar, type, link, is_read, channel, created_at, metadata")
+        .from("notifications").select("id, user_id, title, title_ar, body, body_ar, type, link, is_read, channel, status, created_at, metadata")
         .order("created_at", { ascending: false }).limit(100);
       if (error) throw error;
       return data || [];
@@ -124,7 +124,7 @@ export default function NotificationsAdmin() {
     queryKey: ["notification-queue-items"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("notification_queue").select("id, notification_id, user_id, channel, status, scheduled_for, sent_at, error_message, created_at")
+        .from("notification_queue").select("id, user_id, channel, status, attempts, scheduled_for, error_message, created_at")
         .order("created_at", { ascending: false }).limit(100);
       if (error) throw error;
       return data || [];
@@ -135,7 +135,7 @@ export default function NotificationsAdmin() {
     queryKey: ["notification-templates"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("notification_templates").select("id, name, name_ar, subject, subject_ar, body, body_ar, type, channel, is_active, created_at")
+        .from("notification_templates").select("id, name, title, title_ar, body, body_ar, channels, variables, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
