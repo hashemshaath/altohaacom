@@ -82,12 +82,12 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
     setAiLoading(true);
     try {
       const companyData = await supabase.from("companies").select("name, type, description, country_code").eq("id", companyId).single();
-      const history = sponsorships.map((s: any) => ({
-        competition: s.competitions?.title,
-        tier: s.sponsorship_packages?.tier,
+      const history = sponsorships.map((s) => ({
+        competition: (s as Record<string, unknown>).competitions && typeof (s as Record<string, unknown>).competitions === "object" ? ((s as Record<string, unknown>).competitions as Record<string, unknown>)?.title : undefined,
+        tier: (s as Record<string, unknown>).sponsorship_packages && typeof (s as Record<string, unknown>).sponsorship_packages === "object" ? ((s as Record<string, unknown>).sponsorship_packages as Record<string, unknown>)?.tier : undefined,
         status: s.status,
       }));
-      const upcoming = upcomingCompetitions.map((c: any) => ({
+      const upcoming = upcomingCompetitions.map((c) => ({
         title: c.title,
         date: c.start_date,
         country: c.country_code,
@@ -116,9 +116,9 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
   };
 
   const { totalSpent, activeCount, pendingInvitations } = useMemo(() => ({
-    totalSpent: sponsorships.reduce((sum: number, s: any) => sum + Number(s.sponsorship_packages?.price || 0), 0),
-    activeCount: sponsorships.filter((s: any) => s.status === "active").length,
-    pendingInvitations: invitations.filter((i: any) => i.status === "pending").length,
+    totalSpent: sponsorships.reduce((sum: number, s) => sum + Number((s as Record<string, unknown>).sponsorship_packages && typeof (s as Record<string, unknown>).sponsorship_packages === "object" ? ((s as Record<string, unknown>).sponsorship_packages as Record<string, unknown>)?.price || 0 : 0), 0),
+    activeCount: sponsorships.filter((s) => s.status === "active").length,
+    pendingInvitations: invitations.filter((i) => i.status === "pending").length,
   }), [sponsorships, invitations]);
 
   return (
@@ -175,7 +175,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sponsorships.map((s: any) => {
+                {sponsorships.map((s) => {
                   const Icon = TIER_ICONS[s.sponsorship_packages?.tier] || Package;
                   return (
                     <TableRow key={s.id}>
@@ -227,7 +227,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
         <CardContent>
           {invitations.length > 0 ? (
             <div className="grid gap-3 sm:grid-cols-2">
-              {invitations.map((inv: any) => (
+              {invitations.map((inv) => (
                 <Card key={inv.id} className="border">
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start justify-between mb-2">
@@ -270,7 +270,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2">
-              {upcomingCompetitions.map((comp: any) => (
+              {upcomingCompetitions.map((comp) => (
                 <Card key={comp.id} className="border">
                   <CardContent className="pt-4 pb-4">
                     <p className="font-medium text-sm">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>

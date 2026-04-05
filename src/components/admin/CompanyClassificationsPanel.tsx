@@ -85,16 +85,16 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
 
   const assignedRoleValues = roles.map(r => r.role);
   const availableClassifications = classifications.filter(
-    (c: any) => !assignedRoleValues.includes(c.name.toLowerCase())
+    (c) => !assignedRoleValues.includes(c.name.toLowerCase())
   );
 
   const getClassColor = (roleName: string) => {
-    const cls = classifications.find((c: any) => c.name.toLowerCase() === roleName.toLowerCase());
+    const cls = classifications.find((c) => c.name.toLowerCase() === roleName.toLowerCase());
     return cls?.color || "bg-muted text-muted-foreground";
   };
 
   const getClassLabel = (roleName: string) => {
-    const cls = classifications.find((c: any) => c.name.toLowerCase() === roleName.toLowerCase());
+    const cls = classifications.find((c) => c.name.toLowerCase() === roleName.toLowerCase());
     if (cls) return isAr ? (cls.name_ar || cls.name) : cls.name;
     return roleName;
   };
@@ -106,7 +106,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
         setNewRole("");
         toast({ title: isAr ? "تم تعيين التصنيف" : "Classification assigned" });
       },
-      onError: (err: any) => {
+      onError: (err: Error) => {
         toast({ variant: "destructive", title: isAr ? "فشل التعيين" : "Failed", description: err.message });
       },
     });
