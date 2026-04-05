@@ -398,7 +398,7 @@ export default function CompanySponsorships() {
             {packages.map((pkg) => {
               const tier = TIER_CONFIG[pkg.tier] || TIER_CONFIG.bronze;
               const TierIcon = tier.icon;
-              const benefits = Array.isArray(pkg.benefits) ? pkg.benefits : JSON.parse(pkg.benefits || "[]");
+              const benefits = Array.isArray(pkg.benefits) ? pkg.benefits : JSON.parse(String(pkg.benefits || "[]"));
               return (
                 <Card key={pkg.id} className={`relative ${pkg.tier === "gold" ? "border-chart-4 shadow-md ring-1 ring-chart-4/20" : ""}`}>
                   {pkg.tier === "gold" && <div className="absolute top-0 inset-x-0 h-1 bg-chart-4" />}

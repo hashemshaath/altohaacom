@@ -277,7 +277,7 @@ export default function CompanyAdvertising() {
                      <p>• {pkg.max_impressions ? <><AnimatedCounter value={pkg.max_impressions} className="inline" format /> {isAr ? "مشاهدة" : "impressions"}</> : isAr ? "غير محدود" : "Unlimited"}</p>
                      <p>• {pkg.max_clicks ? <><AnimatedCounter value={pkg.max_clicks} className="inline" format /> {isAr ? "نقرة" : "clicks"}</> : isAr ? "غير محدود" : "Unlimited"}</p>
                      <p>• <AnimatedCounter value={pkg.max_campaigns} className="inline" /> {isAr ? "حملة" : "campaigns"}</p>
-                     <p>• <AnimatedCounter value={pkg.included_placements?.length || 0} className="inline" /> {isAr ? "موقع" : "placements"}</p>
+                     <p>• <AnimatedCounter value={(pkg as any).included_placements?.length || 0} className="inline" /> {isAr ? "موقع" : "placements"}</p>
                    </div>
                    {pkg.price && <p className="text-sm font-bold mt-3 text-primary">{formatCurrency(Number(pkg.price), language as "en" | "ar")}</p>}
                   <p className="text-xs mt-3">{isAr ? pkg.description_ar || pkg.description : pkg.description}</p>

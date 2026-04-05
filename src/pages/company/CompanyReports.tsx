@@ -402,7 +402,7 @@ export default function CompanyReports() {
                         <tr key={t.transaction_number} className="border-b last:border-0 hover:bg-muted/30">
                           <td className="p-3 font-mono text-xs">{t.transaction_number}</td>
                           <td className="p-3"><Badge variant="outline" className={`text-[10px] ${isCredit ? "text-chart-2" : "text-destructive"}`}>{t.type}</Badge></td>
-                          <td className="p-3 text-muted-foreground truncate max-w-[200px]">{isAr ? t.description_ar || t.description : t.description}</td>
+                          <td className="p-3 text-muted-foreground truncate max-w-[200px]">{isAr ? (t as any).description_ar || t.description : t.description}</td>
                           <td className={`p-3 text-end font-medium ${isCredit ? "text-chart-2" : "text-destructive"}`}>
                             {isCredit ? "+" : "−"}{formatCurrency(t.amount || 0, language as "en" | "ar")}
                           </td>
