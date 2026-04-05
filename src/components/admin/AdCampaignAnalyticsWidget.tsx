@@ -48,11 +48,11 @@ export const AdCampaignAnalyticsWidget = memo(function AdCampaignAnalyticsWidget
       for (let i = 6; i >= 0; i--) {
         dailyMap[format(subDays(now, i), "EEE")] = { impressions: 0, clicks: 0 };
       }
-      (impressions.data || []).forEach((imp: any) => {
+      (impressions.data || []).forEach((imp: { created_at: string }) => {
         const d = format(new Date(imp.created_at), "EEE");
         if (dailyMap[d]) dailyMap[d].impressions++;
       });
-      (clicks.data || []).forEach((cl: any) => {
+      (clicks.data || []).forEach((cl: { created_at: string }) => {
         const d = format(new Date(cl.created_at), "EEE");
         if (dailyMap[d]) dailyMap[d].clicks++;
       });

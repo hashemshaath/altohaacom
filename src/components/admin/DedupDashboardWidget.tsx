@@ -76,8 +76,8 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
             <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
               {isAr ? "آخر العمليات" : "Recent Merges"}
             </div>
-            {data.recentMerges.map((m: any) => {
-              const details = m.details as any;
+            {data.recentMerges.map((m) => {
+              const details = m.details as Record<string, unknown> | null;
               return (
                 <div key={m.id} className="flex items-center gap-2 text-xs p-2 rounded-lg bg-muted/30">
                   <Merge className="h-3 w-3 text-muted-foreground shrink-0" />
