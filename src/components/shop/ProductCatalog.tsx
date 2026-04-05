@@ -147,7 +147,7 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
             <Card key={p.id} className={cn("group overflow-hidden transition-all hover:shadow-md", view === "list" && "flex flex-row")}>
               <div className={cn("relative overflow-hidden bg-muted", view === "grid" ? "aspect-square" : "w-32 shrink-0")}>
                 {p.image_url ? (
-                  <img src={p.image_url} alt={isAr ? p.name_ar || p.name : p.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
+                  <img src={p.image_url} alt={isAr ? p.title_ar || p.title : p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <Package className="h-10 w-10 text-muted-foreground/30" />
@@ -168,7 +168,7 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
                 </Button>
               </div>
               <CardContent className={cn("p-3", view === "list" && "flex-1")}>
-                <p className="text-sm font-medium line-clamp-2 mb-1">{isAr ? p.name_ar || p.name : p.name}</p>
+                <p className="text-sm font-medium line-clamp-2 mb-1">{isAr ? p.title_ar || p.title : p.title}</p>
                 {p.category && <Badge variant="secondary" className="text-[10px] mb-2">{p.category}</Badge>}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm font-bold text-primary">{p.price?.toFixed(2)} {p.currency || "SAR"}</span>
@@ -178,14 +178,14 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    {p.average_rating > 0 && (
+                    {(p as any).average_rating > 0 && (
                       <>
                         <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                        <span>{p.average_rating?.toFixed(1)}</span>
+                        <span>{(p as any).average_rating?.toFixed(1)}</span>
                       </>
                     )}
-                    {p.sold_count > 0 && (
-                      <span className="ms-1">({p.sold_count} {isAr ? "مبيع" : "sold"})</span>
+                    {(p as any).sold_count > 0 && (
+                      <span className="ms-1">({(p as any).sold_count} {isAr ? "مبيع" : "sold"})</span>
                     )}
                   </div>
                   <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => onAddToCart?.(p)}>

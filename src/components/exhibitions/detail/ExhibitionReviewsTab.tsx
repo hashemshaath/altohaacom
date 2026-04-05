@@ -348,7 +348,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
       toast({ title: isAr ? "شكراً لتقييمك! ⭐" : "Thanks for your review! ⭐" });
     },
     onError: (e: Error) => {
-      const isDuplicate = e?.message?.includes("unique") || e?.code === "23505";
+      const isDuplicate = e?.message?.includes("unique") || (e as any)?.code === "23505";
       toast({
         title: isAr ? "خطأ" : "Error",
         description: isDuplicate ? (isAr ? "لقد قمت بالتقييم مسبقاً" : "You already reviewed this exhibition") : (isAr ? "فشل في إرسال التقييم" : "Failed to submit review"),

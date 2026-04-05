@@ -72,13 +72,13 @@ export const ExhibitionTicketSelector = memo(function ExhibitionTicketSelector({
                       </p>
                     )}
                     <div className="flex items-center gap-2">
-                      <span className="text-lg font-bold" style={{ color: tt.color || undefined }}>
+                      <span className="text-lg font-bold">
                         {isFree ? t("Free", "مجاني") : `${tt.price} ${tt.currency}`}
                       </span>
                     </div>
                   </div>
-                  {tt.color && (
-                    <div className="h-2 w-2 rounded-full shrink-0 mt-1" style={{ background: tt.color }} />
+                  {(tt as any).color && (
+                    <div className="h-2 w-2 rounded-full shrink-0 mt-1" style={{ background: (tt as any).color }} />
                   )}
                 </div>
                 {/* Status badges */}

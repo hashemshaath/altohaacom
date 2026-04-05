@@ -330,7 +330,7 @@ export default function ProSuppliers() {
                       <SupplierBadges
                         isVerified={company.is_verified}
                         productCount={productCount}
-                        foundedYear={company.founded_year}
+                        foundedYear={(company as any).founded_year}
                         variant="compact"
                       />
 

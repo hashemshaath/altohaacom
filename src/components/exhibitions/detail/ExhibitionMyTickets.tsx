@@ -29,7 +29,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
       if (!user) return [];
       const { data, error } = await supabase
         .from("exhibition_tickets")
-        .select("id, ticket_number, qr_code, status, payment_status, attendee_name, attendee_email, checked_in_at, created_at, ticket_type_id")
+        .select("id, ticket_number, qr_code, status, attendee_name, attendee_email, checked_in_at, created_at, ticket_type_id")
         .eq("exhibition_id", exhibitionId)
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });

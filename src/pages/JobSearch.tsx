@@ -166,7 +166,7 @@ export default function JobSearch() {
     queryFn: async () => {
       let query = supabase
         .from("job_postings")
-        .select("*, companies(name, name_ar, logo_url, slug)")
+        .select("*, companies!inner(name, name_ar, logo_url)")
         .eq("status", "active")
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
@@ -195,12 +195,12 @@ export default function JobSearch() {
 
   // Top hiring companies
   const topCompanies = useMemo(() => {
-    const counts: Record<string, { name: string; nameAr: string; logo: string | null; slug: string | null; count: number }> = {};
+    const counts: Record<string, { name: string; nameAr: string; logo: string | null; count: number }> = {};
     jobPostings.forEach((j) => {
-      const c = j.companies;
+      const c = (j as any).companies;
       if (!c?.name) return;
       const key = c.name;
-      if (!counts[key]) counts[key] = { name: c.name, nameAr: c.name_ar || c.name, logo: c.logo_url, slug: c.slug, count: 0 };
+      if (!counts[key]) counts[key] = { name: c.name, nameAr: c.name_ar || c.name, logo: c.logo_url, count: 0 };
       counts[key].count++;
     });
     return Object.values(counts).sort((a, b) => b.count - a.count).slice(0, 5);
@@ -544,7 +544,7 @@ export default function JobSearch() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Select value={sortBy} onValueChange={(v) => setSortBy(v)}>
+                <Select value={sortBy} onValueChange={(v) => setSortBy(v as typeof sortBy)}>
                   <SelectTrigger className="w-[140px] rounded-xl border-border/20 bg-card text-xs h-10">
                     <ArrowUpDown className="h-3 w-3 me-1 text-muted-foreground/50" /><SelectValue />
                   </SelectTrigger>

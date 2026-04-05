@@ -38,10 +38,10 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
           .eq("is_read", false),
         supabase
           .from("competition_registrations")
-          .select("id, competitions!inner(title, title_ar, start_date)")
+          .select("id, competitions!inner(title, title_ar, competition_start)")
           .eq("participant_id", user.id)
           .eq("status", "approved")
-          .gte("competitions.start_date", todayISO)
+          .gte("competitions.competition_start", todayISO)
           .limit(3),
       ]);
 
@@ -90,9 +90,9 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
   digest.upcomingCompetitions.forEach((reg) => {
     const comp = reg.competitions;
     if (!comp) return;
-    const title = isAr ? (comp.title_ar || comp.title) : comp.title;
-    const timeStr = comp.start_date
-      ? formatDistanceToNow(new Date(comp.start_date), { addSuffix: true, locale: isAr ? ar : enUS })
+    const title = isAr ? ((comp as any).title_ar || (comp as any).title) : (comp as any).title;
+    const timeStr = (comp as any).competition_start
+      ? formatDistanceToNow(new Date((comp as any).competition_start), { addSuffix: true, locale: isAr ? ar : enUS })
       : "";
     items.push({
       icon: Trophy,

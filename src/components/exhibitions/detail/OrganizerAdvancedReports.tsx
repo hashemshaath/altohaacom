@@ -104,24 +104,24 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
 
   const { exportCSV: exportTickets } = useCSVExport({
     columns: [
-      { header: "ID", accessor: (r) => r.id },
-      { header: "Status", accessor: (r) => r.status },
-      { header: "Type", accessor: (r) => r.ticket_type || "standard" },
-      { header: "Amount", accessor: (r) => r.price_paid || 0 },
-      { header: "Checked In", accessor: (r) => r.checked_in_at ? "Yes" : "No" },
-      { header: "Created", accessor: (r) => r.created_at },
+      { header: "ID", accessor: (r: any) => r.id },
+      { header: "Status", accessor: (r: any) => r.status },
+      { header: "Type", accessor: (r: any) => r.ticket_type || "standard" },
+      { header: "Amount", accessor: (r: any) => r.price_paid || 0 },
+      { header: "Checked In", accessor: (r: any) => r.checked_in_at ? "Yes" : "No" },
+      { header: "Created", accessor: (r: any) => r.created_at },
     ],
     filename: `${exhibitionTitle}_tickets`,
   });
 
   const { exportCSV: exportBooths } = useCSVExport({
     columns: [
-      { header: "Status", accessor: (r) => r.status },
-      { header: "Category", accessor: (r) => r.category },
-      { header: "Hall", accessor: (r) => r.hall },
-      { header: "Price", accessor: (r) => r.price },
-      { header: "Size (sqm)", accessor: (r) => r.size_sqm },
-      { header: "Assigned", accessor: (r) => r.assigned_to ? "Yes" : "No" },
+      { header: "Status", accessor: (r: any) => r.status },
+      { header: "Category", accessor: (r: any) => r.category },
+      { header: "Hall", accessor: (r: any) => r.hall },
+      { header: "Price", accessor: (r: any) => r.price },
+      { header: "Size (sqm)", accessor: (r: any) => r.size_sqm },
+      { header: "Assigned", accessor: (r: any) => r.assigned_to ? "Yes" : "No" },
     ],
     filename: `${exhibitionTitle}_booths`,
   });

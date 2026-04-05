@@ -35,7 +35,7 @@ export default function Shop() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("shop_products")
-        .select("id, title, title_ar, description, description_ar, price, sale_price, currency, category, product_type, image_url, gallery_urls, is_featured, is_active, stock_quantity, seller_id, created_at")
+        .select("id, title, title_ar, description, description_ar, price, currency, category, product_type, image_url, gallery_urls, is_featured, is_active, seller_id, created_at")
         .eq("is_active", true)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });

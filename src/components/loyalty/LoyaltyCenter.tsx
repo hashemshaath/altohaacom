@@ -180,15 +180,15 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {rewards.map((r) => {
               const canAfford = points >= r.points_cost;
-              const tierIndex = tiers.findIndex((t) => t.slug === r.min_tier);
+              const tierIndex = tiers.findIndex((t) => t.slug === (r as any).min_tier);
               const userTierIndex = tiers.findIndex((t) => t.slug === currentTier?.slug);
               const tierLocked = tierIndex > userTierIndex;
               const affordPct = Math.min(100, (points / r.points_cost) * 100);
 
               return (
-                <Card key={r.id} className={`transition-all hover:shadow-md ${r.is_featured ? "border-primary/30 ring-1 ring-primary/10" : "hover:border-border/60"} ${tierLocked ? "opacity-60" : ""}`}>
+                <Card key={r.id} className={`transition-all hover:shadow-md ${(r as any).is_featured ? "border-primary/30 ring-1 ring-primary/10" : "hover:border-border/60"} ${tierLocked ? "opacity-60" : ""}`}>
                   <CardContent className="p-4 space-y-3">
-                    {r.is_featured && (
+                    {(r as any).is_featured && (
                       <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">
                         <Sparkles className="h-2.5 w-2.5 me-0.5" />
                         {isAr ? "مميز" : "Featured"}
@@ -215,7 +215,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                       {tierLocked ? (
                         <Badge variant="outline" className="text-[10px] gap-1">
                           <Lock className="h-3 w-3" />
-                          {r.min_tier}
+                          {(r as any).min_tier}
                         </Badge>
                       ) : (
                         <Button
@@ -240,7 +240,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
         <TabsContent value="badges">
           {badges.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {badges.map((b) => (
+              {badges.map((b: any) => (
                 <Card key={b.id} className="text-center group/badge transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-chart-4/30">
                   <CardContent className="p-4 space-y-2">
                     <span className="text-3xl block transition-transform duration-500 group-hover/badge:scale-125 group-hover/badge:rotate-6">{b.badge_icon}</span>

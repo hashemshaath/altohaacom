@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-interface CSVExportOptions<T> {
+interface CSVExportOptions<T = Record<string, any>> {
   /** Column definitions: header label and accessor */
   columns: { header: string; accessor: (row: T) => string | number | boolean | null | undefined }[];
   /** File name without extension */
@@ -26,7 +26,7 @@ interface CSVExportOptions<T> {
  * // later: exportCSV(filteredData);
  * ```
  */
-export function useCSVExport<T>({ columns, filename = "export", bom = true }: CSVExportOptions<T>) {
+export function useCSVExport<T = Record<string, any>>({ columns, filename = "export", bom = true }: CSVExportOptions<T>) {
   const { toast } = useToast();
   const { language } = useLanguage();
   const isAr = language === "ar";
