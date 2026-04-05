@@ -13,7 +13,10 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { BookOpen, Globe, FileText, Save, Loader2, Plus, Trash2, Link, Scale, Sparkles, X, Image } from "lucide-react";
+import {
+  BookOpen, Globe, FileText, Save, Loader2, Plus, Trash2, Link,
+  Scale, Eye, EyeOff, Sparkles, X, Image
+} from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RubricTemplatesPanel } from "./RubricTemplatesPanel";
 import { ReferenceGalleryPanel } from "./ReferenceGalleryPanel";

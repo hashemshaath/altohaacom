@@ -1,4 +1,9 @@
-import { Sparkles, Search, BarChart3, CalendarDays, MapPin, UserPlus, Heart, Truck, GraduationCap, Megaphone, Newspaper, Puzzle, Mail, Handshake, Star, Layout } from "lucide-react";
+import React from "react";
+import {
+  Sparkles, Search, BarChart3, CalendarDays, MapPin, ChefHat,
+  UserPlus, Heart, Truck, GraduationCap, Megaphone, Newspaper,
+  Puzzle, Mail, Handshake, Image, Star, Layout,
+} from "lucide-react";
 
 const ICON_MAP: Record<string, React.ElementType> = {
   hero: Sparkles,

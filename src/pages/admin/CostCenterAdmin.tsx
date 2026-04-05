@@ -8,7 +8,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Download } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { useCostEstimates, useCostEstimateItems, useCostApprovalLog, useCostTemplates, useCreateCostEstimate, useUpdateCostEstimate, useSaveCostEstimateItem, useDeleteCostEstimateItem, useSubmitForApproval, useApproveCostEstimate, useRejectCostEstimate, useConvertToInvoice, useSaveCostTemplate, useDuplicateCostEstimate, recalcEstimateTotals, COST_ITEM_CATEGORIES, MODULE_TYPES, ESTIMATE_STATUS_CONFIG, type CostEstimate, type CostEstimateItem, type CostModuleType, type CostItemCategory, type CostTemplate } from "@/hooks/useCostCenter";
+import {
+  useCostEstimates, useCostEstimateItems, useCostApprovalLog,
+  useCostTemplates, useCreateCostEstimate, useUpdateCostEstimate,
+  useSaveCostEstimateItem, useDeleteCostEstimateItem,
+  useSubmitForApproval, useApproveCostEstimate, useRejectCostEstimate,
+  useConvertToInvoice, useSaveCostTemplate, useDuplicateCostEstimate,
+  recalcEstimateTotals,
+  COST_ITEM_CATEGORIES, MODULE_TYPES, ESTIMATE_STATUS_CONFIG,
+  type CostEstimate, type CostEstimateItem, type CostModuleType,
+  type CostEstimateStatus, type CostItemCategory, type CostTemplate,
+} from "@/hooks/useCostCenter";
 import { ChefCostCenter } from "@/components/admin/chefs-table/ChefCostCenter";
 import { CostCenterOverview } from "@/components/admin/cost-center/CostCenterOverview";
 import { CostCenterBudgetTracking } from "@/components/admin/cost-center/CostCenterBudgetTracking";
@@ -19,14 +29,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { FinanceQuickNav } from "@/components/admin/FinanceQuickNav";
+import { toast } from "sonner";
 import { format } from "date-fns";
-import { Calculator, Plus, Search, FileText, Eye, Edit2, Trash2, Save, Send, CheckCircle2, XCircle, Receipt, DollarSign, BarChart3, Clock, Copy, Printer, LayoutTemplate, History, AlertCircle, Trophy, ChefHat, Landmark, Calendar, TrendingUp } from "lucide-react";
+import {
+  Calculator, Plus, Search, FileText, Eye, Edit2, Trash2,
+  Save, Send, CheckCircle2, XCircle, Receipt, ChevronDown,
+  DollarSign, BarChart3, Clock, ArrowRight, Copy,
+  Printer, LayoutTemplate, History, AlertCircle, Users,
+  Trophy, ChefHat, Landmark, Calendar, TrendingUp,
+} from "lucide-react";
 
 export default function CostCenterAdmin() {
   const { language } = useLanguage();

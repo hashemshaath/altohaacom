@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { Save, Type, Palette } from "lucide-react";
+import { FONT_OPTIONS, HEADING_FONT_OPTIONS } from "@/config/themePresets";
 
 interface Props {
   settings: Record<string, any>;

@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import { Users, Gift, Copy, Share2, TrendingUp, CheckCircle, Clock, ArrowLeft } from "lucide-react";
+import { formatCurrency } from "@/lib/currencyFormatter";
 import { Link } from "react-router-dom";
 
 const TIER_REWARDS: Record<string, { referrerPoints: number; referredDiscount: number }> = {

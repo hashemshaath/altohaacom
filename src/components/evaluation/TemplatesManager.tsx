@@ -15,8 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Plus, Copy, Pencil, Trash2, Save, FileText, ChefHat, Trophy, Wrench, Coffee, Layers, Eye } from "lucide-react";
+import {
+  Plus, Copy, Pencil, Trash2, Save, FileText, ChefHat, Trophy, Wrench, Coffee,
+  Layers, Star, Eye, Package, Target,
+} from "lucide-react";
 
 const DOMAIN_ICONS: Record<string, React.ElementType> = {
   chefs_table: ChefHat,

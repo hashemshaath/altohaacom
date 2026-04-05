@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Building2, Shield, Users, Search, Check, Gavel } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Building2, Shield, Users, Search, Check, Gavel, Globe } from "lucide-react";
 import { useState } from "react";
 
 interface SupervisingBodiesStepProps {

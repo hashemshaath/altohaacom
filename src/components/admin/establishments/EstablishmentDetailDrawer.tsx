@@ -1,14 +1,14 @@
-import { memo } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Users, Award, MapPin, Globe, Mail, Phone, Calendar, Star, TrendingUp, Eye } from "lucide-react";
+import { Building2, Users, Award, MapPin, Globe, Mail, Phone, Calendar, Star, TrendingUp, Eye } from "lucide-react";
 
 interface Props {
   entityId: string | null;

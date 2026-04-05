@@ -1,14 +1,15 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, MapPin, Calendar, Landmark, RefreshCw } from "lucide-react";
+import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight, MapPin, Calendar, Landmark, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 

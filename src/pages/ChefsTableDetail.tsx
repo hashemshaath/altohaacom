@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { EvaluationRadarChart } from "@/components/evaluation/EvaluationRadarChart";
 import { EvaluationBarChart } from "@/components/evaluation/EvaluationBarChart";
 import { EvaluationScoreCard } from "@/components/evaluation/EvaluationScoreCard";
@@ -23,6 +24,7 @@ import {
   Users, Image, FileText, Check, X, Clock, BarChart3, ClipboardCheck, ScrollText
 } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 const scoreLabels = [
   { key: "taste_score", en: "Taste & Flavor", ar: "المذاق والنكهة", color: "bg-chart-1" },

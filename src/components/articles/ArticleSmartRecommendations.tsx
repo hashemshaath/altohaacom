@@ -4,7 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Eye, Calendar } from "lucide-react";
+import { Sparkles, Eye, Calendar, ArrowUpRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { TicketSatisfactionRating } from "@/components/support/TicketSatisfactionRating";
 import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,7 +32,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Ticket, Plus, Send, Clock, CheckCircle2, MessageSquare, ArrowLeft, Search } from "lucide-react";
+import {
+  Ticket,
+  Plus,
+  Send,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  MessageSquare,
+  ArrowLeft,
+  Search,
+} from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toEnglishDigits } from "@/lib/formatNumber";

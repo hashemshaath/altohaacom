@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AlertTriangle, Merge, Loader2, X } from "lucide-react";
+import { AlertTriangle, Merge, ExternalLink, Loader2, X } from "lucide-react";
 import type { DupCandidate } from "@/hooks/useEntityDedup";
 
 const TABLE_LABELS: Record<string, { en: string; ar: string }> = {

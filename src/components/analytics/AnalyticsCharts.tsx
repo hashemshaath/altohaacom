@@ -5,7 +5,11 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   LineChart, Line, PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { CHART_COLORS, TOOLTIP_STYLE, LEGEND_STYLE, BAR_RADIUS, H_BAR_RADIUS, getNoDataText, translateStatus, getTooltipStyle } from "@/lib/chartConfig";
+import {
+  CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS,
+  GRID_PROPS, LEGEND_STYLE, BAR_RADIUS, H_BAR_RADIUS, CHART_HEIGHT, getNoDataText,
+  translateStatus, getTooltipStyle,
+} from "@/lib/chartConfig";
 
 function NoData({ isAr }: { isAr: boolean }) {
   return <p className="py-12 text-center text-muted-foreground text-sm">{getNoDataText(isAr)}</p>;

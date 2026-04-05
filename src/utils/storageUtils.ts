@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 
 const SIGNED_URL_EXPIRY = 2592000; // 30 days in seconds
 

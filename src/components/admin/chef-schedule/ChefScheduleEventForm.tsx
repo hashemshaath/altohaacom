@@ -1,14 +1,20 @@
-import { useState, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useCreateScheduleEvent, useUpdateScheduleEvent, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType, type ScheduleVisibility, type ScheduleStatus } from "@/hooks/useChefSchedule";
+import {
+  useCreateScheduleEvent, useUpdateScheduleEvent,
+  EVENT_TYPE_CONFIG, PARTICIPATION_TYPES, BROADCAST_TYPES,
+  type ChefScheduleEvent, type ScheduleEventType, type ScheduleVisibility, type ScheduleStatus,
+} from "@/hooks/useChefSchedule";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 import { X, Save, Plus } from "lucide-react";
 
 interface Props {

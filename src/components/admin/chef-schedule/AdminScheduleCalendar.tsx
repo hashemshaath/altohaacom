@@ -1,7 +1,10 @@
 import { useMemo, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { getDaysInMonth, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType } from "@/hooks/useChefSchedule";
-import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
+import {
+  useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS,
+  type GlobalEvent, type GlobalEventType,
+} from "@/hooks/useGlobalEventsCalendar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

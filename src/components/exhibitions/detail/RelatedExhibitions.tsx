@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
-import { isPast, isWithinInterval } from "date-fns";
+import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { cn } from "@/lib/utils";
 
 interface Props {

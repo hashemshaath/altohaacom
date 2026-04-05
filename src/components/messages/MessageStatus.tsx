@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { CheckCheck, Clock } from "lucide-react";
+import { Check, CheckCheck, Clock } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,

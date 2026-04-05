@@ -1,5 +1,6 @@
 import { memo, useState, forwardRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { InlineConfirm } from "@/components/ui/InlineConfirm";
+import { toast } from "sonner";
 import {
   User, Shield, Mail, Phone, Calendar, Globe, Award, Clock,
   CreditCard, FileText, Loader2, X, Copy, ExternalLink,

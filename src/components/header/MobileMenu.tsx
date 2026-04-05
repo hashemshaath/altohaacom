@@ -11,7 +11,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Menu, Shield, Scale, Home, User, LogOut, MessageSquare, HelpCircle, ChevronDown, Settings, Crown } from "lucide-react";
+import {
+  Menu, Shield, Scale, Search, Home, User, LogOut,
+  MessageSquare, HelpCircle, ChevronDown,
+  LayoutDashboard, Settings, Crown,
+} from "lucide-react";
 import { useState, useCallback, memo, forwardRef } from "react";
 
 interface NavLink {

@@ -37,6 +37,7 @@ import {
   DollarSign, Clock, CheckCircle, XCircle, Send, Copy,
 } from "lucide-react";
 import { format } from "date-fns";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface InvoiceItem {
   name: string;

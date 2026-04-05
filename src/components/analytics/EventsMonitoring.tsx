@@ -14,10 +14,26 @@ import { Button } from "@/components/ui/button";
 import { downloadCSV, printableReport } from "@/lib/exportUtils";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell, Legend, Line, ScatterChart, Scatter, ZAxis, ComposedChart } from "recharts";
-import { CHART_COLORS, TOOLTIP_STYLE, LEGEND_STYLE, BAR_RADIUS, H_BAR_RADIUS, getNoDataText } from "@/lib/chartConfig";
-import { Activity, Eye, MousePointerClick, Globe, Monitor, Smartphone, Tablet, Search, Zap, TrendingUp, BarChart3, Users, FileText, Layers, Timer, MapPin, Chrome, Clock, ArrowRight, Gauge, Crosshair, Fingerprint, Route, Flame, Target, LayoutGrid, Hash, Percent, ArrowUpRight, ArrowDownRight, Minus, ShoppingCart, DollarSign, PackageX, CreditCard, Download, Printer } from "lucide-react";
-import { format, subDays, subHours, parseISO, getHours, getDay } from "date-fns";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  AreaChart, Area, PieChart, Pie, Cell, Legend, LineChart, Line, RadarChart,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ScatterChart, Scatter,
+  ZAxis, ComposedChart, Treemap,
+} from "recharts";
+import {
+  CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS,
+  GRID_PROPS, LEGEND_STYLE, BAR_RADIUS, H_BAR_RADIUS, CHART_HEIGHT, getNoDataText,
+} from "@/lib/chartConfig";
+import {
+  Activity, Eye, MousePointerClick, Globe, Monitor, Smartphone,
+  Tablet, Search, Zap, TrendingUp, BarChart3, Users,
+  FileText, Layers, Timer, MapPin, Chrome, Clock, ArrowRight,
+  Gauge, Crosshair, Fingerprint, Route, AlertTriangle, Flame,
+  Target, PieChart as PieChartIcon, Radar as RadarIcon, LayoutGrid,
+  Hash, Percent, ArrowUpRight, ArrowDownRight, Minus,
+  ShoppingCart, DollarSign, PackageX, CreditCard, Download, Printer,
+} from "lucide-react";
+import { format, subDays, subHours, parseISO, differenceInMinutes, getHours, getDay } from "date-fns";
 
 const EXTRA_COLORS = [
   "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",

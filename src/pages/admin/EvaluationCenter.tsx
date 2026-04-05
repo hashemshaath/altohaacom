@@ -6,7 +6,7 @@ import { Settings2, FileText, ChefHat, Trophy, Wrench, UtensilsCrossed, Printer,
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useEvaluationDomains } from "@/hooks/useEvaluationSystem";
+import { useEvaluationDomains, useEvaluationCriteriaByDomain } from "@/hooks/useEvaluationSystem";
 import { CriteriaManager } from "@/components/evaluation/CriteriaManager";
 import { TemplatesManager } from "@/components/evaluation/TemplatesManager";
 import { useCSVExport } from "@/hooks/useCSVExport";

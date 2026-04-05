@@ -3,7 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Bell, CalendarClock, Ticket, Users, Star, Radio, MessageCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Bell, BellOff, CalendarClock, Ticket, Users, Star, Radio, MessageCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   exhibitionId: string;

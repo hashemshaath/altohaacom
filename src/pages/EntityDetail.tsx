@@ -16,7 +16,12 @@ import { toast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { countryFlag } from "@/lib/countryFlag";
-import { Building2, MapPin, Globe, Users, ShieldCheck, Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target, GraduationCap, BookOpen, Trophy, ArrowRight, Newspaper } from "lucide-react";
+import {
+  Building2, MapPin, Globe, Mail, Phone, Users, ShieldCheck,
+  Bell, BellOff, ArrowLeft, ExternalLink, Share2, Calendar, Award, Target,
+  GraduationCap, BookOpen, Trophy, ArrowRight, Crown, Newspaper, Briefcase,
+  Clock
+} from "lucide-react";
 import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { EntityProgramsTab } from "@/components/entities/EntityProgramsTab";

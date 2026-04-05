@@ -1,8 +1,13 @@
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Briefcase, GraduationCap, Tv, Trophy, ChevronDown, Calendar, Scale, Users, Medal, CalendarCheck, FileText } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Briefcase, GraduationCap, Tv, Award, Trophy, ChevronDown, Calendar, Scale, Users, Medal, CalendarCheck, FileText } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
-import { EDUCATION_LEVELS, JUDGING_POSITIONS, COMPETITION_ROLES, MEMBERSHIP_TYPES, labelFor } from "@/components/admin/career-timeline/constants";
+import {
+  EDUCATION_LEVELS, JUDGING_POSITIONS, MEDAL_TYPES, COMPETITION_ROLES,
+  MEMBERSHIP_TYPES, CERTIFICATE_TYPES, COUNTRIES,
+  labelFor,
+} from "@/components/admin/career-timeline/constants";
 import { BioCareerSkeleton } from "./BioCareerSkeleton";
 
 interface Props {

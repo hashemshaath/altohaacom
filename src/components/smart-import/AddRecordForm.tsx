@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -6,7 +7,11 @@ import {
   Plus, Loader2, MapPin, Star, Calendar, Phone, Hash,
 } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
-import { type TargetTable, type EntityType, type CompanyType, type ExhibitionType, ENTITY_TYPE_LABELS, COMPANY_TYPE_LABELS, EXHIBITION_TYPE_LABELS, countFields } from "./types";
+import {
+  type TargetTable, type EntityType, type CompanyType, type ExhibitionType,
+  TARGET_TABLE_OPTIONS, ENTITY_TYPE_LABELS, COMPANY_TYPE_LABELS,
+  ESTABLISHMENT_TYPES, EXHIBITION_TYPE_LABELS, countFields,
+} from "./types";
 
 interface AddRecordFormProps {
   details: ImportedData;

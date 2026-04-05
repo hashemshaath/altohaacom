@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Download, Loader2, CheckCircle2, Crown, Star } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 
 interface MembershipReceiptProps {
   receiptData: {

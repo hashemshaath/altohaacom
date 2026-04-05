@@ -2,9 +2,10 @@ import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { Package, Tag, Gift, CreditCard } from "lucide-react";
+import { ShoppingBag, Package, Tag, Gift, CreditCard } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/admin/orders", icon: Package, labelEn: "Orders", labelAr: "الطلبات", countKey: "pendingOrders" },

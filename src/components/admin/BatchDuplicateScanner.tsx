@@ -1,4 +1,5 @@
 import { useState, memo } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,11 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { ScanSearch, Merge, CheckCircle2, Loader2 } from "lucide-react";
+import {
+  ScanSearch, Merge, AlertTriangle, CheckCircle2, Loader2, Building2,
+} from "lucide-react";
 import { useEntityDedup, type DupGroup } from "@/hooks/useEntityDedup";
+import { toast } from "sonner";
 
 const TABLE_OPTIONS = [
   { value: "organizers", label_en: "Organizers", label_ar: "المنظمون" },

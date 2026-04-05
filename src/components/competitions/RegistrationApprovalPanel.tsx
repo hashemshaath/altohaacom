@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
 import { executeWorkflow } from "@/lib/workflowAutomation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";

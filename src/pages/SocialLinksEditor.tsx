@@ -26,7 +26,16 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
-import { Palette, Eye, Link as LinkIcon, Plus, Trash2, Globe, Save, Copy, Check, QrCode, Download, Upload, BarChart3, MousePointerClick, Pencil, Instagram, Twitter, Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2, Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase, Sparkles, TrendingUp, Loader2, GripVertical, Image, FileText, AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar, FileDown, FileUp, Search, UserPlus, Bell } from "lucide-react";
+import {
+  Palette, Eye, Link as LinkIcon, Plus, Trash2, ExternalLink,
+  Globe, Save, Copy, Check, QrCode, Download, Upload,
+  BarChart3, MousePointerClick, Pencil, Instagram, Twitter,
+  Facebook, Linkedin, Youtube, Smartphone, Type, EyeOff, Settings2,
+  Phone, MessageCircle, Music, ShoppingBag, CalendarDays, Video, Briefcase,
+  Sparkles, TrendingUp, Loader2, GripVertical, Image, FileText,
+  AlignLeft, AlignCenter, AlignRight, LayoutGrid, LayoutList, ArrowLeftRight, Clock, Calendar,
+  FileDown, FileUp, Search, UserPlus, Bell
+} from "lucide-react";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 
@@ -114,7 +123,12 @@ const FONT_SIZES = [
   { id: "xl", label: "Extra Large", labelAr: "كبير جداً" },
 ];
 
-import { THEME_COLORS, THEME_PREVIEW_MAP, BUTTON_STYLES_MAP, FONT_MAP, FONT_FAMILIES, parseExtra, detectLinkType, type ExtraSettings } from "@/lib/socialLinksConstants";
+import {
+  THEME_COLORS, THEME_PREVIEW_MAP, BUTTON_STYLES_MAP, FONT_MAP, FONT_SIZE_MAP,
+  FONT_FAMILIES, parseExtra, DEFAULT_EXTRA, detectLinkType, getButtonStyleOverrides,
+  isVideoLink,
+  type ExtraSettings, type PreviewTheme,
+} from "@/lib/socialLinksConstants";
 
 const SOCIAL_ICONS: Record<string, typeof Instagram> = {
   instagram: Instagram, twitter: Twitter, facebook: Facebook,

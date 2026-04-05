@@ -1,10 +1,11 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Wallet, TrendingUp, TrendingDown, ArrowRightLeft, CreditCard } from "lucide-react";
+import { Wallet, TrendingUp, TrendingDown, ArrowRightLeft, CreditCard, Banknote } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
 

@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Users, Trophy, Building2, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";

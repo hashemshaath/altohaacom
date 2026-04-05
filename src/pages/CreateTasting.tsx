@@ -7,7 +7,7 @@ import { useCreateTastingSession, useAddTastingCriteria, useCriteriaPresets, Eva
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
-import { type EvaluationCategory } from "@/components/tasting/EvaluationCategorySelect";
+import { type EvaluationCategory, CATEGORIES } from "@/components/tasting/EvaluationCategorySelect";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 import {
   ArrowLeft, ArrowRight, Check, Trophy, Layers,
   Hash, Star, CheckCircle2, Eye, Wrench, Zap,

@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { FileText, Image, Music, Video, Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { createMembershipInvoice } from "@/lib/membershipInvoice";
 import { SEOHead } from "@/components/SEOHead";
@@ -21,6 +21,7 @@ import {
   CreditCard, Clock, Sparkles, ChevronRight, Loader2,
   ArrowDown, ArrowUp, AlertTriangle, RefreshCw,
 } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { MembershipReceipt } from "@/components/membership/MembershipReceipt";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";

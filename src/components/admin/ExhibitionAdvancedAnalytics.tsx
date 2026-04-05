@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,9 +8,12 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Area, AreaChart } from "recharts";
-import { Download, TrendingUp, Users, Ticket, Eye, MapPin, Calendar } from "lucide-react";
-import { subDays, format } from "date-fns";
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line, Area, AreaChart,
+} from "recharts";
+import { Download, TrendingUp, Users, Ticket, DollarSign, Eye, MapPin, Calendar } from "lucide-react";
+import { subDays, format, startOfWeek, endOfWeek } from "date-fns";
 import { useCSVExport } from "@/hooks/useCSVExport";
 
 const COLORS = [

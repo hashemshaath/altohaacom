@@ -13,9 +13,9 @@ import {
   TrendingUp, TrendingDown, Users, DollarSign,
   ArrowUpCircle, ArrowDownCircle, UserPlus, Crown, Gift
 } from "lucide-react";
-import { useCallback } from "react";
+import { useMemo, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { format, subMonths, startOfMonth, differenceInDays } from "date-fns";
+import { format, subMonths, startOfMonth, endOfMonth, differenceInDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
 

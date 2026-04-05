@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Trophy, Award, Calendar, Search, Filter, ArrowRight, Clock, CheckCircle2, XCircle, ChevronRight } from "lucide-react";
+import { Trophy, Medal, Award, Calendar, Search, Filter, ArrowRight, Clock, CheckCircle2, XCircle, Loader2, ChevronRight, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";

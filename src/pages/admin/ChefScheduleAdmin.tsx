@@ -5,16 +5,29 @@ import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useQuery } from "@tanstack/react-query";
-import { useChefScheduleEvents, useUpdateScheduleEvent, useDeleteScheduleEvent, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType } from "@/hooks/useChefSchedule";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  useChefScheduleEvents, useUpdateScheduleEvent, useDeleteScheduleEvent,
+  EVENT_TYPE_CONFIG, PARTICIPATION_TYPES,
+  type ChefScheduleEvent, type ScheduleEventType,
+} from "@/hooks/useChefSchedule";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
-import { Calendar, Trophy, ChefHat, Landmark, Tv, Mic, GraduationCap, MessageSquare, MapPin, User, Plane, Ban, MoreHorizontal, Lock, Shield, Globe, CheckCircle, AlertCircle, Briefcase, DollarSign, BarChart3, Trash2, Plus, Download, Edit, CalendarDays } from "lucide-react";
+import {
+  Calendar, Trophy, ChefHat, Landmark, Tv, Mic, GraduationCap, MessageSquare,
+  MapPin, User, Plane, Ban, MoreHorizontal, Clock, Eye, EyeOff,
+  Lock, Shield, Globe, Search, Filter, CheckCircle, AlertCircle,
+  Briefcase, DollarSign, Users, BarChart3, Trash2, Plus, Download, Edit,
+  CalendarDays,
+} from "lucide-react";
 import ChefScheduleEventForm from "@/components/admin/chef-schedule/ChefScheduleEventForm";
 import AdminScheduleCalendar from "@/components/admin/chef-schedule/AdminScheduleCalendar";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";

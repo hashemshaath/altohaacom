@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { QrCode, Search, Eye, Copy, BarChart3, Hash, ScanLine, Filter } from "lucide-react";
+import { QrCode, Search, Eye, Copy, BarChart3, Hash, ScanLine, Filter, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { format } from "date-fns";
@@ -20,6 +20,7 @@ import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "exhibition", "participant", "judge", "team_member", "general"];

@@ -1,11 +1,13 @@
 import { useRef, useState, useCallback, useMemo } from "react";
 import { MarkdownToolbar } from "./MarkdownToolbar";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { Hash, ChevronRight, Maximize2, Minimize2, Languages, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface Props {

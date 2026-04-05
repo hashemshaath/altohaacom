@@ -10,8 +10,8 @@ import { Progress } from "@/components/ui/progress";
 import { useReferralCode, useReferralStats, useReferralInvitations, useReferralMilestones, useUserMilestones, useSendInvitation } from "@/hooks/useReferral";
 import { useReferralAnalytics } from "@/hooks/useReferralAnalytics";
 import { usePointsBalance } from "@/hooks/usePoints";
-import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight, Clock, RefreshCw, Phone, Globe, Sparkles } from "lucide-react";
-import { toEnglishDigits } from "@/lib/formatNumber";
+import { Share2, Gift, Trophy, Users, TrendingUp, Send, Star, Mail, MessageCircle, BarChart3, Target, Zap, CheckCircle2, MousePointerClick, ArrowDownRight, Layers, Clock, RefreshCw, Phone, Globe, Sparkles } from "lucide-react";
+import { toEnglishDigits, formatNumber } from "@/lib/formatNumber";
 import { Link } from "react-router-dom";
 import { ReferralShareSheet } from "@/components/referrals/ReferralShareSheet";
 import { ReferralLeaderboard } from "@/components/referrals/ReferralLeaderboard";
@@ -19,7 +19,7 @@ import { BonusCampaignBanner } from "@/components/referrals/BonusCampaignBanner"
 import { SocialProofWidget } from "@/components/referrals/SocialProofWidget";
 import { TierProgressCard } from "@/components/referrals/TierProgressCard";
 import { useToast } from "@/hooks/use-toast";
-import { Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 
 export default function Referrals() {
   const { language } = useLanguage();

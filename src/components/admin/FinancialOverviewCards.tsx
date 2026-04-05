@@ -1,12 +1,13 @@
 import { memo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DollarSign, TrendingUp, FileText, CreditCard, AlertTriangle } from "lucide-react";
-import { subDays } from "date-fns";
+import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const FinancialOverviewCards = memo(function FinancialOverviewCards() {

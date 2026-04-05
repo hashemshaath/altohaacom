@@ -12,7 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 import { countryFlag } from "@/lib/countryFlag";
-import { Building2, ArrowLeft, Search, Plus, X, Package, Star, Phone, Mail, Globe, Scale } from "lucide-react";
+import {
+  Building2, ArrowLeft, Search, Plus, X, Package, Star,
+  Phone, Mail, Globe, MapPin, CheckCircle, Scale,
+} from "lucide-react";
 
 const MAX_COMPARE = 4;
 

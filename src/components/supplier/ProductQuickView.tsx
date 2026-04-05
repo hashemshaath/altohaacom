@@ -1,8 +1,10 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Package } from "lucide-react";
+import { Package, ShoppingCart, X } from "lucide-react";
 
 interface ProductQuickViewProps {
   product: any;

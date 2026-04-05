@@ -7,16 +7,39 @@ import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search as SearchIcon, Calendar, MapPin, Globe, User, FileText, Trophy, Filter, X, CheckCircle2, Clock, Trash2, MessageSquare, ChevronRight, Building2, UtensilsCrossed, Star, Ticket, Bookmark, Eye } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import {
+  Search as SearchIcon,
+  Calendar,
+  MapPin,
+  Globe,
+  User,
+  FileText,
+  Trophy,
+  Filter,
+  X,
+  CheckCircle2,
+  Clock,
+  Trash2,
+  MessageSquare,
+  ChevronRight,
+  ExternalLink,
+  Building2,
+  UtensilsCrossed,
+  Star,
+  Ticket,
+  Bookmark,
+  Eye,
+} from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
-import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch } from "@/lib/recentSearches";
+import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
 import { SearchSuggestions } from "@/components/search/SearchSuggestions";
 import { HighlightText } from "@/components/search/HighlightText";
 import { VoiceSearchButton } from "@/components/search/VoiceSearchButton";

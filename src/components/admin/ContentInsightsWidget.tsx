@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { FileText, Eye, TrendingUp, Calendar, Star } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { subDays } from "date-fns";
+import { format, subDays } from "date-fns";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 

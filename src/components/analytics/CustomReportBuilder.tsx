@@ -2,6 +2,7 @@ import { useState, useCallback, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +11,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
-import { FileText, Download, Trash2, BarChart3, PieChart, TrendingUp, Users, Trophy, MessageSquare, Award, Newspaper, GraduationCap, Save, Play } from "lucide-react";
+import {
+  FileText,
+  Download,
+  Plus,
+  Trash2,
+  BarChart3,
+  PieChart,
+  TrendingUp,
+  Users,
+  Trophy,
+  MessageSquare,
+  Award,
+  Newspaper,
+  GraduationCap,
+  DollarSign,
+  Save,
+  Play,
+} from "lucide-react";
 import {
   BarChart,
   Bar,

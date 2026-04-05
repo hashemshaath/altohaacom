@@ -5,7 +5,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { MapPin, Globe, CheckCircle2, Star, Landmark, Mail, Phone, Calendar, Eye, ExternalLink, Scale } from "lucide-react";
+import {
+  Building2, MapPin, Globe, CheckCircle2, Star, Landmark,
+  ArrowUpRight, Mail, Phone, Calendar, Eye, ExternalLink, Scale,
+} from "lucide-react";
 
 interface Props {
   org: any | null;

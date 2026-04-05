@@ -1,8 +1,8 @@
 import { useMemo, memo } from "react";
 import { Link } from "react-router-dom";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Users, ChevronRight, Flag, CheckCircle2 } from "lucide-react";
+import { Calendar, Users, Trophy, ChevronRight, Flag, CheckCircle2 } from "lucide-react";
 import { format, isPast, isFuture, isWithinInterval } from "date-fns";
 
 interface Props {

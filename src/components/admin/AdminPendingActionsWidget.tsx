@@ -1,11 +1,16 @@
 import { memo } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { AlertTriangle, ArrowRight, Flag, Package, Ticket, Building2, ClipboardCheck } from "lucide-react";
+import {
+  AlertTriangle, ArrowRight, Flag, Package, Ticket,
+  UserCheck, FileText, Building2, ClipboardCheck,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PendingItem {

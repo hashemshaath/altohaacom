@@ -1,15 +1,20 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Palette, Sparkles, PanelTop, Home, Layers, ArrowRight, CheckCircle2, Circle, Image, LayoutGrid, AlertTriangle, Eye, Moon, Sun, Download, Shield, Ruler, Code2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import {
+  Palette, Sparkles, Globe, PanelTop, Home, Layers, Type,
+  ArrowRight, CheckCircle2, Circle, Image, LayoutGrid,
+  AlertTriangle, Eye, Moon, Sun, Download, Shield, Ruler, Code2,
+} from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
-import { useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
+import { useFadeIn, useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 

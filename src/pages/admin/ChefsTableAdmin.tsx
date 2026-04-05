@@ -22,8 +22,14 @@ import { ChefsTableSessionDetail } from "@/components/admin/chefs-table/ChefsTab
 import { ChefsTablePricing } from "@/components/admin/chefs-table/ChefsTablePricing";
 import { ChefsTableChefRegistrations } from "@/components/admin/chefs-table/ChefsTableChefRegistrations";
 
-import { ChefHat, Search, Package, Calendar, FileText, Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image, Send, Gavel, Printer, ChevronDown, DollarSign, Users, AlertCircle, BarChart3, UserPlus, Receipt } from "lucide-react";
+import {
+  ChefHat, Search, Eye, Package, Calendar, FileText,
+  Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
+  Send, Gavel, Printer, ChevronDown, DollarSign, Download,
+  Users, AlertCircle, BarChart3, UserPlus, Receipt,
+} from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "sonner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { useTableSort } from "@/hooks/useTableSort";

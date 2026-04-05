@@ -16,7 +16,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
-import { Megaphone, Target, BarChart3, Globe, Users, CheckCircle2, Sparkles, ArrowRight, Loader2, Eye, MousePointer, Zap, Clock, Building2 } from "lucide-react";
+import {
+  Megaphone, Target, BarChart3, Globe, Users, CheckCircle2,
+  Sparkles, ArrowRight, Loader2, Eye, MousePointer, DollarSign,
+  Zap, Clock, Building2,
+} from "lucide-react";
 
 const AD_FORMATS = [
   { id: "banner", en: "Banner / Display", ar: "بانر / عرض", desc: "Classic display ads across the platform" },

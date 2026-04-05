@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import type { useCart } from "@/hooks/useCart";
 import { useNavigate } from "react-router-dom";
-import { formatCurrency } from "@/lib/currencyFormatter";
+import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 
 interface CartSheetProps {

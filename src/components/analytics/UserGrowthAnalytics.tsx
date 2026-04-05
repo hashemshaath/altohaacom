@@ -1,14 +1,16 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, UserCheck, UserX, Shield, TrendingUp } from "lucide-react";
+import { Users, UserCheck, UserX, Shield, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { translateRole, getTooltipStyle, CHART_COLORS } from "@/lib/chartConfig";
+import { translateRole, getTooltipStyle, TOOLTIP_STYLE, CHART_COLORS, LEGEND_STYLE, CHART_HEIGHT, GRID_PROPS, X_AXIS_PROPS, Y_AXIS_PROPS } from "@/lib/chartConfig";
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
 import type { DataPoint } from "@/lib/trendPrediction";
+import { linearRegression } from "@/lib/trendPrediction";
 
 
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {

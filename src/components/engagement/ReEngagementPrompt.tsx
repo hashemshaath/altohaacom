@@ -1,4 +1,5 @@
 import { useState, useEffect, memo } from "react";
+import { ROUTES } from "@/config/routes";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";

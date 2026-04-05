@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { HandHeart, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   exhibitionId: string;

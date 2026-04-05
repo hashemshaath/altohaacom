@@ -1,10 +1,11 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Hash, ArrowUpRight, Layers } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 /**
  * Shows related topic clusters — groups articles by tags

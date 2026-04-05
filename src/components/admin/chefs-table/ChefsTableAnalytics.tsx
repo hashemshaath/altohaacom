@@ -1,8 +1,12 @@
 import { useMemo, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Area, AreaChart } from "recharts";
-import { TrendingUp, Activity, Target } from "lucide-react";
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, LineChart, Line, Area, AreaChart,
+} from "recharts";
+import { TrendingUp, TrendingDown, Activity, Target } from "lucide-react";
 import type { ChefsTableRequest, ChefsTableSession } from "@/hooks/useChefsTable";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 

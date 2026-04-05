@@ -1,5 +1,6 @@
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -14,7 +15,18 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Search, Loader2, MapPin, Globe, Phone, Clock, Building2, Sparkles, CheckCircle } from "lucide-react";
+import {
+  Search,
+  Loader2,
+  MapPin,
+  Globe,
+  Phone,
+  Clock,
+  Building2,
+  Sparkles,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 
 export interface ImportedData {
   name_en?: string;

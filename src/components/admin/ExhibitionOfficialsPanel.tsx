@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Trash2, Loader2, Save, X, User } from "lucide-react";
+import { Plus, Trash2, Loader2, Save, X, User, GripVertical } from "lucide-react";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 
 interface Props {

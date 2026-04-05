@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import React, { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -14,9 +14,13 @@ import {
 import {
   Collapsible, CollapsibleContent, CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase, Trophy, Award, Tv, Globe2, Languages, CheckCircle2, Edit3, X, Trash2, Download, Printer, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase,
+  Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin,
+  Edit3, X, Trash2, Download, Printer, ChevronDown, ChevronRight,
+} from "lucide-react";
 import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
-import type { CVData } from "./types";
+import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance, CVSkill } from "./types";
 import {
   getFlag, ROLE_LABELS, MEDIA_TYPE_LABELS,
   EMPLOYMENT_TYPE_LABELS, EDUCATION_LEVEL_LABELS,

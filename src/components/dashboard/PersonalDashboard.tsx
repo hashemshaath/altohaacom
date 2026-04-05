@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MessageSquare, Users, Trophy, ChefHat, Target, Calendar, Activity, Flame } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { BarChart3, TrendingUp, Eye, Heart, MessageSquare, Users, Trophy, ChefHat, Target, Calendar, Activity, Flame } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const PersonalDashboard = memo(function PersonalDashboard() {

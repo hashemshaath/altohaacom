@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Check, Palette, Save } from "lucide-react";
+import { THEME_PRESETS } from "@/config/themePresets";
 
 interface Props {
   settings: Record<string, any>;

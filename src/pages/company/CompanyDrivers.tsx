@@ -21,7 +21,9 @@ import {
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Truck, Plus, Search, User, Phone, Car, CheckCircle, Trash2, Pencil, Filter, Download } from "lucide-react";
+import {
+  Truck, Plus, Search, User, Phone, Car, CheckCircle, XCircle, Trash2, Pencil, Filter, Download,
+} from "lucide-react";
 import { format } from "date-fns";
 
 export default function CompanyDrivers() {

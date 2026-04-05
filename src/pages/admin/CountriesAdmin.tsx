@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,9 +29,16 @@ import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
-import { Globe, Plus, Edit, Trash2, Search, CheckCircle, XCircle, MapPin, Star, Save, X, ChevronRight, BarChart3, Download, Copy, EyeOff, CheckCheck, RefreshCw, Filter, Zap, Shield, Phone, Mail, Building, Clock, DollarSign, Languages, ArrowLeftRight, Upload, History } from "lucide-react";
+import {
+  Globe, Plus, Edit, Trash2, Search, CheckCircle, XCircle,
+  MapPin, Star, Save, X, ChevronRight,
+  ToggleLeft, BarChart3, Download, Copy, Eye, EyeOff,
+  AlertTriangle, CheckCheck, RefreshCw, ArrowUpDown, Filter,
+  Zap, Shield, Phone, Mail, Building, Clock, DollarSign, Languages,
+  ArrowLeftRight, Upload, History,
+} from "lucide-react";
 import { CountryOverviewDashboard } from "@/components/admin/CountryOverviewDashboard";
-import { CountryCompletenessScore } from "@/components/admin/countries/CountryCompletenessScore";
+import { CountryCompletenessScore, getCompletenessScore } from "@/components/admin/countries/CountryCompletenessScore";
 import { CountryComparisonTool } from "@/components/admin/countries/CountryComparisonTool";
 import { CountryCSVImport } from "@/components/admin/countries/CountryCSVImport";
 import { CountryAuditLog } from "@/components/admin/countries/CountryAuditLog";
@@ -104,6 +112,7 @@ const featureLabels: Record<string, { en: string; ar: string; icon: typeof Zap }
 
 const continents = ["Asia", "Africa", "Europe", "North America", "South America", "Oceania"];
 const regions = ["GCC", "MENA", "Europe", "Americas", "South Asia", "Southeast Asia", "East Asia", "Oceania", "Sub-Saharan Africa"];
+
 
 
 export default function CountriesAdmin() {

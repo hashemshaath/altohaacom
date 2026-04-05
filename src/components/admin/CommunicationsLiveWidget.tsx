@@ -1,11 +1,13 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { MessageSquare, Send, Inbox, Mail, CheckCheck, TrendingUp, BarChart3 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { MessageSquare, Send, Inbox, Mail, Clock, CheckCheck, TrendingUp, BarChart3 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
-import { format, subDays } from "date-fns";
+import { format, subDays, differenceInMinutes } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget() {

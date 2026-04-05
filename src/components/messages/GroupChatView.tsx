@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
@@ -16,7 +17,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Send, ArrowLeft, Users, MoreVertical, UserPlus, LogOut, Paperclip, Settings } from "lucide-react";
+import { Send, ArrowLeft, Users, MoreVertical, UserPlus, LogOut, Paperclip, FileText, Trash2, Settings } from "lucide-react";
 import { EmojiPicker } from "@/components/messages/EmojiPicker";
 import { MessageAttachments } from "@/components/messages/MessageAttachments";
 import { VoiceMessageRecorder } from "@/components/messages/VoiceMessageRecorder";
