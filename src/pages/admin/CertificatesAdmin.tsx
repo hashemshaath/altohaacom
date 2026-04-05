@@ -167,7 +167,7 @@ export default function CertificatesAdmin() {
       toast({ title: language === "ar" ? "تم إنشاء الشهادة" : "Certificate created" });
       resetForm();
     },
-    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const bulkSignMutation = useMutation({

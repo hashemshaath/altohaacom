@@ -95,7 +95,7 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
       toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تم الإضافة" : "Added") });
       resetForm();
     },
-    onError: (err: any) => toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const deleteMutation = useMutation({

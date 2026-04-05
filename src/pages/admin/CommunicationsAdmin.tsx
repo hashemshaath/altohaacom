@@ -235,7 +235,7 @@ export default function CommunicationsAdmin() {
       setComposeForm({ company_id: "", subject: "", message: "", priority: "normal" });
       toast({ title: isAr ? "تم إرسال الرسالة" : "Message sent" });
     },
-    onError: (e: any) => toast({ title: isAr ? "فشل الإرسال" : "Send failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
+    onError: (e: Error) => toast({ title: isAr ? "فشل الإرسال" : "Send failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
   });
 
   const addNoteMutation = useMutation({

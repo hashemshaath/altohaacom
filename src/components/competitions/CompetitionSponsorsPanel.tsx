@@ -101,7 +101,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
       setSelectedPackage("");
       toast({ title: isAr ? "تمت إضافة الراعي" : "Sponsor added" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

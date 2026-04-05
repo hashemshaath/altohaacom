@@ -67,7 +67,7 @@ export default function UsersTab({ isAr, t }: Props) {
       queryClient.invalidateQueries({ queryKey: ["roleStats"] });
       toast({ title: t("Roles updated", "تم تحديث الأدوار") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err) });
     },
   });

@@ -60,7 +60,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
       qc.invalidateQueries({ queryKey: ["seo-meta-configs"] });
       toast.success(isAr ? "تم حفظ إعدادات SEO" : "SEO meta saved");
     },
-    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
+    onError: (e: Error) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const selectPage = (path: string) => {

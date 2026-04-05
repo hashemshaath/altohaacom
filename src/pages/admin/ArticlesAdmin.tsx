@@ -82,7 +82,7 @@ export default function ArticlesAdmin() {
       setEditingArticleId(null);
       toast({ title: t("تم التحديث", "Updated") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: t("فشل التحديث", "Update failed"), description: err instanceof Error ? err.message : String(err) });
     },
   });

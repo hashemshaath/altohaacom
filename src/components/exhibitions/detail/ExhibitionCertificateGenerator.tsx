@@ -101,7 +101,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
       queryClient.invalidateQueries({ queryKey: ["exhibition-certs", exhibitionId] });
       toast({ title: t(`${count} certificates issued! 🎉`, `تم إصدار ${count} شهادة! 🎉`) });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Failed to generate", "فشل الإنشاء"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

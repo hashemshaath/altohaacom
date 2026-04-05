@@ -51,7 +51,7 @@ export function useAwardPoints() {
         }
       }
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       console.error("Award points error:", err);
     },
   });

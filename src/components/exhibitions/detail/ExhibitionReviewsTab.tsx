@@ -229,7 +229,7 @@ function ReportButton({ reviewId, isAr }: { reviewId: string; isAr: boolean }) {
       }
     },
     onSuccess: () => toast({ title: isAr ? "تم الإبلاغ ✅" : "Reported ✅" }),
-    onError: (e: any) => toast({ title: e.message === "already_reported" ? (isAr ? "تم الإبلاغ مسبقاً" : "Already reported") : (isAr ? "خطأ" : "Error"), variant: "destructive" }),
+    onError: (e: Error) => toast({ title: e.message === "already_reported" ? (isAr ? "تم الإبلاغ مسبقاً" : "Already reported") : (isAr ? "خطأ" : "Error"), variant: "destructive" }),
   });
 
   if (!user) return null;
@@ -347,7 +347,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
       setPhotoUrls([]);
       toast({ title: isAr ? "شكراً لتقييمك! ⭐" : "Thanks for your review! ⭐" });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       const isDuplicate = e?.message?.includes("unique") || e?.code === "23505";
       toast({
         title: isAr ? "خطأ" : "Error",

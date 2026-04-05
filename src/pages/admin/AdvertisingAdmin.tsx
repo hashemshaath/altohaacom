@@ -187,7 +187,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
       if (error) throw error;
     },
     onSuccess: () => toast({ title: isAr ? "تم إنشاء الفاتورة" : "Invoice generated" }),
-    onError: (e: any) => toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
+    onError: (e: Error) => toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
   });
 
   // ─── Rejection handler ───

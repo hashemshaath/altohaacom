@@ -103,7 +103,7 @@ export default function JobDetail() {
       toast({ title: isAr ? "تم تقديم الطلب بنجاح ✓" : "Application submitted ✓" });
       setShowApplyForm(false);
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

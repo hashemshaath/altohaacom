@@ -72,7 +72,7 @@ Be specific with numbers, target metrics, and implementation steps. Include both
       setReport(data);
       toast.success(isAr ? "تم إنشاء التقرير" : "Report generated");
     },
-    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
+    onError: (e: Error) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   // Auto-generated static recommendations based on data

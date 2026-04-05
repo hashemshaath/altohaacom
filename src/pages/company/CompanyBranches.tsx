@@ -107,7 +107,7 @@ export default function CompanyBranches() {
       toast({ title: isAr ? "تم الحفظ بنجاح" : "Saved successfully" });
       closeDialog();
     },
-    onError: (err: any) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) }),
+    onError: (err: Error) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const deleteBranch = useMutation({

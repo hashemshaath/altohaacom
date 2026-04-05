@@ -83,7 +83,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
       queryClient.invalidateQueries({ queryKey: ["checkin-stats", exhibitionId] });
       toast({ title: t("Check-in successful!", "تم تسجيل الدخول!") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg === "not_found") setResult({ type: "error", message: t("❌ Ticket not found", "❌ التذكرة غير موجودة") });
       else if (msg === "not_confirmed") setResult({ type: "error", message: t("❌ Ticket not confirmed", "❌ التذكرة غير مؤكدة") });

@@ -256,7 +256,7 @@ export default function ExhibitionsAdmin() {
         resetForm();
       }
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -292,7 +292,7 @@ export default function ExhibitionsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
       toast({ title: t("Exhibition duplicated", "تم تكرار الفعالية") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -308,7 +308,7 @@ export default function ExhibitionsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
       toast({ title: t("Exhibition approved and moved to draft", "تمت الموافقة ونقلها إلى مسودة") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -324,7 +324,7 @@ export default function ExhibitionsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
       toast({ title: t("Exhibition rejected", "تم رفض الفعالية") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

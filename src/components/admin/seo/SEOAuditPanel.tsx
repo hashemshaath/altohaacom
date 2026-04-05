@@ -70,7 +70,7 @@ export function SEOAuditPanel() {
           : `Score: ${data.score}/100 — ${data.total_issues} issues found`,
       });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast.error(isAr ? "فشل التدقيق" : "Audit failed", { description: e instanceof Error ? e.message : String(e) });
     },
   });

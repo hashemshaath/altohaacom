@@ -216,7 +216,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
         }
       });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
@@ -263,7 +263,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
         });
       });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

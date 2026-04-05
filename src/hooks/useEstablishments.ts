@@ -134,7 +134,7 @@ export function useCreateEstablishment() {
       queryClient.invalidateQueries({ queryKey: ["establishments"] });
       toast({ title: "Establishment added successfully" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -164,7 +164,7 @@ export function useAddAssociation() {
       queryClient.invalidateQueries({ queryKey: ["establishment-associations"] });
       toast({ title: "Association added" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -193,7 +193,7 @@ export function useAddQualification() {
       queryClient.invalidateQueries({ queryKey: ["association-qualifications"] });
       toast({ title: "Qualification added" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

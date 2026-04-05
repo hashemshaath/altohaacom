@@ -96,7 +96,7 @@ export default function MembershipRedeem() {
       queryClient.invalidateQueries({ queryKey: ["checkout-profile"] });
       toast.success(isAr ? "تم تفعيل العضوية بنجاح! 🎉" : "Membership activated! 🎉");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error(err instanceof Error ? err.message : String(err));
     },
   });

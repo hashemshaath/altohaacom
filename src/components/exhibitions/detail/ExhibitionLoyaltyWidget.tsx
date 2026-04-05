@@ -72,7 +72,7 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
       queryClient.invalidateQueries({ queryKey: ["exhibition-loyalty", exhibitionId] });
       toast({ title: t("Points earned! 🎉", "تم كسب النقاط! 🎉") });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       if (e.message === "already_earned") {
         toast({ title: t("Already earned", "تم كسبها مسبقاً"), variant: "destructive" });
       }

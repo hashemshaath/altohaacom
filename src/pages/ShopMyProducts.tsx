@@ -77,7 +77,7 @@ export default function ShopMyProducts() {
       toast({ title: isAr ? "تم الحفظ بنجاح" : "Product saved" });
       resetForm();
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });

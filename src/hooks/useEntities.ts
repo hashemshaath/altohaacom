@@ -72,7 +72,7 @@ export function useEnrollInProgram() {
       queryClient.invalidateQueries({ queryKey: ["program-enrollments"] });
       toast({ title: "Enrolled successfully" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

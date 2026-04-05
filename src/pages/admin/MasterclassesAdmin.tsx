@@ -94,7 +94,7 @@ export default function MasterclassesAdmin() {
       resetForm();
       toast({ title: language === "ar" ? "تم الإنشاء" : "Created successfully" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: language === "ar" ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

@@ -145,7 +145,7 @@ export default function MentorshipAdmin() {
           toast({ title: isAr ? "تم إنشاء المطابقة" : "Match created" });
           setMatchOpen(false); setMatchProgramId(""); setMatchMentorId(""); setMatchMenteeId("");
         },
-        onError: (err: any) => {
+        onError: (err: Error) => {
           toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err instanceof Error ? err.message : String(err) });
         },
       }

@@ -299,7 +299,7 @@ export default function OrdersAdmin() {
       setOrderForm({ ...defaultOrderForm });
       toast({ title: isAr ? "تم إنشاء الطلب" : "Order created" });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });

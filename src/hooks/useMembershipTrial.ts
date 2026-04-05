@@ -64,7 +64,7 @@ export function useStartTrial() {
       queryClient.invalidateQueries({ queryKey: ["user-profile"] });
       toast({ title: `🎉 Trial started!`, description: `Enjoy your free trial.` });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Cannot start trial", description: err instanceof Error ? err.message : String(err) });
     },
   });

@@ -149,7 +149,7 @@ const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Pro
       queryClient.invalidateQueries({ queryKey: ["admin-judges"] });
       toast({ title: isAr ? "تم حفظ الملف" : "Profile saved" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

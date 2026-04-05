@@ -60,7 +60,7 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
       setMaxUses("");
       toast({ title: t("Discount code created! 🎫", "تم إنشاء كود الخصم! 🎫") });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       const isDuplicate = e?.code === "23505";
       toast({ title: isDuplicate ? t("Code already exists", "الكود موجود مسبقاً") : t("Error", "خطأ"), variant: "destructive" });
     },

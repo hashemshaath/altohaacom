@@ -68,7 +68,7 @@ export const ExhibitionOrganizerMessaging = memo(function ExhibitionOrganizerMes
         title: t(`Message sent to ${count} attendees! 📨`, `تم إرسال الرسالة إلى ${count} حاضر! 📨`),
       });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Failed to send", "فشل في الإرسال"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

@@ -49,7 +49,7 @@ export const SubscriptionDetailsCard = memo(function SubscriptionDetailsCard({ u
       queryClient.invalidateQueries({ queryKey: ["membership-card-sub", userId] });
       toast({ title: isAr ? "تم تحديث التجديد التلقائي" : "Auto-renewal updated" });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) });
     },
   });

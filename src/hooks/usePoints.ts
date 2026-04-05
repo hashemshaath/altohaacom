@@ -110,7 +110,7 @@ export function useRedeemReward() {
       queryClient.invalidateQueries({ queryKey: ["points-rewards"] });
       toast({ title: "Reward redeemed successfully!" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

@@ -139,7 +139,7 @@ export default function AdvertiseWithUs() {
       setForm({ title: "", title_ar: "", description: "", description_ar: "", request_type: "banner", budget: "", currency: "SAR", desired_start_date: "", desired_end_date: "", package_id: "" });
       qc.invalidateQueries({ queryKey: ["my-ad-requests"] });
     },
-    onError: (e: any) => toast({ title: isAr ? "حدث خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
+    onError: (e: Error) => toast({ title: isAr ? "حدث خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
   });
 
   const statusConfig: Record<string, { en: string; ar: string; cls: string }> = {
