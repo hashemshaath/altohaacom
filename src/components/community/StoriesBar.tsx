@@ -179,7 +179,7 @@ export const StoriesBar = memo(function StoriesBar() {
       setShowCaptionInput(false);
       fetchStories();
       toast({ title: isAr ? "تمت إضافة القصة" : "Story added!" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Error", description: err.message });
     } finally {
       setUploading(false);

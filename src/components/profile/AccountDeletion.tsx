@@ -44,7 +44,7 @@ export const AccountDeletion = memo(function AccountDeletion() {
       // Sign out and redirect
       await supabase.auth.signOut();
       window.location.href = "/";
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: isAr ? "فشل الحذف" : "Deletion failed",
         description: err.message,

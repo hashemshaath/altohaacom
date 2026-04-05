@@ -319,7 +319,7 @@ export function useMessagesData() {
           attachment_urls: urls,
           attachment_names: names,
         });
-      } catch (err: any) {
+      } catch (err: unknown) {
         toast({ variant: "destructive", title: isAr ? "فشل رفع الملف" : "Upload failed", description: err.message });
       } finally {
         setUploading(false);

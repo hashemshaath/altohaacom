@@ -70,7 +70,7 @@ export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onC
       setResults(data.results || []);
       setSearchTime(Date.now() - start);
       setPhase("results");
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: isAr ? "خطأ في البحث" : "Search Error",
         description: err.message,
@@ -103,7 +103,7 @@ export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onC
       setSourcesUsed(data.sources_used || {});
       setDataQuality(data.data_quality || 0);
       setPhase("details");
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: isAr ? "خطأ في جلب التفاصيل" : "Details Error",
         description: err.message,

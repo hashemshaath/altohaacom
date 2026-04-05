@@ -116,7 +116,7 @@ export default function CompanyAdminMessaging() {
       setSubject("");
       setComposing(false);
       queryClient.invalidateQueries({ queryKey: ["company-support-messages", companyId] });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setSending(false);

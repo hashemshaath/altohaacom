@@ -87,7 +87,7 @@ export const MoyasarPaymentForm = memo(function MoyasarPaymentForm({
         setStep("form");
         toast.error(t("Payment was not completed", "لم تتم عملية الدفع"));
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Payment error:", err);
       setStep("form");
       toast.error(err.message || t("Payment failed", "فشلت عملية الدفع"));

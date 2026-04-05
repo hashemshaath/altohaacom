@@ -255,7 +255,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
       setScheduledAt("");
       removeVideo();
       onPosted();
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Error", description: err.message });
     } finally {
       setPosting(false);

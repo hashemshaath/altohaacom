@@ -42,7 +42,7 @@ export const ArticleAISummary = memo(function ArticleAISummary({
       const text = data?.choices?.[0]?.message?.content || data?.message || "";
       if (!text) throw new Error("No summary generated");
       setSummary(text);
-    } catch (e: any) {
+    } catch (e: unknown) {
       setError(isAr ? "فشل إنشاء الملخص" : "Failed to generate summary");
     } finally {
       setLoading(false);

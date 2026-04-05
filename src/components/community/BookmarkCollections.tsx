@@ -97,7 +97,7 @@ export const BookmarkCollections = memo(function BookmarkCollections({ postId }:
       setNewName("");
       setCreating(false);
       toast({ title: isAr ? "تم إنشاء المجموعة" : "Collection created" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Error", description: err.message });
     } finally {
       setSaving(false);

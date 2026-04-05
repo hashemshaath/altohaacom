@@ -122,7 +122,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
         title: isAr ? "تم تحديث الصورة بنجاح ✓" : "Image updated successfully ✓",
       });
       onProfileUpdate();
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         variant: "destructive",
         title: isAr ? "حدث خطأ" : "Something went wrong",

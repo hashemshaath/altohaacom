@@ -303,7 +303,7 @@ export default function Auth() {
           description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setFormError(err.message || "Login failed");
       setSignInPhoneStep("phone");
     } finally {
@@ -436,7 +436,7 @@ export default function Auth() {
           description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setPinError(err.message || "Login failed");
     } finally {
       setLoading(false);

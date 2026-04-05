@@ -357,7 +357,7 @@ export default function SmartImportAdmin() {
       if (!data.results?.length) {
         toast({ title: isAr ? "لا توجد نتائج" : "No Results", description: isAr ? "جرب كلمات بحث مختلفة" : "Try different search terms", variant: "destructive" });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ في البحث" : "Search Error", description: err.message, variant: "destructive" });
     } finally {
       setSearching(false);
@@ -396,7 +396,7 @@ export default function SmartImportAdmin() {
       }
       setStep("details");
       toast({ title: isAr ? "تم استخراج البيانات بنجاح" : "Data extracted successfully" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setUrlImporting(false);
@@ -442,7 +442,7 @@ export default function SmartImportAdmin() {
       }
       setStep("details");
       toast({ title: isAr ? "تم جلب البيانات بنجاح" : "Data fetched successfully" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setLoadingDetails(false);
@@ -539,7 +539,7 @@ export default function SmartImportAdmin() {
       (compResComp.data || []).forEach((c: any) => records.push({ id: c.id, name: c.title, name_ar: c.title_ar, identifier: c.competition_number || c.id.slice(0, 8), sub_type: "competition", city: c.city, phone: null, email: null, website: null, table: "competitions" }));
 
       setExistingRecords(records);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("DB check error:", err);
     } finally {
       setCheckingDb(false);
@@ -567,7 +567,7 @@ export default function SmartImportAdmin() {
       toast({ title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully` });
       await logImport('update', record.table, record.id, record.sub_type);
       setDbChecked(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setUpdating(false);
@@ -673,7 +673,7 @@ export default function SmartImportAdmin() {
         const { data: newStats } = await supabase.functions.invoke("smart-import", { body: { mode: "stats" } });
         if (newStats?.success) setStats(newStats.stats);
       } catch {}
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setSaving(false);

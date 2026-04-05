@@ -142,7 +142,7 @@ export default function CreateRecipe() {
       });
       toast.success(isAr ? "تم إنشاء الوصفة!" : "Recipe created!");
       navigate(`/recipes/${data.slug || data.id}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast.error(err.message || (isAr ? "خطأ في الإنشاء" : "Failed to create recipe"));
     }
   };

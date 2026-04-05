@@ -65,7 +65,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
         setCvText(text);
         toast({ title: isAr ? `✅ تم استخراج ${text.length} حرف من الملف` : `✅ Extracted ${text.length} characters from file` });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err?.message === "OLD_DOC_FORMAT") {
         toast({
           variant: "destructive",
@@ -102,7 +102,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
       setParsedData(data.data as CVData);
       setStep("preview");
       toast({ title: isAr ? "تم تحليل السيرة الذاتية بنجاح ✨" : "CV parsed successfully ✨" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err.message });
     }
     setParsing(false);

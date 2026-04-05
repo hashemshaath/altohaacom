@@ -68,7 +68,7 @@ export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
 
       const assistantContent = data?.response || (isAr ? "عذراً، لم أتمكن من الرد" : "Sorry, I couldn't generate a response.");
       setMessages((prev) => [...prev, { role: "assistant", content: assistantContent }]);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const errorMsg = err?.message?.includes("429")
         ? (isAr ? "تم تجاوز الحد المسموح، حاول لاحقاً" : "Rate limit exceeded, please try later")
         : err?.message?.includes("402")

@@ -311,7 +311,7 @@ export default function CertificatesAdmin() {
               queryClient.invalidateQueries({ queryKey: ["certificate-templates"] });
               toast({ title: language === "ar" ? "تم حفظ القالب" : "Template saved successfully" });
               setShowDesigner(false);
-            } catch (err: any) {
+            } catch (err: unknown) {
               toast({ variant: "destructive", title: "Error", description: err.message });
             }
           }}

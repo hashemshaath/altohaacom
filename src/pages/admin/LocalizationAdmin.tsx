@@ -316,7 +316,7 @@ export default function LocalizationAdmin() {
       setShowImportDialog(false);
       setImportText("");
       toast({ title: isAr ? "تم الاستيراد" : "Imported", description: `${entries.length} ${isAr ? "مفتاح" : "keys imported"}` });
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" });
     }
   };

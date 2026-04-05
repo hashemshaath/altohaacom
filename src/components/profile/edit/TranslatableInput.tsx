@@ -46,7 +46,7 @@ export const TranslatableInput = memo(function TranslatableInput({
         onTranslated(data.translated);
         toast({ title: targetLang === "ar" ? "تمت الترجمة للعربية" : "Translated to English" });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Translation Error", description: err.message, variant: "destructive" });
     } finally {
       setTranslating(false);
@@ -65,7 +65,7 @@ export const TranslatableInput = memo(function TranslatableInput({
         onChange(data.optimized);
         toast({ title: lang === "ar" ? "تم التحسين بنجاح" : "Optimized successfully" });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "SEO Error", description: err.message, variant: "destructive" });
     } finally {
       setOptimizing(false);

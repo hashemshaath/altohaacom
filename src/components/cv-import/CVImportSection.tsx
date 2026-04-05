@@ -82,7 +82,7 @@ export const CVImportSection = memo(function CVImportSection() {
 
       if (error) throw error;
       setResults(data || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: isAr ? "خطأ في البحث" : "Search error", description: err.message });
     }
     setSearching(false);
@@ -125,7 +125,7 @@ export const CVImportSection = memo(function CVImportSection() {
           phone: newPhone.trim(),
         });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
     }
     setCreating(false);
@@ -166,7 +166,7 @@ export const CVImportSection = memo(function CVImportSection() {
         setCvText(text);
         toast({ title: isAr ? `✅ تم استخراج ${text.length} حرف` : `✅ Extracted ${text.length} characters` });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err?.message === "OLD_DOC_FORMAT") {
         toast({ variant: "destructive", title: isAr ? "صيغة .doc القديمة غير مدعومة" : "Old .doc format not supported", description: isAr ? "يرجى تحويل الملف إلى .docx أو PDF" : "Please convert to .docx or PDF" });
       } else {
@@ -199,7 +199,7 @@ export const CVImportSection = memo(function CVImportSection() {
       setParsedData(data.data as CVData);
       setStep("preview");
       toast({ title: isAr ? "تم تحليل السيرة الذاتية بنجاح ✨" : "CV parsed successfully ✨" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err.message });
     }
     setParsing(false);

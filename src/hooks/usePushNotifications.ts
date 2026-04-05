@@ -68,7 +68,7 @@ export function usePushNotifications() {
       setIsSubscribed(true);
       toast({ title: "Push notifications enabled! 🔔" });
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: "Failed to subscribe", description: err.message, variant: "destructive" });
       return false;
     } finally {

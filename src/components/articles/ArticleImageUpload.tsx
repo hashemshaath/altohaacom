@@ -49,7 +49,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
       const { data: urlData } = supabase.storage.from("article-images").getPublicUrl(path);
       onChange(urlData.publicUrl);
       toast({ title: t("Image uploaded!", "تم رفع الصورة!") });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: t("Upload failed", "فشل الرفع"), description: err.message });
     } finally {
       setUploading(false);

@@ -282,7 +282,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
                     attachment_names: ["voice.webm"],
                     metadata: { duration: dur },
                   });
-                } catch (err: any) {
+                } catch (err: unknown) {
                   toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err.message });
                 } finally {
                   setUploading(false);
@@ -314,7 +314,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
               names.push(file.name);
             }
             sendMutation.mutate({ content: isAr ? "مرفق" : "Attachment", message_type: "file", attachment_urls: urls, attachment_names: names });
-          } catch (err: any) {
+          } catch (err: unknown) {
             toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err.message });
           } finally {
             setUploading(false);

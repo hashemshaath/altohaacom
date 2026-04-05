@@ -43,7 +43,7 @@ export const CoverImageUpload = memo(function CoverImageUpload({ currentUrl, onU
       const { data } = supabase.storage.from("competition-images").getPublicUrl(path);
       setPreview(data.publicUrl);
       onUrlChange(data.publicUrl);
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Upload failed", description: err.message });
     } finally {
       setUploading(false);
