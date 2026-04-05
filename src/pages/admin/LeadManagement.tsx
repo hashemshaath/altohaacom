@@ -180,7 +180,7 @@ export default function LeadManagement() {
         .order("created_at", { ascending: false })
         .limit(50);
       // Filter for this lead
-      return (data || []).filter((a) => a.details?.lead_id === selectedLead.id);
+      return (data || []).filter((a) => (a.details as any)?.lead_id === selectedLead.id);
     },
     enabled: !!selectedLead?.id && isDetailOpen,
   });
@@ -781,13 +781,13 @@ export default function LeadManagement() {
                         <div className="rounded-xl border p-3">
                           <div className="flex items-center justify-between">
                             <p className="text-xs font-medium">
-                              {entry.details?.action === "created"
+                              {(entry.details as any)?.action === "created"
                                 ? (isAr ? "تم إنشاء العميل" : "Lead created")
-                                : entry.details?.action === "bulk_status_change"
+                                : (entry.details as any)?.action === "bulk_status_change"
                                   ? (isAr ? "تغيير حالة جماعي" : "Bulk status change")
-                                  : entry.details?.updates?.status
-                                    ? `${isAr ? "الحالة → " : "Status → "}${stageLabels[entry.details.updates.status]?.[language] || entry.details.updates.status}`
-                                    : entry.details?.updates?.notes !== undefined
+                                  : (entry.details as any)?.updates?.status
+                                    ? `${isAr ? "الحالة → " : "Status → "}${stageLabels[(entry.details as any).updates.status]?.[language] || (entry.details as any).updates.status}`
+                                    : (entry.details as any)?.updates?.notes !== undefined
                                       ? (isAr ? "تحديث الملاحظات" : "Notes updated")
                                       : (isAr ? "تحديث" : "Updated")}
                             </p>

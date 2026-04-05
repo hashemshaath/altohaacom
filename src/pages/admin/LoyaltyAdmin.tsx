@@ -36,7 +36,7 @@ export default function LoyaltyAdmin() {
   const { data: tiers = [] } = useQuery({
     queryKey: ["adminLoyaltyTiers"],
     queryFn: async () => {
-      const { data } = await supabase.from("loyalty_tiers").select("id, name, name_ar, slug, min_points, max_points, multiplier, badge_emoji, color, benefits, is_active, sort_order").order("sort_order");
+      const { data } = await supabase.from("loyalty_tiers").select("id, name, name_ar, slug, min_points, multiplier, icon_emoji, color, benefits, is_active, sort_order").order("sort_order");
       return data || [];
     },
   });
@@ -54,7 +54,7 @@ export default function LoyaltyAdmin() {
   const { data: rewards = [] } = useQuery({
     queryKey: ["adminRewards"],
     queryFn: async () => {
-      const { data } = await supabase.from("rewards_catalog").select("id, name, name_ar, description, description_ar, points_cost, category, image_url, is_active, stock_count, sort_order").order("sort_order");
+      const { data } = await supabase.from("rewards_catalog").select("id, name, name_ar, description, description_ar, points_cost, category, image_url, is_active, is_featured, min_tier, stock, sort_order").order("sort_order");
       return data || [];
     },
   });
@@ -63,7 +63,7 @@ export default function LoyaltyAdmin() {
   const { data: redemptions = [] } = useQuery({
     queryKey: ["adminRedemptions"],
     queryFn: async () => {
-      const { data } = await supabase.from("reward_redemptions").select("id, user_id, reward_id, points_spent, status, created_at").order("created_at", { ascending: false }).limit(50);
+      const { data } = await supabase.from("reward_redemptions").select("id, user_id, reward_id, points_spent, redemption_code, status, created_at").order("created_at", { ascending: false }).limit(50);
       return data || [];
     },
   });
