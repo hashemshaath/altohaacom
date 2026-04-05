@@ -33,7 +33,7 @@ export const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, f
       });
       if (error) throw error;
       if (data?.translated) onTranslated(data.translated);
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast({ title: "Translation failed", description: e.message, variant: "destructive" });
     } finally {
       setLoading(false);

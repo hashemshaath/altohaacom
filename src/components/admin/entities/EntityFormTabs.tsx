@@ -157,7 +157,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
         onUpdate(targetField, data.translated);
         toast({ title: isAr ? "تمت الترجمة + SEO" : "Translated + SEO optimized" });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setTranslatingField(null);
@@ -178,7 +178,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
         onUpdate(field, data.optimized);
         toast({ title: isAr ? "تم تحسين النص" : "Text optimized for SEO" });
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setTranslatingField(null);
@@ -197,7 +197,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
       const field = type === "logo" ? "logo_url" : "cover_image_url";
       onUpdate(field, urlData.publicUrl);
       toast({ title: isAr ? "تم الرفع" : "Upload successful" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
     } finally {
       setter(false);

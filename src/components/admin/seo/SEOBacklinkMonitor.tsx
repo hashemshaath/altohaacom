@@ -93,7 +93,7 @@ export const SEOBacklinkMonitor = memo(function SEOBacklinkMonitor({ isAr }: { i
       setNewAnchor("");
       qc.invalidateQueries({ queryKey: ["seo-backlinks"] });
       toast.success(isAr ? "تمت إضافة الرابط الخلفي" : "Backlink added");
-    } catch (e: any) {
+    } catch (e: unknown) {
       toast.error(e.message);
     } finally {
       setAdding(false);

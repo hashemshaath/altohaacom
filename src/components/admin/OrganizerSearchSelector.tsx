@@ -289,7 +289,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         setShowAddForm(false);
         setNewName(""); setNewNameAr(""); setNewCountry(""); setNewType("culinary_association");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
     } finally {
       setIsAdding(false);

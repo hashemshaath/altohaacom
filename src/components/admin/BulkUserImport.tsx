@@ -124,7 +124,7 @@ export const BulkUserImport = memo(function BulkUserImport() {
         });
         if (error || data?.error) throw new Error(data?.error || error?.message);
         success++;
-      } catch (err: any) {
+      } catch (err: unknown) {
         failed++;
         errors.push(`${u.email}: ${err.message}`);
       }

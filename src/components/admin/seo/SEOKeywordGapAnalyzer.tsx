@@ -156,7 +156,7 @@ Return ONLY valid JSON array of objects with fields: keyword, type, estimatedTra
           priority: 90 - i * 5,
         })));
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error("AI analysis failed:", e);
     } finally {
       setAnalyzing(false);

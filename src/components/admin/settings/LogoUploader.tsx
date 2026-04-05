@@ -46,7 +46,7 @@ export const LogoUploader = memo(function LogoUploader({ label, labelAr, isAr, v
       const { data } = supabase.storage.from("brand-assets").getPublicUrl(fileName);
       onChange(data.publicUrl);
       toast({ title: isAr ? "تم رفع الشعار بنجاح" : "Logo uploaded successfully" });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: isAr ? "فشل الرفع" : "Upload failed", description: err.message, variant: "destructive" });
     } finally {
       setUploading(false);

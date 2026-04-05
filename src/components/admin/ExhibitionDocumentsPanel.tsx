@@ -77,7 +77,7 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
       }
       queryClient.invalidateQueries({ queryKey: ["exhibition-documents", exhibitionId] });
       toast({ title: t("Documents uploaded", "تم رفع المستندات") });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ title: t("Upload failed", "فشل الرفع"), description: err.message, variant: "destructive" });
     } finally {
       setUploading(false);

@@ -83,7 +83,7 @@ const SecurityDashboard = memo(function SecurityDashboard() {
         setEvents(data.recent_events || []);
         setTypeBreakdown(data.type_breakdown || {});
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Error", description: err.message });
     } finally {
       setLoading(false);
