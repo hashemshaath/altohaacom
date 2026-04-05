@@ -79,7 +79,7 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
           </div>
         ) : (
           <div className="space-y-2">
-            {data?.reports.map((r: any) => (
+            {data?.reports.map((r) => (
               <div key={r.id} className="flex items-center gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-2.5 transition-all duration-200 hover:bg-destructive/10 hover:shadow-sm group/report">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-destructive/10 transition-transform group-hover/report:scale-110">
                   <Flag className="h-3.5 w-3.5 text-destructive" />
@@ -93,7 +93,7 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
                 </Badge>
               </div>
             ))}
-            {data?.pendingPosts.map((p: any) => (
+            {data?.pendingPosts.map((p) => (
               <div key={p.id} className="flex items-center gap-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-2.5 transition-all duration-200 hover:bg-chart-4/10 hover:shadow-sm group/post">
                 <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-chart-4/10 transition-transform group-hover/post:scale-110">
                   <MessageSquare className="h-3.5 w-3.5 text-chart-4" />
