@@ -39,7 +39,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_sponsors")
-        .select("*, competitions(title, title_ar, start_date, end_date, status), sponsorship_packages(name, name_ar, tier, price)")
+        .select("*, competitions(title, title_ar, competition_start, competition_end, status), sponsorship_packages(name, name_ar, tier, price)")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -89,7 +89,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
       }));
       const upcoming = upcomingCompetitions.map((c) => ({
         title: c.title,
-        date: c.start_date,
+        date: c.competition_start,
         country: c.country_code,
       }));
 
@@ -182,10 +182,10 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
                       <TableCell className="font-medium">
                         <div>
                           <p>{isAr && s.competitions?.title_ar ? s.competitions.title_ar : s.competitions?.title || "—"}</p>
-                          {s.competitions?.start_date && (
+                          {s.competitions?.competition_start && (
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              {format(new Date(s.competitions.start_date), "MMM yyyy")}
+                              {format(new Date(s.competitions.competition_start), "MMM yyyy")}
                             </p>
                           )}
                         </div>
@@ -275,10 +275,10 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
                   <CardContent className="pt-4 pb-4">
                     <p className="font-medium text-sm">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
                     <div className="flex items-center gap-2 mt-2">
-                      {comp.start_date && (
+                      {comp.competition_start && (
                         <Badge variant="outline" className="text-[10px]">
                           <Calendar className="h-3 w-3 me-1" />
-                          {format(new Date(comp.start_date), "MMM yyyy")}
+                          {format(new Date(comp.competition_start), "MMM yyyy")}
                         </Badge>
                       )}
                       <Badge variant="secondary" className="text-[10px]">{comp.status}</Badge>
