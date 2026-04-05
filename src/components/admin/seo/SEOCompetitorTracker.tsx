@@ -7,8 +7,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Globe, Plus, Trash2, RefreshCw, ExternalLink, Shield, Zap, Eye, Target, Loader2 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
 import { CHART_COLORS } from "@/lib/chartConfig";
+import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   CartesianGrid, Cell,

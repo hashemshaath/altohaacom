@@ -11,8 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { FileText, Download, Trash2, BarChart3, PieChart, TrendingUp, Users, Trophy, MessageSquare, Award, Newspaper, GraduationCap, Save, Play } from "lucide-react";
-import {
 import { supabase } from "@/integrations/supabase/client";
+import {
   BarChart,
   Bar,
   XAxis,

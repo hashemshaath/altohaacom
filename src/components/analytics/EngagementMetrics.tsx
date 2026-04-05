@@ -17,8 +17,8 @@ import {
   Award,
   MessageSquare,
 } from "lucide-react";
-import {
 import { supabase } from "@/integrations/supabase/client";
+import {
   RadarChart,
   Radar,
   PolarGrid,

@@ -26,8 +26,8 @@ import {
 
 // Extracted modules
 import { type LangCode, SOCIAL_ICONS, tl, pickLocalizedText, formatCompact } from "@/lib/socialLinksTranslations";
-import {
 import { supabase } from "@/integrations/supabase/client";
+import {
   AnimatedNumber, FloatingParticles, TypingText, VideoEmbed,
   SectionDivider, ContactFormSection, EmailSubscriptionSection,
 } from "@/components/social-links/SocialLinksWidgets";

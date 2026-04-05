@@ -7,8 +7,8 @@ import {
   Ticket, Star, MapPin, Calendar, Percent,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
 import { CHART_COLORS } from "@/lib/chartConfig";
+import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid,
 } from "recharts";

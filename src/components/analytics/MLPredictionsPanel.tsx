@@ -11,8 +11,8 @@ import {
   Brain, RefreshCw, TrendingUp, TrendingDown, Users, Trophy,
   DollarSign, AlertTriangle, Target, Sparkles, Lightbulb, ShieldAlert, Activity,
 } from "lucide-react";
-import {
 import { supabase } from "@/integrations/supabase/client";
+import {
   ComposedChart, Area, Line, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid,
   PolarAngleAxis, PolarRadiusAxis,

@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AnalyticsKPICards } from "./AnalyticsKPICards";
-import {
 import { supabase } from "@/integrations/supabase/client";
+import {
   RegistrationTrendChart,
   MonthlyCompetitionsChart,
   ScoreDistributionChart,

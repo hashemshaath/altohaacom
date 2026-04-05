@@ -6,8 +6,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Globe, MapPin, Users, TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
 import { supabase } from "@/integrations/supabase/client";
+import {
 import { CHART_COLORS } from "@/lib/chartConfig";
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,

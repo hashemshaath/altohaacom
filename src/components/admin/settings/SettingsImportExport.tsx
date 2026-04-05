@@ -8,8 +8,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import {
   Download, Upload, FileJson, AlertTriangle, CheckCircle2, Loader2, Shield,
 } from "lucide-react";
-import {
 import { supabase } from "@/integrations/supabase/client";
+import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
   AlertDialogTrigger,
