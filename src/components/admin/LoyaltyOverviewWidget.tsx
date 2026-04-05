@@ -25,7 +25,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
         { count: referralCodes },
       ] = await Promise.all([
         supabase.from("membership_cards").select("*", { count: "exact", head: true }).eq("card_status", "active"),
-        supabase.from("membership_cards").select("tier").eq("card_status", "active"),
+        supabase.from("membership_cards").select("tier").eq("card_status", "active") as unknown as Promise<{ data: { tier: string }[] | null }>,
         supabase.from("challenges").select("*", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("rewards_catalog").select("*", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("points_ledger").select("points, action_type").order("created_at", { ascending: false }).limit(100),
@@ -34,14 +34,14 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
 
       // Tier distribution
       const tiers: Record<string, number> = {};
-      tierDistribution?.forEach((m: any) => {
+      tierDistribution?.forEach((m) => {
         const t = m.tier || "bronze";
         tiers[t] = (tiers[t] || 0) + 1;
       });
 
       // Points stats
-      const totalAwarded = recentPoints?.filter((p: any) => p.points > 0).reduce((s: number, p: any) => s + p.points, 0) || 0;
-      const totalRedeemed = Math.abs(recentPoints?.filter((p: any) => p.points < 0).reduce((s: number, p: any) => s + p.points, 0) || 0);
+      const totalAwarded = recentPoints?.filter((p) => p.points > 0).reduce((s, p) => s + p.points, 0) || 0;
+      const totalRedeemed = Math.abs(recentPoints?.filter((p) => p.points < 0).reduce((s, p) => s + p.points, 0) || 0);
 
       return {
         totalMembers: totalMembers || 0,

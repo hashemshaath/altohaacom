@@ -80,8 +80,8 @@ export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({
       toast({ title: t("Official added", "تمت إضافة المسؤول") });
       setForm(emptyOfficial);
       setShowForm(false);
-    } catch (err: any) {
-      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setSaving(false);
     }

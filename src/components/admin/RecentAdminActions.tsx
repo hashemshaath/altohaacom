@@ -54,7 +54,7 @@ export const RecentAdminActions = memo(function RecentAdminActions() {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          {actions.map((a: any) => {
+          {actions.map((a) => {
             const Icon = getActionIcon(a.action_type);
             const color = getActionColor(a.action_type);
             return (

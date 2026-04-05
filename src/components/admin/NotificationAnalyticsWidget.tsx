@@ -24,10 +24,10 @@ export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWi
       ]);
 
       const byType: Record<string, number> = {};
-      (recentNotifs.data || []).forEach((n: any) => { byType[n.type || "info"] = (byType[n.type || "info"] || 0) + 1; });
+      (recentNotifs.data || []).forEach((n) => { byType[n.type || "info"] = (byType[n.type || "info"] || 0) + 1; });
 
       const today = new Date().toISOString().split("T")[0];
-      const todayCount = (recentNotifs.data || []).filter((n: any) => n.created_at?.startsWith(today)).length;
+      const todayCount = (recentNotifs.data || []).filter((n) => n.created_at?.startsWith(today)).length;
 
       return {
         total: totalRes.count || 0,

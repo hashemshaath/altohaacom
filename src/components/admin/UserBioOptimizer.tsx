@@ -36,8 +36,8 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
         onBioChange(data.optimized);
         toast({ title: isAr ? "تم تحسين النبذة" : "Bio optimized successfully" });
       }
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في التحسين" : "Optimization Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ في التحسين" : "Optimization Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setOptimizing(false);
     }
@@ -65,8 +65,8 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
             : "Translated to Arabic and filled in the other field",
         });
       }
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في الترجمة" : "Translation Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ في الترجمة" : "Translation Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setTranslating(false);
     }

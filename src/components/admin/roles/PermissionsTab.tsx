@@ -113,8 +113,8 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
       queryClient.invalidateQueries({ queryKey: ["rolePermissions"] });
       queryClient.invalidateQueries({ queryKey: ["roleStats"] });
       toast({ title: t("Permissions saved successfully", "تم حفظ الصلاحيات بنجاح") });
-    } catch (err: any) {
-      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setSaving(false);
     }

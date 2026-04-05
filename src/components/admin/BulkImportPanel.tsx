@@ -122,8 +122,8 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       a.click();
       URL.revokeObjectURL(url);
       toast({ title: t("Template downloaded", "تم تنزيل القالب") });
-    } catch (err: any) {
-      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setLoading(false);
     }
@@ -160,8 +160,8 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
         title: t(`${data.total} rows found`, `تم العثور على ${data.total} صف`),
         description: t(`${data.valid} valid, ${data.errors?.length || 0} errors`, `${data.valid} صالح، ${data.errors?.length || 0} أخطاء`),
       });
-    } catch (err: any) {
-      toast({ variant: "destructive", title: t("Parse error", "خطأ في التحليل"), description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: t("Parse error", "خطأ في التحليل"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setLoading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -204,8 +204,8 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       setRows(allOptimized);
       setStep("review");
       toast({ title: t("AI optimization complete", "اكتمل التحسين بالذكاء الاصطناعي") });
-    } catch (err: any) {
-      toast({ variant: "destructive", title: t("AI Error", "خطأ AI"), description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: t("AI Error", "خطأ AI"), description: err instanceof Error ? err.message : String(err) });
       setStep("preview");
     } finally {
       setOptimizing(false);
@@ -247,8 +247,8 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       queryClient.invalidateQueries({ queryKey: ["bulk-imports"] });
       onImportComplete?.();
       resetState();
-    } catch (err: any) {
-      toast({ variant: "destructive", title: t("Save error", "خطأ في الحفظ"), description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: t("Save error", "خطأ في الحفظ"), description: err instanceof Error ? err.message : String(err) });
       setStep("review");
     } finally {
       setSaving(false);
@@ -298,8 +298,8 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       queryClient.invalidateQueries({ queryKey: ["admin-entities"] });
       onImportComplete?.();
       resetState();
-    } catch (err: any) {
-      toast({ variant: "destructive", title: t("Import error", "خطأ في الاستيراد"), description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: t("Import error", "خطأ في الاستيراد"), description: err instanceof Error ? err.message : String(err) });
       setStep("review");
     } finally {
       setSaving(false);

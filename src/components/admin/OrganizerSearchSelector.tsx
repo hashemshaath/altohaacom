@@ -289,8 +289,8 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         setShowAddForm(false);
         setNewName(""); setNewNameAr(""); setNewCountry(""); setNewType("culinary_association");
       }
-    } catch (err: any) {
-      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setIsAdding(false);
     }

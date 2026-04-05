@@ -27,27 +27,27 @@ export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
           .order("created_at", { ascending: false }),
       ]);
 
-      const invoices = (invoicesRes.data || []) as any[];
+      const invoices = invoicesRes.data || [];
       const txns = txnRes.data || [];
 
       const now = new Date();
-      const overdue = invoices.filter((i: any) => i.status !== "paid" && i.status !== "cancelled" && i.due_date && new Date(i.due_date) < now);
-      const pending = invoices.filter((i: any) => i.status === "sent" || i.status === "pending");
-      const paid = invoices.filter((i: any) => i.status === "paid");
+      const overdue = invoices.filter((i) => i.status !== "paid" && i.status !== "cancelled" && i.due_date && new Date(i.due_date) < now);
+      const pending = invoices.filter((i) => i.status === "sent" || i.status === "pending");
+      const paid = invoices.filter((i) => i.status === "paid");
 
       const totalRevenue30d = txns.filter(t => t.type === "payment" || t.type === "credit")
         .reduce((s, t) => s + (Number(t.amount) || 0), 0);
 
-      const totalInvoiced = invoices.filter((i: any) => i.status !== "cancelled")
-        .reduce((s: number, i: any) => s + (Number(i.amount) || 0), 0);
-      const totalPaid = paid.reduce((s: number, i: any) => s + (Number(i.amount) || 0), 0);
+      const totalInvoiced = invoices.filter((i) => i.status !== "cancelled")
+        .reduce((s, i) => s + (Number(i.amount) || 0), 0);
+      const totalPaid = paid.reduce((s, i) => s + (Number(i.amount) || 0), 0);
       const collectionRate = totalInvoiced > 0 ? Math.round((totalPaid / totalInvoiced) * 100) : 0;
 
       return {
         overdue,
         pending,
-        overdueAmount: overdue.reduce((s: number, i: any) => s + (Number(i.amount) || 0), 0),
-        pendingAmount: pending.reduce((s: number, i: any) => s + (Number(i.amount) || 0), 0),
+        overdueAmount: overdue.reduce((s, i) => s + (Number(i.amount) || 0), 0),
+        pendingAmount: pending.reduce((s, i) => s + (Number(i.amount) || 0), 0),
         totalRevenue30d,
         collectionRate,
       };
@@ -119,7 +119,7 @@ export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
             </p>
             <ScrollArea className="max-h-32">
               <div className="space-y-1.5">
-                {data.overdue.slice(0, 5).map((inv: any) => {
+                {data.overdue.slice(0, 5).map((inv) => {
                   const daysOverdue = differenceInDays(new Date(), new Date(inv.due_date));
                   return (
                     <div key={inv.id} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/50">

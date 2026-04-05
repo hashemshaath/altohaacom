@@ -143,8 +143,8 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
         });
         resetAddForm();
       }
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setIsAdding(false);
     }

@@ -145,7 +145,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
       toast({ title: editingId ? t("Series updated", "تم تحديث السلسلة") : t("Series created", "تم إنشاء السلسلة") });
       resetForm();
     },
-    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
   });
 
   const deleteMutation = useMutation({

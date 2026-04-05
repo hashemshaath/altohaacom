@@ -90,7 +90,7 @@ export const ExhibitionTicketStatsWidget = memo(function ExhibitionTicketStatsWi
         {data?.recentTickets && data.recentTickets.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">{isAr ? "آخر التذاكر" : "Recent Tickets"}</p>
-            {data.recentTickets.map((t: any) => (
+            {data.recentTickets.map((t) => (
               <div key={t.id} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/20">
                 <div className="truncate flex-1">
                   <span className="font-mono font-medium">{t.ticket_number}</span>

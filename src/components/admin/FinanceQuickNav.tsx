@@ -10,13 +10,20 @@ import {
   ArrowRight, TrendingUp, AlertTriangle,
 } from "lucide-react";
 
+interface FinanceCounts {
+  orders: number;
+  invoices: number;
+  estimates: number;
+  overdue: number;
+}
+
 interface NavItem {
   href: string;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   labelEn: string;
   labelAr: string;
-  countKey?: string;
-  alertKey?: string;
+  countKey?: keyof FinanceCounts;
+  alertKey?: keyof FinanceCounts;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -58,8 +65,8 @@ export const FinanceQuickNav = memo(function FinanceQuickNav() {
     <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
       {NAV_ITEMS.map((item) => {
         const isActive = location.pathname === item.href;
-        const count = item.countKey && counts ? (counts as any)[item.countKey] : 0;
-        const alert = item.alertKey && counts ? (counts as any)[item.alertKey] : 0;
+        const count = item.countKey && counts ? counts[item.countKey] : 0;
+        const alert = item.alertKey && counts ? counts[item.alertKey] : 0;
         const Icon = item.icon;
 
         return (

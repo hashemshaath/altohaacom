@@ -37,8 +37,8 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
         onOptimized?.(data.optimized);
         toast({ title: isAr ? "تم التحسين بنجاح" : "Optimized successfully" });
       }
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setOptimizing(false);
     }
@@ -59,8 +59,8 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
           title: isAr ? "تمت الترجمة وتعبئة الحقل الآخر" : "Translated & filled in the other field",
         });
       }
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setTranslating(false);
     }
