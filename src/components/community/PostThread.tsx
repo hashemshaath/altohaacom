@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Repeat2, Bookmark, Share2, User, X } from "lucide-react";
+import { Heart, X } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { PostComposer } from "./PostComposer";

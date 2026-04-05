@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,15 +12,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  Crown, Trophy, Calendar, MapPin, Building2, CheckCircle, XCircle, Clock,
-  Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye
-} from "lucide-react";
+import { Crown, Trophy, Calendar, MapPin, CheckCircle, XCircle, Clock, Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 

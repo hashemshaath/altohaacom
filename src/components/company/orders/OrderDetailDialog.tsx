@@ -11,7 +11,7 @@ import {
 import { Calendar, Truck, FileText, AlertTriangle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
-import { CompanyOrder, OrderItem, ORDER_CATEGORIES } from "./orderTypes";
+import { CompanyOrder, OrderItem } from "./orderTypes";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 
 interface OrderDetailDialogProps {

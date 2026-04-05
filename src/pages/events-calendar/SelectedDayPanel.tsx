@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, X } from "lucide-react";
-import { format, isSameDay } from "date-fns";
+import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { DayEventCard } from "./DayView";

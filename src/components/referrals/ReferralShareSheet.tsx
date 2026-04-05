@@ -1,7 +1,6 @@
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -9,9 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useSendInvitation } from "@/hooks/useReferral";
 import { useAwardPoints } from "@/hooks/useAwardPoints";
 import { QRCodeSVG } from "qrcode.react";
-import {
-  Copy, Mail, MessageCircle, Share2, Send, Loader2, QrCode, Smartphone, Link2
-} from "lucide-react";
+import { Copy, Mail, MessageCircle, Share2, Send, Loader2, QrCode, Smartphone } from "lucide-react";
 
 interface ReferralShareSheetProps {
   referralLink: string;

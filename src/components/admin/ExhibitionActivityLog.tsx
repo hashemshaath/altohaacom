@@ -5,8 +5,8 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { History, CheckCircle2, Pencil, Trash2, Eye, Plus, UserCheck, Ticket } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { History, CheckCircle2, Pencil, Trash2, Eye, Plus, Ticket } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 export const ExhibitionActivityLog = memo(function ExhibitionActivityLog() {
   const { language } = useLanguage();

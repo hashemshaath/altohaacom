@@ -9,10 +9,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { getVerificationUrl } from "@/lib/qrCode";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Download, Copy, User, Trophy, Gavel, Shield, QrCode,
-  CheckCircle2, Clock, Building2,
-} from "lucide-react";
+import { Download, Copy, Trophy, Gavel, Shield, QrCode, CheckCircle2, Clock, Building2 } from "lucide-react";
 import type { QREntityType } from "@/lib/qrCode";
 
 interface ParticipantBadgeCardProps {

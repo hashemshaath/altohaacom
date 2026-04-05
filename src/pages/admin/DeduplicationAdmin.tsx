@@ -17,10 +17,9 @@ import {
   ScanSearch, Merge, AlertTriangle, CheckCircle2, Loader2,
   Shield, Clock, Activity, Zap, BarChart3,
 } from "lucide-react";
-import { useEntityDedup, type DupGroup, type DupCandidate } from "@/hooks/useEntityDedup";
+import { useEntityDedup, type DupGroup } from "@/hooks/useEntityDedup";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { format } from "date-fns";
 
 const TABLE_OPTIONS = [

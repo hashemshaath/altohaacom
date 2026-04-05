@@ -5,18 +5,11 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Calendar as CalendarIcon, Trophy, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Calendar as CalendarIcon, Trophy, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import {
-  format,
-  isSameDay,
-  startOfMonth,
-  endOfMonth,
-  isWithinInterval,
-} from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { cn } from "@/lib/utils";
 

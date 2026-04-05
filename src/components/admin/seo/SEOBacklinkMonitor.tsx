@@ -5,17 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import {
-  Link2, Plus, Trash2, ExternalLink, Shield, AlertTriangle,
-  CheckCircle2, TrendingUp, Loader2, ArrowUpRight, Globe, Clock,
-} from "lucide-react";
+import { Link2, Plus, Trash2, ExternalLink, Shield, CheckCircle2, TrendingUp, Loader2, Globe } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
-import { format } from "date-fns";
 
 interface Backlink {
   id: string;

@@ -6,7 +6,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEstablishment, useEstablishmentAssociations, useAddAssociation, useAddQualification, useAssociationQualifications } from "@/hooks/useEstablishments";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Building2, MapPin, Star, Phone, Mail, Globe, Users, Award, Calendar, Plus, Briefcase } from "lucide-react";
+import { Building2, MapPin, Star, Phone, Mail, Globe, Users, Award, Calendar, Plus } from "lucide-react";
 import { format } from "date-fns";
 
 const associationTypes = [

@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Trash2, Pencil, Calendar, MapPin, Trophy } from "lucide-react";
+import { Plus, Trash2, Pencil, MapPin, Trophy } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 

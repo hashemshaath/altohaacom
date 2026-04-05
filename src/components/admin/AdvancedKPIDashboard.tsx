@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,9 +11,7 @@ import {
 import { Activity, Users, Trophy, FileText, DollarSign, TrendingUp, Ticket } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  CHART_COLORS, TOOLTIP_STYLE, AXIS_TICK, X_AXIS_PROPS, Y_AXIS_PROPS, GRID_PROPS, getNoDataText,
-} from "@/lib/chartConfig";
+import { CHART_COLORS, TOOLTIP_STYLE } from "@/lib/chartConfig";
 
 export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
   const { language } = useLanguage();

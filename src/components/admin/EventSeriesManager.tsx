@@ -13,10 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
-import {
-  Plus, Pencil, Trash2, ChevronDown, Layers, Calendar, Copy, Loader2, X,
-  Landmark, Trophy, Shuffle,
-} from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronDown, Layers, Calendar, Loader2, X, Landmark, Trophy, Shuffle } from "lucide-react";
 
 interface SeriesRow {
   id: string;

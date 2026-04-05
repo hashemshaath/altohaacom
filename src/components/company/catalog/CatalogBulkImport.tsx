@@ -11,7 +11,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Upload, FileText, AlertTriangle, CheckCircle2, Download, X, Loader2 } from "lucide-react";
 import { categories, CatalogFormData } from "./catalogTypes";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 

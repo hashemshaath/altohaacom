@@ -3,13 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Gift, Send, Inbox, ArrowLeft, Copy, CheckCircle, Clock, XCircle, ExternalLink } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
 
 const STATUS_MAP: Record<string, { en: string; ar: string; variant: "default" | "secondary" | "outline" | "destructive" }> = {
   pending: { en: "Pending", ar: "في الانتظار", variant: "secondary" },

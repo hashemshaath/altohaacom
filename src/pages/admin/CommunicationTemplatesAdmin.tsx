@@ -5,7 +5,6 @@ import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { notifyFromTemplate } from "@/lib/notificationTriggers";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
@@ -25,10 +24,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import {
-  MessageSquare, Plus, Edit, Trash2, Search, Mail, Phone, Send, Eye, Copy, Filter, FileText,
-  Variable, Zap, ChevronDown, ChevronUp, CheckSquare, XSquare, Download, LayoutGrid, List,
-} from "lucide-react";
+import { MessageSquare, Plus, Edit, Trash2, Mail, Phone, Send, Eye, Copy, Filter, FileText, Variable, Zap, ChevronDown, ChevronUp, XSquare, Download, LayoutGrid, List } from "lucide-react";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";

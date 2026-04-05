@@ -8,18 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
 import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
 import { AuthLayout } from "@/components/auth/AuthLayout";
-import { z } from "zod";
-import {
-  Building2, Loader2, LogIn, Phone, Mail, KeyRound,
-  CheckCircle, ArrowLeft, ShieldCheck,
-} from "lucide-react";
+import { Building2, Loader2, LogIn, Phone, Mail, CheckCircle, ArrowLeft } from "lucide-react";
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MS = 5 * 60 * 1000;

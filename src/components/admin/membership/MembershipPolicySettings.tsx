@@ -8,10 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  Settings2, Clock, ShieldAlert, Bell, RefreshCw, AlertTriangle,
-  Save, CheckCircle2, Timer, CalendarClock, Zap, Info, Loader2,
-} from "lucide-react";
+import { Settings2, ShieldAlert, Bell, RefreshCw, AlertTriangle, Save, CheckCircle2, Timer, CalendarClock, Zap, Info, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 

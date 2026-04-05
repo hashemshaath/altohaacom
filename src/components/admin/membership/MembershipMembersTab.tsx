@@ -27,11 +27,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
-import {
-  Search, ArrowUpCircle, Mail, MoreHorizontal, CalendarPlus,
-  Ban, ShieldOff, ShieldCheck, Download, Clock,
-} from "lucide-react";
-import { format, differenceInDays, addDays, addMonths, addYears } from "date-fns";
+import { Search, ArrowUpCircle, Mail, MoreHorizontal, CalendarPlus, Ban, ShieldOff, ShieldCheck, Clock } from "lucide-react";
+import { format, differenceInDays, addDays } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];

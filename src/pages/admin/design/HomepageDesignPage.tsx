@@ -1,14 +1,9 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Home, Layers, ArrowRight, Megaphone, Eye, EyeOff,
-  BarChart3, AlertTriangle, CheckCircle, Settings2, Sparkles,
-} from "lucide-react";
+import { Home, Layers, ArrowRight, Megaphone, Eye, EyeOff, BarChart3, AlertTriangle, Sparkles } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTemplateSwitcher";
 import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";

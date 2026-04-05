@@ -6,10 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  History, FileText, User, Calendar, ChevronDown, ChevronUp,
-  Download, Search, BarChart3, CheckCircle2, XCircle, Filter,
-} from "lucide-react";
+import { History, FileText, User, Calendar, ChevronDown, ChevronUp, Download, Search, BarChart3, CheckCircle2, Filter } from "lucide-react";
 import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
 
 interface CVImportRecord {

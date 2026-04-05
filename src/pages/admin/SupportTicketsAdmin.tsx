@@ -19,12 +19,10 @@ import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -54,22 +52,7 @@ import { TicketEscalationWidget } from "@/components/admin/TicketEscalationWidge
 import { SupportSatisfactionWidget } from "@/components/admin/SupportSatisfactionWidget";
 import { MessagingAdminOverview } from "@/components/admin/MessagingAdminOverview";
 import { SupportOverviewWidget } from "@/components/admin/SupportOverviewWidget";
-import {
-  Ticket,
-  Search,
-  Send,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Users,
-  MessageSquare,
-  ArrowLeft,
-  UserCheck,
-  XCircle,
-  Timer,
-  Zap,
-  MessageCircle,
-} from "lucide-react";
+import { Ticket, Send, Clock, CheckCircle2, AlertCircle, Users, MessageSquare, ArrowLeft, XCircle, Timer, Zap } from "lucide-react";
 import { format, formatDistanceToNow, differenceInHours, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";

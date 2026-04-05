@@ -2,8 +2,6 @@ import { useState } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
-import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
-import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
@@ -35,35 +33,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  Package,
-  Search,
-  Plus,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  ChevronLeft,
-  Save,
-  X,
-  Send,
-  MessageSquare,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Truck,
-  Building2,
-  ShoppingBag,
-  Edit,
-  Trash2,
-  FileText,
-  Download,
-  Ban,
-  User,
-} from "lucide-react";
+import { Package, Search, Plus, Eye, CheckCircle, XCircle, ChevronLeft, Save, X, Send, MessageSquare, ArrowUpRight, ArrowDownLeft, Truck, Building2, ShoppingBag, Edit, Trash2, FileText, Download, Ban, User } from "lucide-react";
 import { format } from "date-fns";
 
 type OrderStatus = "draft" | "pending" | "approved" | "rejected" | "in_progress" | "completed" | "cancelled";

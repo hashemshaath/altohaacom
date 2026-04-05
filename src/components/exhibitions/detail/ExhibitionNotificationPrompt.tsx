@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bell, BellOff, X, Smartphone } from "lucide-react";
+import { Bell, X, Smartphone } from "lucide-react";
 
 interface Props {
   exhibitionId: string;

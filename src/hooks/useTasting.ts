@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { toast } from "sonner";
 
 export type EvalMethod = "numeric" | "stars" | "pass_fail";
 export type SessionStatus = "draft" | "open" | "in_progress" | "completed" | "cancelled";

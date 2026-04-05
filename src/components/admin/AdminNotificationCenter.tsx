@@ -7,10 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Bell, BellOff, CheckCheck, Clock, AlertTriangle, Info, Trash2 } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { Bell, BellOff, CheckCheck, Clock, AlertTriangle, Info } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
-import { toast } from "sonner";
 
 const TYPE_ICONS: Record<string, typeof Bell> = {
   warning: AlertTriangle,

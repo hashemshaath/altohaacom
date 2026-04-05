@@ -2,22 +2,16 @@ import { useState, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
-import {
-  Landmark, Receipt, Building2, ShieldCheck, AlertTriangle,
-  CheckCircle2, Clock, Calculator,
-} from "lucide-react";
+import { Landmark, Receipt, Building2, ShieldCheck, Calculator } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 
 const KSA_VAT_RATE = 15;

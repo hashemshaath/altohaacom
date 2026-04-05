@@ -5,7 +5,6 @@ import { useAutoTranslate } from "@/hooks/useAutoTranslate";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
 import { Button } from "@/components/ui/button";
 import { Languages, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 
 interface EntityInput {
   name?: string;

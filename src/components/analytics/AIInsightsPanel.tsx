@@ -11,7 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Brain, RefreshCw, Sparkles, TrendingUp, AlertTriangle, Lightbulb, BarChart3, History, Calendar, FileText, Download } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
-import { toast } from "sonner";
 
 const REPORT_TYPES = [
   { value: "weekly", labelEn: "Weekly", labelAr: "أسبوعي" },

@@ -1,24 +1,13 @@
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import {
-  Users, Trophy, Building2, FileText, TrendingUp, TrendingDown,
-  Eye, Activity, DollarSign, BarChart3, PieChart, ArrowUpRight,
-  ArrowDownRight, Minus, RefreshCw, Loader2, Globe, Star
-} from "lucide-react";
-import {
-  AreaChart, Area, BarChart, Bar, PieChart as RechartsPie, Pie, Cell,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
-} from "recharts";
+import { Users, Trophy, Building2, FileText, TrendingUp, Activity, ArrowUpRight, ArrowDownRight, Minus, Globe } from "lucide-react";
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const CHART_COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",

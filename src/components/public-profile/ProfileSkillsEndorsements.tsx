@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Sparkles, Users, TrendingUp } from "lucide-react";
+import { Sparkles, Users } from "lucide-react";
 
 interface ProfileSkillsEndorsementsProps {
   userId: string;

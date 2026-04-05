@@ -27,11 +27,7 @@ import { MediaPreviewOverlay } from "@/components/messages/MediaPreviewOverlay";
 import { QuickReplySuggestions } from "@/components/messages/QuickReplySuggestions";
 import { UnreadDivider } from "@/components/messages/UnreadDivider";
 import { LastSeenLabel } from "@/components/messages/LastSeenLabel";
-import {
-  Send, ArrowLeft, MoreVertical, Search, CheckSquare,
-  Paperclip, Star, Link2, Image, Film, Music, FileText, Trash2, MessageSquare,
-  Plus, X, Smile, Phone, Video, Reply, Forward, Pin,
-} from "lucide-react";
+import { Send, ArrowLeft, MoreVertical, Search, CheckSquare, Paperclip, Star, Link2, Image, Film, Music, FileText, Trash2, MessageSquare, X, Reply, Forward, Pin } from "lucide-react";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";

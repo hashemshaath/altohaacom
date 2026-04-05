@@ -2,7 +2,7 @@ import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Share2, Copy, ExternalLink } from "lucide-react";
+import { Share2, Copy } from "lucide-react";
 
 interface SupplierShareButtonsProps {
   companyName: string;

@@ -1,12 +1,8 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import {
-  BarChart3, Users, Trophy, FileText, Bell, Shield,
-  Landmark, Zap, Package, Award, type LucideIcon,
-} from "lucide-react";
+import { BarChart3, Users, Trophy, FileText, Bell, Shield, Landmark, Package, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface MobileAction {

@@ -5,14 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Separator } from "@/components/ui/separator";
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
 } from "recharts";
-import {
-  Printer, Download, FileSpreadsheet, Trophy, ChefHat, Landmark,
-  Calendar, FileText, BarChart3, DollarSign,
-} from "lucide-react";
+import { Printer, FileSpreadsheet } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 

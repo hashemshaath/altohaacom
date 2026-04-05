@@ -10,21 +10,11 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import {
-  Search, Plus, Trash2, Edit, Package, Save, X, Check,
-  ShoppingCart, Beef, Leaf, GlassWater, Flame, Wrench, Shirt,
-  ShieldCheck, Droplets, Plug, Wind, Cable, Truck, ClipboardList,
-  MapPin, Refrigerator, Sparkles, Store, ListPlus, Filter,
-  BookTemplate, ChefHat, CookingPot,
-} from "lucide-react";
-import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
-import { DISH_TEMPLATES } from "@/data/dishTemplates";
+import { Search, Plus, Trash2, Edit, Package, Save, X, Check, ShoppingCart, Beef, Leaf, GlassWater, Flame, Wrench, Shirt, ShieldCheck, Droplets, Plug, Wind, Cable, Truck, ClipboardList, MapPin, Refrigerator, Sparkles, Store, ListPlus, Filter, BookTemplate, ChefHat } from "lucide-react";
 
 /* ── Supermarket aisle definitions ── */
 const SUPERMARKET_AISLES = [

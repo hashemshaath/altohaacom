@@ -2,7 +2,7 @@ import { memo, useState, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
-import {
-  ArrowUpCircle, ArrowDownCircle, RefreshCw, UserPlus, XCircle,
-  ShieldAlert, Clock, Gift, Zap, Search, CalendarDays, ChevronDown
-} from "lucide-react";
+import { ArrowUpCircle, ArrowDownCircle, RefreshCw, XCircle, ShieldAlert, Clock, Gift, Zap, Search, CalendarDays, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 

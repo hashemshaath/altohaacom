@@ -1,22 +1,15 @@
-import { useState, memo } from "react";
+import { memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
-import {
-  User, Shield, Mail, Phone, Calendar, Globe, Award, Clock,
-  CreditCard, Trophy, FileText, Ban, CheckCircle2, Loader2,
-} from "lucide-react";
+import { User, Shield, Mail, Phone, Calendar, Globe, Award, Clock, CreditCard, FileText, Loader2 } from "lucide-react";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
 
 interface Props {
   userId: string | null;

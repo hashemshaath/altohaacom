@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, Building, Clock, ArrowRight, Eye, Globe } from "lucide-react";
+import { Calendar, Building, Clock, ArrowRight, Eye, Globe } from "lucide-react";
 import { format, isFuture, differenceInDays } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

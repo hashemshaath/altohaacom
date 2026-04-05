@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Download, Calendar, TrendingUp, DollarSign, BarChart3, Target } from "lucide-react";
+import { Download, TrendingUp, DollarSign, BarChart3, Target } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 

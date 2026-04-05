@@ -1,4 +1,4 @@
-import { useState, useMemo, memo } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -13,15 +13,8 @@ import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import {
-  Briefcase, Search, MapPin, Building2, Clock, Users, ChefHat, DollarSign,
-  Utensils, Coffee, Cake, Soup, Salad, Award, GraduationCap,
-  ArrowRight, Sparkles, Eye, Star, TrendingUp,
-  CheckCircle2, XCircle, Zap, Shield, MessageSquare, Crown, Timer,
-  Play, Target, Rocket, Globe, Heart
-} from "lucide-react";
+import { Briefcase, Search, MapPin, Building2, Clock, Users, ChefHat, DollarSign, Utensils, Coffee, Cake, Soup, Salad, Award, GraduationCap, ArrowRight, Sparkles, Eye, Star, TrendingUp, CheckCircle2, XCircle, Zap, Shield, Crown, Target, Rocket } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import heroImage from "@/assets/jobs-hero.jpg";
 import employerImage from "@/assets/jobs-employer.jpg";
 import chefImage from "@/assets/jobs-chef.jpg";

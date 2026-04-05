@@ -1,8 +1,4 @@
-import {
-  MapPin, Package, ShieldCheck, UtensilsCrossed, Flame, Lightbulb,
-  Droplets, ClipboardList, Refrigerator, Shirt, GlassWater, Beef,
-  Leaf, Wrench, Sparkles, Wind, Cable, Plug, Truck,
-} from "lucide-react";
+import { MapPin, Package, ShieldCheck, UtensilsCrossed, Flame, Droplets, ClipboardList, Refrigerator, Shirt, GlassWater, Beef, Leaf, Wrench, Sparkles, Wind, Cable, Plug, Truck } from "lucide-react";
 
 export const ORDER_CATEGORIES = [
   { value: "venue_setup", label: "Venue & Location", labelAr: "الموقع والمكان", icon: MapPin, description: "Size, layout, platforms", descriptionAr: "المساحة، التصميم، المنصات" },

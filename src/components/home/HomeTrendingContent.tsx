@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Eye, Flame } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { SectionHeader } from "./SectionHeader";

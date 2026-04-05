@@ -1,6 +1,5 @@
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +11,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Loader2, Mail, CheckCircle, Phone, AlertCircle } from "lucide-react";
-import { z } from "zod";
 
 interface ForgotPasswordDialogProps {
   open: boolean;

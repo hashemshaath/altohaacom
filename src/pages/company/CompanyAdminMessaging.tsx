@@ -14,9 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import { CompanyPageGuard } from "@/components/company/CompanyPageGuard";
-import {
-  MessageSquare, Send, Headphones, Clock, User, ShieldCheck, Plus,
-} from "lucide-react";
+import { MessageSquare, Send, Headphones, User, ShieldCheck, Plus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toEnglishDigits } from "@/lib/formatNumber";

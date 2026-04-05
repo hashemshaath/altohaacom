@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
-import { Plus, ChefHat, Trash2, Wrench } from "lucide-react";
+import { Plus, ChefHat, Trash2 } from "lucide-react";
 
 interface Props {
   competitionId: string;

@@ -15,15 +15,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import {
-  BookOpen, Plus, Edit, Trash2, Users, Eye, EyeOff,
-  GraduationCap, ChevronDown, ChevronUp, Save, X, ArrowLeft, MapPin,
-} from "lucide-react";
+import { BookOpen, Plus, Trash2, Users, Eye, EyeOff, GraduationCap, Save, X, ArrowLeft, MapPin } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";

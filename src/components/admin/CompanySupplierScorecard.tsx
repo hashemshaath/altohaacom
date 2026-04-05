@@ -2,14 +2,14 @@ import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Progress } from "@/components/ui/progress";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Building2, Search, Star, TrendingUp, Clock, Package, Filter, ArrowUpDown } from "lucide-react";
+import { Building2, Search, Star, TrendingUp, Package, Filter, ArrowUpDown } from "lucide-react";
 
 export const CompanySupplierScorecard = memo(function CompanySupplierScorecard() {
   const { language } = useLanguage();

@@ -3,13 +3,11 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Briefcase, Award, ChefHat, MapPin, Calendar, Globe, Star, Trophy, BookOpen, Image, Heart } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Briefcase, ChefHat, MapPin, Calendar, Trophy, Heart } from "lucide-react";
 
 interface Props {
   userId?: string;

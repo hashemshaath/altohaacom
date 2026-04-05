@@ -2,14 +2,11 @@ import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import {
-  ClipboardList, Package, CheckCircle, Clock, AlertTriangle,
-  Send, Lightbulb, Printer, TrendingUp, FileInput, Download,
-} from "lucide-react";
+import { ClipboardList, Package, CheckCircle, Clock, AlertTriangle, Send, Lightbulb, Printer, TrendingUp, FileInput } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, isPast, differenceInDays } from "date-fns";

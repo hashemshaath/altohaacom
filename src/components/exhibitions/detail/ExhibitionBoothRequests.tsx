@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { CheckCircle2, XCircle, Clock, Building, Loader2, Eye } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Building, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";

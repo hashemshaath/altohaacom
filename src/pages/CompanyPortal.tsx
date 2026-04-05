@@ -10,31 +10,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {
-  LayoutDashboard,
-  ShoppingCart,
-  MessageSquare,
-  FileText,
-  FileSpreadsheet,
-  Users,
-  Image,
-  Clock,
-  BarChart3,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  Building2,
-  Truck,
-  Star,
-  Package,
-  Menu,
-  Crown,
-  MoreHorizontal,
-  Megaphone,
-  Bell,
-  Headphones,
-  Factory,
-} from "lucide-react";
+import { LayoutDashboard, ShoppingCart, MessageSquare, FileText, FileSpreadsheet, Users, Image, Clock, BarChart3, Settings, ChevronLeft, ChevronRight, Building2, Truck, Star, Package, Crown, MoreHorizontal, Megaphone, Bell, Headphones, Factory } from "lucide-react";
 
 export default function CompanyPortalLayout() {
   const { t, language } = useLanguage();

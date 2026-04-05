@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,12 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   ChevronRight, Plus, Trash2, Save, X, Package, Search, ListPlus,
   CheckCircle, Clock, AlertTriangle, User, Calendar, StickyNote, Star,
 } from "lucide-react";
-import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { ITEM_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 import { format } from "date-fns";
 

@@ -4,10 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Heart, MessageCircle, Repeat2, Bookmark, Share2, MoreHorizontal,
-  Flag, Trash2, Pin, Mail, Pencil, History,
-} from "lucide-react";
+import { MessageCircle, Repeat2, Bookmark, Share2, MoreHorizontal, Flag, Trash2, Pin, Mail, Pencil, History } from "lucide-react";
 import { BookmarkCollections } from "./BookmarkCollections";
 import { LikeAnimation } from "./LikeAnimation";
 import { OnlineDot } from "./PresenceIndicator";

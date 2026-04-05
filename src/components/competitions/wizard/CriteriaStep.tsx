@@ -9,7 +9,6 @@ import { Progress } from "@/components/ui/progress";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { Plus, Trash2 } from "lucide-react";
 import type { CriteriaForm } from "./types";
-import { emptyCriteria } from "./types";
 
 interface CriteriaStepProps {
   criteria: CriteriaForm[];
