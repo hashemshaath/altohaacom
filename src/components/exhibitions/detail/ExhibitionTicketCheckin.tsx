@@ -64,7 +64,7 @@ export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ e
       queryClient.invalidateQueries({ queryKey: ["exhibition-tickets"] });
       toast({ title: isAr ? "تم تسجيل الدخول بنجاح ✅" : "Check-in successful ✅" });
       setStatus("already_checked_in");
-      setResult((prev: any) => prev ? { ...prev, checked_in_at: new Date().toISOString() } : prev);
+      setResult((prev) => prev ? { ...prev, checked_in_at: new Date().toISOString() } : prev);
     },
     onError: () => {
       toast({ title: isAr ? "فشل تسجيل الدخول" : "Check-in failed", variant: "destructive" });

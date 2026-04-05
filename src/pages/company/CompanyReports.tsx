@@ -105,22 +105,22 @@ export default function CompanyReports() {
   // Summary KPIs
   const { totalOrders, totalOrderValue, totalInvoiced, totalPaid, totalPending, totalCredits, totalDebits } = useMemo(() => {
     const tInv = filteredInvoices.reduce((s, i: any) => s + (i.amount || 0), 0);
-    const tPaid = filteredInvoices.filter((i: any) => i.status === "paid").reduce((s, i: any) => s + (i.amount || 0), 0);
+    const tPaid = filteredInvoices.filter((i) => i.status === "paid").reduce((s, i: any) => s + (i.amount || 0), 0);
     return {
       totalOrders: filteredOrders.length,
       totalOrderValue: filteredOrders.reduce((s, o: any) => s + (o.total_amount || 0), 0),
       totalInvoiced: tInv,
       totalPaid: tPaid,
       totalPending: tInv - tPaid,
-      totalCredits: filteredTxns.filter((t: any) => ["payment", "credit", "refund"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0),
-      totalDebits: filteredTxns.filter((t: any) => ["invoice", "debit"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0),
+      totalCredits: filteredTxns.filter((t) => ["payment", "credit", "refund"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0),
+      totalDebits: filteredTxns.filter((t) => ["invoice", "debit"].includes(t.type)).reduce((s, t: any) => s + (t.amount || 0), 0),
     };
   }, [filteredOrders, filteredInvoices, filteredTxns]);
 
   // Export functions
   const exportOrders = () => {
     const headers = ["Order #", "Title", "Direction", "Category", "Status", "Total", "Currency", "Order Date", "Delivery Date", "Created"];
-    const rows = filteredOrders.map((o: any) => [
+    const rows = filteredOrders.map((o) => [
       o.order_number, o.title, o.direction, o.category, o.status,
       String(o.total_amount || 0), o.currency, o.order_date || "", o.delivery_date || "",
       o.created_at?.split("T")[0] || "",
@@ -131,7 +131,7 @@ export default function CompanyReports() {
 
   const exportInvoices = () => {
     const headers = ["Invoice #", "Title", "Status", "Subtotal", "Tax", "Discount", "Total", "Currency", "Due Date", "Paid At", "Created"];
-    const rows = filteredInvoices.map((i: any) => [
+    const rows = filteredInvoices.map((i) => [
       i.invoice_number, i.title, i.status,
       String(i.subtotal || 0), String(i.tax_amount || 0), String(i.discount_amount || 0),
       String(i.amount || 0), i.currency, i.due_date || "", i.paid_at?.split("T")[0] || "",
@@ -143,7 +143,7 @@ export default function CompanyReports() {
 
   const exportTransactions = () => {
     const headers = ["Txn #", "Type", "Amount", "Currency", "Description", "Payment Method", "Reconciled", "Date", "Created"];
-    const rows = filteredTxns.map((t: any) => [
+    const rows = filteredTxns.map((t) => [
       t.transaction_number, t.type, String(t.amount || 0), t.currency, t.description,
       t.payment_method || "", t.is_reconciled ? "Yes" : "No",
       t.transaction_date?.split("T")[0] || "", t.created_at?.split("T")[0] || "",
@@ -264,7 +264,7 @@ export default function CompanyReports() {
                   <tbody>
                     {filteredOrders.length === 0 ? (
                       <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">{isAr ? "لا توجد طلبات" : "No orders"}</td></tr>
-                    ) : filteredOrders.slice(0, 50).map((o: any) => (
+                    ) : filteredOrders.slice(0, 50).map((o) => (
                       <tr key={o.order_number} className="border-b last:border-0 hover:bg-muted/30">
                         <td className="p-3 font-mono text-xs">{o.order_number}</td>
                         <td className="p-3">{o.title}</td>
@@ -318,7 +318,7 @@ export default function CompanyReports() {
                   <tbody>
                     {filteredInvoices.length === 0 ? (
                       <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">{isAr ? "لا توجد فواتير" : "No invoices"}</td></tr>
-                    ) : filteredInvoices.slice(0, 50).map((i: any) => (
+                    ) : filteredInvoices.slice(0, 50).map((i) => (
                       <tr key={i.invoice_number} className="border-b last:border-0 hover:bg-muted/30">
                         <td className="p-3 font-mono text-xs">{i.invoice_number}</td>
                         <td className="p-3">{i.title}</td>
@@ -396,7 +396,7 @@ export default function CompanyReports() {
                   <tbody>
                     {filteredTxns.length === 0 ? (
                       <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">{isAr ? "لا توجد معاملات" : "No transactions"}</td></tr>
-                    ) : filteredTxns.slice(0, 50).map((t: any) => {
+                    ) : filteredTxns.slice(0, 50).map((t) => {
                       const isCredit = ["payment", "credit", "refund"].includes(t.type);
                       return (
                         <tr key={t.transaction_number} className="border-b last:border-0 hover:bg-muted/30">

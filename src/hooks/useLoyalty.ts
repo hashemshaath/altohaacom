@@ -158,7 +158,7 @@ export function useRedeemLoyaltyReward() {
       queryClient.invalidateQueries({ queryKey: ["points-balance"] });
       queryClient.invalidateQueries({ queryKey: ["points-ledger"] });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

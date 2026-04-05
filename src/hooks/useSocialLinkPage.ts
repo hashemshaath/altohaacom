@@ -120,7 +120,7 @@ export function useUpsertSocialLinkPage() {
       qc.invalidateQueries({ queryKey: ["social-link-page"] });
       toast({ title: "✅" });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast({ title: "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });

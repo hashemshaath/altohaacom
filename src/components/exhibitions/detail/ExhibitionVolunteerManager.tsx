@@ -45,14 +45,14 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
   const { data: profiles = {} } = useQuery({
     queryKey: ["vol-profiles", exhibitionId],
     queryFn: async () => {
-      const userIds = volunteers.map((v: any) => v.user_id);
+      const userIds = volunteers.map((v) => v.user_id);
       if (userIds.length === 0) return {};
       const { data } = await supabase
         .from("profiles")
         .select("user_id, full_name, username, avatar_url, email")
         .in("user_id", userIds);
       const map: Record<string, any> = {};
-      (data || []).forEach((p: any) => { map[p.user_id] = p; });
+      (data || []).forEach((p) => { map[p.user_id] = p; });
       return map;
     },
     enabled: volunteers.length > 0,
@@ -104,9 +104,9 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
     },
   });
 
-  const filtered = filter === "all" ? volunteers : volunteers.filter((v: any) => v.status === filter);
+  const filtered = filter === "all" ? volunteers : volunteers.filter((v) => v.status === filter);
   const counts = { all: volunteers.length, pending: 0, approved: 0, rejected: 0 };
-  volunteers.forEach((v: any) => { if (counts[v.status as keyof typeof counts] !== undefined) counts[v.status as keyof typeof counts]++; });
+  volunteers.forEach((v) => { if (counts[v.status as keyof typeof counts] !== undefined) counts[v.status as keyof typeof counts]++; });
 
   const statusBadge = (s: string) => {
     const map: Record<string, { icon: React.ReactNode; cls: string }> = {
@@ -168,9 +168,9 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map((v: any) => {
+                {filtered.map((v) => {
                   const p = (profiles as any)[v.user_id];
-                  const taskCount = tasks.filter((tk: any) => tk.volunteer_id === v.id).length;
+                  const taskCount = tasks.filter((tk) => tk.volunteer_id === v.id).length;
                   return (
                     <TableRow key={v.id}>
                       <TableCell className="text-xs font-medium">{p?.full_name || p?.username || "—"}</TableCell>
@@ -223,10 +223,10 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
                                 </Button>
 
                                 {/* Existing tasks */}
-                                {tasks.filter((tk: any) => tk.volunteer_id === v.id).length > 0 && (
+                                {tasks.filter((tk) => tk.volunteer_id === v.id).length > 0 && (
                                   <div className="border-t pt-3 space-y-2">
                                     <p className="text-xs font-medium text-muted-foreground">{t("Assigned Tasks", "المهام المعينة")}</p>
-                                    {tasks.filter((tk: any) => tk.volunteer_id === v.id).map((tk: any) => (
+                                    {tasks.filter((tk) => tk.volunteer_id === v.id).map((tk) => (
                                       <div key={tk.id} className="flex items-center gap-2 text-xs p-2 rounded-md bg-muted/40">
                                         <Badge variant="outline" className="text-[9px]">{tk.priority}</Badge>
                                         <span className="flex-1">{tk.title}</span>

@@ -89,12 +89,12 @@ export default function QRCodesAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الكود" : "Code", accessor: (r: any) => r.code },
-      { header: isAr ? "النوع" : "Entity Type", accessor: (r: any) => r.entity_type },
-      { header: isAr ? "الفئة" : "Category", accessor: (r: any) => r.category },
-      { header: isAr ? "المسح" : "Scans", accessor: (r: any) => r.scan_count },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.is_active ? "Active" : "Inactive" },
-      { header: isAr ? "التاريخ" : "Created", accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd") },
+      { header: isAr ? "الكود" : "Code", accessor: (r) => r.code },
+      { header: isAr ? "النوع" : "Entity Type", accessor: (r) => r.entity_type },
+      { header: isAr ? "الفئة" : "Category", accessor: (r) => r.category },
+      { header: isAr ? "المسح" : "Scans", accessor: (r) => r.scan_count },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.is_active ? "Active" : "Inactive" },
+      { header: isAr ? "التاريخ" : "Created", accessor: (r) => format(new Date(r.created_at), "yyyy-MM-dd") },
     ],
     filename: "qr-codes",
   });

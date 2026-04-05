@@ -126,8 +126,8 @@ export default function RecipeDetail() {
             carbohydrateContent: recipe.carbs_g ? `${recipe.carbs_g}g` : undefined,
             fatContent: recipe.fat_g ? `${recipe.fat_g}g` : undefined,
           } : undefined,
-          recipeIngredient: ingredients.map((i: any) => typeof i === "string" ? i : i.name || ""),
-          recipeInstructions: steps.map((s: any, idx: number) => ({
+          recipeIngredient: ingredients.map((i) => typeof i === "string" ? i : i.name || ""),
+          recipeInstructions: steps.map((s, idx) => ({
             "@type": "HowToStep",
             position: idx + 1,
             text: typeof s === "string" ? s : s.text || s.instruction || "",
@@ -226,7 +226,7 @@ export default function RecipeDetail() {
                 <Card>
                   <CardContent className="py-4">
                     <ul className="space-y-2">
-                      {ingredients.map((ing: any, i: number) => (
+                      {ingredients.map((ing, i) => (
                         <li key={i} className="flex items-center gap-2 text-sm">
                           <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
                             <Check className="h-3 w-3 text-primary" />
@@ -251,7 +251,7 @@ export default function RecipeDetail() {
                   <Progress value={(checkedSteps.size / steps.length) * 100} className="mb-4 h-1.5" />
                 )}
                 <div className="space-y-3">
-                  {steps.map((step: any, i: number) => {
+                  {steps.map((step, i) => {
                     const text = typeof step === "string" ? step : step.text || JSON.stringify(step);
                     const done = checkedSteps.has(i);
                     return (

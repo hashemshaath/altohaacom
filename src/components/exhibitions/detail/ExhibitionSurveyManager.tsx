@@ -50,7 +50,7 @@ export const ExhibitionSurveyManager = memo(function ExhibitionSurveyManager({ e
         .from("exhibition_survey_responses")
         .select("survey_id")
         .eq("user_id", user.id);
-      return (data || []).map((r: any) => r.survey_id);
+      return (data || []).map((r) => r.survey_id);
     },
     enabled: !!user,
   });
@@ -177,7 +177,7 @@ export const ExhibitionSurveyManager = memo(function ExhibitionSurveyManager({ e
       )}
 
       {/* Surveys list */}
-      {surveys.map((survey: any) => {
+      {surveys.map((survey) => {
         const responded = myResponses.includes(survey.id);
         const responseCount = responseCounts[survey.id] || 0;
         return (
@@ -275,7 +275,7 @@ function SurveyCard({ survey, responded, responseCount, isAr, isOrganizer, exhib
 
         {showForm && !responded && (
           <div className="mt-4 space-y-3 border-t border-border/40 pt-3">
-            {questions.sort((a: any, b: any) => a.sort_order - b.sort_order).map((q: any) => (
+            {questions.sort((a, b) => a.sort_order - b.sort_order).map((q) => (
               <div key={q.id} className="space-y-1.5">
                 <Label className="text-xs">{isAr ? (q.question_ar || q.question) : q.question}</Label>
                 {q.question_type === "rating" ? (

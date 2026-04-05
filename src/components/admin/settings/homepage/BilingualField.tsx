@@ -66,7 +66,7 @@ export const BilingualField = memo(function BilingualField({
             </Label>
             {valueAr?.trim() && <TranslateBtn loading={translatingToEn} onClick={() => translate("ar")} target="EN" />}
           </div>
-          <Field value={valueAr} onChange={(e: any) => onChangeAr(e.target.value)} placeholder={placeholderAr || "...العربية"} className={inputCls} dir="rtl" rows={rows} />
+          <Field value={valueAr} onChange={(e) => onChangeAr(e.target.value)} placeholder={placeholderAr || "...العربية"} className={inputCls} dir="rtl" rows={rows} />
         </div>
         <div className="border-t border-dashed border-border/30" />
         <div className="p-2.5 space-y-1">
@@ -77,7 +77,7 @@ export const BilingualField = memo(function BilingualField({
             </Label>
             {valueEn?.trim() && <TranslateBtn loading={translatingToAr} onClick={() => translate("en")} target="عربي" />}
           </div>
-          <Field value={valueEn} onChange={(e: any) => onChangeEn(e.target.value)} placeholder={placeholderEn || "English..."} className={inputCls} dir="ltr" rows={rows} />
+          <Field value={valueEn} onChange={(e) => onChangeEn(e.target.value)} placeholder={placeholderEn || "English..."} className={inputCls} dir="ltr" rows={rows} />
         </div>
       </div>
     );

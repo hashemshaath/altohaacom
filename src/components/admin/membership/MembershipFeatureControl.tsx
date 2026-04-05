@@ -49,7 +49,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
       if (!f.is_active) continue;
       const mappings = (f as any).membership_feature_tiers || [];
       for (const tier of TIERS) {
-        if (mappings.some((m: any) => m.tier === tier && m.is_enabled)) {
+        if (mappings.some((m) => m.tier === tier && m.is_enabled)) {
           tierCoverage[tier]++;
         }
       }
@@ -300,7 +300,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
                                 </div>
                               </td>
                               {TIERS.map(tier => {
-                                const mapping = tierMappings.find((m: any) => m.tier === tier);
+                                const mapping = tierMappings.find((m) => m.tier === tier);
                                 const isEnabled = mapping?.is_enabled ?? false;
                                 const key = `${feature.id}-${tier}`;
                                 return (

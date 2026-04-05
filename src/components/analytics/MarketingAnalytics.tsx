@@ -267,7 +267,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
                 </div>
                 <ScrollArea className="h-[180px]">
                   <div className="space-y-2">
-                    {campaignData.campaigns.slice(0, 8).map((c: any) => {
+                    {campaignData.campaigns.slice(0, 8).map((c) => {
                       const spendPct = c.budget > 0 ? Math.round(((c.spent || 0) / c.budget) * 100) : 0;
                       return (
                         <div key={c.id} className="rounded-xl border p-3 space-y-1.5">
@@ -384,7 +384,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={conversionData?.sourcePie || []} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3} dataKey="value" label={({ name, value }) => `${name} (${value})`}>
-                      {(conversionData?.sourcePie || []).map((_: any, i: number) => (
+                      {(conversionData?.sourcePie || []).map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Pie>
@@ -411,7 +411,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
             <EmptyState text={isAr ? "لم يتم تكوين أي تكامل بعد" : "No integrations configured yet"} />
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {trackingConfigs.map((cfg: any) => {
+              {trackingConfigs.map((cfg) => {
                 const platformLabels: Record<string, { en: string; ar: string }> = {
                   google_analytics_4: { en: "Google Analytics 4", ar: "Google Analytics 4" },
                   google_tag_manager: { en: "Google Tag Manager", ar: "Google Tag Manager" },

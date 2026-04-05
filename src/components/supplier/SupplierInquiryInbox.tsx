@@ -49,7 +49,7 @@ export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
   const replyMutation = useMutation({
     mutationFn: async () => {
       if (!companyId || !selectedId || !replyText.trim()) throw new Error("Invalid");
-      const original = inquiries.find((i: any) => i.id === selectedId) as any;
+      const original = inquiries.find((i) => i.id === selectedId) as any;
       await supabase.from("company_communications").insert({
         company_id: companyId,
         subject: `Re: ${original?.subject || "Inquiry"}`,
@@ -72,10 +72,10 @@ export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
     onError: () => toast({ title: isAr ? "فشل الإرسال" : "Failed to send", variant: "destructive" }),
   });
 
-  const selected = inquiries.find((i: any) => i.id === selectedId) as any;
-  const unreadCount = useMemo(() => inquiries.filter((i: any) => i.status === "unread").length, [inquiries]);
+  const selected = inquiries.find((i) => i.id === selectedId) as any;
+  const unreadCount = useMemo(() => inquiries.filter((i) => i.status === "unread").length, [inquiries]);
 
-  const handleSelect = (inquiry: any) => {
+  const handleSelect = (inquiry) => {
     setSelectedId(inquiry.id);
     setReplyText("");
     if (inquiry.status === "unread") {
@@ -121,7 +121,7 @@ export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
               <p className="text-sm text-muted-foreground">{isAr ? "لا توجد استفسارات" : "No inquiries yet"}</p>
             </div>
           )}
-          {inquiries.map((inq: any) => (
+          {inquiries.map((inq) => (
             <Card
               key={inq.id}
               className={`cursor-pointer rounded-xl transition-colors ${

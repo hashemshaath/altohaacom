@@ -87,7 +87,7 @@ const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin 
       setForm({ document_type: "passport", title: "", expiry_date: "", notes: "" });
       setUploading(false);
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       setUploading(false);
       toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },

@@ -52,20 +52,20 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
 
       const suggestions: Suggestion[] = [];
 
-      (comps.data || []).forEach((c: any) => {
+      (comps.data || []).forEach((c) => {
         suggestions.push({ text: isAr ? c.title_ar || c.title : c.title, type: "autocomplete", icon: Trophy, category: isAr ? "مسابقة" : "Competition" });
       });
-      (articles.data || []).forEach((a: any) => {
+      (articles.data || []).forEach((a) => {
         suggestions.push({ text: isAr ? a.title_ar || a.title : a.title, type: "autocomplete", icon: FileText, category: isAr ? "مقال" : "Article" });
       });
-      (profiles.data || []).forEach((p: any) => {
+      (profiles.data || []).forEach((p) => {
         const name = isAr ? p.full_name_ar || p.full_name : p.full_name || p.full_name_ar;
         if (name) suggestions.push({ text: name, type: "autocomplete", icon: Users, category: isAr ? "عضو" : "Member" });
       });
-      (recipes.data || []).forEach((r: any) => {
+      (recipes.data || []).forEach((r) => {
         suggestions.push({ text: isAr ? r.title_ar || r.title : r.title, type: "autocomplete", icon: UtensilsCrossed, category: isAr ? "وصفة" : "Recipe" });
       });
-      (exhibitions.data || []).forEach((e: any) => {
+      (exhibitions.data || []).forEach((e) => {
         suggestions.push({ text: isAr ? e.title_ar || e.title : e.title, type: "autocomplete", icon: Ticket, category: isAr ? "معرض" : "Exhibition" });
       });
 
@@ -88,7 +88,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
         .limit(200);
 
       const tagCounts: Record<string, number> = {};
-      (posts || []).forEach((p: any) => {
+      (posts || []).forEach((p) => {
         p.content?.match(/#([^\s#]+)/g)?.forEach((m: string) => {
           const tag = m.replace("#", "").toLowerCase();
           if (tag.length >= 3) tagCounts[tag] = (tagCounts[tag] || 0) + 1;

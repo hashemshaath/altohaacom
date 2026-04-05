@@ -298,7 +298,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
           </CardHeader>
           <CardContent className="pt-0">
             <div className="space-y-2 max-h-[200px] overflow-y-auto scrollbar-none">
-              {invitations.slice(0, 8).map((inv: any) => (
+              {invitations.slice(0, 8).map((inv) => (
                 <div key={inv.id} className="flex items-center gap-3 py-2 px-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors">
                   <div className={`h-7 w-7 rounded-full flex items-center justify-center shrink-0 ${
                     inv.status === "converted" ? "bg-chart-2/15 text-chart-2" :

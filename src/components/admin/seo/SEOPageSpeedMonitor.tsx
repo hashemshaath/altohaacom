@@ -106,7 +106,7 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
 
     // Per-page breakdown
     const byPage: Record<string, { lcp: number[]; fcp: number[]; ttfb: number[]; samples: number }> = {};
-    currentData.forEach((v: any) => {
+    currentData.forEach((v) => {
       if (!byPage[v.path]) byPage[v.path] = { lcp: [], fcp: [], ttfb: [], samples: 0 };
       byPage[v.path].samples++;
       if (v.lcp != null) byPage[v.path].lcp.push(Number(v.lcp));
@@ -130,7 +130,7 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
 
     // Daily trend
     const byDay: Record<string, { lcp: number[]; fcp: number[] }> = {};
-    currentData.forEach((v: any) => {
+    currentData.forEach((v) => {
       const day = format(new Date(v.created_at), "MM/dd");
       if (!byDay[day]) byDay[day] = { lcp: [], fcp: [] };
       if (v.lcp != null) byDay[day].lcp.push(Number(v.lcp));
@@ -141,8 +141,8 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
       .sort((a, b) => a.day.localeCompare(b.day));
 
     // Mobile vs Desktop comparison
-    const mobile = currentData.filter((v: any) => v.device_type === "mobile");
-    const desktop = currentData.filter((v: any) => v.device_type === "desktop");
+    const mobile = currentData.filter((v) => v.device_type === "mobile");
+    const desktop = currentData.filter((v) => v.device_type === "desktop");
     const deviceComparison = {
       mobile: { lcp: p75(extract(mobile, "lcp")), fcp: p75(extract(mobile, "fcp")), ttfb: p75(extract(mobile, "ttfb")), count: mobile.length },
       desktop: { lcp: p75(extract(desktop, "lcp")), fcp: p75(extract(desktop, "fcp")), ttfb: p75(extract(desktop, "ttfb")), count: desktop.length },
@@ -157,7 +157,7 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
 
     // Connection type impact
     const byConn: Record<string, number[]> = {};
-    currentData.forEach((v: any) => {
+    currentData.forEach((v) => {
       const ct = v.connection_type || "unknown";
       if (!byConn[ct]) byConn[ct] = [];
       if (v.lcp != null) byConn[ct].push(Number(v.lcp));

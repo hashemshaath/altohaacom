@@ -32,8 +32,8 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
         .order("created_at", { ascending: false });
       if (!data || data.length === 0) return [];
 
-      const compIds = data.filter((w: any) => w.event_type === "competition").map((w: any) => w.event_id);
-      const exhIds = data.filter((w: any) => w.event_type === "exhibition").map((w: any) => w.event_id);
+      const compIds = data.filter((w) => w.event_type === "competition").map((w) => w.event_id);
+      const exhIds = data.filter((w) => w.event_type === "exhibition").map((w) => w.event_id);
 
       const [compsRes, exhsRes] = await Promise.all([
         compIds.length > 0
@@ -44,13 +44,13 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
           : { data: [] },
       ]);
 
-      const compMap = new Map((compsRes.data || []).map((c: any) => [c.id, c]));
-      const exhMap = new Map((exhsRes.data || []).map((e: any) => [e.id, e]));
+      const compMap = new Map((compsRes.data || []).map((c) => [c.id, c]));
+      const exhMap = new Map((exhsRes.data || []).map((e) => [e.id, e]));
 
-      return data.map((w: any) => ({
+      return data.map((w) => ({
         ...w,
         event: w.event_type === "competition" ? compMap.get(w.event_id) : exhMap.get(w.event_id),
-      })).filter((w: any) => w.event);
+      })).filter((w) => w.event);
     },
     enabled: !!user,
   });
@@ -61,7 +61,7 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
     toast({ title: isAr ? "تمت الإزالة" : "Removed from watchlist" });
   };
 
-  const filtered = tab === "all" ? watchlist : watchlist.filter((w: any) => w.event_type === (tab === "competitions" ? "competition" : "exhibition"));
+  const filtered = tab === "all" ? watchlist : watchlist.filter((w) => w.event_type === (tab === "competitions" ? "competition" : "exhibition"));
 
   return (
     <Card>
@@ -98,7 +98,7 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
               </div>
             ) : (
               <div className="space-y-1.5">
-                {filtered.map((item: any) => {
+                {filtered.map((item) => {
                   const e = item.event;
                   const isComp = item.event_type === "competition";
                   const href = isComp ? `/competitions/${e.slug}` : `/exhibitions/${e.slug}`;

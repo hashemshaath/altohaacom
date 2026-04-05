@@ -308,7 +308,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                           {t("Sponsors", "الرعاة")} ({analytics.totalSponsors})
                         </p>
                         <div className="space-y-1.5">
-                          {analytics.sponsors.slice(0, 5).map((sp: any) => (
+                          {analytics.sponsors.slice(0, 5).map((sp) => (
                             <div key={sp.id} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/30">
                               {sp.logo_url && <img src={sp.logo_url} alt="" className="h-6 w-6 rounded object-contain" />}
                               <span className="truncate flex-1">{isAr && sp.name_ar ? sp.name_ar : sp.name}</span>
@@ -381,7 +381,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                       <CardContent className="p-4">
                         <p className="text-xs font-medium mb-2">{t("Recent Tickets", "آخر التذاكر")}</p>
                         <div className="space-y-1.5">
-                          {analytics.recentTickets.map((tk: any) => (
+                          {analytics.recentTickets.map((tk) => (
                             <div key={tk.id} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/30">
                               <span className="truncate flex-1">{tk.attendee_name || "—"}</span>
                               <Badge variant={tk.status === "confirmed" ? "default" : "secondary"} className="text-[9px] h-4">
@@ -480,7 +480,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                       <CardContent className="p-4">
                         <p className="text-xs font-medium mb-3">{t("Recent Reviews", "آخر التقييمات")}</p>
                         <div className="space-y-2">
-                          {analytics.recentReviews.map((rv: any) => (
+                          {analytics.recentReviews.map((rv) => (
                             <div key={rv.id} className="p-2.5 rounded-xl bg-muted/30 space-y-1">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-1">

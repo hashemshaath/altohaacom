@@ -281,7 +281,7 @@ export default function Jobs() {
               </div>
 
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {featuredJobs.map((job: any) => {
+                {featuredJobs.map((job) => {
                   const company = job.companies as any;
                   const title = isAr ? (job.title_ar || job.title) : job.title;
                   const location = isAr ? (job.location_ar || job.location) : job.location;

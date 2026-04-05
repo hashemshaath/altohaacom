@@ -48,7 +48,7 @@ export function useGoogleTracking() {
     // Ensure dataLayer exists once before any script needs it
     (window as any).dataLayer = (window as any).dataLayer || [];
 
-    configs.forEach((row: any) => {
+    configs.forEach((row) => {
       const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
       switch (row.integration_type) {
         case "google_tag_manager":

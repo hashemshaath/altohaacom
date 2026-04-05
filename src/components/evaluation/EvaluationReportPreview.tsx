@@ -95,7 +95,7 @@ function generateRecommendations(categoryScores: any[], isAr: boolean) {
 
   // Criteria-level recommendations
   categoryScores.forEach(cat => {
-    cat.criteria.forEach((cr: any) => {
+    cat.criteria.forEach((cr) => {
       if (cr.simulatedScore < 7 && cr.is_required) {
         recs.push({
           type: "warning" as const,
@@ -161,14 +161,14 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
   const reportRef = useRef<HTMLDivElement>(null);
   const reportId = useMemo(() => `REP-2026-${String(Math.floor(Math.random() * 9000) + 1000)}`, []);
 
-  const categoryScores = useMemo(() => snapshot.map((cat: any, idx: number) => {
+  const categoryScores = useMemo(() => snapshot.map((cat, idx) => {
     const criteria = cat.criteria || [];
-    const scores = criteria.map((c: any) => ({
+    const scores = criteria.map((c) => ({
       ...c,
       simulatedScore: Math.round((6.5 + Math.random() * 3.5) * 10) / 10,
     }));
     const avgScore = scores.length
-      ? Math.round((scores.reduce((s: number, c: any) => s + c.simulatedScore, 0) / scores.length) * 10) / 10
+      ? Math.round((scores.reduce((s, c) => s + c.simulatedScore, 0) / scores.length) * 10) / 10
       : 0;
     return {
       categoryName: isAr && cat.category?.name_ar ? cat.category.name_ar : cat.category?.name,
@@ -179,16 +179,16 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
   }), [snapshot, isAr]);
 
   const overallScore = categoryScores.length
-    ? Math.round((categoryScores.reduce((s: number, c: any) => s + c.avgScore, 0) / categoryScores.length) * 10) / 10
+    ? Math.round((categoryScores.reduce((s, c) => s + c.avgScore, 0) / categoryScores.length) * 10) / 10
     : 0;
 
-  const radarData = categoryScores.map((cat: any) => ({ category: cat.categoryName, score: cat.avgScore, fullMark: 10 }));
-  const barData = categoryScores.map((cat: any) => ({ name: cat.categoryName, score: cat.avgScore }));
-  const totalCriteria = snapshot.reduce((sum: number, cat: any) => sum + (cat.criteria?.length || 0), 0);
+  const radarData = categoryScores.map((cat) => ({ category: cat.categoryName, score: cat.avgScore, fullMark: 10 }));
+  const barData = categoryScores.map((cat) => ({ name: cat.categoryName, score: cat.avgScore }));
+  const totalCriteria = snapshot.reduce((sum, cat) => sum + (cat.criteria?.length || 0), 0);
 
   const scoreDistribution = useMemo(() => {
     let excellent = 0, good = 0, fair = 0, poor = 0;
-    categoryScores.forEach(cat => cat.criteria.forEach((cr: any) => {
+    categoryScores.forEach(cat => cat.criteria.forEach((cr) => {
       if (cr.simulatedScore >= 9) excellent++;
       else if (cr.simulatedScore >= 7.5) good++;
       else if (cr.simulatedScore >= 6) fair++;
@@ -304,7 +304,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                       <YAxis dataKey="name" type="category" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} width={75} />
                       <Tooltip contentStyle={{ background: 'hsl(var(--popover))', border: '1px solid hsl(var(--border))', borderRadius: '8px', fontSize: '12px' }} />
                       <Bar dataKey="score" radius={[0, 4, 4, 0]}>
-                        {barData.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                        {barData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
@@ -354,7 +354,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
               {isAr ? "النتائج التفصيلية" : "Detailed Scores"} — {totalCriteria} {isAr ? "معيار" : "criteria"}
             </p>
             <div className="space-y-5">
-              {categoryScores.map((cat: any, ci: number) => (
+              {categoryScores.map((cat, ci) => (
                 <div key={ci}>
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-sm font-bold flex items-center gap-2">
@@ -364,7 +364,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                     <span className={`text-sm font-black tabular-nums ${getScoreColor(cat.avgScore)}`}>{cat.avgScore}/10</span>
                   </div>
                   <div className="space-y-2">
-                    {cat.criteria.map((cr: any, cri: number) => (
+                    {cat.criteria.map((cr, cri) => (
                       <div key={cri} className="flex items-center gap-3">
                         <span className="text-xs text-muted-foreground flex-1 min-w-0 truncate">
                           {isAr && cr.name_ar ? cr.name_ar : cr.name}

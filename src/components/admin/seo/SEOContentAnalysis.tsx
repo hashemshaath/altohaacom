@@ -57,7 +57,7 @@ export const SEOContentAnalysis = memo(function SEOContentAnalysis({ isAr }: { i
   });
 
   const metrics: ContentMetrics[] = useMemo(() => {
-    return articles.map((a: any) => {
+    return articles.map((a) => {
       const wordCount = (a.content || "").split(/\s+/).filter(Boolean).length;
       const m = {
         id: a.id,

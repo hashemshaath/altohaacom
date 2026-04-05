@@ -139,7 +139,7 @@ export default function CompanyAdvertising() {
                 <Select value={form.package_id} onValueChange={v => setForm(f => ({ ...f, package_id: v }))}>
                   <SelectTrigger><SelectValue placeholder={isAr ? "اختر باقة" : "Select package"} /></SelectTrigger>
                   <SelectContent>
-                    {packages.map((p: any) => (
+                    {packages.map((p) => (
                       <SelectItem key={p.id} value={p.id}>{isAr ? p.name_ar || p.name : p.name} — {p.price} {p.currency}</SelectItem>
                     ))}
                   </SelectContent>
@@ -209,7 +209,7 @@ export default function CompanyAdvertising() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {campaigns.map((c: any) => {
+                    {campaigns.map((c) => {
                       const ctr = c.total_impressions > 0 ? ((c.total_clicks / c.total_impressions) * 100).toFixed(2) : "0.00";
                       return (
                         <TableRow key={c.id} className="cursor-pointer hover:bg-muted/50" onClick={() => navigate(`/company/advertising/${c.id}`)}>
@@ -247,7 +247,7 @@ export default function CompanyAdvertising() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {requests.map((r: any) => (
+                    {requests.map((r) => (
                       <TableRow key={r.id}>
                         <TableCell className="font-medium">{isAr ? r.title_ar || r.title : r.title}</TableCell>
                         <TableCell><Badge variant="outline">{r.request_type}</Badge></TableCell>
@@ -265,7 +265,7 @@ export default function CompanyAdvertising() {
 
         <TabsContent value="packages">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {packages.map((pkg: any) => (
+            {packages.map((pkg) => (
               <Card key={pkg.id} className={`border-2 transition-all hover:shadow-lg ${pkg.tier === "platinum" ? "border-primary" : "border-border/50"}`}>
                 <CardContent className="p-5 text-center">
                   <Badge className="mb-2" variant={pkg.tier === "platinum" ? "default" : "secondary"}>

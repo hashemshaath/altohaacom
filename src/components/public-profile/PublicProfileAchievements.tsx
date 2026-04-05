@@ -72,9 +72,9 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
 
   const topRanking = rankings[0];
   const { totalMedals, totalGold, totalSilver, totalBronze } = useMemo(() => {
-    const g = rankings.reduce((acc: number, r: any) => acc + (r.gold_medals || 0), 0);
-    const s = rankings.reduce((acc: number, r: any) => acc + (r.silver_medals || 0), 0);
-    const b = rankings.reduce((acc: number, r: any) => acc + (r.bronze_medals || 0), 0);
+    const g = rankings.reduce((acc, r) => acc + (r.gold_medals || 0), 0);
+    const s = rankings.reduce((acc, r) => acc + (r.silver_medals || 0), 0);
+    const b = rankings.reduce((acc, r) => acc + (r.bronze_medals || 0), 0);
     return { totalMedals: g + s + b, totalGold: g, totalSilver: s, totalBronze: b };
   }, [rankings]);
 
@@ -201,7 +201,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
-                {awards.map((ua: any) => {
+                {awards.map((ua) => {
                   const award = ua.global_awards_system;
                   return (
                     <Tooltip key={ua.id}>

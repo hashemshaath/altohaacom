@@ -167,10 +167,10 @@ export default function CompanySponsorships() {
   });
 
   const { availableOpportunities, pendingInvitations } = useMemo(() => {
-    const alreadySponsoredIds = mySponsors.map((s: any) => s.competition_id);
+    const alreadySponsoredIds = mySponsors.map((s) => s.competition_id);
     return {
       availableOpportunities: opportunities.filter(c => !alreadySponsoredIds.includes(c.id)),
-      pendingInvitations: invitations.filter((i: any) => i.status === "pending"),
+      pendingInvitations: invitations.filter((i) => i.status === "pending"),
     };
   }, [mySponsors, opportunities, invitations]);
 
@@ -196,11 +196,11 @@ export default function CompanySponsorships() {
         <div className="relative z-10 mt-4 flex flex-wrap gap-4">
           <div className="rounded-xl bg-background/60 px-4 py-2 backdrop-blur-sm">
             <p className="text-xs text-muted-foreground">{isAr ? "الرعايات النشطة" : "Active"}</p>
-            <p className="text-xl font-bold">{mySponsors.filter((s: any) => s.status === "active").length}</p>
+            <p className="text-xl font-bold">{mySponsors.filter((s) => s.status === "active").length}</p>
           </div>
           <div className="rounded-xl bg-background/60 px-4 py-2 backdrop-blur-sm">
             <p className="text-xs text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</p>
-            <p className="text-xl font-bold text-chart-4">{mySponsors.filter((s: any) => s.status === "pending").length}</p>
+            <p className="text-xl font-bold text-chart-4">{mySponsors.filter((s) => s.status === "pending").length}</p>
           </div>
           <div className="rounded-xl bg-background/60 px-4 py-2 backdrop-blur-sm">
             <p className="text-xs text-muted-foreground">{isAr ? "دعوات جديدة" : "Invitations"}</p>
@@ -246,7 +246,7 @@ export default function CompanySponsorships() {
             </Card>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              {availableOpportunities.map((comp: any) => {
+              {availableOpportunities.map((comp) => {
                 const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
                 return (
                   <Card key={comp.id} className="overflow-hidden transition-all hover:shadow-md">
@@ -307,7 +307,7 @@ export default function CompanySponsorships() {
               </CardContent>
             </Card>
           ) : (
-            mySponsors.map((sponsor: any) => {
+            mySponsors.map((sponsor) => {
               const comp = sponsor.competitions;
               const pkg = sponsor.sponsorship_packages;
               const tier = TIER_CONFIG[sponsor.tier] || TIER_CONFIG.bronze;
@@ -356,7 +356,7 @@ export default function CompanySponsorships() {
               </CardContent>
             </Card>
           ) : (
-            invitations.map((inv: any) => {
+            invitations.map((inv) => {
               const st = STATUS_CONFIG[inv.status] || STATUS_CONFIG.pending;
               return (
                 <Card key={inv.id}>
@@ -395,7 +395,7 @@ export default function CompanySponsorships() {
         {/* Packages */}
         <TabsContent value="packages" className="mt-4">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {packages.map((pkg: any) => {
+            {packages.map((pkg) => {
               const tier = TIER_CONFIG[pkg.tier] || TIER_CONFIG.bronze;
               const TierIcon = tier.icon;
               const benefits = Array.isArray(pkg.benefits) ? pkg.benefits : JSON.parse(pkg.benefits || "[]");
@@ -465,7 +465,7 @@ export default function CompanySponsorships() {
                     <SelectValue placeholder={isAr ? "اختر الباقة" : "Select package"} />
                   </SelectTrigger>
                   <SelectContent>
-                    {packages.map((pkg: any) => (
+                    {packages.map((pkg) => (
                       <SelectItem key={pkg.id} value={pkg.id}>
                         {isAr && pkg.name_ar ? pkg.name_ar : pkg.name}
                         {pkg.price ? ` - ${Number(pkg.price).toLocaleString()} SAR` : ""}

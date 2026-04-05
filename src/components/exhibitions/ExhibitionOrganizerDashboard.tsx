@@ -200,7 +200,7 @@ export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDas
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {ticketsList.map((ticket: any) => (
+                    {ticketsList.map((ticket) => (
                       <TableRow key={ticket.id}>
                         <TableCell className="font-mono text-xs">{ticket.ticket_number}</TableCell>
                         <TableCell className="text-xs">{ticket.attendee_name || "—"}</TableCell>

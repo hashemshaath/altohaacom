@@ -110,7 +110,7 @@ export default function ChefPortfolio() {
 
   const totalComps = registrations?.length || 0;
   const approvedComps = registrations?.filter(r => r.status === "approved").length || 0;
-  const avgScore = scores?.length ? (scores.reduce((s: number, sc: any) => s + Number(sc.score), 0) / scores.length).toFixed(1) : "—";
+  const avgScore = scores?.length ? (scores.reduce((s, sc) => s + Number(sc.score), 0) / scores.length).toFixed(1) : "—";
   const totalCerts = certificates?.length || 0;
 
   // Score distribution for chart

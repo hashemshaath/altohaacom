@@ -71,10 +71,10 @@ export const EventsByCategory = memo(function EventsByCategory() {
 
   const current = tabConfig[activeTab];
   const filtered = statusFilter
-    ? current.items.filter((i: any) => i.status === statusFilter)
+    ? current.items.filter((i) => i.status === statusFilter)
     : current.items;
 
-  const statuses = [...new Set(current.items.map((i: any) => i.status))];
+  const statuses = [...new Set(current.items.map((i) => i.status))];
 
   const statusBadge = (status: string) => {
     const map: Record<string, { label: string; labelAr: string; cls: string; icon?: any }> = {
@@ -158,7 +158,7 @@ export const EventsByCategory = memo(function EventsByCategory() {
                     key={s}
                     label={isAr ? statusLabels[s]?.ar || s : statusLabels[s]?.en || s}
                     active={statusFilter === s}
-                    count={current.items.filter((i: any) => i.status === s).length}
+                    count={current.items.filter((i) => i.status === s).length}
                     onClick={() => setStatusFilter(statusFilter === s ? null : s)}
                   />
                 ))}
@@ -173,19 +173,19 @@ export const EventsByCategory = memo(function EventsByCategory() {
           {activeTab === "competitions" && filtered.length >= 3 ? (
             <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
               {renderFeaturedCompetition(filtered[0], isAr, statusBadge)}
-              {filtered.slice(1).map((item: any) => renderCompetitionCard(item, isAr, statusBadge))}
+              {filtered.slice(1).map((item) => renderCompetitionCard(item, isAr, statusBadge))}
             </div>
           ) : activeTab === "exhibitions" ? (
             <StaggeredList className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
-              {filtered.map((item: any) => renderExhibitionCard(item, isAr, statusBadge))}
+              {filtered.map((item) => renderExhibitionCard(item, isAr, statusBadge))}
             </StaggeredList>
           ) : activeTab === "chefs-table" ? (
             <StaggeredList className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
-              {filtered.map((item: any) => renderChefsTableCard(item, isAr))}
+              {filtered.map((item) => renderChefsTableCard(item, isAr))}
             </StaggeredList>
           ) : (
             <StaggeredList className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4" stagger={60}>
-              {filtered.map((item: any) => renderCompetitionCard(item, isAr, statusBadge))}
+              {filtered.map((item) => renderCompetitionCard(item, isAr, statusBadge))}
             </StaggeredList>
           )}
         </>

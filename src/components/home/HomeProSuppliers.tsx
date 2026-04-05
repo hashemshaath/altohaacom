@@ -59,13 +59,13 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
 
   const categories = useMemo(() => {
     const s = new Set<string>();
-    suppliers.forEach((sup: any) => { if (sup.supplier_category) s.add(sup.supplier_category); });
+    suppliers.forEach((sup) => { if (sup.supplier_category) s.add(sup.supplier_category); });
     return Array.from(s);
   }, [suppliers]);
 
   const filtered = useMemo(() => {
     if (!catFilter) return suppliers;
-    return suppliers.filter((s: any) => s.supplier_category === catFilter);
+    return suppliers.filter((s) => s.supplier_category === catFilter);
   }, [suppliers, catFilter]);
 
   if (suppliers.length === 0) return null;
@@ -91,7 +91,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
                   key={c}
                   label={cl ? (isAr ? cl.ar : cl.en) : c}
                   active={catFilter === c}
-                  count={suppliers.filter((s: any) => s.supplier_category === c).length}
+                  count={suppliers.filter((s) => s.supplier_category === c).length}
                   onClick={() => setCatFilter(catFilter === c ? null : c)}
                 />
               );
@@ -101,7 +101,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
       />
 
       <HorizontalScrollRow isAr={isAr}>
-        {filtered.map((s: any) => {
+        {filtered.map((s) => {
           const name = isAr && s.name_ar ? s.name_ar : s.name;
           const tagline = isAr && s.tagline_ar ? s.tagline_ar : s.tagline;
           return (

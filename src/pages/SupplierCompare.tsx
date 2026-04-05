@@ -69,7 +69,7 @@ export default function SupplierCompare() {
         .in("company_id", selectedIds)
         .eq("is_active", true);
       const counts: Record<string, number> = {};
-      (data || []).forEach((r: any) => {
+      (data || []).forEach((r) => {
         counts[r.company_id] = (counts[r.company_id] || 0) + 1;
       });
       return counts;
@@ -88,13 +88,13 @@ export default function SupplierCompare() {
         .in("company_id", selectedIds)
         .eq("status", "published");
       const stats: Record<string, { count: number; avg: number }> = {};
-      (data || []).forEach((r: any) => {
+      (data || []).forEach((r) => {
         if (!stats[r.company_id]) stats[r.company_id] = { count: 0, avg: 0 };
         stats[r.company_id].count++;
       });
       // Calculate averages
       const grouped: Record<string, number[]> = {};
-      (data || []).forEach((r: any) => {
+      (data || []).forEach((r) => {
         if (!grouped[r.company_id]) grouped[r.company_id] = [];
         grouped[r.company_id].push(r.rating);
       });
@@ -126,7 +126,7 @@ export default function SupplierCompare() {
   };
 
   const filteredPicker = useMemo(() => {
-    return allSuppliers.filter((s: any) => {
+    return allSuppliers.filter((s) => {
       if (selectedIds.includes(s.id)) return false;
       if (!searchTerm) return true;
       const term = searchTerm.toLowerCase();
@@ -135,10 +135,10 @@ export default function SupplierCompare() {
   }, [allSuppliers, selectedIds, searchTerm]);
 
   const orderedSuppliers = selectedIds
-    .map((id) => selectedSuppliers.find((s: any) => s.id === id))
+    .map((id) => selectedSuppliers.find((s) => s.id === id))
     .filter(Boolean) as any[];
 
-  const CompareRow = ({ label, render }: { label: string; render: (s: any) => React.ReactNode }) => (
+  const CompareRow = ({ label, render }: { label: string; render: (s) => React.ReactNode }) => (
     <div className="grid border-b border-border/40" style={{ gridTemplateColumns: `200px repeat(${orderedSuppliers.length}, 1fr)` }}>
       <div className="p-3 text-sm font-medium text-muted-foreground bg-muted/30 flex items-center">{label}</div>
       {orderedSuppliers.map((s) => (
@@ -174,7 +174,7 @@ export default function SupplierCompare() {
           {/* Selected suppliers header + add button */}
           <div className="flex flex-wrap gap-3 mb-6">
             {selectedIds.map((id) => {
-              const s = allSuppliers.find((x: any) => x.id === id) as any;
+              const s = allSuppliers.find((x) => x.id === id) as any;
               return (
                 <Badge key={id} variant="secondary" className="gap-2 py-1.5 px-3 text-sm">
                   {s?.logo_url ? (
@@ -212,7 +212,7 @@ export default function SupplierCompare() {
                   />
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3 max-h-64 overflow-y-auto">
-                  {filteredPicker.slice(0, 12).map((s: any) => (
+                  {filteredPicker.slice(0, 12).map((s) => (
                     <button
                       key={s.id}
                       onClick={() => addSupplier(s.id)}
@@ -244,7 +244,7 @@ export default function SupplierCompare() {
               {/* Header row */}
               <div className="grid border-b-2 border-border/60" style={{ gridTemplateColumns: `200px repeat(${orderedSuppliers.length}, 1fr)` }}>
                 <div className="p-4 bg-muted/30" />
-                {orderedSuppliers.map((s: any) => (
+                {orderedSuppliers.map((s) => (
                   <div key={s.id} className="p-4 text-center space-y-2">
                     <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-muted">
                       {s.logo_url ? (

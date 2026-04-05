@@ -29,25 +29,25 @@ const FinancialReports = memo(function FinancialReports() {
       // Total order revenue
       const totalOrderRevenue = (orders || []).reduce((sum, o: any) => sum + (Number(o.total_amount) || 0), 0);
       const totalTransactions = (transactions || []).reduce((sum, t: any) => sum + (Number(t.amount) || 0), 0);
-      const totalSponsorship = (sponsors || []).filter((s: any) => s.status === "active").reduce((sum, s: any) => sum + (Number(s.amount_paid) || 0), 0);
+      const totalSponsorship = (sponsors || []).filter((s) => s.status === "active").reduce((sum, s: any) => sum + (Number(s.amount_paid) || 0), 0);
 
       // Orders by category
       const categoryCounts: Record<string, number> = {};
-      (orders || []).forEach((o: any) => {
+      (orders || []).forEach((o) => {
         categoryCounts[o.category] = (categoryCounts[o.category] || 0) + (Number(o.total_amount) || 0);
       });
       const categoryData = Object.entries(categoryCounts).map(([name, value]) => ({ name, value: Math.round(value) }));
 
       // Sponsorship by tier
       const tierCounts: Record<string, number> = {};
-      (sponsors || []).forEach((s: any) => {
+      (sponsors || []).forEach((s) => {
         tierCounts[s.tier] = (tierCounts[s.tier] || 0) + (Number(s.amount_paid) || 0);
       });
       const tierData = Object.entries(tierCounts).map(([name, value]) => ({ name, value: Math.round(value) }));
 
       // Monthly transaction volume
       const monthVolume: Record<string, number> = {};
-      (transactions || []).forEach((t: any) => {
+      (transactions || []).forEach((t) => {
         const month = t.created_at?.substring(0, 7) || "unknown";
         monthVolume[month] = (monthVolume[month] || 0) + (Number(t.amount) || 0);
       });

@@ -39,19 +39,19 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
         const d = format(subDays(now, i), "MMM dd");
         dailyMap[d] = 0;
       }
-      allProfiles.data?.forEach((p: any) => {
+      allProfiles.data?.forEach((p) => {
         const d = format(new Date(p.created_at), "MMM dd");
         if (dailyMap[d] !== undefined) dailyMap[d]++;
       });
       const trend = Object.entries(dailyMap).map(([date, count]) => ({ date, count }));
 
       // Account type distribution
-      const proCount = allProfiles.data?.filter((p: any) => p.account_type === "professional").length || 0;
-      const fanCount = allProfiles.data?.filter((p: any) => p.account_type === "fan").length || 0;
+      const proCount = allProfiles.data?.filter((p) => p.account_type === "professional").length || 0;
+      const fanCount = allProfiles.data?.filter((p) => p.account_type === "fan").length || 0;
 
       // Role distribution
       const roleMap: Record<string, number> = {};
-      roles.data?.forEach((r: any) => { roleMap[r.role] = (roleMap[r.role] || 0) + 1; });
+      roles.data?.forEach((r) => { roleMap[r.role] = (roleMap[r.role] || 0) + 1; });
       const roleDistribution = Object.entries(roleMap)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 5)
@@ -59,11 +59,11 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
 
       // Top countries
       const countryMap: Record<string, number> = {};
-      countries.data?.forEach((c: any) => { countryMap[c.country_code] = (countryMap[c.country_code] || 0) + 1; });
+      countries.data?.forEach((c) => { countryMap[c.country_code] = (countryMap[c.country_code] || 0) + 1; });
       const topCountries = Object.entries(countryMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
-      const activeCount = allProfiles.data?.filter((p: any) => p.account_status === "active").length || 0;
-      const suspendedCount = allProfiles.data?.filter((p: any) => p.account_status === "suspended" || p.account_status === "banned").length || 0;
+      const activeCount = allProfiles.data?.filter((p) => p.account_status === "active").length || 0;
+      const suspendedCount = allProfiles.data?.filter((p) => p.account_status === "suspended" || p.account_status === "banned").length || 0;
 
       return {
         trend,

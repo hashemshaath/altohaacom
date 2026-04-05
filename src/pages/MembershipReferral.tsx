@@ -88,9 +88,9 @@ export default function MembershipReferral() {
     }
   };
 
-  const totalConverted = useMemo(() => referrals?.filter((r: any) => r.status === "converted").length || 0, [referrals]);
-  const totalPending = useMemo(() => referrals?.filter((r: any) => r.status === "pending").length || 0, [referrals]);
-  const totalPoints = useMemo(() => referrals?.reduce((s: number, r: any) => s + (r.referrer_bonus_points || 0), 0) || 0, [referrals]);
+  const totalConverted = useMemo(() => referrals?.filter((r) => r.status === "converted").length || 0, [referrals]);
+  const totalPending = useMemo(() => referrals?.filter((r) => r.status === "pending").length || 0, [referrals]);
+  const totalPoints = useMemo(() => referrals?.reduce((s, r) => s + (r.referrer_bonus_points || 0), 0) || 0, [referrals]);
 
   const stats = [
     {
@@ -210,7 +210,7 @@ export default function MembershipReferral() {
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {referrals.map((ref: any) => (
+              {referrals.map((ref) => (
                 <div key={ref.id} className="flex items-center justify-between rounded-xl border p-3">
                   <div className="flex items-center gap-3">
                     <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">

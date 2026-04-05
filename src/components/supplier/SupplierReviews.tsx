@@ -58,22 +58,22 @@ export const SupplierReviews = memo(function SupplierReviews({ companyId }: Prop
   });
 
   const { data: reviewerProfiles = {} } = useQuery({
-    queryKey: ["reviewerProfiles", companyId, reviews.map((r: any) => r.user_id)],
+    queryKey: ["reviewerProfiles", companyId, reviews.map((r) => r.user_id)],
     queryFn: async () => {
-      const userIds = reviews.map((r: any) => r.user_id);
+      const userIds = reviews.map((r) => r.user_id);
       if (userIds.length === 0) return {};
       const { data } = await supabase
         .from("profiles")
         .select("user_id, full_name, display_name, username")
         .in("user_id", userIds);
       const map: Record<string, any> = {};
-      (data || []).forEach((p: any) => { map[p.user_id] = p; });
+      (data || []).forEach((p) => { map[p.user_id] = p; });
       return map;
     },
     enabled: reviews.length > 0,
   });
 
-  const existingReview = reviews.find((r: any) => r.user_id === user?.id);
+  const existingReview = reviews.find((r) => r.user_id === user?.id);
 
   const submitMutation = useMutation({
     mutationFn: async () => {
@@ -107,12 +107,12 @@ export const SupplierReviews = memo(function SupplierReviews({ companyId }: Prop
   });
 
   const avgRating = useMemo(() => reviews.length > 0
-    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : "0", [reviews]);
 
   const ratingDistribution = useMemo(() => [5, 4, 3, 2, 1].map((star) => ({
     star,
-    count: reviews.filter((r: any) => r.rating === star).length,
+    count: reviews.filter((r) => r.rating === star).length,
   })), [reviews]);
 
   return (
@@ -190,7 +190,7 @@ export const SupplierReviews = memo(function SupplierReviews({ companyId }: Prop
 
       {/* Reviews List */}
       <div className="space-y-3">
-        {reviews.map((r: any) => {
+        {reviews.map((r) => {
           const profile = reviewerProfiles[r.user_id];
           const displayName = profile?.display_name || profile?.full_name || profile?.username || (isAr ? "مستخدم" : "User");
           return (

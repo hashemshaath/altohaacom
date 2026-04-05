@@ -80,7 +80,7 @@ export function useRecipes(filters?: {
 
       const profileMap = new Map((profilesRes.data || []).map(p => [p.user_id, p.full_name]));
       const ratingsMap = new Map<string, { sum: number; count: number }>();
-      (ratingsRes.data || []).forEach((r: any) => {
+      (ratingsRes.data || []).forEach((r) => {
         const existing = ratingsMap.get(r.recipe_id) || { sum: 0, count: 0 };
         ratingsMap.set(r.recipe_id, { sum: existing.sum + r.rating, count: existing.count + 1 });
       });

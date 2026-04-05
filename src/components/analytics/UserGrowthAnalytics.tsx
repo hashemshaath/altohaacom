@@ -36,7 +36,7 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
 
       // Signups by month
       const monthCounts: Record<string, number> = {};
-      (profiles || []).forEach((p: any) => {
+      (profiles || []).forEach((p) => {
         const month = p.created_at?.substring(0, 7) || "unknown";
         monthCounts[month] = (monthCounts[month] || 0) + 1;
       });
@@ -59,7 +59,7 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
 
       // Role distribution
       const roleCounts: Record<string, number> = {};
-      (roles || []).forEach((r: any) => {
+      (roles || []).forEach((r) => {
         roleCounts[r.role] = (roleCounts[r.role] || 0) + 1;
       });
       const roleData = Object.entries(roleCounts).map(([name, value]) => ({ name, value }));

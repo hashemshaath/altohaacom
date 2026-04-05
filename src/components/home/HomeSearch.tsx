@@ -120,7 +120,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                 {isAr ? "الأكثر رواجاً" : "Trending"}
               </div>
               <div className="space-y-0.5">
-                {trending.map((item: any) => (
+                {trending.map((item) => (
                   <button
                     key={item.id}
                     type="button"

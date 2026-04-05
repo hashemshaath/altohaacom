@@ -72,12 +72,12 @@ export default function VerificationAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الاسم" : "Applicant", accessor: (r: any) => r.applicant_name },
-      { header: isAr ? "النوع" : "Entity Type", accessor: (r: any) => r.entity_type },
-      { header: isAr ? "المستوى" : "Level", accessor: (r: any) => r.verification_level },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "المخاطرة" : "Risk Score", accessor: (r: any) => r.ai_risk_score != null ? (r.ai_risk_score * 100).toFixed(0) + "%" : "" },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.created_at?.slice(0, 10) || "" },
+      { header: isAr ? "الاسم" : "Applicant", accessor: (r) => r.applicant_name },
+      { header: isAr ? "النوع" : "Entity Type", accessor: (r) => r.entity_type },
+      { header: isAr ? "المستوى" : "Level", accessor: (r) => r.verification_level },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "المخاطرة" : "Risk Score", accessor: (r) => r.ai_risk_score != null ? (r.ai_risk_score * 100).toFixed(0) + "%" : "" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r) => r.created_at?.slice(0, 10) || "" },
     ],
     filename: "verification-requests",
   });
@@ -89,7 +89,7 @@ export default function VerificationAdmin() {
     rejected: requests?.filter((r) => r.status === "rejected").length || 0,
   };
 
-  const handleAIReview = async (req: any) => {
+  const handleAIReview = async (req) => {
     const docs = req.documents as any[] || [];
     await aiMutation.mutateAsync({
       request_id: req.id,
@@ -292,7 +292,7 @@ export default function VerificationAdmin() {
                   {/* Documents */}
                   {docs.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1">
-                      {docs.map((doc: any, i: number) => (
+                      {docs.map((doc, i) => (
                         <Badge key={i} variant="outline" className="text-[10px]">
                           {doc.type} — {doc.name}
                         </Badge>

@@ -28,7 +28,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
 
       // Extract hashtags and count engagement
       const tagMap = new Map<string, { count: number; engagement: number }>();
-      posts.forEach((post: any) => {
+      posts.forEach((post) => {
         const tags = (post.content || "").match(/#(\w+)/g);
         if (tags) {
           tags.forEach((tag: string) => {

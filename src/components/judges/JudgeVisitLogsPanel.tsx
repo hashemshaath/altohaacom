@@ -95,7 +95,7 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
       toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تم الإضافة" : "Added") });
       resetForm();
     },
-    onError: (err: any) => toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const deleteMutation = useMutation({
@@ -111,7 +111,7 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
 
   const resetForm = () => { setForm(emptyForm); setEditingId(null); setShowForm(false); };
 
-  const startEdit = (log: any) => {
+  const startEdit = (log) => {
     setForm({
       event_type: log.event_type || "competition",
       event_name: log.event_name || "",

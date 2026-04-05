@@ -94,7 +94,7 @@ export default function MasterclassesAdmin() {
       resetForm();
       toast({ title: language === "ar" ? "تم الإنشاء" : "Created successfully" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: language === "ar" ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -133,12 +133,12 @@ export default function MasterclassesAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
-      { header: isAr ? "التصنيف" : "Category", accessor: (r: any) => r.category },
-      { header: isAr ? "المستوى" : "Level", accessor: (r: any) => r.level },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "المدة" : "Duration", accessor: (r: any) => r.duration_hours },
-      { header: isAr ? "المسجلين" : "Enrollments", accessor: (r: any) => r.masterclass_enrollments?.length || 0 },
+      { header: isAr ? "العنوان" : "Title", accessor: (r) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "التصنيف" : "Category", accessor: (r) => r.category },
+      { header: isAr ? "المستوى" : "Level", accessor: (r) => r.level },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "المدة" : "Duration", accessor: (r) => r.duration_hours },
+      { header: isAr ? "المسجلين" : "Enrollments", accessor: (r) => r.masterclass_enrollments?.length || 0 },
     ],
     filename: "masterclasses",
   });
@@ -167,17 +167,17 @@ export default function MasterclassesAdmin() {
 
   const masterclassStats = useMemo(() => [
     { label: language === "ar" ? "إجمالي الدورات" : "Total Courses", value: masterclasses.length, icon: BookOpen },
-    { label: language === "ar" ? "منشورة" : "Published", value: masterclasses.filter((m: any) => m.status === "published").length, icon: Eye },
-    { label: language === "ar" ? "مسودات" : "Drafts", value: masterclasses.filter((m: any) => m.status === "draft").length, icon: EyeOff },
+    { label: language === "ar" ? "منشورة" : "Published", value: masterclasses.filter((m) => m.status === "published").length, icon: Eye },
+    { label: language === "ar" ? "مسودات" : "Drafts", value: masterclasses.filter((m) => m.status === "draft").length, icon: EyeOff },
     {
       label: language === "ar" ? "إجمالي المسجلين" : "Total Enrollments",
-      value: masterclasses.reduce((sum: number, m: any) => sum + (m.masterclass_enrollments?.length || 0), 0),
+      value: masterclasses.reduce((sum, m) => sum + (m.masterclass_enrollments?.length || 0), 0),
       icon: Users,
     },
   ], [masterclasses, language]);
 
   if (managingModulesId) {
-    const mc = masterclasses.find((m: any) => m.id === managingModulesId);
+    const mc = masterclasses.find((m) => m.id === managingModulesId);
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-3">
@@ -366,7 +366,7 @@ export default function MasterclassesAdmin() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {pagination.paginated.map((mc: any) => (
+                      {pagination.paginated.map((mc) => (
                         <TableRow key={mc.id} className={bulk.isSelected(mc.id) ? "bg-primary/5" : ""}>
                           <TableCell>
                             <Checkbox checked={bulk.isSelected(mc.id)} onCheckedChange={() => bulk.toggleOne(mc.id)} />

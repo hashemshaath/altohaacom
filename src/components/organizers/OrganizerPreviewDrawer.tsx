@@ -15,7 +15,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isAr: boolean;
-  onCompare?: (org: any) => void;
+  onCompare?: (org) => void;
   isInCompare?: boolean;
 }
 

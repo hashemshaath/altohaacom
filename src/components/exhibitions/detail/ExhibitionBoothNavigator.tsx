@@ -30,11 +30,11 @@ export const ExhibitionBoothNavigator = memo(function ExhibitionBoothNavigator({
     },
   });
 
-  const halls = useMemo(() => [...new Set(booths.map((b: any) => b.hall).filter(Boolean))], [booths]);
-  const categories = useMemo(() => [...new Set(booths.map((b: any) => b.category).filter(Boolean))], [booths]);
+  const halls = useMemo(() => [...new Set(booths.map((b) => b.hall).filter(Boolean))], [booths]);
+  const categories = useMemo(() => [...new Set(booths.map((b) => b.category).filter(Boolean))], [booths]);
 
   const filtered = useMemo(() => {
-    return booths.filter((b: any) => {
+    return booths.filter((b) => {
       const matchSearch = !search ||
         b.booth_number?.toLowerCase().includes(search.toLowerCase()) ||
         b.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -101,7 +101,7 @@ export const ExhibitionBoothNavigator = memo(function ExhibitionBoothNavigator({
 
       {/* Booth grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
-        {filtered.map((booth: any) => (
+        {filtered.map((booth) => (
           <Card key={booth.id} className="border-border/40 transition-all hover:shadow-md hover:border-primary/20 group cursor-pointer">
             <CardContent className="p-3">
               <div className="flex items-start justify-between gap-1 mb-2">

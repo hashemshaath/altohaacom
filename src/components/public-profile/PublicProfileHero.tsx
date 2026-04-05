@@ -74,7 +74,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
     hashtags.push(isAr ? (profile.specialization_ar || profile.specialization) : profile.specialization);
   }
   if (userSpecialties?.length) {
-    userSpecialties.forEach((us: any) => {
+    userSpecialties.forEach((us) => {
       const name = isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name;
       if (name && !hashtags.includes(name)) hashtags.push(name);
     });
@@ -164,7 +164,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                       <TooltipContent side="bottom" className="text-xs">{getCountryName(profile.second_nationality)}</TooltipContent>
                     </Tooltip>
                   )}
-                  {userAwards?.map((ua: any) => {
+                  {userAwards?.map((ua) => {
                     const award = ua.global_awards_system;
                     if (!award?.logo_url) return null;
                     return (

@@ -83,7 +83,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
       queryClient.invalidateQueries({ queryKey: ["checkin-stats", exhibitionId] });
       toast({ title: t("Check-in successful!", "تم تسجيل الدخول!") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg === "not_found") setResult({ type: "error", message: t("❌ Ticket not found", "❌ التذكرة غير موجودة") });
       else if (msg === "not_confirmed") setResult({ type: "error", message: t("❌ Ticket not confirmed", "❌ التذكرة غير مؤكدة") });
@@ -188,7 +188,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-1.5">
-            {stats.recent.map((r: any) => (
+            {stats.recent.map((r) => (
               <div key={r.id} className="flex items-center justify-between text-xs p-2 rounded-xl bg-muted/30">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="h-3 w-3 text-chart-3" />

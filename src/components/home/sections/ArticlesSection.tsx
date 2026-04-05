@@ -74,7 +74,7 @@ const ArticlesSection = memo(function ArticlesSection() {
         />
 
         <HorizontalScrollRow isAr={isAr}>
-          {articles.map((article: any) => {
+          {articles.map((article) => {
             const typeInfo = article.type && TYPE_MAP[article.type];
             const readTime = estimateReadTime(article.excerpt || article.excerpt_ar);
             return (

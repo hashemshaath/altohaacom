@@ -289,7 +289,7 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
                     formatter={(value: number) => [formatCurrency(value, language as "en" | "ar"), isAr ? "المبلغ" : "Amount"]}
                   />
                   <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
-                    {data.agingData.map((entry: any, i: number) => (
+                    {data.agingData.map((entry, i) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Bar>
@@ -318,9 +318,9 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={data.statusPie.map((d: any) => ({ ...d, label: translateStatus(d.name, isAr) }))} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" nameKey="label"
+                  <Pie data={data.statusPie.map((d) => ({ ...d, label: translateStatus(d.name, isAr) }))} cx="50%" cy="50%" innerRadius={50} outerRadius={80} paddingAngle={3} dataKey="value" nameKey="label"
                     label={({ label, value }) => `${label} (${value})`}>
-                    {data.statusPie.map((_: any, i: number) => (
+                    {data.statusPie.map((_, i) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>

@@ -48,7 +48,7 @@ export default function ForYou() {
       color: "text-primary",
       bg: "bg-primary/10",
       items: data?.competitions || [],
-      renderItem: (c: any) => (
+      renderItem: (c) => (
         <Link key={c.id} to={`/competitions/${c.slug}`} className="group">
           <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 border-border/40">
             <CardContent className="p-0">
@@ -81,7 +81,7 @@ export default function ForYou() {
       color: "text-chart-5",
       bg: "bg-chart-5/10",
       items: data?.exhibitions || [],
-      renderItem: (e: any) => (
+      renderItem: (e) => (
         <Link key={e.id} to={`/exhibitions/${e.slug}`} className="group">
           <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 border-border/40">
             <CardContent className="p-0">
@@ -114,7 +114,7 @@ export default function ForYou() {
       color: "text-chart-4",
       bg: "bg-chart-4/10",
       items: data?.recipes || [],
-      renderItem: (r: any) => (
+      renderItem: (r) => (
         <Link key={r.id} to={`/recipes/${r.slug}`} className="group">
           <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 border-border/40">
             <CardContent className="p-0">
@@ -147,7 +147,7 @@ export default function ForYou() {
       color: "text-chart-2",
       bg: "bg-chart-2/10",
       items: data?.articles || [],
-      renderItem: (a: any) => (
+      renderItem: (a) => (
         <Link key={a.id} to={`/blog/${a.slug}`} className="group">
           <Card className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5 border-border/40">
             <CardContent className="p-0">
@@ -177,7 +177,7 @@ export default function ForYou() {
       color: "text-chart-3",
       bg: "bg-chart-3/10",
       items: data?.chefs || [],
-      renderItem: (c: any) => (
+      renderItem: (c) => (
         <Link key={c.user_id} to={`/${c.username || c.user_id}`} className="group">
           <Card className="transition-all hover:shadow-md hover:-translate-y-0.5 border-border/40">
             <CardContent className="p-4 flex flex-col items-center text-center gap-2">

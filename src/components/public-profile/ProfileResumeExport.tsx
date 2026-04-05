@@ -30,9 +30,9 @@ export const ProfileResumeExport = memo(function ProfileResumeExport({
       const spec = isAr ? (profile.specialization_ar || profile.specialization) : (profile.specialization || profile.specialization_ar);
 
       // Group career records
-      const work = careerRecords.filter((r: any) => r.record_type === "work");
-      const education = careerRecords.filter((r: any) => r.record_type === "education");
-      const certifications = careerRecords.filter((r: any) => r.record_type === "certification");
+      const work = careerRecords.filter((r) => r.record_type === "work");
+      const education = careerRecords.filter((r) => r.record_type === "education");
+      const certifications = careerRecords.filter((r) => r.record_type === "certification");
 
       const formatDate = (d: string | null) => {
         if (!d) return "";
@@ -85,7 +85,7 @@ export const ProfileResumeExport = memo(function ProfileResumeExport({
   ${work.length > 0 ? `
   <div class="section">
     <div class="section-title">${isAr ? 'الخبرة المهنية' : 'Professional Experience'}</div>
-    ${work.map((r: any) => `
+    ${work.map((r) => `
     <div class="entry">
       <div class="entry-title">${isAr ? (r.title_ar || r.title) : r.title}</div>
       ${r.entity_name ? `<div class="entry-org">${isAr ? (r.entity_name_ar || r.entity_name) : r.entity_name}</div>` : ''}
@@ -97,7 +97,7 @@ export const ProfileResumeExport = memo(function ProfileResumeExport({
   ${education.length > 0 ? `
   <div class="section">
     <div class="section-title">${isAr ? 'التعليم' : 'Education'}</div>
-    ${education.map((r: any) => `
+    ${education.map((r) => `
     <div class="entry">
       <div class="entry-title">${isAr ? (r.title_ar || r.title) : r.title}</div>
       ${r.entity_name ? `<div class="entry-org">${isAr ? (r.entity_name_ar || r.entity_name) : r.entity_name}</div>` : ''}
@@ -108,7 +108,7 @@ export const ProfileResumeExport = memo(function ProfileResumeExport({
   ${certifications.length > 0 ? `
   <div class="section">
     <div class="section-title">${isAr ? 'الشهادات' : 'Certifications'}</div>
-    ${certifications.map((r: any) => `
+    ${certifications.map((r) => `
     <div class="entry">
       <div class="entry-title">${isAr ? (r.title_ar || r.title) : r.title}</div>
       ${r.entity_name ? `<div class="entry-org">${isAr ? (r.entity_name_ar || r.entity_name) : r.entity_name}</div>` : ''}
@@ -120,14 +120,14 @@ export const ProfileResumeExport = memo(function ProfileResumeExport({
     <div class="section-title">${isAr ? 'المهارات' : 'Skills'}</div>
     <div class="skills">
       ${spec ? `<span class="skill-tag">${spec}</span>` : ''}
-      ${userSpecialties.map((us: any) => `<span class="skill-tag">${isAr ? (us.specialties?.name_ar || us.specialties?.name) : us.specialties?.name}</span>`).join('')}
+      ${userSpecialties.map((us) => `<span class="skill-tag">${isAr ? (us.specialties?.name_ar || us.specialties?.name) : us.specialties?.name}</span>`).join('')}
     </div>
   </div>` : ''}
 
   ${userAwards.length > 0 ? `
   <div class="section">
     <div class="section-title">${isAr ? 'الجوائز' : 'Awards'}</div>
-    ${userAwards.map((ua: any) => `
+    ${userAwards.map((ua) => `
     <div class="entry">
       <div class="entry-title">${isAr ? (ua.global_awards_system?.name_ar || ua.global_awards_system?.name) : ua.global_awards_system?.name}</div>
     </div>`).join('')}

@@ -46,7 +46,7 @@ export function useCareerMutations(deps: MutationDeps) {
       }
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["career-records", userId] }); toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Added") }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const saveMembershipMutation = useMutation({
@@ -56,13 +56,13 @@ export function useCareerMutations(deps: MutationDeps) {
       else { const { error } = await supabase.from("entity_memberships").insert({ ...payload, user_id: userId, status: "active" }); if (error) throw error; }
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-entity-memberships", userId] }); toast({ title: editingMembershipId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت إضافة العضوية" : "Membership added") }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const addCompetitionMutation = useMutation({
     mutationFn: async () => { const { error } = await supabase.from("competition_registrations").insert({ participant_id: userId, competition_id: selectedCompetitionId, status: "approved" }); if (error) throw error; },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-competition-history", userId] }); toast({ title: isAr ? "تمت إضافة المسابقة" : "Competition added" }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const addManualCompetitionMutation = useMutation({
@@ -72,7 +72,7 @@ export function useCareerMutations(deps: MutationDeps) {
       else { const { error } = await supabase.from("user_career_records").insert(payload); if (error) throw error; }
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["career-records", userId] }); toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Added") }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const addAwardMutation = useMutation({
@@ -84,7 +84,7 @@ export function useCareerMutations(deps: MutationDeps) {
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] }); toast({ title: isAr ? "تمت إضافة الجائزة" : "Award added" }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const saveAwardMutation = useMutation({
@@ -94,7 +94,7 @@ export function useCareerMutations(deps: MutationDeps) {
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); closeForm(); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const deleteAwardMutation = useMutation({
@@ -118,7 +118,7 @@ export function useCareerMutations(deps: MutationDeps) {
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["career-records", userId] }); toast({ title: isAr ? "تم نقل العنصر" : "Item moved" }); },
-    onError: (err: any) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const persistSectionsOrder = useCallback(async (newSections: SectionConfig[]) => {

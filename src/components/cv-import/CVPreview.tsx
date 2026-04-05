@@ -474,9 +474,9 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
       }
 
       if (data.skills?.length) {
-        const skillObjects = data.skills.map((s: any) => typeof s === "string" ? { name: s, name_ar: "" } : s);
-        const skillsEn = skillObjects.map((s: any) => s.name).filter(Boolean).join(", ");
-        const skillsAr = skillObjects.map((s: any) => s.name_ar).filter(Boolean).join("، ");
+        const skillObjects = data.skills.map((s) => typeof s === "string" ? { name: s, name_ar: "" } : s);
+        const skillsEn = skillObjects.map((s) => s.name).filter(Boolean).join(", ");
+        const skillsAr = skillObjects.map((s) => s.name_ar).filter(Boolean).join("، ");
         const { error: skillsError } = await supabase
           .from("profiles")
           .update({

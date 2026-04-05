@@ -77,7 +77,7 @@ export default function ShopMyProducts() {
       toast({ title: isAr ? "تم الحفظ بنجاح" : "Product saved" });
       resetForm();
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
@@ -107,7 +107,7 @@ export default function ShopMyProducts() {
     setForm({ title: "", title_ar: "", description: "", description_ar: "", product_type: "physical", category: "general", price: "", currency: "SAR", stock_quantity: "0", image_url: "" });
   };
 
-  const startEdit = (p: any) => {
+  const startEdit = (p) => {
     setEditingId(p.id);
     setForm({
       title: p.title, title_ar: p.title_ar || "", description: p.description || "",
@@ -197,7 +197,7 @@ export default function ShopMyProducts() {
           </div>
         ) : (
           <div className="space-y-3">
-            {products.map((p: any) => {
+            {products.map((p) => {
               const title = isAr && p.title_ar ? p.title_ar : p.title;
               return (
                 <Card key={p.id}>

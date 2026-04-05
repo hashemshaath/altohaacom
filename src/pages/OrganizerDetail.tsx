@@ -86,8 +86,8 @@ export default function OrganizerDetail() {
         ]);
 
         const directExhibitions = directRes.data || [];
-        const junctionIds = (junctionRes.data || []).map((j: any) => j.exhibition_id);
-        const directIds = new Set(directExhibitions.map((e: any) => e.id));
+        const junctionIds = (junctionRes.data || []).map((j) => j.exhibition_id);
+        const directIds = new Set(directExhibitions.map((e) => e.id));
         const missingIds = junctionIds.filter((id: string) => !directIds.has(id));
 
         if (missingIds.length > 0) {
@@ -254,7 +254,7 @@ export default function OrganizerDetail() {
     const allSponsors: { name: string; logo?: string; tier?: string }[] = [];
     exhibitions.forEach((e: ExhibitionRow) => {
       if (e.sponsors_info && Array.isArray(e.sponsors_info)) {
-        e.sponsors_info.forEach((s: any) => {
+        e.sponsors_info.forEach((s) => {
           if (s.name && !allSponsors.some(sp => sp.name === s.name)) {
             allSponsors.push({ name: s.name, logo: s.logo_url || s.logo, tier: s.tier });
           }
@@ -1112,7 +1112,7 @@ export default function OrganizerDetail() {
                     {isAr ? "فريق العمل وجهات الاتصال" : "Team & Key Contacts"}
                   </h3>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {orgKeyContacts.map((c: any, i: number) => (
+                    {orgKeyContacts.map((c, i) => (
                       <Card key={i} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
                         <CardContent className="p-5">
                           <div className="flex items-center gap-4 mb-3">

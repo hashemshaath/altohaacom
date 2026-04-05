@@ -73,7 +73,7 @@ export default function MentorshipDetail() {
           toast({ title: isAr ? "تم التسجيل بنجاح!" : "Enrollment submitted!" });
           setEnrollOpen(false);
         },
-        onError: (err: any) => {
+        onError: (err: Error) => {
           toast({ variant: "destructive", title: isAr ? "فشل التسجيل" : "Enrollment failed", description: err instanceof Error ? err.message : String(err) });
         },
       }

@@ -54,7 +54,7 @@ export default function RoleManagement() {
 
   const securityScore = useMemo(() => {
     const totalRoles = ALL_ROLES.length;
-    const rolesWithPerms = ALL_ROLES.filter(r => allRolePerms.some((rp: any) => rp.role === r)).length;
+    const rolesWithPerms = ALL_ROLES.filter(r => allRolePerms.some((rp) => rp.role === r)).length;
     const score = Math.round((rolesWithPerms / totalRoles) * 100) - Math.min(overridesCount * 2, 20);
     return Math.max(0, Math.min(100, score));
   }, [allRolePerms, overridesCount]);

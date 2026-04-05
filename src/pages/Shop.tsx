@@ -46,12 +46,12 @@ export default function Shop() {
   });
 
   const categories = useMemo(
-    () => [...new Set(products.map((p: any) => p.category))].sort(),
+    () => [...new Set(products.map((p) => p.category))].sort(),
     [products]
   );
 
   const filtered = useMemo(() => {
-    let result = products.filter((p: any) => {
+    let result = products.filter((p) => {
       const title = isAr && p.title_ar ? p.title_ar : p.title;
       const matchesSearch = !search || title.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = categoryFilter === "all" || p.category === categoryFilter;
@@ -61,17 +61,17 @@ export default function Shop() {
 
     // Apply sorting
     if (sortBy === "price_asc") {
-      result = [...result].sort((a: any, b: any) => a.price - b.price);
+      result = [...result].sort((a, b) => a.price - b.price);
     } else if (sortBy === "price_desc") {
-      result = [...result].sort((a: any, b: any) => b.price - a.price);
+      result = [...result].sort((a, b) => b.price - a.price);
     } else if (sortBy === "name") {
-      result = [...result].sort((a: any, b: any) => {
+      result = [...result].sort((a, b) => {
         const aName = isAr && a.title_ar ? a.title_ar : a.title;
         const bName = isAr && b.title_ar ? b.title_ar : b.title;
         return aName.localeCompare(bName);
       });
     } else if (sortBy === "popular") {
-      result = [...result].sort((a: any, b: any) => (b.view_count || 0) - (a.view_count || 0));
+      result = [...result].sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
     }
 
     return result;
@@ -80,7 +80,7 @@ export default function Shop() {
   // Track product list view when filtered results change
   useEffect(() => {
     if (filtered.length > 0) {
-      trackProductListView("shop_main", filtered.slice(0, 10).map((p: any) => ({
+      trackProductListView("shop_main", filtered.slice(0, 10).map((p) => ({
         product_id: p.id,
         title: p.title,
         price: p.price,
@@ -89,7 +89,7 @@ export default function Shop() {
     }
   }, [filtered.length, categoryFilter, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleAddToCart = useCallback((product: any) => {
+  const handleAddToCart = useCallback((product) => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
       return;
@@ -160,7 +160,7 @@ export default function Shop() {
           <ShopEmptyState search={search} onClearSearch={() => setSearch("")} />
         ) : (
           <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
-            {filtered.map((product: any) => (
+            {filtered.map((product) => (
               <ShopProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
             ))}
           </div>

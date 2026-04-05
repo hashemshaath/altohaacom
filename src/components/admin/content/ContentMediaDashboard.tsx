@@ -48,9 +48,9 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
   // Article stats
   const stats = {
     total: articles.length,
-    published: articles.filter((a: any) => a.status === "published").length,
-    draft: articles.filter((a: any) => a.status === "draft").length,
-    totalViews: articles.reduce((s: number, a: any) => s + (a.view_count || 0), 0),
+    published: articles.filter((a) => a.status === "published").length,
+    draft: articles.filter((a) => a.status === "draft").length,
+    totalViews: articles.reduce((s, a) => s + (a.view_count || 0), 0),
   };
 
   const statusColors: Record<string, string> = {
@@ -118,7 +118,7 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {articles.map((a: any) => (
+                  {articles.map((a) => (
                     <TableRow key={a.id}>
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -165,7 +165,7 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
             </Card>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {mediaFiles.map((f: any) => (
+              {mediaFiles.map((f) => (
                 <Card key={f.id} className="overflow-hidden group cursor-pointer">
                   <div className="aspect-square bg-muted flex items-center justify-center">
                     {f.file_url && f.file_type?.startsWith("image") ? (
@@ -190,7 +190,7 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-3">
-                {articles.filter((a: any) => a.status === "published").slice(0, 10).map((a: any) => {
+                {articles.filter((a) => a.status === "published").slice(0, 10).map((a) => {
                   const hasExcerpt = !!a.excerpt;
                   const hasImage = !!a.featured_image_url;
                   const titleLen = (a.title || "").length;

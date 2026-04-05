@@ -99,7 +99,7 @@ export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Pro
             {isAr ? "المناصب القيادية" : "Leadership Positions"} ({positions.length})
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
-            {positions.map((pos: any) => {
+            {positions.map((pos) => {
               const profile = pos.profiles as any;
               const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
               const label = positionLabels[pos.position_type];

@@ -95,7 +95,7 @@ export function useSubmitVerification() {
         });
       });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
@@ -153,7 +153,7 @@ export function useRunAIVerification() {
       if (error) throw error;
       return result.analysis;
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "AI Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
@@ -244,7 +244,7 @@ export function useReviewVerification() {
       queryClient.invalidateQueries({ queryKey: ["all-verification-requests"] });
       toast({ title: action === "approved" ? "Verification approved ✓" : "Verification rejected" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

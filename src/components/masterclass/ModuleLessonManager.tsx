@@ -52,7 +52,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
 
   const addModuleMutation = useMutation({
     mutationFn: async () => {
-      const maxOrder = modules.reduce((max: number, m: any) => Math.max(max, m.sort_order || 0), 0);
+      const maxOrder = modules.reduce((max, m) => Math.max(max, m.sort_order || 0), 0);
       const { error } = await supabase.from("masterclass_modules").insert({
         masterclass_id: masterclassId,
         title: moduleForm.title,
@@ -85,7 +85,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
 
   const moveModuleMutation = useMutation({
     mutationFn: async ({ id, direction }: { id: string; direction: "up" | "down" }) => {
-      const idx = modules.findIndex((m: any) => m.id === id);
+      const idx = modules.findIndex((m) => m.id === id);
       if (idx < 0) return;
       const swapIdx = direction === "up" ? idx - 1 : idx + 1;
       if (swapIdx < 0 || swapIdx >= modules.length) return;
@@ -101,9 +101,9 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
 
   const addLessonMutation = useMutation({
     mutationFn: async (moduleId: string) => {
-      const module = modules.find((m: any) => m.id === moduleId);
+      const module = modules.find((m) => m.id === moduleId);
       const lessons = module?.masterclass_lessons || [];
-      const maxOrder = lessons.reduce((max: number, l: any) => Math.max(max, l.sort_order || 0), 0);
+      const maxOrder = lessons.reduce((max, l) => Math.max(max, l.sort_order || 0), 0);
       const { error } = await supabase.from("masterclass_lessons").insert({
         module_id: moduleId,
         title: lessonForm.title,
@@ -200,8 +200,8 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
         </Card>
       ) : (
         <Accordion type="multiple" className="space-y-2">
-          {modules.map((module: any, idx: number) => {
-            const lessons = [...(module.masterclass_lessons || [])].sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
+          {modules.map((module, idx) => {
+            const lessons = [...(module.masterclass_lessons || [])].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
             return (
               <AccordionItem key={module.id} value={module.id} className="border rounded-xl px-4">
                 <AccordionTrigger className="hover:no-underline">
@@ -229,7 +229,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="space-y-2 pt-2">
-                    {lessons.map((lesson: any) => (
+                    {lessons.map((lesson) => (
                       <div key={lesson.id} className="flex items-center justify-between rounded-md border p-3">
                         <div className="flex items-center gap-3">
                           {lesson.content_type === "video" ? <PlayCircle className="h-4 w-4 text-primary" /> : <FileText className="h-4 w-4 text-primary" />}

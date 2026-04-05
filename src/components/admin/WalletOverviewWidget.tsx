@@ -29,8 +29,8 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
       ]);
 
       // Calculate totals
-      const totalCredits = transactions?.filter((t: any) => ["credit", "refund"].includes(t.type)).reduce((s: number, t: any) => s + (t.amount || 0), 0) || 0;
-      const totalDebits = transactions?.filter((t: any) => ["debit", "payment"].includes(t.type)).reduce((s: number, t: any) => s + (t.amount || 0), 0) || 0;
+      const totalCredits = transactions?.filter((t) => ["credit", "refund"].includes(t.type)).reduce((s, t) => s + (t.amount || 0), 0) || 0;
+      const totalDebits = transactions?.filter((t) => ["debit", "payment"].includes(t.type)).reduce((s, t) => s + (t.amount || 0), 0) || 0;
 
       // Daily chart data
       const dailyMap: Record<string, { credits: number; debits: number }> = {};
@@ -38,7 +38,7 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
         const d = format(subDays(new Date(), i), "EEE");
         dailyMap[d] = { credits: 0, debits: 0 };
       }
-      transactions?.forEach((t: any) => {
+      transactions?.forEach((t) => {
         const day = format(new Date(t.created_at), "EEE");
         if (!dailyMap[day]) return;
         if (["credit", "refund"].includes(t.type)) dailyMap[day].credits += t.amount || 0;
@@ -103,7 +103,7 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
           {data?.recentTxns.length === 0 && (
             <p className="text-[10px] text-muted-foreground/50 text-center py-3">{isAr ? "لا معاملات حديثة" : "No recent transactions"}</p>
           )}
-          {data?.recentTxns.map((txn: any, i: number) => {
+          {data?.recentTxns.map((txn, i) => {
             const isCredit = ["credit", "refund"].includes(txn.type);
             return (
               <div key={i} className={`flex items-center justify-between text-[11px] p-1.5 rounded transition-colors hover:bg-muted/40 ${isCredit ? "bg-chart-2/5" : "bg-destructive/5"}`}>

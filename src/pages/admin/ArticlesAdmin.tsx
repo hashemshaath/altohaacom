@@ -82,7 +82,7 @@ export default function ArticlesAdmin() {
       setEditingArticleId(null);
       toast({ title: t("تم التحديث", "Updated") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: t("فشل التحديث", "Update failed"), description: err instanceof Error ? err.message : String(err) });
     },
   });
@@ -102,7 +102,7 @@ export default function ArticlesAdmin() {
     setFormData({ title: "", title_ar: "", slug: "", excerpt: "", excerpt_ar: "", content: "", content_ar: "", type: "news", status: "draft", featured_image_url: "", is_featured: false, published_at: "", category_id: "" });
   };
 
-  const handleEdit = (article: any) => {
+  const handleEdit = (article) => {
     setEditingArticleId(article.id);
     setFormData({
       title: article.title || "", title_ar: article.title_ar || "", slug: article.slug || "",
@@ -128,13 +128,13 @@ export default function ArticlesAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: "Title", accessor: (a: any) => a.title },
-      { header: "Type", accessor: (a: any) => a.type },
-      { header: "Status", accessor: (a: any) => a.status },
-      { header: "Views", accessor: (a: any) => a.view_count || 0 },
-      { header: "Featured", accessor: (a: any) => a.is_featured ? "Yes" : "No" },
-      { header: "Published", accessor: (a: any) => a.published_at ? format(new Date(a.published_at), "yyyy-MM-dd") : "" },
-      { header: "Created", accessor: (a: any) => format(new Date(a.created_at), "yyyy-MM-dd") },
+      { header: "Title", accessor: (a) => a.title },
+      { header: "Type", accessor: (a) => a.type },
+      { header: "Status", accessor: (a) => a.status },
+      { header: "Views", accessor: (a) => a.view_count || 0 },
+      { header: "Featured", accessor: (a) => a.is_featured ? "Yes" : "No" },
+      { header: "Published", accessor: (a) => a.published_at ? format(new Date(a.published_at), "yyyy-MM-dd") : "" },
+      { header: "Created", accessor: (a) => format(new Date(a.created_at), "yyyy-MM-dd") },
     ],
     filename: "articles",
   });

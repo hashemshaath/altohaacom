@@ -245,7 +245,7 @@ export default function CRMDashboard() {
   // Trend calculations
   const ticketTrend = useMemo(() => {
     if (!allTicketsForTrend?.length) return { current: 0, direction: "stable" as const };
-    const recentCount = allTicketsForTrend.filter((t: any) => isAfter(new Date(t.created_at), dateRangeStart)).length;
+    const recentCount = allTicketsForTrend.filter((t) => isAfter(new Date(t.created_at), dateRangeStart)).length;
     return { current: recentCount, direction: recentCount > (allTicketsForTrend.length / 2) ? "up" as const : "down" as const };
   }, [allTicketsForTrend, dateRangeStart]);
 
@@ -617,7 +617,7 @@ export default function CRMDashboard() {
             <CardContent className="p-0">
               <ScrollArea className="max-h-[400px]">
                 <div className="divide-y">
-                  {recentLeads.map((lead: any) => (
+                  {recentLeads.map((lead) => (
                     <Link
                       key={lead.id}
                       to="/admin/leads"

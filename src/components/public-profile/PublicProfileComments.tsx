@@ -38,8 +38,8 @@ export const PublicProfileComments = memo(function PublicProfileComments({ userI
       ]);
 
       const eventMap = new Map<string, any>();
-      (compsRes.data || []).forEach((c: any) => eventMap.set(c.id, { ...c, type: "competition" }));
-      (exhsRes.data || []).forEach((e: any) => eventMap.set(e.id, { ...e, type: "exhibition" }));
+      (compsRes.data || []).forEach((c) => eventMap.set(c.id, { ...c, type: "competition" }));
+      (exhsRes.data || []).forEach((e) => eventMap.set(e.id, { ...e, type: "exhibition" }));
 
       return data.map(c => ({ ...c, event: eventMap.get(c.event_id) })).filter(c => c.event);
     },
@@ -58,7 +58,7 @@ export const PublicProfileComments = memo(function PublicProfileComments({ userI
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0 space-y-2">
-        {comments.map((c: any) => {
+        {comments.map((c) => {
           const isComp = c.event_type === "competition";
           const href = isComp ? `/competitions/${c.event.slug}` : `/exhibitions/${c.event.slug}`;
           return (

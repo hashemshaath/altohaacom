@@ -77,7 +77,7 @@ export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionI
         </Link>
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {related.slice(0, 3).map((ex: any) => {
+        {related.slice(0, 3).map((ex) => {
           const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
           const now = new Date();
           const start = new Date(ex.start_date);

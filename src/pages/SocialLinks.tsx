@@ -112,7 +112,7 @@ export default function SocialLinks() {
 
   const handleFollow = useCallback(() => {
     if (!user) return;
-    toggleFollow.mutate(!!isFollowing, { onSuccess: (result: any) => { if (result?.type === "request_sent") toast({ title: tl("requested", lang) }); } });
+    toggleFollow.mutate(!!isFollowing, { onSuccess: (result) => { if (result?.type === "request_sent") toast({ title: tl("requested", lang) }); } });
   }, [user, isFollowing, toggleFollow, lang, toast]);
 
   const googleFontLink = useMemo(() => {
@@ -413,7 +413,7 @@ export default function SocialLinks() {
           <div className={`mb-5 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <h3 className={`text-[9px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: theme.accent }}>{tl("awards", lang)}</h3>
             <div className="space-y-1.5">
-              {globalAwards.map((award: any, i: number) => (
+              {globalAwards.map((award, i) => (
                 <div key={i} className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
                   <span className="text-base">{award.icon === "gold" ? "🏅" : award.icon === "tabakh" ? "👨‍🍳" : "🏆"}</span>
                   <span className="flex-1 text-xs font-medium" style={{ color: theme.textMuted }}>{isRtl ? (award.name_ar || award.name) : (award.name || award.name_ar)}</span>
@@ -480,7 +480,7 @@ export default function SocialLinks() {
             <div className={`flex ${justifyClass} flex-wrap gap-1.5`}>
               <button onClick={() => setActivePage("main")} className="px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300"
                 style={{ background: activePage === "main" ? `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentMedium})` : theme.btnBg, border: `1px solid ${activePage === "main" ? theme.accentMedium : theme.border}`, color: activePage === "main" ? theme.accent : theme.textMuted }}>{tl("all", lang)}</button>
-              {extra.pages.map((pg: any) => (
+              {extra.pages.map((pg) => (
                 <button key={pg.id} onClick={() => setActivePage(pg.id)} className="px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300"
                   style={{ background: activePage === pg.id ? `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentMedium})` : theme.btnBg, border: `1px solid ${activePage === pg.id ? theme.accentMedium : theme.border}`, color: activePage === pg.id ? theme.accent : theme.textMuted }}>
                   {isRtl ? (pg.label_ar || pg.label) : pg.label}

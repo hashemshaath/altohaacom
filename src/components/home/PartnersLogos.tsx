@@ -38,7 +38,7 @@ export const PartnersLogos = memo(function PartnersLogos() {
   });
 
   const allItems = [
-    ...partners.map((p: any) => ({
+    ...partners.map((p) => ({
       id: p.id,
       name: isAr && p.name_ar ? p.name_ar : p.name,
       logo: p.logo_url,
@@ -46,7 +46,7 @@ export const PartnersLogos = memo(function PartnersLogos() {
       external: !!p.website_url,
       verified: false,
     })),
-    ...entities.filter((e: any) => e.logo_url).map((e: any) => ({
+    ...entities.filter((e) => e.logo_url).map((e) => ({
       id: e.id,
       name: isAr && e.name_ar ? e.name_ar : e.name,
       logo: e.logo_url,

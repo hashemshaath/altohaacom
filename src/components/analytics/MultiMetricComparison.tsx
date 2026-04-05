@@ -63,7 +63,7 @@ export const MultiMetricComparison = memo(function MultiMetricComparison() {
         const counts: Record<string, number> = {};
         months.forEach(m => { counts[format(m, "yyyy-MM")] = 0; });
 
-        (rows || []).forEach((r: any) => {
+        (rows || []).forEach((r) => {
           const month = r[metric.dateCol]?.substring(0, 7);
           if (month && counts[month] !== undefined) counts[month]++;
         });

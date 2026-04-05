@@ -213,7 +213,7 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
       });
       setSelectedIds(new Set());
     },
-    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const winnerCount = selectedCandidates.filter(c => c.rank <= 3).length;

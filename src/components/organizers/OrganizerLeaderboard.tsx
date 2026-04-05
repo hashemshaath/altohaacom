@@ -34,7 +34,7 @@ export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organiz
     { key: "views", label: "Most Viewed", labelAr: "الأكثر مشاهدة", icon: Eye },
   ];
 
-  const getValue = (org: any) => {
+  const getValue = (org) => {
     if (metric === "events") return org.total_exhibitions || 0;
     if (metric === "rating") return org.average_rating ? org.average_rating.toFixed(1) : "0";
     return (org.total_views || 0).toLocaleString();

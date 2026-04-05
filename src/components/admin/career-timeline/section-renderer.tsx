@@ -36,7 +36,7 @@ interface SectionContentProps {
   onUpdateMembership?: (k: string, v: any) => void;
   onSaveMembership?: () => void;
   onStartAddMembership?: () => void;
-  onStartEditMembership?: (m: any) => void;
+  onStartEditMembership?: (m) => void;
   onDeleteMembership?: (id: string) => void;
   // Competitions (linked)
   competitions?: any[];
@@ -59,7 +59,7 @@ interface SectionContentProps {
   onSaveAward?: () => void;
   onAddAward?: () => void;
   onStartAddAward?: () => void;
-  onStartEditAward?: (cert: any) => void;
+  onStartEditAward?: (cert) => void;
   onDeleteAward?: (id: string) => void;
 }
 
@@ -124,7 +124,7 @@ function MembershipsSectionContent({
   return (
     <>
       {memberships.length === 0 && !isAddingHere && <EmptyState icon={Users} message={isAr ? "لا توجد عضويات" : "No memberships"} />}
-      {memberships.map((m: any) => (
+      {memberships.map((m) => (
         editingMembershipId === m.id ? (
           <MembershipForm key={m.id} form={membershipForm} isAr={isAr} editingId={editingMembershipId} isPending={saveMembershipPending}
             onUpdate={onUpdateMembership!} onSave={onSaveMembership!} onCancel={onCloseForm} />
@@ -158,7 +158,7 @@ function CompetitionsSectionContent({
     <>
       {competitions.length === 0 && competitionCareerRecords.length === 0 && !isAddingHere &&
         <EmptyState icon={Trophy} message={isAr ? "لا توجد مشاركات أو فعاليات" : "No competitions or events"} />}
-      {competitions.map((reg: any) => (
+      {competitions.map((reg) => (
         <CompactRow key={reg.id} icon={Trophy} color={section.color}
           title={isAr ? (reg.competitions?.title_ar || reg.competitions?.title) : reg.competitions?.title} subtitle=""
           meta={`${reg.competitions?.competition_start ? formatDateShort(reg.competitions.competition_start, isAr) : ""}${reg.competitions?.country_code ? ` · ${reg.competitions.country_code}` : ""}`}
@@ -194,7 +194,7 @@ function AwardsSectionContent({
   return (
     <>
       {certificates.length === 0 && !isAddingHere && <EmptyState icon={Medal} message={isAr ? "لا توجد جوائز" : "No awards"} />}
-      {certificates.map((cert: any) => (
+      {certificates.map((cert) => (
         editingAwardId === cert.id ? (
           <AwardAddForm key={cert.id} form={awardForm} isAr={isAr} editingId={editingAwardId} isPending={saveAwardPending}
             onUpdate={onUpdateAward!} onSave={onSaveAward!} onCancel={onCloseForm} />

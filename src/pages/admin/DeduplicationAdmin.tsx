@@ -400,7 +400,7 @@ const DeduplicationAdmin = memo(function DeduplicationAdmin() {
               ) : (
                 <ScrollArea className="max-h-[500px]">
                   <div className="space-y-2">
-                    {auditLog.map((log: any) => {
+                    {auditLog.map((log) => {
                       const details = log.details as any;
                       const tblInfo = TABLE_OPTIONS.find(t => t.value === details?.table);
                       return (

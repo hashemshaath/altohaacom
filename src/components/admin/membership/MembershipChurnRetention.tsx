@@ -237,7 +237,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
       ];
       if (!allAtRisk.length) throw new Error("No at-risk members");
 
-      const notifications = allAtRisk.map((u: any) => ({
+      const notifications = allAtRisk.map((u) => ({
         user_id: u.user_id,
         title: "Your membership is expiring soon — renew now!",
         title_ar: "عضويتك تنتهي قريباً — جدّد الآن!",
@@ -387,7 +387,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
           <AlertTitle>{isAr ? "أعضاء في خطر حرج" : "Critical: Members expiring soon"}</AlertTitle>
           <AlertDescription className="mt-2">
             <div className="space-y-1.5">
-              {atRiskData!.critical.slice(0, 5).map((u: any) => (
+              {atRiskData!.critical.slice(0, 5).map((u) => (
                 <div key={u.user_id} className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <Crown className="h-3 w-3" />
@@ -568,7 +568,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
                 </div>
                 {group.data.length > 0 ? (
                   <div className="space-y-1">
-                    {group.data.slice(0, 3).map((u: any) => (
+                    {group.data.slice(0, 3).map((u) => (
                       <div key={u.user_id} className="flex items-center justify-between text-xs">
                         <span className="truncate max-w-[140px]">{u.name}</span>
                         <div className="flex items-center gap-1.5">

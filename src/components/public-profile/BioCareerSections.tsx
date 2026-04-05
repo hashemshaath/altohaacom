@@ -285,7 +285,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
 
   const orderedSections = useMemo(() => {
     if (userSections.length > 0) {
-      const sectionOrder = userSections.map((s: any) => s.section_key);
+      const sectionOrder = userSections.map((s) => s.section_key);
       for (const key of DEFAULT_SECTION_ORDER) {
         if (!sectionOrder.includes(key)) sectionOrder.push(key);
       }
@@ -295,7 +295,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
   }, [userSections]);
 
   const getSectionLabel = (key: string) => {
-    const dbSection = userSections.find((s: any) => s.section_key === key);
+    const dbSection = userSections.find((s) => s.section_key === key);
     if (dbSection) return isRtl ? (dbSection.name_ar || dbSection.name_en) : dbSection.name_en;
     const defaults = DEFAULT_SECTION_LABELS[key];
     return defaults ? (isRtl ? defaults[0] : defaults[1]) : key;
@@ -336,7 +336,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
           return (
             <CollapsibleBioSection key={key} icon={Icon} title={label} count={count} theme={theme} defaultOpen={isDefault}>
               <div className="space-y-2">
-                {memberships.map((m: any) => <MembershipCard key={m.id} membership={m} isAr={isRtl} theme={theme} iconBg={iconBg} />)}
+                {memberships.map((m) => <MembershipCard key={m.id} membership={m} isAr={isRtl} theme={theme} iconBg={iconBg} />)}
               </div>
             </CollapsibleBioSection>
           );
@@ -345,7 +345,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
           return (
             <CollapsibleBioSection key={key} icon={Icon} title={label} count={count} theme={theme} defaultOpen={isDefault}>
               <div className="space-y-2">
-                {certificates.map((cert: any) => <AwardCard key={cert.id} cert={cert} isAr={isRtl} theme={theme} iconBg={iconBg} />)}
+                {certificates.map((cert) => <AwardCard key={cert.id} cert={cert} isAr={isRtl} theme={theme} iconBg={iconBg} />)}
               </div>
             </CollapsibleBioSection>
           );
@@ -354,7 +354,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
         return (
           <CollapsibleBioSection key={key} icon={Icon} title={label} count={count} theme={theme} defaultOpen={isDefault}>
             <div className="space-y-2">
-              {sectionRecords.map((r: any) => (
+              {sectionRecords.map((r) => (
                 <RecordCard key={r.id} record={r} isAr={isRtl} theme={theme} icon={Icon} iconBg={iconBg} sectionType={key} />
               ))}
             </div>

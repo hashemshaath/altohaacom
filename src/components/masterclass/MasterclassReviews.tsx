@@ -41,11 +41,11 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
     },
   });
 
-  const myReview = useMemo(() => reviews.find((r: any) => r.user_id === user?.id), [reviews, user?.id]);
+  const myReview = useMemo(() => reviews.find((r) => r.user_id === user?.id), [reviews, user?.id]);
   const avgRating = useMemo(() => reviews.length > 0
-    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : null, [reviews]);
-  const otherReviews = useMemo(() => reviews.filter((r: any) => r.user_id !== user?.id), [reviews, user?.id]);
+  const otherReviews = useMemo(() => reviews.filter((r) => r.user_id !== user?.id), [reviews, user?.id]);
 
   const submitReview = useMutation({
     mutationFn: async () => {
@@ -162,7 +162,7 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
       {/* All Reviews */}
       {otherReviews.length > 0 && (
         <div className="space-y-3">
-          {otherReviews.map((review: any) => (
+          {otherReviews.map((review) => (
             <Card key={review.id}>
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">

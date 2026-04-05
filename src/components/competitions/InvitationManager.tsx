@@ -82,7 +82,7 @@ export const InvitationManager = memo(function InvitationManager({ competitionId
       setShowAddForm(false);
       toast({ title: isAr ? "تمت إضافة الدعوة" : "Invitation added" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

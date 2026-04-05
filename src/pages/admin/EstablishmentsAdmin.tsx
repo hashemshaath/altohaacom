@@ -64,17 +64,17 @@ export default function EstablishmentsAdmin() {
     if (!entities) return { total: 0, active: 0, pending: 0, visible: 0, hidden: 0 };
     return {
       total: entities.length,
-      active: entities.filter((e: any) => e.status === "active").length,
-      pending: entities.filter((e: any) => e.status === "pending").length,
-      visible: entities.filter((e: any) => e.is_visible).length,
-      hidden: entities.filter((e: any) => !e.is_visible).length,
+      active: entities.filter((e) => e.status === "active").length,
+      pending: entities.filter((e) => e.status === "pending").length,
+      visible: entities.filter((e) => e.is_visible).length,
+      hidden: entities.filter((e) => !e.is_visible).length,
     };
   }, [entities]);
 
   // Filter
   const filtered = useMemo(() => {
     if (!entities) return [];
-    return entities.filter((e: any) => {
+    return entities.filter((e) => {
       if (statusFilter === "active" && e.status !== "active") return false;
       if (statusFilter === "pending" && e.status !== "pending") return false;
       if (statusFilter === "visible" && !e.is_visible) return false;
@@ -96,11 +96,11 @@ export default function EstablishmentsAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الرقم" : "Number", accessor: (r: any) => r.entity_number },
-      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => isAr && r.name_ar ? r.name_ar : r.name },
-      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.type },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
+      { header: isAr ? "الرقم" : "Number", accessor: (r) => r.entity_number },
+      { header: isAr ? "الاسم" : "Name", accessor: (r) => isAr && r.name_ar ? r.name_ar : r.name },
+      { header: isAr ? "النوع" : "Type", accessor: (r) => r.type },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "المدينة" : "City", accessor: (r) => r.city || "" },
     ],
     filename: "entities",
   });
@@ -133,7 +133,7 @@ export default function EstablishmentsAdmin() {
     toast({ title: isAr ? "تم الحذف" : "Deleted" });
   };
 
-  const handleEdit = (entity: any) => {
+  const handleEdit = (entity) => {
     setEditingId(entity.id);
     setForm({
       ...emptyForm,
@@ -357,7 +357,7 @@ export default function EstablishmentsAdmin() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {pagination.paginated.map((entity: any) => (
+              {pagination.paginated.map((entity) => (
                 <EntityTableRow
                   key={entity.id}
                   entity={entity}

@@ -185,7 +185,7 @@ export default function AudienceSegments() {
       resetForm();
       toast({ title: isAr ? "تم إنشاء الشريحة" : "Segment created" });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ variant: "destructive", title: "Error", description: error.message });
     },
   });

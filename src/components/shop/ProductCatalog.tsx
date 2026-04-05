@@ -12,7 +12,7 @@ import { Search, ShoppingCart, Star, Filter, Package, Grid3X3, List, Heart, Eye 
 import { cn } from "@/lib/utils";
 
 interface Props {
-  onAddToCart?: (product: any) => void;
+  onAddToCart?: (product) => void;
 }
 
 export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Props) {
@@ -143,7 +143,7 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
         </Card>
       ) : (
         <div className={cn("grid gap-4", view === "grid" ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" : "grid-cols-1")}>
-          {products.map((p: any) => (
+          {products.map((p) => (
             <Card key={p.id} className={cn("group overflow-hidden transition-all hover:shadow-md", view === "list" && "flex flex-row")}>
               <div className={cn("relative overflow-hidden bg-muted", view === "grid" ? "aspect-square" : "w-32 shrink-0")}>
                 {p.image_url ? (

@@ -44,7 +44,7 @@ export const SEOCrawlAnalytics = memo(function SEOCrawlAnalytics({ isAr, range =
 
     // By crawler name
     const byCrawler: Record<string, number> = {};
-    visits.forEach((v: any) => { byCrawler[v.crawler_name] = (byCrawler[v.crawler_name] || 0) + 1; });
+    visits.forEach((v) => { byCrawler[v.crawler_name] = (byCrawler[v.crawler_name] || 0) + 1; });
     const crawlerChart = Object.entries(byCrawler)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
@@ -52,12 +52,12 @@ export const SEOCrawlAnalytics = memo(function SEOCrawlAnalytics({ isAr, range =
 
     // By type
     const byType: Record<string, number> = {};
-    visits.forEach((v: any) => { byType[v.crawler_type || "unknown"] = (byType[v.crawler_type || "unknown"] || 0) + 1; });
+    visits.forEach((v) => { byType[v.crawler_type || "unknown"] = (byType[v.crawler_type || "unknown"] || 0) + 1; });
     const typeChart = Object.entries(byType).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
 
     // By day
     const byDay: Record<string, number> = {};
-    visits.forEach((v: any) => {
+    visits.forEach((v) => {
       const day = format(new Date(v.created_at), "MM/dd");
       byDay[day] = (byDay[day] || 0) + 1;
     });
@@ -67,14 +67,14 @@ export const SEOCrawlAnalytics = memo(function SEOCrawlAnalytics({ isAr, range =
 
     // Top crawled pages
     const byPath: Record<string, number> = {};
-    visits.forEach((v: any) => { byPath[v.path] = (byPath[v.path] || 0) + 1; });
+    visits.forEach((v) => { byPath[v.path] = (byPath[v.path] || 0) + 1; });
     const topPages = Object.entries(byPath)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
       .map(([path, count]) => ({ path, count }));
 
     // Crawl budget efficiency
-    const uniquePaths = new Set(visits.map((v: any) => v.path)).size;
+    const uniquePaths = new Set(visits.map((v) => v.path)).size;
     const totalCrawls = visits.length;
     const efficiency = uniquePaths > 0 ? Math.round((uniquePaths / totalCrawls) * 100) : 0;
 

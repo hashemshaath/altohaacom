@@ -55,13 +55,13 @@ export const HomeTrendingContent = function HomeTrendingContent() {
 
   const types = useMemo(() => {
     const s = new Set<string>();
-    articles.forEach((a: any) => { if (a.type) s.add(a.type); });
+    articles.forEach((a) => { if (a.type) s.add(a.type); });
     return Array.from(s);
   }, [articles]);
 
   const filtered = useMemo(() => {
     if (!typeFilter) return articles;
-    return articles.filter((a: any) => a.type === typeFilter);
+    return articles.filter((a) => a.type === typeFilter);
   }, [articles, typeFilter]);
 
   if (articles.length === 0) return null;
@@ -89,7 +89,7 @@ export const HomeTrendingContent = function HomeTrendingContent() {
                       key={t}
                       label={label ? (isAr ? label.ar : label.en) : t}
                       active={typeFilter === t}
-                      count={articles.filter((a: any) => a.type === t).length}
+                      count={articles.filter((a) => a.type === t).length}
                       onClick={() => setTypeFilter(typeFilter === t ? null : t)}
                     />
                   );
@@ -104,7 +104,7 @@ export const HomeTrendingContent = function HomeTrendingContent() {
             </div>
           ) : (
             <HorizontalScrollRow isAr={isAr}>
-              {filtered.map((article: any, i: number) => (
+              {filtered.map((article, i) => (
                 <Link
                   key={article.id}
                   to={`/blog/${article.slug}`}

@@ -39,7 +39,7 @@ export const ForwardMessageDialog = memo(function ForwardMessageDialog({ open, o
         .limit(200);
 
       const ids = new Set<string>();
-      messages?.forEach((m: any) => {
+      messages?.forEach((m) => {
         if (m.sender_id !== user.id) ids.add(m.sender_id);
         if (m.receiver_id !== user.id) ids.add(m.receiver_id);
       });
@@ -75,7 +75,7 @@ export const ForwardMessageDialog = memo(function ForwardMessageDialog({ open, o
     },
   });
 
-  const filtered = useMemo(() => contacts.filter((c: any) => {
+  const filtered = useMemo(() => contacts.filter((c) => {
     if (!search) return true;
     const name = (c.full_name || c.username || "").toLowerCase();
     return name.includes(search.toLowerCase());
@@ -114,7 +114,7 @@ export const ForwardMessageDialog = memo(function ForwardMessageDialog({ open, o
             </div>
           ) : (
             <div className="space-y-1">
-              {filtered.map((c: any) => {
+              {filtered.map((c) => {
                 const isSent = sent.has(c.user_id);
                 return (
                   <div key={c.user_id} className="flex items-center gap-3 rounded-xl p-2 hover:bg-muted/50 transition-colors">

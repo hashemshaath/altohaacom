@@ -83,7 +83,7 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
     },
   });
 
-  const savedItemIds = new Set(mySchedule.map((s: any) => s.schedule_item_id).filter(Boolean));
+  const savedItemIds = new Set(mySchedule.map((s) => s.schedule_item_id).filter(Boolean));
 
   if (!user) {
     return (
@@ -121,7 +121,7 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
         </Card>
       ) : (
         <div className="space-y-2">
-          {mySchedule.map((item: any) => {
+          {mySchedule.map((item) => {
             const scheduleItem = item.exhibition_schedule_items;
             const booth = item.exhibition_booths;
             const itemTitle = scheduleItem
@@ -176,7 +176,7 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
               <div>
                 <p className="text-xs font-semibold mb-2 text-muted-foreground">{t("Event Sessions", "جلسات الفعالية")}</p>
                 <div className="space-y-1.5 max-h-60 overflow-y-auto">
-                  {availableItems.map((item: any) => {
+                  {availableItems.map((item) => {
                     const isSaved = savedItemIds.has(item.id);
                     return (
                       <Card key={item.id} className={`transition-all ${isSaved ? "opacity-50" : "hover:shadow-sm cursor-pointer"}`}>

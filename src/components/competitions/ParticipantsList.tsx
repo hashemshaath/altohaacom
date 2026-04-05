@@ -245,7 +245,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
       setShowInviteForm(false);
       toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: isAr ? "فشل الإرسال" : "Failed", description: err instanceof Error ? err.message : String(err) });
     },
   });
@@ -291,7 +291,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
     { total: 0 } as Record<string, number>
   ) || { total: 0 };
 
-  const filteredInvitations = inviteFilter === "all" ? invitations : invitations.filter((i: any) => i.status === inviteFilter);
+  const filteredInvitations = inviteFilter === "all" ? invitations : invitations.filter((i) => i.status === inviteFilter);
   const inviteCounts = invitations.reduce((acc: Record<string, number>, i: any) => {
     acc[i.status] = (acc[i.status] || 0) + 1;
     return acc;
@@ -576,7 +576,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
           {/* Invitations list */}
           {filteredInvitations.length > 0 ? (
             <div className="grid gap-3 sm:grid-cols-2">
-              {filteredInvitations.map((inv: any) => {
+              {filteredInvitations.map((inv) => {
                 const channel = CHANNELS.find(c => c.value === inv.invitation_channel);
                 const ChannelIcon = channel?.icon || Mail;
                 const cat = categories?.find(c => c.id === inv.category_id);

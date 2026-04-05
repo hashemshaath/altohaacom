@@ -104,7 +104,7 @@ async function handleEvaluationSubmitted(ctx: EvaluationContext) {
     .select("user_id")
     .eq("role", "supervisor");
 
-  const adminIds = admins?.map((a: any) => a.user_id) || [];
+  const adminIds = admins?.map((a) => a.user_id) || [];
   if (adminIds.length) {
     await sendBulkNotifications({
       userIds: adminIds,
@@ -130,7 +130,7 @@ async function handleAllEvaluationsComplete(ctx: EvaluationContext) {
     .select("user_id")
     .eq("role", "supervisor");
 
-  const adminIds = admins?.map((a: any) => a.user_id) || [];
+  const adminIds = admins?.map((a) => a.user_id) || [];
   if (adminIds.length) {
     await sendBulkNotifications({
       userIds: adminIds,
@@ -157,7 +157,7 @@ async function handleReportPublished(ctx: EvaluationContext) {
       .select("user_id")
       .eq("company_id", session.company_id);
 
-    const contactIds = contacts?.map((c: any) => c.user_id) || [];
+    const contactIds = contacts?.map((c) => c.user_id) || [];
     if (contactIds.length) {
       await sendBulkNotifications({
         userIds: contactIds,
@@ -228,7 +228,7 @@ async function handleInvoiceGenerated(ctx: EvaluationContext) {
     .select("user_id")
     .eq("company_id", session.company_id);
 
-  const contactIds = contacts?.map((c: any) => c.user_id) || [];
+  const contactIds = contacts?.map((c) => c.user_id) || [];
   if (!contactIds.length) return;
 
   await sendBulkNotifications({

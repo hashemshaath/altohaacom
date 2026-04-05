@@ -301,7 +301,7 @@ export const CohortRetentionChart = memo(function CohortRetentionChart() {
                 </tr>
               </thead>
               <tbody>
-                {data.cohortTable.map((row: any) => (
+                {data.cohortTable.map((row) => (
                   <tr key={row.cohort} className="border-b border-border/40">
                     <td className="p-2 font-mono text-xs">{row.cohort}</td>
                     <td className="p-2 text-center font-medium">{row.total}</td>

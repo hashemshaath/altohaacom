@@ -72,7 +72,7 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
       queryClient.invalidateQueries({ queryKey: ["exhibition-loyalty", exhibitionId] });
       toast({ title: t("Points earned! 🎉", "تم كسب النقاط! 🎉") });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       if (e.message === "already_earned") {
         toast({ title: t("Already earned", "تم كسبها مسبقاً"), variant: "destructive" });
       }
@@ -80,8 +80,8 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
   });
 
   const { completedTypes, totalEarned, totalPossible } = useMemo(() => ({
-    completedTypes: new Set(myActions.map((a: any) => a.action_type)),
-    totalEarned: myActions.reduce((s: number, a: any) => s + (a.points_earned || 0), 0),
+    completedTypes: new Set(myActions.map((a) => a.action_type)),
+    totalEarned: myActions.reduce((s, a) => s + (a.points_earned || 0), 0),
     totalPossible: LOYALTY_ACTIONS.reduce((s, a) => s + a.points, 0),
   }), [myActions]);
 

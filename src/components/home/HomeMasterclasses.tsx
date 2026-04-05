@@ -67,20 +67,20 @@ export const HomeMasterclasses = memo(function HomeMasterclasses() {
 
   const categories = useMemo(() => {
     const s = new Set<string>();
-    classes.forEach((c: any) => { if (c.category) s.add(c.category); });
+    classes.forEach((c) => { if (c.category) s.add(c.category); });
     return Array.from(s);
   }, [classes]);
 
   const levels = useMemo(() => {
     const s = new Set<string>();
-    classes.forEach((c: any) => { if (c.level) s.add(c.level); });
+    classes.forEach((c) => { if (c.level) s.add(c.level); });
     return Array.from(s);
   }, [classes]);
 
   const filtered = useMemo(() => {
     let result = classes;
-    if (levelFilter) result = result.filter((c: any) => c.level === levelFilter);
-    if (catFilter) result = result.filter((c: any) => c.category === catFilter);
+    if (levelFilter) result = result.filter((c) => c.level === levelFilter);
+    if (catFilter) result = result.filter((c) => c.category === catFilter);
     return result;
   }, [classes, levelFilter, catFilter]);
 
@@ -107,7 +107,7 @@ export const HomeMasterclasses = memo(function HomeMasterclasses() {
                   key={l}
                   label={label ? (isAr ? label.ar : label.en) : l}
                   active={levelFilter === l}
-                  count={classes.filter((c: any) => c.level === l).length}
+                  count={classes.filter((c) => c.level === l).length}
                   onClick={() => setLevelFilter(levelFilter === l ? null : l)}
                 />
               );
@@ -119,7 +119,7 @@ export const HomeMasterclasses = memo(function HomeMasterclasses() {
                   key={c}
                   label={cl ? (isAr ? cl.ar : cl.en) : c}
                   active={catFilter === c}
-                  count={classes.filter((mc: any) => mc.category === c).length}
+                  count={classes.filter((mc) => mc.category === c).length}
                   onClick={() => setCatFilter(catFilter === c ? null : c)}
                 />
               );
@@ -134,7 +134,7 @@ export const HomeMasterclasses = memo(function HomeMasterclasses() {
         </div>
       ) : (
         <HorizontalScrollRow isAr={isAr}>
-          {filtered.map((mc: any) => {
+          {filtered.map((mc) => {
             const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
             const levelLabel = LEVEL_LABELS[mc.level];
 

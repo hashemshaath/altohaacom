@@ -68,12 +68,12 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   // Impressions & clicks over time (daily)
   const timeSeriesData = useMemo(() => {
     const byDay: Record<string, { date: string; impressions: number; clicks: number }> = {};
-    impressions.forEach((imp: any) => {
+    impressions.forEach((imp) => {
       const day = imp.created_at?.slice(0, 10) || "";
       if (!byDay[day]) byDay[day] = { date: day, impressions: 0, clicks: 0 };
       byDay[day].impressions++;
     });
-    clicks.forEach((cl: any) => {
+    clicks.forEach((cl) => {
       const day = cl.created_at?.slice(0, 10) || "";
       if (!byDay[day]) byDay[day] = { date: day, impressions: 0, clicks: 0 };
       byDay[day].clicks++;
@@ -84,7 +84,7 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   // Device breakdown
   const deviceData = useMemo(() => {
     const counts: Record<string, number> = {};
-    impressions.forEach((imp: any) => {
+    impressions.forEach((imp) => {
       const d = imp.device_type || "unknown";
       counts[d] = (counts[d] || 0) + 1;
     });
@@ -95,13 +95,13 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const placementPerformance = useMemo(() => {
     const impByPlacement: Record<string, number> = {};
     const clickByPlacement: Record<string, number> = {};
-    impressions.forEach((imp: any) => {
+    impressions.forEach((imp) => {
       impByPlacement[imp.placement_id] = (impByPlacement[imp.placement_id] || 0) + 1;
     });
-    clicks.forEach((cl: any) => {
+    clicks.forEach((cl) => {
       clickByPlacement[cl.placement_id] = (clickByPlacement[cl.placement_id] || 0) + 1;
     });
-    return placements.map((p: any) => ({
+    return placements.map((p) => ({
       name: isAr ? p.name_ar || p.name : p.name,
       impressions: impByPlacement[p.id] || 0,
       clicks: clickByPlacement[p.id] || 0,
@@ -112,12 +112,12 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   // Top pages
   const topPages = useMemo(() => {
     const counts: Record<string, { impressions: number; clicks: number }> = {};
-    impressions.forEach((imp: any) => {
+    impressions.forEach((imp) => {
       const page = imp.page_url || "/";
       if (!counts[page]) counts[page] = { impressions: 0, clicks: 0 };
       counts[page].impressions++;
     });
-    clicks.forEach((cl: any) => {
+    clicks.forEach((cl) => {
       const page = cl.page_url || "/";
       if (!counts[page]) counts[page] = { impressions: 0, clicks: 0 };
       counts[page].clicks++;
@@ -132,13 +132,13 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const campaignPerformance = useMemo(() => {
     const impByCampaign: Record<string, number> = {};
     const clickByCampaign: Record<string, number> = {};
-    impressions.forEach((imp: any) => {
+    impressions.forEach((imp) => {
       impByCampaign[imp.campaign_id] = (impByCampaign[imp.campaign_id] || 0) + 1;
     });
-    clicks.forEach((cl: any) => {
+    clicks.forEach((cl) => {
       clickByCampaign[cl.campaign_id] = (clickByCampaign[cl.campaign_id] || 0) + 1;
     });
-    return campaigns.map((c: any) => ({
+    return campaigns.map((c) => ({
       name: isAr ? c.name_ar || c.name : c.name,
       company: isAr ? c.companies?.name_ar || c.companies?.name : c.companies?.name,
       impressions: impByCampaign[c.id] || 0,

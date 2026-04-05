@@ -39,7 +39,7 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
       ]);
 
       const scoreBuckets: Record<string, number> = { "0-20": 0, "21-40": 0, "41-60": 0, "61-80": 0, "81-100": 0 };
-      (scores || []).forEach((s: any) => {
+      (scores || []).forEach((s) => {
         const v = Number(s.score);
         if (v <= 20) scoreBuckets["0-20"]++;
         else if (v <= 40) scoreBuckets["21-40"]++;
@@ -49,30 +49,30 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
       });
 
       const monthCounts: Record<string, number> = {};
-      (competitions || []).forEach((c: any) => {
+      (competitions || []).forEach((c) => {
         const month = c.competition_start?.substring(0, 7) || "unknown";
         monthCounts[month] = (monthCounts[month] || 0) + 1;
       });
 
       const statusCounts: Record<string, number> = {};
-      (competitions || []).forEach((c: any) => {
+      (competitions || []).forEach((c) => {
         const s = c.status || "unknown";
         statusCounts[s] = (statusCounts[s] || 0) + 1;
       });
 
       const countryCounts: Record<string, number> = {};
-      (competitions || []).forEach((c: any) => {
+      (competitions || []).forEach((c) => {
         if (c.country_code) countryCounts[c.country_code] = (countryCounts[c.country_code] || 0) + 1;
       });
 
       const regMonths: Record<string, number> = {};
-      (registrations || []).forEach((r: any) => {
+      (registrations || []).forEach((r) => {
         const m = r.created_at?.substring(0, 7);
         if (m) regMonths[m] = (regMonths[m] || 0) + 1;
       });
 
-      const uniqueCountries = new Set((competitions || []).map((c: any) => c.country_code).filter(Boolean));
-      const activeCount = (competitions || []).filter((c: any) => c.status === "active" || c.status === "in_progress").length;
+      const uniqueCountries = new Set((competitions || []).map((c) => c.country_code).filter(Boolean));
+      const activeCount = (competitions || []).filter((c) => c.status === "active" || c.status === "in_progress").length;
 
       return {
         totalRegistrations: totalRegistrations || 0,

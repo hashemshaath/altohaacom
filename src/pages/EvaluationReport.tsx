@@ -230,7 +230,7 @@ export default function EvaluationReport() {
               <ChefHat className="h-3.5 w-3.5" />{isAr ? "فريق التقييم" : "Evaluation Panel"}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {evaluations.map((ev: any, i: number) => (
+              {evaluations.map((ev, i) => (
                 <div key={i} className="rounded-xl border border-border/30 p-4 flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
                     {ev.profile?.avatar_url ? (
@@ -250,14 +250,14 @@ export default function EvaluationReport() {
             </div>
 
             {/* Endorsements */}
-            {evaluations.some((e: any) => e.endorsement_text) && (
+            {evaluations.some((e) => e.endorsement_text) && (
               <>
                 <Separator />
                 <p className="text-[10px] font-bold text-muted-foreground uppercase flex items-center gap-1.5">
                   <Lightbulb className="h-3.5 w-3.5" />{isAr ? "التوصيات" : "Chef Endorsements"}
                 </p>
                 <div className="space-y-3">
-                  {evaluations.filter((e: any) => e.endorsement_text).map((ev: any, i: number) => (
+                  {evaluations.filter((e) => e.endorsement_text).map((ev, i) => (
                     <div key={i} className="rounded-xl border border-primary/20 bg-primary/5 p-4">
                       <p className="text-sm italic">"{isAr && ev.endorsement_text_ar ? ev.endorsement_text_ar : ev.endorsement_text}"</p>
                       <p className="text-xs text-muted-foreground mt-2">— {ev.profile?.full_name || "Chef"}</p>

@@ -210,7 +210,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
     setEditingId(null);
   };
 
-  const startEdit = (r: any) => {
+  const startEdit = (r) => {
     setForm({
       item_name: r.item_name || "",
       item_name_ar: r.item_name_ar || "",

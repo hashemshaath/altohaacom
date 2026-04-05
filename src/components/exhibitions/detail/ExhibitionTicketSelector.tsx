@@ -40,7 +40,7 @@ export const ExhibitionTicketSelector = memo(function ExhibitionTicketSelector({
         <h4 className="text-sm font-semibold">{t("Choose Ticket Type", "اختر نوع التذكرة")}</h4>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
-        {types.map((tt: any) => {
+        {types.map((tt) => {
           const isSelected = selectedTypeId === tt.id;
           const isSoldOut = tt.max_quantity && tt.sold_count >= tt.max_quantity;
           const remaining = tt.max_quantity ? tt.max_quantity - tt.sold_count : null;

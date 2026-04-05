@@ -153,7 +153,7 @@ function CompetitionClassifiedCard({ comp, isAr, now }: { comp: any; isAr: boole
 
           {categories.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {categories.slice(0, 5).map((cat: any) => (
+              {categories.slice(0, 5).map((cat) => (
                 <Badge key={cat.id} variant="secondary" className="text-[10px]">
                   {isAr && cat.name_ar ? cat.name_ar : cat.name}
                 </Badge>

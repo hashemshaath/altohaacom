@@ -60,7 +60,7 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
       setMaxUses("");
       toast({ title: t("Discount code created! 🎫", "تم إنشاء كود الخصم! 🎫") });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       const isDuplicate = e?.code === "23505";
       toast({ title: isDuplicate ? t("Code already exists", "الكود موجود مسبقاً") : t("Error", "خطأ"), variant: "destructive" });
     },
@@ -134,7 +134,7 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
           <p className="text-xs text-muted-foreground text-center py-4">{t("No discount codes yet", "لا توجد أكواد خصم بعد")}</p>
         ) : (
           <div className="space-y-2">
-            {codes.map((dc: any) => (
+            {codes.map((dc) => (
               <div key={dc.id} className="flex items-center gap-2 p-2.5 rounded-xl bg-muted/40 border border-border/40">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">

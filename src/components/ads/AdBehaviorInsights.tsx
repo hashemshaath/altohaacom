@@ -47,7 +47,7 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
   // Category engagement
   const categoryData = useMemo(() => {
     const counts: Record<string, number> = {};
-    behaviors.forEach((b: any) => {
+    behaviors.forEach((b) => {
       if (b.page_category) counts[b.page_category] = (counts[b.page_category] || 0) + 1;
     });
     return Object.entries(counts)
@@ -59,7 +59,7 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
   // Hourly activity
   const hourlyData = useMemo(() => {
     const hours = Array.from({ length: 24 }, (_, i) => ({ hour: `${i}:00`, views: 0 }));
-    behaviors.forEach((b: any) => {
+    behaviors.forEach((b) => {
       if (b.created_at) {
         const h = new Date(b.created_at).getHours();
         hours[h].views++;
@@ -70,12 +70,12 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
 
   // Average session duration
   const avgDuration = useMemo(() => {
-    const durations = behaviors.filter((b: any) => b.duration_seconds && b.duration_seconds > 0).map((b: any) => b.duration_seconds);
+    const durations = behaviors.filter((b) => b.duration_seconds && b.duration_seconds > 0).map((b) => b.duration_seconds);
     return durations.length > 0 ? Math.round(durations.reduce((s: number, d: number) => s + d, 0) / durations.length) : 0;
   }, [behaviors]);
 
   const totalEvents = behaviors.length;
-  const uniqueSessions = new Set(behaviors.map((b: any) => b.created_at?.slice(0, 10))).size;
+  const uniqueSessions = new Set(behaviors.map((b) => b.created_at?.slice(0, 10))).size;
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
@@ -159,8 +159,8 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
             <p className="text-center py-8 text-sm text-muted-foreground">{isAr ? "لا توجد بيانات" : "No interest data yet"}</p>
           ) : (
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {interests.map((interest: any, i: number) => {
-                const maxScore = Math.max(...interests.map((x: any) => x.score || 1));
+              {interests.map((interest, i) => {
+                const maxScore = Math.max(...interests.map((x) => x.score || 1));
                 const pct = ((interest.score || 0) / maxScore) * 100;
                 return (
                   <div key={i} className="p-3 rounded-xl bg-muted/50">

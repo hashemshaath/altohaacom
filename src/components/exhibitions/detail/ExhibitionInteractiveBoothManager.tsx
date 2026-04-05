@@ -64,7 +64,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
     onError: () => toast({ title: t("Booking failed", "فشل الحجز"), variant: "destructive" }),
   });
 
-  const filtered = useMemo(() => booths.filter((b: any) => {
+  const filtered = useMemo(() => booths.filter((b) => {
     if (filterStatus !== "all" && (b.status || "available") !== filterStatus) return false;
     if (!search) return true;
     const q = search.toLowerCase();
@@ -73,9 +73,9 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
 
   const stats = useMemo(() => ({
     total: booths.length,
-    available: booths.filter((b: any) => b.status === "available").length,
-    reserved: booths.filter((b: any) => b.status === "reserved").length,
-    occupied: booths.filter((b: any) => b.status === "occupied").length,
+    available: booths.filter((b) => b.status === "available").length,
+    reserved: booths.filter((b) => b.status === "reserved").length,
+    occupied: booths.filter((b) => b.status === "occupied").length,
   }), [booths]);
 
   // Group by hall for the visual floor map
@@ -142,7 +142,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
           <CardContent className="p-4">
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-2">
               <TooltipProvider>
-                {hallBooths.map((booth: any) => {
+                {hallBooths.map((booth) => {
                   const st = booth.status || "available";
                   return (
                     <Tooltip key={booth.id}>

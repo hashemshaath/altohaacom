@@ -33,11 +33,11 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
   const matrixData = Object.entries(grouped).map(([category, perms]) => ({
     category,
     perms: perms
-      .filter((p: any) => !matrixSearch || p.name.toLowerCase().includes(matrixSearch.toLowerCase()) || p.code.toLowerCase().includes(matrixSearch.toLowerCase()) || (p.name_ar && p.name_ar.includes(matrixSearch)))
-      .map((p: any) => ({
+      .filter((p) => !matrixSearch || p.name.toLowerCase().includes(matrixSearch.toLowerCase()) || p.code.toLowerCase().includes(matrixSearch.toLowerCase()) || (p.name_ar && p.name_ar.includes(matrixSearch)))
+      .map((p) => ({
         ...p,
         roles: rolesToShow.reduce<Record<string, boolean>>((acc, role) => {
-          acc[role] = allRolePerms.some((rp: any) => rp.role === role && rp.permission_id === p.id);
+          acc[role] = allRolePerms.some((rp) => rp.role === role && rp.permission_id === p.id);
           return acc;
         }, {}),
       })),
@@ -50,7 +50,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
   const exportMatrixCSV = () => {
     const headers = [t("Category", "التصنيف"), t("Permission", "الصلاحية"), t("Code", "الكود"), ...rolesToShow.map(r => ROLE_META[r].labelEn)];
     const rows = matrixData.flatMap(({ category, perms }) =>
-      perms.map((p: any) => [category, p.name, p.code, ...rolesToShow.map(r => p.roles[r] ? "✓" : "")])
+      perms.map((p) => [category, p.name, p.code, ...rolesToShow.map(r => p.roles[r] ? "✓" : "")])
     );
     const csv = "\uFEFF" + [headers, ...rows].map(r => r.join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
@@ -64,7 +64,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
 
   // Compute summary per role
   const roleSummary = rolesToShow.map(role => {
-    const count = allRolePerms.filter((rp: any) => rp.role === role).length;
+    const count = allRolePerms.filter((rp) => rp.role === role).length;
     return { role, count };
   });
 
@@ -167,7 +167,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
                           <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{category}</span>
                         </TableCell>
                       </TableRow>
-                      {perms.map((perm: any) => (
+                      {perms.map((perm) => (
                         <TableRow key={perm.id} className="hover:bg-muted/20">
                           <TableCell className="sticky left-0 bg-background z-10">
                             <TooltipProvider>

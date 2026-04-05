@@ -38,19 +38,19 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
 
       // Revenue
       const totalRevenue = tickets.reduce((s, t: any) => s + (t.price_paid || 0), 0);
-      const boothRevenue = booths.filter((b: any) => b.assigned_to).reduce((s, b: any) => s + (b.price || 0), 0);
+      const boothRevenue = booths.filter((b) => b.assigned_to).reduce((s, b: any) => s + (b.price || 0), 0);
       const currency = tickets[0]?.currency || booths[0]?.currency || "SAR";
 
       // Ticket stats
-      const confirmed = tickets.filter((t: any) => t.status === "confirmed").length;
-      const checkedIn = tickets.filter((t: any) => t.checked_in_at).length;
+      const confirmed = tickets.filter((t) => t.status === "confirmed").length;
+      const checkedIn = tickets.filter((t) => t.checked_in_at).length;
       const checkInRate = confirmed > 0 ? Math.round((checkedIn / confirmed) * 100) : 0;
 
       // Daily ticket trend (30 days)
       const now = new Date();
       const dailyMap: Record<string, number> = {};
       for (let i = 29; i >= 0; i--) dailyMap[format(subDays(now, i), "MM/dd")] = 0;
-      tickets.forEach((t: any) => {
+      tickets.forEach((t) => {
         const d = format(new Date(t.created_at), "MM/dd");
         if (dailyMap[d] !== undefined) dailyMap[d]++;
       });
@@ -58,27 +58,27 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
 
       // Ticket type breakdown
       const typeMap: Record<string, number> = {};
-      tickets.forEach((t: any) => { const tp = t.ticket_type || "standard"; typeMap[tp] = (typeMap[tp] || 0) + 1; });
+      tickets.forEach((t) => { const tp = t.ticket_type || "standard"; typeMap[tp] = (typeMap[tp] || 0) + 1; });
       const ticketTypes = Object.entries(typeMap).map(([name, value]) => ({ name, value }));
 
       // Booth stats
       const totalBooths = booths.length;
-      const occupiedBooths = booths.filter((b: any) => b.status === "occupied" || b.assigned_to).length;
+      const occupiedBooths = booths.filter((b) => b.status === "occupied" || b.assigned_to).length;
       const boothOccupancy = totalBooths > 0 ? Math.round((occupiedBooths / totalBooths) * 100) : 0;
 
       // Booth by category
       const catMap: Record<string, number> = {};
-      booths.forEach((b: any) => { const c = b.category || "general"; catMap[c] = (catMap[c] || 0) + 1; });
+      booths.forEach((b) => { const c = b.category || "general"; catMap[c] = (catMap[c] || 0) + 1; });
       const boothCategories = Object.entries(catMap).map(([name, value]) => ({ name, value }));
 
       // Reviews
       const avgRating = reviews.length > 0 ? (reviews.reduce((s, r: any) => s + r.rating, 0) / reviews.length).toFixed(1) : "0";
-      const ratingDist = [1, 2, 3, 4, 5].map(star => ({ star: `${star}⭐`, count: reviews.filter((r: any) => r.rating === star).length }));
+      const ratingDist = [1, 2, 3, 4, 5].map(star => ({ star: `${star}⭐`, count: reviews.filter((r) => r.rating === star).length }));
 
       // Follower growth (daily, last 14 days)
       const followerDaily: Record<string, number> = {};
       for (let i = 13; i >= 0; i--) followerDaily[format(subDays(now, i), "MM/dd")] = 0;
-      followers.forEach((f: any) => {
+      followers.forEach((f) => {
         const d = format(new Date(f.created_at), "MM/dd");
         if (followerDaily[d] !== undefined) followerDaily[d]++;
       });
@@ -104,24 +104,24 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
 
   const { exportCSV: exportTickets } = useCSVExport({
     columns: [
-      { header: "ID", accessor: (r: any) => r.id },
-      { header: "Status", accessor: (r: any) => r.status },
-      { header: "Type", accessor: (r: any) => r.ticket_type || "standard" },
-      { header: "Amount", accessor: (r: any) => r.price_paid || 0 },
-      { header: "Checked In", accessor: (r: any) => r.checked_in_at ? "Yes" : "No" },
-      { header: "Created", accessor: (r: any) => r.created_at },
+      { header: "ID", accessor: (r) => r.id },
+      { header: "Status", accessor: (r) => r.status },
+      { header: "Type", accessor: (r) => r.ticket_type || "standard" },
+      { header: "Amount", accessor: (r) => r.price_paid || 0 },
+      { header: "Checked In", accessor: (r) => r.checked_in_at ? "Yes" : "No" },
+      { header: "Created", accessor: (r) => r.created_at },
     ],
     filename: `${exhibitionTitle}_tickets`,
   });
 
   const { exportCSV: exportBooths } = useCSVExport({
     columns: [
-      { header: "Status", accessor: (r: any) => r.status },
-      { header: "Category", accessor: (r: any) => r.category },
-      { header: "Hall", accessor: (r: any) => r.hall },
-      { header: "Price", accessor: (r: any) => r.price },
-      { header: "Size (sqm)", accessor: (r: any) => r.size_sqm },
-      { header: "Assigned", accessor: (r: any) => r.assigned_to ? "Yes" : "No" },
+      { header: "Status", accessor: (r) => r.status },
+      { header: "Category", accessor: (r) => r.category },
+      { header: "Hall", accessor: (r) => r.hall },
+      { header: "Price", accessor: (r) => r.price },
+      { header: "Size (sqm)", accessor: (r) => r.size_sqm },
+      { header: "Assigned", accessor: (r) => r.assigned_to ? "Yes" : "No" },
     ],
     filename: `${exhibitionTitle}_booths`,
   });
@@ -198,7 +198,7 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
             <ResponsiveContainer width="100%" height={180}>
               <PieChart>
                 <Pie data={data.ticketTypes} cx="50%" cy="50%" innerRadius={40} outerRadius={70} dataKey="value" label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`} labelLine={false}>
-                  {data.ticketTypes.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+                  {data.ticketTypes.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
                 <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8 }} />
               </PieChart>

@@ -487,7 +487,7 @@ async function getAdminUserIds(): Promise<string[]> {
     .from("user_roles")
     .select("user_id")
     .eq("role", "supervisor");
-  return [...new Set((data || []).map((r: any) => r.user_id as string))];
+  return [...new Set((data || []).map((r) => r.user_id as string))];
 }
 
 async function notifyAllAdmins(notification: Omit<SendNotificationParams, "userId">) {
@@ -733,7 +733,7 @@ export async function notifySuggestionSubmitted(params: {
 
   if (roles?.length) {
     await Promise.allSettled(
-      roles.map((r: any) =>
+      roles.map((r) =>
         sendNotification({
           userId: r.user_id,
           title: `New Item Suggestion: ${params.itemName}`,
@@ -784,7 +784,7 @@ export async function notifyItemDelivered(params: {
 
   if (roles?.length) {
     await Promise.allSettled(
-      roles.map((r: any) =>
+      roles.map((r) =>
         sendNotification({
           userId: r.user_id,
           title: `Item Delivered: ${params.itemName}`,

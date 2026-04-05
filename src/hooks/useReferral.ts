@@ -143,7 +143,7 @@ export function useSendInvitation() {
       const isEmail = variables.channel === "email" && variables.email;
       toast({ title: isEmail ? "Invitation email sent!" : "Invitation sent!" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });

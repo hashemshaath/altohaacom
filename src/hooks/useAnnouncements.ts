@@ -46,7 +46,7 @@ export function useAnnouncements() {
         .from("dismissed_announcements" as any) as any)
         .select("announcement_id")
         .eq("user_id", user!.id);
-      return (data || []).map((d: any) => d.announcement_id) as string[];
+      return (data || []).map((d) => d.announcement_id) as string[];
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 10,

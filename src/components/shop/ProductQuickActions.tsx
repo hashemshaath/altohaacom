@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 
 interface ProductQuickActionsProps {
   product: any;
-  onAddToCart: (product: any, quantity: number) => void;
+  onAddToCart: (product, quantity) => void;
 }
 
 export const ProductQuickActions = memo(function ProductQuickActions({ product, onAddToCart }: ProductQuickActionsProps) {

@@ -147,8 +147,8 @@ export default function MembershipGiftsHistory() {
     },
   });
 
-  const sentPending = useMemo(() => sentGifts.filter((g: any) => g.status === "pending").length, [sentGifts]);
-  const sentRedeemed = useMemo(() => sentGifts.filter((g: any) => g.status === "redeemed").length, [sentGifts]);
+  const sentPending = useMemo(() => sentGifts.filter((g) => g.status === "pending").length, [sentGifts]);
+  const sentRedeemed = useMemo(() => sentGifts.filter((g) => g.status === "redeemed").length, [sentGifts]);
 
   return (
     <div className="container max-w-3xl py-6 sm:py-10 space-y-6" dir={isAr ? "rtl" : "ltr"}>
@@ -223,7 +223,7 @@ export default function MembershipGiftsHistory() {
               </CardContent>
             </Card>
           ) : (
-            sentGifts.map((gift: any) => <GiftCard key={gift.id} gift={gift} type="sent" isAr={isAr} />)
+            sentGifts.map((gift) => <GiftCard key={gift.id} gift={gift} type="sent" isAr={isAr} />)
           )}
         </TabsContent>
 
@@ -238,7 +238,7 @@ export default function MembershipGiftsHistory() {
               </CardContent>
             </Card>
           ) : (
-            receivedGifts.map((gift: any) => <GiftCard key={gift.id} gift={gift} type="received" isAr={isAr} />)
+            receivedGifts.map((gift) => <GiftCard key={gift.id} gift={gift} type="received" isAr={isAr} />)
           )}
         </TabsContent>
       </Tabs>

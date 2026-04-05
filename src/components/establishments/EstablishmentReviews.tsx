@@ -83,7 +83,7 @@ const EstablishmentReviews = memo(function EstablishmentReviews({ establishmentI
       setRating(0); setTitle(""); setContent("");
       toast({ title: isAr ? "تم إضافة التقييم" : "Review submitted" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

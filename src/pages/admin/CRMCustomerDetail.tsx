@@ -196,7 +196,7 @@ export default function CRMCustomerDetail() {
       setWalletNote("");
       toast({ title: isAr ? "تم تحديث المحفظة" : "Wallet updated" });
     },
-    onError: (e: any) => toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
+    onError: (e: Error) => toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
   });
 
   // Add to group
@@ -276,7 +276,7 @@ export default function CRMCustomerDetail() {
             </DialogHeader>
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {allGroups
-                .filter(g => !userGroups.some((ug: any) => ug.group_id === g.id))
+                .filter(g => !userGroups.some((ug) => ug.group_id === g.id))
                 .map(g => (
                   <Button
                     key={g.id}
@@ -288,7 +288,7 @@ export default function CRMCustomerDetail() {
                     {isAr ? g.name_ar || g.name : g.name}
                   </Button>
                 ))}
-              {allGroups.filter(g => !userGroups.some((ug: any) => ug.group_id === g.id)).length === 0 && (
+              {allGroups.filter(g => !userGroups.some((ug) => ug.group_id === g.id)).length === 0 && (
                 <p className="text-sm text-muted-foreground text-center py-4">
                   {isAr ? "لا توجد مجموعات متاحة" : "No available groups"}
                 </p>
@@ -388,7 +388,7 @@ export default function CRMCustomerDetail() {
                 )}
               </div>
               <div className="flex flex-wrap gap-1 justify-center">
-                {roles.map((r: any) => (
+                {roles.map((r) => (
                   <Badge key={r.role} variant="outline" className="text-[10px] capitalize">{r.role}</Badge>
                 ))}
               </div>
@@ -424,7 +424,7 @@ export default function CRMCustomerDetail() {
                 {userGroups.length === 0 && (
                   <p className="text-xs text-muted-foreground">{isAr ? "لا توجد مجموعات" : "No groups"}</p>
                 )}
-                {userGroups.map((ug: any) => (
+                {userGroups.map((ug) => (
                   <Badge key={ug.id} variant="outline" className="text-[10px] gap-1">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: ug.customer_groups?.color || "#6366f1" }} />
                     {isAr ? ug.customer_groups?.name_ar || ug.customer_groups?.name : ug.customer_groups?.name}
@@ -440,7 +440,7 @@ export default function CRMCustomerDetail() {
                 <div>
                   <p className="text-xs font-medium text-muted-foreground mb-2">{isAr ? "حقول مخصصة" : "Custom Fields"}</p>
                   <div className="space-y-1">
-                    {customFields.map((f: any) => (
+                    {customFields.map((f) => (
                       <div key={f.id} className="flex justify-between text-xs">
                         <span className="text-muted-foreground">{f.field_name}</span>
                         <span className="font-medium">{f.field_value || "—"}</span>
@@ -501,7 +501,7 @@ export default function CRMCustomerDetail() {
                       <h4 className="text-sm font-medium mb-3">{isAr ? "سجل الطلبات" : "Order History"}</h4>
                       <ScrollArea className="h-48">
                         <div className="space-y-2">
-                          {orders.slice(0, 10).map((order: any) => (
+                          {orders.slice(0, 10).map((order) => (
                             <div key={order.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                               <div>
                                 <p className="font-medium">{order.order_number}</p>
@@ -538,7 +538,7 @@ export default function CRMCustomerDetail() {
                   ) : (
                     <ScrollArea className="h-64">
                       <div className="space-y-2">
-                        {walletTx.map((tx: any) => (
+                        {walletTx.map((tx) => (
                           <div key={tx.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                             <div>
                               <p className="font-medium">{tx.description}</p>
@@ -572,7 +572,7 @@ export default function CRMCustomerDetail() {
                   ) : (
                     <ScrollArea className="h-64">
                       <div className="space-y-2">
-                        {loyaltyTx.map((tx: any) => (
+                        {loyaltyTx.map((tx) => (
                           <div key={tx.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                             <div>
                               <p className="font-medium">{tx.description}</p>
@@ -601,7 +601,7 @@ export default function CRMCustomerDetail() {
                     <EmptyState message={isAr ? "لا توجد عناصر في قائمة الأمنيات" : "No items in the wishlist"} />
                   ) : (
                     <div className="grid gap-3 sm:grid-cols-2">
-                      {wishlist.map((item: any) => (
+                      {wishlist.map((item) => (
                         <div key={item.id} className="flex items-center gap-3 rounded-xl border p-3">
                           {item.item_image_url ? (
                             <img src={item.item_image_url} alt="" className="h-12 w-12 rounded-xl object-cover" />
@@ -636,7 +636,7 @@ export default function CRMCustomerDetail() {
                     <EmptyState message={isAr ? "لم يسجل في أي مسابقة" : "Not registered in any competition"} />
                   ) : (
                     <div className="space-y-2">
-                      {registrations.map((reg: any) => (
+                      {registrations.map((reg) => (
                         <div key={reg.id} className="flex items-center justify-between rounded-xl border p-3 text-sm">
                           <div>
                             <p className="font-medium">

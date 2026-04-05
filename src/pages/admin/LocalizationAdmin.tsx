@@ -134,7 +134,7 @@ export default function LocalizationAdmin() {
       setNewKey({ key: "", namespace: "common", en: "", ar: "", context: "" });
       toast({ title: isAr ? "تمت الإضافة" : "Added", description: isAr ? "تمت إضافة المفتاح بنجاح" : "Translation key added successfully" });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
@@ -230,7 +230,7 @@ export default function LocalizationAdmin() {
       queryClient.invalidateQueries({ queryKey: ["translation-keys"] });
       toast({ title: isAr ? "تمت الترجمة" : "Translated", description: isAr ? "تمت الترجمة التلقائية بنجاح" : "Auto-translated successfully" });
     },
-    onError: (e: any) => {
+    onError: (e: Error) => {
       toast({ title: isAr ? "خطأ في الترجمة" : "Translation Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });

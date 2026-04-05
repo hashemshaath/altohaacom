@@ -33,13 +33,13 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
         .limit(8);
 
       if (ranked && ranked.length > 0) {
-        const userIds = ranked.map((r: any) => r.user_id);
+        const userIds = ranked.map((r) => r.user_id);
         const { data: profiles } = await supabase
           .from("profiles")
           .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality, show_nationality")
           .in("user_id", userIds);
-        const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
-        return ranked.map((r: any) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
+        const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
+        return ranked.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
       }
 
       const { data: profiles } = await supabase
@@ -48,7 +48,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
         .eq("is_verified", true)
         .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(8);
-      return (profiles || []).map((p: any) => ({
+      return (profiles || []).map((p) => ({
         ...p,
         total_points: p.loyalty_points || 0,
         gold_medals: 0, silver_medals: 0, bronze_medals: 0,
@@ -61,7 +61,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
   // Extract unique specializations for filter
   const specializations = useMemo(() => {
     const specs = new Set<string>();
-    chefs.forEach((c: any) => {
+    chefs.forEach((c) => {
       const s = isAr && c.specialization_ar ? c.specialization_ar : c.specialization;
       if (s) specs.add(s);
     });
@@ -70,7 +70,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
 
   const filteredChefs = useMemo(() => {
     if (!specFilter) return chefs;
-    return chefs.filter((c: any) => {
+    return chefs.filter((c) => {
       const s = isAr && c.specialization_ar ? c.specialization_ar : c.specialization;
       return s === specFilter;
     });
@@ -106,7 +106,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
                   key={s}
                   label={s}
                   active={specFilter === s}
-                  count={chefs.filter((c: any) => (isAr && c.specialization_ar ? c.specialization_ar : c.specialization) === s).length}
+                  count={chefs.filter((c) => (isAr && c.specialization_ar ? c.specialization_ar : c.specialization) === s).length}
                   onClick={() => setSpecFilter(specFilter === s ? null : s)}
                 />
               ))}
@@ -120,13 +120,13 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
             dir={isAr ? "rtl" : "ltr"}
             style={{ WebkitOverflowScrolling: "touch" }}
           >
-            {filteredChefs.map((chef: any, idx: number) => {
+            {filteredChefs.map((chef, idx) => {
               const name = getDisplayName(chef, isAr);
               const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
               const initials = name ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
               const hasMedals = chef.gold_medals > 0 || chef.silver_medals > 0 || chef.bronze_medals > 0;
               const nationalityEmoji = chef.show_nationality !== false && chef.nationality ? countryFlag(chef.nationality) : "";
-              const countryObj = allCountries.find((c: any) => c.code === chef.country_code);
+              const countryObj = allCountries.find((c) => c.code === chef.country_code);
               const countryName = countryObj ? (isAr ? countryObj.name_ar || countryObj.name : countryObj.name) : chef.country_code;
               const locationParts = [localizeCity(chef.city || "", isAr), countryName].filter(Boolean).join(", ");
               const isTop3 = idx < 3 && chef.rank;

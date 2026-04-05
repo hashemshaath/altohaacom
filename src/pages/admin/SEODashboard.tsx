@@ -321,16 +321,16 @@ export default function SEODashboard() {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
-      const urls = indexingStatus.slice(0, 20).map((s: any) => s.url);
+      const urls = indexingStatus.slice(0, 20).map((s) => s.url);
       const { data, error } = await supabase.functions.invoke("gsc-sync", { body: { action: "inspect_urls", siteUrl: GSC_SITE_URL, urls } });
       if (error) throw error;
-      toast.success(isAr ? `تم فحص ${data.inspections?.filter((i: any) => !i.error).length || 0} صفحة` : `Inspected ${data.inspections?.filter((i: any) => !i.error).length || 0} URLs`);
+      toast.success(isAr ? `تم فحص ${data.inspections?.filter((i) => !i.error).length || 0} صفحة` : `Inspected ${data.inspections?.filter((i) => !i.error).length || 0} URLs`);
       refetchIndexing();
     } catch (e: unknown) { toast.error(e.message || "Inspection failed"); } finally { setGscSyncing(null); }
   };
 
   const handleGSCSubmitUrls = async (urls?: string[]) => {
-    const targetUrls = urls || indexingStatus?.filter((s: any) => s.status !== "indexed").map((s: any) => s.url) || [];
+    const targetUrls = urls || indexingStatus?.filter((s) => s.status !== "indexed").map((s) => s.url) || [];
     if (!targetUrls.length) { toast.info(isAr ? "لا صفحات لإرسالها" : "No pages to submit"); return; }
     setGscSyncing("submit");
     try {
@@ -338,34 +338,34 @@ export default function SEODashboard() {
       if (!session) throw new Error("Not authenticated");
       const { data, error } = await supabase.functions.invoke("gsc-sync", { body: { action: "submit_indexing", urls: targetUrls.slice(0, 10) } });
       if (error) throw error;
-      toast.success(isAr ? `تم إرسال ${data.submissions?.filter((s: any) => s.success).length || 0} صفحة` : `Submitted ${data.submissions?.filter((s: any) => s.success).length || 0} URLs`);
+      toast.success(isAr ? `تم إرسال ${data.submissions?.filter((s) => s.success).length || 0} صفحة` : `Submitted ${data.submissions?.filter((s) => s.success).length || 0} URLs`);
       refetchIndexing();
     } catch (e: unknown) { toast.error(e.message || "Submission failed"); } finally { setGscSyncing(null); }
   };
 
   // ── Computed Metrics ──
   const totalViews = pageViews?.length || 0;
-  const uniqueSessions = new Set(pageViews?.map((v: any) => v.session_id) || []).size;
-  const bounceCount = pageViews?.filter((v: any) => v.is_bounce)?.length || 0;
+  const uniqueSessions = new Set(pageViews?.map((v) => v.session_id) || []).size;
+  const bounceCount = pageViews?.filter((v) => v.is_bounce)?.length || 0;
   const bounceRate = totalViews > 0 ? Math.round((bounceCount / totalViews) * 100) : 0;
-  const avgDuration = totalViews > 0 ? Math.round((pageViews?.reduce((s: number, v: any) => s + (v.duration_seconds || 0), 0) || 0) / totalViews) : 0;
+  const avgDuration = totalViews > 0 ? Math.round((pageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / totalViews) : 0;
 
   const devices = { mobile: 0, tablet: 0, desktop: 0 };
-  pageViews?.forEach((v: any) => {
+  pageViews?.forEach((v) => {
     if (v.device_type === "mobile") devices.mobile++;
     else if (v.device_type === "tablet") devices.tablet++;
     else devices.desktop++;
   });
 
   const pageCounts: Record<string, number> = {};
-  pageViews?.forEach((v: any) => { pageCounts[v.path] = (pageCounts[v.path] || 0) + 1; });
+  pageViews?.forEach((v) => { pageCounts[v.path] = (pageCounts[v.path] || 0) + 1; });
   const topPages = Object.entries(pageCounts).sort(([, a], [, b]) => b - a).slice(0, 15);
 
   // Vitals aggregation
   const vitalsAgg = useMemo(() => {
     if (!vitalsData?.length) return null;
     const metrics = { lcp: [] as number[], inp: [] as number[], cls: [] as number[], fcp: [] as number[], ttfb: [] as number[] };
-    vitalsData.forEach((v: any) => {
+    vitalsData.forEach((v) => {
       if (v.lcp != null) metrics.lcp.push(Number(v.lcp));
       if (v.inp != null) metrics.inp.push(Number(v.inp));
       if (v.cls != null) metrics.cls.push(Number(v.cls));
@@ -376,8 +376,8 @@ export default function SEODashboard() {
     return {
       lcp: p75(metrics.lcp), inp: p75(metrics.inp), cls: p75(metrics.cls), fcp: p75(metrics.fcp), ttfb: p75(metrics.ttfb),
       sampleCount: vitalsData.length,
-      mobileCount: vitalsData.filter((v: any) => v.device_type === "mobile").length,
-      desktopCount: vitalsData.filter((v: any) => v.device_type === "desktop").length,
+      mobileCount: vitalsData.filter((v) => v.device_type === "mobile").length,
+      desktopCount: vitalsData.filter((v) => v.device_type === "desktop").length,
     };
   }, [vitalsData]);
 
@@ -385,7 +385,7 @@ export default function SEODashboard() {
   const pageVitals = useMemo(() => {
     if (!vitalsData?.length) return [];
     const byPath: Record<string, { lcp: number[]; cls: number[]; inp: number[] }> = {};
-    vitalsData.forEach((v: any) => {
+    vitalsData.forEach((v) => {
       if (!byPath[v.path]) byPath[v.path] = { lcp: [], cls: [], inp: [] };
       if (v.lcp != null) byPath[v.path].lcp.push(Number(v.lcp));
       if (v.cls != null) byPath[v.path].cls.push(Number(v.cls));
@@ -401,7 +401,7 @@ export default function SEODashboard() {
   const trendData = useMemo(() => {
     if (!vitalsData?.length) return [];
     const byDay: Record<string, { lcp: number[]; inp: number[]; cls: number[]; fcp: number[]; ttfb: number[] }> = {};
-    vitalsData.forEach((v: any) => {
+    vitalsData.forEach((v) => {
       const day = format(new Date(v.created_at), "MM/dd");
       if (!byDay[day]) byDay[day] = { lcp: [], inp: [], cls: [], fcp: [], ttfb: [] };
       if (v.lcp != null) byDay[day].lcp.push(Number(v.lcp));
@@ -418,7 +418,7 @@ export default function SEODashboard() {
   const connectionDistribution = useMemo(() => {
     if (!vitalsData?.length) return [];
     const counts: Record<string, number> = {};
-    vitalsData.forEach((v: any) => { const ct = v.connection_type || "unknown"; counts[ct] = (counts[ct] || 0) + 1; });
+    vitalsData.forEach((v) => { const ct = v.connection_type || "unknown"; counts[ct] = (counts[ct] || 0) + 1; });
     return Object.entries(counts).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value);
   }, [vitalsData]);
 
@@ -426,7 +426,7 @@ export default function SEODashboard() {
   const deviceVitalsComparison = useMemo(() => {
     if (!vitalsData?.length) return [];
     const byDevice: Record<string, { lcp: number[]; fcp: number[]; ttfb: number[] }> = {};
-    vitalsData.forEach((v: any) => {
+    vitalsData.forEach((v) => {
       const dt = v.device_type || "unknown";
       if (!byDevice[dt]) byDevice[dt] = { lcp: [], fcp: [], ttfb: [] };
       if (v.lcp != null) byDevice[dt].lcp.push(Number(v.lcp));
@@ -446,9 +446,9 @@ export default function SEODashboard() {
       const { data, error } = await supabase.functions.invoke("seo-sitemap-ping", { headers: { Authorization: `Bearer ${session?.access_token}` } });
       if (error) throw error;
       const results = data?.results || [];
-      const sitemapOk = results.some((r: any) => r.engine === "Sitemap" && r.status === "success");
-      const allOk = results.every((r: any) => ["success", "info"].includes(r.status));
-      const desc = results.map((r: any) => {
+      const sitemapOk = results.some((r) => r.engine === "Sitemap" && r.status === "success");
+      const allOk = results.every((r) => ["success", "info"].includes(r.status));
+      const desc = results.map((r) => {
         const icon = r.status === "success" ? "✓" : r.status === "info" ? "ℹ" : "✗";
         const msg = r.message ? ` (${r.message})` : "";
         return `${r.engine}: ${icon}${msg}`;
@@ -499,7 +499,7 @@ export default function SEODashboard() {
             totalViews, bounceRate, avgDuration, topPages,
             vitalsPass: vitalsAgg ? (["lcp", "inp", "cls", "fcp", "ttfb"] as const).filter(m => vitalsAgg[m] != null && getVitalStatus(m, vitalsAgg[m]!) === "good").length : 0,
             vitalsTotal: 5,
-            indexedPages: indexingStatus?.filter((s: any) => s.status === "indexed").length || 0,
+            indexedPages: indexingStatus?.filter((s) => s.status === "indexed").length || 0,
             totalPages: indexingStatus?.length || PUBLIC_ROUTES.length,
             issueCount: 0, keywords: trackedKeywords || [],
           }} />
@@ -542,11 +542,11 @@ export default function SEODashboard() {
 
         {/* SEO Score */}
         <SEOScoreGauge
-          score={(() => { const a = (trackedKeywords || []) as any[]; return a.length > 0 ? Math.min(100, Math.round(65 + (vitalsAgg ? 10 : 0) + (indexingStatus?.filter((s: any) => s.status === "indexed").length ? 10 : 0))) : null; })()}
+          score={(() => { const a = (trackedKeywords || []) as any[]; return a.length > 0 ? Math.min(100, Math.round(65 + (vitalsAgg ? 10 : 0) + (indexingStatus?.filter((s) => s.status === "indexed").length ? 10 : 0))) : null; })()}
           previousScore={null}
           vitalsPass={vitalsAgg ? (["lcp", "inp", "cls", "fcp", "ttfb"] as const).filter(m => vitalsAgg[m] != null && getVitalStatus(m, vitalsAgg[m]!) === "good").length : 0}
           vitalsTotal={5}
-          indexedPages={indexingStatus?.filter((s: any) => s.status === "indexed").length || 0}
+          indexedPages={indexingStatus?.filter((s) => s.status === "indexed").length || 0}
           totalPages={indexingStatus?.length || PUBLIC_ROUTES.length}
           issueCount={0}
           isAr={isAr}
@@ -886,7 +886,7 @@ export default function SEODashboard() {
     const crawlerCounts: Record<string, number> = {};
     const typeCounts: Record<string, number> = {};
     const pagePaths: Record<string, number> = {};
-    crawlerVisits?.forEach((v: any) => {
+    crawlerVisits?.forEach((v) => {
       crawlerCounts[v.crawler_name] = (crawlerCounts[v.crawler_name] || 0) + 1;
       typeCounts[v.crawler_type || "unknown"] = (typeCounts[v.crawler_type || "unknown"] || 0) + 1;
       pagePaths[v.path] = (pagePaths[v.path] || 0) + 1;
@@ -931,7 +931,7 @@ export default function SEODashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead><tr className="border-b border-border/40 text-xs text-muted-foreground"><th className="text-start py-2 pe-3 font-medium">{isAr ? "الزاحف" : "Crawler"}</th><th className="text-start py-2 px-3 font-medium">{isAr ? "النوع" : "Type"}</th><th className="text-start py-2 px-3 font-medium">{isAr ? "الصفحة" : "Page"}</th><th className="text-end py-2 ps-3 font-medium">{isAr ? "الوقت" : "Time"}</th></tr></thead>
-                  <tbody>{crawlerVisits.slice(0, 20).map((v: any, i: number) => (
+                  <tbody>{crawlerVisits.slice(0, 20).map((v, i) => (
                     <tr key={i} className="border-b border-border/20 last:border-0"><td className="py-2 pe-3 font-medium">{v.crawler_name}</td><td className="py-2 px-3"><Badge variant="outline" className="text-[9px]">{v.crawler_type}</Badge></td><td className="py-2 px-3 font-mono text-xs truncate max-w-[200px]">{v.path}</td><td className="py-2 ps-3 text-end text-xs text-muted-foreground">{format(new Date(v.created_at), "dd MMM HH:mm")}</td></tr>
                   ))}</tbody>
                 </table>
@@ -963,7 +963,7 @@ export default function SEODashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead><tr className="border-b border-border/40 text-xs text-muted-foreground"><th className="text-start py-2 pe-3 font-medium">{isAr ? "الكلمة" : "Keyword"}</th><th className="text-start py-2 px-2 font-medium">{isAr ? "الصفحة" : "Target"}</th><th className="text-end py-2 px-2 font-medium">{isAr ? "الموقع" : "Position"}</th><th className="text-end py-2 px-2 font-medium">{isAr ? "التغير" : "Change"}</th><th className="text-end py-2 px-2 font-medium">{isAr ? "الأفضل" : "Best"}</th><th className="text-end py-2 ps-2 font-medium">{isAr ? "آخر فحص" : "Last Check"}</th><th className="text-end py-2 ps-2 font-medium"></th></tr></thead>
-                  <tbody>{trackedKeywords.map((kw: any) => {
+                  <tbody>{trackedKeywords.map((kw) => {
                     const change = kw.previous_position && kw.current_position ? kw.previous_position - kw.current_position : null;
                     return (
                       <tr key={kw.id} className="border-b border-border/20 last:border-0">
@@ -1001,10 +1001,10 @@ export default function SEODashboard() {
         {indexingStatus && indexingStatus.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
-              { label: isAr ? "مفهرسة" : "Indexed", count: indexingStatus.filter((s: any) => s.status === "indexed").length, color: "text-chart-2" },
-              { label: isAr ? "مرسلة" : "Submitted", count: indexingStatus.filter((s: any) => s.status === "submitted").length, color: "text-chart-1" },
-              { label: isAr ? "غير معروفة" : "Unknown", count: indexingStatus.filter((s: any) => s.status === "unknown").length, color: "text-muted-foreground" },
-              { label: isAr ? "خطأ" : "Error", count: indexingStatus.filter((s: any) => s.status === "error").length, color: "text-destructive" },
+              { label: isAr ? "مفهرسة" : "Indexed", count: indexingStatus.filter((s) => s.status === "indexed").length, color: "text-chart-2" },
+              { label: isAr ? "مرسلة" : "Submitted", count: indexingStatus.filter((s) => s.status === "submitted").length, color: "text-chart-1" },
+              { label: isAr ? "غير معروفة" : "Unknown", count: indexingStatus.filter((s) => s.status === "unknown").length, color: "text-muted-foreground" },
+              { label: isAr ? "خطأ" : "Error", count: indexingStatus.filter((s) => s.status === "error").length, color: "text-destructive" },
             ].map(s => <Card key={s.label}><CardContent className="p-3 text-center"><p className={`text-xl font-bold ${s.color}`}><AnimatedCounter value={s.count} /></p><p className="text-[10px] text-muted-foreground">{s.label}</p></CardContent></Card>)}
           </div>
         )}
@@ -1016,7 +1016,7 @@ export default function SEODashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead><tr className="border-b border-border/40 text-xs text-muted-foreground"><th className="text-start py-2 pe-3 font-medium">{isAr ? "الصفحة" : "Page"}</th><th className="text-start py-2 px-2 font-medium">{isAr ? "الحالة" : "Status"}</th><th className="text-start py-2 px-2 font-medium">{isAr ? "مرسلة إلى" : "Submitted To"}</th><th className="text-end py-2 ps-2 font-medium">{isAr ? "آخر تحديث" : "Updated"}</th></tr></thead>
-                  <tbody>{indexingStatus.map((page: any) => (
+                  <tbody>{indexingStatus.map((page) => (
                     <tr key={page.id} className="border-b border-border/20 last:border-0">
                       <td className="py-2 pe-3 font-mono text-xs truncate max-w-[200px]">{page.path}</td>
                       <td className="py-2 px-2"><Badge variant={page.status === "indexed" ? "default" : page.status === "error" ? "destructive" : "secondary"} className="text-[9px]">{page.status === "indexed" ? "✓ Indexed" : page.status === "submitted" ? "⏳ Submitted" : page.status === "error" ? "✗ Error" : "? Unknown"}</Badge></td>
@@ -1123,7 +1123,7 @@ export default function SEODashboard() {
         <CardHeader className="pb-3"><CardTitle className="text-sm flex items-center gap-2"><Globe className="h-4 w-4 text-primary" />{isAr ? "سجل إشعارات محركات البحث" : "Search Engine Ping Log"}</CardTitle></CardHeader>
         <CardContent>
           {!crawlLog?.length ? <div className="text-center py-8 text-muted-foreground text-sm">{isAr ? "لم يتم إرسال إشعارات بعد" : "No pings sent yet"}</div> : (
-            <div className="space-y-2">{crawlLog.map((log: any) => (
+            <div className="space-y-2">{crawlLog.map((log) => (
               <div key={log.id} className="flex items-center gap-3 py-2 border-b border-border/20 last:border-0">
                 {log.status === "success" ? <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" /> : <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />}
                 <div className="flex-1 min-w-0"><p className="text-sm font-medium capitalize">{log.search_engine} — {log.action?.replace(/_/g, " ")}</p><p className="text-[10px] text-muted-foreground">{format(new Date(log.created_at), "dd MMM yyyy HH:mm")}{log.response_code && ` · HTTP ${log.response_code}`}</p></div>

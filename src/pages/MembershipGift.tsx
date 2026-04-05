@@ -96,7 +96,7 @@ export default function MembershipGift() {
       setStep("success");
       toast.success(isAr ? "تم إنشاء الهدية بنجاح! 🎁" : "Gift created successfully! 🎁");
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message);
     },
   });

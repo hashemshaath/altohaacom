@@ -31,7 +31,7 @@ export const PublicProfileAbout = memo(function PublicProfileAbout({ profile, bi
               <p className="text-sm font-medium mb-2">{specialization}</p>
               {userSpecialties.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
-                  {userSpecialties.map((us: any) => (
+                  {userSpecialties.map((us) => (
                     <Badge key={us.id} variant="secondary" className="text-[10px] h-5 rounded-xl">
                       {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
                     </Badge>

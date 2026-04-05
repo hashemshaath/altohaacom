@@ -110,14 +110,14 @@ export default function JudgesAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الرقم" : "Account #", accessor: (r: any) => r.account_number || "" },
-      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => r.full_name || "" },
-      { header: isAr ? "المستوى" : "Level", accessor: (r: any) => r.judgeProfile?.judge_level || "" },
-      { header: isAr ? "التخصص" : "Specialty", accessor: (r: any) => r.judgeProfile?.judge_category || "" },
-      { header: isAr ? "الجنسية" : "Nationality", accessor: (r: any) => r.judgeProfile?.nationality || r.location || "" },
-      { header: isAr ? "المستندات" : "Docs", accessor: (r: any) => r.docCount },
-      { header: isAr ? "العضويات" : "Memberships", accessor: (r: any) => r.membershipCount },
-      { header: isAr ? "المشاركات" : "Participations", accessor: (r: any) => r.visitCount },
+      { header: isAr ? "الرقم" : "Account #", accessor: (r) => r.account_number || "" },
+      { header: isAr ? "الاسم" : "Name", accessor: (r) => r.full_name || "" },
+      { header: isAr ? "المستوى" : "Level", accessor: (r) => r.judgeProfile?.judge_level || "" },
+      { header: isAr ? "التخصص" : "Specialty", accessor: (r) => r.judgeProfile?.judge_category || "" },
+      { header: isAr ? "الجنسية" : "Nationality", accessor: (r) => r.judgeProfile?.nationality || r.location || "" },
+      { header: isAr ? "المستندات" : "Docs", accessor: (r) => r.docCount },
+      { header: isAr ? "العضويات" : "Memberships", accessor: (r) => r.membershipCount },
+      { header: isAr ? "المشاركات" : "Participations", accessor: (r) => r.visitCount },
     ],
     filename: "judges",
   });

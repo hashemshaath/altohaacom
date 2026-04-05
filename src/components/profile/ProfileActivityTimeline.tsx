@@ -38,7 +38,7 @@ export const ProfileActivityTimeline = memo(function ProfileActivityTimeline({ u
         .order("registered_at", { ascending: false })
         .limit(5);
 
-      (regs || []).forEach((r: any) => {
+      (regs || []).forEach((r) => {
         const title = isAr && r.competitions?.title_ar ? r.competitions.title_ar : r.competitions?.title;
         timeline.push({
           id: `reg-${r.id}`,
@@ -78,7 +78,7 @@ export const ProfileActivityTimeline = memo(function ProfileActivityTimeline({ u
         .order("enrolled_at", { ascending: false })
         .limit(3);
 
-      (enrollments || []).forEach((e: any) => {
+      (enrollments || []).forEach((e) => {
         const title = isAr && e.masterclasses?.title_ar ? e.masterclasses.title_ar : e.masterclasses?.title;
         timeline.push({
           id: `enroll-${e.id}`,

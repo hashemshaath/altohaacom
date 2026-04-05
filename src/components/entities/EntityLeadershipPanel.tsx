@@ -87,7 +87,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
       toast({ title: isAr ? "تمت إضافة المنصب" : "Position added" });
       resetForm();
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

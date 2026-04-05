@@ -146,7 +146,7 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
         <TabsContent value="career" className="mt-4 space-y-3">
           {!career.length ? (
             <Card className="border-dashed"><CardContent className="py-8 text-center"><p className="text-sm text-muted-foreground">{isAr ? "لا توجد سجلات مهنية" : "No career records"}</p></CardContent></Card>
-          ) : career.map((c: any) => (
+          ) : career.map((c) => (
             <Card key={c.id}>
               <CardContent className="p-4 flex gap-4">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
@@ -170,7 +170,7 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
             <Card className="border-dashed"><CardContent className="py-8 text-center"><p className="text-sm text-muted-foreground">{isAr ? "لا توجد وصفات" : "No recipes"}</p></CardContent></Card>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {recipes.map((r: any) => (
+              {recipes.map((r) => (
                 <Card key={r.id} className="overflow-hidden group cursor-pointer">
                   <div className="aspect-[4/3] bg-muted">
                     {r.image_url ? (
@@ -195,7 +195,7 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
         <TabsContent value="awards" className="mt-4 space-y-3">
           {!competitions.length ? (
             <Card className="border-dashed"><CardContent className="py-8 text-center"><p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات" : "No competitions"}</p></CardContent></Card>
-          ) : competitions.map((c: any) => (
+          ) : competitions.map((c) => (
             <Card key={c.id}>
               <CardContent className="p-4 flex items-center gap-4">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-100">

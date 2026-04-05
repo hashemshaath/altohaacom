@@ -108,7 +108,7 @@ export default function MarketingAutomationAdmin() {
         description: isAr ? `تمت معالجة ${count} مستخدم` : `Processed ${count} users`,
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
     },
   });
@@ -141,7 +141,7 @@ export default function MarketingAutomationAdmin() {
         description: JSON.stringify(data?.results || {}),
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
     },
   });
@@ -323,7 +323,7 @@ export default function MarketingAutomationAdmin() {
                       {isAr ? "لا توجد محفزات مكونة" : "No triggers configured"}
                     </p>
                   ) : (
-                    triggers.map((t: any) => (
+                    triggers.map((t) => (
                       <div key={t.id} className="flex items-center justify-between rounded-xl border border-border/40 p-3 transition-colors hover:bg-accent/30">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
@@ -367,7 +367,7 @@ export default function MarketingAutomationAdmin() {
                       {isAr ? "لا يوجد سجل بعد" : "No history yet"}
                     </p>
                   ) : (
-                    runs.map((run: any) => (
+                    runs.map((run) => (
                       <div key={run.id} className="flex items-center justify-between rounded-xl border p-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">

@@ -179,12 +179,12 @@ export default function ExhibitionsAdmin() {
 
   const { exportCSV: exportExhibitions } = useCSVExport({
     columns: [
-      { header: isAr ? "الاسم" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
-      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.type },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.start_date ? format(new Date(r.start_date), "yyyy-MM-dd") : "" },
-      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
-      { header: isAr ? "المنظم" : "Organizer", accessor: (r: any) => r.organizer_name || "" },
+      { header: isAr ? "الاسم" : "Title", accessor: (r) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "النوع" : "Type", accessor: (r) => r.type },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r) => r.start_date ? format(new Date(r.start_date), "yyyy-MM-dd") : "" },
+      { header: isAr ? "المدينة" : "City", accessor: (r) => r.city || "" },
+      { header: isAr ? "المنظم" : "Organizer", accessor: (r) => r.organizer_name || "" },
     ],
     filename: "exhibitions",
   });
@@ -256,7 +256,7 @@ export default function ExhibitionsAdmin() {
         resetForm();
       }
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -273,7 +273,7 @@ export default function ExhibitionsAdmin() {
   });
 
   const duplicateMutation = useMutation({
-    mutationFn: async (ex: any) => {
+    mutationFn: async (ex) => {
       const { id, created_at, updated_at, view_count, slug, ...rest } = ex;
       const newSlug = (slug || "") + "-copy-" + Date.now().toString(36);
       const payload = {
@@ -292,7 +292,7 @@ export default function ExhibitionsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
       toast({ title: t("Exhibition duplicated", "تم تكرار الفعالية") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -308,7 +308,7 @@ export default function ExhibitionsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
       toast({ title: t("Exhibition approved and moved to draft", "تمت الموافقة ونقلها إلى مسودة") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -324,7 +324,7 @@ export default function ExhibitionsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
       toast({ title: t("Exhibition rejected", "تم رفض الفعالية") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
@@ -344,7 +344,7 @@ export default function ExhibitionsAdmin() {
     setShowForm(false);
   };
 
-  const startEdit = (ex: any) => {
+  const startEdit = (ex) => {
     setForm({
       title: ex.title, title_ar: ex.title_ar, slug: ex.slug,
       description: ex.description, description_ar: ex.description_ar,

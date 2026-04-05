@@ -73,7 +73,7 @@ const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAd
       toast({ title: editingId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تم الإضافة" : "Added") });
       resetForm();
     },
-    onError: (err: any) => toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
+    onError: (err: Error) => toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" }),
   });
 
   const deleteMutation = useMutation({
@@ -89,7 +89,7 @@ const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAd
 
   const resetForm = () => { setForm(emptyForm); setEditingId(null); setShowForm(false); };
 
-  const startEdit = (m: any) => {
+  const startEdit = (m) => {
     setForm({
       organization_name: m.organization_name || "",
       organization_name_ar: m.organization_name_ar || "",

@@ -156,7 +156,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
   };
 
   // Load existing template for editing
-  const startEdit = (tpl: any) => {
+  const startEdit = (tpl) => {
     setEditingId(tpl.id);
     setForm({
       name: tpl.name || "",
@@ -165,7 +165,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
       description_ar: tpl.description_ar || "",
       category: tpl.category || "general",
       is_public: tpl.is_public || false,
-      items: (tpl.items || []).map((it: any) => ({
+      items: (tpl.items || []).map((it) => ({
         custom_name: it.custom_name || "",
         custom_name_ar: it.custom_name_ar || "",
         quantity: it.quantity || 1,
@@ -185,7 +185,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
   };
 
   // Add supermarket item to form items
-  const addSupermarketItem = (item: any) => {
+  const addSupermarketItem = (item) => {
     const exists = form.items.some(fi => fi.custom_name === item.name);
     if (exists) {
       toast({ title: isAr ? "العنصر موجود بالفعل" : "Item already added" });
@@ -251,7 +251,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
 
   // Apply template to competition
   const applyTemplate = useMutation({
-    mutationFn: async (template: any) => {
+    mutationFn: async (template) => {
       const { data: newList, error: listError } = await supabase
         .from("requirement_lists")
         .insert({
@@ -266,7 +266,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
         .single();
       if (listError) throw listError;
 
-      const items = (template.items || []).map((item: any, idx: number) => ({
+      const items = (template.items || []).map((item, idx) => ({
         list_id: newList.id,
         custom_name: item.custom_name,
         custom_name_ar: item.custom_name_ar || null,
@@ -639,7 +639,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
         </Card>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
-          {filteredTemplates.map((tpl: any) => {
+          {filteredTemplates.map((tpl) => {
             const catDef = ORDER_CATEGORIES.find(c => c.value === tpl.category);
             const itemCount = (tpl.items || []).length;
             const isOwn = tpl.created_by === user?.id;
@@ -680,7 +680,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
                   {/* Preview items */}
                   {itemCount > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2">
-                      {(tpl.items || []).slice(0, 4).map((it: any, i: number) => (
+                      {(tpl.items || []).slice(0, 4).map((it, i) => (
                         <Badge key={i} variant="secondary" className="text-[9px] h-4">
                           {isAr ? (it.custom_name_ar || it.custom_name) : it.custom_name}
                         </Badge>

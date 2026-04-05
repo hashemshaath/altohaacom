@@ -68,7 +68,7 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
       <CardContent className="p-4">
         {enrollments && enrollments.length > 0 ? (
           <div className="space-y-3">
-            {enrollments.map((enrollment: any) => {
+            {enrollments.map((enrollment) => {
               const mc = enrollment.masterclasses as any;
               if (!mc) return null;
               const title = isAr && mc.title_ar ? mc.title_ar : mc.title;

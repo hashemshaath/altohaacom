@@ -101,7 +101,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
       setSelectedPackage("");
       toast({ title: isAr ? "تمت إضافة الراعي" : "Sponsor added" });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
@@ -157,10 +157,10 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
     },
   });
 
-  const existingSponsorIds = sponsors?.map((s: any) => s.company_id) || [];
+  const existingSponsorIds = sponsors?.map((s) => s.company_id) || [];
   const availableCompanies = companies?.filter(c => !existingSponsorIds.includes(c.id)) || [];
-  const activeSponsors = sponsors?.filter((s: any) => s.status === "active") || [];
-  const pendingSponsors = sponsors?.filter((s: any) => s.status === "pending") || [];
+  const activeSponsors = sponsors?.filter((s) => s.status === "active") || [];
+  const pendingSponsors = sponsors?.filter((s) => s.status === "pending") || [];
 
   // Marquee for public display
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -193,7 +193,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
               {isAr ? "طلبات رعاية قيد المراجعة" : "Pending Sponsorship Applications"}
               <Badge variant="secondary" className="text-[10px]">{pendingSponsors.length}</Badge>
             </p>
-            {pendingSponsors.map((sponsor: any) => {
+            {pendingSponsors.map((sponsor) => {
               const companyName = isAr && sponsor.companies?.name_ar ? sponsor.companies.name_ar : sponsor.companies?.name;
               const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
               const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
@@ -277,7 +277,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
         {activeSponsors.length > 0 ? (
           isOrganizer ? (
             <div className="grid gap-3 sm:grid-cols-2">
-              {activeSponsors.map((sponsor: any) => {
+              {activeSponsors.map((sponsor) => {
                 const tier = (sponsor.tier || "bronze") as keyof typeof TIER_CONFIG;
                 const config = TIER_CONFIG[tier] || TIER_CONFIG.bronze;
                 const Icon = config.icon;
@@ -311,7 +311,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
             /* Public tiered display */
             <div className="space-y-6">
               {(["platinum", "gold", "silver", "bronze", "custom"] as const).map(tierKey => {
-                const tierSponsors = activeSponsors.filter((s: any) => (s.tier || "bronze") === tierKey);
+                const tierSponsors = activeSponsors.filter((s) => (s.tier || "bronze") === tierKey);
                 if (tierSponsors.length === 0) return null;
                 const config = TIER_CONFIG[tierKey];
                 const Icon = config.icon;
@@ -324,7 +324,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
                       </h4>
                     </div>
                     <div className={`grid gap-3 ${tierKey === "platinum" ? "sm:grid-cols-1" : "sm:grid-cols-2 lg:grid-cols-3"}`}>
-                      {tierSponsors.map((sponsor: any) => {
+                      {tierSponsors.map((sponsor) => {
                         const companyName = isAr && sponsor.companies?.name_ar ? sponsor.companies.name_ar : sponsor.companies?.name;
                         const isPlatinum = tierKey === "platinum";
                         return (

@@ -34,9 +34,9 @@ export function throttle<T extends (...args: any[]) => any>(fn: T, limit = 200):
 /**
  * Simple memoize for single-argument pure functions.
  */
-export function memoize<T extends (arg: any) => any>(fn: T, maxSize = 100): T {
+export function memoize<T extends (arg) => any>(fn: T, maxSize = 100): T {
   const cache = new Map<any, ReturnType<T>>();
-  return ((arg: any) => {
+  return ((arg) => {
     if (cache.has(arg)) return cache.get(arg);
     const result = fn(arg);
     if (cache.size >= maxSize) {

@@ -54,7 +54,7 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
     },
   });
 
-  const filtered = useMemo(() => booths.filter((b: any) => {
+  const filtered = useMemo(() => booths.filter((b) => {
     if (!search) return true;
     const q = search.toLowerCase();
     return b.booth_number.toLowerCase().includes(q) ||
@@ -89,7 +89,7 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
           <CardTitle className="text-sm">{t("Booth Management", "إدارة الأجنحة")} ({booths.length})</CardTitle>
           <div className="flex gap-2">
             {["available", "reserved", "occupied"].map(s => {
-              const count = booths.filter((b: any) => (b.status || "available") === s).length;
+              const count = booths.filter((b) => (b.status || "available") === s).length;
               return (
                 <Badge key={s} variant="outline" className="text-[10px] gap-1">
                   {statusIcon(s)}
@@ -127,7 +127,7 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((booth: any) => (
+              {filtered.map((booth) => (
                 <TableRow key={booth.id}>
                   <TableCell className="font-mono text-xs">
                     <div className="flex items-center gap-1">

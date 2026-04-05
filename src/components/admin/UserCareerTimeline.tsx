@@ -158,9 +158,9 @@ export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isA
     setEditingId(record.id); setAddingSection(record.record_type);
   };
   const startAddMembership = () => { setMembershipForm({ entity_id: "", membership_type: "member", title: "", title_ar: "", enrollment_date: "", notes: "" }); setEditingMembershipId(null); setAddingSection("memberships"); };
-  const startEditMembership = (m: any) => { setMembershipForm({ entity_id: m.entity_id || "", membership_type: m.membership_type || "member", title: m.title || "", title_ar: m.title_ar || "", enrollment_date: m.enrollment_date || "", notes: m.notes || "" }); setEditingMembershipId(m.id); setAddingSection("memberships"); };
+  const startEditMembership = (m) => { setMembershipForm({ entity_id: m.entity_id || "", membership_type: m.membership_type || "member", title: m.title || "", title_ar: m.title_ar || "", enrollment_date: m.enrollment_date || "", notes: m.notes || "" }); setEditingMembershipId(m.id); setAddingSection("memberships"); };
   const startAddAward = () => { setAwardForm({ event_name: "", event_name_ar: "", achievement: "", achievement_ar: "", type: "participation", event_date: "" }); setEditingAwardId(null); setAddingSection("awards"); };
-  const startEditAward = (cert: any) => { setAwardForm({ event_name: cert.event_name || "", event_name_ar: cert.event_name_ar || "", achievement: cert.achievement || "", achievement_ar: cert.achievement_ar || "", type: cert.type || "participation", event_date: cert.event_date || "" }); setEditingAwardId(cert.id); setAddingSection("awards"); };
+  const startEditAward = (cert) => { setAwardForm({ event_name: cert.event_name || "", event_name_ar: cert.event_name_ar || "", achievement: cert.achievement || "", achievement_ar: cert.achievement_ar || "", type: cert.type || "participation", event_date: cert.event_date || "" }); setEditingAwardId(cert.id); setAddingSection("awards"); };
 
   // ── Section Management ──
   const startEditSectionTitle = (section: SectionConfig) => { setEditingSectionKey(section.key); setSectionEditName({ en: section.en, ar: section.ar }); };

@@ -114,7 +114,7 @@ const ContentReviewsSection = memo(function ContentReviewsSection({
     staleTime: 1000 * 60 * 5,
   });
 
-  const getProfile = (userId: string) => profiles.find((p: any) => p.user_id === userId);
+  const getProfile = (userId: string) => profiles.find((p) => p.user_id === userId);
 
   const userReview = currentUser ? reviews.find((r) => r.user_id === currentUser) : null;
 

@@ -41,17 +41,17 @@ export const GeographicDistribution = memo(function GeographicDistribution() {
 
       // Count users by country
       const usersByCountry: Record<string, number> = {};
-      (profiles || []).forEach((p: any) => {
+      (profiles || []).forEach((p) => {
         if (p.country_code) usersByCountry[p.country_code] = (usersByCountry[p.country_code] || 0) + 1;
       });
 
       const compsByCountry: Record<string, number> = {};
-      (competitions || []).forEach((c: any) => {
+      (competitions || []).forEach((c) => {
         if (c.country_code) compsByCountry[c.country_code] = (compsByCountry[c.country_code] || 0) + 1;
       });
 
       const companiesByCountry: Record<string, number> = {};
-      (companies || []).forEach((c: any) => {
+      (companies || []).forEach((c) => {
         if (c.country_code) companiesByCountry[c.country_code] = (companiesByCountry[c.country_code] || 0) + 1;
       });
 

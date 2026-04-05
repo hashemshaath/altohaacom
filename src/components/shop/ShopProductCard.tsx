@@ -20,7 +20,7 @@ const typeLabels: Record<string, { en: string; ar: string }> = {
 
 interface ShopProductCardProps {
   product: any;
-  onAddToCart: (product: any) => void;
+  onAddToCart: (product) => void;
 }
 
 export const ShopProductCard = memo(function ShopProductCard({ product, onAddToCart }: ShopProductCardProps) {

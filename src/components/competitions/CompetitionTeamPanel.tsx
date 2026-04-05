@@ -136,7 +136,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
       setEditingId(null);
       setForm(emptyForm);
     },
-    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const deleteMutation = useMutation({
@@ -164,7 +164,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
     },
   });
 
-  const filtered = filterRole === "all" ? members : members.filter((m: any) => m.role === filterRole);
+  const filtered = filterRole === "all" ? members : members.filter((m) => m.role === filterRole);
 
   const getRoleLabel = (role: string) => {
     const r = ROLES.find((r) => r.value === role);
@@ -190,12 +190,12 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
   };
 
   const grouped = useMemo(() => ROLES.reduce((acc, role) => {
-    const roleMembers = filtered.filter((m: any) => m.role === role.value);
+    const roleMembers = filtered.filter((m) => m.role === role.value);
     if (roleMembers.length > 0) acc.push({ ...role, members: roleMembers });
     return acc;
   }, [] as any[]), [filtered]);
 
-  const checkedInCount = useMemo(() => members.filter((m: any) => m.is_checked_in).length, [members]);
+  const checkedInCount = useMemo(() => members.filter((m) => m.is_checked_in).length, [members]);
 
   return (
     <div className="space-y-4">
@@ -332,7 +332,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
         <div className="space-y-6">
           {ROLE_GROUPS.map((roleGroup) => {
             const groupMembers = roleGroup.roles.flatMap(role => 
-              filtered.filter((m: any) => m.role === role.value)
+              filtered.filter((m) => m.role === role.value)
             );
             if (groupMembers.length === 0) return null;
             return (
@@ -342,14 +342,14 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
                   <span className="text-muted-foreground/50">({groupMembers.length})</span>
                 </h4>
                 <div className="space-y-3">
-                  {grouped.filter((g: any) => roleGroup.roles.some(r => r.value === g.value)).map((group: any) => (
+                  {grouped.filter((g) => roleGroup.roles.some(r => r.value === g.value)).map((group) => (
                     <div key={group.value}>
                       <div className="flex items-center gap-2 mb-2">
                         <Badge variant={roleColor(group.value)} className="text-[10px]">{isAr ? group.ar : group.en}</Badge>
                         <span className="text-[10px] text-muted-foreground/60">({group.members.length})</span>
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2">
-                {group.members.map((member: any) => {
+                {group.members.map((member) => {
                   const name = isAr && member.name_ar ? member.name_ar : member.name;
                   const title = isAr && member.title_ar ? member.title_ar : member.title;
                   const initials = name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase();

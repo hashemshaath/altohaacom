@@ -80,7 +80,7 @@ export default function MentorApply() {
           toast({ title: isAr ? "تم تقديم الطلب بنجاح" : "Application submitted successfully" });
           navigate("/mentorship");
         },
-        onError: (err: any) => {
+        onError: (err: Error) => {
           toast({ variant: "destructive", title: isAr ? "فشل التقديم" : "Submission failed", description: err instanceof Error ? err.message : String(err) });
         },
       }

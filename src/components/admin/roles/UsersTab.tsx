@@ -67,18 +67,18 @@ export default function UsersTab({ isAr, t }: Props) {
       queryClient.invalidateQueries({ queryKey: ["roleStats"] });
       toast({ title: t("Roles updated", "تم تحديث الأدوار") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err) });
     },
   });
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: t("Name", "الاسم"), accessor: (u: any) => u.full_name || "" },
-      { header: t("Username", "اسم المستخدم"), accessor: (u: any) => u.username || "" },
-      { header: t("Email", "البريد"), accessor: (u: any) => u.email || "" },
-      { header: t("Account #", "رقم الحساب"), accessor: (u: any) => u.account_number || "" },
-      { header: t("Roles", "الأدوار"), accessor: (u: any) => u.roles?.join(", ") || "" },
+      { header: t("Name", "الاسم"), accessor: (u) => u.full_name || "" },
+      { header: t("Username", "اسم المستخدم"), accessor: (u) => u.username || "" },
+      { header: t("Email", "البريد"), accessor: (u) => u.email || "" },
+      { header: t("Account #", "رقم الحساب"), accessor: (u) => u.account_number || "" },
+      { header: t("Roles", "الأدوار"), accessor: (u) => u.roles?.join(", ") || "" },
     ],
     filename: "role-assignments",
   });

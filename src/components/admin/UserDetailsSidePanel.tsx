@@ -77,7 +77,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
       ]);
       return {
         profile: profileRes.data,
-        roles: (rolesRes.data || []).map((r: any) => r.role) as AppRole[],
+        roles: (rolesRes.data || []).map((r) => r.role) as AppRole[],
         wallet: walletRes.data,
         actions: actionsRes.data || [],
         certificateCount: certsRes.count || 0,
@@ -343,7 +343,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                     <p className="text-xs text-muted-foreground text-center py-6">{isAr ? "لا يوجد سجل إجراءات بعد" : "No activity yet"}</p>
                   ) : (
                     <div className="space-y-1.5 mt-2">
-                      {data.actions.map((action: any, i: number) => (
+                      {data.actions.map((action, i) => (
                         <div key={i} className="flex items-start gap-2.5 p-2.5 rounded-xl bg-muted/20 border border-border/30">
                           <div className="h-6 w-6 rounded-full bg-muted/60 flex items-center justify-center shrink-0 mt-0.5">
                             <FileText className="h-3 w-3 text-muted-foreground" />

@@ -144,14 +144,14 @@ export default function GlobalEventsAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "النوع" : "Type", accessor: (r: any) => GLOBAL_EVENT_LABELS[r.type as GlobalEventType]?.en || r.type },
-      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
-      { header: isAr ? "تاريخ البداية" : "Start Date", accessor: (r: any) => r.start_date },
-      { header: isAr ? "تاريخ النهاية" : "End Date", accessor: (r: any) => r.end_date || "" },
-      { header: isAr ? "المدينة" : "City", accessor: (r: any) => r.city || "" },
-      { header: isAr ? "الدولة" : "Country", accessor: (r: any) => r.country_code || "" },
-      { header: isAr ? "المنظم" : "Organizer", accessor: (r: any) => r.organizer || "" },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status },
+      { header: isAr ? "النوع" : "Type", accessor: (r) => GLOBAL_EVENT_LABELS[r.type as GlobalEventType]?.en || r.type },
+      { header: isAr ? "العنوان" : "Title", accessor: (r) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "تاريخ البداية" : "Start Date", accessor: (r) => r.start_date },
+      { header: isAr ? "تاريخ النهاية" : "End Date", accessor: (r) => r.end_date || "" },
+      { header: isAr ? "المدينة" : "City", accessor: (r) => r.city || "" },
+      { header: isAr ? "الدولة" : "Country", accessor: (r) => r.country_code || "" },
+      { header: isAr ? "المنظم" : "Organizer", accessor: (r) => r.organizer || "" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
     ],
     filename: "global-events",
   });

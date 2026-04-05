@@ -41,7 +41,7 @@ export function useCSVExport<T>({ columns, filename = "export", bom = true }: CS
         return;
       }
 
-      const escape = (val: any): string => {
+      const escape = (val: unknown): string => {
         const str = val == null ? "" : String(val);
         return str.includes(",") || str.includes('"') || str.includes("\n")
           ? `"${str.replace(/"/g, '""')}"`

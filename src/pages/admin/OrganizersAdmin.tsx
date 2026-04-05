@@ -213,12 +213,12 @@ export default function OrganizersAdmin() {
   });
 
   const countries = useMemo(() =>
-    [...new Set((organizers || []).map((o: any) => o.country).filter(Boolean))] as string[],
+    [...new Set((organizers || []).map((o) => o.country).filter(Boolean))] as string[],
     [organizers]
   );
 
   const filtered = useMemo(() => {
-    const list = (organizers || []).filter((o: any) => {
+    const list = (organizers || []).filter((o) => {
       const matchSearch = !search || o.name?.toLowerCase().includes(search.toLowerCase()) || o.name_ar?.includes(search) || o.email?.toLowerCase().includes(search.toLowerCase());
       const matchStatus = statusFilter === "all" || o.status === statusFilter;
       const matchCountry = countryFilter === "all" || o.country === countryFilter;
@@ -226,7 +226,7 @@ export default function OrganizersAdmin() {
       return matchSearch && matchStatus && matchCountry && matchVerified;
     });
     // Sort
-    return list.sort((a: any, b: any) => {
+    return list.sort((a, b) => {
       let av = a[sortKey], bv = b[sortKey];
       if (typeof av === "string") av = av.toLowerCase();
       if (typeof bv === "string") bv = bv.toLowerCase();
@@ -244,22 +244,22 @@ export default function OrganizersAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: "Number", accessor: (o: any) => o.organizer_number },
-      { header: "Name", accessor: (o: any) => o.name },
-      { header: "Name (AR)", accessor: (o: any) => o.name_ar },
-      { header: "Email", accessor: (o: any) => o.email },
-      { header: "Phone", accessor: (o: any) => o.phone },
-      { header: "Website", accessor: (o: any) => o.website },
-      { header: "City", accessor: (o: any) => o.city },
-      { header: "Country", accessor: (o: any) => o.country },
-      { header: "Status", accessor: (o: any) => o.status },
-      { header: "Verified", accessor: (o: any) => o.is_verified ? "Yes" : "No" },
-      { header: "Featured", accessor: (o: any) => o.is_featured ? "Yes" : "No" },
-      { header: "Events", accessor: (o: any) => o.total_exhibitions || 0 },
-      { header: "Views", accessor: (o: any) => o.total_views || 0 },
-      { header: "Rating", accessor: (o: any) => o.average_rating || 0 },
-      { header: "Services", accessor: (o: any) => (o.services || []).join("; ") },
-      { header: "Founded", accessor: (o: any) => o.founded_year },
+      { header: "Number", accessor: (o) => o.organizer_number },
+      { header: "Name", accessor: (o) => o.name },
+      { header: "Name (AR)", accessor: (o) => o.name_ar },
+      { header: "Email", accessor: (o) => o.email },
+      { header: "Phone", accessor: (o) => o.phone },
+      { header: "Website", accessor: (o) => o.website },
+      { header: "City", accessor: (o) => o.city },
+      { header: "Country", accessor: (o) => o.country },
+      { header: "Status", accessor: (o) => o.status },
+      { header: "Verified", accessor: (o) => o.is_verified ? "Yes" : "No" },
+      { header: "Featured", accessor: (o) => o.is_featured ? "Yes" : "No" },
+      { header: "Events", accessor: (o) => o.total_exhibitions || 0 },
+      { header: "Views", accessor: (o) => o.total_views || 0 },
+      { header: "Rating", accessor: (o) => o.average_rating || 0 },
+      { header: "Services", accessor: (o) => (o.services || []).join("; ") },
+      { header: "Founded", accessor: (o) => o.founded_year },
     ],
     filename: "organizers",
   });
@@ -314,7 +314,7 @@ export default function OrganizersAdmin() {
       setForm(emptyForm);
       toast.success(editId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Created"));
     },
-    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
+    onError: (e: Error) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const handleSave = useCallback(() => {
@@ -336,7 +336,7 @@ export default function OrganizersAdmin() {
       qc.invalidateQueries({ queryKey: ["admin-organizers"] });
       toast.success(isAr ? "تم الحذف" : "Deleted");
     },
-    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
+    onError: (e: Error) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const bulkDeleteMutation = useMutation({
@@ -386,7 +386,7 @@ export default function OrganizersAdmin() {
     },
   });
 
-  const openEdit = (org: any) => {
+  const openEdit = (org) => {
     setEditId(org.id);
     const social = org.social_links || {};
     setForm({
@@ -413,9 +413,9 @@ export default function OrganizersAdmin() {
 
   const stats = {
     total: organizers?.length || 0,
-    active: organizers?.filter((o: any) => o.status === "active").length || 0,
-    verified: organizers?.filter((o: any) => o.is_verified).length || 0,
-    featured: organizers?.filter((o: any) => o.is_featured).length || 0,
+    active: organizers?.filter((o) => o.status === "active").length || 0,
+    verified: organizers?.filter((o) => o.is_verified).length || 0,
+    featured: organizers?.filter((o) => o.is_featured).length || 0,
   };
 
   const selectedArray = Array.from(selected);
@@ -490,7 +490,7 @@ export default function OrganizersAdmin() {
             onClear={clearSelection}
             onDelete={() => { if (confirm(isAr ? "حذف المحدد؟" : "Delete selected?")) bulkDeleteMutation.mutate(selectedArray); }}
             onStatusChange={() => bulkStatusMutation.mutate({ ids: selectedArray, status: "active" })}
-            onExport={() => exportCSV(filtered.filter((o: any) => selected.has(o.id)))}
+            onExport={() => exportCSV(filtered.filter((o) => selected.has(o.id)))}
           >
             <Button variant="outline" size="sm" className="gap-1.5" onClick={() => bulkVerifyMutation.mutate({ ids: selectedArray, verified: true })}>
               <Shield className="h-3.5 w-3.5" />{isAr ? "توثيق" : "Verify"}
@@ -521,7 +521,7 @@ export default function OrganizersAdmin() {
                 </SelectContent>
               </Select>
             )}
-            <Select value={verifiedFilter} onValueChange={(v: any) => setVerifiedFilter(v)}>
+            <Select value={verifiedFilter} onValueChange={(v) => setVerifiedFilter(v)}>
               <SelectTrigger className="w-28 h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
@@ -578,7 +578,7 @@ export default function OrganizersAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {pagination.paginated.map((org: any) => (
+                  {pagination.paginated.map((org) => (
                     <TableRow key={org.id} className={`cursor-pointer ${selected.has(org.id) ? "bg-primary/5" : ""}`} onClick={() => setDetailId(org.id)}>
                       <TableCell onClick={e => e.stopPropagation()}><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
                       <TableCell>

@@ -18,7 +18,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
         .from("site_settings")
         .select("key, value");
       const map: SiteSettings = {};
-      (data || []).forEach((row: any) => {
+      (data || []).forEach((row) => {
         map[row.key] = typeof row.value === "string" ? JSON.parse(row.value) : row.value;
       });
       return map;

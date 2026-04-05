@@ -186,7 +186,7 @@ export const UserCompetitionStats = memo(function UserCompetitionStats({ userId 
           </CardHeader>
           <CardContent>
             <div className="space-y-2">
-              {data.recentScores.map((score: any, i: number) => (
+              {data.recentScores.map((score, i) => (
                 <div key={i} className="flex items-center justify-between rounded-xl border p-3">
                   <span className="text-sm font-medium">
                     {isAr ? "النتيجة" : "Score"} #{i + 1}

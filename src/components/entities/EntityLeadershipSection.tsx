@@ -85,14 +85,14 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
   const honorary = positions?.filter(p => honoraryTypes.includes(p.position_type)) || [];
   const board = positions?.filter(p => !executiveTypes.includes(p.position_type) && !honoraryTypes.includes(p.position_type)) || [];
 
-  const getTitle = (pos: any) => {
+  const getTitle = (pos) => {
     const label = positionLabels[pos.position_type];
     return pos.position_title
       ? (isAr && pos.position_title_ar ? pos.position_title_ar : pos.position_title)
       : (label ? (isAr ? label.ar : label.en) : pos.position_type);
   };
 
-  const renderFeaturedCard = (pos: any) => {
+  const renderFeaturedCard = (pos) => {
     const profile = pos.profiles as any;
     const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
     const username = profile?.username;
@@ -138,7 +138,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
     return <div key={pos.id}>{content}</div>;
   };
 
-  const renderMemberCard = (pos: any) => {
+  const renderMemberCard = (pos) => {
     const profile = pos.profiles as any;
     const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
     const username = profile?.username;

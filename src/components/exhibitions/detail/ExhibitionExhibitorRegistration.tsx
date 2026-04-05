@@ -65,7 +65,7 @@ export const ExhibitionExhibitorRegistration = memo(function ExhibitionExhibitor
       queryClient.invalidateQueries({ queryKey: ["booth-request", exhibitionId] });
       toast({ title: t("Request submitted successfully! ✅", "تم إرسال الطلب بنجاح! ✅") });
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ title: t("Failed to submit", "فشل الإرسال"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });

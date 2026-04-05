@@ -62,7 +62,7 @@ export function useUserPermissions() {
         .in("role", userRoles);
 
       const permCodes = new Set(
-        rolePerms?.map((rp: any) => rp.permissions?.code).filter(Boolean) || []
+        rolePerms?.map((rp) => rp.permissions?.code).filter(Boolean) || []
       );
 
       // Get overrides
@@ -71,7 +71,7 @@ export function useUserPermissions() {
         .select("granted, permissions(code)")
         .eq("user_id", user.id);
 
-      overrides?.forEach((o: any) => {
+      overrides?.forEach((o) => {
         if (o.permissions?.code) {
           if (o.granted) {
             permCodes.add(o.permissions.code);

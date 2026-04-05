@@ -104,13 +104,13 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
 
   const getProfileName = (id: string | null) => {
     if (!id) return "—";
-    const p = profiles.find((pr: any) => pr.user_id === id);
+    const p = profiles.find((pr) => pr.user_id === id);
     return p?.full_name || p?.username || "—";
   };
 
   // Add custom item
   const addItem = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data) => {
       const { error } = await supabase.from("requirement_list_items").insert({
         list_id: listId, ...data, added_by: user!.id, sort_order: items.length,
       });
@@ -126,7 +126,7 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
 
   // Add from catalog
   const addFromCatalog = useMutation({
-    mutationFn: async (catalogItem: any) => {
+    mutationFn: async (catalogItem) => {
       const { error } = await supabase.from("requirement_list_items").insert({
         list_id: listId, item_id: catalogItem.id, quantity: catalogItem.default_quantity || 1,
         unit: catalogItem.unit || "piece", estimated_cost: catalogItem.estimated_cost,

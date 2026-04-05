@@ -153,7 +153,7 @@ export default function LeadManagement() {
 
   const bulk = useAdminBulkActions(leads);
   const selectedIds = bulk.selected;
-  const setSelectedIds = (_v: any) => { bulk.clearSelection(); };
+  const setSelectedIds = (_v) => { bulk.clearSelection(); };
 
   // Lead stats
   const { data: stats } = useQuery({
@@ -180,7 +180,7 @@ export default function LeadManagement() {
         .order("created_at", { ascending: false })
         .limit(50);
       // Filter for this lead
-      return (data || []).filter((a: any) => a.details?.lead_id === selectedLead.id);
+      return (data || []).filter((a) => a.details?.lead_id === selectedLead.id);
     },
     enabled: !!selectedLead?.id && isDetailOpen,
   });
@@ -773,7 +773,7 @@ export default function LeadManagement() {
                 <ScrollArea className="max-h-[350px]">
                   <div className="relative ps-6 space-y-4">
                     <div className="absolute start-2 top-0 bottom-0 w-px bg-border" />
-                    {activityLog.map((entry: any) => (
+                    {activityLog.map((entry) => (
                       <div key={entry.id} className="relative">
                         <div className="absolute start-[-18px] top-1 h-4 w-4 rounded-full bg-primary/10 ring-2 ring-background flex items-center justify-center">
                           <div className="h-1.5 w-1.5 rounded-full bg-primary" />

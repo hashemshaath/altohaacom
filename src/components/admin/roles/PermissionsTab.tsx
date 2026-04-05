@@ -38,7 +38,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
 
   // Sync selectedPerms when role data loads
   if (!rolePermsLoading && lastSyncedRole !== activeRole) {
-    const ids = new Set(rolePerms.map((rp: any) => rp.permission_id as string));
+    const ids = new Set(rolePerms.map((rp) => rp.permission_id as string));
     setSelectedPerms(ids);
     setLastSyncedRole(activeRole);
   }
@@ -91,7 +91,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
     if (!permSearch.trim()) return grouped;
     const result: Record<string, typeof permissions> = {};
     Object.entries(grouped).forEach(([cat, perms]) => {
-      const filtered = perms.filter((p: any) =>
+      const filtered = perms.filter((p) =>
         p.name.toLowerCase().includes(permSearch.toLowerCase()) ||
         p.code.toLowerCase().includes(permSearch.toLowerCase()) ||
         (p.name_ar && p.name_ar.includes(permSearch))
@@ -121,14 +121,14 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
   };
 
   const copyPermsFromRole = (sourceRole: AppRole) => {
-    const sourcePerms = allRolePerms.filter((rp: any) => rp.role === sourceRole).map((rp: any) => rp.permission_id as string);
+    const sourcePerms = allRolePerms.filter((rp) => rp.role === sourceRole).map((rp) => rp.permission_id as string);
     setSelectedPerms(new Set(sourcePerms));
     setCopyMenuOpen(false);
     toast({ title: t(`Copied permissions from ${ROLE_META[sourceRole].labelEn}`, `تم نسخ الصلاحيات من ${ROLE_META[sourceRole].labelAr}`) });
   };
 
   // Calculate diff from saved state
-  const savedPerms = useMemo(() => new Set(rolePerms.map((rp: any) => rp.permission_id as string)), [rolePerms]);
+  const savedPerms = useMemo(() => new Set(rolePerms.map((rp) => rp.permission_id as string)), [rolePerms]);
   const hasChanges = useMemo(() => {
     if (savedPerms.size !== selectedPerms.size) return true;
     for (const id of selectedPerms) if (!savedPerms.has(id)) return true;
@@ -185,7 +185,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
                       {ALL_ROLES.filter(r => r !== activeRole).map(role => {
                         const rm = ROLE_META[role];
                         const Icon = rm.icon;
-                        const count = allRolePerms.filter((rp: any) => rp.role === role).length;
+                        const count = allRolePerms.filter((rp) => rp.role === role).length;
                         return (
                           <button key={role} onClick={() => copyPermsFromRole(role)}
                             className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs rounded-lg hover:bg-muted transition-colors text-start">
@@ -212,7 +212,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
             <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
           ) : (
             Object.entries(filteredGrouped).map(([category, perms]) => {
-              const catSelected = perms.filter((p: any) => selectedPerms.has(p.id)).length;
+              const catSelected = perms.filter((p) => selectedPerms.has(p.id)).length;
               const allSelected = catSelected === perms.length;
               const isExpanded = expandedCategories.has(category) || catSelected > 0;
               return (
@@ -239,7 +239,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
                         </Button>
                       </div>
                       <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
-                        {perms.map((perm: any) => (
+                        {perms.map((perm) => (
                           <label key={perm.id}
                             className={`flex cursor-pointer items-center gap-2.5 rounded-xl border p-2.5 transition-all duration-200 hover:bg-muted/50 active:scale-[0.98] touch-manipulation ${
                               selectedPerms.has(perm.id) ? "border-primary/40 bg-primary/5 shadow-sm" : "border-border/40"

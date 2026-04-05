@@ -217,7 +217,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
       toast({ title: t("Article saved!", "تم حفظ المقال!") });
       onBack();
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast({ variant: "destructive", title: t("Save failed", "فشل الحفظ"), description: err instanceof Error ? err.message : String(err) });
     },
   });

@@ -272,7 +272,7 @@ export default function ArticleDetail() {
   }
 
   const hasHeroImage = article.featured_image_url && !imageFailed;
-  const tags = (articleTags || []).map((t: any) => t.content_tags).filter(Boolean);
+  const tags = (articleTags || []).map((t) => t.content_tags).filter(Boolean);
 
   return (
     <div className="flex min-h-screen flex-col" dir={isAr ? "rtl" : "ltr"}>
@@ -663,7 +663,7 @@ export default function ArticleDetail() {
                 <div className="mt-10 pt-6 border-t border-border/30">
                   <div className="flex items-center gap-2 flex-wrap">
                     <Tag className="h-4 w-4 text-muted-foreground" />
-                    {tags.map((tag: any) => (
+                    {tags.map((tag) => (
                       <Badge
                         key={tag.id}
                         variant="secondary"

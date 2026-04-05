@@ -87,7 +87,7 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
     setDialogOpen(false);
   };
 
-  const openEdit = (tt: any) => {
+  const openEdit = (tt) => {
     setForm({
       name: tt.name, name_ar: tt.name_ar || "", description: tt.description || "",
       description_ar: tt.description_ar || "", price: tt.price?.toString() || "0",
@@ -98,7 +98,7 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
     setDialogOpen(true);
   };
 
-  const totalSold = useMemo(() => types.reduce((s: number, t: any) => s + (t.sold_count || 0), 0), [types]);
+  const totalSold = useMemo(() => types.reduce((s, t) => s + (t.sold_count || 0), 0), [types]);
 
   return (
     <Card>
@@ -157,7 +157,7 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
           </div>
         ) : (
           <div className="divide-y divide-border/40">
-            {types.map((tt: any) => {
+            {types.map((tt) => {
               const remaining = tt.max_quantity ? tt.max_quantity - tt.sold_count : null;
               return (
                 <div key={tt.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20 transition-colors">

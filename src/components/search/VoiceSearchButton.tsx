@@ -29,7 +29,7 @@ export const VoiceSearchButton = memo(function VoiceSearchButton({ onResult, cla
     recognition.lang = isAr ? "ar-SA" : "en-US";
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       onResult(transcript);
     };

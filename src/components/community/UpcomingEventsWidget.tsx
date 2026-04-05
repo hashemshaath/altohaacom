@@ -38,7 +38,7 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
         {isAr ? "فعاليات قادمة" : "Upcoming Events"}
       </h3>
       <div className="divide-y divide-border">
-        {events.map((event: any) => {
+        {events.map((event) => {
           const title = (isAr && event.title_ar) ? event.title_ar : event.title;
           const startDate = new Date(event.start_date);
           const timeUntil = formatDistanceToNow(startDate, { 

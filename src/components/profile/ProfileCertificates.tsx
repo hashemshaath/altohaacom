@@ -86,7 +86,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
     },
   });
 
-  const handleShareAsPost = async (cert: any) => {
+  const handleShareAsPost = async (cert) => {
     if (!user) return;
     const eventName = isAr && cert.event_name_ar ? cert.event_name_ar : cert.event_name;
     const achievement = isAr && cert.achievement_ar ? cert.achievement_ar : cert.achievement;
@@ -119,7 +119,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
     }
   };
 
-  const handleCopyLink = (cert: any) => {
+  const handleCopyLink = (cert) => {
     const url = `${window.location.origin}/verify?code=${cert.verification_code}`;
     navigator.clipboard.writeText(url);
     toast({ title: isAr ? "تم نسخ الرابط ✓" : "Link copied ✓" });

@@ -38,7 +38,7 @@ export const NewsRelatedTopics = memo(function NewsRelatedTopics({
 
       // Deduplicate and score by shared tag count
       const articleMap: Record<string, { article: any; sharedTags: string[]; score: number }> = {};
-      data.forEach((row: any) => {
+      data.forEach((row) => {
         const art = row.articles;
         if (!art || art.status !== "published") return;
         if (!articleMap[art.id]) {

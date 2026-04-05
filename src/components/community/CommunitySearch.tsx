@@ -76,25 +76,25 @@ export const CommunitySearch = memo(function CommunitySearch() {
 
       const [usersRes, postsRes, recipesRes, groupsRes] = searches;
 
-      (usersRes.data || []).forEach((u: any) => all.push({
+      (usersRes.data || []).forEach((u) => all.push({
         type: "user", id: u.user_id,
         title: (isAr ? (u.display_name_ar || u.display_name) : u.display_name) || u.full_name || u.username || "Chef",
         subtitle: u.specialization || (u.username ? `@${u.username}` : undefined),
         avatar: u.avatar_url,
       }));
 
-      (postsRes.data || []).forEach((p: any) => all.push({
+      (postsRes.data || []).forEach((p) => all.push({
         type: "post", id: p.id,
         title: p.content.slice(0, 80) + (p.content.length > 80 ? "..." : ""),
       }));
 
-      (recipesRes.data || []).forEach((r: any) => all.push({
+      (recipesRes.data || []).forEach((r) => all.push({
         type: "recipe", id: r.id,
         title: (isAr && r.title_ar) ? r.title_ar : r.title,
         avatar: r.image_url,
       }));
 
-      (groupsRes.data || []).forEach((g: any) => all.push({
+      (groupsRes.data || []).forEach((g) => all.push({
         type: "group", id: g.id,
         title: (isAr && g.name_ar) ? g.name_ar : g.name,
         avatar: g.avatar_url,

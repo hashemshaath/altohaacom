@@ -51,8 +51,8 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
       const badges = badgesRes.data || [];
       const streak = streakRes.data;
 
-      const activeChallenges = challenges.map((c: any) => {
-        const p = progress.find((up: any) => up.challenge_id === c.id);
+      const activeChallenges = challenges.map((c) => {
+        const p = progress.find((up) => up.challenge_id === c.id);
         return {
           ...c,
           current: p?.progress || 0,
@@ -60,7 +60,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
         };
       });
 
-      const completedCount = progress.filter((p: any) => p.completed_at).length;
+      const completedCount = progress.filter((p) => p.completed_at).length;
 
       return { activeChallenges, badges, streak, completedCount, totalChallenges: challenges.length };
     },
@@ -71,7 +71,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
   if (!data) return null;
 
   const { activeChallenges, badges, streak, completedCount } = data;
-  const incompleteChallenges = activeChallenges.filter((c: any) => !c.completed).slice(0, 3);
+  const incompleteChallenges = activeChallenges.filter((c) => !c.completed).slice(0, 3);
 
   return (
     <Card className="border-border/40 overflow-hidden">
@@ -122,7 +122,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
               <Sparkles className="h-3 w-3 text-chart-1" />
               {isAr ? "تحديات نشطة" : "Active Challenges"}
             </p>
-            {incompleteChallenges.map((c: any) => {
+            {incompleteChallenges.map((c) => {
               const pct = Math.min(100, Math.round((c.current / (c.target_count || 1)) * 100));
               return (
                 <div key={c.id} className="rounded-xl border border-border/30 p-2.5 space-y-1.5">
@@ -155,7 +155,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
               {isAr ? "آخر الشارات" : "Recent Badges"}
             </p>
             <div className="flex gap-2 overflow-x-auto scrollbar-none">
-              {badges.map((b: any) => (
+              {badges.map((b) => (
                 <div key={b.id} className="flex flex-col items-center gap-1 shrink-0 p-2 rounded-xl bg-muted/30 min-w-[56px]">
                   <span className="text-xl">{b.badge_icon || "⭐"}</span>
                   <p className="text-[8px] text-muted-foreground text-center line-clamp-1 max-w-[52px]">

@@ -41,7 +41,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
 
   if (tickets.length === 0) return null;
 
-  const handleShare = async (ticket: any) => {
+  const handleShare = async (ticket) => {
     const text = `${exhibitionTitle}\n${t("Ticket", "تذكرة")}: ${ticket.ticket_number}\n${exhibitionDate ? format(new Date(exhibitionDate), "MMM d, yyyy") : ""}`;
     if (navigator.share) {
       try { await navigator.share({ title: exhibitionTitle, text }); } catch {}
@@ -63,7 +63,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
         </div>
       </div>
 
-      {tickets.map((ticket: any, idx: number) => {
+      {tickets.map((ticket, idx) => {
         const isConfirmed = ticket.status === "confirmed";
         const isCheckedIn = !!ticket.checked_in_at;
 

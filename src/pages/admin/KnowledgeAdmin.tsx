@@ -315,11 +315,11 @@ export default function KnowledgeAdmin() {
 
   const { exportCSV: exportResources } = useCSVExport({
     columns: [
-      { header: isAr ? "العنوان" : "Title", accessor: (r: any) => isAr && r.title_ar ? r.title_ar : r.title },
-      { header: isAr ? "النوع" : "Type", accessor: (r: any) => r.resource_type },
-      { header: isAr ? "منشور" : "Published", accessor: (r: any) => r.is_published ? "Yes" : "No" },
-      { header: isAr ? "للحكام" : "Judge Resource", accessor: (r: any) => r.is_judge_resource ? "Yes" : "No" },
-      { header: isAr ? "الرابط" : "URL", accessor: (r: any) => r.url || "" },
+      { header: isAr ? "العنوان" : "Title", accessor: (r) => isAr && r.title_ar ? r.title_ar : r.title },
+      { header: isAr ? "النوع" : "Type", accessor: (r) => r.resource_type },
+      { header: isAr ? "منشور" : "Published", accessor: (r) => r.is_published ? "Yes" : "No" },
+      { header: isAr ? "للحكام" : "Judge Resource", accessor: (r) => r.is_judge_resource ? "Yes" : "No" },
+      { header: isAr ? "الرابط" : "URL", accessor: (r) => r.url || "" },
     ],
     filename: "knowledge-resources",
   });
