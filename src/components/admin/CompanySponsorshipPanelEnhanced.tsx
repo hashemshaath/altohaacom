@@ -69,9 +69,9 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, start_date, country_code, status")
+        .select("id, title, title_ar, competition_start, country_code, status")
         .in("status", ["upcoming", "registration_open"])
-        .order("start_date", { ascending: true })
+        .order("competition_start", { ascending: true })
         .limit(10);
       if (error) throw error;
       return data || [];
