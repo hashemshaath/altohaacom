@@ -130,9 +130,9 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
                           {event.severity}
                         </Badge>
                       </div>
-                      {event.details && (
+                      {event.metadata && (
                         <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-md">
-                          {typeof event.details === "string" ? event.details : JSON.stringify(event.details)}
+                          {typeof event.metadata === "string" ? event.metadata : JSON.stringify(event.metadata)}
                         </p>
                       )}
                       <div className="flex items-center gap-2 mt-1 text-[10px] text-muted-foreground/70">

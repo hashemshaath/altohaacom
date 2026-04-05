@@ -359,7 +359,7 @@ function SessionsPanel() {
                       <div className="flex items-center gap-1">
                         <Smartphone className="h-3 w-3 text-muted-foreground" />
                         <span className="text-xs truncate max-w-[150px]">
-                          {session.device_info || "Unknown"}
+                          {typeof session.device_info === "string" ? session.device_info : session.device_info ? JSON.stringify(session.device_info) : "Unknown"}
                         </span>
                       </div>
                     </TableCell>

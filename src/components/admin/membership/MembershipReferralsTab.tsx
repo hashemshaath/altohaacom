@@ -29,7 +29,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_codes")
-        .select("*, profiles:user_id(full_name, username, email, avatar_url)")
+        .select("*")
         .order("total_conversions", { ascending: false });
       if (error) throw error;
       return data || [];

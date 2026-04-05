@@ -38,7 +38,7 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
   const { data: mediaFiles = [], isLoading: mediaLoading } = useQuery({
     queryKey: ["admin-content-media"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("media_library").select("id, file_name, file_url, file_type, file_size, alt_text, category, tags, uploaded_by, created_at").order("created_at", { ascending: false }).limit(50);
+      const { data, error } = await supabase.from("media_library").select("id, filename, file_url, file_type, file_size, alt_text, original_filename, uploaded_by, created_at").order("created_at", { ascending: false }).limit(50);
       if (error) return [];
       return data || [];
     },
@@ -169,13 +169,13 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
                 <Card key={f.id} className="overflow-hidden group cursor-pointer">
                   <div className="aspect-square bg-muted flex items-center justify-center">
                     {f.file_url && f.file_type?.startsWith("image") ? (
-                      <img src={f.file_url} alt={f.file_name} className="w-full h-full object-cover" loading="lazy" />
+                      <img src={f.file_url} alt={f.filename} className="w-full h-full object-cover" loading="lazy" />
                     ) : (
                       <FileText className="h-8 w-8 text-muted-foreground/40" />
                     )}
                   </div>
                   <CardContent className="p-2">
-                    <p className="text-xs truncate">{f.file_name || f.title || "Untitled"}</p>
+                    <p className="text-xs truncate">{f.filename || f.original_filename || "Untitled"}</p>
                   </CardContent>
                 </Card>
               ))}

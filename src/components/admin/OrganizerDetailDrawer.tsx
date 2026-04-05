@@ -293,7 +293,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
                           </p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             <Badge variant="outline" className="text-[8px] h-3.5 capitalize">{ex.role}</Badge>
-                            <Badge variant={ex.status === "published" ? "default" : "secondary"} className="text-[8px] h-3.5 capitalize">{ex.status}</Badge>
+                            <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-[8px] h-3.5 capitalize">{ex.status}</Badge>
                             {(ex.view_count || 0) > 0 && (
                               <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
                                 <Eye className="h-2.5 w-2.5" />{ex.view_count}
