@@ -28,9 +28,9 @@ export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidg
           .limit(1000),
         supabase
           .from("competitions")
-          .select("id, title, title_ar, registration_deadline, competition_start, status")
+          .select("id, title, title_ar, registration_end, competition_start, status")
           .in("status", ["registration_open", "upcoming"])
-          .order("registration_deadline", { ascending: true })
+          .order("registration_end", { ascending: true })
           .limit(5),
       ]);
 
@@ -104,7 +104,7 @@ export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidg
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">{isAr ? "مواعيد نهائية قادمة" : "Upcoming Deadlines"}</p>
             {data.upcoming.map((comp) => {
-              const daysLeft = comp.registration_deadline ? differenceInDays(new Date(comp.registration_deadline), new Date()) : null;
+              const daysLeft = comp.registration_end ? differenceInDays(new Date(comp.registration_end), new Date()) : null;
               return (
                 <div key={comp.id} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/30">
                   <span className="truncate flex-1">{isAr && comp.title_ar ? comp.title_ar : comp.title}</span>
