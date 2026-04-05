@@ -33,7 +33,7 @@ const companyTypes: { value: CompanyType; label: string; labelAr: string }[] = [
 
 interface CompanyEditPanelProps {
   companyId: string;
-  companyDetails: Record<string, unknown>;
+  companyDetails: Record<string, string | number | boolean | null>;
 }
 
 export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanelProps) {
