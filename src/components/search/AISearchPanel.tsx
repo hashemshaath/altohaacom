@@ -76,7 +76,7 @@ export const AISearchPanel = memo(function AISearchPanel({ query }: Props) {
       }
     } catch (e: unknown) {
       console.error("AI search error:", e);
-      setError(e.message || (isAr ? "حدث خطأ" : "An error occurred"));
+      setError((e instanceof Error ? e.message : "") || (isAr ? "حدث خطأ" : "An error occurred"));
     } finally {
       setIsStreaming(false);
     }

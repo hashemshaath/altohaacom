@@ -312,7 +312,7 @@ export default function SEODashboard() {
       if (error) throw error;
       toast.success(isAr ? `تم مزامنة ${data.total_queries} استعلام` : `Synced ${data.total_queries} queries`);
       refetchKeywords();
-    } catch (e: unknown) { toast.error(e.message || "GSC sync failed"); } finally { setGscSyncing(null); }
+    } catch (e: unknown) { toast.error((e instanceof Error ? e.message : "") || "GSC sync failed"); } finally { setGscSyncing(null); }
   };
 
   const handleGSCInspectUrls = async () => {
@@ -326,7 +326,7 @@ export default function SEODashboard() {
       if (error) throw error;
       toast.success(isAr ? `تم فحص ${data.inspections?.filter((i) => !i.error).length || 0} صفحة` : `Inspected ${data.inspections?.filter((i) => !i.error).length || 0} URLs`);
       refetchIndexing();
-    } catch (e: unknown) { toast.error(e.message || "Inspection failed"); } finally { setGscSyncing(null); }
+    } catch (e: unknown) { toast.error((e instanceof Error ? e.message : "") || "Inspection failed"); } finally { setGscSyncing(null); }
   };
 
   const handleGSCSubmitUrls = async (urls?: string[]) => {
@@ -340,7 +340,7 @@ export default function SEODashboard() {
       if (error) throw error;
       toast.success(isAr ? `تم إرسال ${data.submissions?.filter((s) => s.success).length || 0} صفحة` : `Submitted ${data.submissions?.filter((s) => s.success).length || 0} URLs`);
       refetchIndexing();
-    } catch (e: unknown) { toast.error(e.message || "Submission failed"); } finally { setGscSyncing(null); }
+    } catch (e: unknown) { toast.error((e instanceof Error ? e.message : "") || "Submission failed"); } finally { setGscSyncing(null); }
   };
 
   // ── Computed Metrics ──
@@ -635,7 +635,7 @@ export default function SEODashboard() {
         ]);
         toast.success(isAr ? "تم جمع بيانات الأداء" : "Performance data collected successfully");
       } catch (e: unknown) {
-        toast.error(e.message || "Failed to collect vitals");
+        toast.error((e instanceof Error ? e.message : "") || "Failed to collect vitals");
       } finally {
         setCollectingVitals(false);
       }
