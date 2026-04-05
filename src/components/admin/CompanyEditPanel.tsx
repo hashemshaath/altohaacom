@@ -31,9 +31,10 @@ const companyTypes: { value: CompanyType; label: string; labelAr: string }[] = [
   { value: "vendor", label: "Vendor", labelAr: "بائع" },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface CompanyEditPanelProps {
   companyId: string;
-  companyDetails: Record<string, string | number | boolean | null | unknown>;
+  companyDetails: any; // Supabase row with dynamic fields
 }
 
 export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanelProps) {
