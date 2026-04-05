@@ -10,6 +10,7 @@ import {
   DollarSign, TrendingUp, TrendingDown, PieChart,
   AlertTriangle, CheckCircle, Package,
 } from "lucide-react";
+import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { OrderExportActions } from "./OrderExportActions";

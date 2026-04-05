@@ -15,7 +15,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Search, Plus, Trash2, Edit, Package, Save, X } from "lucide-react";
+import {
+  Search, Plus, Trash2, Edit, Package, Image as ImageIcon, Save, X, Check,
+} from "lucide-react";
+import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 
 interface CatalogItem {
   id: string;

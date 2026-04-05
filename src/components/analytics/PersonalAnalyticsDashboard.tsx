@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,9 +12,11 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, BarChart, Bar,
 } from "recharts";
-import { FileText, Heart, Users, Trophy, ChefHat, Sparkles, TrendingUp, TrendingDown, Minus, Eye, Star, Hash, Lightbulb, Zap, MessageSquare, Film } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { CHART_COLORS } from "@/lib/chartConfig";
+import {
+  FileText, Heart, Users, UserPlus, Trophy, ChefHat, Sparkles, TrendingUp,
+  TrendingDown, Minus, Eye, Star, Hash, Lightbulb, Zap, BookOpen,
+  MessageSquare, Film,
+} from "lucide-react";
 
 interface AnalyticsData {
   summary: {

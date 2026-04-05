@@ -1,18 +1,20 @@
-import React from "react";
 import { useState, createContext, useContext, memo, forwardRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Check, GripVertical, ArrowRightLeft, Languages, Loader2 } from "lucide-react";
+import {
+  Plus, Pencil, Trash2, X, Check, GripVertical, ArrowRightLeft, Languages, Loader2,
+} from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSortable } from "@dnd-kit/sortable";
-import { supabase } from "@/integrations/supabase/client";
+import { CSS } from "@dnd-kit/utilities";
 
 // ── Smart Translate Button ──────────────────────────────────────
 

@@ -13,8 +13,12 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
-import { Plus, Trash2, Pencil, Users, Image, Filter, ArrowLeft, Trophy, Pause, Play, Save, X, Loader2 } from "lucide-react";
-import { genderDisplay, categoryBadgeText } from "@/lib/categoryUtils";
+import {
+  Plus, Trash2, Pencil, Users, Image, Filter,
+  Eye, ArrowLeft, Trophy, Pause, Play, FileText,
+  Save, X, Loader2,
+} from "lucide-react";
+import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, levelDisplay, categoryBadgeText } from "@/lib/categoryUtils";
 
 interface CategoryManagementPanelProps {
   competitionId: string;

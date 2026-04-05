@@ -1,4 +1,3 @@
-import React from "react";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,9 @@ import {
   ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceDot, Legend,
 } from "recharts";
-import { X_AXIS_PROPS, Y_AXIS_PROPS, TOOLTIP_STYLE, LEGEND_STYLE } from "@/lib/chartConfig";
+import {
+  TOOLTIP_STYLE, X_AXIS_PROPS, Y_AXIS_PROPS, GRID_PROPS, LEGEND_STYLE, CHART_HEIGHT,
+} from "@/lib/chartConfig";
 import {
   linearRegression, forecast, detectAnomalies, monthlyGrowthRate,
   type DataPoint, type TrendResult,
