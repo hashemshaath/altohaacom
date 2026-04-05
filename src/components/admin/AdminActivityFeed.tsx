@@ -21,6 +21,13 @@ interface FeedItem {
   color: string;
 }
 
+interface ProfileRow { user_id: string; full_name: string | null; display_name: string | null; created_at: string }
+interface ReportRow { id: string; reason: string | null; created_at: string }
+interface OrderRow { id: string; order_number: string | null; created_at: string }
+interface ActionRow { id: string; action_type: string; created_at: string }
+interface RegRow { id: string; registration_number: string | null; registered_at: string }
+interface TicketRow { id: string; ticket_number: string | null; subject: string | null; created_at: string }
+
 export const AdminActivityFeed = memo(function AdminActivityFeed() {
   const { language } = useLanguage();
   const isAr = language === "ar";
@@ -42,39 +49,41 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
 
       const items: FeedItem[] = [];
 
-      const getData = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value?.data || []) : [];
+      function getData<T>(r: PromiseSettledResult<{ data: T[] | null }>): T[] {
+        return r.status === "fulfilled" ? (r.value?.data || []) : [];
+      }
 
-      getData(users).forEach((u: any) => items.push({
+      getData<ProfileRow>(users).forEach((u) => items.push({
         id: `u-${u.user_id}`, type: "user",
         title: isAr ? `${u.display_name || u.full_name || "مستخدم"} انضم` : `${u.display_name || u.full_name || "User"} joined`,
         time: u.created_at, icon: UserPlus, color: "text-primary",
       }));
 
-      getData(reports).forEach((r: any) => items.push({
+      getData<ReportRow>(reports).forEach((r) => items.push({
         id: `r-${r.id}`, type: "report",
         title: isAr ? `بلاغ جديد: ${r.reason || "محتوى"}` : `New report: ${r.reason || "content"}`,
         time: r.created_at, icon: Flag, color: "text-destructive",
       }));
 
-      getData(orders).forEach((o: any) => items.push({
+      getData<OrderRow>(orders).forEach((o) => items.push({
         id: `o-${o.id}`, type: "order",
         title: isAr ? `طلب ${o.order_number}` : `Order ${o.order_number}`,
         time: o.created_at, icon: Package, color: "text-chart-3",
       }));
 
-      getData(actions).forEach((a: any) => items.push({
+      getData<ActionRow>(actions).forEach((a) => items.push({
         id: `a-${a.id}`, type: "action",
         title: isAr ? `إجراء: ${a.action_type.replace(/_/g, " ")}` : `Action: ${a.action_type.replace(/_/g, " ")}`,
         time: a.created_at, icon: Shield, color: "text-chart-4",
       }));
 
-      getData(competitions).forEach((c: any) => items.push({
+      getData<RegRow>(competitions).forEach((c) => items.push({
         id: `c-${c.id}`, type: "competition",
         title: isAr ? `تسجيل مسابقة ${c.registration_number || ""}` : `Competition reg ${c.registration_number || ""}`,
         time: c.registered_at, icon: Trophy, color: "text-chart-5",
       }));
 
-      getData(tickets).forEach((t: any) => items.push({
+      getData<TicketRow>(tickets).forEach((t) => items.push({
         id: `t-${t.id}`, type: "ticket",
         title: isAr ? `تذكرة: ${t.subject || t.ticket_number}` : `Ticket: ${t.subject || t.ticket_number}`,
         time: t.created_at, icon: Ticket, color: "text-chart-1",

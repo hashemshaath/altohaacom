@@ -58,7 +58,7 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
     },
   });
 
-  const unreadCount = useMemo(() => notifications.filter((n: any) => !n.is_read).length, [notifications]);
+  const unreadCount = useMemo(() => notifications.filter((n) => !n.is_read).length, [notifications]);
 
   const getIcon = (type: string) => {
     const Icon = TYPE_ICONS[type] || TYPE_ICONS.default;
@@ -121,7 +121,7 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {notifications.map((notif: any) => (
+              {notifications.map((notif) => (
                 <div
                   key={notif.id}
                   className={`flex items-start gap-3 px-4 py-3 transition-colors hover:bg-muted/50 ${
