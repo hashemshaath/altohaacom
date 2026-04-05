@@ -129,7 +129,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
               const countryObj = allCountries.find((c) => c.code === chef.country_code);
               const countryName = countryObj ? (isAr ? countryObj.name_ar || countryObj.name : countryObj.name) : chef.country_code;
               const locationParts = [localizeCity(chef.city || "", isAr), countryName].filter(Boolean).join(", ");
-              const isTop3 = idx < 3 && chef.rank;
+              const isTop3 = idx < 3 && (chef as any).rank;
 
               return (
                 <Link

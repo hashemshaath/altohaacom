@@ -153,8 +153,8 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
                   <Briefcase className="h-5 w-5 text-primary" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm">{isAr && c.title_ar ? c.title_ar : c.title}</p>
-                  <p className="text-xs text-muted-foreground">{isAr && c.organization_ar ? c.organization_ar : c.organization}</p>
+                  <p className="font-medium text-sm">{isAr && c.role_title_ar ? c.role_title_ar : c.role_title || c.association_type}</p>
+                  <p className="text-xs text-muted-foreground">{isAr && (c.establishments as any)?.name_ar ? (c.establishments as any).name_ar : (c.establishments as any)?.name}</p>
                   <p className="text-[10px] text-muted-foreground mt-1">
                     {c.start_date} — {c.is_current ? (isAr ? "حالي" : "Present") : c.end_date || "—"}
                   </p>

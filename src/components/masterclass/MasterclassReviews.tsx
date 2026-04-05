@@ -172,7 +172,7 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-medium">
-                        {review.profiles?.full_name || (language === "ar" ? "مستخدم" : "User")}
+                        {(review as any).profiles?.full_name || (language === "ar" ? "مستخدم" : "User")}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {format(new Date(review.created_at), "MMM d, yyyy")}
