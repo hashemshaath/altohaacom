@@ -171,7 +171,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
     if (dailyRegistrations.length === 0) return [];
     let cum = 0;
     return dailyRegistrations.map((d) => {
-      cum += d[t("Bookings", "حجوزات")];
+      cum += Number(d[t("Bookings", "حجوزات")] || 0);
       return { ...d, [t("Total", "الإجمالي")]: cum };
     });
   }, [dailyRegistrations]);

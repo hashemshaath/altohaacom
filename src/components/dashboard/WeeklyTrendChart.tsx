@@ -43,7 +43,7 @@ export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
       const [postsRes, reactionsRes, viewsRes] = await Promise.allSettled([
         supabase.from("posts").select("created_at").eq("author_id", user.id).gte("created_at", weekAgo),
         supabase.from("post_reactions").select("created_at").eq("user_id", user.id).gte("created_at", weekAgo),
-        supabase.from("profile_views").select("viewed_at").eq("profile_user_id", user.id).gte("viewed_at", weekAgo),
+        supabase.from("profile_views").select("created_at").eq("profile_user_id", user.id).gte("created_at", weekAgo),
       ]);
 
       const posts = postsRes.status === "fulfilled" ? (postsRes.value.data || []) : [];
@@ -61,7 +61,7 @@ export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
       });
 
       views.forEach((v) => {
-        const dayIdx = days.findIndex(d => new Date(v.viewed_at).toDateString() === new Date(d.date).toDateString());
+        const dayIdx = days.findIndex(d => new Date(v.created_at).toDateString() === new Date(d.date).toDateString());
         if (dayIdx >= 0) days[dayIdx].views++;
       });
 

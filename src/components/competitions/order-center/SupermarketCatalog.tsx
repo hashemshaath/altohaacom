@@ -138,12 +138,12 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
 
   // Mutations
   const saveMutation = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: Record<string, any>) => {
       if (editId) {
-        const { error } = await supabase.from("requirement_items").update(data).eq("id", editId);
+        const { error } = await supabase.from("requirement_items").update(data as any).eq("id", editId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("requirement_items").insert({ ...data, created_by: user!.id });
+        const { error } = await supabase.from("requirement_items").insert({ ...data, created_by: user!.id } as any);
         if (error) throw error;
       }
     },
@@ -254,9 +254,9 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
   const handleSave = () => {
     if (!form.name) return;
     saveMutation.mutate({
-      name: form.name, name_ar: form.name_ar || null,
-      description: form.description || null, description_ar: form.description_ar || null,
-      category: form.category, subcategory: form.subcategory || null,
+      name: form.name, name_ar: form.name_ar || "",
+      description: form.description || "", description_ar: form.description_ar || "",
+      category: form.category, subcategory: form.subcategory || "",
       unit: form.unit, default_quantity: form.default_quantity,
       estimated_cost: form.estimated_cost || null, brand: form.brand || null,
       is_active: true,

@@ -77,7 +77,7 @@ export const AdminCatalogManager = memo(function AdminCatalogManager() {
         const { error } = await supabase.from("requirement_items").update(data).eq("id", editId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("requirement_items").insert({ ...data, created_by: user!.id });
+        const { error } = await supabase.from("requirement_items").insert({ ...data, created_by: user!.id } as any);
         if (error) throw error;
       }
     },

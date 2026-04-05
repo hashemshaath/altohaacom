@@ -29,7 +29,7 @@ export const EntityNotificationsCard = memo(function EntityNotificationsCard({ e
           .limit(3),
         supabase
           .from("entity_competition_participations")
-          .select("id, competition_id, role, created_at, competitions:competition_id(title, title_ar)")
+          .select("id, competition_id, participation_type, created_at, competitions:competition_id(title, title_ar)")
           .eq("entity_id", entityId)
           .order("created_at", { ascending: false })
           .limit(3),
@@ -52,7 +52,7 @@ export const EntityNotificationsCard = memo(function EntityNotificationsCard({ e
         });
       });
 
-      (compsRes.data || []).forEach((c) => {
+      (compsRes.data || []).forEach((c: any) => {
         const comp = c.competitions;
         activities.push({
           type: isAr ? "مسابقة" : "Competition",

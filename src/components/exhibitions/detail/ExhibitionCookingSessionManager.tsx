@@ -226,7 +226,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
                     <TableCell>
                       <span className="text-xs flex items-center gap-1">
                         <Users className="h-3 w-3 text-muted-foreground" />
-                        {regCounts[s.id] || 0}/{s.max_participants || "∞"}
+                        {regCounts[s.id] || 0}/{s.max_audience || "∞"}
                       </span>
                     </TableCell>
                     <TableCell>
