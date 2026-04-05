@@ -47,7 +47,7 @@ export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker
           .select("judge_id, registration_id")
           .in("registration_id", regIds.slice(0, 500));
 
-        scores?.forEach((s: any) => {
+        scores?.forEach((s: { judge_id: string; registration_id: string }) => {
           const compId = regToComp[s.registration_id];
           if (!compId) return;
           if (!scoreCounts[compId]) scoreCounts[compId] = new Set();

@@ -45,13 +45,13 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
       for (let i = 0; i < 14; i++) {
         trendMap[format(subDays(new Date(), 13 - i), "MMM dd")] = 0;
       }
-      (recentOrdersRes.data || []).forEach((o: any) => {
+      (recentOrdersRes.data || []).forEach((o: { created_at: string }) => {
         const key = format(new Date(o.created_at), "MMM dd");
         if (trendMap[key] !== undefined) trendMap[key]++;
       });
       const ordersTrend = Object.entries(trendMap).map(([date, orders]) => ({ date, orders }));
 
-      const thisWeekRevenue = (ordersThisWeek.data || []).reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+      const thisWeekRevenue = (ordersThisWeek.data || []).reduce((sum: number, o: { total_amount: number | null }) => sum + (o.total_amount || 0), 0);
 
       return {
         totalCompanies: totalRes.count || 0,
@@ -146,7 +146,7 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
               {data.topCompanies.length === 0 ? (
                 <p className="text-[10px] text-muted-foreground text-center py-4">{isAr ? "لا توجد بيانات" : "No data"}</p>
               ) : (
-                data.topCompanies.map((company: any, idx: number) => (
+                data.topCompanies.map((company, idx) => (
                   <div key={company.id} className="flex items-center justify-between p-2.5 rounded-xl border border-border/30 text-xs transition-all duration-200 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5 group">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-[10px] font-bold text-muted-foreground tabular-nums w-4">{idx + 1}</span>
