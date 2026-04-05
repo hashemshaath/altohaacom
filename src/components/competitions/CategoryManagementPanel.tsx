@@ -314,7 +314,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
                 {approved.length > 0 ? (
                   <div className="space-y-2">
                     {approved.map((reg, idx) => {
-                      const regScores = scores.filter((s) => s.registration?.registration_id === reg.id || s.registration_id === reg.id);
+                      const regScores = scores.filter((s) => (s as any).registration?.registration_id === reg.id || s.registration_id === reg.id);
                       const totalScore = regScores.reduce((sum, s) => sum + (s.score || 0), 0);
                       return (
                         <div key={reg.id} className="flex items-center justify-between rounded-xl border p-3">

@@ -110,7 +110,7 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
 
   // Add custom item
   const addItem = useMutation({
-    mutationFn: async (data) => {
+    mutationFn: async (data: Record<string, any>) => {
       const { error } = await supabase.from("requirement_list_items").insert({
         list_id: listId, ...data, added_by: user!.id, sort_order: items.length,
       });
@@ -126,7 +126,7 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
 
   // Add from catalog
   const addFromCatalog = useMutation({
-    mutationFn: async (catalogItem) => {
+    mutationFn: async (catalogItem: Record<string, any>) => {
       const { error } = await supabase.from("requirement_list_items").insert({
         list_id: listId, item_id: catalogItem.id, quantity: catalogItem.default_quantity || 1,
         unit: catalogItem.unit || "piece", estimated_cost: catalogItem.estimated_cost,
