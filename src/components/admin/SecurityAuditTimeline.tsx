@@ -55,9 +55,9 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
   });
 
   const stats = useMemo(() => ({
-    critical: events.filter((e: any) => e.severity === "critical").length,
-    high: events.filter((e: any) => e.severity === "high").length,
-    medium: events.filter((e: any) => e.severity === "medium").length,
+    critical: events.filter((e) => e.severity === "critical").length,
+    high: events.filter((e) => e.severity === "high").length,
+    medium: events.filter((e) => e.severity === "medium").length,
     total: events.length,
   }), [events]);
 
@@ -114,7 +114,7 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
               {/* Timeline line */}
               <div className="absolute start-7 top-0 bottom-0 w-px bg-border" />
 
-              {events.map((event: any, idx: number) => {
+              {events.map((event, idx) => {
                 const severity = SEVERITY_CONFIG[event.severity as keyof typeof SEVERITY_CONFIG] || SEVERITY_CONFIG.info;
                 const EventIcon = EVENT_ICONS[event.event_type] || severity.icon;
 

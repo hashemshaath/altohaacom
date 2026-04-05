@@ -11,11 +11,11 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const FIELDS = [
-  { key: "avatar", labelEn: "Photo", labelAr: "صورة", icon: Camera, check: (p: any) => !!p?.avatar_url },
-  { key: "bio", labelEn: "Bio", labelAr: "نبذة", icon: FileText, check: (p: any) => !!p?.bio && p.bio.length > 10 },
-  { key: "location", labelEn: "Location", labelAr: "الموقع", icon: MapPin, check: (p: any) => !!p?.location || !!p?.country_code },
-  { key: "specialization", labelEn: "Specialty", labelAr: "التخصص", icon: Briefcase, check: (p: any) => !!p?.specialization || !!p?.job_title },
-  { key: "social", labelEn: "Social", labelAr: "التواصل", icon: Globe, check: (p: any) => !!p?.instagram || !!p?.twitter || !!p?.linkedin },
+  { key: "avatar", labelEn: "Photo", labelAr: "صورة", icon: Camera, check: (p) => !!p?.avatar_url },
+  { key: "bio", labelEn: "Bio", labelAr: "نبذة", icon: FileText, check: (p) => !!p?.bio && p.bio.length > 10 },
+  { key: "location", labelEn: "Location", labelAr: "الموقع", icon: MapPin, check: (p) => !!p?.location || !!p?.country_code },
+  { key: "specialization", labelEn: "Specialty", labelAr: "التخصص", icon: Briefcase, check: (p) => !!p?.specialization || !!p?.job_title },
+  { key: "social", labelEn: "Social", labelAr: "التواصل", icon: Globe, check: (p) => !!p?.instagram || !!p?.twitter || !!p?.linkedin },
 ];
 
 export const ProfileCompletionCard = memo(function ProfileCompletionCard() {

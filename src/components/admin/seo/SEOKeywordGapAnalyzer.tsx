@@ -150,7 +150,7 @@ Return ONLY valid JSON array of objects with fields: keyword, type, estimatedTra
       const jsonMatch = content.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        setAiOpportunities(parsed.map((o: any, i: number) => ({
+        setAiOpportunities(parsed.map((o, i) => ({
           ...o,
           currentPos: null,
           priority: 90 - i * 5,

@@ -106,7 +106,7 @@ export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCou
               {isAr ? "إضافة إلى مجموعة" : "Add to collection"}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {collections.map((col: any) => (
+            {collections.map((col) => (
               <DropdownMenuItem key={col.id} onClick={() => addToCollection(col.id)} className="gap-2 text-sm">
                 <span>{col.emoji}</span>
                 {col.name}

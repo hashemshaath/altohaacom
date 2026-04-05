@@ -38,9 +38,9 @@ export default function ActivityTab({ isAr, t }: Props) {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: t("Action", "الإجراء"), accessor: (r: any) => r.action_type?.replace(/_/g, " ") || "" },
-      { header: t("Details", "التفاصيل"), accessor: (r: any) => r.details ? JSON.stringify(r.details) : "" },
-      { header: t("Date", "التاريخ"), accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+      { header: t("Action", "الإجراء"), accessor: (r) => r.action_type?.replace(/_/g, " ") || "" },
+      { header: t("Details", "التفاصيل"), accessor: (r) => r.details ? JSON.stringify(r.details) : "" },
+      { header: t("Date", "التاريخ"), accessor: (r) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
     ],
     filename: "role-activity-log",
   });
@@ -85,7 +85,7 @@ export default function ActivityTab({ isAr, t }: Props) {
         ) : (
           <ScrollArea className="max-h-[500px]">
             <div className="space-y-2">
-              {recentChanges.map((change: any) => {
+              {recentChanges.map((change) => {
                 const ActionIcon = ACTION_ICONS[change.action_type] || Activity;
                 const label = actionLabels[change.action_type];
                 const isRemoval = change.action_type === "remove_role";

@@ -295,9 +295,9 @@ export default function JobSearch() {
         j.title?.toLowerCase().includes(selectedCategory)
       );
     }
-    if (sortBy === "salary") results = [...results].sort((a: any, b: any) => (b.salary_min || 0) - (a.salary_min || 0));
-    if (sortBy === "views") results = [...results].sort((a: any, b: any) => (b.views_count || 0) - (a.views_count || 0));
-    if (sortBy === "deadline") results = [...results].sort((a: any, b: any) => {
+    if (sortBy === "salary") results = [...results].sort((a, b) => (b.salary_min || 0) - (a.salary_min || 0));
+    if (sortBy === "views") results = [...results].sort((a, b) => (b.views_count || 0) - (a.views_count || 0));
+    if (sortBy === "deadline") results = [...results].sort((a, b) => {
       if (!a.application_deadline) return 1;
       if (!b.application_deadline) return -1;
       return new Date(a.application_deadline).getTime() - new Date(b.application_deadline).getTime();

@@ -87,7 +87,7 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
     });
   }
 
-  digest.upcomingCompetitions.forEach((reg: any) => {
+  digest.upcomingCompetitions.forEach((reg) => {
     const comp = reg.competitions;
     if (!comp) return;
     const title = isAr ? (comp.title_ar || comp.title) : comp.title;

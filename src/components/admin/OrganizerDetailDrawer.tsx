@@ -59,7 +59,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
           .or(`organizer_id.eq.${organizerId},organizer_name.eq.${org?.name || ""}`)
           .order("start_date", { ascending: false })
           .limit(20);
-        return (data || []).map((e: any) => ({ ...e, role: "organizer" }));
+        return (data || []).map((e) => ({ ...e, role: "organizer" }));
       }
 
       const exIds = linked.map(l => l.exhibition_id);
@@ -71,7 +71,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
         .in("id", exIds)
         .order("start_date", { ascending: false });
 
-      return (exh || []).map((e: any) => ({ ...e, role: roleMap[e.id] || "organizer" }));
+      return (exh || []).map((e) => ({ ...e, role: roleMap[e.id] || "organizer" }));
     },
     enabled: !!organizerId && open,
   });
@@ -80,7 +80,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
   const { data: aggStats } = useQuery({
     queryKey: ["admin-organizer-agg", organizerId],
     queryFn: async () => {
-      const exIds = exhibitions.map((e: any) => e.id).filter(Boolean);
+      const exIds = exhibitions.map((e) => e.id).filter(Boolean);
       if (!exIds.length) return { tickets: 0, reviews: 0 };
 
       const [{ count: tickets }, { count: reviews }] = await Promise.all([
@@ -245,7 +245,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
               {org.key_contacts && Array.isArray(org.key_contacts) && org.key_contacts.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "جهات الاتصال" : "Key Contacts"}</p>
-                  {(org.key_contacts as any[]).map((c: any, i: number) => (
+                  {(org.key_contacts as any[]).map((c, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
                       <UserCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
                       <span className="font-medium">{c.name}</span>
@@ -272,7 +272,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
                   <p className="text-sm text-muted-foreground">{isAr ? "لا توجد معارض مرتبطة" : "No linked exhibitions"}</p>
                 </div>
               ) : (
-                exhibitions.map((ex: any) => (
+                exhibitions.map((ex) => (
                   <Link key={ex.id} to={`/exhibitions/${ex.slug}`} className="group block">
                     <Card className="rounded-xl border-border/40 hover:border-primary/30 hover:shadow-sm transition-all">
                       <CardContent className="p-3 flex items-center gap-3">

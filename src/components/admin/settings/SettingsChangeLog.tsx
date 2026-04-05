@@ -50,7 +50,7 @@ export const SettingsChangeLog = memo(function SettingsChangeLog() {
             </p>
           ) : (
             <div className="space-y-2">
-              {logs.map((log: any, i: number) => {
+              {logs.map((log, i) => {
                 const Icon = CATEGORY_ICONS[log.category] || Settings;
                 const timeAgo = log.updated_at
                   ? formatDistanceToNow(new Date(log.updated_at), {

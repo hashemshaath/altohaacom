@@ -228,7 +228,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
                     {isAr ? "لا توجد بيانات بعد" : "No data yet"}
                   </p>
                 ) : (
-                  interests.map((interest: any, i: number) => {
+                  interests.map((interest, i) => {
                     const maxScore = interests[0]?.score || 1;
                     const pct = Math.round(((interest.score || 0) / maxScore) * 100);
                     return (
@@ -298,7 +298,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
           <CardContent>
             <div className="space-y-3">
               {Object.entries(behaviorStats?.deviceDistribution || {}).map(([device, count]: [string, any]) => {
-                const total = Object.values(behaviorStats?.deviceDistribution || {}).reduce((s: number, v: any) => s + v, 0) as number;
+                const total = Object.values(behaviorStats?.deviceDistribution || {}).reduce((s, v) => s + v, 0) as number;
                 const pct = total > 0 ? Math.round((count / total) * 100) : 0;
                 const deviceLabels: Record<string, { en: string; ar: string }> = {
                   mobile: { en: "Mobile", ar: "موبايل" },
@@ -368,7 +368,7 @@ function LifecycleTriggersList() {
         {triggers.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">{isAr ? "لا توجد محفزات" : "No triggers"}</p>
         ) : (
-          triggers.map((t: any) => (
+          triggers.map((t) => (
             <div key={t.id} className="flex items-center justify-between rounded-xl border p-2.5">
               <div>
                 <p className="text-xs font-medium">{isAr ? t.name_ar || t.name : t.name}</p>

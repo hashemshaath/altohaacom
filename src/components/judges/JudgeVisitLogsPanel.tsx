@@ -111,7 +111,7 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
 
   const resetForm = () => { setForm(emptyForm); setEditingId(null); setShowForm(false); };
 
-  const startEdit = (log: any) => {
+  const startEdit = (log) => {
     setForm({
       event_type: log.event_type || "competition",
       event_name: log.event_name || "",

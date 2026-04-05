@@ -114,7 +114,7 @@ export const HomeTestimonials = function HomeTestimonials() {
                 <ChevronLeft className="h-[18px] w-[18px] sm:h-4 sm:w-4 rtl:rotate-180" />
               </Button>
               <div className="flex gap-1.5">
-                {testimonials.map((_: any, i: number) => (
+                {testimonials.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrent(i)}

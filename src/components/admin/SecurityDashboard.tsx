@@ -350,7 +350,7 @@ function SessionsPanel() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sessions.map((session: any) => (
+                {sessions.map((session) => (
                   <TableRow key={session.id}>
                     <TableCell className="text-xs font-mono truncate max-w-[120px]">
                       {session.user_id?.substring(0, 8)}...
@@ -396,7 +396,7 @@ function PermissionsOverview() {
       
       // Role distribution
       const roleCounts: Record<string, number> = {};
-      (rolesRes.data || []).forEach((r: any) => {
+      (rolesRes.data || []).forEach((r) => {
         roleCounts[r.role] = (roleCounts[r.role] || 0) + 1;
       });
 
@@ -464,7 +464,7 @@ function PermissionsOverview() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {data?.overrides.map((o: any) => (
+                  {data?.overrides.map((o) => (
                     <TableRow key={o.id}>
                       <TableCell className="text-xs font-mono truncate max-w-[100px]">
                         {o.user_id?.substring(0, 8)}...

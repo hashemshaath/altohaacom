@@ -95,12 +95,12 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
         (supabase as any).from("competitions").select("series_id, edition_year").not("series_id", "is", null),
       ]);
       const counts: Record<string, { exhibitions: number; competitions: number; years: number[] }> = {};
-      (exh.data || []).forEach((r: any) => {
+      (exh.data || []).forEach((r) => {
         if (!counts[r.series_id]) counts[r.series_id] = { exhibitions: 0, competitions: 0, years: [] };
         counts[r.series_id].exhibitions++;
         if (r.edition_year && !counts[r.series_id].years.includes(r.edition_year)) counts[r.series_id].years.push(r.edition_year);
       });
-      (comp.data || []).forEach((r: any) => {
+      (comp.data || []).forEach((r) => {
         if (!counts[r.series_id]) counts[r.series_id] = { exhibitions: 0, competitions: 0, years: [] };
         counts[r.series_id].competitions++;
         if (r.edition_year && !counts[r.series_id].years.includes(r.edition_year)) counts[r.series_id].years.push(r.edition_year);

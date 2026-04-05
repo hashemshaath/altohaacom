@@ -181,7 +181,7 @@ export function SEOAuditPanel() {
               {isAr ? "لم يتم إجراء أي تدقيق بعد" : "No audits run yet"}
             </p>
           )}
-          {audits.map((audit: any) => {
+          {audits.map((audit) => {
             const isExpanded = expandedAudit === audit.id;
             const summary = audit.summary as any;
             return (
@@ -222,7 +222,7 @@ export function SEOAuditPanel() {
                         {isAr ? "لا توجد مشاكل! 🎉" : "No issues found! 🎉"}
                       </p>
                     )}
-                    {issues.map((issue: any) => {
+                    {issues.map((issue) => {
                       const cfg = SEVERITY_CONFIG[issue.severity as keyof typeof SEVERITY_CONFIG] || SEVERITY_CONFIG.info;
                       const Icon = cfg.icon;
                       return (

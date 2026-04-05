@@ -307,7 +307,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
   };
 
   // Insert a single row based on entity type
-  const insertRow = async (row: any) => {
+  const insertRow = async (row) => {
     switch (entityType) {
       case "exhibition": {
         const slug = (row.title || "").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
@@ -516,7 +516,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                   {t("Validation Errors", "أخطاء التحقق")}
                 </div>
                 <ul className="mt-2 space-y-1">
-                  {errors.slice(0, 5).map((err: any, i: number) => (
+                  {errors.slice(0, 5).map((err, i) => (
                     <li key={i} className="text-xs text-muted-foreground">
                       {t(`Row ${err.row}: ${err instanceof Error ? err.message : String(err)}`, `الصف ${err.row}: ${err instanceof Error ? err.message : String(err)}`)}
                     </li>

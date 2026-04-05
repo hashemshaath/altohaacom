@@ -50,7 +50,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
 
   const countries = useMemo(() => {
     const m = new Map<string, number>();
-    users.forEach((u: any) => {
+    users.forEach((u) => {
       if (u.country_code) m.set(u.country_code, (m.get(u.country_code) || 0) + 1);
     });
     return Array.from(m.entries())
@@ -61,7 +61,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
 
   const filtered = useMemo(() => {
     if (!countryFilter) return users;
-    return users.filter((u: any) => u.country_code === countryFilter);
+    return users.filter((u) => u.country_code === countryFilter);
   }, [users, countryFilter]);
 
   if (users.length === 0) return null;
@@ -83,7 +83,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
             <>
               <FilterChip label={isAr ? "الكل" : "All"} active={!countryFilter} count={users.length} onClick={() => setCountryFilter(null)} />
               {countries.map(({ code, count }) => {
-                const co = allCountries.find((c: any) => c.code === code);
+                const co = allCountries.find((c) => c.code === code);
                 const name = co ? (isAr ? co.name_ar || co.name : co.name) : code;
                 return (
                   <FilterChip
@@ -100,7 +100,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
         />
 
         <HorizontalScrollRow isAr={isAr}>
-          {filtered.map((user: any) => {
+          {filtered.map((user) => {
             const name = getDisplayName(user, isAr);
             const spec = isAr && user.specialization_ar ? user.specialization_ar : user.specialization;
             const initials = name

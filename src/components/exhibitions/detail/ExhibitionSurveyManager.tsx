@@ -275,7 +275,7 @@ function SurveyCard({ survey, responded, responseCount, isAr, isOrganizer, exhib
 
         {showForm && !responded && (
           <div className="mt-4 space-y-3 border-t border-border/40 pt-3">
-            {questions.sort((a: any, b: any) => a.sort_order - b.sort_order).map((q) => (
+            {questions.sort((a, b) => a.sort_order - b.sort_order).map((q) => (
               <div key={q.id} className="space-y-1.5">
                 <Label className="text-xs">{isAr ? (q.question_ar || q.question) : q.question}</Label>
                 {q.question_type === "rating" ? (

@@ -55,7 +55,7 @@ export function SponsorshipOpportunities() {
         .order("sort_order")
         .limit(4);
 
-      return (competitions || []).map((c: any) => ({
+      return (competitions || []).map((c) => ({
         ...c,
         currentSponsors: c.competition_sponsors?.length || 0,
         packages: packages || [],
@@ -84,7 +84,7 @@ export function SponsorshipOpportunities() {
         {opportunities[0]?.packages?.length > 0 && (
           <div className="mb-4 overflow-x-auto">
             <div className="flex min-w-max gap-2 pb-1" dir={isAr ? "rtl" : "ltr"}>
-              {opportunities[0].packages.map((pkg: any) => {
+              {opportunities[0].packages.map((pkg) => {
                 const tier = TIER_LABELS[pkg.tier] || TIER_LABELS.bronze;
                 return (
                   <div
@@ -108,7 +108,7 @@ export function SponsorshipOpportunities() {
         )}
 
         <HorizontalScrollRow isAr={isAr}>
-          {opportunities.map((comp: any) => {
+          {opportunities.map((comp) => {
             const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
             return (
               <Link

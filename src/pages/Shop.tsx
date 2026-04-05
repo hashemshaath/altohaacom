@@ -61,17 +61,17 @@ export default function Shop() {
 
     // Apply sorting
     if (sortBy === "price_asc") {
-      result = [...result].sort((a: any, b: any) => a.price - b.price);
+      result = [...result].sort((a, b) => a.price - b.price);
     } else if (sortBy === "price_desc") {
-      result = [...result].sort((a: any, b: any) => b.price - a.price);
+      result = [...result].sort((a, b) => b.price - a.price);
     } else if (sortBy === "name") {
-      result = [...result].sort((a: any, b: any) => {
+      result = [...result].sort((a, b) => {
         const aName = isAr && a.title_ar ? a.title_ar : a.title;
         const bName = isAr && b.title_ar ? b.title_ar : b.title;
         return aName.localeCompare(bName);
       });
     } else if (sortBy === "popular") {
-      result = [...result].sort((a: any, b: any) => (b.view_count || 0) - (a.view_count || 0));
+      result = [...result].sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
     }
 
     return result;

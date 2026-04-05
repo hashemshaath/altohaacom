@@ -47,8 +47,8 @@ export const ExhibitionAdvancedAnalytics = memo(function ExhibitionAdvancedAnaly
       const allFollowers = followers.data || [];
 
       // Revenue estimate from paid tickets
-      const paidTickets = allTickets.filter((t: any) => t.status === "confirmed").length;
-      const pendingPayments = allTickets.filter((t: any) => t.status === "pending").length;
+      const paidTickets = allTickets.filter((t) => t.status === "confirmed").length;
+      const pendingPayments = allTickets.filter((t) => t.status === "pending").length;
 
       // Status distribution for pie chart
       const statusDist: Record<string, number> = {};
@@ -135,8 +135,8 @@ export const ExhibitionAdvancedAnalytics = memo(function ExhibitionAdvancedAnaly
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: "Metric", accessor: (r: any) => r.metric },
-      { header: "Value", accessor: (r: any) => r.value },
+      { header: "Metric", accessor: (r) => r.metric },
+      { header: "Value", accessor: (r) => r.value },
     ],
     filename: "exhibition_analytics",
   });

@@ -83,7 +83,7 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
           </CardTitle>
         </CardHeader>
         <CardContent className="p-3 space-y-1 max-h-[280px] overflow-y-auto">
-          {data.recentTxns.slice(0, 12).map((txn: any, i: number) => (
+          {data.recentTxns.slice(0, 12).map((txn, i) => (
             <div key={i} className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0 rounded-lg px-1.5 transition-colors duration-200 hover:bg-muted/40">
               <div className="flex items-center gap-2 min-w-0">
                 {txn.type === "credit" ? (
@@ -116,7 +116,7 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
             </CardTitle>
           </CardHeader>
           <CardContent className="p-3 space-y-2">
-            {data.topWallets.map((w: any, i: number) => (
+            {data.topWallets.map((w, i) => (
               <div key={i} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="text-[9px] w-5 h-5 flex items-center justify-center rounded-full p-0">

@@ -109,7 +109,7 @@ export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
         {/* Recent Events */}
         <div className="space-y-1">
           <p className="text-xs font-medium text-muted-foreground">{isAr ? "آخر الأحداث" : "Recent Events"}</p>
-          {data?.recentEvents.map((evt: any, i: number) => (
+          {data?.recentEvents.map((evt, i) => (
             <div key={i} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/20">
               <span className="truncate">{evt.event_type.replace(/_/g, " ")}</span>
               <Badge variant={evt.severity === "critical" ? "destructive" : "secondary"} className="text-[9px] px-1 py-0">

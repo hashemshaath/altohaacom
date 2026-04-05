@@ -101,11 +101,11 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (r: any) => r.invoice_number || "" },
-      { header: isAr ? "المبلغ" : "Amount", accessor: (r: any) => r.amount || 0 },
-      { header: isAr ? "العملة" : "Currency", accessor: (r: any) => r.currency || "SAR" },
-      { header: isAr ? "الحالة" : "Status", accessor: (r: any) => r.status || "" },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r: any) => r.created_at ? format(new Date(r.created_at), "yyyy-MM-dd") : "" },
+      { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (r) => r.invoice_number || "" },
+      { header: isAr ? "المبلغ" : "Amount", accessor: (r) => r.amount || 0 },
+      { header: isAr ? "العملة" : "Currency", accessor: (r) => r.currency || "SAR" },
+      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status || "" },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r) => r.created_at ? format(new Date(r.created_at), "yyyy-MM-dd") : "" },
     ],
     filename: "membership-invoices",
   });
@@ -353,7 +353,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                   </div>
                   {searchedUsers.length > 0 && (
                     <div className="space-y-1 max-h-40 overflow-y-auto rounded-lg border p-1">
-                      {searchedUsers.map((u: any) => (
+                      {searchedUsers.map((u) => (
                         <button
                           key={u.user_id}
                           onClick={() => {

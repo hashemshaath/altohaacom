@@ -37,7 +37,7 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
   const enrollmentCount = mc.masterclass_enrollments?.length || 0;
   const reviews = mc.masterclass_reviews || [];
   const avgRating = useMemo(() => reviews.length > 0
-    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length)
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length)
     : null, [reviews]);
   return (
     <Card

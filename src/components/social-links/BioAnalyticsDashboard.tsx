@@ -46,7 +46,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return (
     <div className="rounded-xl border border-border bg-card px-3 py-2 shadow-lg">
       <p className="text-[10px] text-muted-foreground mb-1">{label}</p>
-      {payload.map((entry: any, i: number) => (
+      {payload.map((entry, i) => (
         <p key={i} className="text-xs font-semibold" style={{ color: entry.color }}>
           {entry.name}: {entry.value}
         </p>
@@ -588,7 +588,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                   <YAxis tick={{ fontSize: 8 }} axisLine={false} tickLine={false} />
                   <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey={isAr ? "زيارات" : "Views"} radius={[3, 3, 0, 0]}>
-                    {hourlyData.map((_: any, i: number) => {
+                    {hourlyData.map((_, i) => {
                       const max = Math.max(...visitorStats.hourlyBreakdown);
                       const val = visitorStats.hourlyBreakdown[i];
                       return <Cell key={i} fill={val === max ? "hsl(var(--chart-2))" : "hsl(var(--primary) / 0.4)"} />;

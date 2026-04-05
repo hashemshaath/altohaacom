@@ -43,7 +43,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
         .from("site_settings")
         .select("*")
         .like("key", "seo_meta_%");
-      return (data || []).map((d: any) => ({ path: d.key.replace("seo_meta_", "").replace(/_/g, "/"), ...d.value }));
+      return (data || []).map((d) => ({ path: d.key.replace("seo_meta_", "").replace(/_/g, "/"), ...d.value }));
     },
   });
 
@@ -65,7 +65,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
 
   const selectPage = (path: string) => {
     setSelectedPath(path);
-    const existing = metaConfigs.find((m: any) => m.path === path);
+    const existing = metaConfigs.find((m) => m.path === path);
     setForm(existing || { path });
   };
 
@@ -75,7 +75,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
   const descOk = descLen > 0 && descLen <= 160;
 
   const filteredRoutes = DEFAULT_ROUTES.filter(r => r.includes(search.toLowerCase()));
-  const configuredPaths = new Set(metaConfigs.map((m: any) => m.path));
+  const configuredPaths = new Set(metaConfigs.map((m) => m.path));
 
   return (
     <div className="space-y-4">

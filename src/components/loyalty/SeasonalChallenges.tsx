@@ -58,7 +58,7 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
   });
 
   const getProgress = (challengeId: string) => {
-    const p = userProgress.find((up: any) => up.challenge_id === challengeId);
+    const p = userProgress.find((up) => up.challenge_id === challengeId);
     return p ? { current: p.progress || 0, completed: p.completed_at != null } : { current: 0, completed: false };
   };
 
@@ -88,7 +88,7 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
       </CardHeader>
       <CardContent>
         <div className="grid gap-2.5 sm:grid-cols-2">
-          {challenges.map((c: any) => {
+          {challenges.map((c) => {
             const { current, completed } = getProgress(c.id);
             const target = c.target_count || 1;
             const pct = Math.min(100, Math.round((current / target) * 100));

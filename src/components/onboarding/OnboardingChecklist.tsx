@@ -16,7 +16,7 @@ interface Step {
   label: string;
   labelAr: string;
   link: string;
-  check: (profile: any) => boolean;
+  check: (profile) => boolean;
 }
 
 const STEPS: Step[] = [

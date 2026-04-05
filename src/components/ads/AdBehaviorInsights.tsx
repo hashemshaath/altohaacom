@@ -159,7 +159,7 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
             <p className="text-center py-8 text-sm text-muted-foreground">{isAr ? "لا توجد بيانات" : "No interest data yet"}</p>
           ) : (
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {interests.map((interest: any, i: number) => {
+              {interests.map((interest, i) => {
                 const maxScore = Math.max(...interests.map((x) => x.score || 1));
                 const pct = ((interest.score || 0) / maxScore) * 100;
                 return (

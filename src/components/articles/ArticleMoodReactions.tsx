@@ -46,7 +46,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
 
         const reactionCounts: Record<string, number> = {};
         REACTIONS.forEach(r => { reactionCounts[r.key] = 0; });
-        (allReactions || []).forEach((r: any) => {
+        (allReactions || []).forEach((r) => {
           reactionCounts[r.reaction_type] = (reactionCounts[r.reaction_type] || 0) + 1;
         });
         setCounts(reactionCounts);
@@ -68,7 +68,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
         const { data: userReactions } = await userQuery;
 
         const userSelected: Record<string, boolean> = {};
-        (userReactions || []).forEach((r: any) => {
+        (userReactions || []).forEach((r) => {
           userSelected[r.reaction_type] = true;
         });
         setSelected(userSelected);

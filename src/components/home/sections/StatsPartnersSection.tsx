@@ -67,7 +67,7 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
           .eq("is_active", true)
           .order("sort_order")
           .limit(itemCount);
-        return (allData || []).map((p: any) => ({
+        return (allData || []).map((p) => ({
           id: p.id,
           name: isAr ? p.name_ar || p.name : p.name,
           logo_url: p.logo_url,
@@ -76,7 +76,7 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
         })) as LogoItem[];
       }
 
-      return (data || []).map((p: any) => ({
+      return (data || []).map((p) => ({
         id: p.id,
         name: isAr ? p.name_ar || p.name : p.name,
         logo_url: p.logo_url,
@@ -100,7 +100,7 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
         .not("logo_url", "is", null)
         .order("name")
         .limit(itemCount);
-      return (data || []).map((e: any) => ({
+      return (data || []).map((e) => ({
         id: e.id,
         name: isAr ? e.name_ar || e.name : e.name,
         logo_url: e.logo_url,

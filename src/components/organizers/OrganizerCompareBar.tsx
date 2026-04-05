@@ -65,7 +65,7 @@ export const OrganizerCompareBar = memo(function OrganizerCompareBar({ items, on
 });
 
 function CompareTable({ items, isAr }: { items: any[]; isAr: boolean }) {
-  const rows: { label: string; labelAr: string; icon: typeof Landmark; render: (org: any) => React.ReactNode }[] = [
+  const rows: { label: string; labelAr: string; icon: typeof Landmark; render: (org) => React.ReactNode }[] = [
     {
       label: "Name", labelAr: "الاسم", icon: CheckCircle2,
       render: (org) => (

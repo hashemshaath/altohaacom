@@ -41,13 +41,13 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
         .limit(itemCount);
 
       if (ranked && ranked.length > 0) {
-        const userIds = ranked.map((r: any) => r.user_id);
+        const userIds = ranked.map((r) => r.user_id);
         const { data: profiles } = await supabase
           .from("profiles")
           .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality, show_nationality")
           .in("user_id", userIds);
-        const profileMap = new Map((profiles || []).map((p: any) => [p.user_id, p]));
-        return ranked.map((r: any) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
+        const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
+        return ranked.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
       }
 
       const { data: profiles } = await supabase
@@ -56,7 +56,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
         .eq("is_verified", true)
         .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(itemCount);
-      return (profiles || []).map((p: any) => ({
+      return (profiles || []).map((p) => ({
         ...p, total_points: p.loyalty_points || 0,
         gold_medals: 0, silver_medals: 0, bronze_medals: 0,
       }));
@@ -111,12 +111,12 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                 </div>
               </div>
             ))
-          ) : chefs.map((chef: any, idx: number) => {
+          ) : chefs.map((chef, idx) => {
             const name = getDisplayName(chef, isAr);
             const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
             const initials = name ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
             const hasMedals = chef.gold_medals > 0 || chef.silver_medals > 0 || chef.bronze_medals > 0;
-            const countryObj = allCountries.find((c: any) => c.code === chef.country_code);
+            const countryObj = allCountries.find((c) => c.code === chef.country_code);
             const countryName = countryObj ? (isAr ? countryObj.name_ar || countryObj.name : countryObj.name) : "";
             const natCode = chef.show_nationality !== false ? chef.nationality : null;
 

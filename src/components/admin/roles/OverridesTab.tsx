@@ -50,8 +50,8 @@ export default function OverridesTab({ isAr, t }: Props) {
     },
   });
 
-  const grantedCount = overrides.filter((o: any) => o.granted).length;
-  const revokedCount = overrides.filter((o: any) => !o.granted).length;
+  const grantedCount = overrides.filter((o) => o.granted).length;
+  const revokedCount = overrides.filter((o) => !o.granted).length;
 
   return (
     <Card className="rounded-2xl border-border/40">
@@ -90,7 +90,7 @@ export default function OverridesTab({ isAr, t }: Props) {
           </div>
         ) : (
           <div className="space-y-2">
-            {overrides.map((o: any) => (
+            {overrides.map((o) => (
               <div key={o.id} className="flex items-center gap-3 rounded-xl border border-border/40 p-3 hover:bg-muted/20 transition-colors">
                 <div className={`rounded-xl p-2 shrink-0 ${o.granted ? "bg-chart-2/10" : "bg-destructive/10"}`}>
                   {o.granted ? <ShieldCheck className="h-4 w-4 text-chart-2" /> : <ShieldOff className="h-4 w-4 text-destructive" />}

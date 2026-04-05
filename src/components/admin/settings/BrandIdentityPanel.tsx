@@ -242,7 +242,7 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
   };
 
   const removeSeasonalIdentity = (id: string) => {
-    setSeasonalIdentities(seasonalIdentities.filter((s: any) => s.id !== id));
+    setSeasonalIdentities(seasonalIdentities.filter((s) => s.id !== id));
     if (activeSeasonalId === id) setActiveSeasonalId(null);
   };
 
@@ -509,7 +509,7 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {seasonalIdentities.map((item: any, idx: number) => (
+                  {seasonalIdentities.map((item, idx) => (
                     <div key={item.id} className={cn(
                       "rounded-xl border-2 p-4 space-y-3 transition-all",
                       activeSeasonalId === item.id

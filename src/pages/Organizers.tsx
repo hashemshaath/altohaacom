@@ -87,19 +87,19 @@ export default function Organizers() {
 
     switch (sortBy) {
       case "name":
-        list = [...list].sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
+        list = [...list].sort((a, b) => (a.name || "").localeCompare(b.name || ""));
         break;
       case "events":
-        list = [...list].sort((a: any, b: any) => (b.total_exhibitions || 0) - (a.total_exhibitions || 0));
+        list = [...list].sort((a, b) => (b.total_exhibitions || 0) - (a.total_exhibitions || 0));
         break;
       case "rating":
-        list = [...list].sort((a: any, b: any) => (b.average_rating || 0) - (a.average_rating || 0));
+        list = [...list].sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
         break;
       case "newest":
-        list = [...list].sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        list = [...list].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         break;
       default:
-        list = [...list].sort((a: any, b: any) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
+        list = [...list].sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
     }
     return list;
   }, [organizers, search, countryFilter, categoryFilter, sortBy]);

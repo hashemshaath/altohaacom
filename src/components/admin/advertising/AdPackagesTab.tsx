@@ -17,7 +17,7 @@ const tierColors: Record<string, string> = {
 interface Props {
   packages: any[];
   onToggleActive?: (id: string, active: boolean) => void;
-  onEdit?: (pkg: any) => void;
+  onEdit?: (pkg) => void;
 }
 
 export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleActive, onEdit }: Props) {
@@ -46,7 +46,7 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleAct
       </Card>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {packages.map((pkg: any) => (
+        {packages.map((pkg) => (
           <Card
             key={pkg.id}
             className={`rounded-2xl border-2 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 ${tierColors[pkg.tier] || "border-border/50"}`}

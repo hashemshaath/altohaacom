@@ -68,7 +68,7 @@ export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-4">
-          {badges.map((ub: any) => {
+          {badges.map((ub) => {
             const compTitle = language === "ar" && ub.competitions?.title_ar
               ? ub.competitions.title_ar
               : ub.competitions?.title;

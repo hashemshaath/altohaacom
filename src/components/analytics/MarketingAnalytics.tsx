@@ -384,7 +384,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie data={conversionData?.sourcePie || []} cx="50%" cy="50%" innerRadius={40} outerRadius={70} paddingAngle={3} dataKey="value" label={({ name, value }) => `${name} (${value})`}>
-                      {(conversionData?.sourcePie || []).map((_: any, i: number) => (
+                      {(conversionData?.sourcePie || []).map((_, i) => (
                         <Cell key={i} fill={COLORS[i % COLORS.length]} />
                       ))}
                     </Pie>

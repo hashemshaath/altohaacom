@@ -17,7 +17,7 @@ export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomp
   const containerRef = useRef<HTMLDivElement>(null);
 
   const suggestions = search.length >= 2
-    ? organizers.filter((o: any) => {
+    ? organizers.filter((o) => {
         const q = search.toLowerCase();
         return (
           o.name?.toLowerCase().includes(q) ||
@@ -61,7 +61,7 @@ export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomp
 
       {showDropdown && (
         <div className="absolute inset-x-0 top-full mt-1.5 z-50 rounded-xl border border-border/50 bg-popover shadow-xl overflow-hidden" role="listbox">
-          {suggestions.map((org: any) => {
+          {suggestions.map((org) => {
             const name = isAr && org.name_ar ? org.name_ar : org.name;
             return (
               <Link

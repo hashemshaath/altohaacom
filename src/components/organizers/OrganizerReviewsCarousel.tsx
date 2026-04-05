@@ -72,7 +72,7 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
       </h2>
 
       <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory">
-        {reviews.map((r: any) => (
+        {reviews.map((r) => (
           <div
             key={r.id}
             className="snap-start shrink-0 w-[260px] rounded-xl border border-border/30 bg-muted/20 p-4 space-y-3"

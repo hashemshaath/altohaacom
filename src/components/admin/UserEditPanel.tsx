@@ -107,7 +107,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   const { data: editUserSpecialties = [], refetch: refetchUserSpecialties } = useUserSpecialties(editingUser.user_id);
   const { data: editFollowStats } = useFollowStats(editingUser.user_id);
 
-  const editUserSpecialtyIds = new Set(editUserSpecialties.map((us: any) => us.specialty_id));
+  const editUserSpecialtyIds = new Set(editUserSpecialties.map((us) => us.specialty_id));
 
   const validateUsername = async (username: string) => {
     if (!username || username.length < 3) {

@@ -60,7 +60,7 @@ export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
         .order("competition_start", { ascending: true })
         .limit(50);
 
-      return (data || []).map((c: any) => ({
+      return (data || []).map((c) => ({
         ...c,
         isRegistered: registeredIds.includes(c.id),
       }));

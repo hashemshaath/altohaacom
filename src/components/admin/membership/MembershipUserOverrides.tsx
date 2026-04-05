@@ -68,7 +68,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
     enabled: !!selectedUserId,
   });
 
-  const selectedProfile = users.find((u: any) => u.user_id === selectedUserId) || null;
+  const selectedProfile = users.find((u) => u.user_id === selectedUserId) || null;
 
   const handleAddOverride = async () => {
     if (!selectedUserId || !newOverride.featureId) return;
@@ -132,7 +132,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
   };
 
   // Features not yet overridden
-  const existingFeatureIds = new Set(overrides.map((o: any) => o.feature_id));
+  const existingFeatureIds = new Set(overrides.map((o) => o.feature_id));
   const availableFeatures = features.filter(f => !existingFeatureIds.has(f.id));
 
   return (
@@ -160,7 +160,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
 
           {users.length > 0 && (
             <div className="space-y-1 max-w-md">
-              {users.map((u: any) => (
+              {users.map((u) => (
                 <button
                   key={u.user_id}
                   onClick={() => {
@@ -312,7 +312,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
               </div>
             ) : (
               <div className="space-y-2">
-                {overrides.map((override: any) => {
+                {overrides.map((override) => {
                   const feature = override.membership_features;
                   const isExpired = override.expires_at && new Date(override.expires_at) < new Date();
                   return (

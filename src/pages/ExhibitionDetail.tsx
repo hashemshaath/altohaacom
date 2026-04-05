@@ -193,7 +193,7 @@ export default function ExhibitionDetail() {
       const scored = (regs || [])
         .map((r) => ({ ...r, totalScore: (r.competition_scores || []).reduce((sum, s) => sum + Number(s.score || 0), 0), scoreCount: (r.competition_scores || []).length }))
         .filter((r) => r.scoreCount > 0)
-        .sort((a: any, b: any) => b.totalScore - a.totalScore);
+        .sort((a, b) => b.totalScore - a.totalScore);
 
       const participantIds = [...new Set(scored.map((r) => r.participant_id))];
       if (participantIds.length > 0) {

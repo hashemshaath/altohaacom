@@ -37,20 +37,20 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
       for (let i = 13; i >= 0; i--) {
         const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
         const key = d.toISOString().split("T")[0];
-        const dayPoints = (pointsRes.data || []).filter((p: any) => p.created_at?.startsWith(key)).reduce((s: number, p: any) => s + (p.points || 0), 0);
+        const dayPoints = (pointsRes.data || []).filter((p) => p.created_at?.startsWith(key)).reduce((s, p) => s + (p.points || 0), 0);
         pointsData.push({ day: key.slice(5), pts: dayPoints });
       }
 
       // This month vs last month points
-      const thisMonthPts = (pointsRes.data || []).filter((p: any) => new Date(p.created_at) >= thirtyDaysAgo).reduce((s: number, p: any) => s + Math.max(0, p.points || 0), 0);
-      const lastMonthPts = (pointsRes.data || []).filter((p: any) => new Date(p.created_at) < thirtyDaysAgo).reduce((s: number, p: any) => s + Math.max(0, p.points || 0), 0);
+      const thisMonthPts = (pointsRes.data || []).filter((p) => new Date(p.created_at) >= thirtyDaysAgo).reduce((s, p) => s + Math.max(0, p.points || 0), 0);
+      const lastMonthPts = (pointsRes.data || []).filter((p) => new Date(p.created_at) < thirtyDaysAgo).reduce((s, p) => s + Math.max(0, p.points || 0), 0);
 
       return {
         pointsData,
         thisMonthPts,
         lastMonthPts,
         competitions: regsRes.data?.length || 0,
-        competitionsApproved: regsRes.data?.filter((r: any) => r.status === "approved").length || 0,
+        competitionsApproved: regsRes.data?.filter((r) => r.status === "approved").length || 0,
         badges: badgesRes.data?.length || 0,
         profileViews: viewsRes.data?.length || 0,
       };

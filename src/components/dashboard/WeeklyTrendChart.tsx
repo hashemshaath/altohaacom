@@ -50,17 +50,17 @@ export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
       const reactions = reactionsRes.status === "fulfilled" ? (reactionsRes.value.data || []) : [];
       const views = viewsRes.status === "fulfilled" ? (viewsRes.value.data || []) : [];
 
-      posts.forEach((p: any) => {
+      posts.forEach((p) => {
         const dayIdx = days.findIndex(d => new Date(p.created_at).toDateString() === new Date(d.date).toDateString());
         if (dayIdx >= 0) days[dayIdx].posts++;
       });
 
-      reactions.forEach((r: any) => {
+      reactions.forEach((r) => {
         const dayIdx = days.findIndex(d => new Date(r.created_at).toDateString() === new Date(d.date).toDateString());
         if (dayIdx >= 0) days[dayIdx].reactions++;
       });
 
-      views.forEach((v: any) => {
+      views.forEach((v) => {
         const dayIdx = days.findIndex(d => new Date(v.viewed_at).toDateString() === new Date(d.date).toDateString());
         if (dayIdx >= 0) days[dayIdx].views++;
       });

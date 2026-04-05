@@ -78,9 +78,9 @@ export default function ProSuppliers() {
       result = result.filter((c) => c.country_code === countryFilter);
     }
     if (sortBy === "name") {
-      result.sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
+      result.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     } else if (sortBy === "newest") {
-      result.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
     return result;
   }, [companies, search, category, countryFilter, sortBy]);

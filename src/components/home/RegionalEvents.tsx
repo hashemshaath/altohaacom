@@ -42,15 +42,15 @@ export function RegionalEvents() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const saudiCount = useMemo(() => allComps.filter((c: any) => c.country_code?.toUpperCase() === "SA").length, [allComps]);
-  const meCount = useMemo(() => allComps.filter((c: any) => c.country_code && MIDDLE_EAST.includes(c.country_code.toUpperCase())).length, [allComps]);
-  const globalCount = useMemo(() => allComps.filter((c: any) => !c.country_code || !MIDDLE_EAST.includes(c.country_code.toUpperCase())).length, [allComps]);
+  const saudiCount = useMemo(() => allComps.filter((c) => c.country_code?.toUpperCase() === "SA").length, [allComps]);
+  const meCount = useMemo(() => allComps.filter((c) => c.country_code && MIDDLE_EAST.includes(c.country_code.toUpperCase())).length, [allComps]);
+  const globalCount = useMemo(() => allComps.filter((c) => !c.country_code || !MIDDLE_EAST.includes(c.country_code.toUpperCase())).length, [allComps]);
 
   const filteredComps = useMemo(() => {
     switch (activeTab) {
-      case "saudi": return allComps.filter((c: any) => c.country_code?.toUpperCase() === "SA");
-      case "middle-east": return allComps.filter((c: any) => c.country_code && MIDDLE_EAST.includes(c.country_code.toUpperCase()));
-      case "global": return allComps.filter((c: any) => !c.country_code || !MIDDLE_EAST.includes(c.country_code.toUpperCase()));
+      case "saudi": return allComps.filter((c) => c.country_code?.toUpperCase() === "SA");
+      case "middle-east": return allComps.filter((c) => c.country_code && MIDDLE_EAST.includes(c.country_code.toUpperCase()));
+      case "global": return allComps.filter((c) => !c.country_code || !MIDDLE_EAST.includes(c.country_code.toUpperCase()));
       default: return allComps;
     }
   }, [allComps, activeTab]);
@@ -99,7 +99,7 @@ export function RegionalEvents() {
               </button>
 
               <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as any} dir={isAr ? "rtl" : "ltr"}>
-                {filteredComps.map((item: any) => (
+                {filteredComps.map((item) => (
                   <EventCard key={item.id} item={item} isAr={isAr} />
                 ))}
               </div>

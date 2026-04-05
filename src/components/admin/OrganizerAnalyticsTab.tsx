@@ -33,7 +33,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const exIds = useMemo(() => exhibitions.map((e: any) => e.id).filter(Boolean), [exhibitions]);
+  const exIds = useMemo(() => exhibitions.map((e) => e.id).filter(Boolean), [exhibitions]);
 
   // Aggregate stats: tickets, reviews, followers
   const { data: aggData } = useQuery({
@@ -52,8 +52,8 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
         ? reviews.reduce((s, r: any) => s + (r.rating || 0), 0) / reviews.length
         : 0;
 
-      const totalViews = exhibitions.reduce((s: number, e: any) => s + (e.view_count || 0), 0);
-      const countries = new Set(exhibitions.map((e: any) => e.country).filter(Boolean)).size;
+      const totalViews = exhibitions.reduce((s, e) => s + (e.view_count || 0), 0);
+      const countries = new Set(exhibitions.map((e) => e.country).filter(Boolean)).size;
 
       return {
         tickets: ticketsRes.count || 0,
@@ -75,7 +75,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
       const m = startOfMonth(subMonths(now, i));
       months[format(m, "yyyy-MM")] = 0;
     }
-    exhibitions.forEach((e: any) => {
+    exhibitions.forEach((e) => {
       if (e.start_date) {
         const key = format(parseISO(e.start_date), "yyyy-MM");
         if (key in months) months[key]++;
@@ -90,7 +90,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
   // Status distribution
   const statusDist = useMemo(() => {
     const map: Record<string, number> = {};
-    exhibitions.forEach((e: any) => {
+    exhibitions.forEach((e) => {
       const s = e.status || "unknown";
       map[s] = (map[s] || 0) + 1;
     });
@@ -100,7 +100,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
   // Country distribution
   const countryDist = useMemo(() => {
     const map: Record<string, number> = {};
-    exhibitions.forEach((e: any) => {
+    exhibitions.forEach((e) => {
       const c = e.country || e.city || "Unknown";
       map[c] = (map[c] || 0) + 1;
     });
@@ -113,10 +113,10 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
   // Views trend (per exhibition, sorted by date)
   const viewsTrend = useMemo(() => {
     return exhibitions
-      .filter((e: any) => e.start_date)
-      .sort((a: any, b: any) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
+      .filter((e) => e.start_date)
+      .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
       .slice(-12)
-      .map((e: any) => ({
+      .map((e) => ({
         name: format(parseISO(e.start_date), "MMM yy"),
         views: e.view_count || 0,
       }));

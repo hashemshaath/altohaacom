@@ -18,14 +18,14 @@ export function useCareerData(userId: string) {
 
   const sections: SectionConfig[] = useMemo(() => {
     const customFromDb: SectionConfig[] = dbSections
-      .filter((s: any) => s.is_custom)
-      .map((s: any) => ({
+      .filter((s) => s.is_custom)
+      .map((s) => ({
         key: s.section_key, icon: s.icon || "FileText",
         en: s.name_en, ar: s.name_ar || s.name_en,
         color: s.color || CUSTOM_SECTION_COLORS[0], isCustom: true,
       }));
     const dbDefaultOrder = dbSections
-      .filter((s: any) => !s.is_custom)
+      .filter((s) => !s.is_custom)
       .reduce((acc: Record<string, any>, s: any) => { acc[s.section_key] = s; return acc; }, {} as Record<string, any>);
 
     // Check if any custom section semantically duplicates a default section
@@ -46,7 +46,7 @@ export function useCareerData(userId: string) {
       });
 
     if (dbSections.length > 0) {
-      const orderedKeys = dbSections.map((s: any) => s.section_key);
+      const orderedKeys = dbSections.map((s) => s.section_key);
       const allSections = [...defaults, ...customFromDb];
       const ordered: SectionConfig[] = [];
       for (const key of orderedKeys) {

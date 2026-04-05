@@ -15,7 +15,7 @@ interface Props {
   bulkActions: any;
   onApprove: (id: string, status: string) => void;
   onReject: (id: string) => void;
-  onInvoice: (campaign: any) => void;
+  onInvoice: (campaign) => void;
   onExportCSV: (items: any[]) => void;
   invoicePending: boolean;
 }
@@ -103,7 +103,7 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {campaigns.map((c: any) => {
+                {campaigns.map((c) => {
                   const budget = c.budget || 1;
                   const spent = c.spent || 0;
                   const pct = Math.min(Math.round((spent / budget) * 100), 100);

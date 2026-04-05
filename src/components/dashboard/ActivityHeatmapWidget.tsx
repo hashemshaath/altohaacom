@@ -36,9 +36,9 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
       ]);
 
       const allDates: string[] = [
-        ...(postsRes.data || []).map((d: any) => d.created_at),
-        ...(recipesRes.data || []).map((d: any) => d.created_at),
-        ...(commentsRes.data || []).map((d: any) => d.created_at),
+        ...(postsRes.data || []).map((d) => d.created_at),
+        ...(recipesRes.data || []).map((d) => d.created_at),
+        ...(commentsRes.data || []).map((d) => d.created_at),
       ];
 
       const dayMap: Record<string, number> = {};

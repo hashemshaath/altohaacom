@@ -226,7 +226,7 @@ export default function OrganizersAdmin() {
       return matchSearch && matchStatus && matchCountry && matchVerified;
     });
     // Sort
-    return list.sort((a: any, b: any) => {
+    return list.sort((a, b) => {
       let av = a[sortKey], bv = b[sortKey];
       if (typeof av === "string") av = av.toLowerCase();
       if (typeof bv === "string") bv = bv.toLowerCase();

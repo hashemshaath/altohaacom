@@ -202,11 +202,11 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الاسم" : "Name", accessor: (r: any) => r.profile?.full_name || "" },
-      { header: isAr ? "المعرف" : "Username", accessor: (r: any) => r.profile?.username || "" },
-      { header: isAr ? "المستوى" : "Tier", accessor: (r: any) => r.profile?.membership_tier || "basic" },
-      { header: isAr ? "الرصيد" : "Balance", accessor: (r: any) => r.balance || 0 },
-      { header: isAr ? "النقاط" : "Points", accessor: (r: any) => r.points_balance || 0 },
+      { header: isAr ? "الاسم" : "Name", accessor: (r) => r.profile?.full_name || "" },
+      { header: isAr ? "المعرف" : "Username", accessor: (r) => r.profile?.username || "" },
+      { header: isAr ? "المستوى" : "Tier", accessor: (r) => r.profile?.membership_tier || "basic" },
+      { header: isAr ? "الرصيد" : "Balance", accessor: (r) => r.balance || 0 },
+      { header: isAr ? "النقاط" : "Points", accessor: (r) => r.points_balance || 0 },
     ],
     filename: "membership-wallets",
   });
@@ -300,7 +300,7 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {walletUsers?.map((item: any) => (
+                      {walletUsers?.map((item) => (
                         <TableRow key={item.id}>
                           <TableCell>
                             <div className="flex items-center gap-2.5">

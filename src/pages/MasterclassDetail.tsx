@@ -420,7 +420,7 @@ export default function MasterclassDetail() {
             <Accordion type="multiple" className="space-y-2">
               {modules.map((module) => {
                 const lessons = module.masterclass_lessons || [];
-                const sortedLessons = [...lessons].sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
+                const sortedLessons = [...lessons].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
                 const moduleCompletedCount = sortedLessons.filter((l) => completedLessonIds.has(l.id)).length;
 
                 return (

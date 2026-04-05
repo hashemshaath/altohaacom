@@ -40,7 +40,7 @@ interface ProfileField {
   labelEn: string;
   labelAr: string;
   icon: any;
-  check: (p: any) => boolean;
+  check: (p) => boolean;
   actionEn: string;
   actionAr: string;
   link: string;

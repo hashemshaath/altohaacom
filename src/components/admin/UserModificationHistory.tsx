@@ -106,7 +106,7 @@ export const UserModificationHistory = memo(function UserModificationHistory({ u
   return (
     <ScrollArea className="h-[400px]">
       <div className="space-y-3 pe-4">
-        {history.map((action: any) => {
+        {history.map((action) => {
           const meta = ACTION_META[action.action_type] || ACTION_META.update_profile;
           const Icon = meta.icon;
           return (

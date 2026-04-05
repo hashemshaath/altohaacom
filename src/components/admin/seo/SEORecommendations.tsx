@@ -42,7 +42,7 @@ Current Metrics:
 - Indexed Pages: ${seoData.indexedPages}/${seoData.totalPages}
 - Open Issues: ${seoData.issueCount}
 - Top Pages: ${seoData.topPages.slice(0, 5).map(([p, c]) => `${p} (${c} views)`).join(", ")}
-- Tracked Keywords: ${seoData.keywords.length} (${seoData.keywords.filter((k: any) => k.current_position).length} with positions)
+- Tracked Keywords: ${seoData.keywords.length} (${seoData.keywords.filter((k) => k.current_position).length} with positions)
 
 Provide recommendations in this format:
 ## 🎯 High Priority

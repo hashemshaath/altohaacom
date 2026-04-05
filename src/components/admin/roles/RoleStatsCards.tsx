@@ -19,7 +19,7 @@ export default function RoleStatsCards({ roleStats, allRolePerms, totalPerms, ac
       {roleStats.map(({ role, count }) => {
         const meta = ROLE_META[role];
         const Icon = meta.icon;
-        const permCount = allRolePerms.filter((rp: any) => rp.role === role).length;
+        const permCount = allRolePerms.filter((rp) => rp.role === role).length;
         const permPercent = totalPerms > 0 ? Math.round((permCount / totalPerms) * 100) : 0;
         const isActive = activeRole === role && activeTab === "permissions";
         return (

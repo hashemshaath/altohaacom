@@ -211,7 +211,7 @@ export const SupportCenter = memo(function SupportCenter() {
                   <Separator className="my-3" />
                   <ScrollArea className="max-h-[300px]">
                     <div className="space-y-3">
-                      {replies.map((r: any) => (
+                      {replies.map((r) => (
                         <div key={r.id} className={cn("p-3 rounded-xl text-sm", r.is_staff ? "bg-primary/5 border-s-2 border-primary" : "bg-muted")}>
                           <div className="flex items-center justify-between mb-1">
                             <Badge variant="outline" className="text-[10px]">{r.is_staff ? (isAr ? "فريق الدعم" : "Support Team") : (isAr ? "أنت" : "You")}</Badge>
@@ -243,7 +243,7 @@ export const SupportCenter = memo(function SupportCenter() {
               </CardContent>
             </Card>
           ) : (
-            tickets.map((t: any) => {
+            tickets.map((t) => {
               const sc = STATUS_CONFIG[t.status] || STATUS_CONFIG.open;
               const Icon = sc.icon;
               return (

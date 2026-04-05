@@ -70,13 +70,13 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
 
   // Stats
   const totalCodes = referralCodes?.length || 0;
-  const activeCodes = referralCodes?.filter((c: any) => c.is_active).length || 0;
-  const totalConversions = referralCodes?.reduce((sum: number, c: any) => sum + (c.total_conversions || 0), 0) || 0;
-  const totalPointsAwarded = referralCodes?.reduce((sum: number, c: any) => sum + (c.total_points_earned || 0), 0) || 0;
-  const totalClicks = referralCodes?.reduce((sum: number, c: any) => sum + (c.total_clicks || 0), 0) || 0;
+  const activeCodes = referralCodes?.filter((c) => c.is_active).length || 0;
+  const totalConversions = referralCodes?.reduce((sum, c) => sum + (c.total_conversions || 0), 0) || 0;
+  const totalPointsAwarded = referralCodes?.reduce((sum, c) => sum + (c.total_points_earned || 0), 0) || 0;
+  const totalClicks = referralCodes?.reduce((sum, c) => sum + (c.total_clicks || 0), 0) || 0;
   const conversionRate = totalClicks > 0 ? ((totalConversions / totalClicks) * 100).toFixed(1) : "0";
 
-  const filteredCodes = referralCodes?.filter((code: any) => {
+  const filteredCodes = referralCodes?.filter((code) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
     const profile = code.profiles;
@@ -167,7 +167,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
           {(() => {
             const funnelData = [
               { stage: isAr ? "نقرات" : "Clicks", value: totalClicks, color: "hsl(var(--muted-foreground))" },
-              { stage: isAr ? "دعوات" : "Invites", value: referralCodes?.reduce((s: number, c: any) => s + (c.total_invites_sent || 0), 0) || 0, color: "hsl(var(--primary))" },
+              { stage: isAr ? "دعوات" : "Invites", value: referralCodes?.reduce((s, c) => s + (c.total_invites_sent || 0), 0) || 0, color: "hsl(var(--primary))" },
               { stage: isAr ? "تحويلات" : "Conversions", value: totalConversions, color: "hsl(var(--chart-2))" },
             ];
             return funnelData[0].value > 0 ? (
@@ -241,7 +241,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                     ) : filteredCodes?.length === 0 ? (
                       <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">{isAr ? "لا توجد نتائج" : "No results"}</TableCell></TableRow>
                     ) : (
-                      filteredCodes?.map((code: any) => (
+                      filteredCodes?.map((code) => (
                         <TableRow key={code.id}>
                           <TableCell>
                             <div>
@@ -301,7 +301,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                     ) : conversions?.length === 0 ? (
                       <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">{isAr ? "لا توجد تحويلات" : "No conversions yet"}</TableCell></TableRow>
                     ) : (
-                      conversions?.map((c: any) => (
+                      conversions?.map((c) => (
                         <TableRow key={c.id}>
                           <TableCell>
                             <p className="text-sm font-medium">{c.referrer?.full_name || c.referrer?.username || "-"}</p>
@@ -366,7 +366,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                     ) : membershipReferrals?.length === 0 ? (
                       <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">{isAr ? "لا توجد إحالات" : "No referrals yet"}</TableCell></TableRow>
                     ) : (
-                      membershipReferrals?.map((r: any) => (
+                      membershipReferrals?.map((r) => (
                         <TableRow key={r.id}>
                           <TableCell>
                             <p className="text-sm font-medium">{r.referrer?.full_name || r.referrer?.username || "-"}</p>

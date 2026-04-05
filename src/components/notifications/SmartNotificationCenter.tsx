@@ -326,7 +326,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                     </Badge>
                   </p>
                   <div className="space-y-1">
-                    {(items as any[]).map((n: any) => {
+                    {(items as any[]).map((n) => {
                       const priority = inferPriority(n);
                       return (
                         <SwipeableNotificationCard

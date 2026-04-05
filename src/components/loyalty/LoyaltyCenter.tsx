@@ -32,10 +32,10 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
   const progress = tierData?.progress || 0;
 
   const getUserChallengeProgress = (challengeId: string) => {
-    return userChallenges.find((uc: any) => uc.challenge_id === challengeId);
+    return userChallenges.find((uc) => uc.challenge_id === challengeId);
   };
 
-  const handleRedeem = (reward: any) => {
+  const handleRedeem = (reward) => {
     if (points < reward.points_cost) {
       toast({ title: isAr ? "نقاط غير كافية" : "Not enough points", variant: "destructive" });
       return;
@@ -53,7 +53,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
     legendary: "bg-primary/10 text-primary",
   };
 
-  const loginStreak = streaks.find((s: any) => s.streak_type === "daily_login");
+  const loginStreak = streaks.find((s) => s.streak_type === "daily_login");
 
   return (
     <div className="space-y-6">
@@ -85,7 +85,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
               </div>
               <Progress value={progress} className="h-3" />
               <div className="flex gap-1 justify-between">
-                {tiers.map((t: any) => (
+                {tiers.map((t) => (
                   <div key={t.id} className={`flex flex-col items-center transition-all duration-300 ${points >= t.min_points ? "opacity-100 scale-100" : "opacity-40 scale-95"}`}>
                     <span className="text-sm">{t.icon_emoji}</span>
                     <span className="text-[10px] text-muted-foreground tabular-nums"><AnimatedCounter value={t.min_points} className="inline" /></span>
@@ -134,7 +134,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
 
         {/* Challenges */}
         <TabsContent value="challenges" className="space-y-3">
-          {challenges.map((c: any) => {
+          {challenges.map((c) => {
             const userProgress = getUserChallengeProgress(c.id);
             const pct = userProgress ? Math.min((userProgress.progress / c.target_count) * 100, 100) : 0;
             const completed = userProgress?.completed_at;
@@ -178,10 +178,10 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
         {/* Rewards */}
         <TabsContent value="rewards">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {rewards.map((r: any) => {
+            {rewards.map((r) => {
               const canAfford = points >= r.points_cost;
-              const tierIndex = tiers.findIndex((t: any) => t.slug === r.min_tier);
-              const userTierIndex = tiers.findIndex((t: any) => t.slug === currentTier?.slug);
+              const tierIndex = tiers.findIndex((t) => t.slug === r.min_tier);
+              const userTierIndex = tiers.findIndex((t) => t.slug === currentTier?.slug);
               const tierLocked = tierIndex > userTierIndex;
               const affordPct = Math.min(100, (points / r.points_cost) * 100);
 
@@ -240,7 +240,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
         <TabsContent value="badges">
           {badges.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {badges.map((b: any) => (
+              {badges.map((b) => (
                 <Card key={b.id} className="text-center group/badge transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-chart-4/30">
                   <CardContent className="p-4 space-y-2">
                     <span className="text-3xl block transition-transform duration-500 group-hover/badge:scale-125 group-hover/badge:rotate-6">{b.badge_icon}</span>
@@ -265,7 +265,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
 
         {/* Tiers */}
         <TabsContent value="tiers" className="space-y-3">
-          {tiers.map((t: any) => {
+          {tiers.map((t) => {
             const isCurrentTier = t.slug === currentTier?.slug;
             const isReached = points >= t.min_points;
 

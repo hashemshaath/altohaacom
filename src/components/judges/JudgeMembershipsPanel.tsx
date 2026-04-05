@@ -89,7 +89,7 @@ const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAd
 
   const resetForm = () => { setForm(emptyForm); setEditingId(null); setShowForm(false); };
 
-  const startEdit = (m: any) => {
+  const startEdit = (m) => {
     setForm({
       organization_name: m.organization_name || "",
       organization_name_ar: m.organization_name_ar || "",

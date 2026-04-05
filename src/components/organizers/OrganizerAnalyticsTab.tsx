@@ -49,7 +49,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
     sortedYears.slice().reverse().map(year => ({
       year,
       events: byYear[year].length,
-      views: byYear[year].reduce((s: number, e: any) => s + (e.view_count || 0), 0),
+      views: byYear[year].reduce((s, e) => s + (e.view_count || 0), 0),
     })),
   [sortedYears, byYear]);
 
@@ -57,7 +57,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
   const typeData = useMemo(() =>
     types.map(t => ({
       name: t.replace(/_/g, " "),
-      value: exhibitions.filter((e: any) => e.type === t).length,
+      value: exhibitions.filter((e) => e.type === t).length,
     })),
   [types, exhibitions]);
 
@@ -65,7 +65,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
   const countryData = useMemo(() =>
     countries.map(c => ({
       name: c,
-      events: exhibitions.filter((e: any) => e.country === c).length,
+      events: exhibitions.filter((e) => e.country === c).length,
     })).sort((a, b) => b.events - a.events),
   [countries, exhibitions]);
 
@@ -75,7 +75,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
       month: new Date(2024, i).toLocaleString(isAr ? "ar" : "en", { month: "short" }),
       count: 0,
     }));
-    exhibitions.forEach((e: any) => {
+    exhibitions.forEach((e) => {
       if (e.start_date) {
         const m = new Date(e.start_date).getMonth();
         months[m].count++;
@@ -96,8 +96,8 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
   // Average rating across all exhibitions
   const avgDuration = useMemo(() => {
     const durations = exhibitions
-      .filter((e: any) => e.start_date && e.end_date)
-      .map((e: any) => {
+      .filter((e) => e.start_date && e.end_date)
+      .map((e) => {
         const start = new Date(e.start_date).getTime();
         const end = new Date(e.end_date).getTime();
         return Math.ceil((end - start) / (1000 * 60 * 60 * 24));

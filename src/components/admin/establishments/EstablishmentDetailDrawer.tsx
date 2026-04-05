@@ -133,7 +133,7 @@ const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ enti
           <TabsContent value="chefs" className="mt-4 space-y-3">
             {!associations?.length ? (
               <p className="text-sm text-muted-foreground text-center py-8">{isAr ? "لا يوجد طهاة مرتبطين" : "No associated chefs"}</p>
-            ) : associations.map((a: any) => (
+            ) : associations.map((a) => (
               <Card key={a.id} className="border-border/50">
                 <CardContent className="p-3 flex items-center gap-3">
                   <Avatar className="h-9 w-9">

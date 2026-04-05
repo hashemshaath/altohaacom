@@ -180,7 +180,7 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
           )}
         </div>
         {/* Replies */}
-        {comment.replies?.map((r: any) => renderComment(r, true))}
+        {comment.replies?.map((r) => renderComment(r, true))}
         {/* Reply input */}
         {replyTo === comment.id && user && (
           <div className="flex gap-2 mt-2 ms-10">
@@ -242,7 +242,7 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
         </div>
       ) : (
         <div className="divide-y divide-border/30">
-          {comments.map((c: any) => renderComment(c))}
+          {comments.map((c) => renderComment(c))}
         </div>
       )}
     </div>

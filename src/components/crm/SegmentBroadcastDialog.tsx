@@ -130,7 +130,7 @@ export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
           : `Notification sent to ${count} users`,
       });
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast({ variant: "destructive", title: "Error", description: error.message });
     },
   });

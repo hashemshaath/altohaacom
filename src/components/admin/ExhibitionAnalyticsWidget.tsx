@@ -96,7 +96,7 @@ export const ExhibitionAnalyticsWidget = memo(function ExhibitionAnalyticsWidget
         {data?.upcomingExh && data.upcomingExh.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">{isAr ? "معارض قادمة" : "Upcoming Events"}</p>
-            {data.upcomingExh.map((exh: any) => {
+            {data.upcomingExh.map((exh) => {
               const daysLeft = differenceInDays(new Date(exh.start_date), new Date());
               return (
                 <div key={exh.id} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/20">

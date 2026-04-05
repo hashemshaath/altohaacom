@@ -172,9 +172,9 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
         .select("status, tier, amount, currency, created_at, redeemed_at");
 
       const total = gifts?.length || 0;
-      const pending = gifts?.filter((g: any) => g.status === "pending").length || 0;
-      const redeemed = gifts?.filter((g: any) => g.status === "redeemed").length || 0;
-      const totalRevenue = gifts?.reduce((s: number, g: any) => s + (Number(g.amount) || 0), 0) || 0;
+      const pending = gifts?.filter((g) => g.status === "pending").length || 0;
+      const redeemed = gifts?.filter((g) => g.status === "redeemed").length || 0;
+      const totalRevenue = gifts?.reduce((s, g) => s + (Number(g.amount) || 0), 0) || 0;
       const redemptionRate = total > 0 ? ((redeemed / total) * 100).toFixed(1) : "0";
 
       // Tier breakdown

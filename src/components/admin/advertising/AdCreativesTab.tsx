@@ -113,7 +113,7 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
         </Card>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredCreatives.map((cr: any) => (
+          {filteredCreatives.map((cr) => (
             <Card key={cr.id} className="rounded-2xl overflow-hidden group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
               {cr.image_url && (
                 <div className="aspect-video bg-muted relative overflow-hidden">
