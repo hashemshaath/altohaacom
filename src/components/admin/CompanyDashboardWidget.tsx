@@ -37,7 +37,7 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "active"),
         supabase.from("company_orders").select("id, total_amount", { count: "exact" }).gte("created_at", sevenDaysAgo),
         supabase.from("company_orders").select("id", { count: "exact", head: true }).gte("created_at", fourteenDaysAgo).lt("created_at", sevenDaysAgo),
-        supabase.from("companies").select("id, name, name_ar, type, status, total_reviews, average_rating").order("total_reviews", { ascending: false }).limit(5),
+        supabase.from("companies").select("id, name, name_ar, type, status, total_reviews").order("total_reviews", { ascending: false }).limit(5),
         supabase.from("company_orders").select("created_at").gte("created_at", subDays(new Date(), 14).toISOString()).order("created_at", { ascending: true }),
       ]);
 
@@ -157,7 +157,6 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <Star className="h-3 w-3 text-chart-4 fill-chart-4" />
-                      <span className="text-[10px] font-bold tabular-nums">{company.average_rating?.toFixed(1) || "—"}</span>
                       <span className="text-[9px] text-muted-foreground">({company.total_reviews || 0})</span>
                     </div>
                   </div>
