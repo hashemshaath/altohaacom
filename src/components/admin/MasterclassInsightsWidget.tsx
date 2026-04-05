@@ -17,7 +17,7 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
     queryKey: ["admin-masterclass-insights"],
     queryFn: async () => {
       const r1 = await supabase.from("masterclasses").select("*", { count: "exact", head: true });
-      const r2 = await supabase.from("masterclasses").select("*", { count: "exact", head: true }).eq("is_published", true);
+      const r2 = await (supabase.from("masterclasses").select("*", { count: "exact", head: true }) as any).eq("is_published", true) as { count: number | null };
       const r3 = await supabase.from("masterclass_modules").select("*", { count: "exact", head: true });
       const r4 = await supabase.from("masterclass_enrollments").select("progress_percentage, completed_at") as { data: { progress_percentage: number; completed_at: string | null }[] | null };
       const r5 = await supabase.from("masterclasses").select("id, title, title_ar, enrollment_count, average_rating")
