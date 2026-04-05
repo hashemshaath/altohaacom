@@ -23,7 +23,7 @@ export const CertificateWorkflowTracker = memo(function CertificateWorkflowTrack
       const statuses = { draft: 0, pending_signature: 0, signed: 0, issued: 0, revoked: 0 };
       const types: Record<string, number> = {};
 
-      (data || []).forEach((c: any) => {
+      (data || []).forEach((c: { status: string; type: string }) => {
         if (c.status in statuses) statuses[c.status as keyof typeof statuses]++;
         types[c.type] = (types[c.type] || 0) + 1;
       });

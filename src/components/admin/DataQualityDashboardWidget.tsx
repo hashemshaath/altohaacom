@@ -18,7 +18,7 @@ interface EntityScore {
   complete: number;
 }
 
-function computeCompleteness(records: any[], requiredFields: string[]): { complete: number; total: number; score: number } {
+function computeCompleteness(records: Record<string, unknown>[], requiredFields: string[]): { complete: number; total: number; score: number } {
   if (!records.length) return { complete: 0, total: 0, score: 0 };
   let complete = 0;
   for (const r of records) {

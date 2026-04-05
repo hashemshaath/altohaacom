@@ -76,13 +76,13 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
             <div className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
               {isAr ? "آخر العمليات" : "Recent Merges"}
             </div>
-            {data.recentMerges.map((m: any) => {
-              const details = m.details as any;
+            {data.recentMerges.map((m) => {
+              const details = m.details as Record<string, unknown> | null;
               return (
                 <div key={m.id} className="flex items-center gap-2 text-xs p-2 rounded-lg bg-muted/30">
                   <Merge className="h-3 w-3 text-muted-foreground shrink-0" />
-                  <span className="truncate flex-1">{details?.primary_name || "—"}</span>
-                  <Badge variant="secondary" className="text-[9px]">+{details?.merged_count || 0}</Badge>
+                  <span className="truncate flex-1">{String(details?.primary_name || "—")}</span>
+                  <Badge variant="secondary" className="text-[9px]">+{String(details?.merged_count || 0)}</Badge>
                   <span className="text-[9px] text-muted-foreground shrink-0">
                     <Clock className="h-2.5 w-2.5 inline me-0.5" />
                     {format(new Date(m.created_at), "MMM d")}

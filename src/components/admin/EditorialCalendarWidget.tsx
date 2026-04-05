@@ -35,21 +35,23 @@ export const EditorialCalendarWidget = memo(function EditorialCalendarWidget() {
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 0 });
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
+  interface ArticleRow { id: string; title: string; title_ar: string | null; status: string | null; type: string; published_at: string | null; created_at: string }
+
   const articlesByDay = useMemo(() => {
-    const map = new Map<string, any[]>();
-    articles.forEach((a: any) => {
+    const map = new Map<string, ArticleRow[]>();
+    articles.forEach((a) => {
       if (a.published_at) {
         const key = format(parseISO(a.published_at), "yyyy-MM-dd");
         const list = map.get(key) || [];
-        list.push(a);
+        list.push(a as ArticleRow);
         map.set(key, list);
       }
     });
     return map;
   }, [articles]);
 
-  const drafts = articles.filter((a: any) => a.status === "draft");
-  const scheduled = articles.filter((a: any) => a.status === "published" && a.published_at && new Date(a.published_at) > new Date());
+  const drafts = articles.filter((a) => a.status === "draft");
+  const scheduled = articles.filter((a) => a.status === "published" && a.published_at && new Date(a.published_at) > new Date());
 
   const statusColor: Record<string, string> = {
     draft: "bg-chart-4/20 border-chart-4/30 text-chart-4",
@@ -96,7 +98,7 @@ export const EditorialCalendarWidget = memo(function EditorialCalendarWidget() {
                   {format(day, "d")}
                 </p>
                 <div className="space-y-0.5">
-                  {dayArticles.slice(0, 2).map((a: any) => (
+                  {dayArticles.slice(0, 2).map((a) => (
                     <div
                       key={a.id}
                       className={cn("rounded px-1 py-0.5 text-[8px] font-medium truncate border", statusColor[a.status] || statusColor.draft)}
@@ -138,7 +140,7 @@ export const ArticlePerformanceWidget = memo(function ArticlePerformanceWidget()
 
   if (topArticles.length === 0) return null;
 
-  const maxViews = Math.max(...topArticles.map((a: any) => a.view_count || 1));
+  const maxViews = Math.max(...topArticles.map((a) => a.view_count || 1));
 
   return (
     <Card className="rounded-2xl border-border/40">
@@ -149,7 +151,7 @@ export const ArticlePerformanceWidget = memo(function ArticlePerformanceWidget()
         </CardTitle>
       </CardHeader>
       <CardContent className="pb-4 space-y-3">
-        {topArticles.map((article: any, i: number) => {
+        {topArticles.map((article, i) => {
           const title = isAr ? article.title_ar || article.title : article.title;
           const pct = ((article.view_count || 0) / maxViews) * 100;
           return (

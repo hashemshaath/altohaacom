@@ -39,7 +39,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competition_sponsors")
-        .select("*, competitions(title, title_ar, start_date, end_date, status), sponsorship_packages(name, name_ar, tier, price)")
+        .select("*, competitions(title, title_ar, competition_start, competition_end, status), sponsorship_packages(name, name_ar, tier, price)")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -69,9 +69,9 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
     queryFn: async () => {
       const { data, error } = await supabase
         .from("competitions")
-        .select("id, title, title_ar, start_date, country_code, status")
+        .select("id, title, title_ar, competition_start, country_code, status")
         .in("status", ["upcoming", "registration_open"])
-        .order("start_date", { ascending: true })
+        .order("competition_start", { ascending: true })
         .limit(10);
       if (error) throw error;
       return data || [];
@@ -82,14 +82,14 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
     setAiLoading(true);
     try {
       const companyData = await supabase.from("companies").select("name, type, description, country_code").eq("id", companyId).single();
-      const history = sponsorships.map((s: any) => ({
-        competition: s.competitions?.title,
-        tier: s.sponsorship_packages?.tier,
+      const history = sponsorships.map((s) => ({
+        competition: (s as Record<string, unknown>).competitions && typeof (s as Record<string, unknown>).competitions === "object" ? ((s as Record<string, unknown>).competitions as Record<string, unknown>)?.title : undefined,
+        tier: (s as Record<string, unknown>).sponsorship_packages && typeof (s as Record<string, unknown>).sponsorship_packages === "object" ? ((s as Record<string, unknown>).sponsorship_packages as Record<string, unknown>)?.tier : undefined,
         status: s.status,
       }));
-      const upcoming = upcomingCompetitions.map((c: any) => ({
+      const upcoming = upcomingCompetitions.map((c) => ({
         title: c.title,
-        date: c.start_date,
+        date: c.competition_start,
         country: c.country_code,
       }));
 
@@ -116,9 +116,9 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
   };
 
   const { totalSpent, activeCount, pendingInvitations } = useMemo(() => ({
-    totalSpent: sponsorships.reduce((sum: number, s: any) => sum + Number(s.sponsorship_packages?.price || 0), 0),
-    activeCount: sponsorships.filter((s: any) => s.status === "active").length,
-    pendingInvitations: invitations.filter((i: any) => i.status === "pending").length,
+    totalSpent: sponsorships.reduce((sum: number, s) => sum + Number((s as Record<string, unknown>).sponsorship_packages && typeof (s as Record<string, unknown>).sponsorship_packages === "object" ? ((s as Record<string, unknown>).sponsorship_packages as Record<string, unknown>)?.price || 0 : 0), 0),
+    activeCount: sponsorships.filter((s) => s.status === "active").length,
+    pendingInvitations: invitations.filter((i) => i.status === "pending").length,
   }), [sponsorships, invitations]);
 
   return (
@@ -175,17 +175,17 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sponsorships.map((s: any) => {
+                {sponsorships.map((s) => {
                   const Icon = TIER_ICONS[s.sponsorship_packages?.tier] || Package;
                   return (
                     <TableRow key={s.id}>
                       <TableCell className="font-medium">
                         <div>
                           <p>{isAr && s.competitions?.title_ar ? s.competitions.title_ar : s.competitions?.title || "—"}</p>
-                          {s.competitions?.start_date && (
+                          {s.competitions?.competition_start && (
                             <p className="text-xs text-muted-foreground flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              {format(new Date(s.competitions.start_date), "MMM yyyy")}
+                              {format(new Date(s.competitions.competition_start), "MMM yyyy")}
                             </p>
                           )}
                         </div>
@@ -227,7 +227,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
         <CardContent>
           {invitations.length > 0 ? (
             <div className="grid gap-3 sm:grid-cols-2">
-              {invitations.map((inv: any) => (
+              {invitations.map((inv) => (
                 <Card key={inv.id} className="border">
                   <CardContent className="pt-4 pb-4">
                     <div className="flex items-start justify-between mb-2">
@@ -270,15 +270,15 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2">
-              {upcomingCompetitions.map((comp: any) => (
+              {upcomingCompetitions.map((comp) => (
                 <Card key={comp.id} className="border">
                   <CardContent className="pt-4 pb-4">
                     <p className="font-medium text-sm">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
                     <div className="flex items-center gap-2 mt-2">
-                      {comp.start_date && (
+                      {comp.competition_start && (
                         <Badge variant="outline" className="text-[10px]">
                           <Calendar className="h-3 w-3 me-1" />
-                          {format(new Date(comp.start_date), "MMM yyyy")}
+                          {format(new Date(comp.competition_start), "MMM yyyy")}
                         </Badge>
                       )}
                       <Badge variant="secondary" className="text-[10px]">{comp.status}</Badge>

@@ -25,12 +25,12 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
 
       // Type distribution
       const byType: Record<string, number> = {};
-      (typeBreakdown.data || []).forEach((c: any) => { byType[c.type] = (byType[c.type] || 0) + 1; });
+      (typeBreakdown.data || []).forEach((c: { type: string }) => { byType[c.type] = (byType[c.type] || 0) + 1; });
 
       // Order revenue
       const orders = recentOrders.data || [];
-      const totalRevenue = orders.reduce((sum: number, o: any) => sum + (Number(o.total_amount) || 0), 0);
-      const paidOrders = orders.filter((o: any) => o.status === "paid" || o.status === "delivered").length;
+      const totalRevenue = orders.reduce((sum: number, o: { total_amount: number | null }) => sum + (Number(o.total_amount) || 0), 0);
+      const paidOrders = orders.filter((o: { status: string | null }) => o.status === "paid" || o.status === "delivered").length;
 
       return {
         total: totalRes.count || 0,

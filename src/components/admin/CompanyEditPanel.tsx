@@ -31,9 +31,10 @@ const companyTypes: { value: CompanyType; label: string; labelAr: string }[] = [
   { value: "vendor", label: "Vendor", labelAr: "بائع" },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface CompanyEditPanelProps {
   companyId: string;
-  companyDetails: any;
+  companyDetails: any; // Supabase row with dynamic fields
 }
 
 export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, companyDetails }: CompanyEditPanelProps) {
@@ -72,7 +73,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
   const { data: mediaItems = [] } = useQuery({
     queryKey: ["company-media-logos", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, file_name, category, media_type, created_at")
+      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, category, file_type, created_at")
         .eq("company_id", companyId).in("category", ["logo", "product_images"]).order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -197,8 +198,9 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
         filename: file.name, file_type: file.type, file_size: file.size, uploaded_by: user?.id || null,
       });
       toast({ title: isAr ? "تم رفع الشعار" : "Logo uploaded" });
-    } catch (e: any) {
-      toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: e.message });
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Unknown error";
+      toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: message });
     }
     setLogoUploading(false);
   };
@@ -372,7 +374,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
               <p className="text-sm font-medium mb-2">{isAr ? "اختر من مكتبة الوسائط" : "Select from Media Library"}</p>
               {mediaItems.length > 0 ? (
                 <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                  {mediaItems.filter((m: any) => m.file_type?.startsWith("image")).map((m: any) => (
+                  {mediaItems.filter((m) => m.file_type?.startsWith("image")).map((m) => (
                     <button key={m.id} className="rounded-xl border-2 border-transparent hover:border-primary overflow-hidden aspect-square"
                       onClick={() => { setForm(prev => ({ ...prev, logo_url: m.file_url })); setShowMediaPicker(false); }}>
                       <img src={m.file_url} alt={m.filename} className="h-full w-full object-cover" />

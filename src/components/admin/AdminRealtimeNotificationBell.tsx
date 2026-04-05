@@ -29,7 +29,7 @@ export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotifica
 
   const unreadCount = events.filter((e) => !e.read).length;
 
-  const addEvent = useCallback((type: string, payload: any) => {
+  const addEvent = useCallback((type: string, _payload: unknown) => {
     const iconMap: Record<string, { icon: React.ElementType; color: string }> = {
       user: { icon: Users, color: "text-primary" },
       competition: { icon: Trophy, color: "text-chart-4" },

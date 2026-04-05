@@ -79,7 +79,7 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
         },
         {
           icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue",
-          value: `${((ordersNow.data?.reduce((s: number, o: any) => s + (o.total_amount || 0), 0) || 0) / 1000).toFixed(1)}K`,
+          value: `${((ordersNow.data?.reduce((s: number, o: { total_amount: number | null }) => s + (o.total_amount || 0), 0) || 0) / 1000).toFixed(1)}K`,
           growth: 0,
           color: "text-chart-4", bg: "bg-chart-4/10",
         },
@@ -90,7 +90,7 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
       for (let i = 29; i >= 0; i--) {
         dailyMap[format(subDays(now, i), "dd")] = 0;
       }
-      recentUsers.data?.forEach((u: any) => {
+      recentUsers.data?.forEach((u: { created_at: string }) => {
         const d = format(new Date(u.created_at), "dd");
         if (dailyMap[d] !== undefined) dailyMap[d]++;
       });

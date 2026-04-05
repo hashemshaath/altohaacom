@@ -41,7 +41,7 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
       ]);
       return {
         profile: profileRes.data,
-        roles: (rolesRes.data || []).map((r: any) => r.role),
+        roles: (rolesRes.data || []).map((r: { role: string }) => r.role),
         wallet: walletRes.data,
         actions: actionsRes.data || [],
       };
@@ -175,7 +175,7 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
                   <p className="text-[10px] text-muted-foreground text-center py-4">{isAr ? "لا يوجد سجل" : "No history"}</p>
                 ) : (
                   <div className="space-y-1.5">
-                    {user.actions.map((action: any, i: number) => (
+                    {user.actions.map((action: { action_type: string; created_at: string; details: unknown }, i: number) => (
                       <div key={i} className="flex items-start gap-2 p-2 rounded-xl bg-muted/20 text-xs">
                         <div className="h-5 w-5 rounded-full bg-muted/60 flex items-center justify-center shrink-0 mt-0.5">
                           <FileText className="h-2.5 w-2.5 text-muted-foreground" />

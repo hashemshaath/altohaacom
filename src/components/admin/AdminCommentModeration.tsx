@@ -77,11 +77,11 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
   });
 
   const filtered = search
-    ? comments.filter((c: any) => c.content.toLowerCase().includes(search.toLowerCase()) || c.author?.full_name?.toLowerCase().includes(search.toLowerCase()))
+    ? comments.filter((c) => c.content.toLowerCase().includes(search.toLowerCase()) || c.author?.full_name?.toLowerCase().includes(search.toLowerCase()))
     : comments;
 
-  const flaggedCount = comments.filter((c: any) => c.is_flagged).length;
-  const hiddenCount = comments.filter((c: any) => c.is_hidden).length;
+  const flaggedCount = comments.filter((c) => c.is_flagged).length;
+  const hiddenCount = comments.filter((c) => c.is_hidden).length;
 
   return (
     <div className="space-y-4">
@@ -90,7 +90,7 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
           <Search className="h-4 w-4 text-muted-foreground" />
           <Input placeholder={isAr ? "بحث..." : "Search comments..."} value={search} onChange={e => setSearch(e.target.value)} className="h-8 text-sm" />
         </div>
-        <Select value={filter} onValueChange={(v: any) => setFilter(v)}>
+        <Select value={filter} onValueChange={(v: "all" | "flagged" | "hidden") => setFilter(v)}>
           <SelectTrigger className="w-[140px] h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
@@ -139,7 +139,7 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((c: any) => (
+              {filtered.map((c) => (
                 <TableRow key={c.id} className={c.is_hidden ? "opacity-50" : ""}>
                   <TableCell>
                     <div className="flex items-center gap-2">

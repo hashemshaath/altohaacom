@@ -37,7 +37,7 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "active"),
         supabase.from("company_orders").select("id, total_amount", { count: "exact" }).gte("created_at", sevenDaysAgo),
         supabase.from("company_orders").select("id", { count: "exact", head: true }).gte("created_at", fourteenDaysAgo).lt("created_at", sevenDaysAgo),
-        supabase.from("companies").select("id, name, name_ar, type, status, total_reviews, average_rating").order("total_reviews", { ascending: false }).limit(5),
+        supabase.from("companies").select("id, name, name_ar, type, status, total_reviews").order("total_reviews", { ascending: false }).limit(5),
         supabase.from("company_orders").select("created_at").gte("created_at", subDays(new Date(), 14).toISOString()).order("created_at", { ascending: true }),
       ]);
 
@@ -45,13 +45,13 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
       for (let i = 0; i < 14; i++) {
         trendMap[format(subDays(new Date(), 13 - i), "MMM dd")] = 0;
       }
-      (recentOrdersRes.data || []).forEach((o: any) => {
+      (recentOrdersRes.data || []).forEach((o: { created_at: string }) => {
         const key = format(new Date(o.created_at), "MMM dd");
         if (trendMap[key] !== undefined) trendMap[key]++;
       });
       const ordersTrend = Object.entries(trendMap).map(([date, orders]) => ({ date, orders }));
 
-      const thisWeekRevenue = (ordersThisWeek.data || []).reduce((sum: number, o: any) => sum + (o.total_amount || 0), 0);
+      const thisWeekRevenue = (ordersThisWeek.data || []).reduce((sum: number, o: { total_amount: number | null }) => sum + (o.total_amount || 0), 0);
 
       return {
         totalCompanies: totalRes.count || 0,
@@ -146,7 +146,7 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
               {data.topCompanies.length === 0 ? (
                 <p className="text-[10px] text-muted-foreground text-center py-4">{isAr ? "لا توجد بيانات" : "No data"}</p>
               ) : (
-                data.topCompanies.map((company: any, idx: number) => (
+                data.topCompanies.map((company, idx) => (
                   <div key={company.id} className="flex items-center justify-between p-2.5 rounded-xl border border-border/30 text-xs transition-all duration-200 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5 group">
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="text-[10px] font-bold text-muted-foreground tabular-nums w-4">{idx + 1}</span>
@@ -157,7 +157,6 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <Star className="h-3 w-3 text-chart-4 fill-chart-4" />
-                      <span className="text-[10px] font-bold tabular-nums">{company.average_rating?.toFixed(1) || "—"}</span>
                       <span className="text-[9px] text-muted-foreground">({company.total_reviews || 0})</span>
                     </div>
                   </div>

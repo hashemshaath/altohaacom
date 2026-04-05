@@ -75,7 +75,7 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
               <TrendingUp className="h-3 w-3" />
               {isAr ? "الأكثر مشاهدة" : "Most Viewed"}
             </p>
-            {stats.topArticles.map((a: any) => (
+            {stats.topArticles.map((a) => (
               <div key={a.id} className="flex items-center justify-between text-xs py-1 border-b border-border/30 last:border-0">
                 <span className="truncate flex-1 me-2">{isAr ? a.title_ar || a.title : a.title}</span>
                 <div className="flex items-center gap-1.5 shrink-0">

@@ -15,7 +15,7 @@ interface ExportModule {
   key: string;
   label: string;
   labelAr: string;
-  icon: any;
+  icon: React.ElementType;
   table: string;
   columns: string;
 }
