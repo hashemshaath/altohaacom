@@ -102,7 +102,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
       toast({ title: isAr ? "تمت إضافة الراعي" : "Sponsor added" });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
 

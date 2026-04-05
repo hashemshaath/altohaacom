@@ -130,7 +130,7 @@ export default function CommunicationTemplatesAdmin() {
       toast({ title: isAr ? "تم الحفظ" : "Template saved" });
     },
     onError: (e: any) => {
-      toast({ title: isAr ? "فشل الحفظ" : "Save failed", description: e.message, variant: "destructive" });
+      toast({ title: isAr ? "فشل الحفظ" : "Save failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
 
@@ -195,7 +195,7 @@ export default function CommunicationTemplatesAdmin() {
       toast({ title: isAr ? "تم الإرسال" : "Notification sent" });
     },
     onError: (e: any) => {
-      toast({ title: isAr ? "فشل الإرسال" : "Send failed", description: e.message, variant: "destructive" });
+      toast({ title: isAr ? "فشل الإرسال" : "Send failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
 

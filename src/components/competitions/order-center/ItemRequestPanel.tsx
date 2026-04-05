@@ -113,7 +113,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
         });
       }
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const updateRequest = useMutation({
@@ -148,7 +148,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
         });
       }
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const reviewRequest = useMutation({

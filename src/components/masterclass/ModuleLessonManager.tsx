@@ -69,7 +69,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
       setModuleForm({ title: "", title_ar: "", description: "", is_free_preview: false });
       toast({ title: language === "ar" ? "تمت إضافة الوحدة" : "Module added" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteModuleMutation = useMutation({
@@ -123,7 +123,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
       setLessonForm({ title: "", title_ar: "", content: "", content_ar: "", content_type: "article", video_url: "", duration_minutes: 0 });
       toast({ title: language === "ar" ? "تمت إضافة الدرس" : "Lesson added" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteLessonMutation = useMutation({

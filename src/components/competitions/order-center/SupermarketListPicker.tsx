@@ -109,7 +109,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
       onItemAdded?.();
       toast({ title: isAr ? "تمت الإضافة ✓" : "Added ✓" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   // Batch add dish template ingredients
@@ -166,7 +166,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
       setShowDishPicker(false);
       toast({ title: isAr ? `تمت إضافة ${count} عنصر ✓` : `Added ${count} items ✓` });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const isAlreadyAdded = (id: string) => existingItemIds.includes(id) || addedIds.has(id);

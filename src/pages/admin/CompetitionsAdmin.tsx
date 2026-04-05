@@ -470,8 +470,8 @@ export default function CompetitionsAdmin() {
         title: isAr ? (mode === "update" ? "✅ تم تحديث المسابقة بنجاح" : "✅ تم استيراد المسابقة بنجاح") : (mode === "update" ? "✅ Competition Updated Successfully" : "✅ Competition Imported Successfully"),
         description: `"${nameEn || nameAr}" ${isAr ? (mode === "update" ? "تم تحديثها" : "تم إنشاؤها كمسودة") : (mode === "update" ? "updated" : "created as draft")}${savedParts.length ? ` + ${savedParts.join(", ")}` : ""}`,
       });
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     }
   }, [isAr, user, queryClient, toast]);
 

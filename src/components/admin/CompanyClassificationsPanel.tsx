@@ -69,7 +69,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
       setCustomForm({ name: "", name_ar: "", color: "bg-primary/10 text-primary border-primary/20" });
       toast({ title: isAr ? "تم إضافة التصنيف" : "Classification added" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteClassificationMutation = useMutation({
@@ -107,7 +107,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
         toast({ title: isAr ? "تم تعيين التصنيف" : "Classification assigned" });
       },
       onError: (err: Error) => {
-        toast({ variant: "destructive", title: isAr ? "فشل التعيين" : "Failed", description: err.message });
+        toast({ variant: "destructive", title: isAr ? "فشل التعيين" : "Failed", description: err instanceof Error ? err.message : String(err) });
       },
     });
   };

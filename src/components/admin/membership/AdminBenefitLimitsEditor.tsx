@@ -86,7 +86,7 @@ const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
       setHasChanges(false);
     },
     onError: (err: Error) => {
-      toast.error(err.message);
+      toast.error(err instanceof Error ? err.message : String(err));
     },
   });
 

@@ -71,7 +71,7 @@ export function SEOAuditPanel() {
       });
     },
     onError: (e: any) => {
-      toast.error(isAr ? "فشل التدقيق" : "Audit failed", { description: e.message });
+      toast.error(isAr ? "فشل التدقيق" : "Audit failed", { description: e instanceof Error ? e.message : String(e) });
     },
   });
 

@@ -80,8 +80,8 @@ function useSmartTranslate() {
         onResult(data.translated);
         toast({ title: fromLang === "ar" ? "Translated ✓" : "✓ تمت الترجمة" });
       }
-    } catch (err: any) {
-      toast({ title: "Translation Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Translation Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setTranslatingKey(null);
     }
@@ -506,8 +506,8 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
 
       toast({ title: isAr ? `✅ تم استيراد ${recordsCreated} سجل وتحديث صفحة Bio تلقائياً` : `✅ Imported ${recordsCreated} records & Bio page auto-updated` });
       onSaved();
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     }
 
     setSaving(false);

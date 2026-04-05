@@ -97,7 +97,7 @@ export default function MembershipRedeem() {
       toast.success(isAr ? "تم تفعيل العضوية بنجاح! 🎉" : "Membership activated! 🎉");
     },
     onError: (err: any) => {
-      toast.error(err.message);
+      toast.error(err instanceof Error ? err.message : String(err));
     },
   });
 

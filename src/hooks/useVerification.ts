@@ -96,7 +96,7 @@ export function useSubmitVerification() {
       });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
 }
@@ -154,7 +154,7 @@ export function useRunAIVerification() {
       return result.analysis;
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: "AI Error", description: err.message });
+      toast({ variant: "destructive", title: "AI Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
 }
@@ -245,7 +245,7 @@ export function useReviewVerification() {
       toast({ title: action === "approved" ? "Verification approved ✓" : "Verification rejected" });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
 }

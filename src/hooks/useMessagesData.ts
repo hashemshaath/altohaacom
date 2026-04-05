@@ -319,8 +319,8 @@ export function useMessagesData() {
           attachment_urls: urls,
           attachment_names: names,
         });
-      } catch (err: any) {
-        toast({ variant: "destructive", title: isAr ? "فشل رفع الملف" : "Upload failed", description: err.message });
+      } catch (err: unknown) {
+        toast({ variant: "destructive", title: isAr ? "فشل رفع الملف" : "Upload failed", description: err instanceof Error ? err.message : String(err) });
       } finally {
         setUploading(false);
       }

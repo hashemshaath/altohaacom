@@ -115,7 +115,7 @@ export const ExhibitionOrganizerQuickActions = memo(function ExhibitionOrganizer
     onError: (err: any) => {
       toast({
         title: t("Failed to send", "فشل في الإرسال"),
-        description: err.message,
+        description: err instanceof Error ? err.message : String(err),
         variant: "destructive",
       });
     },

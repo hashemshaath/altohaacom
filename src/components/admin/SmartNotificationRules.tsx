@@ -145,7 +145,7 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
       setEditingRule(null);
       setForm(emptyRule);
     },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const toggleMutation = useMutation({

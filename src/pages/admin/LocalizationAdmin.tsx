@@ -135,7 +135,7 @@ export default function LocalizationAdmin() {
       toast({ title: isAr ? "تمت الإضافة" : "Added", description: isAr ? "تمت إضافة المفتاح بنجاح" : "Translation key added successfully" });
     },
     onError: (e: any) => {
-      toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
 
@@ -231,7 +231,7 @@ export default function LocalizationAdmin() {
       toast({ title: isAr ? "تمت الترجمة" : "Translated", description: isAr ? "تمت الترجمة التلقائية بنجاح" : "Auto-translated successfully" });
     },
     onError: (e: any) => {
-      toast({ title: isAr ? "خطأ في الترجمة" : "Translation Error", description: e.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ في الترجمة" : "Translation Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
 
@@ -316,8 +316,8 @@ export default function LocalizationAdmin() {
       setShowImportDialog(false);
       setImportText("");
       toast({ title: isAr ? "تم الاستيراد" : "Imported", description: `${entries.length} ${isAr ? "مفتاح" : "keys imported"}` });
-    } catch (e: any) {
-      toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" });
+    } catch (e: unknown) {
+      toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     }
   };
 

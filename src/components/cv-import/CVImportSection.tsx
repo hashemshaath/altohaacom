@@ -82,8 +82,8 @@ export const CVImportSection = memo(function CVImportSection() {
 
       if (error) throw error;
       setResults(data || []);
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في البحث" : "Search error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ في البحث" : "Search error", description: err instanceof Error ? err.message : String(err) });
     }
     setSearching(false);
   }, [searchQuery, isAr, toast]);
@@ -125,8 +125,8 @@ export const CVImportSection = memo(function CVImportSection() {
           phone: newPhone.trim(),
         });
       }
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     }
     setCreating(false);
   };
@@ -166,8 +166,8 @@ export const CVImportSection = memo(function CVImportSection() {
         setCvText(text);
         toast({ title: isAr ? `✅ تم استخراج ${text.length} حرف` : `✅ Extracted ${text.length} characters` });
       }
-    } catch (err: any) {
-      if (err?.message === "OLD_DOC_FORMAT") {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message === "OLD_DOC_FORMAT") {
         toast({ variant: "destructive", title: isAr ? "صيغة .doc القديمة غير مدعومة" : "Old .doc format not supported", description: isAr ? "يرجى تحويل الملف إلى .docx أو PDF" : "Please convert to .docx or PDF" });
       } else {
         toast({ variant: "destructive", title: isAr ? "خطأ في قراءة الملف" : "Error reading file" });
@@ -199,8 +199,8 @@ export const CVImportSection = memo(function CVImportSection() {
       setParsedData(data.data as CVData);
       setStep("preview");
       toast({ title: isAr ? "تم تحليل السيرة الذاتية بنجاح ✨" : "CV parsed successfully ✨" });
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err instanceof Error ? err.message : String(err) });
     }
     setParsing(false);
   };

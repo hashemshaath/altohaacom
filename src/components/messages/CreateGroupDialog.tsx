@@ -83,8 +83,8 @@ export const CreateGroupDialog = memo(function CreateGroupDialog({ open, onOpenC
       setGroupName("");
       setSelectedUsers([]);
       setSearch("");
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setCreating(false);
     }

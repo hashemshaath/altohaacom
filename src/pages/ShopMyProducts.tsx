@@ -78,7 +78,7 @@ export default function ShopMyProducts() {
       resetForm();
     },
     onError: (e: any) => {
-      toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
 

@@ -138,7 +138,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
       setSelectedCompanyId(null);
       toast({ title: isAr ? "تم إرسال طلب عرض الأسعار بنجاح" : "Quote request sent successfully" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const toggleItem = (id: string) => {

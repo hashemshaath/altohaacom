@@ -69,7 +69,7 @@ export const ExhibitionOrganizerMessaging = memo(function ExhibitionOrganizerMes
       });
     },
     onError: (err: any) => {
-      toast({ title: t("Failed to send", "فشل في الإرسال"), description: err.message, variant: "destructive" });
+      toast({ title: t("Failed to send", "فشل في الإرسال"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 

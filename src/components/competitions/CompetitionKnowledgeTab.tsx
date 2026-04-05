@@ -122,7 +122,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
       setEditRules(false);
       toast({ title: language === "ar" ? "تم الحفظ" : "Rules saved" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   // Add resource
@@ -152,7 +152,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
       });
       toast({ title: language === "ar" ? "تمت الإضافة" : "Resource added" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   // Delete resource

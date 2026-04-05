@@ -164,7 +164,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
       setEditing(false);
       toast({ title: isAr ? "تم حفظ التعديلات" : "Changes saved" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الحفظ" : "Save failed", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الحفظ" : "Save failed", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const handleAITranslate = async (text: string, sourceLang: "ar" | "en", setter: (val: string) => void) => {

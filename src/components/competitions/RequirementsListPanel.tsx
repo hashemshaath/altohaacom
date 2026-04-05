@@ -83,7 +83,7 @@ export const RequirementsListPanel = memo(function RequirementsListPanel({ compe
       setNewList({ title: "", title_ar: "", description: "", category: "general" });
       toast({ title: language === "ar" ? "تم إنشاء القائمة" : "List created" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const updateStatusMutation = useMutation({

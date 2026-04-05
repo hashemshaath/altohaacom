@@ -158,7 +158,7 @@ export default function InvoicesAdmin() {
       resetForm();
       toast({ title: language === "ar" ? "تم إنشاء الفاتورة" : "Invoice created" });
     },
-    onError: (err) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const updateStatusMutation = useMutation({
@@ -226,7 +226,7 @@ export default function InvoicesAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
       toast({ title: language === "ar" ? "تم نسخ الفاتورة" : "Invoice duplicated" });
     },
-    onError: (err) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const resetForm = () => {

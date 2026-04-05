@@ -63,7 +63,7 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
       setReviewText("");
       toast({ title: language === "ar" ? "تم حفظ تقييمك" : "Review saved" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteReview = useMutation({

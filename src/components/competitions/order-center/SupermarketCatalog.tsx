@@ -152,7 +152,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
       setShowAdd(false); setEditId(null); resetForm();
       toast({ title: isAr ? "تم الحفظ بنجاح" : "Saved successfully" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteMutation = useMutation({
@@ -201,7 +201,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
       setShowListPicker(false);
       toast({ title: isAr ? "تمت إضافة العناصر للقائمة ✓" : "Items added to list ✓" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   // Save selected items as a new template
@@ -230,7 +230,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
       setSelectedIds(new Set());
       toast({ title: isAr ? "تم حفظ القالب ✓" : "Template saved ✓" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const resetForm = () => setForm({

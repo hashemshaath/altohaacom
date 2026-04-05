@@ -204,10 +204,10 @@ export const SmartImportDialog = memo(function SmartImportDialog({
 
       setResult(data.data);
       setSourcesUsed(data.sources_used || {});
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: isAr ? "خطأ في الاستيراد" : "Import Error",
-        description: err.message,
+        description: err instanceof Error ? err.message : String(err),
         variant: "destructive",
       });
     } finally {

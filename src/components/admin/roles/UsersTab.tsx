@@ -68,7 +68,7 @@ export default function UsersTab({ isAr, t }: Props) {
       toast({ title: t("Roles updated", "تم تحديث الأدوار") });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err.message });
+      toast({ variant: "destructive", title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err) });
     },
   });
 

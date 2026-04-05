@@ -76,7 +76,7 @@ export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, is
       setForm({ item_name: "", item_name_ar: "", category: "equipment", quantity: 1, unit: "piece", description: "", estimated_cost: "", priority: "medium" });
       toast({ title: isAr ? "تم إرسال الاقتراح للمراجعة" : "Suggestion submitted for review" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const reviewSuggestion = useMutation({

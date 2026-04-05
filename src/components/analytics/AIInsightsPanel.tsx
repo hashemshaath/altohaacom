@@ -93,7 +93,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
           }
         }
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("AI Insights error:", err);
       setInsights(
         isAr

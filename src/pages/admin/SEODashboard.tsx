@@ -281,7 +281,7 @@ export default function SEODashboard() {
       setNewKeyword(""); setNewKeywordPage("");
       refetchKeywords();
       toast.success(isAr ? "تمت إضافة الكلمة المفتاحية" : "Keyword added");
-    } catch (e: any) { toast.error(e.message); } finally { setAddingKeyword(false); }
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : String(e)); } finally { setAddingKeyword(false); }
   };
 
   const handleDeleteKeyword = async (id: string) => {
@@ -312,7 +312,7 @@ export default function SEODashboard() {
       if (error) throw error;
       toast.success(isAr ? `تم مزامنة ${data.total_queries} استعلام` : `Synced ${data.total_queries} queries`);
       refetchKeywords();
-    } catch (e: any) { toast.error(e.message || "GSC sync failed"); } finally { setGscSyncing(null); }
+    } catch (e: unknown) { toast.error(e.message || "GSC sync failed"); } finally { setGscSyncing(null); }
   };
 
   const handleGSCInspectUrls = async () => {
@@ -326,7 +326,7 @@ export default function SEODashboard() {
       if (error) throw error;
       toast.success(isAr ? `تم فحص ${data.inspections?.filter((i: any) => !i.error).length || 0} صفحة` : `Inspected ${data.inspections?.filter((i: any) => !i.error).length || 0} URLs`);
       refetchIndexing();
-    } catch (e: any) { toast.error(e.message || "Inspection failed"); } finally { setGscSyncing(null); }
+    } catch (e: unknown) { toast.error(e.message || "Inspection failed"); } finally { setGscSyncing(null); }
   };
 
   const handleGSCSubmitUrls = async (urls?: string[]) => {
@@ -340,7 +340,7 @@ export default function SEODashboard() {
       if (error) throw error;
       toast.success(isAr ? `تم إرسال ${data.submissions?.filter((s: any) => s.success).length || 0} صفحة` : `Submitted ${data.submissions?.filter((s: any) => s.success).length || 0} URLs`);
       refetchIndexing();
-    } catch (e: any) { toast.error(e.message || "Submission failed"); } finally { setGscSyncing(null); }
+    } catch (e: unknown) { toast.error(e.message || "Submission failed"); } finally { setGscSyncing(null); }
   };
 
   // ── Computed Metrics ──
@@ -458,7 +458,7 @@ export default function SEODashboard() {
       } else {
         toast.error(isAr ? "فشل التحقق من خريطة الموقع" : "Sitemap verification failed", { description: desc });
       }
-    } catch (e: any) { toast.error(e.message); } finally { setPinging(false); }
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : String(e)); } finally { setPinging(false); }
   };
 
   // Get active section info
@@ -634,7 +634,7 @@ export default function SEODashboard() {
           queryClient.invalidateQueries({ queryKey: ["admin-web-vitals-summary"] }),
         ]);
         toast.success(isAr ? "تم جمع بيانات الأداء" : "Performance data collected successfully");
-      } catch (e: any) {
+      } catch (e: unknown) {
         toast.error(e.message || "Failed to collect vitals");
       } finally {
         setCollectingVitals(false);
@@ -1176,8 +1176,8 @@ export default function SEODashboard() {
       if (error) throw error;
       await refetchSeoSettings();
       toast.success(isAr ? "تم الحفظ بنجاح" : "Saved successfully");
-    } catch (e: any) {
-      toast.error(e.message);
+    } catch (e: unknown) {
+      toast.error(e instanceof Error ? e.message : String(e));
     } finally {
       setSavingSeo(false);
     }

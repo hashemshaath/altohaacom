@@ -65,8 +65,8 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
         setCvText(text);
         toast({ title: isAr ? `✅ تم استخراج ${text.length} حرف من الملف` : `✅ Extracted ${text.length} characters from file` });
       }
-    } catch (err: any) {
-      if (err?.message === "OLD_DOC_FORMAT") {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message === "OLD_DOC_FORMAT") {
         toast({
           variant: "destructive",
           title: isAr ? "صيغة .doc القديمة غير مدعومة" : "Old .doc format not supported",
@@ -102,8 +102,8 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
       setParsedData(data.data as CVData);
       setStep("preview");
       toast({ title: isAr ? "تم تحليل السيرة الذاتية بنجاح ✨" : "CV parsed successfully ✨" });
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err instanceof Error ? err.message : String(err) });
     }
     setParsing(false);
   };

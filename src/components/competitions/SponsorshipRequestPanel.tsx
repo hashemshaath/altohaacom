@@ -115,7 +115,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
       setNewRequest({ sponsor_company_id: "", title: "", title_ar: "", description: "", request_type: "sponsorship", deadline: "" });
       toast({ title: language === "ar" ? "تم إنشاء طلب الرعاية" : "Sponsorship request created" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const updateStatusMutation = useMutation({

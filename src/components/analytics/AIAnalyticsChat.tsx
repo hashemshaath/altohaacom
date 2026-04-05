@@ -68,10 +68,10 @@ export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
 
       const assistantContent = data?.response || (isAr ? "عذراً، لم أتمكن من الرد" : "Sorry, I couldn't generate a response.");
       setMessages((prev) => [...prev, { role: "assistant", content: assistantContent }]);
-    } catch (err: any) {
-      const errorMsg = err?.message?.includes("429")
+    } catch (err: unknown) {
+      const errorMsg = (err instanceof Error ? err.message : '').includes("429")
         ? (isAr ? "تم تجاوز الحد المسموح، حاول لاحقاً" : "Rate limit exceeded, please try later")
-        : err?.message?.includes("402")
+        : (err instanceof Error ? err.message : '').includes("402")
         ? (isAr ? "نفدت رصيد الذكاء الاصطناعي" : "AI credits exhausted")
         : (isAr ? "حدث خطأ، حاول مرة أخرى" : "An error occurred, please try again");
 

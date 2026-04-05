@@ -246,7 +246,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
       toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent" });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: isAr ? "فشل الإرسال" : "Failed", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "فشل الإرسال" : "Failed", description: err instanceof Error ? err.message : String(err) });
     },
   });
 

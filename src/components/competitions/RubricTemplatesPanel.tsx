@@ -91,7 +91,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
       resetForm();
       toast({ title: language === "ar" ? "تم الحفظ" : "Rubric saved" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const deleteMutation = useMutation({
@@ -138,7 +138,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
       queryClient.invalidateQueries({ queryKey: ["competition-criteria-knowledge", competitionId] });
       toast({ title: language === "ar" ? "تم تطبيق القالب" : "Template applied to competition" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const resetForm = () => {

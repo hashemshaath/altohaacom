@@ -246,7 +246,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
       resetForm();
       toast({ title: isAr ? (editingId ? "تم تحديث القالب" : "تم حفظ القالب") : (editingId ? "Template updated" : "Template saved") });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   // Apply template to competition
@@ -291,7 +291,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
       queryClient.invalidateQueries({ queryKey: ["requirement-templates"] });
       toast({ title: isAr ? "تم تطبيق القالب على المسابقة" : "Template applied to competition" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   // Delete

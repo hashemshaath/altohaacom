@@ -212,8 +212,8 @@ export default function EstablishmentsAdmin() {
       setShowForm(false);
       setEditingId(null);
       setForm(emptyForm);
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setIsSaving(false);
     }

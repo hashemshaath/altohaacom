@@ -149,7 +149,7 @@ export default function CompanySponsorships() {
       setApplicationNote("");
       toast({ title: isAr ? "تم تقديم طلب الرعاية بنجاح!" : "Sponsorship application submitted!" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   // Respond to invitation

@@ -66,7 +66,7 @@ export const ExhibitionExhibitorRegistration = memo(function ExhibitionExhibitor
       toast({ title: t("Request submitted successfully! ✅", "تم إرسال الطلب بنجاح! ✅") });
     },
     onError: (err: any) => {
-      toast({ title: t("Failed to submit", "فشل الإرسال"), description: err.message, variant: "destructive" });
+      toast({ title: t("Failed to submit", "فشل الإرسال"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 

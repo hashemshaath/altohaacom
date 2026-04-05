@@ -179,8 +179,8 @@ export default function OrganizersAdmin() {
       const url = urlData.publicUrl;
       setForm(f => ({ ...f, [type === "logo" ? "logo_url" : "cover_image_url"]: url }));
       toast.success(isAr ? "تم الرفع بنجاح" : "Uploaded successfully");
-    } catch (err: any) {
-      toast.error(err.message || (isAr ? "فشل الرفع" : "Upload failed"));
+    } catch (err: unknown) {
+      toast.error((err instanceof Error ? err.message : "") || (isAr ? "فشل الرفع" : "Upload failed"));
     } finally {
       setter(false);
     }
@@ -314,7 +314,7 @@ export default function OrganizersAdmin() {
       setForm(emptyForm);
       toast.success(editId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Created"));
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const handleSave = useCallback(() => {
@@ -336,7 +336,7 @@ export default function OrganizersAdmin() {
       qc.invalidateQueries({ queryKey: ["admin-organizers"] });
       toast.success(isAr ? "تم الحذف" : "Deleted");
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const bulkDeleteMutation = useMutation({

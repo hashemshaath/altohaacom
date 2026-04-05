@@ -533,8 +533,8 @@ export const ChatArea = memo(function ChatArea({
                     attachment_names: ["voice.webm"],
                     metadata: { duration: dur },
                   });
-                } catch (err: any) {
-                  toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: err.message });
+                } catch (err: unknown) {
+                  toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: err instanceof Error ? err.message : String(err) });
                 }
               }}
             />

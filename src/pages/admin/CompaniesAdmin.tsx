@@ -390,7 +390,7 @@ export default function CompaniesAdmin() {
       setContactForm({ name: "", name_ar: "", title: "", title_ar: "", department: "general", email: "", phone: "", mobile: "", whatsapp: "", is_primary: false, can_login: false });
       toast({ title: isAr ? "تم إضافة جهة الاتصال" : "Contact added" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteContactMutation = useMutation({
@@ -431,7 +431,7 @@ export default function CompaniesAdmin() {
       setBranchForm({ name: "", name_ar: "", address: "", address_ar: "", city: "", country: "", phone: "", email: "", postal_code: "", is_headquarters: false, manager_name: "", manager_phone: "", manager_email: "" });
       toast({ title: isAr ? "تم إضافة الفرع" : "Branch added" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteBranchMutation = useMutation({
@@ -466,7 +466,7 @@ export default function CompaniesAdmin() {
       setDriverForm({ name: "", name_ar: "", phone: "", vehicle_type: "", vehicle_plate: "", license_number: "", is_available: true });
       toast({ title: isAr ? "تم إضافة السائق" : "Driver added" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteDriverMutation = useMutation({
@@ -503,7 +503,7 @@ export default function CompaniesAdmin() {
       setInvitationForm({ title: "", title_ar: "", description: "", invitation_type: "sponsorship", event_date: "", expires_at: "" });
       toast({ title: isAr ? "تم إرسال الدعوة" : "Invitation sent" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const replyMutation = useMutation({
@@ -574,7 +574,7 @@ export default function CompaniesAdmin() {
       queryClient.invalidateQueries({ queryKey: ["company-media", selectedCompany] });
       toast({ title: isAr ? "تم رفع الملف" : "File uploaded" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الرفع" : "Upload failed", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteMediaMutation = useMutation({
@@ -610,7 +610,7 @@ export default function CompaniesAdmin() {
       setCatalogForm({ name: "", name_ar: "", category: "", sku: "", unit_price: "", quantity: "", description: "", shop_product_id: "" });
       toast({ title: isAr ? "تم إضافة المنتج" : "Product added" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: isAr ? "فشل الإضافة" : "Failed to add", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteCatalogMutation = useMutation({

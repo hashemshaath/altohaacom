@@ -211,8 +211,8 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setResults(data.results || []);
       setSearchTime(Date.now() - start);
       setPhase("results");
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ في البحث" : "Search Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: isAr ? "خطأ في البحث" : "Search Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("idle");
     }
   }, [query, location, isAr]);
@@ -229,8 +229,8 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setSourcesUsed(data.sources_used || {});
       setDataQuality(data.data_quality || 0);
       setPhase("details");
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("results");
     }
   }, [location, isAr]);
@@ -248,8 +248,8 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setSourcesUsed(data.sources_used || {});
       setDataQuality(data.data_quality || 0);
       setPhase("details");
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("idle");
     }
   }, [urlInput, isAr]);
@@ -267,8 +267,8 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setSourcesUsed(data.sources_used || {});
       setDataQuality(data.data_quality || 0);
       setPhase("details");
-    } catch (err: any) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("idle");
     }
   }, [isAr]);
@@ -281,10 +281,10 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
     try {
       const text = await extractTextFromFile(file);
       setPdfText(text);
-    } catch (err: any) {
-      const msg = err.message === "OLD_DOC_FORMAT"
+    } catch (err: unknown) {
+      const msg = (err instanceof Error && err.message === "OLD_DOC_FORMAT")
         ? (isAr ? "صيغة .doc القديمة غير مدعومة، استخدم .docx أو .pdf" : "Legacy .doc format not supported, use .docx or .pdf")
-        : err.message === "UNSUPPORTED_FORMAT"
+        : (err instanceof Error && err.message === "UNSUPPORTED_FORMAT")
         ? (isAr ? "صيغة الملف غير مدعومة" : "Unsupported file format")
         : (isAr ? "فشل قراءة الملف" : "Failed to read file");
       toast({ title: isAr ? "خطأ" : "Error", description: msg, variant: "destructive" });

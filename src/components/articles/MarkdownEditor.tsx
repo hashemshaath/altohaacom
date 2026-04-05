@@ -124,8 +124,8 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
         onTranslateContent(data.translated);
         toast({ title: isAr ? "تمت ترجمة المحتوى بالكامل" : "Full content translated" });
       }
-    } catch (err: any) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+    } catch (err: unknown) {
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setTranslating(false);
     }
