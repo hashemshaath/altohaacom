@@ -71,7 +71,7 @@ export default function Shop() {
         return aName.localeCompare(bName);
       });
     } else if (sortBy === "popular") {
-      result = [...result].sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
+      result = [...result].sort((a, b) => ((b as any).view_count || 0) - ((a as any).view_count || 0));
     }
 
     return result;

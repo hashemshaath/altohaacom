@@ -231,7 +231,7 @@ export default function RecipeDetail() {
                           <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
                             <Check className="h-3 w-3 text-primary" />
                           </div>
-                          {typeof ing === "string" ? ing : ing.text || JSON.stringify(ing)}
+                          {typeof ing === "string" ? ing : (ing as any)?.text || JSON.stringify(ing)}
                         </li>
                       ))}
                     </ul>
@@ -252,7 +252,7 @@ export default function RecipeDetail() {
                 )}
                 <div className="space-y-3">
                   {steps.map((step, i) => {
-                    const text = typeof step === "string" ? step : step.text || JSON.stringify(step);
+                    const text = typeof step === "string" ? step : (step as any)?.text || JSON.stringify(step);
                     const done = checkedSteps.has(i);
                     return (
                       <Card

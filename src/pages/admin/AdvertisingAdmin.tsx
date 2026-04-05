@@ -168,7 +168,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   });
 
   const generateInvoice = useMutation({
-    mutationFn: async (campaign) => {
+    mutationFn: async (campaign: any) => {
       const amount = campaign.spent || 0;
       if (amount <= 0) throw new Error("No spend to invoice");
       const { data: { user } } = await supabase.auth.getUser();

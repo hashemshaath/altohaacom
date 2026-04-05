@@ -126,10 +126,11 @@ export default function ShopOrders() {
                 <CardContent className="p-4">
                   <div className="space-y-2">
                     {order.shop_order_items?.map((item) => {
-                      const itemTitle = isAr && item.product_snapshot?.title_ar
-                        ? item.product_snapshot.title_ar
-                        : item.product_snapshot?.title || item.shop_products?.title;
-                      const imgUrl = item.product_snapshot?.image_url || item.shop_products?.image_url;
+                      const snapshot = item.product_snapshot as any;
+                      const itemTitle = isAr && snapshot?.title_ar
+                        ? snapshot.title_ar
+                        : snapshot?.title || item.shop_products?.title;
+                      const imgUrl = snapshot?.image_url || item.shop_products?.image_url;
                       return (
                         <div key={item.id} className="flex items-center gap-3">
                           <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-muted">
