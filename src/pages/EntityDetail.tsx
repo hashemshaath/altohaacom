@@ -34,6 +34,7 @@ import { EntityMapEmbed } from "@/components/entities/EntityMapEmbed";
 import { EntityContactCard } from "@/components/entities/EntityContactCard";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";
+import React from "react";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];

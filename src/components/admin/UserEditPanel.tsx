@@ -26,6 +26,7 @@ import {
   Loader2, Upload, Camera, KeyRound, Mail, AlertCircle,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { supabase } from "@/integrations/supabase/client";
 
 type AccountStatus = Database["public"]["Enums"]["account_status"];
 type AccountType = Database["public"]["Enums"]["account_type"];

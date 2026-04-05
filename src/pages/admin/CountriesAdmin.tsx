@@ -34,6 +34,7 @@ import { CountryCompletenessScore } from "@/components/admin/countries/CountryCo
 import { CountryComparisonTool } from "@/components/admin/countries/CountryComparisonTool";
 import { CountryCSVImport } from "@/components/admin/countries/CountryCSVImport";
 import { CountryAuditLog } from "@/components/admin/countries/CountryAuditLog";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Country {
   id: string;

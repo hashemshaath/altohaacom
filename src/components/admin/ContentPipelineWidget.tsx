@@ -9,6 +9,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recha
 import { FileText, Clock, CheckCircle2, Archive, Eye, TrendingUp } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ContentPipelineWidget = memo(function ContentPipelineWidget() {
   const { language } = useLanguage();

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { React, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Plus, Trash2, UtensilsCrossed, GripVertical, Upload, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const categoryOptions = [
   { value: "appetizer", en: "Appetizer", ar: "مقبلات" },

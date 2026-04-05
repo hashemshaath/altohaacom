@@ -1,4 +1,4 @@
-import { useRef, useState, memo } from "react";
+import { React, useRef, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
 import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPanel";
 import { Image, Languages, Loader2, MapPin, Search, Upload, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { supabase } from "@/integrations/supabase/client";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];

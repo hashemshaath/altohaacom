@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, memo } from "react";
+import { React, useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -12,6 +12,7 @@ import {
   Mic, MicOff, Sparkles,
 } from "lucide-react";
 import { addRecentSearch } from "@/lib/recentSearches";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Result {
   id: string;

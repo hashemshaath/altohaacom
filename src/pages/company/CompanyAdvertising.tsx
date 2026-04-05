@@ -18,6 +18,7 @@ import { Megaphone, Eye, MousePointer, DollarSign, Plus, Package, FileText } fro
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",

@@ -1,6 +1,6 @@
 import { useHasFeature, useHasFeatureForUser } from "@/hooks/useMembershipFeatures";
 import { UpgradePrompt } from "./UpgradePrompt";
-import { useEffect, useRef, memo } from "react";
+import { React, useEffect, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 

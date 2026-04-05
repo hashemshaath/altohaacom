@@ -8,6 +8,7 @@ import { Printer, Users, Trophy, ShoppingCart, TrendingUp, TrendingDown, BarChar
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ExecutiveSummary = memo(function ExecutiveSummary() {
   const { language } = useLanguage();

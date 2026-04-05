@@ -10,6 +10,7 @@ import { SparklineCard } from "./SparklineCard";
 import { CHART_COLORS, LEGEND_STYLE, BAR_RADIUS, getNoDataText, translateRole, translateStatus, getTooltipStyle } from "@/lib/chartConfig";
 import type { DataPoint } from "@/lib/trendPrediction";
 import type { DateRange } from "./AnalyticsDateRange";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   dateRange?: DateRange;

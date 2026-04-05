@@ -1,5 +1,6 @@
 
 import { cn } from "@/lib/utils";
+import React from "react";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;

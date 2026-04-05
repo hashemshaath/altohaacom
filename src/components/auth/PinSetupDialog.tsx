@@ -10,6 +10,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import { Loader2, CheckCircle, AlertCircle, KeyRound } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PinSetupDialogProps {
   open: boolean;

@@ -43,6 +43,7 @@ import { CompanyAnalyticsWidget } from "@/components/admin/CompanyAnalyticsWidge
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { CompanyLiveStatsWidget } from "@/components/admin/CompanyLiveStatsWidget";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 type CompanyStatus = "active" | "inactive" | "pending" | "suspended";

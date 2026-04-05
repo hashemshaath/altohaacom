@@ -9,6 +9,7 @@ import { translateRole, getTooltipStyle, CHART_COLORS } from "@/lib/chartConfig"
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
 import type { DataPoint } from "@/lib/trendPrediction";
+import { supabase } from "@/integrations/supabase/client";
 
 
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {

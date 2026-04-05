@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { React, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
 import { SOURCE_CHANNELS } from "./types";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SearchResultItem {
   id: string;

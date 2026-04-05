@@ -29,6 +29,7 @@ import { SectionContent } from "./career-timeline/section-renderer";
 import { useCareerData } from "./career-timeline/useCareerData";
 import { useCareerMutations } from "./career-timeline/useCareerMutations";
 import { CareerTimelineSkeleton } from "./career-timeline/CareerTimelineSkeleton";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props { userId: string; isAr: boolean; }
 

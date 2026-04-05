@@ -7,6 +7,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, 
 import { DollarSign, ShoppingBag, TrendingUp, Package, CreditCard, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
   const { language } = useLanguage();

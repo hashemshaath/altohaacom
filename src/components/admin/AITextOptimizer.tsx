@@ -2,6 +2,7 @@ import { useState, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, Languages } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   text: string;

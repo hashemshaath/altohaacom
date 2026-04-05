@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Zap, Users, Target, Activity, CheckCircle2, Clock } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 

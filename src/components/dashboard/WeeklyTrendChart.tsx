@@ -7,6 +7,7 @@ import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Activity, TrendingUp, TrendingDown } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
   const { user } = useAuth();

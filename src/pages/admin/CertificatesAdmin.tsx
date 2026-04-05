@@ -35,6 +35,7 @@ import { CertificatesLiveWidget } from "@/components/admin/CertificatesLiveWidge
 import { CertificateWorkflowTracker } from "@/components/admin/CertificateWorkflowTracker";
 import { CertificateIssuanceWidget } from "@/components/admin/CertificateIssuanceWidget";
 import { Award, FileText, Download, Search, Plus, Edit, Eye, CheckCircle, XCircle, Clock, ChevronLeft, Save, X, Copy, Palette, LayoutTemplate, PenTool, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 type CertificateType = "participation" | "winner_gold" | "winner_silver" | "winner_bronze" | "appreciation" | "organizer" | "judge" | "sponsor" | "volunteer";
 type CertificateStatus = "draft" | "pending_signature" | "signed" | "issued" | "revoked";

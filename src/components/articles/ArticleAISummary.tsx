@@ -2,6 +2,7 @@ import { memo, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Sparkles, Loader2, ChevronDown, ChevronUp, Languages } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * AI-powered article summary that generates a concise TL;DR

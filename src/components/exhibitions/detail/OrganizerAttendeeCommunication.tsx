@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Send, Bell, Users, Mail, Megaphone } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   exhibitionId: string;

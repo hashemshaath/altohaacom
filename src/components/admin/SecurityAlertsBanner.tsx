@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldAlert, AlertTriangle, Ban, Lock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { subDays } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
   const { language } = useLanguage();

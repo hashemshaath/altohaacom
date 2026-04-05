@@ -10,6 +10,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Flag, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const REPORT_REASONS = [
   { value: "spam", en: "Spam or misleading", ar: "محتوى مزعج أو مضلل" },

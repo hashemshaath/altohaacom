@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, memo, forwardRef } from "react";
+import { React, useState, createContext, useContext, memo, forwardRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSortable } from "@dnd-kit/sortable";
+import { supabase } from "@/integrations/supabase/client";
 
 // ── Smart Translate Button ──────────────────────────────────────
 

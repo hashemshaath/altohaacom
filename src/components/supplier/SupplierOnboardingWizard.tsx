@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { React, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

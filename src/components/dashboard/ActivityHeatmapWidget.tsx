@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 import { format, subDays, startOfDay, parseISO } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 const WEEKS = 12;
 const DAYS = WEEKS * 7;

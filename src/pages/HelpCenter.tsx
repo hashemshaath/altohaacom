@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { AIAssistant } from "@/components/knowledge/AIAssistant";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FAQ {
   id: string;

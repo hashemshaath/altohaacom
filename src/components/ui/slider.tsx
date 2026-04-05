@@ -1,5 +1,6 @@
 
 import { cn } from "@/lib/utils";
+import React from "react";
 
 const Slider = React.forwardRef<
   React.ElementRef<typeof SliderPrimitive.Root>,

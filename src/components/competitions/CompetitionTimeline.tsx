@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { React, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { CalendarCheck, CalendarX, PlayCircle, Trophy, Clock } from "lucide-react";

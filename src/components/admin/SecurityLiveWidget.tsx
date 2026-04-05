@@ -9,6 +9,7 @@ import { ShieldAlert, Users, Monitor, Ban, AlertTriangle, Activity } from "lucid
 import { format, subDays } from "date-fns";
 import { translateRole } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SecurityLiveWidget = memo(function SecurityLiveWidget() {
   const { language } = useLanguage();

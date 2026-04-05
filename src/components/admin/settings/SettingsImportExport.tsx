@@ -1,4 +1,4 @@
-import { useState, useRef, memo } from "react";
+import { React, useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import {
   Download, Upload, FileJson, AlertTriangle, CheckCircle2, Loader2, Shield,
 } from "lucide-react";
 import {
+import { supabase } from "@/integrations/supabase/client";
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
   AlertDialogTrigger,

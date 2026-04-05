@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Ticket, CheckCircle2, Clock, TrendingUp, BarChart3 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { startOfDay, subDays } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ExhibitionTicketStatsWidget = memo(function ExhibitionTicketStatsWidget() {
   const { language } = useLanguage();

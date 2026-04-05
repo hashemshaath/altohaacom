@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Ticket, CheckCircle2, TrendingUp, Clock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   exhibitionId: string;

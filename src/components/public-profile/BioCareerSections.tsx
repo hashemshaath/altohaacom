@@ -1,9 +1,10 @@
-import { useState, useMemo, memo } from "react";
+import { React, useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, GraduationCap, Tv, Trophy, ChevronDown, Calendar, Scale, Users, Medal, CalendarCheck, FileText } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { EDUCATION_LEVELS, JUDGING_POSITIONS, COMPETITION_ROLES, MEMBERSHIP_TYPES, labelFor } from "@/components/admin/career-timeline/constants";
 import { BioCareerSkeleton } from "./BioCareerSkeleton";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   userId: string;

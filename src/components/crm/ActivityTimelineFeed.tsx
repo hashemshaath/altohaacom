@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Rss, Ticket, MessageSquare, UserSearch, Bell, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 interface TimelineItem {
   id: string;

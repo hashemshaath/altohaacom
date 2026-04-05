@@ -1,8 +1,9 @@
-import { useState, useRef, memo } from "react";
+import { React, useState, useRef, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, X, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CatalogImageUploadProps {
   imageUrl: string;

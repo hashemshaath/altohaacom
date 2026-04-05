@@ -11,6 +11,7 @@ import { LocationSection } from "./edit/LocationSection";
 import { SocialMediaSection } from "./edit/SocialMediaSection";
 import { useAccountType } from "@/hooks/useAccountType";
 import { AccountTypeCard } from "./AccountTypeCard";
+import { supabase } from "@/integrations/supabase/client";
 
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];
 

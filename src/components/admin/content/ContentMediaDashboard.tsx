@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Image, FileText, Search, Eye, Calendar, Globe, BarChart3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 const ContentMediaDashboard = memo(function ContentMediaDashboard() {
   const { language } = useLanguage();

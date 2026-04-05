@@ -8,6 +8,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { Globe } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { CHART_COLORS, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CountryBreakdownChartProps {
   metric: "users" | "competitions" | "companies";

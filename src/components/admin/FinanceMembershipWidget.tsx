@@ -11,6 +11,7 @@ import {
   TrendingUp, ArrowUpRight, Crown, Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
   const { language } = useLanguage();

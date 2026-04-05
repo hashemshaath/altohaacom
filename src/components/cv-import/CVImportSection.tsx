@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { React, useState, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";

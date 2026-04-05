@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Globe, Users, Shield, UserCheck, Crown, TrendingUp, Clock } from "lucide-react";
 import { translateRole } from "@/lib/chartConfig";
+import { supabase } from "@/integrations/supabase/client";
 
 export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
   const { language } = useLanguage();

@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState, useEffect, useRef } from "react";
+import { React, Suspense, useMemo, useState, useEffect, useRef } from "react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";

@@ -1,3 +1,4 @@
+import { supabase } from "@/integrations/supabase/client";
 
 export type OrderActionType =
   | "item_added"

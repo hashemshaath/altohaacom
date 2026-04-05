@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { React, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useEvaluationDomains,

@@ -8,6 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Trophy, Users, Gavel, MapPin, TrendingUp, Calendar } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidget() {
   const { language } = useLanguage();

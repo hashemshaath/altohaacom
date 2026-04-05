@@ -1,5 +1,6 @@
 
 import { cn } from "@/lib/utils";
+import React from "react";
 
 const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,

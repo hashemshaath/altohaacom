@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Wallet, TrendingUp, TrendingDown, ArrowRightLeft, CreditCard } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
   const { language } = useLanguage();

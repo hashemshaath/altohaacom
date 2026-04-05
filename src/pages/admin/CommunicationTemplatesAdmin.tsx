@@ -29,6 +29,7 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Template {
   id: string;

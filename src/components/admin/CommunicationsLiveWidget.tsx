@@ -7,6 +7,7 @@ import { MessageSquare, Send, Inbox, Mail, CheckCheck, TrendingUp, BarChart3 } f
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget() {
   const { language } = useLanguage();

@@ -2,6 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Clock, Loader2, Plus, RefreshCw, Database as DatabaseIcon } from "lucide-react";
+import React from "react";
 
 interface ImportHistoryProps {
   open: boolean;

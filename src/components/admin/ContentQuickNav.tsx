@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { FileText, Image, BookOpen, ShieldCheck, Tag } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV_ITEMS = [
   { href: "/admin/articles", icon: FileText, labelEn: "Articles", labelAr: "المقالات", countKey: "draft" },

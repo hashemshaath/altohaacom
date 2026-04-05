@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { React, useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";

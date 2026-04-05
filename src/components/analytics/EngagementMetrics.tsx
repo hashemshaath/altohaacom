@@ -18,6 +18,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import {
+import { supabase } from "@/integrations/supabase/client";
   RadarChart,
   Radar,
   PolarGrid,

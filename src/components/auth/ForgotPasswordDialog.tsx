@@ -11,6 +11,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Loader2, Mail, CheckCircle, Phone, AlertCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ForgotPasswordDialogProps {
   open: boolean;

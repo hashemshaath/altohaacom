@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 const HEARTBEAT_INTERVAL = 30000; // 30 seconds
 const ONLINE_THRESHOLD = 60000; // 60 seconds

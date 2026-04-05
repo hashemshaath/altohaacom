@@ -11,6 +11,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Download, TrendingUp, Users, Ticket, Eye, MapPin, Calendar } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { supabase } from "@/integrations/supabase/client";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))",

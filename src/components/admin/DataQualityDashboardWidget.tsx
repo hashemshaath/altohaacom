@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { React, memo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, ShieldAlert, ArrowRight, Database, Users, Building2, Trophy } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface EntityScore {
   label: string;

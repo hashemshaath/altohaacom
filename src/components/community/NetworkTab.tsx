@@ -21,6 +21,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { FollowButton } from "./FollowButton";
+import { supabase } from "@/integrations/supabase/client";
 
 export const NetworkTab = memo(function NetworkTab() {
   const { user } = useAuth();

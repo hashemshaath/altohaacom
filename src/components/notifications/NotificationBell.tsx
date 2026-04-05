@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { React, useState, useRef } from "react";
 import { Bell, BellOff, ShoppingCart, CheckCircle, Trophy, FileText, Heart, MessageCircle, UserPlus, Radio, Eye, Flame, Settings, Volume2, VolumeX } from "lucide-react";
 import { NotificationPriorityBadge, inferPriority } from "./NotificationPriorityBadge";
 import { NotificationActionButtons } from "./NotificationActionButtons";

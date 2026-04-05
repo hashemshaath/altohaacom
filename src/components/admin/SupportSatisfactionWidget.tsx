@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
 import { SmilePlus, Clock, Timer, Users, TrendingDown, Zap } from "lucide-react";
 import { format, subDays, differenceInMinutes } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget() {
   const { language } = useLanguage();

@@ -1,4 +1,4 @@
-import { useMemo, lazy, Suspense } from "react";
+import { React, useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -26,6 +26,7 @@ import {
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer, LineChart, Line } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
 
 // Lazy load heavy widgets
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));

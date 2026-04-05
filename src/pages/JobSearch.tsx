@@ -1,4 +1,4 @@
-import { useState, useMemo, memo, useCallback, useEffect, useRef } from "react";
+import { React, useState, useMemo, memo, useCallback, useEffect, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";

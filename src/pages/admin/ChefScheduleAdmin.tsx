@@ -23,6 +23,7 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { supabase } from "@/integrations/supabase/client";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,

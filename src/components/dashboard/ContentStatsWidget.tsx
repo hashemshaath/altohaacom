@@ -6,6 +6,7 @@ import { BarChart3, FileText, Trophy, Users, TrendingUp, TrendingDown, Minus } f
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import { supabase } from "@/integrations/supabase/client";
 
 interface DailyCount {
   day: string;

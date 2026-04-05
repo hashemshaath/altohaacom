@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, AlertCircle, CheckCircle, Lock, Eye, EyeOff } from "lucide-react";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ChangePasswordDialogProps {
   open: boolean;

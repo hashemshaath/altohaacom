@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { Target, Sparkles, TrendingUp, Lightbulb, Search, BookOpen, Loader2, Zap, Eye } from "lucide-react";
 import {
+import { supabase } from "@/integrations/supabase/client";
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, Cell, ScatterChart, Scatter, ZAxis,
 } from "recharts";

@@ -25,6 +25,7 @@ import { AdCreativesTab } from "@/components/admin/advertising/AdCreativesTab";
 import { AdPlacementsTab } from "@/components/admin/advertising/AdPlacementsTab";
 import { AdPackagesTab } from "@/components/admin/advertising/AdPackagesTab";
 import { AdIntegrationsTab } from "@/components/admin/advertising/AdIntegrationsTab";
+import { supabase } from "@/integrations/supabase/client";
 
 // Lazy analytics tabs
 const AdAnalyticsDashboard = lazy(() => import("@/components/ads/AdAnalyticsDashboard").then(m => ({ default: m.AdAnalyticsDashboard })));

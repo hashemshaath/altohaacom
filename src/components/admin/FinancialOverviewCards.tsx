@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DollarSign, TrendingUp, FileText, CreditCard, AlertTriangle } from "lucide-react";
 import { subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
   const { language } = useLanguage();

@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, Hash, TrendingUp } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const FeedRecommendations = memo(function FeedRecommendations() {
   const { user } = useAuth();

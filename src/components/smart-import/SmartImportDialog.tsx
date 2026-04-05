@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Search, Loader2, MapPin, Globe, Phone, Clock, Building2, Sparkles, CheckCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ImportedData {
   name_en?: string;

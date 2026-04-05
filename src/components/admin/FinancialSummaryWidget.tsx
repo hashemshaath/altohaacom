@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DollarSign, Receipt, Package, Wallet, TrendingUp, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
   const { language } = useLanguage();

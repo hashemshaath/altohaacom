@@ -9,6 +9,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Download, Users, Ticket, DollarSign, BarChart3, Eye, Star, MapPin } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, differenceInDays } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props { exhibitionId: string; exhibitionTitle: string; isAr: boolean; }
 

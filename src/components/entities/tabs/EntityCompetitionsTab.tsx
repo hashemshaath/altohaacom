@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Trophy } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const participationTypeLabels: Record<string, { en: string; ar: string }> = {
   participant: { en: "Participant", ar: "مشارك" }, organizer: { en: "Organizer", ar: "منظم" },

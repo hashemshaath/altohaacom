@@ -1,6 +1,7 @@
 
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
+import React from "react";
 
 export interface InputProps extends React.ComponentProps<"input"> {
   startIcon?: React.ReactNode;

@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { Globe, TrendingUp, Shield } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 const ROLE_COLORS = [
   "hsl(var(--primary))",

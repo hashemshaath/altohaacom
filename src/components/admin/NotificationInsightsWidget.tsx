@@ -8,6 +8,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Bell, Send, Eye, AlertTriangle, Zap, Mail, Smartphone, MessageSquare } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const NotificationInsightsWidget = memo(function NotificationInsightsWidget() {
   const { language } = useLanguage();

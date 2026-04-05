@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Shield, Users, Lock, Key, AlertTriangle, CheckCircle } from "lucide-react";
 import { translateRole } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
   const { language } = useLanguage();

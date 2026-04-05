@@ -9,6 +9,7 @@ import { StaggeredList } from "@/components/ui/staggered-list";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProfileAnalyticsDashboardProps {
   userId: string;

@@ -1,4 +1,4 @@
-import { forwardRef, useRef, useState, useEffect, type MutableRefObject } from "react";
+import { React, forwardRef, useRef, useState, useEffect, type MutableRefObject } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";

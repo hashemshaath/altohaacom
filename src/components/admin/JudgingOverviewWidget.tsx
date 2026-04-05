@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Gavel, Users, Clock, Trophy, Star } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
   const { language } = useLanguage();

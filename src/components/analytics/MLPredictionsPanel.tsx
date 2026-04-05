@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { React, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import {
   DollarSign, AlertTriangle, Target, Sparkles, Lightbulb, ShieldAlert, Activity,
 } from "lucide-react";
 import {
+import { supabase } from "@/integrations/supabase/client";
   ComposedChart, Area, Line, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid,
   PolarAngleAxis, PolarRadiusAxis,

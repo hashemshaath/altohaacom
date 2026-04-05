@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Copy } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import React from "react";
 
 interface DataFieldProps {
   label: string;

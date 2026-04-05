@@ -1,7 +1,8 @@
-import { useState, useRef, memo } from "react";
+import { React, useState, useRef, memo } from "react";
 import { Upload, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   label: string;

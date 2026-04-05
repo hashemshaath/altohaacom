@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Megaphone, Building2, DollarSign, BarChart3, Users } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV_ITEMS = [
   { href: "/admin/advertising", icon: Megaphone, labelEn: "Advertising", labelAr: "الإعلانات", countKey: "pending" },

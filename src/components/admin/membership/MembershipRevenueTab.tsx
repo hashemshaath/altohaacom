@@ -9,6 +9,7 @@ import { useAdminExport } from "@/hooks/useAdminExport";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from "recharts";
 import { DollarSign, TrendingUp, TrendingDown, Users, CreditCard, ArrowDownCircle, Percent, Target, Wallet, Coins } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const { language } = useLanguage();

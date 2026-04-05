@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreditCard, AlertTriangle, Clock, TrendingUp, Receipt } from "lucide-react";
 import { differenceInDays } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
   const { language } = useLanguage();

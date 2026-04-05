@@ -12,6 +12,7 @@ import { ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Respons
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { format, subMonths } from "date-fns";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 export const FinancialForecasting = memo(function FinancialForecasting() {
   const { language } = useLanguage();

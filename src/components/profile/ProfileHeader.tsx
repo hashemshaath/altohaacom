@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { FeatureGate } from "@/components/membership/FeatureGate";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProfileHeaderProps {
   profile: any;

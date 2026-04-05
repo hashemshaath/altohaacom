@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { React, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { downloadCSV } from "@/lib/exportUtils";
 import { supabase } from "@/integrations/supabase/client";

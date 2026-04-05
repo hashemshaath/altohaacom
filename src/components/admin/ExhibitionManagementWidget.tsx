@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Landmark, Ticket, Users, MapPin, Calendar, TrendingUp } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ExhibitionManagementWidget = memo(function ExhibitionManagementWidget() {
   const { language } = useLanguage();

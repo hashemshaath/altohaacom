@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Megaphone, Eye, MousePointerClick, DollarSign, TrendingUp, Pause, Play, AlertCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const AdCampaignOverviewWidget = memo(function AdCampaignOverviewWidget() {
   const { language } = useLanguage();

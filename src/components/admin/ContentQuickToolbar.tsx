@@ -4,6 +4,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { FileText, Eye, TrendingUp, BarChart3 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ContentQuickToolbar = memo(function ContentQuickToolbar() {
   const { language } = useLanguage();

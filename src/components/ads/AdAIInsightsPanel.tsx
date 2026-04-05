@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, TrendingUp, Target, DollarSign, Clock, RefreshCw, Repeat } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
   const { language } = useLanguage();

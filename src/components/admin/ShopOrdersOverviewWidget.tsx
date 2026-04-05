@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { ShoppingBag, Package, DollarSign, Clock, Truck, AlertCircle, Tag } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget() {
   const { language } = useLanguage();

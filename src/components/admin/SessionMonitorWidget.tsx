@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Monitor, Smartphone, Globe, Shield, Activity, Wifi, WifiOff } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SessionMonitorWidget = memo(function SessionMonitorWidget() {
   const { language } = useLanguage();

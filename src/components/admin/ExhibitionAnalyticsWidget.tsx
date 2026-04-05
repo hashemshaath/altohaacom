@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Landmark, Ticket, Calendar, Building } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInDays } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ExhibitionAnalyticsWidget = memo(function ExhibitionAnalyticsWidget() {
   const { language } = useLanguage();

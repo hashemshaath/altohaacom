@@ -24,6 +24,7 @@ import { LoyaltyLiveStatsWidget } from "@/components/admin/LoyaltyLiveStatsWidge
 import { WalletAdminOverview } from "@/components/admin/WalletAdminOverview";
 import { WalletTransactionHeatmap } from "@/components/admin/WalletTransactionHeatmap";
 import { WalletPointsAnalyticsWidget } from "@/components/admin/WalletPointsAnalyticsWidget";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function LoyaltyAdmin() {
   const { language } = useLanguage();

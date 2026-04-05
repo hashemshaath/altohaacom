@@ -6,6 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { QrCode, Download, Copy, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getVerificationUrl, generateVCard, downloadVCard } from "@/lib/qrCode";
+import React from "react";
 
 interface QRCodeDisplayProps {
   code: string;

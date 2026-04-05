@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { FileText, Eye, Star, TrendingUp, Clock, BarChart3 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ContentStatsWidget = memo(function ContentStatsWidget() {
   const { language } = useLanguage();

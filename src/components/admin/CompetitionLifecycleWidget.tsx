@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Users, Gavel, Calendar, MapPin, AlertTriangle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidget() {
   const { language } = useLanguage();

@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CommunityEvent {
   id: string;

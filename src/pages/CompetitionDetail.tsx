@@ -1,4 +1,4 @@
-import { useState, useMemo, lazy, Suspense } from "react";
+import { React, useState, useMemo, lazy, Suspense } from "react";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { useParams, Link } from "react-router-dom";
@@ -37,6 +37,7 @@ import { ParticipantStatsCard } from "@/components/competitions/ParticipantStats
 import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import type { Database } from "@/integrations/supabase/types";
+import { supabase } from "@/integrations/supabase/client";
 
 // Lazy-loaded tab panels (only loaded when user opens the tab)
 const CompetitionStatusManager = lazy(() => import("@/components/competitions/CompetitionStatusManager").then(m => ({ default: m.CompetitionStatusManager })));

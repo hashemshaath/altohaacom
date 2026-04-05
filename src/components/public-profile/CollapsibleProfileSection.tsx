@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { React, useState, memo } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 

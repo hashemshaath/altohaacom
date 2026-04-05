@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { React, useState, useCallback, memo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CVData } from "./types";
 import { CVPreview } from "./CVPreview";
 import { extractTextFromFile } from "./fileParser";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;

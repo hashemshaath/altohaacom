@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { User, ExternalLink, Building2 } from "lucide-react";
+import React from "react";
 
 interface OrganizerCardProps {
   organizerId: string;

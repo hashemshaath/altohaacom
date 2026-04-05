@@ -7,6 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { ShieldCheck, AlertTriangle, Users, Lock, Activity, Ban } from "lucide-react";
 import { subDays, subHours } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
   const { language } = useLanguage();

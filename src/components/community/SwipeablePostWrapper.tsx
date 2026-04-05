@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, memo } from "react";
+import { React, useRef, useState, useCallback, memo } from "react";
 import { cn } from "@/lib/utils";
 import { Heart, Bookmark } from "lucide-react";
 

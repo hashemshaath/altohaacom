@@ -12,6 +12,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar,
 } from "recharts";
 import { FileText, Heart, Users, Trophy, ChefHat, Sparkles, TrendingUp, TrendingDown, Minus, Eye, Star, Hash, Lightbulb, Zap, MessageSquare, Film } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AnalyticsData {
   summary: {

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Trophy, Calendar, Globe, Medal, Gavel } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const NAV_ITEMS = [
   { href: "/admin/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات", countKey: "pending" },

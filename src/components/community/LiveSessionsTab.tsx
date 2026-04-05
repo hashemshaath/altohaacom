@@ -12,6 +12,7 @@ import { Radio, Users, Calendar, Clock, Plus, Loader2, Video } from "lucide-reac
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LiveSession {
   id: string;

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, UserCheck, Shield, KeyRound, Ban, Eye, MessageSquare, Copy, Check } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UserQuickActionsProps {
   userId: string;

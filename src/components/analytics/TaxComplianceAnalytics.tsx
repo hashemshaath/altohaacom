@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 const KSA_VAT_RATE = 15;
 const KSA_ZAKAT_RATE = 2.5;

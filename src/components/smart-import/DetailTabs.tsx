@@ -9,6 +9,7 @@ import { EditableField } from "./EditableField";
 import { ImagePreviewEditor } from "./ImagePreviewEditor";
 import type { ImportedData } from "./SmartImportDialog";
 import {
+import React from "react";
   FileText, Phone, MapPin, Building2, Briefcase, Clock,
   Star, Globe, Calendar, Users, Award, Share2,
   UserCheck, Shield, Link2, BookOpen, ExternalLink,

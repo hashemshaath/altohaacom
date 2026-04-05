@@ -10,6 +10,7 @@ import {
 } from "recharts";
 import { format, subMonths, parseISO, startOfMonth } from "date-fns";
 import { Eye, Star, Ticket, MapPin, Users, BarChart3, Globe } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",

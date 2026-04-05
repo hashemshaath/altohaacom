@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { React, useState, useCallback, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { FileText, Download, Trash2, BarChart3, PieChart, TrendingUp, Users, Trophy, MessageSquare, Award, Newspaper, GraduationCap, Save, Play } from "lucide-react";
 import {
+import { supabase } from "@/integrations/supabase/client";
   BarChart,
   Bar,
   XAxis,

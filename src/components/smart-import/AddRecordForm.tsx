@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
 import { type TargetTable, type EntityType, type CompanyType, type ExhibitionType, ENTITY_TYPE_LABELS, COMPANY_TYPE_LABELS, EXHIBITION_TYPE_LABELS, countFields } from "./types";
+import React from "react";
 
 interface AddRecordFormProps {
   details: ImportedData;

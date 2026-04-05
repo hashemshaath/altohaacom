@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { React, memo } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAdminRole } from "@/hooks/useAdminRole";

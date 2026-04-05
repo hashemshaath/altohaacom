@@ -10,6 +10,7 @@ import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { Phone, Mail, MapPin, Globe, Building2, CreditCard, Hash, Shield, Earth } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import React from "react";
 
 export default function CompanyProfile() {
   const { language } = useLanguage();

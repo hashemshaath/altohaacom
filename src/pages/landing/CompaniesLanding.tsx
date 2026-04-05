@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { React, useState } from "react";
 import { Link } from "react-router-dom";
 import { Building2, Package, Truck, BarChart3, Globe, CheckCircle, ArrowRight, Sparkles, ShieldCheck, Users, FileText } from "lucide-react";
 import { Header } from "@/components/Header";
@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";
+import { supabase } from "@/integrations/supabase/client";
 
 const benefits = [
   { icon: Package, titleEn: "Product Catalog", titleAr: "كتالوج المنتجات", descEn: "Showcase your products to thousands of culinary professionals", descAr: "اعرض منتجاتك لآلاف المحترفين في مجال الطهي" },

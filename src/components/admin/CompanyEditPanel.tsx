@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { Building2, Save, X, Edit, Sparkles, Upload, Image, Phone, MapPin, CreditCard, Shield, Star, ExternalLink } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 

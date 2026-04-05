@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, MapPin, Calendar, Landmark, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RecommendationData {
   competitions: any[];

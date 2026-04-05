@@ -19,6 +19,7 @@ import { ArticleSEOPanel } from "./ArticleSEOPanel";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { cn } from "@/lib/utils";
 import {
+import { supabase } from "@/integrations/supabase/client";
   ArrowLeft, Save, Eye, Calendar, Star, Loader2, CheckCircle2, Globe,
   Sparkles, Link2, Tag, FolderOpen, Wand2, RotateCcw, Languages, Search,
 } from "lucide-react";

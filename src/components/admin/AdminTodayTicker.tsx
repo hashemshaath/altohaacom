@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 import { UserPlus, ShoppingBag, MessageSquare, Flag, Trophy, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Compact horizontal ticker showing today's key metrics.

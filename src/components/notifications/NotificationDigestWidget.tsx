@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { React, memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNotifications } from "@/hooks/useNotifications";
 import { Card, CardContent } from "@/components/ui/card";

@@ -13,6 +13,7 @@ import {
   CalendarDays, Zap
 } from "lucide-react";
 import { differenceInDays, subDays, format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
 
 type Period = "7d" | "14d" | "30d";
 

@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 import { ShieldAlert, ShieldCheck, Monitor, Ban, Activity, AlertTriangle } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const SecurityAuditWidget = memo(function SecurityAuditWidget() {
   const { language } = useLanguage();

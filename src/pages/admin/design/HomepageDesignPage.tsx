@@ -9,6 +9,7 @@ import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTe
 import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
 import { HomepageLivePreview } from "@/components/admin/settings/homepage/HomepageLivePreview";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function HomepageDesignPage() {
   const { language } = useLanguage();

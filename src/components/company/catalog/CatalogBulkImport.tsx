@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { React, useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,6 +13,7 @@ import { Upload, FileText, AlertTriangle, CheckCircle2, Download, X, Loader2 } f
 import { categories, CatalogFormData } from "./catalogTypes";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CatalogBulkImportProps {
   open: boolean;

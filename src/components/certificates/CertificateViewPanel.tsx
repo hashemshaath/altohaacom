@@ -12,6 +12,7 @@ import { defaultDesign } from "./types";
 import { PenTool, CheckCircle, Send, Printer, Copy, XCircle, X, Award } from "lucide-react";
 import { format } from "date-fns";
 import { useRef, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Certificate {
   id: string;

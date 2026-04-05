@@ -1,4 +1,4 @@
-import { memo, useCallback } from "react";
+import { React, memo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Share2, Check, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";

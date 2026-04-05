@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Users, Gavel, CheckCircle, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CompetitionPipelineTracker = memo(function CompetitionPipelineTracker() {
   const { language } = useLanguage();

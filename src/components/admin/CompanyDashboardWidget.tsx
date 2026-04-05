@@ -15,6 +15,7 @@ import { subDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CHART_COLORS, TOOLTIP_STYLE, BAR_RADIUS } from "@/lib/chartConfig";
+import { supabase } from "@/integrations/supabase/client";
 
 export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
   const { language } = useLanguage();

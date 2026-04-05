@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback, useMemo, memo } from "react";
+import { React, useState, useEffect, useCallback, useMemo, memo } from "react";
 import { Check, Loader2, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { tl, type LangCode } from "@/lib/socialLinksTranslations";
 import { getVideoEmbedUrl } from "@/lib/socialLinksConstants";
+import { supabase } from "@/integrations/supabase/client";
 
 // ── Animated Number ──
 export const AnimatedNumber = memo(function AnimatedNumber({ value, duration = 1200 }: { value: number; duration?: number }) {

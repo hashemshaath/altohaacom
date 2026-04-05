@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense, createContext, useContext } from "react";
+import { React, useState, useEffect, lazy, Suspense, createContext, useContext } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { SEOHead } from "@/components/SEOHead";

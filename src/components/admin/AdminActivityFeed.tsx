@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { Activity, ArrowRight, UserPlus, Flag, Trophy, Shield, Package, Ticket } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FeedItem {
   id: string;
