@@ -454,7 +454,7 @@ export default function ProSupplierDetail() {
                     </Button>
                   </div>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    {products.slice(0, 4).map((p) => (
+                    {products.slice(0, 4).map((p: any) => (
                       <Card key={p.id} className="rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onClick={() => setQuickViewProduct(p)}>
                         {p.image_url ? (
                           <div className="h-32 bg-muted">

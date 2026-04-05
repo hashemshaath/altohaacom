@@ -74,7 +74,7 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
         const config = EVENT_TYPE_CONFIG[(ev.event_type as ScheduleEventType) || "other"];
         items.push({
           id: ev.id,
-          type: ev.event_type === "tv_interview" ? "event" : (ev.event_type || "event"),
+          type: ev.event_type === "tv_interview" ? "event" : ((ev.event_type || "event") as ScheduleItem["type"]),
           title: ev.show_details_publicly ? (isAr && ev.title_ar ? ev.title_ar : ev.title) : (isAr ? config?.ar : config?.en) || "Event",
           date: ev.start_date,
           location: ev.show_details_publicly ? (isAr && ev.venue_ar ? ev.venue_ar : ev.city || ev.venue) : undefined,

@@ -105,7 +105,7 @@ export function useMessagesData() {
       if (!user) return [];
       const { data: messages } = await supabase
         .from("messages")
-        .select("id, sender_id, receiver_id, content, message_type, is_read, is_starred, category, attachment_url, attachment_name, created_at")
+        .select("id, sender_id, receiver_id, content, message_type, is_read, is_starred, category, attachment_urls, attachment_names, created_at")
         .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
         .order("created_at", { ascending: false });
       if (!messages) return [];

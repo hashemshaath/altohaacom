@@ -182,8 +182,8 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
                   <CardContent className="p-2.5">
                     <p className="text-sm font-medium line-clamp-1">{isAr && r.title_ar ? r.title_ar : r.title}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      {r.cuisine_type && <Badge variant="outline" className="text-[9px]">{r.cuisine_type}</Badge>}
-                      <span className="text-[10px] text-muted-foreground flex items-center gap-0.5"><Heart className="h-3 w-3" />{r.save_count || 0}</span>
+                      {r.cuisine && <Badge variant="outline" className="text-[9px]">{r.cuisine}</Badge>}
+                      <span className="text-[10px] text-muted-foreground flex items-center gap-0.5"><Heart className="h-3 w-3" />0</span>
                     </div>
                   </CardContent>
                 </Card>
