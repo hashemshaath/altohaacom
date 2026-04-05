@@ -105,7 +105,7 @@ const EngagementMetrics = memo(function EngagementMetrics() {
         const weekEnd = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
         const weekLabel = `W${8 - i}`;
 
-        const weekActivity = (allProfiles || []).filter((p: any) => {
+        const weekActivity = (allProfiles || []).filter((p) => {
           const d = new Date(p.created_at);
           return d >= weekStart && d < weekEnd;
         }).length;

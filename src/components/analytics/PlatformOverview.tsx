@@ -66,22 +66,22 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
       const rangeMessages = rangeResults[4]?.count || 0;
 
       const roleCounts: Record<string, number> = {};
-      (roleDistribution || []).forEach((r: any) => { roleCounts[r.role] = (roleCounts[r.role] || 0) + 1; });
+      (roleDistribution || []).forEach((r) => { roleCounts[r.role] = (roleCounts[r.role] || 0) + 1; });
       const roleData = Object.entries(roleCounts).map(([name, value]) => ({ name, value }));
 
       const statusCounts: Record<string, number> = {};
-      (competitionsByStatus || []).forEach((c: any) => { statusCounts[c.status || "unknown"] = (statusCounts[c.status || "unknown"] || 0) + 1; });
+      (competitionsByStatus || []).forEach((c) => { statusCounts[c.status || "unknown"] = (statusCounts[c.status || "unknown"] || 0) + 1; });
       const statusData = Object.entries(statusCounts).map(([name, value]) => ({ name, value }));
 
       const buildMonthlyTrend = (dates: any[]): DataPoint[] => {
         const months: Record<string, number> = {};
-        (dates || []).forEach((p: any) => { const m = p.created_at?.substring(0, 7); if (m) months[m] = (months[m] || 0) + 1; });
+        (dates || []).forEach((p) => { const m = p.created_at?.substring(0, 7); if (m) months[m] = (months[m] || 0) + 1; });
         return Object.entries(months).sort(([a], [b]) => a.localeCompare(b)).slice(-12).map(([date, value]) => ({ date, value }));
       };
 
       const buildSparkline = (dates: any[]): { v: number }[] => {
         const days: Record<string, number> = {};
-        (dates || []).forEach((p: any) => { const d = p.created_at?.substring(0, 10); if (d) days[d] = (days[d] || 0) + 1; });
+        (dates || []).forEach((p) => { const d = p.created_at?.substring(0, 10); if (d) days[d] = (days[d] || 0) + 1; });
         return Object.entries(days).sort(([a], [b]) => a.localeCompare(b)).slice(-14).map(([_, value]) => ({ v: value }));
       };
 

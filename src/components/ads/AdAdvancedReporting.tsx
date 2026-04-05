@@ -58,9 +58,9 @@ export const AdAdvancedReporting = memo(function AdAdvancedReporting() {
 
   // Calculate advanced metrics per campaign
   const reportData = useMemo(() => {
-    return campaigns.map((c: any) => {
-      const campImpressions = impressions.filter((i: any) => i.campaign_id === c.id).length;
-      const campClicks = clicks.filter((cl: any) => cl.campaign_id === c.id).length;
+    return campaigns.map((c) => {
+      const campImpressions = impressions.filter((i) => i.campaign_id === c.id).length;
+      const campClicks = clicks.filter((cl) => cl.campaign_id === c.id).length;
       const ctr = campImpressions > 0 ? ((campClicks / campImpressions) * 100) : 0;
       const spent = c.spent || 0;
       const budget = c.budget || 0;

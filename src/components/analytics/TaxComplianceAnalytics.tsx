@@ -251,7 +251,7 @@ export const TaxComplianceAnalytics = memo(function TaxComplianceAnalytics() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data?.taxReports.map((r: any) => (
+                {data?.taxReports.map((r) => (
                   <TableRow key={r.id}>
                     <TableCell className="font-medium">{r.report_type}</TableCell>
                     <TableCell className="text-xs text-muted-foreground">{r.period_start} → {r.period_end}</TableCell>

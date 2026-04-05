@@ -45,7 +45,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap() {
       const grid: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
       let maxVal = 0;
 
-      (records || []).forEach((r: any) => {
+      (records || []).forEach((r) => {
         const d = new Date(r[sourceConfig[source].dateField]);
         const day = d.getDay();
         const hour = d.getHours();

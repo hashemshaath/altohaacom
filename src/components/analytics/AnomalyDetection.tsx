@@ -49,7 +49,7 @@ export const AnomalyDetection = memo(function AnomalyDetection() {
       // Count by day
       const countByDay: Record<string, number> = {};
       interval.forEach(d => { countByDay[format(d, "yyyy-MM-dd")] = 0; });
-      (rows || []).forEach((r: any) => {
+      (rows || []).forEach((r) => {
         const day = format(new Date(r[dateCol]), "yyyy-MM-dd");
         if (countByDay[day] !== undefined) countByDay[day]++;
       });
@@ -146,7 +146,7 @@ export const AnomalyDetection = memo(function AnomalyDetection() {
                 <Area type="monotone" dataKey="upper" stroke="none" fill="hsl(var(--destructive))" fillOpacity={0.07} />
                 <Area type="monotone" dataKey="lower" stroke="none" fill="hsl(var(--background))" fillOpacity={1} />
                 <ReferenceLine y={data?.mean} stroke="hsl(var(--muted-foreground))" strokeDasharray="4 4" label={{ value: isAr ? "المتوسط" : "Mean", fontSize: 10 }} />
-                <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} dot={(props: any) => {
+                <Line type="monotone" dataKey="value" stroke="hsl(var(--primary))" strokeWidth={2} dot={(props) => {
                   const { cx, cy, payload } = props;
                   if (payload?.isAnomaly) {
                     return <circle cx={cx} cy={cy} r={5} fill="hsl(var(--destructive))" stroke="hsl(var(--background))" strokeWidth={2} />;

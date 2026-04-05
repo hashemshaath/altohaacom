@@ -76,7 +76,7 @@ export const TikTokPixelPanel = memo(function TikTokPixelPanel() {
 
   useEffect(() => {
     const map: Record<string, IntegrationConfig> = {};
-    savedConfigs.forEach((s: any) => {
+    savedConfigs.forEach((s) => {
       map[s.integration_type] = {
         integration_type: s.integration_type,
         config: (s.config as Record<string, string>) || {},
@@ -131,7 +131,7 @@ export const TikTokPixelPanel = memo(function TikTokPixelPanel() {
         {tiktokIntegrations.map(integration => {
           const cfg = configs[integration.type];
           const isActive = cfg?.is_active || false;
-          const isSaved = savedConfigs.some((s: any) => s.integration_type === integration.type);
+          const isSaved = savedConfigs.some((s) => s.integration_type === integration.type);
           return (
             <Card key={integration.type} className={`transition-all ${isActive ? "border-primary/30 shadow-sm" : "border-border/50"}`}>
               <CardHeader className="pb-3">
