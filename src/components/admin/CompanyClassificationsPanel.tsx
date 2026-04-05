@@ -175,7 +175,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
         <CardContent className="pt-6">
           <Label className="mb-3 block">{isAr ? "تعيين تصنيف" : "Assign Classification"}</Label>
           <div className="flex flex-wrap gap-2">
-            {availableClassifications.map((cls: any) => (
+            {availableClassifications.map((cls) => (
               <button
                 key={cls.id}
                 type="button"
@@ -252,7 +252,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
         <CardContent className="pt-6">
           <Label className="mb-3 block text-sm font-semibold">{isAr ? "جميع التصنيفات المتاحة" : "All Available Classifications"}</Label>
           <div className="flex flex-wrap gap-2">
-            {classifications.map((cls: any) => (
+            {classifications.map((cls) => (
               <div key={cls.id} className="flex items-center gap-1">
                 <Badge className={cls.color}>
                   {isAr ? (cls.name_ar || cls.name) : cls.name}
