@@ -281,7 +281,7 @@ export default function SEODashboard() {
       setNewKeyword(""); setNewKeywordPage("");
       refetchKeywords();
       toast.success(isAr ? "تمت إضافة الكلمة المفتاحية" : "Keyword added");
-    } catch (e: unknown) { toast.error(e.message); } finally { setAddingKeyword(false); }
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : String(e)); } finally { setAddingKeyword(false); }
   };
 
   const handleDeleteKeyword = async (id: string) => {
@@ -458,7 +458,7 @@ export default function SEODashboard() {
       } else {
         toast.error(isAr ? "فشل التحقق من خريطة الموقع" : "Sitemap verification failed", { description: desc });
       }
-    } catch (e: unknown) { toast.error(e.message); } finally { setPinging(false); }
+    } catch (e: unknown) { toast.error(e instanceof Error ? e.message : String(e)); } finally { setPinging(false); }
   };
 
   // Get active section info
@@ -1177,7 +1177,7 @@ export default function SEODashboard() {
       await refetchSeoSettings();
       toast.success(isAr ? "تم الحفظ بنجاح" : "Saved successfully");
     } catch (e: unknown) {
-      toast.error(e.message);
+      toast.error(e instanceof Error ? e.message : String(e));
     } finally {
       setSavingSeo(false);
     }

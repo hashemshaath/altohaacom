@@ -65,7 +65,7 @@ export function useStartTrial() {
       toast({ title: `🎉 Trial started!`, description: `Enjoy your free trial.` });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: "Cannot start trial", description: err.message });
+      toast({ variant: "destructive", title: "Cannot start trial", description: err instanceof Error ? err.message : String(err) });
     },
   });
 }

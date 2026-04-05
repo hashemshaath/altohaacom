@@ -47,7 +47,7 @@ export const PostEditDialog = memo(function PostEditDialog({ post, onClose, onSa
       toast({ title: isAr ? "تم تعديل المنشور" : "Post updated" });
       onClose();
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setSaving(false);
     }

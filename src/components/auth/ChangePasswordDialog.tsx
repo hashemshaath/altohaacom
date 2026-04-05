@@ -92,7 +92,7 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
 
       setStep("done");
     } catch (err: unknown) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }

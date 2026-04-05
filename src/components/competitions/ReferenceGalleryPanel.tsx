@@ -96,7 +96,7 @@ export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ compe
       });
       toast({ title: isAr ? "تمت الإضافة" : "Reference added" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const deleteMutation = useMutation({

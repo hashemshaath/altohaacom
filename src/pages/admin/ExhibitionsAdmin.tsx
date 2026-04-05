@@ -257,7 +257,7 @@ export default function ExhibitionsAdmin() {
       }
     },
     onError: (err: any) => {
-      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 
@@ -293,7 +293,7 @@ export default function ExhibitionsAdmin() {
       toast({ title: t("Exhibition duplicated", "تم تكرار الفعالية") });
     },
     onError: (err: any) => {
-      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 
@@ -309,7 +309,7 @@ export default function ExhibitionsAdmin() {
       toast({ title: t("Exhibition approved and moved to draft", "تمت الموافقة ونقلها إلى مسودة") });
     },
     onError: (err: any) => {
-      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 
@@ -325,7 +325,7 @@ export default function ExhibitionsAdmin() {
       toast({ title: t("Exhibition rejected", "تم رفض الفعالية") });
     },
     onError: (err: any) => {
-      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 

@@ -58,7 +58,7 @@ export const AddGroupMembersDialog = memo(function AddGroupMembersDialog({ open,
       onOpenChange(false);
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err instanceof Error ? err.message : String(err) });
     },
   });
 

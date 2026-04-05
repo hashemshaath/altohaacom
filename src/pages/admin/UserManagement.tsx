@@ -205,7 +205,7 @@ export default function UserManagement() {
       await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: `${newStatus}_user`, details: { reason } }]);
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminUsers"] }); toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" }); },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const createUserMutation = useMutation({
@@ -221,13 +221,13 @@ export default function UserManagement() {
       setCreateOpen(false);
       setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewFullNameAr(""); setNewUsername(""); setNewPhone(""); setNewSendInvite(true);
     },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const resetPasswordMutation = useMutation({
     mutationFn: async () => callAdminFn({ action: "reset_password", user_id: resetUserId, new_password: resetNewPassword }),
     onSuccess: () => { toast({ title: isAr ? "تم إعادة تعيين كلمة المرور" : "Password reset" }); setResetOpen(false); setResetNewPassword(""); },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const inviteMutation = useMutation({
@@ -240,7 +240,7 @@ export default function UserManagement() {
       toast({ title: isAr ? "تم إرسال الدعوة بنجاح" : "Invitation sent successfully" });
       setInviteOpen(false); setInviteEmail(""); setInviteFullName(""); setInviteMessageEn(""); setInviteMessageAr("");
     },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const bulkActivate = async () => {

@@ -108,7 +108,7 @@ export default function CompanyTeam() {
       setInviteMessage("");
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
 

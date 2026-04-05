@@ -69,7 +69,7 @@ export default function CompanyInvitations() {
           : (language === "ar" ? "تم رفض الدعوة" : "Invitation declined"),
       });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const statusConfig: Record<string, { color: "default" | "destructive" | "outline" | "secondary"; icon: any; label: string; labelAr: string }> = {

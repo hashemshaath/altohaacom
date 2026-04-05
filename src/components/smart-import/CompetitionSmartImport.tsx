@@ -212,7 +212,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setSearchTime(Date.now() - start);
       setPhase("results");
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ في البحث" : "Search Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ في البحث" : "Search Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("idle");
     }
   }, [query, location, isAr]);
@@ -230,7 +230,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setDataQuality(data.data_quality || 0);
       setPhase("details");
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("results");
     }
   }, [location, isAr]);
@@ -249,7 +249,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setDataQuality(data.data_quality || 0);
       setPhase("details");
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("idle");
     }
   }, [urlInput, isAr]);
@@ -268,7 +268,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       setDataQuality(data.data_quality || 0);
       setPhase("details");
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
       setPhase("idle");
     }
   }, [isAr]);

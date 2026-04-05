@@ -131,7 +131,7 @@ export const NotificationHub = memo(function NotificationHub({ competitionId, la
       queryClient.invalidateQueries({ queryKey: ["comp-notifications", competitionId] });
     },
     onError: (e: Error) => {
-      toast.error(e.message);
+      toast.error(e instanceof Error ? e.message : String(e));
     },
   });
 

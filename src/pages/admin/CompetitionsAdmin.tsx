@@ -471,7 +471,7 @@ export default function CompetitionsAdmin() {
         description: `"${nameEn || nameAr}" ${isAr ? (mode === "update" ? "تم تحديثها" : "تم إنشاؤها كمسودة") : (mode === "update" ? "updated" : "created as draft")}${savedParts.length ? ` + ${savedParts.join(", ")}` : ""}`,
       });
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     }
   }, [isAr, user, queryClient, toast]);
 

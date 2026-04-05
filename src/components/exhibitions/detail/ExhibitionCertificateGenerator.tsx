@@ -102,7 +102,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
       toast({ title: t(`${count} certificates issued! 🎉`, `تم إصدار ${count} شهادة! 🎉`) });
     },
     onError: (err: any) => {
-      toast({ title: t("Failed to generate", "فشل الإنشاء"), description: err.message, variant: "destructive" });
+      toast({ title: t("Failed to generate", "فشل الإنشاء"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 

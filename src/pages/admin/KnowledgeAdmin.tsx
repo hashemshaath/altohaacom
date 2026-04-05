@@ -153,7 +153,7 @@ export default function KnowledgeAdmin() {
       });
       toast({ title: language === "ar" ? "تمت الإضافة" : "Resource added" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const addCategoryMutation = useMutation({
@@ -173,7 +173,7 @@ export default function KnowledgeAdmin() {
       setCategoryForm({ name: "", name_ar: "", description: "", description_ar: "", icon: "folder" });
       toast({ title: language === "ar" ? "تمت الإضافة" : "Category added" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const addReferenceMutation = useMutation({
@@ -203,7 +203,7 @@ export default function KnowledgeAdmin() {
       });
       toast({ title: language === "ar" ? "تمت الإضافة" : "Reference added" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const addRubricMutation = useMutation({
@@ -235,7 +235,7 @@ export default function KnowledgeAdmin() {
       });
       toast({ title: language === "ar" ? "تمت الإضافة" : "Rubric template added" });
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const deleteResourceMutation = useMutation({

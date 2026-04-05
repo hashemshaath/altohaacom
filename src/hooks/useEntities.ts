@@ -73,7 +73,7 @@ export function useEnrollInProgram() {
       toast({ title: "Enrolled successfully" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 }

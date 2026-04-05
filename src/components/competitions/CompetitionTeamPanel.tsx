@@ -136,7 +136,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
       setEditingId(null);
       setForm(emptyForm);
     },
-    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const deleteMutation = useMutation({

@@ -60,7 +60,7 @@ export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ compe
       setSelected(new Set((data.suggestions || []).map((_: Suggestion, i: number) => i)));
     },
     onError: (e: Error) => {
-      toast({ variant: "destructive", title: "Error", description: e.message });
+      toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) });
     },
   });
 
@@ -90,7 +90,7 @@ export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ compe
       toast({ title: language === "ar" ? "تمت إضافة العناصر المقترحة" : "AI suggestions added" });
     },
     onError: (e: Error) => {
-      toast({ variant: "destructive", title: "Error", description: e.message });
+      toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) });
     },
   });
 

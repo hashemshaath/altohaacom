@@ -137,7 +137,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       toast({ title: isAr ? "تم تحديث الملف الشخصي بنجاح" : "Profile updated successfully" });
     },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const updateRolesMutation = useMutation({
@@ -160,7 +160,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       toast({ title: isAr ? "تم تحديث الأدوار" : "Roles updated" });
     },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const uploadMediaMutation = useMutation({
@@ -178,7 +178,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
       toast({ title: isAr ? "تم رفع الصورة" : "Image uploaded" });
     },
-    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const addSpecialtyMutation = useMutation({
@@ -187,7 +187,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
       if (error) throw error;
     },
     onSuccess: () => { refetchUserSpecialties(); toast({ title: isAr ? "تمت الإضافة" : "Added" }); },
-    onError: (e) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const removeSpecialtyMutation = useMutation({
@@ -196,7 +196,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
       if (error) throw error;
     },
     onSuccess: () => { refetchUserSpecialties(); toast({ title: isAr ? "تمت الإزالة" : "Removed" }); },
-    onError: (e) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const handleFileUpload = (file: File, type: "avatar" | "cover") => {

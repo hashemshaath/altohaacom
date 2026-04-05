@@ -131,7 +131,7 @@ export const CountryCSVImport = memo(function CountryCSVImport() {
       setParsed(null);
       setFileName("");
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Import Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Import Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   return (

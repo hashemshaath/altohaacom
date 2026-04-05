@@ -156,7 +156,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
       setBroadcastBody("");
       setBroadcastBodyAr("");
     },
-    onError: (err) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const getTypeIcon = (type: string) => {

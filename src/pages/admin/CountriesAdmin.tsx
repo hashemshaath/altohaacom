@@ -257,7 +257,7 @@ export default function CountriesAdmin() {
       toast({ title: isAr ? "تم الحفظ بنجاح" : "Saved successfully" });
       closeForm();
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const toggleActiveMutation = useMutation({
@@ -284,7 +284,7 @@ export default function CountriesAdmin() {
       toast({ title: isAr ? "تم الحذف" : "Deleted" });
       setDeleteTarget(null);
     },
-    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const bulkToggleMutation = useMutation({

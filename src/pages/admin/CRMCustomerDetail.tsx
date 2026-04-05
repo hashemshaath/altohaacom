@@ -196,7 +196,7 @@ export default function CRMCustomerDetail() {
       setWalletNote("");
       toast({ title: isAr ? "تم تحديث المحفظة" : "Wallet updated" });
     },
-    onError: (e: any) => toast({ title: isAr ? "خطأ" : "Error", description: e.message, variant: "destructive" }),
+    onError: (e: any) => toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),
   });
 
   // Add to group

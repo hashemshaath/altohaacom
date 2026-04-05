@@ -150,7 +150,7 @@ const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Pro
       toast({ title: isAr ? "تم حفظ الملف" : "Profile saved" });
     },
     onError: (err: any) => {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 

@@ -93,7 +93,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
       queryClient.invalidateQueries({ queryKey: ["mgmt-cooking-sessions"] });
       resetForm();
     },
-    onError: (e) => toast.error(e.message),
+    onError: (e) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const statusMut = useMutation({

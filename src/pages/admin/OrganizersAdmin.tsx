@@ -314,7 +314,7 @@ export default function OrganizersAdmin() {
       setForm(emptyForm);
       toast.success(editId ? (isAr ? "تم التحديث" : "Updated") : (isAr ? "تمت الإضافة" : "Created"));
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const handleSave = useCallback(() => {
@@ -336,7 +336,7 @@ export default function OrganizersAdmin() {
       qc.invalidateQueries({ queryKey: ["admin-organizers"] });
       toast.success(isAr ? "تم الحذف" : "Deleted");
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e instanceof Error ? e.message : String(e)),
   });
 
   const bulkDeleteMutation = useMutation({

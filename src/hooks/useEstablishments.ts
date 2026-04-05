@@ -135,7 +135,7 @@ export function useCreateEstablishment() {
       toast({ title: "Establishment added successfully" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 }
@@ -165,7 +165,7 @@ export function useAddAssociation() {
       toast({ title: "Association added" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 }
@@ -194,7 +194,7 @@ export function useAddQualification() {
       toast({ title: "Qualification added" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 }

@@ -79,7 +79,7 @@ export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOr
       queryClient.invalidateQueries({ queryKey: ["checklist-items"] });
       toast({ title: isAr ? "تمت إضافة العنصر للقائمة" : "Item added to list" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   // Group items by category

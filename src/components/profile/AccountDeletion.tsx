@@ -47,7 +47,7 @@ export const AccountDeletion = memo(function AccountDeletion() {
     } catch (err: unknown) {
       toast({
         title: isAr ? "فشل الحذف" : "Deletion failed",
-        description: err.message,
+        description: err instanceof Error ? err.message : String(err),
         variant: "destructive",
       });
     } finally {

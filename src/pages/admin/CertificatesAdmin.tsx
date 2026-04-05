@@ -167,7 +167,7 @@ export default function CertificatesAdmin() {
       toast({ title: language === "ar" ? "تم إنشاء الشهادة" : "Certificate created" });
       resetForm();
     },
-    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err.message }),
+    onError: (err: any) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
   const bulkSignMutation = useMutation({
@@ -312,7 +312,7 @@ export default function CertificatesAdmin() {
               toast({ title: language === "ar" ? "تم حفظ القالب" : "Template saved successfully" });
               setShowDesigner(false);
             } catch (err: unknown) {
-              toast({ variant: "destructive", title: "Error", description: err.message });
+              toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
             }
           }}
           onPrint={() => {

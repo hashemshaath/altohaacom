@@ -518,7 +518,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                 <ul className="mt-2 space-y-1">
                   {errors.slice(0, 5).map((err: any, i: number) => (
                     <li key={i} className="text-xs text-muted-foreground">
-                      {t(`Row ${err.row}: ${err.message}`, `الصف ${err.row}: ${err.message}`)}
+                      {t(`Row ${err.row}: ${err instanceof Error ? err.message : String(err)}`, `الصف ${err.row}: ${err instanceof Error ? err.message : String(err)}`)}
                     </li>
                   ))}
                   {errors.length > 5 && (

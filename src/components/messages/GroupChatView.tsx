@@ -283,7 +283,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
                     metadata: { duration: dur },
                   });
                 } catch (err: unknown) {
-                  toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err.message });
+                  toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err instanceof Error ? err.message : String(err) });
                 } finally {
                   setUploading(false);
                 }
@@ -315,7 +315,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
             }
             sendMutation.mutate({ content: isAr ? "مرفق" : "Attachment", message_type: "file", attachment_urls: urls, attachment_names: names });
           } catch (err: unknown) {
-            toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err.message });
+            toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err instanceof Error ? err.message : String(err) });
           } finally {
             setUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = "";

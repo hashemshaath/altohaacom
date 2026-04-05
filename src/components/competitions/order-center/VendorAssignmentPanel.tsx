@@ -111,7 +111,7 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
       }
       toast({ title: isAr ? "تم تحديث المورد" : "Vendor updated" });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const bulkAssignVendor = useMutation({

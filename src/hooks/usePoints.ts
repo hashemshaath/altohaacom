@@ -111,7 +111,7 @@ export function useRedeemReward() {
       toast({ title: "Reward redeemed successfully!" });
     },
     onError: (err: any) => {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     },
   });
 }

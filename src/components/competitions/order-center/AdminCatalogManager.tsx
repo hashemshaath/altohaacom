@@ -89,7 +89,7 @@ export const AdminCatalogManager = memo(function AdminCatalogManager() {
       resetForm();
       toast({ title: isAr ? (editId ? "تم تحديث العنصر" : "تمت إضافة العنصر") : (editId ? "Item updated" : "Item added") });
     },
-    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e.message }),
+    onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
   });
 
   const deleteMutation = useMutation({

@@ -103,7 +103,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
       setStep("preview");
       toast({ title: isAr ? "تم تحليل السيرة الذاتية بنجاح ✨" : "CV parsed successfully ✨" });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err instanceof Error ? err.message : String(err) });
     }
     setParsing(false);
   };

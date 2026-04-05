@@ -89,7 +89,7 @@ const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin 
     },
     onError: (err: any) => {
       setUploading(false);
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     },
   });
 

@@ -57,7 +57,7 @@ export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, cop
         toast({ title: targetLang === "ar" ? "تمت الترجمة" : "Translated", description: targetLang === "ar" ? "تم ترجمة النص إلى العربية" : "Text translated to English" });
       }
     } catch (err: unknown) {
-      toast({ title: "Translation Error", description: err.message, variant: "destructive" });
+      toast({ title: "Translation Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setTranslating(false);
     }

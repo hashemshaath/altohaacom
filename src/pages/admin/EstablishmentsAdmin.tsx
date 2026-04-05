@@ -213,7 +213,7 @@ export default function EstablishmentsAdmin() {
       setEditingId(null);
       setForm(emptyForm);
     } catch (err: unknown) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setIsSaving(false);
     }

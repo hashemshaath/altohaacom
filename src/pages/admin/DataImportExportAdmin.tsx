@@ -271,7 +271,7 @@ const ExportTab = memo(function ExportTab() {
 
       toast({ title: t(`Exported ${data.length} records`, `تم تصدير ${data.length} سجل`) });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("Export failed", "فشل التصدير"), description: err.message });
+      toast({ variant: "destructive", title: t("Export failed", "فشل التصدير"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setExporting(false);
     }
@@ -598,7 +598,7 @@ const ImportTab = memo(function ImportTab() {
       });
       setStep("done");
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("Import error", "خطأ في الاستيراد"), description: err.message });
+      toast({ variant: "destructive", title: t("Import error", "خطأ في الاستيراد"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setImporting(false);
     }

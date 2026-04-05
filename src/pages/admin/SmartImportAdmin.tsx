@@ -358,7 +358,7 @@ export default function SmartImportAdmin() {
         toast({ title: isAr ? "لا توجد نتائج" : "No Results", description: isAr ? "جرب كلمات بحث مختلفة" : "Try different search terms", variant: "destructive" });
       }
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ في البحث" : "Search Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ في البحث" : "Search Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setSearching(false);
     }
@@ -397,7 +397,7 @@ export default function SmartImportAdmin() {
       setStep("details");
       toast({ title: isAr ? "تم استخراج البيانات بنجاح" : "Data extracted successfully" });
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setUrlImporting(false);
     }
@@ -443,7 +443,7 @@ export default function SmartImportAdmin() {
       setStep("details");
       toast({ title: isAr ? "تم جلب البيانات بنجاح" : "Data fetched successfully" });
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setLoadingDetails(false);
     }
@@ -568,7 +568,7 @@ export default function SmartImportAdmin() {
       await logImport('update', record.table, record.id, record.sub_type);
       setDbChecked(false);
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setUpdating(false);
       setSelectedExistingId(null);
@@ -674,7 +674,7 @@ export default function SmartImportAdmin() {
         if (newStats?.success) setStats(newStats.stats);
       } catch {}
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setSaving(false);
     }

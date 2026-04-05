@@ -50,7 +50,7 @@ export const SubscriptionDetailsCard = memo(function SubscriptionDetailsCard({ u
       toast({ title: isAr ? "تم تحديث التجديد التلقائي" : "Auto-renewal updated" });
     },
     onError: (e: any) => {
-      toast({ variant: "destructive", title: "Error", description: e.message });
+      toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) });
     },
   });
 

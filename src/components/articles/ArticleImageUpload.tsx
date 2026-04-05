@@ -50,7 +50,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
       onChange(urlData.publicUrl);
       toast({ title: t("Image uploaded!", "تم رفع الصورة!") });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: t("Upload failed", "فشل الرفع"), description: err.message });
+      toast({ variant: "destructive", title: t("Upload failed", "فشل الرفع"), description: err instanceof Error ? err.message : String(err) });
     } finally {
       setUploading(false);
     }

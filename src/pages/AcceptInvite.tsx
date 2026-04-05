@@ -58,7 +58,7 @@ export default function AcceptInvite() {
       if (contactError) throw contactError;
     },
     onSuccess: () => { toast({ title: isAr ? "تم قبول الدعوة بنجاح!" : "Invitation accepted successfully!" }); navigate("/company"); },
-    onError: (err: any) => { toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message }); },
+    onError: (err: any) => { toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) }); },
   });
 
   const declineMutation = useMutation({

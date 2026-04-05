@@ -121,7 +121,7 @@ export function useUpsertSocialLinkPage() {
       toast({ title: "✅" });
     },
     onError: (e: any) => {
-      toast({ title: "Error", description: e.message, variant: "destructive" });
+      toast({ title: "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
     },
   });
 }

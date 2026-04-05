@@ -146,7 +146,7 @@ export default function MentorshipAdmin() {
           setMatchOpen(false); setMatchProgramId(""); setMatchMentorId(""); setMatchMenteeId("");
         },
         onError: (err: any) => {
-          toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err.message });
+          toast({ variant: "destructive", title: isAr ? "فشل" : "Failed", description: err instanceof Error ? err.message : String(err) });
         },
       }
     );

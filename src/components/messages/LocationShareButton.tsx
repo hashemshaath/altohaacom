@@ -30,7 +30,7 @@ export const LocationShareButton = memo(function LocationShareButton({ isAr, onS
         setLoading(false);
       },
       (err) => {
-        toast({ variant: "destructive", title: isAr ? "فشل تحديد الموقع" : "Location failed", description: err.message });
+        toast({ variant: "destructive", title: isAr ? "فشل تحديد الموقع" : "Location failed", description: err instanceof Error ? err.message : String(err) });
         setLoading(false);
       },
       { timeout: 10000, enableHighAccuracy: true }

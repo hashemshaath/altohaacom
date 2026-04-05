@@ -207,7 +207,7 @@ export const SmartImportDialog = memo(function SmartImportDialog({
     } catch (err: unknown) {
       toast({
         title: isAr ? "خطأ في الاستيراد" : "Import Error",
-        description: err.message,
+        description: err instanceof Error ? err.message : String(err),
         variant: "destructive",
       });
     } finally {

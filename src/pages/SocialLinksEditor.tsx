@@ -484,7 +484,7 @@ export default function SocialLinksEditor() {
       toast({ title: isAr ? "✅ تم حفظ الحسابات" : "✅ Accounts saved" });
       refetchProfile();
     } catch (err: unknown) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setSavingSocials(false);
     }
@@ -589,7 +589,7 @@ export default function SocialLinksEditor() {
       }
       toast({ title: isAr ? `✅ تم استيراد ${importedItems.length} رابط` : `✅ Imported ${importedItems.length} links` });
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ في الاستيراد" : "Import error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ في الاستيراد" : "Import error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     }
   }, [page, user, form, extra, items.length, isAr, toast, upsertPage, addItem]);
 
@@ -623,7 +623,7 @@ export default function SocialLinksEditor() {
       updateItem.mutate({ id: itemId, thumbnail_url: urlData.publicUrl });
       toast({ title: isAr ? "تم رفع الصورة المصغرة" : "Thumbnail uploaded" });
     } catch (err: unknown) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     }
   }, [user, isAr, toast, updateItem]);
 
@@ -678,7 +678,7 @@ export default function SocialLinksEditor() {
       updateForm({ background_image_url: urlData.publicUrl });
       toast({ title: isAr ? "تم رفع الصورة" : "Image uploaded" });
     } catch (err: unknown) {
-      toast({ title: "Error", description: err.message, variant: "destructive" });
+      toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setUploading(false);
     }
@@ -2093,7 +2093,7 @@ export default function SocialLinksEditor() {
                               updateExtra({ cover_image_url: urlData.publicUrl });
                               toast({ title: isAr ? "تم رفع صورة الغلاف" : "Cover image uploaded" });
                             } catch (err: unknown) {
-                              toast({ title: "Error", description: err.message, variant: "destructive" });
+                              toast({ title: "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
                             }
                           }} />
                         </div>

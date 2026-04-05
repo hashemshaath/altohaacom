@@ -81,7 +81,7 @@ export default function MentorApply() {
           navigate("/mentorship");
         },
         onError: (err: any) => {
-          toast({ variant: "destructive", title: isAr ? "فشل التقديم" : "Submission failed", description: err.message });
+          toast({ variant: "destructive", title: isAr ? "فشل التقديم" : "Submission failed", description: err instanceof Error ? err.message : String(err) });
         },
       }
     );

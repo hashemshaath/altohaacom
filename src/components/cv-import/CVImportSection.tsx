@@ -83,7 +83,7 @@ export const CVImportSection = memo(function CVImportSection() {
       if (error) throw error;
       setResults(data || []);
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في البحث" : "Search error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ في البحث" : "Search error", description: err instanceof Error ? err.message : String(err) });
     }
     setSearching(false);
   }, [searchQuery, isAr, toast]);
@@ -126,7 +126,7 @@ export const CVImportSection = memo(function CVImportSection() {
         });
       }
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
     }
     setCreating(false);
   };
@@ -200,7 +200,7 @@ export const CVImportSection = memo(function CVImportSection() {
       setStep("preview");
       toast({ title: isAr ? "تم تحليل السيرة الذاتية بنجاح ✨" : "CV parsed successfully ✨" });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ في التحليل" : "Parsing error", description: err instanceof Error ? err.message : String(err) });
     }
     setParsing(false);
   };

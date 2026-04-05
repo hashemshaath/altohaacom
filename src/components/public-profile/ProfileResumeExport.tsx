@@ -148,7 +148,7 @@ export const ProfileResumeExport = memo(function ProfileResumeExport({
         description: isAr ? "استخدم حوار الطباعة لحفظها كـ PDF" : "Use the print dialog to save as PDF",
       });
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: "Error", description: err.message });
+      toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setExporting(false);
     }

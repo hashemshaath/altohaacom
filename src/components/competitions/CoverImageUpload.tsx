@@ -44,7 +44,7 @@ export const CoverImageUpload = memo(function CoverImageUpload({ currentUrl, onU
       setPreview(data.publicUrl);
       onUrlChange(data.publicUrl);
     } catch (err: unknown) {
-      toast({ variant: "destructive", title: "Upload failed", description: err.message });
+      toast({ variant: "destructive", title: "Upload failed", description: err instanceof Error ? err.message : String(err) });
     } finally {
       setUploading(false);
     }

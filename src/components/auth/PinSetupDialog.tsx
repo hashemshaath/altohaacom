@@ -89,7 +89,7 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
       setStep("done");
       onSuccess?.();
     } catch (err: unknown) {
-      setError(err.message);
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }

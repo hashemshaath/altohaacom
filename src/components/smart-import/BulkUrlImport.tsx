@@ -50,7 +50,7 @@ export const BulkUrlImport = React.memo(({ isAr, onComplete, userId }: BulkUrlIm
           : `✅ ${successes} succeeded | ❌ ${failures} failed`,
       });
     } catch (err: unknown) {
-      toast({ title: isAr ? "خطأ" : "Error", description: err.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
     } finally {
       setImporting(false);
     }
