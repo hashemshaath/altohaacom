@@ -100,7 +100,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
       qc.invalidateQueries({ queryKey: ["organizer-exhibitions", organizerId] });
       toast.success(isAr ? "تم الربط بنجاح" : "Linked successfully");
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: Error) => toast.error(e.message),
   });
 
   // Unlink mutation
@@ -113,7 +113,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
       qc.invalidateQueries({ queryKey: ["organizer-exhibitions", organizerId] });
       toast.success(isAr ? "تم إلغاء الربط" : "Unlinked successfully");
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: Error) => toast.error(e.message),
   });
 
   // Update role mutation
