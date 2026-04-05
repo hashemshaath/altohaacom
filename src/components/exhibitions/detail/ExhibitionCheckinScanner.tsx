@@ -84,7 +84,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
       toast({ title: t("Check-in successful!", "تم تسجيل الدخول!") });
     },
     onError: (err: any) => {
-      const msg = err.message;
+      const msg = err instanceof Error ? err.message : String(err);
       if (msg === "not_found") setResult({ type: "error", message: t("❌ Ticket not found", "❌ التذكرة غير موجودة") });
       else if (msg === "not_confirmed") setResult({ type: "error", message: t("❌ Ticket not confirmed", "❌ التذكرة غير مؤكدة") });
       else if (msg === "already_checked_in") setResult({ type: "warning", message: t("⚠️ Already checked in", "⚠️ تم تسجيل الدخول مسبقاً") });

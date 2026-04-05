@@ -66,7 +66,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
         toast({ title: isAr ? `✅ تم استخراج ${text.length} حرف من الملف` : `✅ Extracted ${text.length} characters from file` });
       }
     } catch (err: unknown) {
-      if (err?.message === "OLD_DOC_FORMAT") {
+      if (err instanceof Error && err.message === "OLD_DOC_FORMAT") {
         toast({
           variant: "destructive",
           title: isAr ? "صيغة .doc القديمة غير مدعومة" : "Old .doc format not supported",

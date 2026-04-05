@@ -180,7 +180,7 @@ export default function OrganizersAdmin() {
       setForm(f => ({ ...f, [type === "logo" ? "logo_url" : "cover_image_url"]: url }));
       toast.success(isAr ? "تم الرفع بنجاح" : "Uploaded successfully");
     } catch (err: unknown) {
-      toast.error(err.message || (isAr ? "فشل الرفع" : "Upload failed"));
+      toast.error((err instanceof Error ? err.message : "") || (isAr ? "فشل الرفع" : "Upload failed"));
     } finally {
       setter(false);
     }

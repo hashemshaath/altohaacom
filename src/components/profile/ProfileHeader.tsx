@@ -126,7 +126,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
       toast({
         variant: "destructive",
         title: isAr ? "حدث خطأ" : "Something went wrong",
-        description: err?.message || "Unknown error",
+        description: (err instanceof Error ? err.message : "Unknown error"),
       });
     } finally {
       setUploading(false);

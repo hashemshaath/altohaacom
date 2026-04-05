@@ -83,7 +83,7 @@ export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId
       queryClient.invalidateQueries({ queryKey: ["blind-codes", competitionId] });
       toast({ title: isAr ? "تم إنشاء الأكواد" : "Codes generated" });
     },
-    onError: (err: any) => toast({ title: err.message || "Error", variant: "destructive" }),
+    onError: (err: unknown) => toast({ title: err instanceof Error ? err.message : String(err) || "Error", variant: "destructive" }),
   });
 
   if (!isOrganizer) return null;

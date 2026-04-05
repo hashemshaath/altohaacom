@@ -282,9 +282,9 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       const text = await extractTextFromFile(file);
       setPdfText(text);
     } catch (err: unknown) {
-      const msg = err.message === "OLD_DOC_FORMAT"
+      const msg = (err instanceof Error && err.message === "OLD_DOC_FORMAT")
         ? (isAr ? "صيغة .doc القديمة غير مدعومة، استخدم .docx أو .pdf" : "Legacy .doc format not supported, use .docx or .pdf")
-        : err.message === "UNSUPPORTED_FORMAT"
+        : (err instanceof Error && err.message === "UNSUPPORTED_FORMAT")
         ? (isAr ? "صيغة الملف غير مدعومة" : "Unsupported file format")
         : (isAr ? "فشل قراءة الملف" : "Failed to read file");
       toast({ title: isAr ? "خطأ" : "Error", description: msg, variant: "destructive" });

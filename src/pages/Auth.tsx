@@ -304,7 +304,7 @@ export default function Auth() {
         });
       }
     } catch (err: unknown) {
-      setFormError(err.message || "Login failed");
+      setFormError((err instanceof Error ? err.message : "Login failed"));
       setSignInPhoneStep("phone");
     } finally {
       setLoading(false);
@@ -437,7 +437,7 @@ export default function Auth() {
         });
       }
     } catch (err: unknown) {
-      setPinError(err.message || "Login failed");
+      setPinError((err instanceof Error ? err.message : "Login failed"));
     } finally {
       setLoading(false);
     }
