@@ -205,10 +205,10 @@ export const NetworkTab = memo(function NetworkTab() {
                         </Link>
                       );
                     })()}
-                    {((isAr ? rec.specialization_ar : null) || rec.specialization) ? (
+                    {((isAr ? (rec as any).specialization_ar : null) || rec.specialization) ? (
                       <p className="text-[11px] text-muted-foreground truncate flex items-center justify-center gap-1">
                         <ChefHat className="h-3 w-3 shrink-0" />
-                        {(isAr ? rec.specialization_ar : null) || rec.specialization}
+                        {(isAr ? (rec as any).specialization_ar : null) || rec.specialization}
                       </p>
                     ) : null}
                     {rec.country_code && (

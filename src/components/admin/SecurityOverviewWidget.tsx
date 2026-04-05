@@ -32,7 +32,7 @@ export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
         supabase.from("security_events").select("*", { count: "exact", head: true }).gte("created_at", last24h).eq("event_type", "login_failed"),
         supabase.from("user_sessions").select("*", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("ip_blocklist").select("*", { count: "exact", head: true }).eq("is_active", true),
-        supabase.from("security_events").select("event_type, severity, created_at, details").order("created_at", { ascending: false }).limit(5),
+        supabase.from("security_events").select("event_type, severity, created_at, metadata").order("created_at", { ascending: false }).limit(5),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_status", "suspended"),
         supabase.from("security_events").select("*", { count: "exact", head: true }).gte("created_at", last7d).eq("event_type", "role_changed"),
       ]);

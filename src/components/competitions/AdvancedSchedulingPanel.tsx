@@ -180,9 +180,9 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
                           )}
                         </div>
 
-                        {round.description && (
+                        {round.name && (
                           <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">
-                            {isAr && round.description_ar ? round.description_ar : round.description}
+                            {isAr && round.name_ar ? round.name_ar : round.name}
                           </p>
                         )}
                       </div>
@@ -220,7 +220,7 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">
-                      {isAr && station.name_ar ? station.name_ar : station.name}
+                      {isAr && station.station_name_ar ? station.station_name_ar : station.station_name}
                     </p>
                     <p className="text-[10px] text-muted-foreground capitalize">{station.status || "available"}</p>
                   </div>

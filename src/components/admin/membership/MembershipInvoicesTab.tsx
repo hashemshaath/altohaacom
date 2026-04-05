@@ -101,11 +101,11 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (r) => r.invoice_number || "" },
-      { header: isAr ? "المبلغ" : "Amount", accessor: (r) => r.amount || 0 },
-      { header: isAr ? "العملة" : "Currency", accessor: (r) => r.currency || "SAR" },
-      { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status || "" },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r) => r.created_at ? format(new Date(r.created_at), "yyyy-MM-dd") : "" },
+      { header: isAr ? "رقم الفاتورة" : "Invoice #", accessor: (r: Record<string, unknown>) => String(r.invoice_number || "") },
+      { header: isAr ? "المبلغ" : "Amount", accessor: (r: Record<string, unknown>) => String(r.amount || 0) },
+      { header: isAr ? "العملة" : "Currency", accessor: (r: Record<string, unknown>) => String(r.currency || "SAR") },
+      { header: isAr ? "الحالة" : "Status", accessor: (r: Record<string, unknown>) => String(r.status || "") },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r: Record<string, unknown>) => r.created_at ? format(new Date(String(r.created_at)), "yyyy-MM-dd") : "" },
     ],
     filename: "membership-invoices",
   });

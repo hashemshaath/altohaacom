@@ -74,11 +74,11 @@ export default function UsersTab({ isAr, t }: Props) {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: t("Name", "الاسم"), accessor: (u) => u.full_name || "" },
-      { header: t("Username", "اسم المستخدم"), accessor: (u) => u.username || "" },
-      { header: t("Email", "البريد"), accessor: (u) => u.email || "" },
-      { header: t("Account #", "رقم الحساب"), accessor: (u) => u.account_number || "" },
-      { header: t("Roles", "الأدوار"), accessor: (u) => u.roles?.join(", ") || "" },
+      { header: t("Name", "الاسم"), accessor: (u: Record<string, unknown>) => String(u.full_name || "") },
+      { header: t("Username", "اسم المستخدم"), accessor: (u: Record<string, unknown>) => String(u.username || "") },
+      { header: t("Email", "البريد"), accessor: (u: Record<string, unknown>) => String(u.email || "") },
+      { header: t("Account #", "رقم الحساب"), accessor: (u: Record<string, unknown>) => String(u.account_number || "") },
+      { header: t("Roles", "الأدوار"), accessor: (u: Record<string, unknown>) => Array.isArray(u.roles) ? u.roles.join(", ") : "" },
     ],
     filename: "role-assignments",
   });

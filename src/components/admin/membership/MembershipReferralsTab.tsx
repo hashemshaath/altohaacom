@@ -29,7 +29,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_codes")
-        .select("*, profiles:user_id(full_name, username, email, avatar_url)")
+        .select("*")
         .order("total_conversions", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -42,7 +42,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("referral_conversions")
-        .select("*, referrer:referrer_id(full_name, username, email), referred:referred_user_id(full_name, username, email)")
+        .select("*")
         .order("converted_at", { ascending: false })
         .limit(100);
       if (error) throw error;
@@ -56,7 +56,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
     queryFn: async () => {
       let query = supabase
         .from("membership_referrals")
-        .select("*, referrer:referrer_id(full_name, username, email), referred:referred_id(full_name, username, email)")
+        .select("*")
         .order("created_at", { ascending: false })
         .limit(100);
       if (statusFilter !== "all") {
@@ -79,13 +79,9 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
   const filteredCodes = referralCodes?.filter((code) => {
     if (!searchTerm) return true;
     const term = searchTerm.toLowerCase();
-    const profile = code.profiles;
     return (
       code.code?.toLowerCase().includes(term) ||
-      code.custom_slug?.toLowerCase().includes(term) ||
-      profile?.full_name?.toLowerCase().includes(term) ||
-      profile?.username?.toLowerCase().includes(term) ||
-      profile?.email?.toLowerCase().includes(term)
+      code.custom_slug?.toLowerCase().includes(term)
     );
   });
 
@@ -245,8 +241,8 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                         <TableRow key={code.id}>
                           <TableCell>
                             <div>
-                              <p className="text-sm font-medium">{code.profiles?.full_name || code.profiles?.username || "-"}</p>
-                              <p className="text-xs text-muted-foreground">{code.profiles?.email}</p>
+                              <p className="text-sm font-medium">{(code as any).profiles?.full_name || (code as any).profiles?.username || "-"}</p>
+                              <p className="text-xs text-muted-foreground">{(code as any).profiles?.email}</p>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -304,12 +300,12 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                       conversions?.map((c) => (
                         <TableRow key={c.id}>
                           <TableCell>
-                            <p className="text-sm font-medium">{c.referrer?.full_name || c.referrer?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{c.referrer?.email}</p>
+                            <p className="text-sm font-medium">{(c as any).referrer?.full_name || (c as any).referrer?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(c as any).referrer?.email}</p>
                           </TableCell>
                           <TableCell>
-                            <p className="text-sm font-medium">{c.referred?.full_name || c.referred?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{c.referred?.email}</p>
+                            <p className="text-sm font-medium">{(c as any).referred?.full_name || (c as any).referred?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(c as any).referred?.email}</p>
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline">{c.conversion_type}</Badge>
@@ -369,12 +365,12 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                       membershipReferrals?.map((r) => (
                         <TableRow key={r.id}>
                           <TableCell>
-                            <p className="text-sm font-medium">{r.referrer?.full_name || r.referrer?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{r.referrer?.email}</p>
+                            <p className="text-sm font-medium">{(r as any).referrer?.full_name || (r as any).referrer?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(r as any).referrer?.email}</p>
                           </TableCell>
                           <TableCell>
-                            <p className="text-sm font-medium">{r.referred?.full_name || r.referred?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{r.referred?.email}</p>
+                            <p className="text-sm font-medium">{(r as any).referred?.full_name || (r as any).referred?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(r as any).referred?.email}</p>
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline" className="capitalize">{r.tier}</Badge>

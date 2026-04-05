@@ -202,11 +202,11 @@ const MembershipWalletTab = memo(function MembershipWalletTab() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: isAr ? "الاسم" : "Name", accessor: (r) => r.profile?.full_name || "" },
-      { header: isAr ? "المعرف" : "Username", accessor: (r) => r.profile?.username || "" },
-      { header: isAr ? "المستوى" : "Tier", accessor: (r) => r.profile?.membership_tier || "basic" },
-      { header: isAr ? "الرصيد" : "Balance", accessor: (r) => r.balance || 0 },
-      { header: isAr ? "النقاط" : "Points", accessor: (r) => r.points_balance || 0 },
+      { header: isAr ? "الاسم" : "Name", accessor: (r: Record<string, unknown>) => String((r as any).profile?.full_name || "") },
+      { header: isAr ? "المعرف" : "Username", accessor: (r: Record<string, unknown>) => String((r as any).profile?.username || "") },
+      { header: isAr ? "المستوى" : "Tier", accessor: (r: Record<string, unknown>) => String((r as any).profile?.membership_tier || "basic") },
+      { header: isAr ? "الرصيد" : "Balance", accessor: (r: Record<string, unknown>) => String((r as any).balance || 0) },
+      { header: isAr ? "النقاط" : "Points", accessor: (r: Record<string, unknown>) => String((r as any).points_balance || 0) },
     ],
     filename: "membership-wallets",
   });

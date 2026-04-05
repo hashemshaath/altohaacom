@@ -251,7 +251,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
 
   // Apply template to competition
   const applyTemplate = useMutation({
-    mutationFn: async (template) => {
+    mutationFn: async (template: Record<string, any>) => {
       const { data: newList, error: listError } = await supabase
         .from("requirement_lists")
         .insert({

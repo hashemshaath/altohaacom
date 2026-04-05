@@ -38,9 +38,9 @@ export default function ActivityTab({ isAr, t }: Props) {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: t("Action", "الإجراء"), accessor: (r) => r.action_type?.replace(/_/g, " ") || "" },
-      { header: t("Details", "التفاصيل"), accessor: (r) => r.details ? JSON.stringify(r.details) : "" },
-      { header: t("Date", "التاريخ"), accessor: (r) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+      { header: t("Action", "الإجراء"), accessor: (r: Record<string, unknown>) => String(r.action_type || "").replace(/_/g, " ") },
+      { header: t("Details", "التفاصيل"), accessor: (r: Record<string, unknown>) => r.details ? JSON.stringify(r.details) : "" },
+      { header: t("Date", "التاريخ"), accessor: (r: Record<string, unknown>) => r.created_at ? format(new Date(String(r.created_at)), "yyyy-MM-dd HH:mm") : "" },
     ],
     filename: "role-activity-log",
   });

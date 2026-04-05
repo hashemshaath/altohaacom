@@ -135,8 +135,8 @@ export const ExhibitionAdvancedAnalytics = memo(function ExhibitionAdvancedAnaly
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: "Metric", accessor: (r) => r.metric },
-      { header: "Value", accessor: (r) => r.value },
+      { header: "Metric", accessor: (r: Record<string, unknown>) => String(r.metric || "") },
+      { header: "Value", accessor: (r: Record<string, unknown>) => String(r.value || "") },
     ],
     filename: "exhibition_analytics",
   });

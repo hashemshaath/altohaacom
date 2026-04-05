@@ -579,7 +579,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
               {filteredInvitations.map((inv) => {
                 const channel = CHANNELS.find(c => c.value === inv.invitation_channel);
                 const ChannelIcon = channel?.icon || Mail;
-                const cat = categories?.find(c => c.id === inv.category_id);
+                const cat = categories?.find(c => c.id === (inv as any).category_id);
                 return (
                   <Card key={inv.id} className="overflow-hidden hover:shadow-sm transition-shadow">
                     <CardContent className="p-0">
