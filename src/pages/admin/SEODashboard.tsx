@@ -17,6 +17,7 @@ import {
 import { useSearchParams } from "react-router-dom";
 import { SEOScoreGauge } from "@/components/admin/seo/SEOScoreGauge";
 import { cn } from "@/lib/utils";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 const DEFAULT_ROBOTS_TXT = `User-agent: *
 Disallow: /admin/

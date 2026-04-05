@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
+import { CHART_COLORS } from "@/lib/chartConfig";
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   ResponsiveContainer, PieChart, Pie, Cell, CartesianGrid,
 } from "recharts";

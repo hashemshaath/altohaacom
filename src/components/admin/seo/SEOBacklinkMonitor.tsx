@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link2, Plus, Trash2, ExternalLink, Shield, CheckCircle2, TrendingUp, Loader2, Globe } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
+import { CHART_COLORS } from "@/lib/chartConfig";
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";

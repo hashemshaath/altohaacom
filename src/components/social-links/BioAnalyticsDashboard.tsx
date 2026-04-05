@@ -11,6 +11,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 interface BioAnalyticsDashboardProps {
   pageId: string;

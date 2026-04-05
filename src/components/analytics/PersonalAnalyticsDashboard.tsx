@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import { FileText, Heart, Users, Trophy, ChefHat, Sparkles, TrendingUp, TrendingDown, Minus, Eye, Star, Hash, Lightbulb, Zap, MessageSquare, Film } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 interface AnalyticsData {
   summary: {

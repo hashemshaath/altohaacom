@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Users, Trophy, Building2, FileText, TrendingUp, Activity, ArrowUpRight, ArrowDownRight, Minus, Globe } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 const CHART_COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",

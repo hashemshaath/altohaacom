@@ -9,6 +9,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 import { AlertTriangle, Clock, CheckCircle2, TrendingDown, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInHours, differenceInMinutes, subDays, format } from "date-fns";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
   const { language } = useLanguage();

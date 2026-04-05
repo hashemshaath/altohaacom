@@ -7,6 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
 import { TrendingUp, Users, Ticket, Star, Clock, Activity, Globe, Eye } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 interface Props {
   exhibitionId: string;

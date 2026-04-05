@@ -8,6 +8,7 @@ import { Globe, MapPin, Users, TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
 import { supabase } from "@/integrations/supabase/client";
+import { CHART_COLORS } from "@/lib/chartConfig";
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from "recharts";

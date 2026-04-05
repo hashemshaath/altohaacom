@@ -22,6 +22,7 @@ import { BarChart3, TrendingUp, ShoppingCart, CreditCard, Download, Calendar, Ac
 import { format, subMonths, subDays, startOfMonth, endOfMonth, eachMonthOfInterval } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { CHART_COLORS } from "@/lib/chartConfig";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",
