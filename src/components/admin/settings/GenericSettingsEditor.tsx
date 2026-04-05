@@ -6,10 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import {
-  Save, Plus, Trash2, Database, Search, Edit2, X, Check, Copy, Eye, EyeOff,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Save, Plus, Database, Search, Edit2, X, Copy } from "lucide-react";
 
 interface Props {
   settings: Record<string, any>;

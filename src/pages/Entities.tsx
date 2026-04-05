@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,10 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/hooks/use-toast";
-import { Search, Building2, Globe, MapPin, Users, ShieldCheck, Bell, BellOff, ExternalLink, Mail, Phone, Sparkles, Landmark, GraduationCap, Briefcase } from "lucide-react";
+import { Search, Building2, Globe, MapPin, Users, ShieldCheck, Bell, BellOff, Mail, Landmark, GraduationCap, Briefcase } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";

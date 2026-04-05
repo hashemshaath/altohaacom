@@ -4,10 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import {
-  Plus, Send, FileText, Trophy, Landmark, Users, Shield,
-  Zap, Upload, QrCode, Award, Package, type LucideIcon,
-} from "lucide-react";
+import { Plus, Send, FileText, Landmark, Users, Shield, Zap, Upload, QrCode, Award, Package, type LucideIcon } from "lucide-react";
 
 interface QuickAction {
   icon: LucideIcon;

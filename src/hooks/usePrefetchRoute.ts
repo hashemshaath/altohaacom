@@ -1,5 +1,4 @@
 import { useCallback, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Prefetches route modules AND data on hover/focus to speed up navigation.

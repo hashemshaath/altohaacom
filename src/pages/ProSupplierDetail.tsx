@@ -14,11 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
-import {
-  Building2, Phone, Mail, Globe, MapPin, ArrowLeft, CheckCircle,
-  Package, Crown, Hash, Earth, Calendar, Sparkles,
-  ExternalLink, ShoppingCart, Star, ChefHat,
-} from "lucide-react";
+import { Building2, Phone, Mail, Globe, MapPin, ArrowLeft, Package, Crown, Hash, Earth, Calendar, Sparkles, ExternalLink, Star, ChefHat } from "lucide-react";
 import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
 import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
 import { SupplierReviews } from "@/components/supplier/SupplierReviews";

@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipeSave } from "@/hooks/useRecipeSave";
@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { Bookmark, Share2, FolderPlus, Check, Copy, Link2 } from "lucide-react";
+import { Bookmark, Share2, FolderPlus } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface RecipeActionBarProps {

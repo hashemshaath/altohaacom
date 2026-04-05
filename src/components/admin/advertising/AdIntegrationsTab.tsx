@@ -2,7 +2,7 @@ import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Link2, CheckCircle, AlertCircle } from "lucide-react";
+import { Link2 } from "lucide-react";
 import { GoogleIntegrationPanel } from "@/components/ads/GoogleIntegrationPanel";
 import { MetaPixelPanel } from "@/components/ads/MetaPixelPanel";
 import { TikTokPixelPanel } from "@/components/ads/TikTokPixelPanel";

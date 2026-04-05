@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, memo } from "react";
+import { useState, useCallback, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -11,12 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import {
-  Search, Loader2, MapPin, Globe, Sparkles, CheckCircle, ArrowRight, X,
-  ExternalLink, FileText, Trophy, Users, Calendar, Gavel, Award, Upload,
-  Link2, Star, Clock, Shield, ListChecks, Target, Layers, AlertTriangle,
-  Edit, PlusCircle, Copy, RefreshCw, ArrowLeftRight,
-} from "lucide-react";
+import { Search, Loader2, MapPin, Globe, Sparkles, CheckCircle, ArrowRight, X, ExternalLink, FileText, Trophy, Users, Calendar, Gavel, Award, Upload, Link2, Clock, Shield, ListChecks, Target, Layers, AlertTriangle, Edit, PlusCircle, RefreshCw, ArrowLeftRight } from "lucide-react";
 import type { ImportedData } from "./SmartImportDialog";
 import { SOURCE_CHANNELS } from "./types";
 import { extractTextFromFile } from "@/components/cv-import/fileParser";

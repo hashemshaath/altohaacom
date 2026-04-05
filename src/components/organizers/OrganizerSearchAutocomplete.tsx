@@ -2,7 +2,6 @@ import { memo, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Search, X, CheckCircle2, MapPin, Landmark, Star } from "lucide-react";
 
 interface Props {

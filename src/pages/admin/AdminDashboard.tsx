@@ -8,14 +8,12 @@ import { AdminMobileNavGrid } from "@/components/admin/AdminMobileOptimizer";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { DataFreshness } from "@/components/ui/data-freshness";
-import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useInViewport } from "@/hooks/useInViewport";
 import {
   Users, UserCheck, UserPlus, Flag, Trophy, FileText,

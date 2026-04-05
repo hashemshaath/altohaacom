@@ -5,16 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  AlertTriangle, Bell, TrendingDown, Users, Shield,
-  Clock, ArrowRight, CheckCircle2, XCircle,
-} from "lucide-react";
+import { AlertTriangle, Bell, ArrowRight, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatDistanceToNow } from "date-fns";
-import { ar, enUS } from "date-fns/locale";
+import { ar } from "date-fns/locale";
 
 interface Alert {
   id: string;

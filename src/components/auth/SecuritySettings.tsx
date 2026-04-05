@@ -1,6 +1,5 @@
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSessionManager } from "@/hooks/useSessionManager";
 import { Button } from "@/components/ui/button";

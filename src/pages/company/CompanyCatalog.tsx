@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Search, Filter, Upload } from "lucide-react";
-import { CatalogItem, CatalogFormData, defaultForm, categories } from "@/components/company/catalog/catalogTypes";
+import { CatalogItem, CatalogFormData, defaultForm } from "@/components/company/catalog/catalogTypes";
 import { CatalogStats } from "@/components/company/catalog/CatalogStats";
 import { CatalogTable } from "@/components/company/catalog/CatalogTable";
 import { CatalogFormDialog } from "@/components/company/catalog/CatalogFormDialog";

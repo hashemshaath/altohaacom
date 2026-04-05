@@ -4,11 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Calendar, Users, Landmark, Globe, MapPin, TrendingUp,
-  TrendingDown, BarChart3, Eye, History, ChevronRight, Trophy,
-  Image as ImageIcon, ExternalLink, ChevronDown,
-} from "lucide-react";
+import { Calendar, MapPin, TrendingUp, TrendingDown, BarChart3, Eye, History, ChevronRight, Trophy, Image as ImageIcon, ExternalLink, ChevronDown } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";

@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, Users, Star, Ticket, Building, Heart, Calendar, TrendingUp } from "lucide-react";
+import { Eye, Users, Star, Ticket, Building, Heart } from "lucide-react";
 
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 

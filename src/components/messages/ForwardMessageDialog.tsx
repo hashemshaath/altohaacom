@@ -10,7 +10,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
-import { toast } from "sonner";
 
 interface ForwardMessageDialogProps {
   open: boolean;

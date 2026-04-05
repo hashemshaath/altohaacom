@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -13,10 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import {
-  Download, FileText, ShoppingCart, BarChart3, Calendar, Filter,
-  TrendingUp, TrendingDown, DollarSign, FileSpreadsheet,
-} from "lucide-react";
+import { Download, FileText, ShoppingCart, BarChart3, Calendar, Filter, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 
 function downloadCSV(filename: string, headers: string[], rows: string[][]) {
   const bom = "\uFEFF";

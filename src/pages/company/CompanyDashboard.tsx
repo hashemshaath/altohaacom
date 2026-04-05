@@ -1,33 +1,16 @@
 import { useMemo } from "react";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
-import { useCompanyRoles, COMPANY_ROLES } from "@/hooks/useCompanyRoles";
+import { useCompanyRoles } from "@/hooks/useCompanyRoles";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
-import {
-  BarChart3,
-  FileText,
-  Users,
-  ShoppingCart,
-  TrendingUp,
-  Building2,
-  CreditCard,
-  Activity,
-  ArrowUpRight,
-  ArrowDownRight,
-  Clock,
-  Crown,
-  Trophy,
-  Calendar,
-  CheckCircle,
-  Star,
-} from "lucide-react";
+import { BarChart3, FileText, Users, ShoppingCart, TrendingUp, Building2, CreditCard, Activity, ArrowUpRight, Clock, Crown, Trophy, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/currencyFormatter";

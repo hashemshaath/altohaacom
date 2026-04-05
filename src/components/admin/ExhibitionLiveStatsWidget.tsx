@@ -1,11 +1,10 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Landmark, Calendar, Ticket, Users, MapPin, TrendingUp, Building, Eye } from "lucide-react";
+import { Landmark, Calendar, Ticket, Users, TrendingUp, Building, Eye } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 import { format, subDays, differenceInDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

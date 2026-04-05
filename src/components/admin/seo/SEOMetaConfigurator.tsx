@@ -5,9 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { Save, Globe, AlertTriangle, CheckCircle2, Loader2, Plus, Search } from "lucide-react";
+import { Save, Globe, AlertTriangle, CheckCircle2, Loader2, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PageMeta {

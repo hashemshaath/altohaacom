@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/table";
 import { Eye, ShoppingCart } from "lucide-react";
 import { format } from "date-fns";
-import { CompanyOrder, ORDER_CATEGORIES } from "./orderTypes";
+import { CompanyOrder } from "./orderTypes";
 import { OrderStatusBadge } from "./OrderStatusBadge";
 
 interface OrdersTableProps {

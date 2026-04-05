@@ -1,6 +1,5 @@
 import { forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Globe, ExternalLink } from "lucide-react";
 import type { Json } from "@/integrations/supabase/types";
 

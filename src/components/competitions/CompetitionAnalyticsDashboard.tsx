@@ -2,17 +2,10 @@ import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  BarChart, Bar, LineChart, Line, AreaChart, Area,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
-} from "recharts";
-import {
-  BarChart3, Users, Trophy, TrendingUp, Target, Medal,
-  UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown,
-} from "lucide-react";
+import { BarChart, Bar, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart3, Users, Trophy, TrendingUp, Target, Medal, UserCheck, Star, Activity, ArrowUp, ArrowDown } from "lucide-react";
 
 const COLORS = [
   "hsl(var(--primary))",

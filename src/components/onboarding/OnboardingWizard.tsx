@@ -13,10 +13,7 @@ import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useToast } from "@/hooks/use-toast";
 import { StepProgress } from "@/components/ui/step-progress";
 import { SuccessCelebration } from "@/components/ui/success-celebration";
-import {
-  ChefHat, User, Trophy, ArrowRight, ArrowLeft,
-  CheckCircle2, Loader2,
-} from "lucide-react";
+import { User, Trophy, ArrowRight, ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
 type ExperienceLevel = Database["public"]["Enums"]["experience_level"];

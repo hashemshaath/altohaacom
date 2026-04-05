@@ -4,12 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Calendar, Users, Landmark, Globe, MapPin, ArrowUpRight, TrendingUp,
-  TrendingDown, Minus, BarChart3, Eye, Award, ChevronRight, History,
-} from "lucide-react";
+import { Calendar, Users, Landmark, Globe, MapPin, ArrowUpRight, TrendingUp, TrendingDown, Minus, BarChart3, Eye, Award, History } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 

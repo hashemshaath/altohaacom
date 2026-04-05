@@ -5,11 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import {
-  Globe, Plus, Trash2, TrendingUp, TrendingDown, Minus, BarChart3,
-  RefreshCw, ExternalLink, Shield, Zap, Eye, Target, Loader2,
-} from "lucide-react";
+import { Globe, Plus, Trash2, RefreshCw, ExternalLink, Shield, Zap, Eye, Target, Loader2 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,

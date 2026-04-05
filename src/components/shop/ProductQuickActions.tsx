@@ -5,9 +5,7 @@
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Plus, Minus, Eye } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ShoppingCart, Plus, Minus } from "lucide-react";
 
 interface ProductQuickActionsProps {
   product: any;

@@ -49,30 +49,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Search,
-  MoreHorizontal,
-  Eye,
-  UserPlus,
-  Mail,
-  Phone,
-  Building2,
-  MessageSquare,
-  Calendar,
-  Users,
-  UserSearch,
-  TrendingUp,
-  Clock,
-  CheckCircle2,
-  Plus,
-  Download,
-  Kanban,
-  List,
-  Trash2,
-  ArrowRight,
-  History,
-  GripVertical,
-} from "lucide-react";
+import { Search, MoreHorizontal, Eye, UserPlus, Mail, Phone, Building2, MessageSquare, Calendar, Users, UserSearch, TrendingUp, Clock, CheckCircle2, Plus, Download, Kanban, List, ArrowRight, History } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 

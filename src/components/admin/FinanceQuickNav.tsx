@@ -2,13 +2,9 @@ import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import {
-  Package, FileText, Calculator, Wallet, CreditCard,
-  ArrowRight, TrendingUp, AlertTriangle,
-} from "lucide-react";
+import { Package, FileText, Calculator, Wallet, AlertTriangle } from "lucide-react";
 
 interface FinanceCounts {
   orders: number;

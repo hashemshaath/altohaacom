@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Progress } from "@/components/ui/progress";
-import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
+import { ROLE_META, type AppRole } from "./types";
 
 interface Props {
   roleStats: { role: AppRole; count: number }[];

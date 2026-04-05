@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Tracks Core Web Vitals (LCP, INP, CLS, FCP, TTFB) per route

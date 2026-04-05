@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOnlineStatus } from "@/hooks/usePWA";
-import { cacheItems, getCachedItems, getCachedItem, clearStore, removeCachedItem } from "@/lib/offlineCache";
+import { cacheItems, getCachedItems, getCachedItem, clearStore } from "@/lib/offlineCache";
 import { toast } from "@/hooks/use-toast";
 
 const JUDGING_SYNC_KEY = "altoha_judging_last_sync";

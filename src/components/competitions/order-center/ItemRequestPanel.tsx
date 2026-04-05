@@ -15,8 +15,6 @@ import {
   ClipboardList, Plus, CheckCircle, XCircle, Clock, Send, AlertTriangle,
   Edit2, Download, RotateCcw, BookTemplate, MessageSquare, ChevronDown, ChevronUp,
 } from "lucide-react";
-import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
-import { DISH_TEMPLATES } from "@/data/dishTemplates";
 import { downloadCSV } from "@/lib/exportUtils";
 import { notifyItemRequestSubmitted, notifyItemRequestReviewed } from "@/lib/notificationTriggers";
 

@@ -16,7 +16,6 @@ import {
   Gift, Star, Crown, Check, ArrowRight, ArrowLeft, Copy,
   User, Mail, Sparkles, Heart, Loader2, Share2,
 } from "lucide-react";
-import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const TIERS = [

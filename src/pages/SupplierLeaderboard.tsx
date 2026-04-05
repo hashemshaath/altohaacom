@@ -5,14 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 import { countryFlag } from "@/lib/countryFlag";
-import {
-  Trophy, Building2, Star, Package, Eye, ArrowLeft, Medal,
-} from "lucide-react";
+import { Trophy, Building2, Star, Package, Eye, ArrowLeft } from "lucide-react";
 
 type RankBy = "rating" | "products" | "views";
 

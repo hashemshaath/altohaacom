@@ -1,6 +1,5 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCountries } from "@/hooks/useCountries";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { countryFlag } from "@/lib/countryFlag";
 import { Globe } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { CHART_COLORS, TOOLTIP_STYLE, CHART_HEIGHT, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
+import { CHART_COLORS, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
 
 interface CountryBreakdownChartProps {
   metric: "users" | "competitions" | "companies";

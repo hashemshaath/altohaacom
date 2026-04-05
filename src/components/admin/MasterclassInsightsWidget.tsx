@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
-import { BookOpen, Users, GraduationCap, Star, TrendingUp } from "lucide-react";
+import { BookOpen, Users, GraduationCap, Star } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget() {

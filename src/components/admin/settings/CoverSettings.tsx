@@ -10,7 +10,6 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Save, Image, Layers, Eye, Palette, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Circle, CornerDownRight, LayoutTemplate } from "lucide-react";
 import type { CoverMode, GradientDirection } from "@/hooks/useCoverSettings";
-import { COVER_TEMPLATES } from "@/hooks/useCoverSettings";
 
 interface Props {
   settings: Record<string, any>;
