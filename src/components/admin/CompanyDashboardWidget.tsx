@@ -14,7 +14,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { CHART_COLORS, TOOLTIP_STYLE, BAR_RADIUS } from "@/lib/chartConfig";
+import { X_AXIS_PROPS, CHART_COLORS, BAR_RADIUS, TOOLTIP_STYLE } from "@/lib/chartConfig";
 import { supabase } from "@/integrations/supabase/client";
 
 export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {

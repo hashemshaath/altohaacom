@@ -15,7 +15,7 @@ import { downloadCSV, printableReport } from "@/lib/exportUtils";
 import { toast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, PieChart, Pie, Cell, Legend, Line, ScatterChart, Scatter, ZAxis, ComposedChart } from "recharts";
-import { CHART_COLORS, TOOLTIP_STYLE, LEGEND_STYLE, BAR_RADIUS, H_BAR_RADIUS, getNoDataText } from "@/lib/chartConfig";
+import { X_AXIS_PROPS, BAR_RADIUS, LEGEND_STYLE, TOOLTIP_STYLE, getNoDataText, CHART_COLORS, H_BAR_RADIUS, Y_AXIS_PROPS } from "@/lib/chartConfig";
 import { Activity, Eye, MousePointerClick, Globe, Monitor, Smartphone, Tablet, Search, Zap, TrendingUp, BarChart3, Users, FileText, Layers, Timer, MapPin, Chrome, Clock, ArrowRight, Gauge, Crosshair, Fingerprint, Route, Flame, Target, LayoutGrid, Hash, Percent, ArrowUpRight, ArrowDownRight, Minus, ShoppingCart, DollarSign, PackageX, CreditCard, Download, Printer } from "lucide-react";
 import { format, subDays, subHours, parseISO, getHours, getDay } from "date-fns";
 

@@ -7,7 +7,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
 import { SparklineCard } from "./SparklineCard";
-import { CHART_COLORS, LEGEND_STYLE, BAR_RADIUS, getNoDataText, translateRole, translateStatus, getTooltipStyle } from "@/lib/chartConfig";
+import { X_AXIS_PROPS, BAR_RADIUS, getTooltipStyle, LEGEND_STYLE, getNoDataText, CHART_COLORS, translateStatus, translateRole, Y_AXIS_PROPS } from "@/lib/chartConfig";
 import type { DataPoint } from "@/lib/trendPrediction";
 import type { DateRange } from "./AnalyticsDateRange";
 import { supabase } from "@/integrations/supabase/client";

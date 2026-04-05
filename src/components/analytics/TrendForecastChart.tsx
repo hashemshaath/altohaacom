@@ -10,7 +10,7 @@ import {
   ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, ReferenceDot, Legend,
 } from "recharts";
-import { TOOLTIP_STYLE, LEGEND_STYLE } from "@/lib/chartConfig";
+import { X_AXIS_PROPS, Y_AXIS_PROPS, TOOLTIP_STYLE, LEGEND_STYLE } from "@/lib/chartConfig";
 import {
   linearRegression, forecast, detectAnomalies, monthlyGrowthRate,
   type DataPoint, type TrendResult,

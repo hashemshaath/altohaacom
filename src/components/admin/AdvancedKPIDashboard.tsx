@@ -11,7 +11,7 @@ import {
 import { Activity, Users, Trophy, FileText, DollarSign, TrendingUp, Ticket } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { CHART_COLORS, TOOLTIP_STYLE } from "@/lib/chartConfig";
+import { X_AXIS_PROPS, CHART_COLORS, AXIS_TICK, TOOLTIP_STYLE, Y_AXIS_PROPS } from "@/lib/chartConfig";
 import { supabase } from "@/integrations/supabase/client";
 
 export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
