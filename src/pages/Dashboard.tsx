@@ -1,4 +1,5 @@
-import { React, lazy, Suspense, useEffect, useRef, memo } from "react";
+import React from "react";
+import { lazy, Suspense, useEffect, useRef, memo } from "react";
 import { MembershipExpiryBanner } from "@/components/membership/MembershipExpiryBanner";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

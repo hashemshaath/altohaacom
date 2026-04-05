@@ -1,4 +1,5 @@
-import { React, memo, useMemo } from "react";
+import React from "react";
+import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

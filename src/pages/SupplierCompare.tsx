@@ -1,4 +1,5 @@
-import { React, useState, useMemo } from "react";
+import React from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

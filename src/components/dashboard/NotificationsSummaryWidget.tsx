@@ -1,4 +1,5 @@
-import { React, memo } from "react";
+import React from "react";
+import { memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";

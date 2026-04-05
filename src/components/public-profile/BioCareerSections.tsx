@@ -1,4 +1,5 @@
-import { React, useState, useMemo, memo } from "react";
+import React from "react";
+import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Briefcase, GraduationCap, Tv, Trophy, ChevronDown, Calendar, Scale, Users, Medal, CalendarCheck, FileText } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";

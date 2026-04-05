@@ -1,4 +1,5 @@
-import { React, useState } from "react";
+import React from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Building2, Package, Truck, BarChart3, Globe, CheckCircle, ArrowRight, Sparkles, ShieldCheck, Users, FileText } from "lucide-react";
 import { Header } from "@/components/Header";

@@ -1,4 +1,5 @@
-import { React, useState, useRef, useEffect, forwardRef } from "react";
+import React from "react";
+import { useState, useRef, useEffect, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Search, Trophy, Globe, ChefHat, Utensils, BookOpen, Store, TrendingUp, X } from "lucide-react";

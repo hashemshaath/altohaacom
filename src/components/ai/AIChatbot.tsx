@@ -1,4 +1,5 @@
-import { React, useState, useRef, useEffect, useCallback, memo } from "react";
+import React from "react";
+import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";

@@ -1,4 +1,5 @@
-import { React, useState, useCallback, useRef, memo } from "react";
+import React from "react";
+import { useState, useCallback, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useHomepageSections,

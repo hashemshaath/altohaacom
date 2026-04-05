@@ -1,4 +1,5 @@
-import { React, createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from "react";
+import React from "react";
+import { createContext, useContext, useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { getDeviceFingerprint, getDeviceName } from "@/lib/deviceFingerprint";
 import { supabase } from "@/integrations/supabase/client";

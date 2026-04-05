@@ -1,4 +1,5 @@
-import { React, useMemo, lazy, Suspense } from "react";
+import React from "react";
+import { useMemo, lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

@@ -1,4 +1,5 @@
-import { React, useState, useMemo, lazy, Suspense } from "react";
+import React from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { useParams, Link } from "react-router-dom";

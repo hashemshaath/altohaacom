@@ -1,4 +1,5 @@
-import { React, useRef, useEffect, useState, memo } from "react";
+import React from "react";
+import { useRef, useEffect, useState, memo } from "react";
 import { cn } from "@/lib/utils";
 
 interface Tab {

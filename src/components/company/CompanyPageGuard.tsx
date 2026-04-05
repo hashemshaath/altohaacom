@@ -1,4 +1,5 @@
-import { React, memo } from "react";
+import React from "react";
+import { memo } from "react";
 import { useCanAccessPage } from "@/hooks/useCompanyPermissions";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ShieldX } from "lucide-react";

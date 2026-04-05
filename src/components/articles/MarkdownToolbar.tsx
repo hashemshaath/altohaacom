@@ -1,4 +1,5 @@
-import { React, memo, useState, useCallback } from "react";
+import React from "react";
+import { memo, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";

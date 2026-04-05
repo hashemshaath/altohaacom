@@ -1,4 +1,5 @@
-import { React, memo } from "react";
+import React from "react";
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Flame, Clock, CheckCircle2, CalendarCheck, Lock, PlayCircle } from "lucide-react";

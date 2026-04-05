@@ -14,7 +14,8 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, Calendar, Eye, MapPin, Clock, Share2, Twitter, Facebook, Linkedin, Link2, Check, FileText, Sparkles, BookOpen, ChevronUp, Printer, Bookmark, BookmarkCheck, Heart, Tag, ArrowUpRight, Quote, BarChart3, TrendingUp } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
-import { React, useState, useEffect, useMemo, useCallback, memo } from "react";
+import React from "react";
+import { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,

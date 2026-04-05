@@ -1,4 +1,5 @@
-import { React, useRef, useState, useCallback, useMemo } from "react";
+import React from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 import { MarkdownToolbar } from "./MarkdownToolbar";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";

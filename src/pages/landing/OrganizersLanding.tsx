@@ -1,4 +1,5 @@
-import { React, useState } from "react";
+import React from "react";
+import { useState } from "react";
 import { Calendar, Users, BarChart3, Shield, CheckCircle, ArrowRight, Star, Sparkles } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";

@@ -1,4 +1,5 @@
-import { React, forwardRef } from "react";
+import React from "react";
+import { forwardRef } from "react";
 import { useTheme } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
 

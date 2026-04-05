@@ -1,4 +1,5 @@
-import { React, useState, memo } from "react";
+import React from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";

@@ -16,7 +16,8 @@ import { Scale, CheckCircle2, ClipboardList, Briefcase, MapPin, Crown, MoreVerti
 import { Link } from "react-router-dom";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
-import { React, useState } from "react";
+import React from "react";
+import { useState } from "react";
 
 interface JudgesListProps {
   competitionId: string;

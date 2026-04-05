@@ -12,7 +12,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Menu, Shield, Scale, Home, User, LogOut, MessageSquare, HelpCircle, ChevronDown, Settings, Crown } from "lucide-react";
-import { React, useState, useCallback, memo, forwardRef } from "react";
+import React from "react";
+import { useState, useCallback, memo, forwardRef } from "react";
 
 interface NavLink {
   to: string;

@@ -1,4 +1,5 @@
-import { React, useState, useCallback, useRef, useEffect, memo } from "react";
+import React from "react";
+import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

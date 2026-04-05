@@ -1,4 +1,5 @@
-import { React, useState, useCallback, memo } from "react";
+import React from "react";
+import { useState, useCallback, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { X, Loader2, Camera } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
