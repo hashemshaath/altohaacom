@@ -1,5 +1,4 @@
-import React from "react";
-import { memo, useState, useMemo, useRef } from "react";
+import React, { memo, useState, useMemo, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useGlobalEventsCalendar,

@@ -1,16 +1,16 @@
 import { memo } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Link } from "react-router-dom";
-import { Activity, ArrowRight, UserPlus, Flag, Trophy, Shield, Package, Ticket } from "lucide-react";
+import { Activity, ArrowRight, UserPlus, Flag, Trophy, FileText, Shield, Package, AlertTriangle, Ticket, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
-import { supabase } from "@/integrations/supabase/client";
 
 interface FeedItem {
   id: string;

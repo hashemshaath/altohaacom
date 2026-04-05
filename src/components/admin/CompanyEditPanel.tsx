@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useAllCountries } from "@/hooks/useCountries";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { countryFlag } from "@/lib/countryFlag";
@@ -15,8 +16,11 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { Building2, Save, X, Edit, Sparkles, Upload, Image, Phone, MapPin, CreditCard, Shield, Star, ExternalLink } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  Building2, Save, X, Edit, Sparkles, Upload, Image, CheckCircle,
+  Globe, Mail, Phone, MapPin, FileText, CreditCard, Shield, Send,
+  Star, ExternalLink, Navigation,
+} from "lucide-react";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 

@@ -3,7 +3,10 @@ import { CostEstimate, ESTIMATE_STATUS_CONFIG, MODULE_TYPES } from "@/hooks/useC
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, Clock, CheckCircle2, ArrowRight, AlertCircle } from "lucide-react";
+import {
+  Plus, Clock, CheckCircle2, ArrowRight, AlertCircle,
+  Trophy, ChefHat, Landmark, Calendar, FileText, BarChart3,
+} from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {

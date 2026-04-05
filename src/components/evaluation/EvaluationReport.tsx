@@ -6,7 +6,11 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { EvaluationRadarChart } from "./EvaluationRadarChart";
 import { EvaluationBarChart } from "./EvaluationBarChart";
-import { Printer, Award, ChefHat, Star, ThumbsUp, CheckCircle2, AlertTriangle, Lightbulb, Calendar, MapPin, Package, Users, FileText, TrendingUp, Shield } from "lucide-react";
+import {
+  Printer, Download, Award, ChefHat, Star, ThumbsUp, ThumbsDown,
+  CheckCircle2, AlertTriangle, Lightbulb, Calendar, MapPin, Package, Users,
+  FileText, TrendingUp, Shield,
+} from "lucide-react";
 import { format } from "date-fns";
 
 interface EvaluationReportProps {

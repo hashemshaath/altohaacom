@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Trash2 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { OrderFormData, OrderItem } from "./orderTypes";
+import { OrderFormData, OrderItem, ORDER_CATEGORIES } from "./orderTypes";
 
 interface OrderFormDialogProps {
   open: boolean;

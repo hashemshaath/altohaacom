@@ -11,11 +11,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ZoomIn, ZoomOut, RotateCcw, Save, Eye, Palette, Type, Image, Layout, Settings2, Plus, Trash2, Award, Printer, Globe } from "lucide-react";
+import {
+  ZoomIn, ZoomOut, RotateCcw, Save, Eye, Palette, Type, Image,
+  Layout, Settings2, Plus, Trash2, Award, AlignLeft, AlignCenter,
+  AlignRight, Printer, Globe,
+} from "lucide-react";
 import { CertificateLineEditor } from "./CertificateLineEditor";
 import { CertificateLogoManager } from "./CertificateLogoManager";
 import { CertificatePreview } from "./CertificatePreview";
 import type { CertificateDesign, SignatureItem } from "./types";
+import { defaultDesign, defaultLines, defaultLinesAr, professionalTemplates, fontOptions } from "./types";
 
 export type { CertificateDesign } from "./types";
 

@@ -1,7 +1,8 @@
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, Flame } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { TrendingUp, Eye, Flame } from "lucide-react";
 import type { NewsArticle } from "./NewsArticleCard";
 
 interface Props {

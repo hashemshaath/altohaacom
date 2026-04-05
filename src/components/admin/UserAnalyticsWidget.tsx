@@ -1,13 +1,13 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
-import { Globe, TrendingUp, Shield } from "lucide-react";
+import { Users, Globe, TrendingUp, Shield } from "lucide-react";
 import { format, subDays } from "date-fns";
-import { supabase } from "@/integrations/supabase/client";
 
 const ROLE_COLORS = [
   "hsl(var(--primary))",

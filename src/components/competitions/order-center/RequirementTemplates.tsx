@@ -18,7 +18,8 @@ import {
   Package, Copy, CheckCircle, ChefHat, Edit2, X, Save,
   Search, ShoppingCart, GripVertical, UtensilsCrossed,
 } from "lucide-react";
-import { type DishTemplate } from "@/data/dishTemplates";
+import { ORDER_CATEGORIES } from "./OrderCenterCategories";
+import { DISH_TEMPLATES, type DishTemplate, type IngredientItem } from "@/data/dishTemplates";
 
 interface Props {
   competitionId: string;

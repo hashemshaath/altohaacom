@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

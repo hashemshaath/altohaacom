@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
-import { Filter, RotateCcw } from "lucide-react";
+import { Filter, X, RotateCcw } from "lucide-react";
 
 interface FilterValues {
   country: string;

@@ -16,6 +16,7 @@ import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "@/components/shop/CartSheet";
 import { toast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
+import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 

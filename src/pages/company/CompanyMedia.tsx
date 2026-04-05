@@ -21,7 +21,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Image, Upload, Trash2, Search, Filter, ChevronLeft, ChevronRight, FileText, Download, Eye } from "lucide-react";
+import {
+  Image, Upload, Trash2, Search, Filter, X, ChevronLeft, ChevronRight, FileText, Download, Eye,
+} from "lucide-react";
 import { format } from "date-fns";
 
 const CATEGORIES = [

@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, forwardRef } from "react";
 import { type HomepageSection } from "@/hooks/useHomepageSections";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, EyeOff, ChevronDown, Save, Image, LayoutGrid, Database, GripVertical, Loader2, Palette, Clock, Settings2, RotateCcw, Copy, ExternalLink, LayoutTemplate, Layers } from "lucide-react";
+import {
+  Eye, EyeOff, ChevronDown, Save, Image, LayoutGrid, Database,
+  GripVertical, Loader2, Palette, Sparkles,
+  Clock, Settings2, RotateCcw, Copy, ExternalLink, Rows3,
+  LayoutTemplate, SlidersHorizontal, Layers,
+} from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { SectionIcon } from "./SectionIcon";

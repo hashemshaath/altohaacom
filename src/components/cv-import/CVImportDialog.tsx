@@ -1,16 +1,15 @@
-import React from "react";
 import { useState, useCallback, memo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { FileText, Upload, Loader2, Sparkles, ClipboardPaste, CheckCircle2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CVData } from "./types";
 import { CVPreview } from "./CVPreview";
 import { extractTextFromFile } from "./fileParser";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   open: boolean;

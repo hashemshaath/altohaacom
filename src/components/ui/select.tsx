@@ -1,7 +1,8 @@
+import * as React from "react";
+import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import React from "react";
 
 function Select({ dir, ...props }: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & { dir?: "ltr" | "rtl" }) {
   const resolvedDir = dir ?? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | undefined) ?? undefined;

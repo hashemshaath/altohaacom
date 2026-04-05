@@ -2,6 +2,7 @@ import { memo, useState, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useApprovedSpecialties, useUserSpecialties } from "@/hooks/useSpecialties";
 import { useFollowStats } from "@/hooks/useFollow";
@@ -26,7 +27,6 @@ import {
   Loader2, Upload, Camera, KeyRound, Mail, AlertCircle,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
-import { supabase } from "@/integrations/supabase/client";
 
 type AccountStatus = Database["public"]["Enums"]["account_status"];
 type AccountType = Database["public"]["Enums"]["account_type"];

@@ -5,9 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Eye, Users, TrendingUp, Star, Ticket } from "lucide-react";
+import { BarChart3, Eye, Users, TrendingUp, MapPin, Smartphone, Monitor, Tablet, Calendar, Star, Ticket } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts";
 
 interface Props {
   exhibitionId: string;

@@ -1,7 +1,7 @@
-import { memo } from "react";
+import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, PlayCircle, FileText, CheckCircle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 

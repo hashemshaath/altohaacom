@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Search, X, Filter } from "lucide-react";
 import { ITEM_STATUS_LABELS } from "./OrderStatusLabels";
+import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 
 interface Props {
   searchQuery: string;

@@ -11,7 +11,6 @@ import {
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 import { TrendingUp, PieChart as PieIcon, Receipt, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
-import { CHART_COLORS } from "@/lib/chartConfig";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",

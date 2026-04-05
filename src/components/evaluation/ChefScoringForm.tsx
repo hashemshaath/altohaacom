@@ -13,8 +13,11 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Star, Send, ThumbsUp, ThumbsDown, Scale, FileText, Sparkles, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  Star, ChefHat, Send, ThumbsUp, ThumbsDown, Scale,
+  FileText, Sparkles, CheckCircle2, AlertCircle, Loader2,
+} from "lucide-react";
 
 interface Props {
   sessionId: string;

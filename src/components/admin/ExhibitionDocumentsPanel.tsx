@@ -1,15 +1,15 @@
-import React from "react";
 import { useState, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { Upload, Trash2, Loader2, FileText, Bot, ExternalLink } from "lucide-react";
+import { Upload, Trash2, Loader2, FileText, Bot, ExternalLink, Download } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Props {

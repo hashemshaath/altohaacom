@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +11,6 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Flag, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 const REPORT_REASONS = [
   { value: "spam", en: "Spam or misleading", ar: "محتوى مزعج أو مضلل" },

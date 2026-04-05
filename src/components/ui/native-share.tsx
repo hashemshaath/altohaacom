@@ -1,4 +1,3 @@
-import React from "react";
 import { memo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Share2, Check, Copy } from "lucide-react";

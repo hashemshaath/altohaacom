@@ -1,4 +1,3 @@
-import React from "react";
 import { forwardRef, useRef, useState, useEffect, type MutableRefObject } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";

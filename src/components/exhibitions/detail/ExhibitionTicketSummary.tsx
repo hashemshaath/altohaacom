@@ -1,10 +1,10 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Ticket, CheckCircle2, TrendingUp, Clock } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { Ticket, Users, CheckCircle2, TrendingUp, Clock, CreditCard } from "lucide-react";
 
 interface Props {
   exhibitionId: string;

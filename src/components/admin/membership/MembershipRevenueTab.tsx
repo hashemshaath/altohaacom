@@ -1,15 +1,20 @@
 import { memo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart } from "recharts";
-import { DollarSign, TrendingUp, TrendingDown, Users, CreditCard, ArrowDownCircle, Percent, Target, Wallet, Coins } from "lucide-react";
+import {
+  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Area, AreaChart,
+} from "recharts";
+import {
+  DollarSign, TrendingUp, TrendingDown, Users, CreditCard,
+  ArrowUpCircle, ArrowDownCircle, Percent, Target, Wallet, Coins,
+} from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
-import { supabase } from "@/integrations/supabase/client";
 
 const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const { language } = useLanguage();

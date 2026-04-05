@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useMemo, memo, useCallback, useEffect, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,7 +19,14 @@ import { OpenToWorkBadge } from "@/components/profile/OpenToWorkBadge";
 import { SEOHead } from "@/components/SEOHead";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { Briefcase, Search, MapPin, Building2, Clock, Users, ChefHat, Filter, DollarSign, Utensils, Coffee, Cake, Soup, Salad, Award, GraduationCap, X, ArrowRight, Sparkles, Eye, Star, Globe, Megaphone, Home, ChevronRight, LayoutGrid, LayoutList, Bell, BellRing, Bookmark, TrendingUp, SlidersHorizontal, History, Zap, AlertCircle, Share2, Check, ArrowUpDown, Flame, Target, Crown, ChevronDown } from "lucide-react";
+import {
+  Briefcase, Search, MapPin, Building2, Clock, Users, ChefHat, Filter, DollarSign,
+  Utensils, Coffee, Cake, Soup, Salad, Award, GraduationCap, X,
+  ArrowRight, Sparkles, Eye, Star, Globe, BarChart3, Megaphone, Home, ChevronRight,
+  LayoutGrid, LayoutList, Bell, BellRing, Bookmark, TrendingUp,
+  SlidersHorizontal, History, Zap, AlertCircle, Share2, Copy, Check,
+  ArrowUpDown, Flame, Target, Crown, ExternalLink, ChevronDown, Command, Loader2
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";

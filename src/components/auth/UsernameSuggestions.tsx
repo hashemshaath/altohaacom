@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
-import { isReservedUsername } from "@/lib/usernameValidation";
+import { USERNAME_REGEX, isReservedUsername } from "@/lib/usernameValidation";
 
 interface UsernameSuggestionsProps {
   baseUsername: string;

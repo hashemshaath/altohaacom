@@ -1,11 +1,10 @@
-import React from "react";
 import { useState, useEffect, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Trophy, MessageSquare, Award, Activity, Wifi, WifiOff } from "lucide-react";
-import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, ResponsiveContainer, YAxis } from "recharts";
 
 interface LiveMetric {
   label: string;

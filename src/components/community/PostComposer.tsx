@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Image as ImageIcon, X, Globe, Users as UsersIcon, Loader2, User, Trophy, CalendarDays, Quote, Sparkles, Video, Clock } from "lucide-react";
+import {
+  Image as ImageIcon, X, Globe, Lock, Users as UsersIcon, Loader2, User,
+  Trophy, CalendarDays, Quote, Sparkles, Video, Clock,
+} from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { PollComposer } from "./PollComposer";

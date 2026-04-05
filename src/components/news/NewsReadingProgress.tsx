@@ -1,4 +1,5 @@
 import { memo, useEffect, useState, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 /**
  * A slim progress bar at the top of the viewport indicating scroll depth.

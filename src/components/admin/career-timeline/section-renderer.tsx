@@ -2,7 +2,10 @@ import { memo } from "react";
 import { GraduationCap, Briefcase, Trophy, Medal, Award, Users, Scale, Tv, CalendarCheck, FileText } from "lucide-react";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import type { CareerRecord, SectionConfig } from "./constants";
-import { MEMBERSHIP_TYPES, formatDateShort, labelFor, buildRecordMeta } from "./constants";
+import {
+  EDUCATION_LEVELS, EMPLOYMENT_TYPES, MEMBERSHIP_TYPES, COMPETITION_ROLES, JUDGING_POSITIONS,
+  formatDateShort, formatDateRange, labelFor, buildRecordMeta,
+} from "./constants";
 import { EmptyState, AddButton, CompactRow, SortableItem } from "./shared-ui";
 import { CareerForm, MembershipForm, CompetitionAddForm, CompetitionEventForm, AwardAddForm } from "./career-forms";
 

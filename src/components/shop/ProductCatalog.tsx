@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, ShoppingCart, Star, Filter, Package, Grid3X3, List, Heart } from "lucide-react";
+import { Search, ShoppingCart, Star, Filter, Package, Grid3X3, List, Heart, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {

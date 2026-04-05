@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
 import { EvaluationRadarChart } from "@/components/evaluation/EvaluationRadarChart";
 import { EvaluationBarChart } from "@/components/evaluation/EvaluationBarChart";
 import { EvaluationScoreCard } from "@/components/evaluation/EvaluationScoreCard";

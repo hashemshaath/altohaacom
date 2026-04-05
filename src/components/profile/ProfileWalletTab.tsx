@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -10,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Wallet, Star, TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Gift, Clock, Coins, Search, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { Link } from "react-router-dom";
 
 interface ProfileWalletTabProps {
   userId: string;

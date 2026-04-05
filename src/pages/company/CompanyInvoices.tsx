@@ -5,10 +5,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import PrintableInvoice from "@/components/invoices/PrintableInvoice";
-import { FileText, ChevronLeft, Clock, CreditCard } from "lucide-react";
+import {
+  FileText,
+  ChevronLeft,
+  DollarSign,
+  Clock,
+  CheckCircle,
+  CreditCard,
+} from "lucide-react";
 import { format } from "date-fns";
 import { useState, useMemo } from "react";
 

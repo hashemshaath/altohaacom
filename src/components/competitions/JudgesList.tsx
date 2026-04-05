@@ -8,7 +8,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
@@ -16,8 +18,7 @@ import { Scale, CheckCircle2, ClipboardList, Briefcase, MapPin, Crown, MoreVerti
 import { Link } from "react-router-dom";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface JudgesListProps {
   competitionId: string;

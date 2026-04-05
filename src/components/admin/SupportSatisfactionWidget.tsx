@@ -1,13 +1,14 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts";
+import { Progress } from "@/components/ui/progress";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line } from "recharts";
 import { SmilePlus, Clock, Timer, Users, TrendingDown, Zap } from "lucide-react";
 import { format, subDays, differenceInMinutes } from "date-fns";
-import { supabase } from "@/integrations/supabase/client";
 
 export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget() {
   const { language } = useLanguage();

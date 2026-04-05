@@ -1,12 +1,12 @@
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Bell, Send, Eye, AlertCircle, TrendingUp, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { supabase } from "@/integrations/supabase/client";
 
 export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWidget() {
   const { language } = useLanguage();

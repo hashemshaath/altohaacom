@@ -1,14 +1,16 @@
 import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Printer, Users, Trophy, ShoppingCart, TrendingUp, TrendingDown, BarChart3, Activity } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { FileText, Download, Printer, Users, Trophy, ShoppingCart, DollarSign, TrendingUp, TrendingDown, BarChart3, Activity } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
-import { supabase } from "@/integrations/supabase/client";
 
 export const ExecutiveSummary = memo(function ExecutiveSummary() {
   const { language } = useLanguage();

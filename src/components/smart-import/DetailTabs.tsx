@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
@@ -8,7 +9,6 @@ import { DataField, TagList } from "./DataField";
 import { EditableField } from "./EditableField";
 import { ImagePreviewEditor } from "./ImagePreviewEditor";
 import type { ImportedData } from "./SmartImportDialog";
-import React from "react";
 import {
   FileText, Phone, MapPin, Building2, Briefcase, Clock,
   Star, Globe, Calendar, Users, Award, Share2,

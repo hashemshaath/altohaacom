@@ -1,5 +1,6 @@
 import { memo } from "react";
 import { X, Reply } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ReplyPreviewProps {
   replyToMessage: { id: string; content: string; senderName: string } | null;

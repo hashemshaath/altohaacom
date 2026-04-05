@@ -1,3 +1,4 @@
+import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,6 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { QrCode, Download, Copy, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { getVerificationUrl, generateVCard, downloadVCard } from "@/lib/qrCode";
-import React from "react";
 
 interface QRCodeDisplayProps {
   code: string;

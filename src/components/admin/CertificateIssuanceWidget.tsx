@@ -1,11 +1,11 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Award, FileCheck, Send, Clock, ShieldCheck, Download, PenTool } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 
 export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget() {
   const { language } = useLanguage();

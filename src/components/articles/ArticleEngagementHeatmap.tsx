@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, memo } from "react";
+import { useState, useEffect, useRef, memo, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Flame, Clock } from "lucide-react";
+import { Flame, BarChart3, Clock, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SectionData {

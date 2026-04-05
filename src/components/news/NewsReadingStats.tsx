@@ -1,6 +1,7 @@
-import { memo, useState } from "react";
+import { memo, useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { BookOpen, Clock, Trophy, TrendingUp, Flame, Target, BarChart3 } from "lucide-react";
 
 const STORAGE_KEY = "altoha_reading_stats";

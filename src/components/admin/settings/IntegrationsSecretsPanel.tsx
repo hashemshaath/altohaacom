@@ -1,7 +1,10 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Key, ShieldCheck, ExternalLink, Info } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Key, ShieldCheck, AlertTriangle, ExternalLink, Info,
+} from "lucide-react";
 
 const KNOWN_SECRETS = [
   {

@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChefHat, Star } from "lucide-react";
+import { ChefHat, MapPin, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { countryFlag } from "@/lib/countryFlag";

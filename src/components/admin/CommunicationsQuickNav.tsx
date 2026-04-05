@@ -2,10 +2,10 @@ import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { MessageSquare, Bell, Ticket, Mail, Zap } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { MessageSquare, Bell, Ticket, Mail, Zap, AlertTriangle } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/admin/support-tickets", icon: Ticket, labelEn: "Support", labelAr: "الدعم", countKey: "tickets" },

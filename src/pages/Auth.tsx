@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { normalizePhoneForStorage } from "@/lib/arabicNumerals";
 import { getDeviceFingerprint } from "@/lib/deviceFingerprint";
 import { Button } from "@/components/ui/button";
@@ -20,12 +21,13 @@ import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
 import { TermsAgreement } from "@/components/auth/TermsAgreement";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
+import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
   Phone, Mail, KeyRound, Gift, ChefHat, Heart, AlertCircle,
 } from "lucide-react";
 
-import { USERNAME_REGEX, validateUsername, detectLoginInputType } from "@/lib/usernameValidation";
+import { USERNAME_REGEX, validateUsername, isReservedUsername, detectLoginInputType } from "@/lib/usernameValidation";
 const usernameRegex = USERNAME_REGEX;
 
 const loginSchema = z.object({

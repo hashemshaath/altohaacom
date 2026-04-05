@@ -8,8 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Star, User, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { toEnglishDigits } from "@/lib/formatNumber";
 
 interface Props {
   masterclassId: string;

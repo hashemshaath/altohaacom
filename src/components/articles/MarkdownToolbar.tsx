@@ -1,11 +1,19 @@
-import React from "react";
 import { memo, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Bold, Italic, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Code, Link2, Image, Minus, Eye, Edit3, Table, Strikethrough, FileCode, AlignLeft, AlignRight, LayoutTemplate, ChevronDown, Highlighter, Superscript, Subscript, CheckSquare, MessageSquareQuote, type LucideIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import {
+  Bold, Italic, Heading1, Heading2, Heading3,
+  List, ListOrdered, Quote, Code, Link2, Image, Minus,
+  Eye, Edit3, Table, Strikethrough, FileCode,
+  AlignLeft, AlignRight, Columns, LayoutTemplate, ChevronDown,
+  Highlighter, Superscript, Subscript, CheckSquare, MessageSquareQuote,
+  type LucideIcon,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   textareaRef: React.RefObject<HTMLTextAreaElement>;

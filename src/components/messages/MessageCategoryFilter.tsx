@@ -1,9 +1,15 @@
-import React from "react";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Inbox, Mail, Star, CheckSquare, Archive } from "lucide-react";
+import {
+  Inbox,
+  Mail,
+  Star,
+  CheckSquare,
+  Archive,
+  MessageCircle,
+} from "lucide-react";
 
 export type MessageFilter = "all" | "unread" | "starred" | "approval" | "archived";
 

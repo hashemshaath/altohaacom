@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Trash2, Package, Store, ChevronDown, ChevronUp } from "lucide-react";
 import { AIRequirementsSuggest } from "./AIRequirementsSuggest";
 import { SupermarketListPicker } from "./order-center/SupermarketListPicker";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ITEM_STATUS_LABELS, PRIORITY_LABELS, getStatusLabel } from "./order-center/OrderStatusLabels";
 import { formatCurrency } from "@/lib/currencyFormatter";
 

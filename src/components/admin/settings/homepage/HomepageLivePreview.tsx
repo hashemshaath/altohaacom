@@ -1,6 +1,7 @@
 import { memo, useState } from "react";
 import { type HomepageSection } from "@/hooks/useHomepageSections";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { SectionIcon } from "./SectionIcon";
 import { cn } from "@/lib/utils";
 import { Eye, EyeOff, Monitor, Sparkles, Smartphone, MonitorSmartphone } from "lucide-react";

@@ -3,13 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { AlertTriangle, Clock, CheckCircle2, TrendingDown, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInHours, differenceInMinutes, subDays, format } from "date-fns";
-import { CHART_COLORS } from "@/lib/chartConfig";
 
 export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
   const { language } = useLanguage();

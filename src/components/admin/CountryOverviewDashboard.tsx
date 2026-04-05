@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { countryFlag } from "@/lib/countryFlag";
-import { Users, Trophy, Building2, Globe } from "lucide-react";
+import { Users, Trophy, Building2, Award, Globe } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface CountryStats {

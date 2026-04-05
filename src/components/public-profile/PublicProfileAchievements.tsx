@@ -2,6 +2,7 @@ import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Trophy, Medal, Award, Star, TrendingUp, Crown } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

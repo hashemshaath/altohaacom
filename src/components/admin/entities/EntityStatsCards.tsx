@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card } from "@/components/ui/card";
-import { Building2, CheckCircle, Clock, Eye, EyeOff } from "lucide-react";
+import { Building2, CheckCircle, Clock, Eye, EyeOff, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 

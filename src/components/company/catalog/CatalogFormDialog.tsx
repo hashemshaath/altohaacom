@@ -11,7 +11,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { CatalogFormData, CatalogItem } from "./catalogTypes";
+import { CatalogFormData, CatalogItem, categories } from "./catalogTypes";
 import { CatalogImageUpload } from "./CatalogImageUpload";
 
 interface CatalogFormDialogProps {

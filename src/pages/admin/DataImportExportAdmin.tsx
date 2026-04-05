@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useMemo, memo, useCallback, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -19,7 +18,12 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { Download, Upload, FileText, Database, Users, Building2, Trophy, Ticket, CheckCircle, Loader2, Save, Trash2, RefreshCw, Settings2, History, ArrowDownToLine, ArrowUpFromLine, Filter, BookmarkPlus, Layers, Package } from "lucide-react";
+import {
+  Download, Upload, FileSpreadsheet, FileText, Database, Users, Building2,
+  Trophy, Ticket, Clock, CheckCircle, XCircle, Loader2, Save, Trash2,
+  Plus, RefreshCw, Settings2, History, ArrowDownToLine, ArrowUpFromLine,
+  Filter, BookmarkPlus, Layers, Package,
+} from "lucide-react";
 import { format as fmtDate } from "date-fns";
 
 /* ─── Export Module Configs ─── */

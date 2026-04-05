@@ -1,8 +1,8 @@
 import { useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import type { SectionConfig, CareerRecord } from "./constants";
 import { DEFAULT_SECTIONS, CUSTOM_SECTION_COLORS } from "./constants";
-import { supabase } from "@/integrations/supabase/client";
 
 export function useCareerData(userId: string) {
   // ── Load sections ──

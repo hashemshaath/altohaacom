@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Share2 } from "lucide-react";
+import { Share2, Bookmark, MessageCircle, Repeat2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";

@@ -14,9 +14,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search, Plus, Trash2, Shield, Clock, User } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { Search, Plus, Trash2, Shield, Clock, User, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const MembershipUserOverrides = memo(function MembershipUserOverrides() {
   const { language } = useLanguage();

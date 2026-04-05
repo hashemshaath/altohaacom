@@ -1,14 +1,17 @@
-import React from "react";
 import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Zap, Users, Trophy, FileText, AlertTriangle, MessageSquare } from "lucide-react";
+import {
+  Zap, Users, Trophy, FileText, AlertTriangle,
+  MessageSquare, ArrowRight, Clock,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
 
 interface QuickAction {
   icon: React.ElementType;

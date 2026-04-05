@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 
 /**
  * Sanitize HTML — allows safe formatting tags only.

@@ -13,7 +13,7 @@ import { UserCardView } from "@/components/admin/UserCardView";
 import { SkeletonTable } from "@/components/ui/skeleton-table";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useTableSort } from "@/hooks/useTableSort";
-import { Edit, ChevronRight, ChevronLeft, List, LayoutGrid, SlidersHorizontal } from "lucide-react";
+import { Edit, ChevronRight, ChevronLeft, List, LayoutGrid, SlidersHorizontal, Eye, EyeOff } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";

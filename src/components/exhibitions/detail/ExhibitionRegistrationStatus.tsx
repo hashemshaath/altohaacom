@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Ticket, Clock, Users, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
-import { isPast, differenceInDays, format } from "date-fns";
+import { isPast, isFuture, differenceInDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
