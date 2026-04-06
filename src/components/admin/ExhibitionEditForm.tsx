@@ -103,7 +103,9 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const queryClient = useQueryClient();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
-  const editingId = exhibition?.id || null;
+  const originalEditingId = exhibition?.id || null;
+  const [activeEditingId, setActiveEditingId] = useState<string | null>(originalEditingId);
+  const editingId = activeEditingId;
 
   const { data: countries } = useCountries();
   const { data: seriesList } = useQuery({
@@ -160,7 +162,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
-  const [editionConfirmed, setEditionConfirmed] = useState(!!editingId);
+  const [editionConfirmed, setEditionConfirmed] = useState(!!originalEditingId);
+  const [editionResolved, setEditionResolved] = useState(!!originalEditingId || !exhibition?.series_id);
   const [activeSection, setActiveSection] = useState("basic");
 
   // Check if edition exists in DB when series + year are selected
@@ -173,7 +176,6 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         .select("*")
         .eq("series_id", selectedSeriesId)
         .eq("edition_year", editionYear)
-        .neq("id", editingId || "00000000-0000-0000-0000-000000000000")
         .maybeSingle();
       return data;
     },
@@ -183,6 +185,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   // Load existing edition data into form when found
   useEffect(() => {
     if (!existingEdition) return;
+    // Update the active editing ID to the found edition's ID
+    setActiveEditingId(existingEdition.id);
     setForm({
       title: existingEdition.title, title_ar: existingEdition.title_ar, slug: existingEdition.slug,
       description: existingEdition.description, description_ar: existingEdition.description_ar,
@@ -221,9 +225,22 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         country: existingEdition.country || undefined,
       });
     }
+    setEditionResolved(true);
+    setEditionConfirmed(true);
   }, [existingEdition]);
 
+  // When no existing edition and user hasn't confirmed yet, reset form for new edition
+  useEffect(() => {
+    if (selectedSeriesId && editionYear && !existingEdition && !editionLoading && !editionConfirmed) {
+      setActiveEditingId(null);
+      setEditionResolved(false);
+    }
+  }, [selectedSeriesId, editionYear, existingEdition, editionLoading, editionConfirmed]);
+
   const editionHasData = !!existingEdition && !editionLoading;
+
+  // Edition must be resolved before form is usable (for series-based events)
+  const formLocked = !!selectedSeriesId && !editionResolved;
 
   // Whether edition fields should be disabled (new edition not yet confirmed)
   const editionFieldsDisabled = !editingId && !!selectedSeriesId && !!editionYear && !existingEdition && !editionConfirmed;
