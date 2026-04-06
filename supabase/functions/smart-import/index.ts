@@ -475,10 +475,17 @@ ${lat && lng ? `- Coordinates: ${lat}, ${lng}` : ''}
 SEO: Write compelling keyword-rich descriptions (150-300 chars). Tags: 5-10 English SEO keywords.
 ${imageContext}
 
-SAUDI NATIONAL ADDRESS: If in Saudi Arabia, extract:
-- building_number (4 digits), additional_number (4 digits), unit_number
-- district_en/district_ar, postal_code (5 digits), short_address (e.g. RAAA1234)
-- national_address_en/ar: Full formatted address "Building No, Street, District, City, Postal Code, Additional No"
+DETAILED ADDRESS: Extract ALL address components separately:
+- region_en/region_ar: Administrative region/state (e.g. "Riyadh Region" / "منطقة الرياض")
+- district_en/district_ar: Neighborhood/district name
+- street_en/street_ar: Street name
+- building_number: Building number (4 digits in Saudi Arabia)
+- floor_number: Floor/level number
+- additional_number: Additional number (4 digits in Saudi Arabia)
+- unit_number: Office/apartment unit number
+- postal_code: Postal/ZIP code (5 digits in Saudi Arabia)
+- short_address: Saudi short address format (e.g. RAAA1234)
+- national_address_en/ar: Full formatted Saudi National Address "Building No, Street, District, City, Postal Code, Additional No"
 
 EDITIONS & EVENTS: For exhibitions/competitions/events:
 - edition_year: The year of the event (e.g. 2025)
