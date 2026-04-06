@@ -646,8 +646,17 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 )}
               </div>
 
+              {/* Lock overlay when edition not resolved */}
+              {formLocked && (
+                <div className="rounded-lg border border-chart-4/20 bg-chart-4/5 p-4 text-center">
+                  <Layers className="h-5 w-5 text-chart-4 mx-auto mb-2" />
+                  <p className="text-xs font-medium">{t("Select an edition year to continue", "اختر سنة الإصدار للمتابعة")}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{t("Choose a year above to load or create an edition", "اختر سنة أعلاه لتحميل أو إنشاء نسخة")}</p>
+                </div>
+              )}
+
               {/* Title */}
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className={cn("grid gap-4 sm:grid-cols-2", formLocked && "opacity-40 pointer-events-none")}>
                 <FieldGroup label={t("Title (English)", "العنوان (إنجليزي)")} required aiSlot={<AITextOptimizer text={form.title || ""} lang="en" onOptimized={v => updateField("title", v)} onTranslated={v => updateField("title_ar", v)} />}>
                   <Input className="h-9" value={form.title || ""} onChange={e => updateField("title", e.target.value)} placeholder={t("Exhibition title", "عنوان المعرض")} />
                 </FieldGroup>
