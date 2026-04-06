@@ -7,7 +7,7 @@ import {
 export type EntityType = Database["public"]["Enums"]["entity_type"];
 export type CompanyType = Database["public"]["Enums"]["company_type"];
 export type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
-export type TargetTable = "culinary_entities" | "companies" | "establishments" | "exhibitions" | "competitions";
+export type TargetTable = "culinary_entities" | "companies" | "establishments" | "exhibitions" | "competitions" | "organizers";
 export type Step = "search" | "results" | "details";
 
 export interface SearchResultItem {
@@ -56,6 +56,7 @@ export const TARGET_TABLE_OPTIONS: {
   { value: "establishments", label_en: "Establishment", label_ar: "منشأة", icon: MapPin, description_en: "Hotels, restaurants, kitchens", description_ar: "فنادق، مطاعم، مطابخ" },
   { value: "exhibitions", label_en: "Exhibition", label_ar: "معرض / مؤتمر", icon: Landmark, description_en: "Exhibitions, conferences, summits, food festivals", description_ar: "معارض، مؤتمرات، قمم، مهرجانات طعام" },
   { value: "competitions", label_en: "Competition", label_ar: "مسابقة", icon: Trophy, description_en: "Culinary competitions & championships", description_ar: "مسابقات وبطولات طهي" },
+  { value: "organizers", label_en: "Organizer", label_ar: "منظم", icon: Building2, description_en: "Event organizers & management companies", description_ar: "منظمو فعاليات وشركات إدارة" },
 ];
 
 export const ENTITY_TYPE_LABELS: Record<EntityType, { en: string; ar: string }> = {
