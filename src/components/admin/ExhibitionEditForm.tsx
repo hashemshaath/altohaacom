@@ -85,7 +85,7 @@ const SECTIONS: SectionDef[] = [
   { id: "location", icon: MapPin, en: "Location", ar: "الموقع", fields: ["venue", "city", "country"] },
   { id: "organizer", icon: Building, en: "Organizer", ar: "الجهة المنظمة", fields: ["organizer_name"] },
   { id: "tickets", icon: Ticket, en: "Tickets & Pricing", ar: "التذاكر والأسعار", fields: ["is_free"] },
-  { id: "links", icon: LinkIcon, en: "Links & URLs", ar: "الروابط", fields: ["registration_url", "website_url"] },
+  { id: "links", icon: LinkIcon, en: "Links & Social", ar: "الروابط والتواصل", fields: ["registration_url", "website_url"] },
   { id: "sponsors", icon: Award, en: "Sponsors & Partners", ar: "الرعاة والشركاء", fields: [] },
   { id: "competitions", icon: Trophy, en: "Competitions", ar: "المسابقات", fields: [] },
   { id: "media", icon: Image, en: "Media & Files", ar: "الوسائط والملفات", fields: ["cover_image_url"] },
