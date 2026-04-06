@@ -25,7 +25,8 @@ import {
   Twitter, Facebook, Linkedin, Instagram, AlertCircle, Languages,
   StickyNote, BarChart3, Eye, Activity, Briefcase, Target, Clock,
   ExternalLink, Info, Copy, Users, Trash2, Plus, RefreshCw, Link as LinkIcon,
-  Undo2, Youtube, MessageCircle, MapPinned, Navigation,
+  Undo2, Youtube, MessageCircle, MapPinned, Navigation, TrendingUp,
+  FileText, Award, Zap, History,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
