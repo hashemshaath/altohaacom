@@ -61,7 +61,7 @@ export const BrandingSettings = memo(function BrandingSettings({ settings, onSav
           </div>
           <div className="space-y-1.5">
             <Label className="text-xs flex items-center gap-1.5"><FileText className="h-3 w-3" />{isAr ? "رابط الأيقونة المفضلة" : "Favicon URL"}</Label>
-            <Input value={brand.faviconUrl || ""} onChange={e => setBrand({ ...brand, faviconUrl: e.target.value })} placeholder="/favicon.ico" />
+            <Input value={brand.faviconUrl || ""} onChange={e => setBrand({ ...brand, faviconUrl: e.target.value })} placeholder="/altoha-logo.png" />
           </div>
         </div>
         <Button size="sm" className="gap-1.5 mt-2" onClick={() => onSave("branding", brand, "general")} disabled={isPending}>

@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "altoha-logo.png"],
+      includeAssets: ["altoha-logo.png"],
       manifest: {
         name: "Altoha - Culinary Community",
         short_name: "Altoha",
