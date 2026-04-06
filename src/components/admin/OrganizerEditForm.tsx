@@ -37,17 +37,19 @@ interface OrganizerForm {
   name: string; name_ar: string; slug: string;
   description: string; description_ar: string;
   logo_url: string; cover_image_url: string;
-  email: string; phone: string; website: string;
+  email: string; phone: string; fax: string; website: string;
   address: string; address_ar: string;
   city: string; city_ar: string;
   country: string; country_ar: string; country_code: string;
   district: string; district_ar: string;
   street: string; street_ar: string;
   postal_code: string; building_number: string; additional_number: string;
+  unit_number: string; short_address: string;
   national_address: string; national_address_ar: string;
   latitude: string; longitude: string; google_maps_url: string;
   status: string; is_verified: boolean; is_featured: boolean;
   services: string; targeted_sectors: string; founded_year: string;
+  registration_number: string; license_number: string; vat_number: string;
   social_twitter: string; social_facebook: string;
   social_linkedin: string; social_instagram: string;
   social_youtube: string; social_tiktok: string;
@@ -65,14 +67,15 @@ const emptyContact: KeyContact = { name: "", name_ar: "", role: "", role_ar: "",
 
 const emptyForm: OrganizerForm = {
   name: "", name_ar: "", slug: "", description: "", description_ar: "",
-  logo_url: "", cover_image_url: "", email: "", phone: "", website: "",
+  logo_url: "", cover_image_url: "", email: "", phone: "", fax: "", website: "",
   address: "", address_ar: "", city: "", city_ar: "", country: "", country_ar: "",
   country_code: "", district: "", district_ar: "", street: "", street_ar: "",
-  postal_code: "", building_number: "", additional_number: "",
+  postal_code: "", building_number: "", additional_number: "", unit_number: "", short_address: "",
   national_address: "", national_address_ar: "",
   latitude: "", longitude: "", google_maps_url: "",
   status: "active", is_verified: false, is_featured: false,
   services: "", targeted_sectors: "", founded_year: "",
+  registration_number: "", license_number: "", vat_number: "",
   social_twitter: "", social_facebook: "", social_linkedin: "", social_instagram: "",
   social_youtube: "", social_tiktok: "", social_whatsapp: "", social_snapchat: "",
   admin_notes: "", gallery_urls: [], key_contacts: [],
