@@ -529,6 +529,7 @@ export default function SmartImportAdmin() {
         else if (st.table === 'establishments') { setTargetTable('establishments'); setSelectedEstablishmentType(st.sub_type); }
         else if (st.table === 'exhibitions') { setTargetTable('exhibitions'); setSelectedExhibitionType(st.sub_type as ExhibitionType); }
         else if (st.table === 'competitions') { setTargetTable('competitions'); }
+        else if (st.table === 'organizers') { setTargetTable('organizers'); }
       }
       setStep("details");
       toast({ title: isAr ? "تم جلب البيانات بنجاح" : "Data fetched successfully" });
