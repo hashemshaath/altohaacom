@@ -213,7 +213,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
   useEffect(() => {
     if (!orgData) return;
     const social = (orgData.social_links as Record<string, string>) || {};
-    const contacts = (orgData.key_contacts as KeyContact[]) || [];
+    const contacts = (orgData.key_contacts as unknown as KeyContact[]) || [];
     const gallery = (orgData.gallery_urls as string[]) || [];
     const populated: OrganizerForm = {
       name: orgData.name || "", name_ar: orgData.name_ar || "", slug: orgData.slug || "",
