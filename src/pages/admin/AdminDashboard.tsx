@@ -76,6 +76,7 @@ export default function AdminDashboard() {
         { count: totalMasterclasses },
         { count: proUsers },
         { count: fanUsers },
+        { count: totalOrganizers },
         { data: recentActions },
         { data: recentUsers },
       ] = await Promise.all([
@@ -91,6 +92,7 @@ export default function AdminDashboard() {
         supabase.from("masterclasses").select("*", { count: "exact", head: true }),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "professional"),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "fan"),
+        supabase.from("organizers").select("*", { count: "exact", head: true }),
         supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
@@ -108,6 +110,7 @@ export default function AdminDashboard() {
         totalMasterclasses: totalMasterclasses || 0,
         proUsers: proUsers || 0,
         fanUsers: fanUsers || 0,
+        totalOrganizers: totalOrganizers || 0,
         recentActions: recentActions || [],
         recentUsers: recentUsers || [],
       };
