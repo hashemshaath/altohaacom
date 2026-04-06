@@ -104,7 +104,7 @@ export default function CompetitionsAdmin() {
       if (statusFilter !== "all") query = query.eq("status", statusFilter as CompetitionStatus);
       if (organizerFilter !== "all") query = query.eq("organizer_id", organizerFilter);
       if (exhibitionFilter !== "all") query = query.eq("exhibition_id", exhibitionFilter);
-      if (yearFilter !== "all") query = query.gte("competition_start", `${yearFilter}-01-01`).lte("competition_start", `${yearFilter}-12-31`);
+      if (yearFilter !== "all") query = query.eq("edition_year", parseInt(yearFilter));
 
       const { data, error } = await query;
       if (error) throw error;
@@ -198,7 +198,7 @@ export default function CompetitionsAdmin() {
   }, [] as any[]) || [];
 
   // Unique years
-  const uniqueYears = [...new Set(competitions?.filter(c => c.competition_start).map(c => new Date(c.competition_start).getFullYear().toString()) || [])].sort().reverse();
+  const uniqueYears = [...new Set(competitions?.map(c => c.edition_year?.toString() || (c.competition_start ? new Date(c.competition_start).getFullYear().toString() : null)).filter(Boolean) as string[] || [])].sort().reverse();
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: CompetitionStatus }) => {
@@ -727,7 +727,12 @@ export default function CompetitionsAdmin() {
                       <TableCell>
                         <div className="max-w-[220px]">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
-                            {isAr && comp.title_ar ? comp.title_ar : comp.title}
+                            {(() => {
+                              const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                              const year = comp.edition_year;
+                              if (!year || title.includes(String(year))) return title;
+                              return `${title} ${year}`;
+                            })()}
                           </p>
                           {comp.edition_year && (
                             <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-mono border-primary/20 text-primary mt-0.5">
