@@ -885,6 +885,69 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               </div>
             </section>
 
+            {/* ═══ Section: Images ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["images"] = el; }}
+              data-section="images"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5 shadow-sm"
+            >
+              <SectionHeader icon={Camera} title={t("Images", "الصور")} desc={t("Cover image, logo & display image", "صورة الغلاف والشعار وصورة العرض")} status={getSectionStatus("images")} />
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                {/* Cover Image */}
+                <div className="space-y-2">
+                  <FieldGroup label={t("Cover Image", "صورة الغلاف")}>
+                    <Input className="h-9" value={form.cover_image_url || ""} onChange={e => updateField("cover_image_url", e.target.value)} placeholder="https://..." startIcon={<Image className="h-3 w-3" />} />
+                  </FieldGroup>
+                  {form.cover_image_url ? (
+                    <div className="relative h-32 rounded-xl overflow-hidden border border-border/40 group">
+                      <img src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => updateField("cover_image_url", "")}>
+                          <X className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                      <Badge className="absolute bottom-1.5 start-1.5 text-[9px] h-4 bg-black/60 text-white border-0">{t("Cover", "غلاف")}</Badge>
+                    </div>
+                  ) : (
+                    <div className="h-32 rounded-xl border-2 border-dashed border-border/40 flex flex-col items-center justify-center text-muted-foreground/40">
+                      <Image className="h-6 w-6 mb-1" />
+                      <span className="text-[10px]">{t("No cover image", "لا توجد صورة غلاف")}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Logo */}
+                <div className="space-y-2">
+                  <FieldGroup label={t("Logo", "الشعار")}>
+                    <Input className="h-9" value={logoUrl} onChange={e => setLogoUrl(e.target.value)} placeholder="https://..." startIcon={<Palette className="h-3 w-3" />} />
+                  </FieldGroup>
+                  {logoUrl ? (
+                    <div className="relative h-32 rounded-xl overflow-hidden border border-border/40 bg-muted/10 flex items-center justify-center group">
+                      <img src={logoUrl} alt="" className="max-h-24 max-w-full object-contain" />
+                      <Button variant="ghost" size="icon" className="absolute top-1.5 end-1.5 h-6 w-6 rounded-lg bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setLogoUrl("")}>
+                        <X className="h-3 w-3" />
+                      </Button>
+                      <Badge className="absolute bottom-1.5 start-1.5 text-[9px] h-4 bg-black/60 text-white border-0">{t("Logo", "شعار")}</Badge>
+                    </div>
+                  ) : (
+                    <div className="h-32 rounded-xl border-2 border-dashed border-border/40 flex flex-col items-center justify-center text-muted-foreground/40">
+                      <Palette className="h-6 w-6 mb-1" />
+                      <span className="text-[10px]">{t("No logo", "لا يوجد شعار")}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Image summary */}
+              {(form.cover_image_url || logoUrl) && (
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground rounded-lg bg-muted/20 px-3 py-1.5 w-fit">
+                  <CheckCircle2 className="h-3 w-3 text-chart-2" />
+                  {[form.cover_image_url && t("Cover", "غلاف"), logoUrl && t("Logo", "شعار")].filter(Boolean).join(" · ")} {t("uploaded", "مرفوعة")}
+                </div>
+              )}
+            </section>
+
             <div className={cn(formLocked && "opacity-40 pointer-events-none select-none", "space-y-1")}>
 
             {/* ═══ Section: Date & Schedule ═══ */}
