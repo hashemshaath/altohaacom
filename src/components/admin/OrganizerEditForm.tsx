@@ -513,6 +513,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       }
       case "settings": return "complete";
       case "exhibitions": return (linkedExhibitions?.length || 0) > 0 ? "complete" : "empty";
+      case "analytics": return organizerId ? "complete" : "empty";
       case "notes": return form.admin_notes ? "complete" : "empty";
       default: return "empty";
     }
