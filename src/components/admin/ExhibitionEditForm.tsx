@@ -170,6 +170,20 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
   const [editionConfirmed, setEditionConfirmed] = useState(!!originalEditingId);
   const [editionResolved, setEditionResolved] = useState(!!originalEditingId || !exhibition?.series_id);
+  const [selectedVenue, setSelectedVenue] = useState<VenueValue | null>(() => {
+    if (!exhibition?.venue_id) return null;
+    return {
+      id: exhibition.venue_id,
+      name: exhibition.venue || "",
+      nameAr: exhibition.venue_ar || null,
+      city: exhibition.city || null,
+      country: exhibition.country || null,
+      address: null,
+      capacity: null,
+      logoUrl: null,
+      mapUrl: exhibition.map_url || null,
+    };
+  });
   const [activeSection, setActiveSection] = useState("basic");
 
   // Check if edition exists in DB when series + year are selected
