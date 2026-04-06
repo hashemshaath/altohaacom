@@ -23,10 +23,12 @@ import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin
 import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
 import { ExhibitionOfficialsPanel } from "@/components/admin/ExhibitionOfficialsPanel";
 import { ExhibitionDocumentsPanel } from "@/components/admin/ExhibitionDocumentsPanel";
+import { ExhibitionSponsorsPanel } from "@/components/admin/ExhibitionSponsorsPanel";
+import { ExhibitionCompetitionsPanel } from "@/components/admin/ExhibitionCompetitionsPanel";
 import {
   Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X,
   Loader2, Trophy, GraduationCap, Mic, Image, Users, FileText, Layers,
-  ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot,
+  ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot, Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
@@ -83,6 +85,8 @@ const SECTIONS: SectionDef[] = [
   { id: "organizer", icon: Building, en: "Organizer", ar: "الجهة المنظمة", fields: ["organizer_name"] },
   { id: "tickets", icon: Ticket, en: "Tickets & Pricing", ar: "التذاكر والأسعار", fields: ["is_free"] },
   { id: "links", icon: LinkIcon, en: "Links & URLs", ar: "الروابط", fields: ["registration_url", "website_url"] },
+  { id: "sponsors", icon: Award, en: "Sponsors & Partners", ar: "الرعاة والشركاء", fields: [] },
+  { id: "competitions", icon: Trophy, en: "Competitions", ar: "المسابقات", fields: [] },
   { id: "media", icon: Image, en: "Media & Files", ar: "الوسائط والملفات", fields: ["cover_image_url"] },
   { id: "team", icon: Users, en: "Team & Officials", ar: "الفريق والمسؤولون", fields: [] },
 ];
