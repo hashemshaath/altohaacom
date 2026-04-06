@@ -5,9 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { Crown } from "lucide-react";
 
 const tierConfig: Record<string, { color: string; label: string; labelAr: string }> = {
+  strategic_partner: { color: "bg-chart-4/15 text-chart-4 border-chart-4/30", label: "Strategic Partner", labelAr: "شريك استراتيجي" },
+  gold: { color: "bg-chart-4/10 text-chart-4 border-chart-4/20", label: "Gold Sponsor", labelAr: "الراعي الذهبي" },
+  silver: { color: "bg-muted text-muted-foreground border-border", label: "Silver Sponsor", labelAr: "الراعي الفضي" },
+  organizer: { color: "bg-primary/10 text-primary border-primary/20", label: "Organizer", labelAr: "الجهة المنظمة" },
+  official_contractor: { color: "bg-chart-2/10 text-chart-2 border-chart-2/20", label: "Official Contractor", labelAr: "المقاول الرسمي" },
+  official_shipping: { color: "bg-chart-3/10 text-chart-3 border-chart-3/20", label: "Official Shipping Provider", labelAr: "مزوّد الشحن الرسمي" },
+  commercial_supporter: { color: "bg-chart-5/10 text-chart-5 border-chart-5/20", label: "Commercial Supporter", labelAr: "الداعم التجاري" },
+  media_partner: { color: "bg-accent text-accent-foreground border-accent", label: "Media Partner", labelAr: "الشريك الإعلامي" },
+  partner: { color: "bg-primary/10 text-primary border-primary/20", label: "Partner", labelAr: "شريك" },
   platinum: { color: "bg-chart-4/15 text-chart-4 border-chart-4/30", label: "Platinum", labelAr: "بلاتيني" },
-  gold: { color: "bg-chart-4/10 text-chart-4 border-chart-4/20", label: "Gold", labelAr: "ذهبي" },
-  silver: { color: "bg-muted text-muted-foreground border-border", label: "Silver", labelAr: "فضي" },
   bronze: { color: "bg-chart-2/10 text-chart-2 border-chart-2/20", label: "Bronze", labelAr: "برونزي" },
 };
 
