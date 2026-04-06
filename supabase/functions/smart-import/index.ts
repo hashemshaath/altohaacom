@@ -738,12 +738,13 @@ Return ONLY valid JSON:
 
 // ─── Stats endpoint ───
 async function handleStats(client: any): Promise<any> {
-  const [entities, companies, establishments, exhibitions, competitions, logs] = await Promise.all([
+  const [entities, companies, establishments, exhibitions, competitions, organizers, logs] = await Promise.all([
     client.from('culinary_entities').select('id', { count: 'exact', head: true }),
     client.from('companies').select('id', { count: 'exact', head: true }),
     client.from('establishments').select('id', { count: 'exact', head: true }),
     client.from('exhibitions').select('id', { count: 'exact', head: true }),
     client.from('competitions').select('id', { count: 'exact', head: true }),
+    client.from('organizers').select('id', { count: 'exact', head: true }),
     client.from('smart_import_logs').select('id, action, target_table, created_at, status').order('created_at', { ascending: false }).limit(200),
   ]);
 
@@ -760,6 +761,7 @@ async function handleStats(client: any): Promise<any> {
       establishments: establishments.count || 0,
       exhibitions: exhibitions.count || 0,
       competitions: competitions.count || 0,
+      organizers: organizers.count || 0,
     },
     imports: {
       today: todayImports, week: weekImports, total: logsData.length,
@@ -769,6 +771,7 @@ async function handleStats(client: any): Promise<any> {
         establishments: logsData.filter((l: any) => l.target_table === 'establishments').length,
         exhibitions: logsData.filter((l: any) => l.target_table === 'exhibitions').length,
         competitions: logsData.filter((l: any) => l.target_table === 'competitions').length,
+        organizers: logsData.filter((l: any) => l.target_table === 'organizers').length,
       },
       by_action: {
         create: logsData.filter((l: any) => l.action === 'create').length,
