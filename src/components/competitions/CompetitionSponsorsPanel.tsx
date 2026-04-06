@@ -17,9 +17,17 @@ interface CompetitionSponsorsPanelProps {
 }
 
 const TIER_CONFIG = {
+  strategic_partner: { icon: Crown, color: "text-chart-4", bg: "bg-chart-4/10", label: "Strategic Partner", labelAr: "شريك استراتيجي" },
+  gold: { icon: Star, color: "text-chart-4", bg: "bg-chart-4/10", label: "Gold Sponsor", labelAr: "الراعي الذهبي" },
+  silver: { icon: Medal, color: "text-muted-foreground", bg: "bg-muted", label: "Silver Sponsor", labelAr: "الراعي الفضي" },
+  organizer: { icon: Building, color: "text-primary", bg: "bg-primary/10", label: "Organizer", labelAr: "الجهة المنظمة" },
+  official_contractor: { icon: Building, color: "text-chart-2", bg: "bg-chart-2/10", label: "Official Contractor", labelAr: "المقاول الرسمي" },
+  official_shipping: { icon: Building, color: "text-chart-3", bg: "bg-chart-3/10", label: "Official Shipping Provider", labelAr: "مزوّد الشحن الرسمي" },
+  commercial_supporter: { icon: Star, color: "text-chart-5", bg: "bg-chart-5/10", label: "Commercial Supporter", labelAr: "الداعم التجاري" },
+  media_partner: { icon: Star, color: "text-accent-foreground", bg: "bg-accent/10", label: "Media Partner", labelAr: "الشريك الإعلامي" },
+  partner: { icon: Star, color: "text-primary", bg: "bg-primary/10", label: "Partner", labelAr: "شريك" },
+  // Legacy tiers
   platinum: { icon: Crown, color: "text-chart-3", bg: "bg-chart-3/10", label: "Platinum", labelAr: "بلاتيني" },
-  gold: { icon: Star, color: "text-chart-4", bg: "bg-chart-4/10", label: "Gold", labelAr: "ذهبي" },
-  silver: { icon: Medal, color: "text-muted-foreground", bg: "bg-muted", label: "Silver", labelAr: "فضي" },
   bronze: { icon: Award, color: "text-chart-2", bg: "bg-chart-2/10", label: "Bronze", labelAr: "برونزي" },
   custom: { icon: Star, color: "text-primary", bg: "bg-primary/10", label: "Custom", labelAr: "مخصص" },
 };
@@ -310,7 +318,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
           ) : (
             /* Public tiered display */
             <div className="space-y-6">
-              {(["platinum", "gold", "silver", "bronze", "custom"] as const).map(tierKey => {
+              {(["strategic_partner", "gold", "silver", "organizer", "official_contractor", "official_shipping", "commercial_supporter", "media_partner", "partner", "platinum", "bronze", "custom"] as const).map(tierKey => {
                 const tierSponsors = activeSponsors.filter((s) => (s.tier || "bronze") === tierKey);
                 if (tierSponsors.length === 0) return null;
                 const config = TIER_CONFIG[tierKey];

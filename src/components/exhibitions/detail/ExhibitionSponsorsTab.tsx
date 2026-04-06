@@ -6,12 +6,19 @@ import { Star, Award, Building } from "lucide-react";
 interface SponsorInfo { name?: string; name_ar?: string; tier?: string; logo_url?: string; }
 
 const TIER_CONFIG: Record<string, { icon: typeof Star; gradient: string; label: string; labelAr: string; order: number }> = {
-  patron: { icon: Award, gradient: "from-chart-4/20 to-chart-4/5", label: "Patron", labelAr: "راعي رسمي", order: 0 },
-  platinum: { icon: Star, gradient: "from-chart-3/20 to-chart-3/5", label: "Platinum", labelAr: "بلاتيني", order: 1 },
-  gold: { icon: Star, gradient: "from-chart-4/20 to-chart-4/5", label: "Gold", labelAr: "ذهبي", order: 2 },
-  partner: { icon: Star, gradient: "from-primary/20 to-primary/5", label: "Partner", labelAr: "شريك", order: 3 },
-  silver: { icon: Star, gradient: "from-muted-foreground/20 to-muted-foreground/5", label: "Silver", labelAr: "فضي", order: 4 },
-  bronze: { icon: Star, gradient: "from-chart-2/20 to-chart-2/5", label: "Bronze", labelAr: "برونزي", order: 5 },
+  strategic_partner: { icon: Award, gradient: "from-chart-4/20 to-chart-4/5", label: "Strategic Partner", labelAr: "شريك استراتيجي", order: 0 },
+  gold: { icon: Star, gradient: "from-chart-4/20 to-chart-4/5", label: "Gold Sponsor", labelAr: "الراعي الذهبي", order: 1 },
+  silver: { icon: Star, gradient: "from-muted-foreground/20 to-muted-foreground/5", label: "Silver Sponsor", labelAr: "الراعي الفضي", order: 2 },
+  organizer: { icon: Building, gradient: "from-primary/20 to-primary/5", label: "Organizer", labelAr: "الجهة المنظمة", order: 3 },
+  official_contractor: { icon: Building, gradient: "from-chart-2/20 to-chart-2/5", label: "Official Contractor", labelAr: "المقاول الرسمي", order: 4 },
+  official_shipping: { icon: Building, gradient: "from-chart-3/20 to-chart-3/5", label: "Official Shipping Provider", labelAr: "مزوّد الشحن الرسمي", order: 5 },
+  commercial_supporter: { icon: Star, gradient: "from-chart-5/20 to-chart-5/5", label: "Commercial Supporter", labelAr: "الداعم التجاري", order: 6 },
+  media_partner: { icon: Star, gradient: "from-accent/20 to-accent/5", label: "Media Partner", labelAr: "الشريك الإعلامي", order: 7 },
+  partner: { icon: Star, gradient: "from-primary/20 to-primary/5", label: "Partner", labelAr: "شريك", order: 8 },
+  // Legacy tiers kept for backward compatibility
+  patron: { icon: Award, gradient: "from-chart-4/20 to-chart-4/5", label: "Patron", labelAr: "راعي رسمي", order: 9 },
+  platinum: { icon: Star, gradient: "from-chart-3/20 to-chart-3/5", label: "Platinum", labelAr: "بلاتيني", order: 10 },
+  bronze: { icon: Star, gradient: "from-chart-2/20 to-chart-2/5", label: "Bronze", labelAr: "برونزي", order: 11 },
 };
 
 interface Props {
