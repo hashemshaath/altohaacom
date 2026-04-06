@@ -234,42 +234,75 @@ ContactTab.displayName = "ContactTab";
 const AddressTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <Card>
-      <CardContent className="pt-4 space-y-3">
+      <CardContent className="pt-4 space-y-4">
+        {/* Country & Region */}
+        <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+          <Globe className="h-3 w-3" /> {isAr ? "الدولة والمنطقة" : "Country & Region"}
+        </h4>
         <div className="grid grid-cols-2 gap-3">
-          <Field label={isAr ? "المدينة (EN)" : "City (EN)"} value={details.city_en} fieldKey="city_en" editing={editing} onFieldUpdate={onFieldUpdate} />
-          <Field label={isAr ? "المدينة (AR)" : "City (AR)"} value={details.city_ar} fieldKey="city_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
-          <Field label={isAr ? "الحي (EN)" : "District (EN)"} value={details.district_en || details.neighborhood_en} fieldKey="district_en" editing={editing} onFieldUpdate={onFieldUpdate} />
-          <Field label={isAr ? "الحي (AR)" : "District (AR)"} value={details.district_ar || details.neighborhood_ar} fieldKey="district_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
-          <Field label={isAr ? "الشارع (EN)" : "Street (EN)"} value={details.street_en} fieldKey="street_en" editing={editing} onFieldUpdate={onFieldUpdate} />
-          <Field label={isAr ? "الشارع (AR)" : "Street (AR)"} value={details.street_ar} fieldKey="street_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
-          <Field label={isAr ? "الرمز البريدي" : "Postal Code"} value={details.postal_code} fieldKey="postal_code" editing={editing} onFieldUpdate={onFieldUpdate} />
-          <DataField label={isAr ? "الدولة" : "Country"} value={details.country_en ? `${details.country_en}${details.country_code ? ` (${details.country_code})` : ''}` : details.country_ar} />
+          <Field label={isAr ? "الدولة (EN)" : "Country (EN)"} value={details.country_en} fieldKey="country_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="country_ar" pairedFieldValue={details.country_ar} />
+          <Field label={isAr ? "الدولة (AR)" : "Country (AR)"} value={details.country_ar} fieldKey="country_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="country_en" pairedFieldValue={details.country_en} />
+          <Field label={isAr ? "رمز الدولة" : "Country Code"} value={details.country_code} fieldKey="country_code" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "المنطقة (EN)" : "Region (EN)"} value={details.region_en} fieldKey="region_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="region_ar" pairedFieldValue={details.region_ar} />
+          <Field label={isAr ? "المنطقة (AR)" : "Region (AR)"} value={details.region_ar} fieldKey="region_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="region_en" pairedFieldValue={details.region_en} />
+          <Field label={isAr ? "المدينة (EN)" : "City (EN)"} value={details.city_en} fieldKey="city_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="city_ar" pairedFieldValue={details.city_ar} />
+          <Field label={isAr ? "المدينة (AR)" : "City (AR)"} value={details.city_ar} fieldKey="city_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="city_en" pairedFieldValue={details.city_en} />
         </div>
-        <Separator />
-        <Field label={isAr ? "العنوان الكامل (EN)" : "Full Address (EN)"} value={details.full_address_en} fieldKey="full_address_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-        <Field label={isAr ? "العنوان الكامل (AR)" : "Full Address (AR)"} value={details.full_address_ar} fieldKey="full_address_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
 
-        {/* Saudi National Address */}
-        {(details.building_number || details.additional_number || details.short_address || details.national_address_en) && (
-          <>
-            <Separator />
-            <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
-              <MapPin className="h-3 w-3" /> {isAr ? "العنوان الوطني السعودي" : "Saudi National Address"}
-            </h4>
-            <div className="grid grid-cols-2 gap-3">
-              <Field label={isAr ? "رقم المبنى" : "Building No."} value={details.building_number} fieldKey="building_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-              <Field label={isAr ? "الرقم الإضافي" : "Additional No."} value={details.additional_number} fieldKey="additional_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-              <Field label={isAr ? "رقم الوحدة" : "Unit No."} value={details.unit_number} fieldKey="unit_number" editing={editing} onFieldUpdate={onFieldUpdate} />
-              <Field label={isAr ? "العنوان المختصر" : "Short Address"} value={details.short_address} fieldKey="short_address" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-            </div>
-            <Field label={isAr ? "العنوان الوطني (EN)" : "National Address (EN)"} value={details.national_address_en} fieldKey="national_address_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-            <Field label={isAr ? "العنوان الوطني (AR)" : "National Address (AR)"} value={details.national_address_ar} fieldKey="national_address_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
-          </>
-        )}
+        <Separator />
+
+        {/* Street & District */}
+        <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+          <MapPin className="h-3 w-3" /> {isAr ? "الحي والشارع" : "District & Street"}
+        </h4>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label={isAr ? "الحي (EN)" : "District (EN)"} value={details.district_en || details.neighborhood_en} fieldKey="district_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="district_ar" pairedFieldValue={details.district_ar || details.neighborhood_ar} />
+          <Field label={isAr ? "الحي (AR)" : "District (AR)"} value={details.district_ar || details.neighborhood_ar} fieldKey="district_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="district_en" pairedFieldValue={details.district_en || details.neighborhood_en} />
+          <Field label={isAr ? "الشارع (EN)" : "Street (EN)"} value={details.street_en} fieldKey="street_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="street_ar" pairedFieldValue={details.street_ar} />
+          <Field label={isAr ? "الشارع (AR)" : "Street (AR)"} value={details.street_ar} fieldKey="street_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="street_en" pairedFieldValue={details.street_en} />
+        </div>
+
+        <Separator />
+
+        {/* Building Details */}
+        <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+          <Building2 className="h-3 w-3" /> {isAr ? "تفاصيل المبنى" : "Building Details"}
+        </h4>
+        <div className="grid grid-cols-3 gap-3">
+          <Field label={isAr ? "رقم المبنى" : "Building No."} value={details.building_number} fieldKey="building_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+          <Field label={isAr ? "الطابق" : "Floor"} value={details.floor_number} fieldKey="floor_number" editing={editing} onFieldUpdate={onFieldUpdate} />
+          <Field label={isAr ? "رقم الوحدة" : "Unit No."} value={details.unit_number} fieldKey="unit_number" editing={editing} onFieldUpdate={onFieldUpdate} />
+        </div>
+
+        <Separator />
+
+        {/* Postal & National Address */}
+        <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+          <MapPin className="h-3 w-3" /> {isAr ? "العنوان الوطني والبريدي" : "National & Postal Address"}
+        </h4>
+        <div className="grid grid-cols-2 gap-3">
+          <Field label={isAr ? "الرمز البريدي" : "Postal Code"} value={details.postal_code} fieldKey="postal_code" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+          <Field label={isAr ? "الرقم الإضافي" : "Additional No."} value={details.additional_number} fieldKey="additional_number" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+          <Field label={isAr ? "العنوان المختصر" : "Short Address"} value={details.short_address} fieldKey="short_address" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        </div>
+        <Field label={isAr ? "العنوان الوطني (EN)" : "National Address (EN)"} value={details.national_address_en} fieldKey="national_address_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable pairedFieldKey="national_address_ar" pairedFieldValue={details.national_address_ar} />
+        <Field label={isAr ? "العنوان الوطني (AR)" : "National Address (AR)"} value={details.national_address_ar} fieldKey="national_address_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable pairedFieldKey="national_address_en" pairedFieldValue={details.national_address_en} />
+
+        <Separator />
+
+        {/* Full Address */}
+        <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+          <FileText className="h-3 w-3" /> {isAr ? "العنوان الكامل" : "Full Address"}
+        </h4>
+        <Field label={isAr ? "العنوان الكامل (EN)" : "Full Address (EN)"} value={details.full_address_en} fieldKey="full_address_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable multiline pairedFieldKey="full_address_ar" pairedFieldValue={details.full_address_ar} />
+        <Field label={isAr ? "العنوان الكامل (AR)" : "Full Address (AR)"} value={details.full_address_ar} fieldKey="full_address_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable multiline pairedFieldKey="full_address_en" pairedFieldValue={details.full_address_en} />
 
         {(details.latitude || details.longitude) && (
           <>
             <Separator />
+            <h4 className="text-xs font-semibold flex items-center gap-1.5 text-muted-foreground uppercase tracking-wide">
+              <Globe className="h-3 w-3" /> {isAr ? "الإحداثيات" : "GPS Coordinates"}
+            </h4>
             <div className="grid grid-cols-2 gap-3">
               <DataField label={isAr ? "خط العرض" : "Latitude"} value={details.latitude?.toString()} copyable />
               <DataField label={isAr ? "خط الطول" : "Longitude"} value={details.longitude?.toString()} copyable />
