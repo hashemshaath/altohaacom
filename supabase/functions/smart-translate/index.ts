@@ -14,19 +14,17 @@ Deno.serve(async (req) => {
     const validation = validateRequired(body, ["text", "from", "to"]);
     if (validation) return validation;
 
-    const { text, from, to, context } = body;
+    const { text, from, to } = body;
     const fromLabel = from === "ar" ? "Arabic" : "English";
     const toLabel = to === "ar" ? "Arabic" : "English";
 
-    const prompt = `You are a professional bilingual translator specializing in the culinary and food industry.
+    const prompt = `You are a professional bilingual translator.
 
 Translate the following text from ${fromLabel} to ${toLabel}.
 
-Context: ${context || "culinary/food industry/exhibitions/events"}
-
 RULES:
-- Maintain the same tone, style, and meaning
-- Use professional ${toLabel} terminology appropriate for the culinary/food industry
+- Provide a PURE, ACCURATE translation only — do NOT add, remove, or embellish any content
+- Maintain the exact same tone, style, and meaning
 - Keep proper nouns (brand names, place names) as-is unless they have well-known translations
 - If the text contains technical terms, use the standard ${toLabel} equivalent
 - Return ONLY the translated text, no explanations
