@@ -90,7 +90,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
     <footer
       ref={ref}
       id="site-footer"
-      className="border-t border-border/40 bg-card/50 pb-24 sm:pb-0 safe-area-bottom"
+      className="bg-[hsl(213_33%_15%)] dark:bg-[hsl(213_35%_8%)] text-[hsl(210_18%_82%)] pb-24 sm:pb-0 safe-area-bottom"
       role="contentinfo"
     >
       <div className="container px-5 sm:px-6">
@@ -100,14 +100,14 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           <div className="col-span-2 sm:col-span-3 lg:col-span-2 lg:pe-8">
             <Link to="/" className="inline-flex items-center gap-2 group">
               <img src={logoUrl} alt={siteName} className="h-7 w-auto" loading="lazy" />
-              <span className={cn("text-base font-bold text-foreground", !isAr && "font-serif")}>
+              <span className={cn("text-base font-bold text-white/90", !isAr && "font-serif")}>
                 {siteName}
               </span>
             </Link>
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <a
                 href={`mailto:${contactEmail}`}
-                className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-2 text-xs text-white/50 hover:text-white/80 transition-colors"
               >
                 <Mail className="h-3.5 w-3.5" />
                 {contactEmail}
@@ -131,7 +131,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="flex h-10 w-10 sm:h-8 sm:w-8 items-center justify-center rounded-xl text-muted-foreground/50 hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
+                    className="flex h-10 w-10 sm:h-8 sm:w-8 items-center justify-center rounded-xl text-white/40 hover:text-accent hover:bg-white/5 transition-all duration-200 touch-manipulation"
                   >
                     <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
                       <path d={social.icon} />
@@ -145,7 +145,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           {/* Nav columns */}
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-3">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-white/40 mb-3">
                 {l(col.titleEn, col.titleAr)}
               </h3>
               <ul className="space-y-2 sm:space-y-1.5">
@@ -153,7 +153,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-[14px] sm:text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-200 touch-manipulation inline-block py-0.5"
+                      className="text-[14px] sm:text-[13px] text-white/55 hover:text-white transition-colors duration-200 touch-manipulation inline-block py-0.5"
                     >
                       {l(link.en, link.ar)}
                     </Link>
@@ -165,15 +165,15 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-border/20 py-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-muted-foreground/60">{copyrightText}</p>
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground/60">
+        <div className="border-t border-white/10 py-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[11px] text-white/35">{copyrightText}</p>
+          <div className="flex items-center gap-3 text-[11px] text-white/35">
             {legalLinks.map((link, i) => (
               <span key={link.to} className="flex items-center gap-3">
-                <Link to={link.to} className="hover:text-foreground transition-colors">
+                <Link to={link.to} className="hover:text-white/70 transition-colors">
                   {l(link.en, link.ar)}
                 </Link>
-                {i < legalLinks.length - 1 && <span className="text-border/40">·</span>}
+                {i < legalLinks.length - 1 && <span className="text-white/15">·</span>}
               </span>
             ))}
           </div>
