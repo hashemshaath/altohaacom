@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { forwardRef, useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 interface SectionRevealProps {
@@ -8,7 +8,7 @@ interface SectionRevealProps {
   delay?: number;
 }
 
-export function SectionReveal({ children, className, direction = "up", delay = 0 }: SectionRevealProps) {
+export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(function SectionReveal({ children, className, direction = "up", delay = 0 }, forwardedRef) {
   const ref = useRef<HTMLDivElement>(null);
   const [shouldAnimate, setShouldAnimate] = useState(false);
   const [hasAnimated, setHasAnimated] = useState(false);
