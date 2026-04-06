@@ -186,6 +186,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       case "organizer": return (organizer || form.organizer_name) ? "complete" : "empty";
       case "tickets": return "complete"; // always valid (free or priced)
       case "links": return (form.registration_url || form.website_url) ? "complete" : "empty";
+      case "sponsors": return editingId ? "complete" : "empty";
+      case "competitions": return editingId ? "complete" : "empty";
       case "media": return form.cover_image_url ? "complete" : "empty";
       case "team": return editingId ? "complete" : "empty";
       default: return "empty";
