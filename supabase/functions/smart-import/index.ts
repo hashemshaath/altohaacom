@@ -595,14 +595,19 @@ Extract ALL data comprehensively. Services & specializations in BOTH languages. 
 function autoDetectTargetTable(data: any): { table: string; sub_type: string; confidence: number } {
   const bt = (data.business_type_en || data.description_en || '').toLowerCase();
   const name = (data.name_en || '').toLowerCase();
-  const all = `${bt} ${name}`;
+  const nameAr = (data.name_ar || '').toLowerCase();
+  const all = `${bt} ${name} ${nameAr}`;
+
+  // Organizer patterns — check FIRST before exhibitions/companies consume similar keywords
+  const organizerKeywords = ['organizer', 'event management', 'event organizer', 'exhibition organizer', 'conference organizer', 'event planner', 'event company', 'exhibitions management', 'events company', 'event solutions', 'منظم فعاليات', 'إدارة فعاليات', 'تنظيم معارض', 'شركة تنظيم', 'منظم معارض', 'إدارة مؤتمرات'];
+  if (organizerKeywords.some(k => all.includes(k))) return { table: 'organizers', sub_type: 'organizer', confidence: 0.9 };
 
   const exhibitionPatterns: Record<string, string[]> = {
-    exhibition: ['exhibition', 'expo', 'trade show', 'trade fair', 'fair', 'showcase', 'food show'],
-    conference: ['conference', 'congress', 'forum', 'symposium', 'convention'],
-    summit: ['summit', 'global summit'],
-    workshop: ['workshop', 'seminar', 'masterclass', 'bootcamp'],
-    food_festival: ['food festival', 'festival', 'culinary festival', 'gastronomy festival', 'food week'],
+    exhibition: ['exhibition', 'expo', 'trade show', 'trade fair', 'fair', 'showcase', 'food show', 'معرض'],
+    conference: ['conference', 'congress', 'forum', 'symposium', 'convention', 'مؤتمر'],
+    summit: ['summit', 'global summit', 'قمة'],
+    workshop: ['workshop', 'seminar', 'masterclass', 'bootcamp', 'ورشة'],
+    food_festival: ['food festival', 'festival', 'culinary festival', 'gastronomy festival', 'food week', 'مهرجان'],
     trade_show: ['trade show', 'b2b event'],
     competition_event: ['competition event', 'championship event'],
   };
@@ -610,51 +615,48 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
     if (keywords.some(k => all.includes(k))) return { table: 'exhibitions', sub_type: type, confidence: 0.85 };
   }
 
-  const competitionKeywords = ['competition', 'championship', 'contest', 'culinary competition', 'cooking competition', 'chef competition', 'bake off', 'cook off', 'challenge', 'cup', 'prix', 'award ceremony'];
+  const competitionKeywords = ['competition', 'championship', 'contest', 'culinary competition', 'cooking competition', 'chef competition', 'bake off', 'cook off', 'challenge', 'cup', 'prix', 'award ceremony', 'مسابقة', 'بطولة', 'تحدي'];
   if (competitionKeywords.some(k => all.includes(k))) return { table: 'competitions', sub_type: 'competition', confidence: 0.85 };
 
   const estPatterns: Record<string, string[]> = {
-    restaurant: ['restaurant', 'dining', 'eatery', 'grill', 'bistro', 'pizzeria', 'sushi', 'steakhouse', 'food court'],
-    hotel: ['hotel', 'motel', 'inn', 'lodge', 'hostel', 'accommodation', 'suites'],
-    cafe: ['cafe', 'café', 'coffee', 'tea house', 'coffeehouse'],
-    bakery: ['bakery', 'pastry', 'patisserie', 'confectionery'],
-    catering: ['catering', 'banquet', 'event food'],
-    kitchen: ['kitchen', 'cloud kitchen', 'ghost kitchen', 'commissary'],
-    resort: ['resort', 'spa', 'wellness center'],
-    club: ['club', 'lounge', 'bar', 'pub', 'nightclub'],
+    restaurant: ['restaurant', 'dining', 'eatery', 'grill', 'bistro', 'pizzeria', 'sushi', 'steakhouse', 'food court', 'مطعم'],
+    hotel: ['hotel', 'motel', 'inn', 'lodge', 'hostel', 'accommodation', 'suites', 'فندق'],
+    cafe: ['cafe', 'café', 'coffee', 'tea house', 'coffeehouse', 'مقهى'],
+    bakery: ['bakery', 'pastry', 'patisserie', 'confectionery', 'مخبز'],
+    catering: ['catering', 'banquet', 'event food', 'تموين'],
+    kitchen: ['kitchen', 'cloud kitchen', 'ghost kitchen', 'commissary', 'مطبخ'],
+    resort: ['resort', 'spa', 'wellness center', 'منتجع'],
+    club: ['club', 'lounge', 'bar', 'pub', 'nightclub', 'نادي'],
   };
   for (const [type, keywords] of Object.entries(estPatterns)) {
     if (keywords.some(k => all.includes(k))) return { table: 'establishments', sub_type: type, confidence: 0.85 };
   }
 
   const companyPatterns: Record<string, string[]> = {
-    supplier: ['supplier', 'supply', 'wholesale', 'distributor', 'distribution', 'import', 'export', 'trading', 'manufacturer', 'equipment', 'packaging'],
-    sponsor: ['sponsor', 'sponsorship'],
-    partner: ['partner', 'consulting', 'consultancy', 'agency', 'marketing', 'media', 'advertising', 'technology', 'tech', 'software'],
-    vendor: ['vendor', 'seller', 'store', 'shop', 'retail', 'market', 'supermarket', 'grocery'],
+    supplier: ['supplier', 'supply', 'wholesale', 'distributor', 'distribution', 'import', 'export', 'trading', 'manufacturer', 'equipment', 'packaging', 'مورد', 'توريد'],
+    sponsor: ['sponsor', 'sponsorship', 'راعي'],
+    partner: ['partner', 'consulting', 'consultancy', 'agency', 'marketing', 'media', 'advertising', 'technology', 'tech', 'software', 'شريك'],
+    vendor: ['vendor', 'seller', 'store', 'shop', 'retail', 'market', 'supermarket', 'grocery', 'متجر'],
   };
   for (const [type, keywords] of Object.entries(companyPatterns)) {
     if (keywords.some(k => all.includes(k))) return { table: 'companies', sub_type: type, confidence: 0.8 };
   }
 
   const entityPatterns: Record<string, string[]> = {
-    culinary_association: ['association', 'society', 'federation', 'union', 'guild', 'chef association'],
-    government_entity: ['government', 'ministry', 'municipality', 'authority', 'department', 'bureau'],
-    culinary_academy: ['academy', 'culinary school', 'culinary institute', 'cooking school'],
-    university: ['university'],
-    college: ['college'],
-    training_center: ['training center', 'training centre', 'workshop', 'learning center'],
+    culinary_association: ['association', 'society', 'federation', 'union', 'guild', 'chef association', 'جمعية', 'اتحاد'],
+    government_entity: ['government', 'ministry', 'municipality', 'authority', 'department', 'bureau', 'وزارة', 'هيئة'],
+    culinary_academy: ['academy', 'culinary school', 'culinary institute', 'cooking school', 'أكاديمية'],
+    university: ['university', 'جامعة'],
+    college: ['college', 'كلية'],
+    training_center: ['training center', 'training centre', 'learning center', 'مركز تدريب'],
     industry_body: ['industry body', 'standards', 'certification body', 'accreditation'],
-    private_association: ['private association', 'foundation', 'ngo', 'non-profit', 'nonprofit', 'charity'],
+    private_association: ['private association', 'foundation', 'ngo', 'non-profit', 'nonprofit', 'charity', 'مؤسسة'],
   };
   for (const [type, keywords] of Object.entries(entityPatterns)) {
     if (keywords.some(k => all.includes(k))) return { table: 'culinary_entities', sub_type: type, confidence: 0.8 };
   }
 
-  // Organizer patterns (must check before generic company/entity)
-  const organizerKeywords = ['organizer', 'event management', 'event organizer', 'exhibition organizer', 'conference organizer', 'event planner', 'event company', 'exhibitions management', 'منظم فعاليات', 'إدارة فعاليات', 'تنظيم معارض'];
-  if (organizerKeywords.some(k => all.includes(k))) return { table: 'organizers', sub_type: 'organizer', confidence: 0.85 };
-  // Check if organizer data fields suggest organizer
+  // Fallback: check if organizer data fields suggest organizer
   if (data.organizer_name_en && data.start_date && !all.includes('competition') && !all.includes('championship')) {
     return { table: 'organizers', sub_type: 'organizer', confidence: 0.6 };
   }
