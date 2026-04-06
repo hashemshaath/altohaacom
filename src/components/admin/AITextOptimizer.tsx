@@ -50,7 +50,7 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
     try {
       const targetLang = lang === "ar" ? "en" : "ar";
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
-        body: { text, source_lang: lang, target_lang: targetLang, optimize_seo: true, field_type: fieldType, max_length: maxLength },
+        body: { text, source_lang: lang, target_lang: targetLang, optimize_seo: false, field_type: fieldType, max_length: maxLength },
       });
       if (error) throw error;
       if (data?.translated) {

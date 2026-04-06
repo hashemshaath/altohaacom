@@ -33,21 +33,44 @@ Deno.serve(async (req) => {
     const effectiveMax = max_length || ftConfig.max;
     const lengthInstruction = `The output MUST be a ${ftConfig.guideline}. STRICTLY keep the result under ${effectiveMax} characters.`;
 
+    const domain = body.domain || "culinary arts, food industry, exhibitions, and professional events";
+
     let systemPrompt: string;
     if (optimize_only) {
-      systemPrompt = `You are an SEO optimization expert. Optimize the following ${source_lang === "ar" ? "Arabic" : "English"} text for search engines while keeping the meaning intact.
+      systemPrompt = `You are an SEO optimization expert specializing in: ${domain}.
+
+Optimize the following ${source_lang === "ar" ? "Arabic" : "English"} text for search engines while keeping the original meaning fully intact.
+Focus on improving discoverability within the specific domain of ${domain}.
+Use professional terminology appropriate for this field.
 
 FIELD CONTEXT: ${lengthInstruction}
 
-RULES: NEVER use special characters like **, ##, __, --. No markdown formatting. Preserve spacing and punctuation. Be concise. Return ONLY the optimized text.`;
+RULES:
+- NEVER add new information or content that was not in the original text
+- Use domain-specific keywords naturally for SEO
+- NEVER use special characters like **, ##, __, --
+- No markdown formatting
+- Preserve spacing and punctuation
+- Be concise
+- Return ONLY the optimized text`;
     } else {
       const fromLang = source_lang === "ar" ? "Arabic" : "English";
       const toLang = target_lang === "en" ? "English" : "Arabic";
-      systemPrompt = `You are a professional translator and SEO expert. Translate from ${fromLang} to ${toLang}. ${optimize_seo ? "Also optimize for search engines." : ""}
+      systemPrompt = `You are a professional bilingual translator.
+
+Translate the following text from ${fromLang} to ${toLang}.
 
 FIELD CONTEXT: ${lengthInstruction}
 
-RULES: NEVER use special characters or markdown. Preserve spacing. Be concise. Return ONLY the translated text.`;
+RULES:
+- Provide a PURE, ACCURATE translation only — do NOT add, remove, or embellish any content
+- Do NOT optimize for SEO — this is a translation only
+- Maintain the exact same tone, style, and meaning as the original
+- Keep proper nouns (brand names, place names) as-is unless they have well-known translations
+- Use professional ${toLang} terminology
+- NEVER use special characters or markdown
+- Preserve spacing
+- Return ONLY the translated text`;
     }
 
     const response = await callAI({
