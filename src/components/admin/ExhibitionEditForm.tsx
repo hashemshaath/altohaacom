@@ -549,7 +549,6 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                     <Select value={editionYear ? String(editionYear) : "none"} onValueChange={v => {
                       const yr = v === "none" ? null : parseInt(v);
                       setEditionYear(yr);
-                      setEditionConfirmed(!!editingId);
                     }}>
                       <SelectTrigger className={cn("h-9", editionHasData && "border-green-500 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 ring-1 ring-green-500/30")}><SelectValue placeholder={t("Select year", "اختر السنة")} /></SelectTrigger>
                       <SelectContent>
