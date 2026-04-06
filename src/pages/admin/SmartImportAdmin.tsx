@@ -1542,7 +1542,23 @@ export default function SmartImportAdmin() {
             </CardContent>
           </Card>
 
-          {/* Tabbed Details */}
+          {/* Last saved record link */}
+          {lastSavedRecord && (
+            <Card className="border-green-500/30 bg-green-500/5">
+              <CardContent className="py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-medium text-green-700">{isAr ? "تم حفظ السجل بنجاح" : "Record saved successfully"}</span>
+                  </div>
+                  <Button size="sm" variant="outline" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(lastSavedRecord.table, lastSavedRecord.id), '_blank')}>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    {isAr ? "فتح صفحة التعديل" : "Open Edit Page"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           <DetailTabs details={details} activeTab={activeTab} onTabChange={setActiveTab} isAr={isAr} editing={editingFields} onFieldUpdate={handleFieldUpdate} />
         </div>
       )}
