@@ -5,9 +5,9 @@ import { SectionBackgroundWrapper } from "./SectionBackground";
 
 const SPACING: Record<string, string> = {
   none: "py-0",
-  compact: "py-3 sm:py-5 md:py-6",
-  normal: "py-6 sm:py-8 md:py-10",
-  relaxed: "py-8 sm:py-10 md:py-12",
+  compact: "py-6 sm:py-10 md:py-14",
+  normal: "py-10 sm:py-16 md:py-20",
+  relaxed: "py-14 sm:py-20 md:py-[140px]",
 };
 
 // Only GPU-composited properties (transform + opacity)
