@@ -160,6 +160,10 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [includesSeminars, setIncludesSeminars] = useState(exhibition?.includes_seminars || false);
   const [tagsInput, setTagsInput] = useState((exhibition?.tags || []).join(", "));
   const [audienceInput, setAudienceInput] = useState((exhibition?.target_audience || []).join(", "));
+  const [socialLinks, setSocialLinks] = useState<Record<string, string>>(() => {
+    if (!exhibition?.social_links || typeof exhibition.social_links !== "object") return {};
+    return exhibition.social_links as Record<string, string>;
+  });
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
