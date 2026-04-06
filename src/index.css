@@ -5,49 +5,47 @@
 
 @layer base {
   :root {
-    /* ── Dark Luxury — Culinary Prestige ── */
+    /* ── Draft Palette — Duke Blue & Amber (pending review) ── */
 
-    /* White background for debugging */
-    --background: 0 0% 100%;
-    --foreground: 220 20% 12%;
+    --background: 210 20% 98%;
+    --foreground: 213 50% 14%;
 
-    /* Light cards */
-    --card: 0 0% 98%;
-    --card-foreground: 220 20% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 213 45% 16%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 15%;
+    --popover-foreground: 213 45% 16%;
 
-    /* Warm gold primary */
-    --primary: 40 72% 52%;
-    --primary-foreground: 220 20% 8%;
+    /* Duke Blue primary */
+    --primary: 213 70% 30%;
+    --primary-foreground: 0 0% 100%;
 
     /* Light surface secondary */
-    --secondary: 220 14% 96%;
-    --secondary-foreground: 220 16% 25%;
+    --secondary: 210 18% 95%;
+    --secondary-foreground: 213 40% 22%;
 
-    /* Muted light */
-    --muted: 220 14% 95%;
-    --muted-foreground: 220 10% 45%;
+    /* Muted — aluminium-tinted */
+    --muted: 210 14% 94%;
+    --muted-foreground: 20 12% 44%;
 
-    /* Champagne accent */
-    --accent: 35 50% 58%;
-    --accent-foreground: 220 20% 8%;
+    /* Amber Yellow accent */
+    --accent: 37 85% 55%;
+    --accent-foreground: 213 50% 10%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Semantic */
-    --success: 152 55% 42%;
+    /* Semantic — mapped from palette */
+    --success: 174 55% 38%;
     --success-foreground: 0 0% 100%;
-    --info: 210 60% 55%;
+    --info: 213 70% 42%;
     --info-foreground: 0 0% 100%;
-    --warning: 38 85% 55%;
-    --warning-foreground: 220 20% 10%;
+    --warning: 37 85% 55%;
+    --warning-foreground: 213 50% 10%;
 
-    --border: 220 14% 90%;
-    --input: 220 14% 88%;
-    --ring: 40 72% 52%;
+    --border: 210 16% 90%;
+    --input: 210 14% 88%;
+    --ring: 213 70% 30%;
 
     /* Switch */
     --switch-thumb-off: 0 0% 100%;
@@ -56,31 +54,31 @@
     --radius: 0.5rem;
 
     /* Sidebar — light */
-    --sidebar-background: 0 0% 99%;
-    --sidebar-foreground: 220 16% 20%;
-    --sidebar-primary: 40 72% 52%;
-    --sidebar-primary-foreground: 220 20% 8%;
-    --sidebar-accent: 220 14% 95%;
-    --sidebar-accent-foreground: 220 16% 25%;
-    --sidebar-border: 220 14% 90%;
-    --sidebar-ring: 40 72% 52%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 213 40% 18%;
+    --sidebar-primary: 213 70% 30%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 18% 95%;
+    --sidebar-accent-foreground: 213 40% 22%;
+    --sidebar-border: 210 16% 90%;
+    --sidebar-ring: 213 70% 30%;
 
-    /* Charts — warm luxury palette */
-    --chart-1: 40 72% 52%;
-    --chart-2: 35 50% 58%;
-    --chart-3: 280 40% 55%;
-    --chart-4: 15 70% 55%;
-    --chart-5: 152 55% 42%;
+    /* Charts — palette-derived */
+    --chart-1: 213 70% 30%;
+    --chart-2: 174 55% 38%;
+    --chart-3: 45 35% 65%;
+    --chart-4: 16 75% 45%;
+    --chart-5: 37 85% 55%;
 
     --font-sans: 'DM Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'DM Serif Display', ui-serif, Georgia, serif;
 
-    /* Shadows — rich depth with warm tones */
-    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.20);
-    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.24), 0 1px 2px -1px hsl(0 0% 0% / 0.16);
-    --shadow-md: 0 4px 8px -2px hsl(0 0% 0% / 0.28), 0 2px 4px -2px hsl(0 0% 0% / 0.18);
-    --shadow-lg: 0 8px 20px -4px hsl(0 0% 0% / 0.35), 0 4px 8px -4px hsl(0 0% 0% / 0.20);
-    --shadow-glow: 0 0 20px hsl(40 72% 52% / 0.15);
+    /* Shadows — crisp depth */
+    --shadow-xs: 0 1px 2px 0 hsl(213 70% 30% / 0.06);
+    --shadow-sm: 0 1px 3px 0 hsl(213 70% 30% / 0.08), 0 1px 2px -1px hsl(213 70% 30% / 0.05);
+    --shadow-md: 0 4px 8px -2px hsl(213 70% 30% / 0.10), 0 2px 4px -2px hsl(213 70% 30% / 0.06);
+    --shadow-lg: 0 8px 20px -4px hsl(213 70% 30% / 0.14), 0 4px 8px -4px hsl(213 70% 30% / 0.08);
+    --shadow-glow: 0 0 20px hsl(37 85% 55% / 0.15);
 
     /* High-contrast text tokens for media-heavy surfaces (hero, video covers) */
     --hero-foreground: 0 0% 98%;
