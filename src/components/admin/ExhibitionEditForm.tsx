@@ -413,6 +413,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         edition_year: editionYear || null,
         edition_number: editionNumber || null,
         venue_id: selectedVenue?.id || null,
+        logo_url: logoUrl || null,
       };
       if (editingId) {
         const { error } = await supabase.from("exhibitions").update(payload).eq("id", editingId);
