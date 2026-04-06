@@ -358,7 +358,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
             <X className="me-1.5 h-3.5 w-3.5" />
             {t("Cancel", "إلغاء")}
           </Button>
-          <Button size="sm" className="h-8" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.start_date || !form.end_date}>
+          <Button size="sm" className="h-8" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.start_date || !form.end_date || editionFieldsDisabled}>
             {saveMutation.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> : <Save className="me-1.5 h-3.5 w-3.5" />}
             {editingId ? t("Save Changes", "حفظ التعديلات") : t("Create", "إنشاء")}
           </Button>
