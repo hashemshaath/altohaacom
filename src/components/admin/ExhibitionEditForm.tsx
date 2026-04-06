@@ -736,6 +736,26 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               </div>
             </section>
 
+            {/* ═══ Section: Sponsors & Partners ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["sponsors"] = el; }}
+              data-section="sponsors"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
+            >
+              <SectionHeader icon={Award} title={t("Sponsors & Partners", "الرعاة والشركاء")} status={editingId ? "complete" : "empty"} />
+              <ExhibitionSponsorsPanel exhibitionId={editingId || ""} isAr={isAr} />
+            </section>
+
+            {/* ═══ Section: Competitions ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["competitions"] = el; }}
+              data-section="competitions"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
+            >
+              <SectionHeader icon={Trophy} title={t("Competitions", "المسابقات")} status={editingId ? "complete" : "empty"} />
+              <ExhibitionCompetitionsPanel exhibitionId={editingId || ""} editionYear={editionYear} isAr={isAr} />
+            </section>
+
             {/* ═══ Section: Media ═══ */}
             <section
               ref={(el: HTMLDivElement | null) => { sectionRefs.current["media"] = el; }}
