@@ -1451,7 +1451,7 @@ export default function SmartImportAdmin() {
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-5 w-5 text-yellow-600" />
                     <span className="text-sm font-semibold text-yellow-700">
-                      {isAr ? `${existingRecords.length} سجل مطابق` : `${existingRecords.length} matching record${existingRecords.length > 1 ? 's' : ''}`}
+                      {isAr ? `⚠️ تم العثور على ${existingRecords.length} سجل مطابق — يمكنك تحديث بياناته بدلاً من إنشاء مكرر` : `⚠️ ${existingRecords.length} existing record${existingRecords.length > 1 ? 's' : ''} found — update instead of creating duplicates`}
                     </span>
                   </div>
                   <div className="space-y-2">
@@ -1464,32 +1464,36 @@ export default function SmartImportAdmin() {
                           ? (isAr ? COMPANY_TYPE_LABELS[record.sub_type as CompanyType]?.ar : COMPANY_TYPE_LABELS[record.sub_type as CompanyType]?.en) || record.sub_type
                           : record.sub_type;
                       return (
-                        <div key={`${record.table}-${record.id}`} className="flex items-center justify-between rounded-xl border bg-background p-3">
+                        <div key={`${record.table}-${record.id}`} className="flex items-center justify-between rounded-xl border-2 border-yellow-500/30 bg-yellow-500/5 p-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-                              <TableIcon className="h-4 w-4 text-primary" />
+                            <div className="w-10 h-10 rounded-xl bg-yellow-500/15 flex items-center justify-center">
+                              <TableIcon className="h-5 w-5 text-yellow-700" />
                             </div>
                             <div>
-                              <p className="text-sm font-medium">{record.name}</p>
-                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <p className="text-sm font-semibold">{record.name}</p>
+                              {record.name_ar && record.name !== record.name_ar && (
+                                <p className="text-xs text-muted-foreground">{record.name_ar}</p>
+                              )}
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
                                 <Badge variant="outline" className="text-[10px] h-4">{record.identifier}</Badge>
                                 <Badge variant="secondary" className="text-[10px] h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
                                 <span>{typeLabel}</span>
+                                {record.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{record.city}</span>}
                               </div>
                             </div>
                           </div>
-                          <Button size="sm" variant="outline" className="gap-1.5" onClick={() => handleUpdateRecord(record)} disabled={updating}>
-                            {updating && selectedExistingId === record.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
-                            {isAr ? "تحديث" : "Update"}
+                          <Button size="default" variant="default" className="gap-2 bg-yellow-600 hover:bg-yellow-700 text-white shadow-md" onClick={() => handleUpdateRecord(record)} disabled={updating}>
+                            {updating && selectedExistingId === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+                            {isAr ? "تحديث المعلومات" : "Update Information"}
                           </Button>
                         </div>
                       );
                     })}
                   </div>
                   <Separator />
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground">{isAr ? "أو أضف كسجل جديد" : "Or add as new"}</span>
-                    <Button size="sm" variant="default" className="gap-1.5" onClick={() => setShowAddForm(true)}>
+                  <div className="flex items-center justify-between bg-muted/30 rounded-xl p-3">
+                    <span className="text-xs text-muted-foreground">{isAr ? "إذا كان هذا كيان مختلف فعلاً، يمكنك إضافته كسجل جديد" : "If this is truly a different entity, you can add it as a new record"}</span>
+                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setShowAddForm(true)}>
                       <Plus className="h-3.5 w-3.5" />{isAr ? "إضافة جديد" : "Add New"}
                     </Button>
                   </div>

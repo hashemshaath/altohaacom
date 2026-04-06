@@ -452,6 +452,17 @@ async function enrichWithAI(
 
   const prompt = `You are a bilingual data extraction expert (Arabic & English). Extract ALL available data from these sources into a structured JSON.
 
+CRITICAL ENTITY TYPE CLASSIFICATION:
+You MUST correctly classify the entity. The distinctions are:
+- ORGANIZER: A company/entity that ORGANIZES exhibitions, events, conferences. They are NOT the event itself. Example: "Sindi for Exhibitions Organization" is an ORGANIZER, not an exhibition. Keywords: organization, management company, event organizer, تنظيم, إدارة فعاليات, شركة تنظيم معارض.
+- EXHIBITION/EVENT: The event itself (e.g., "Foodex Saudi 2025", "Saudi Food Show"). It has specific dates, a venue, and is organized BY an organizer.
+- COMPETITION: A culinary competition/championship with judging, scores, participants.
+- COMPANY: A business entity (supplier, sponsor, vendor, partner).
+- ESTABLISHMENT: A physical venue (restaurant, hotel, café, kitchen).
+- CULINARY ENTITY: An association, academy, government body.
+
+Set "detected_entity_type" to one of: "organizer", "exhibition", "competition", "company", "establishment", "culinary_entity"
+
 RULES:
 - Every _en/_ar field pair: if only one language found, TRANSLATE to the other professionally
 - If a field has no data, set null
@@ -486,6 +497,7 @@ ${website ? `WEBSITE:\n${website.substring(0, 6000)}` : ''}
 
 Return ONLY valid JSON:
 {
+  "detected_entity_type": "organizer|exhibition|competition|company|establishment|culinary_entity",
   "name_en": null, "name_ar": null,
   "abbreviation_en": null, "abbreviation_ar": null,
   "description_en": "SEO description 150-300 chars",
@@ -593,14 +605,37 @@ Extract ALL data comprehensively. Services & specializations in BOTH languages. 
 
 // ─── Auto-detect target ───
 function autoDetectTargetTable(data: any): { table: string; sub_type: string; confidence: number } {
+  // If AI already classified the entity type, use that first
+  const aiType = (data.detected_entity_type || '').toLowerCase();
+  if (aiType === 'organizer') return { table: 'organizers', sub_type: 'organizer', confidence: 0.95 };
+  if (aiType === 'exhibition') return { table: 'exhibitions', sub_type: 'exhibition', confidence: 0.95 };
+  if (aiType === 'competition') return { table: 'competitions', sub_type: 'competition', confidence: 0.95 };
+  if (aiType === 'company') return { table: 'companies', sub_type: 'supplier', confidence: 0.9 };
+  if (aiType === 'establishment') return { table: 'establishments', sub_type: 'restaurant', confidence: 0.9 };
+  if (aiType === 'culinary_entity') return { table: 'culinary_entities', sub_type: 'culinary_association', confidence: 0.9 };
+
   const bt = (data.business_type_en || data.description_en || '').toLowerCase();
   const name = (data.name_en || '').toLowerCase();
   const nameAr = (data.name_ar || '').toLowerCase();
   const all = `${bt} ${name} ${nameAr}`;
 
-  // Organizer patterns — check FIRST before exhibitions/companies consume similar keywords
-  const organizerKeywords = ['organizer', 'event management', 'event organizer', 'exhibition organizer', 'conference organizer', 'event planner', 'event company', 'exhibitions management', 'events company', 'event solutions', 'منظم فعاليات', 'إدارة فعاليات', 'تنظيم معارض', 'شركة تنظيم', 'منظم معارض', 'إدارة مؤتمرات'];
-  if (organizerKeywords.some(k => all.includes(k))) return { table: 'organizers', sub_type: 'organizer', confidence: 0.9 };
+  // Organizer patterns — check FIRST. An organizer ORGANIZES events, it is NOT an event itself.
+  // Key distinction: "X for Exhibitions Organization" = organizer, "X Exhibition 2025" = exhibition
+  const organizerKeywords = [
+    'organizer', 'organiser', 'organization', 'organisation',
+    'event management', 'event organizer', 'exhibition organizer', 'conference organizer',
+    'event planner', 'event company', 'exhibitions management', 'events company', 'event solutions',
+    'exhibitions organization', 'events organization', 'management company',
+    'for exhibitions', 'for events', 'for conferences',
+    'منظم فعاليات', 'إدارة فعاليات', 'تنظيم معارض', 'شركة تنظيم', 'منظم معارض',
+    'إدارة مؤتمرات', 'لتنظيم المعارض', 'لتنظيم الفعاليات', 'لإدارة المعارض',
+    'شركة إدارة', 'تنظيم فعاليات', 'لتنظيم المؤتمرات',
+  ];
+  // Check organizer keywords but ensure the name doesn't have a year (which would indicate an event edition)
+  const hasYearInName = /\b(19|20)\d{2}\b/.test(data.name_en || '');
+  if (!hasYearInName && organizerKeywords.some(k => all.includes(k))) {
+    return { table: 'organizers', sub_type: 'organizer', confidence: 0.9 };
+  }
 
   const exhibitionPatterns: Record<string, string[]> = {
     exhibition: ['exhibition', 'expo', 'trade show', 'trade fair', 'fair', 'showcase', 'food show', 'معرض'],
