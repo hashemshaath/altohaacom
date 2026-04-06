@@ -647,6 +647,19 @@ export default function SmartImportAdmin() {
   }, [details, dbChecked, step, checkExistingEntity]);
 
   // ─── Update existing record ───
+  const getAdminEditUrl = (table: TargetTable, id: string) => {
+    switch (table) {
+      case 'culinary_entities': return `/admin/entities/${id}`;
+      case 'companies': return `/admin/companies/${id}`;
+      case 'establishments': return `/admin/establishments/${id}`;
+      case 'exhibitions': return `/admin/exhibitions/${id}`;
+      case 'competitions': return `/admin/competitions/${id}`;
+      case 'organizers': return `/admin/organizers/${id}`;
+    }
+  };
+
+  const [lastSavedRecord, setLastSavedRecord] = useState<{ table: TargetTable; id: string } | null>(null);
+
   const handleUpdateRecord = async (record: ExistingRecord) => {
     if (!details) return;
     setUpdating(true);
@@ -657,7 +670,12 @@ export default function SmartImportAdmin() {
       const { error } = await supabase.from(record.table).update(updatePayload).eq("id", record.id);
       if (error) throw error;
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === record.table);
-      toast({ title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully` });
+      toast({
+        title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully`,
+        description: isAr ? "انقر لعرض السجل" : "Click to view record",
+        action: <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button>,
+      });
+      setLastSavedRecord({ table: record.table, id: record.id });
       await logImport('update', record.table, record.id, record.sub_type);
       setDbChecked(false);
     } catch (err: unknown) {
