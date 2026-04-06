@@ -16346,6 +16346,7 @@ export type Database = {
           district_ar: string | null
           email: string | null
           entity_id: string | null
+          fax: string | null
           follower_count: number | null
           founded_year: number | null
           gallery_urls: string[] | null
@@ -16355,6 +16356,7 @@ export type Database = {
           is_verified: boolean | null
           key_contacts: Json | null
           latitude: number | null
+          license_number: string | null
           logo_url: string | null
           longitude: number | null
           metadata: Json | null
@@ -16365,8 +16367,10 @@ export type Database = {
           organizer_number: string | null
           phone: string | null
           postal_code: string | null
+          registration_number: string | null
           services: string[] | null
           services_ar: string[] | null
+          short_address: string | null
           slug: string
           social_links: Json | null
           status: string
@@ -16375,7 +16379,9 @@ export type Database = {
           targeted_sectors: string[] | null
           total_exhibitions: number | null
           total_views: number | null
+          unit_number: string | null
           updated_at: string
+          vat_number: string | null
           website: string | null
         }
         Insert: {
@@ -16400,6 +16406,7 @@ export type Database = {
           district_ar?: string | null
           email?: string | null
           entity_id?: string | null
+          fax?: string | null
           follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
@@ -16409,6 +16416,7 @@ export type Database = {
           is_verified?: boolean | null
           key_contacts?: Json | null
           latitude?: number | null
+          license_number?: string | null
           logo_url?: string | null
           longitude?: number | null
           metadata?: Json | null
@@ -16419,8 +16427,10 @@ export type Database = {
           organizer_number?: string | null
           phone?: string | null
           postal_code?: string | null
+          registration_number?: string | null
           services?: string[] | null
           services_ar?: string[] | null
+          short_address?: string | null
           slug: string
           social_links?: Json | null
           status?: string
@@ -16429,7 +16439,9 @@ export type Database = {
           targeted_sectors?: string[] | null
           total_exhibitions?: number | null
           total_views?: number | null
+          unit_number?: string | null
           updated_at?: string
+          vat_number?: string | null
           website?: string | null
         }
         Update: {
@@ -16454,6 +16466,7 @@ export type Database = {
           district_ar?: string | null
           email?: string | null
           entity_id?: string | null
+          fax?: string | null
           follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
@@ -16463,6 +16476,7 @@ export type Database = {
           is_verified?: boolean | null
           key_contacts?: Json | null
           latitude?: number | null
+          license_number?: string | null
           logo_url?: string | null
           longitude?: number | null
           metadata?: Json | null
@@ -16473,8 +16487,10 @@ export type Database = {
           organizer_number?: string | null
           phone?: string | null
           postal_code?: string | null
+          registration_number?: string | null
           services?: string[] | null
           services_ar?: string[] | null
+          short_address?: string | null
           slug?: string
           social_links?: Json | null
           status?: string
@@ -16483,7 +16499,9 @@ export type Database = {
           targeted_sectors?: string[] | null
           total_exhibitions?: number | null
           total_views?: number | null
+          unit_number?: string | null
           updated_at?: string
+          vat_number?: string | null
           website?: string | null
         }
         Relationships: [
