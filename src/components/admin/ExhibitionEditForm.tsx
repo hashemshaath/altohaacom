@@ -962,22 +962,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               </div>
             </section>
 
-              <div className="flex items-center gap-3">
-                <Switch checked={form.is_virtual || false} onCheckedChange={v => updateField("is_virtual", v)} />
-                <Label className="flex items-center gap-1.5 text-xs">
-                  <Globe className="h-3.5 w-3.5" />
-                  {t("Virtual Event", "حدث افتراضي")}
-                </Label>
-              </div>
 
-              {form.is_virtual ? (
-                <FieldGroup label={t("Virtual Event Link", "رابط الحدث الافتراضي")}>
-                  <Input className="h-9 max-w-md" value={form.virtual_link || ""} onChange={e => updateField("virtual_link", e.target.value)} placeholder="https://zoom.us/..." />
-                </FieldGroup>
-              ) : (
-                <>
-                  {/* Venue Selector - only for current/next year */}
-                  {(() => {
+
                     const currentYear = new Date().getFullYear();
                     const canAssignVenue = !editionYear || (editionYear >= currentYear && editionYear <= currentYear + 1);
                     return (
