@@ -695,7 +695,10 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 <Switch checked={form.is_featured || false} onCheckedChange={v => updateField("is_featured", v)} />
                 <Label className="text-xs">{t("Featured Event", "فعالية مميزة")}</Label>
               </div>
+              </div>
             </section>
+
+            <div className={cn(formLocked && "opacity-40 pointer-events-none select-none")}>
 
             {/* ═══ Section: Date & Schedule ═══ */}
             <section
