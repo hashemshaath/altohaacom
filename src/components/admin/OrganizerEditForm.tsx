@@ -1297,32 +1297,85 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                       </div>
                     )}
 
-                    {linkedExhibitions && linkedExhibitions.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {linkedExhibitions.map(ex => (
-                          <Link key={ex.id} to={`/admin/exhibitions?edit=${ex.id}`} className="block">
-                            <Card className="rounded-2xl hover:shadow-md transition-all group cursor-pointer">
-                              <CardContent className="p-3 flex items-center gap-3">
-                                {ex.cover_image_url ? (
-                                  <img src={ex.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
-                                ) : (
-                                  <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                    {exhibitionGroups.length > 0 ? (
+                      <div className="space-y-3">
+                        {exhibitionGroups.map(group => {
+                          const isExpanded = expandedGroup === group.baseName;
+                          return (
+                            <Card key={group.baseName} className="rounded-2xl overflow-hidden">
+                              <CardContent className="p-0">
+                                {/* Group Header - clickable */}
+                                <button
+                                  type="button"
+                                  onClick={() => setExpandedGroup(isExpanded ? null : group.baseName)}
+                                  className="w-full p-3 flex items-center gap-3 hover:bg-muted/30 transition-colors text-start"
+                                >
+                                  {group.coverImage ? (
+                                    <img src={group.coverImage} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
+                                  ) : (
+                                    <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                                      <Building2 className="h-5 w-5 text-muted-foreground" />
+                                    </div>
+                                  )}
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-semibold truncate">{isAr ? group.baseNameAr : group.baseName}</p>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                      <Badge variant="outline" className="text-[9px] h-4">
+                                        {group.editions.length} {isAr ? "نسخة" : group.editions.length === 1 ? "edition" : "editions"}
+                                      </Badge>
+                                      {group.editions[0]?.edition_year && (
+                                        <span className="text-[9px] text-muted-foreground">
+                                          {group.editions[group.editions.length - 1]?.edition_year} — {group.editions[0]?.edition_year}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <ChevronRight className={cn("h-4 w-4 text-muted-foreground transition-transform shrink-0", isExpanded && "rotate-90")} />
+                                </button>
+
+                                {/* Expanded Editions */}
+                                {isExpanded && (
+                                  <div className="border-t border-border/40 bg-muted/10">
+                                    <div className="p-3 space-y-2">
+                                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                        {isAr ? "النسخ المسجلة" : "Registered Editions"}
+                                      </p>
+                                      {group.editions.map(ed => (
+                                        <Link key={ed.id} to={`/admin/exhibitions?edit=${ed.id}`} className="block">
+                                          <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-background border border-transparent hover:border-border/50 transition-all group/ed cursor-pointer">
+                                            {ed.cover_image_url ? (
+                                              <img src={ed.cover_image_url} alt="" className="h-10 w-14 rounded-lg object-cover shrink-0" />
+                                            ) : (
+                                              <div className="h-10 w-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                              </div>
+                                            )}
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-primary">{ed.edition_year || "—"}</span>
+                                                {ed.edition_number && (
+                                                  <span className="text-[9px] text-muted-foreground">
+                                                    {isAr ? `النسخة ${ed.edition_number}` : `Edition #${ed.edition_number}`}
+                                                  </span>
+                                                )}
+                                              </div>
+                                              <div className="flex items-center gap-1.5 mt-0.5">
+                                                <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-[8px] h-3.5 capitalize">{ed.status}</Badge>
+                                                {ed.start_date && <span className="text-[9px] text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
+                                                {ed.view_count ? <span className="text-[9px] text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
+                                              </div>
+                                            </div>
+                                            <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover/ed:opacity-100 transition-opacity shrink-0" />
+                                          </div>
+                                        </Link>
+                                      ))}
+                                    </div>
                                   </div>
                                 )}
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-semibold truncate">{isAr ? (ex.title_ar || ex.title) : ex.title}</p>
-                                  <div className="flex items-center gap-1.5 mt-0.5">
-                                    <Badge variant="outline" className="text-[9px] h-4 capitalize">{ex.type}</Badge>
-                                    <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-[9px] h-4 capitalize">{ex.status}</Badge>
-                                    {ex.edition_year && <span className="text-[9px] text-muted-foreground">{ex.edition_year}</span>}
-                                  </div>
-                                </div>
-                                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                               </CardContent>
                             </Card>
-                          </Link>
-                        ))}
+                          );
+                        })}
                       </div>
                     ) : (
                       <Card className="rounded-2xl border-dashed">
