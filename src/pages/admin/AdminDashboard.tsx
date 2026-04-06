@@ -252,7 +252,7 @@ export default function AdminDashboard() {
       <AdminMobileNavGrid />
 
       {/* ── Stats Grid ── */}
-      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
         {statCards.map((stat) => {
           const sparkKey = sparklineKeys[stat.title];
           const sparkPoints = sparkKey && sparkData ? sparkData.map((d) => ({ v: d[sparkKey] || 0 })) : null;
