@@ -242,8 +242,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   // Edition must be resolved before form is usable (for series-based events)
   const formLocked = !!selectedSeriesId && !editionResolved;
 
-  // Whether edition fields should be disabled (new edition not yet confirmed)
-  const editionFieldsDisabled = !editingId && !!selectedSeriesId && !!editionYear && !existingEdition && !editionConfirmed;
+  const editionFieldsDisabled = formLocked;
 
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
