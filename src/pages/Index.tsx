@@ -220,8 +220,8 @@ const Index = () => {
         </nav>
       </main>
 
-      {/* Curved transition into footer */}
-      <SectionDivider variant="curve" fillClass="fill-[hsl(213_33%_15%)] dark:fill-[hsl(213_35%_8%)]" />
+      {/* Hairline transition into footer */}
+      <div className="h-px bg-gradient-to-r from-transparent via-[#E5E7EB] to-transparent dark:via-border/30" aria-hidden="true" />
       <Footer />
     </div>
   );
