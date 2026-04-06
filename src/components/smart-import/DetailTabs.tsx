@@ -40,6 +40,8 @@ interface DetailTabsProps {
 }
 
 export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, editing, onFieldUpdate }: DetailTabsProps) => {
+  const hasOrganizerData = details.organizer_name_en || details.organizer_name_ar || details.organizer_email || details.organizer_phone || details.organizer_website || details.organizer_logo_url;
+
   return (
     <Tabs value={activeTab} onValueChange={onTabChange}>
       <TabsList className="w-full justify-start flex-wrap h-auto gap-1 p-1">
@@ -52,6 +54,9 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
         <TabsTrigger value="hours" className="gap-1.5"><Clock className="h-3.5 w-3.5" />{isAr ? "ساعات العمل" : "Hours"}</TabsTrigger>
         <TabsTrigger value="event" className="gap-1.5"><Calendar className="h-3.5 w-3.5" />{isAr ? "الحدث" : "Event"}</TabsTrigger>
         <TabsTrigger value="competition" className="gap-1.5"><Trophy className="h-3.5 w-3.5" />{isAr ? "المسابقة" : "Competition"}</TabsTrigger>
+        {hasOrganizerData && (
+          <TabsTrigger value="organizer" className="gap-1.5"><Users className="h-3.5 w-3.5" />{isAr ? "المنظم" : "Organizer"}</TabsTrigger>
+        )}
       </TabsList>
 
       <TabsContent value="overview" className="mt-4">
@@ -89,6 +94,12 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
       <TabsContent value="competition" className="mt-4">
         <CompetitionTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
+
+      {hasOrganizerData && (
+        <TabsContent value="organizer" className="mt-4">
+          <OrganizerTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
+        </TabsContent>
+      )}
     </Tabs>
   );
 });
