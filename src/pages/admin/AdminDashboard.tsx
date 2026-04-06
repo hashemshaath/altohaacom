@@ -191,11 +191,11 @@ export default function AdminDashboard() {
 
   const quickActions = useMemo(() => [
     { title: isAr ? "إدارة المستخدمين" : "Users", icon: Users, link: "/admin/users" },
+    { title: isAr ? "المنظمون" : "Organizers", icon: Building2, link: "/admin/organizers" },
     { title: isAr ? "إدارة الأدوار" : "Roles", icon: Shield, link: "/admin/roles" },
     { title: isAr ? "العضويات" : "Memberships", icon: CreditCard, link: "/admin/memberships" },
     { title: isAr ? "مراجعة المحتوى" : "Moderation", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
     { title: isAr ? "مسابقة جديدة" : "New Competition", icon: Plus, link: "/admin/competitions" },
-    { title: isAr ? "نشر مقال" : "Publish Article", icon: Send, link: "/admin/articles" },
     { title: isAr ? "إرسال إشعار" : "Notifications", icon: MessageSquare, link: "/admin/notifications" },
     { title: isAr ? "الإعدادات" : "Settings", icon: Settings, link: "/admin/settings" },
   ], [isAr, stats?.pendingReports]);
