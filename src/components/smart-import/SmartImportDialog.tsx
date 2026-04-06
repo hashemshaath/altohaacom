@@ -84,6 +84,7 @@ export interface ImportedData {
   national_id?: string;
   registration_number?: string;
   license_number?: string;
+  vat_number?: string;
   founded_year?: number;
   president_name_en?: string;
   president_name_ar?: string;
