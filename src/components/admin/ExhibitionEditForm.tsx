@@ -252,11 +252,26 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       }
       setEditionResolved(true);
       setEditionConfirmed(true);
+      // Load venue
+      if (existingEdition.venue_id) {
+        setSelectedVenue({
+          id: existingEdition.venue_id,
+          name: existingEdition.venue || "",
+          nameAr: existingEdition.venue_ar || null,
+          city: existingEdition.city || null,
+          country: existingEdition.country || null,
+          address: null, capacity: null, logoUrl: null,
+          mapUrl: existingEdition.map_url || null,
+        });
+      } else {
+        setSelectedVenue(null);
+      }
     } else {
       // No edition found for this year — reset form and lock
       setActiveEditingId(null);
       setEditionResolved(false);
       setEditionConfirmed(false);
+      setSelectedVenue(null);
       // Keep series defaults but clear edition-specific data
       const series = seriesList?.find(s => s.id === selectedSeriesId);
       setForm({
