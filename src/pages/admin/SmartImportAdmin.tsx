@@ -78,6 +78,7 @@ const buildEntityPayload = (d: ImportedData) => {
   if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
   if (d.logo_url) payload.logo_url = d.logo_url;
   if (d.cover_url) payload.cover_image_url = d.cover_url;
+  if (d.google_maps_url) payload.google_maps_url = d.google_maps_url;
   return payload;
 };
 
@@ -224,6 +225,46 @@ const buildCompetitionPayload = (d: ImportedData) => {
   return payload;
 };
 
+const buildOrganizerPayload = (d: ImportedData) => {
+  const payload: Record<string, any> = {};
+  if (d.name_en) payload.name = d.name_en;
+  if (d.name_ar) payload.name_ar = d.name_ar;
+  if (d.description_en) payload.description = d.description_en;
+  if (d.description_ar) payload.description_ar = d.description_ar;
+  if (d.phone) payload.phone = d.phone;
+  if (d.email) payload.email = d.email;
+  if (d.website) payload.website = d.website;
+  if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
+  if (d.city_ar) payload.city_ar = d.city_ar;
+  if (d.country_en || d.country_ar) payload.country = d.country_en || d.country_ar;
+  if (d.country_ar) payload.country_ar = d.country_ar;
+  if (d.country_code) payload.country_code = d.country_code;
+  if (d.full_address_en) payload.address = d.full_address_en;
+  if (d.full_address_ar) payload.address_ar = d.full_address_ar;
+  if (d.street_en) payload.street = d.street_en;
+  if (d.street_ar) payload.street_ar = d.street_ar;
+  if (d.district_en || d.neighborhood_en) payload.district = d.district_en || d.neighborhood_en;
+  if (d.district_ar || d.neighborhood_ar) payload.district_ar = d.district_ar || d.neighborhood_ar;
+  if (d.building_number) payload.building_number = d.building_number;
+  if (d.additional_number) payload.additional_number = d.additional_number;
+  if (d.postal_code) payload.postal_code = d.postal_code;
+  if (d.national_address_en) payload.national_address = d.national_address_en;
+  if (d.national_address_ar) payload.national_address_ar = d.national_address_ar;
+  if (d.latitude) payload.latitude = d.latitude;
+  if (d.longitude) payload.longitude = d.longitude;
+  if (d.google_maps_url) payload.google_maps_url = d.google_maps_url;
+  if (d.founded_year) payload.founded_year = d.founded_year;
+  if (d.logo_url) payload.logo_url = d.logo_url;
+  if (d.cover_url) payload.cover_image_url = d.cover_url;
+  if (d.gallery_urls?.length) payload.gallery_urls = d.gallery_urls;
+  if (d.services_en?.length) payload.services = d.services_en;
+  if (d.services_ar?.length) payload.services_ar = d.services_ar;
+  if (d.targeted_sectors?.length) payload.targeted_sectors = d.targeted_sectors;
+  if (d.categories?.length) payload.categories = d.categories;
+  if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
+  return payload;
+};
+
 const getPayloadForTable = (d: ImportedData, table: TargetTable) => {
   switch (table) {
     case "culinary_entities": return buildEntityPayload(d);
@@ -231,6 +272,7 @@ const getPayloadForTable = (d: ImportedData, table: TargetTable) => {
     case "establishments": return buildEstablishmentPayload(d);
     case "exhibitions": return buildExhibitionPayload(d);
     case "competitions": return buildCompetitionPayload(d);
+    case "organizers": return buildOrganizerPayload(d);
   }
 };
 
@@ -523,12 +565,13 @@ export default function SmartImportAdmin() {
       const orStr = [...new Set(orConditions)].join(",");
       const titleOrStr = [...new Set(titleOrConditions)].join(",");
 
-      const [entRes, compRes, estRes, exhRes, compResComp] = await Promise.all([
+      const [entRes, compRes, estRes, exhRes, compResComp, orgRes] = await Promise.all([
         orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
         orStr ? supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
         orStr ? supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as any).from("exhibitions").select("id, title, title_ar, type, city, organizer_email, website_url, slug").or(titleOrStr) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as any).from("competitions").select("id, title, title_ar, city, country_code, status, competition_number").or(titleOrStr) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("organizers").select("id, name, name_ar, organizer_number, city, phone, email, website, status").or(orStr) : Promise.resolve({ data: [] }),
       ]);
 
       const records: ExistingRecord[] = [];
@@ -537,6 +580,7 @@ export default function SmartImportAdmin() {
       (estRes.data || []).forEach((e) => records.push({ id: e.id, name: e.name, name_ar: e.name_ar, identifier: e.id.slice(0, 8), sub_type: e.type, city: e.city, phone: e.phone, email: e.email, website: e.website, table: "establishments" }));
       (exhRes.data || []).forEach((e) => records.push({ id: e.id, name: e.title, name_ar: e.title_ar, identifier: e.slug || e.id.slice(0, 8), sub_type: e.type, city: e.city, phone: null, email: e.organizer_email, website: e.website_url, table: "exhibitions" }));
       (compResComp.data || []).forEach((c) => records.push({ id: c.id, name: c.title, name_ar: c.title_ar, identifier: c.competition_number || c.id.slice(0, 8), sub_type: "competition", city: c.city, phone: null, email: null, website: null, table: "competitions" }));
+      (orgRes.data || []).forEach((o: any) => records.push({ id: o.id, name: o.name, name_ar: o.name_ar, identifier: o.organizer_number || o.id.slice(0, 8), sub_type: "organizer", city: o.city, phone: o.phone, email: o.email, website: o.website, table: "organizers" }));
 
       setExistingRecords(records);
     } catch (err: unknown) {
@@ -633,6 +677,19 @@ export default function SmartImportAdmin() {
           edition_year: details.edition_year || now.getFullYear(),
         };
         const { data: inserted, error } = await (supabase as any).from("competitions").insert(payload).select("id").single();
+        if (error) throw error;
+        recordId = inserted?.id;
+      } else if (targetTable === "organizers") {
+        subType = "organizer";
+        const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+        const payload = {
+          ...buildOrganizerPayload(details),
+          name: details.name_en || name,
+          slug,
+          status: "active",
+          created_by: user?.id || null,
+        };
+        const { data: inserted, error } = await supabase.from("organizers").insert(payload).select("id").single();
         if (error) throw error;
         recordId = inserted?.id;
       } else {

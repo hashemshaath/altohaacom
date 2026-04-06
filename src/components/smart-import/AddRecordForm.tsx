@@ -154,6 +154,11 @@ export const AddRecordForm = React.memo(({
               {isAr ? "سيتم إنشاء مسابقة بحالة مسودة — يمكنك تعديل التفاصيل لاحقاً" : "A draft competition will be created — you can edit details later"}
             </div>
           )}
+          {targetTable === "organizers" && (
+            <div className="text-xs text-muted-foreground p-2 border rounded-xl bg-muted/30">
+              {isAr ? "سيتم إنشاء سجل منظم جديد — يمكنك ربطه بالمعارض لاحقاً" : "A new organizer record will be created — you can link it to exhibitions later"}
+            </div>
+          )}
         </div>
 
         <div className="rounded-xl border border-dashed p-3 text-xs text-muted-foreground flex items-center gap-2">
@@ -166,7 +171,9 @@ export const AddRecordForm = React.memo(({
                 ? (isAr ? "سيتم إنشاء معرض/مؤتمر جديد بحالة مسودة" : "A new exhibition/conference will be created as draft")
                 : targetTable === "competitions"
                   ? (isAr ? "سيتم إنشاء مسابقة جديدة بحالة مسودة" : "A new competition will be created as draft")
-                  : (isAr ? "سيتم إنشاء سجل منشأة جديد" : "A new establishment record will be created")}
+                  : targetTable === "organizers"
+                    ? (isAr ? "سيتم إنشاء سجل منظم جديد" : "A new organizer record will be created")
+                    : (isAr ? "سيتم إنشاء سجل منشأة جديد" : "A new establishment record will be created")}
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
