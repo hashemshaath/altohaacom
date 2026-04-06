@@ -186,10 +186,16 @@
     text-align: right;
     direction: rtl;
   }
-  h1 { @apply text-3xl md:text-4xl font-bold tracking-tight font-serif; }
-  h2 { @apply text-2xl md:text-3xl font-bold tracking-tight font-serif; }
-  h3 { @apply text-xl font-semibold tracking-tight; }
-  h4 { @apply text-lg font-semibold; }
+  /* Fluid typography with clamp() for smooth scaling */
+  h1 { font-size: clamp(1.75rem, 1.2rem + 2.5vw, 2.75rem); @apply font-bold tracking-tight font-serif; }
+  h2 { font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem); @apply font-bold tracking-tight font-serif; }
+  h3 { font-size: clamp(1.125rem, 0.9rem + 1vw, 1.5rem); @apply font-semibold tracking-tight; }
+  h4 { font-size: clamp(1rem, 0.9rem + 0.5vw, 1.25rem); @apply font-semibold; }
+  h5 { font-size: clamp(0.875rem, 0.85rem + 0.25vw, 1.125rem); @apply font-medium; }
+  h6 { @apply text-sm font-medium; }
+
+  /* Fluid body text */
+  p, li { font-size: clamp(0.875rem, 0.85rem + 0.15vw, 1rem); }
 
   /* Prevent iOS auto-zoom on input focus (requires >= 16px) */
   input, textarea, select {

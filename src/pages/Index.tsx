@@ -153,32 +153,53 @@ const Index = () => {
         ogImage="https://altoha.com/og-image.png"
         canonical="https://altoha.com/"
         lang={language}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: isAr ? "الطهاة" : "AlToha",
-          alternateName: isAr ? "AlToha" : "الطهاة",
-          url: "https://altoha.com",
-          inLanguage: ["en", "ar"],
-          description: seo.description,
-          potentialAction: {
-            "@type": "SearchAction",
-            target: {
-              "@type": "EntryPoint",
-              urlTemplate: "https://altoha.com/search?q={search_term_string}",
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: isAr ? "الطهاة" : "AlToha",
+            alternateName: isAr ? "AlToha" : "الطهاة",
+            url: "https://altoha.com",
+            inLanguage: ["en", "ar"],
+            description: seo.description,
+            potentialAction: {
+              "@type": "SearchAction",
+              target: {
+                "@type": "EntryPoint",
+                urlTemplate: "https://altoha.com/search?q={search_term_string}",
+              },
+              "query-input": "required name=search_term_string",
             },
-            "query-input": "required name=search_term_string",
           },
-        }}
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: isAr ? "الصفحة الرئيسية — الطهاة" : "Homepage — AlToha",
+            description: seo.description,
+            url: "https://altoha.com/",
+            isPartOf: { "@type": "WebSite", url: "https://altoha.com" },
+            breadcrumb: {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: "https://altoha.com/" },
+              ],
+            },
+          },
+        ]}
       />
 
       <Header />
 
-      <main className="flex-1 safe-area-x" aria-label="Homepage content">
+      <main className="flex-1 safe-area-x" role="main" aria-label={isAr ? "المحتوى الرئيسي" : "Homepage content"}>
+        {/* Hero — above-fold, eagerly rendered for LCP */}
         <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
           {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
         </ErrorBoundary>
+
+        {/* Social proof — trust badges */}
         <TrustBadges isAr={isAr} dir={isAr ? "rtl" : "ltr"} />
+
+        {/* Dynamic sections — lazy-loaded below fold */}
         <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
           {isError ? (
             <HomeEmergencySections language={language} />
@@ -186,9 +207,10 @@ const Index = () => {
             <HomeSectionsRenderer sections={dbSections} />
           )}
         </ErrorBoundary>
-        <div className="container px-5 sm:px-6 pb-12 pt-4">
+
+        <nav className="container px-5 sm:px-6 pb-12 pt-4" aria-label={isAr ? "صفحات ذات صلة" : "Related pages"}>
           <RelatedPages currentPath="/" />
-        </div>
+        </nav>
       </main>
 
       <Footer />
