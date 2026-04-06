@@ -564,12 +564,13 @@ export default function SmartImportAdmin() {
       const orStr = [...new Set(orConditions)].join(",");
       const titleOrStr = [...new Set(titleOrConditions)].join(",");
 
-      const [entRes, compRes, estRes, exhRes, compResComp] = await Promise.all([
+      const [entRes, compRes, estRes, exhRes, compResComp, orgRes] = await Promise.all([
         orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
         orStr ? supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
         orStr ? supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as any).from("exhibitions").select("id, title, title_ar, type, city, organizer_email, website_url, slug").or(titleOrStr) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as any).from("competitions").select("id, title, title_ar, city, country_code, status, competition_number").or(titleOrStr) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("organizers").select("id, name, name_ar, organizer_number, city, phone, email, website, status").or(orStr) : Promise.resolve({ data: [] }),
       ]);
 
       const records: ExistingRecord[] = [];
@@ -578,6 +579,7 @@ export default function SmartImportAdmin() {
       (estRes.data || []).forEach((e) => records.push({ id: e.id, name: e.name, name_ar: e.name_ar, identifier: e.id.slice(0, 8), sub_type: e.type, city: e.city, phone: e.phone, email: e.email, website: e.website, table: "establishments" }));
       (exhRes.data || []).forEach((e) => records.push({ id: e.id, name: e.title, name_ar: e.title_ar, identifier: e.slug || e.id.slice(0, 8), sub_type: e.type, city: e.city, phone: null, email: e.organizer_email, website: e.website_url, table: "exhibitions" }));
       (compResComp.data || []).forEach((c) => records.push({ id: c.id, name: c.title, name_ar: c.title_ar, identifier: c.competition_number || c.id.slice(0, 8), sub_type: "competition", city: c.city, phone: null, email: null, website: null, table: "competitions" }));
+      (orgRes.data || []).forEach((o: any) => records.push({ id: o.id, name: o.name, name_ar: o.name_ar, identifier: o.organizer_number || o.id.slice(0, 8), sub_type: "organizer", city: o.city, phone: o.phone, email: o.email, website: o.website, table: "organizers" }));
 
       setExistingRecords(records);
     } catch (err: unknown) {
