@@ -18,7 +18,7 @@ import { DataFreshness } from "@/components/ui/data-freshness";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useInViewport } from "@/hooks/useInViewport";
 import {
-  Users, UserCheck, UserPlus, Flag, Trophy, FileText,
+  Users, UserCheck, UserPlus, Flag, Trophy, FileText, Calendar,
   TrendingUp, ArrowRight, ArrowUpRight, ArrowDownRight,
   Shield, Activity, CreditCard, Landmark, Package,
   GraduationCap, LayoutDashboard, Zap, MessageSquare,
@@ -53,6 +53,81 @@ function LazySection({ children, fallback }: { children: React.ReactNode; fallba
 
 function SectionSkeleton() {
   return <div className="space-y-3"><Skeleton className="h-32 w-full rounded-xl" /></div>;
+}
+
+function UpcomingEventsPreview({ isAr }: { isAr: boolean }) {
+  const { data: events } = useQuery({
+    queryKey: ["admin-upcoming-events-preview"],
+    queryFn: async () => {
+      const now = new Date().toISOString();
+      const [{ data: exh }, { data: comp }] = await Promise.all([
+        supabase.from("exhibitions").select("id, title, title_ar, start_date, city, country, status, slug")
+          .gte("start_date", now).in("status", ["upcoming", "active"]).order("start_date").limit(4),
+        supabase.from("competitions").select("id, title, title_ar, competition_start, city, country, status")
+          .gte("competition_start", now).in("status", ["upcoming", "registration_open", "in_progress"]).order("competition_start").limit(4),
+      ]);
+      const all = [
+        ...(exh || []).map(e => ({ ...e, type: "exhibition" as const, date: e.start_date, link: `/admin/exhibitions` })),
+        ...(comp || []).map(c => ({ ...c, type: "competition" as const, date: c.competition_start, link: `/admin/competitions` })),
+      ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 6);
+      return all;
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (!events || events.length === 0) return null;
+
+  return (
+    <Card className="rounded-xl">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-chart-4" />
+            {isAr ? "الفعاليات القادمة" : "Upcoming Events"}
+          </CardTitle>
+          <div className="flex gap-1.5">
+            <Button variant="ghost" size="sm" className="text-xs h-7 px-2" asChild>
+              <Link to="/admin/exhibitions">{isAr ? "المعارض" : "Exhibitions"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
+            </Button>
+            <Button variant="ghost" size="sm" className="text-xs h-7 px-2" asChild>
+              <Link to="/admin/competitions">{isAr ? "المسابقات" : "Competitions"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {events.map((ev) => (
+            <Link key={ev.id} to={ev.link}>
+              <div className="group flex items-start gap-3 rounded-xl border border-border/40 p-3 transition-all hover:bg-muted/30 hover:border-primary/20">
+                <div className="flex flex-col items-center rounded-lg bg-primary/10 p-2 text-center min-w-[44px]">
+                  <span className="text-[10px] font-semibold text-primary uppercase">
+                    {format(new Date(ev.date), "MMM")}
+                  </span>
+                  <span className="text-lg font-bold text-primary leading-none">
+                    {format(new Date(ev.date), "d")}
+                  </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
+                    {isAr ? (ev.title_ar || ev.title) : ev.title}
+                  </p>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <Badge variant="outline" className="text-[8px] h-4 px-1">
+                      {ev.type === "competition" ? (isAr ? "مسابقة" : "Competition") : (isAr ? "معرض" : "Exhibition")}
+                    </Badge>
+                    {ev.city && (
+                      <span className="text-[10px] text-muted-foreground truncate">{ev.city}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default function AdminDashboard() {
@@ -252,7 +327,7 @@ export default function AdminDashboard() {
       <AdminMobileNavGrid />
 
       {/* ── Stats Grid ── */}
-      <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-9">
         {statCards.map((stat) => {
           const sparkKey = sparklineKeys[stat.title];
           const sparkPoints = sparkKey && sparkData ? sparkData.map((d) => ({ v: d[sparkKey] || 0 })) : null;
@@ -369,6 +444,9 @@ export default function AdminDashboard() {
 
       {/* Quick Actions Bar */}
       <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
+
+      {/* ── Upcoming Events Preview ── */}
+      <UpcomingEventsPreview isAr={isAr} />
 
       {/* Command Bar */}
       <Suspense fallback={null}><AdminCommandBar /></Suspense>
