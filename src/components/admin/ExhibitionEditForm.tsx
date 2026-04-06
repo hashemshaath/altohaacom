@@ -160,7 +160,28 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
+  const [editionConfirmed, setEditionConfirmed] = useState(!!editingId);
   const [activeSection, setActiveSection] = useState("basic");
+
+  // Check if edition exists in DB when series + year are selected
+  const { data: existingEdition, isLoading: editionLoading } = useQuery({
+    queryKey: ["edition-check", selectedSeriesId, editionYear],
+    queryFn: async () => {
+      if (!selectedSeriesId || !editionYear) return null;
+      const { data } = await supabase
+        .from("exhibitions")
+        .select("id, title, title_ar, edition_number, status")
+        .eq("series_id", selectedSeriesId)
+        .eq("edition_year", editionYear)
+        .neq("id", editingId || "00000000-0000-0000-0000-000000000000")
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!selectedSeriesId && !!editionYear,
+  });
+
+  // Whether edition fields should be disabled (new edition not yet confirmed)
+  const editionFieldsDisabled = !editingId && !!selectedSeriesId && !!editionYear && !existingEdition && !editionConfirmed;
 
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
