@@ -832,11 +832,41 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 </FieldGroup>
               ) : (
                 <>
+                  {/* Venue Selector - only for current/next year */}
+                  {(() => {
+                    const currentYear = new Date().getFullYear();
+                    const canAssignVenue = !editionYear || (editionYear >= currentYear && editionYear <= currentYear + 1);
+                    return (
+                      <div className={cn(!canAssignVenue && "opacity-50 pointer-events-none")}>
+                        <VenueSearchSelector
+                          value={selectedVenue}
+                          onChange={setSelectedVenue}
+                          onVenueSelected={(v) => {
+                            updateField("venue", v.name);
+                            updateField("venue_ar", v.nameAr || "");
+                            if (v.city) updateField("city", v.city);
+                            if (v.country) updateField("country", v.country);
+                            if (v.mapUrl) updateField("map_url", v.mapUrl);
+                          }}
+                          isAr={isAr}
+                          disabled={!canAssignVenue}
+                        />
+                        {!canAssignVenue && (
+                          <p className="text-[10px] text-muted-foreground mt-1">
+                            {t("Venue can only be assigned for the current or next year's edition", "يمكن تعيين المقر فقط لنسخة السنة الحالية أو القادمة")}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  <Separator className="my-2" />
+
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <FieldGroup label={t("Venue (EN)", "المكان (إنجليزي)")} aiSlot={<AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />}>
+                    <FieldGroup label={t("Venue Name (EN)", "اسم المكان (إنجليزي)")} aiSlot={<AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />}>
                       <Input className="h-9" value={form.venue || ""} onChange={e => updateField("venue", e.target.value)} />
                     </FieldGroup>
-                    <FieldGroup label={t("Venue (AR)", "المكان (عربي)")} aiSlot={<AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />}>
+                    <FieldGroup label={t("Venue Name (AR)", "اسم المكان (عربي)")} aiSlot={<AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />}>
                       <Input className="h-9" value={form.venue_ar || ""} onChange={e => updateField("venue_ar", e.target.value)} dir="rtl" />
                     </FieldGroup>
                   </div>
