@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
@@ -23,10 +24,10 @@ import {
   Building2, Save, X, Loader2, ChevronLeft, CheckCircle2, Image as ImageIcon,
   Mail, Phone, Globe, MapPin, Calendar, Shield, Star, Upload,
   Twitter, Facebook, Linkedin, Instagram, AlertCircle, Languages,
-  StickyNote, BarChart3, Eye, Activity, Briefcase, Target, Clock,
-  ExternalLink, Info, Copy, Users, Trash2, Plus, RefreshCw, Link as LinkIcon,
+  StickyNote, BarChart3, Eye, Activity, Briefcase, Clock,
+  ExternalLink, Info, Copy, Users, Trash2, Plus, RefreshCw,
   Undo2, Youtube, MessageCircle, MapPinned, Navigation, TrendingUp,
-  FileText, Award, Zap, History,
+  Zap, History, ChevronRight, Hash, FileCheck, Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
@@ -109,8 +110,8 @@ const SectionHeader = memo(({ icon: Icon, title, desc, actions }: { icon: any; t
 ));
 SectionHeader.displayName = "SectionHeader";
 
-const FieldGroup = memo(({ label, required, error, hint, children }: { label: string; required?: boolean; error?: string; hint?: string; children: ReactNode }) => (
-  <div className="space-y-1.5">
+const FieldGroup = memo(({ label, required, error, hint, children, className }: { label: string; required?: boolean; error?: string; hint?: string; children: ReactNode; className?: string }) => (
+  <div className={cn("space-y-1.5", className)}>
     <Label className="text-xs font-medium">
       {label}{required && <span className="text-destructive ms-0.5">*</span>}
     </Label>
@@ -121,7 +122,7 @@ const FieldGroup = memo(({ label, required, error, hint, children }: { label: st
 ));
 FieldGroup.displayName = "FieldGroup";
 
-/* ─── Bilingual Field with per-field translate ─── */
+/* ─── Bilingual Field ─── */
 function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChangeEn, multiline, rows, translateField, context, placeholder_ar, placeholder_en }: {
   labelAr: string; labelEn: string; valueAr: string; valueEn: string;
   onChangeAr: (v: string) => void; onChangeEn: (v: string) => void;
@@ -152,27 +153,23 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Arabic First */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelAr}</Label>
           {valueEn?.trim() && (
             <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
-              {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-              EN → AR
+              {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} EN → AR
             </Button>
           )}
         </div>
         <InputComp value={valueAr} onChange={(e: any) => onChangeAr(e.target.value)} dir="rtl" placeholder={placeholder_ar} {...extraProps} />
       </div>
-      {/* English */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelEn}</Label>
           {valueAr?.trim() && (
             <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
-              {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
-              AR → EN
+              {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} AR → EN
             </Button>
           )}
         </div>
@@ -207,7 +204,26 @@ function generateSlug(name: string) {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/-+$/, "").replace(/^-+/, "");
 }
 
-/* ─── Main Component ─── */
+/* ─── Quick Nav Item ─── */
+function QuickNavItem({ icon: Icon, label, status, active, onClick }: { icon: any; label: string; status: "complete" | "partial" | "empty"; active: boolean; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className={cn(
+      "flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-xs transition-all",
+      active ? "bg-primary/10 text-primary font-medium" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+    )}>
+      <div className={cn(
+        "h-1.5 w-1.5 rounded-full shrink-0",
+        status === "complete" ? "bg-chart-2" : status === "partial" ? "bg-amber-500" : "bg-muted-foreground/30"
+      )} />
+      <Icon className="h-3.5 w-3.5 shrink-0" />
+      <span className="truncate">{label}</span>
+    </button>
+  );
+}
+
+/* ═══════════════════════════════════════════════════ */
+/* ═══ Main Component ═══ */
+/* ═══════════════════════════════════════════════════ */
 interface OrganizerEditFormProps {
   organizerId?: string | null;
   onClose: () => void;
@@ -226,6 +242,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+  const [showSideNav, setShowSideNav] = useState(true);
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
@@ -245,7 +262,6 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
   const { translateField, autoTranslateFields } = useAutoTranslate();
   const [translating, setTranslating] = useState(false);
-
   const translateCtx = "event organizer / exhibition management / Saudi Arabia";
 
   // Load existing data
@@ -265,13 +281,11 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     queryKey: ["organizer-exhibitions", organizerId, orgData?.name],
     queryFn: async () => {
       if (!organizerId) return [];
-      // First try by ID
       const { data: byId } = await supabase.from("exhibitions")
         .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
         .or(`organizer_id.eq.${organizerId},organizer_entity_id.eq.${organizerId}`)
         .order("start_date", { ascending: false }).limit(20);
       if (byId && byId.length > 0) return byId;
-      // Fallback: match by organizer name
       if (orgData?.name) {
         const { data: byName } = await supabase.from("exhibitions")
           .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
@@ -498,7 +512,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     return () => window.removeEventListener("keydown", handler);
   }, [handleSave]);
 
-  // Section status for tab badges
+  // Section status
   const getTabStatus = useCallback((id: string): "complete" | "partial" | "empty" => {
     switch (id) {
       case "identity": return (form.name || form.name_ar) && (form.description || form.description_ar) ? "complete" : (form.name || form.name_ar) ? "partial" : "empty";
@@ -517,14 +531,11 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       case "notes": return form.admin_notes ? "complete" : "empty";
       default: return "empty";
     }
-  }, [form, linkedExhibitions]);
+  }, [form, linkedExhibitions, organizerId]);
 
   const completePct = Math.round(
     (TABS.filter(t => getTabStatus(t.id) === "complete").length / TABS.length) * 100
   );
-
-  const statusDot = (s: "complete" | "partial" | "empty") =>
-    s === "complete" ? "bg-chart-2" : s === "partial" ? "bg-amber-500" : "bg-muted-foreground/30";
 
   // Contacts
   const addContact = () => setForm(f => ({ ...f, key_contacts: [...f.key_contacts, { ...emptyContact }] }));
@@ -534,40 +545,57 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
   };
   const removeGalleryImage = (i: number) => setForm(f => ({ ...f, gallery_urls: f.gallery_urls.filter((_, idx) => idx !== i) }));
 
+  // Navigate tabs
+  const goNextTab = () => {
+    const idx = TABS.findIndex(t => t.id === activeTab);
+    if (idx < TABS.length - 1) setActiveTab(TABS[idx + 1].id);
+  };
+  const goPrevTab = () => {
+    const idx = TABS.findIndex(t => t.id === activeTab);
+    if (idx > 0) setActiveTab(TABS[idx - 1].id);
+  };
+  const currentTabIdx = TABS.findIndex(t => t.id === activeTab);
+
+  const socialProfiles = [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram, form.social_youtube, form.social_tiktok, form.social_whatsapp, form.social_snapchat].filter(Boolean).length;
+
   if (isLoading) {
-    return <div className="flex items-center justify-center py-32"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-32 gap-3">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-xs text-muted-foreground">{isAr ? "جاري التحميل..." : "Loading..."}</p>
+      </div>
+    );
   }
 
   return (
     <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-      {/* ── Top Bar ── */}
-      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border/60 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mb-6">
-        <div className="flex items-center justify-between gap-4">
+      {/* ══ Top Bar ══ */}
+      <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border/60 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mb-0">
+        <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Button variant="ghost" size="icon" onClick={() => hasUnsavedChanges ? setShowDiscardConfirm(true) : onClose()} className="h-8 w-8 rounded-xl shrink-0">
               <ChevronLeft className="h-4 w-4" />
             </Button>
             {form.logo_url ? (
-              <img src={form.logo_url} alt="" className="h-9 w-9 rounded-xl object-cover shrink-0 border" />
+              <img src={form.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0 border shadow-sm" />
             ) : (
-              <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <Building2 className="h-4 w-4 text-primary" />
+              <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <Building2 className="h-5 w-5 text-primary" />
               </div>
             )}
             <div className="min-w-0">
               <h2 className="text-sm font-bold truncate">
                 {isAr ? (form.name_ar || form.name || "منظم جديد") : (form.name || form.name_ar || "New Organizer")}
               </h2>
-              <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <div className="flex items-center gap-2 text-[10px] text-muted-foreground flex-wrap">
                 {organizerId && orgData?.organizer_number && (
                   <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5">{orgData.organizer_number}</Badge>
                 )}
-                {form.status && (
-                  <Badge variant={form.status === "active" ? "default" : "secondary"} className="text-[9px] h-4 capitalize">{form.status}</Badge>
-                )}
-                {form.is_verified && <CheckCircle2 className="h-3 w-3 text-primary" />}
+                <Badge variant={form.status === "active" ? "default" : form.status === "pending" ? "outline" : "secondary"} className="text-[9px] h-4 capitalize">{form.status}</Badge>
+                {form.is_verified && <Badge variant="outline" className="text-[9px] h-4 px-1.5 gap-0.5 border-primary/30"><CheckCircle2 className="h-2.5 w-2.5 text-primary" />{isAr ? "موثق" : "Verified"}</Badge>}
+                {form.is_featured && <Badge variant="outline" className="text-[9px] h-4 px-1.5 gap-0.5 border-amber-500/30"><Star className="h-2.5 w-2.5 text-amber-500" />{isAr ? "مميز" : "Featured"}</Badge>}
                 {hasUnsavedChanges && (
-                  <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/50 text-amber-600">
+                  <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/50 text-amber-600 animate-pulse">
                     {isAr ? "غير محفوظ" : "Unsaved"}
                   </Badge>
                 )}
@@ -575,9 +603,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {lastSaved && (
-              <span className="text-[10px] text-muted-foreground hidden md:flex items-center gap-1">
+              <span className="text-[10px] text-muted-foreground hidden lg:flex items-center gap-1">
                 <Clock className="h-3 w-3" />{lastSaved.toLocaleTimeString()}
               </span>
             )}
@@ -597,9 +625,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
             )}
             <Button variant="secondary" size="sm" className="gap-1.5 h-8" onClick={handleAutoTranslate} disabled={translating}>
               <Languages className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline text-xs">{translating ? "..." : isAr ? "ترجمة الكل" : "Translate All"}</span>
+              <span className="hidden sm:inline text-xs">{translating ? "..." : isAr ? "ترجمة" : "Translate"}</span>
             </Button>
-            <Button size="sm" onClick={handleSave} disabled={(!form.name && !form.name_ar) || saveMutation.isPending} className="gap-1.5 h-8">
+            <Button size="sm" onClick={handleSave} disabled={(!form.name && !form.name_ar) || saveMutation.isPending} className="gap-1.5 h-8 min-w-[72px]">
               {saveMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
               <span className="text-xs">{isAr ? "حفظ" : "Save"}</span>
             </Button>
@@ -610,697 +638,865 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       {/* Dedup */}
       <DeduplicationPanel duplicates={duplicates} checking={checking} onDismiss={clearDuplicates} compact />
 
-      {/* ── Tabs ── */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <div className="overflow-x-auto -mx-4 md:-mx-6 px-4 md:px-6">
-          <TabsList className="inline-flex h-10 gap-0.5 bg-muted/50 p-1 rounded-xl w-max">
-            {TABS.map(tab => {
-              const status = getTabStatus(tab.id);
-              return (
-                <TabsTrigger key={tab.id} value={tab.id} className="gap-1.5 text-xs px-3 rounded-lg data-[state=active]:shadow-sm relative">
-                  <div className={cn("h-1.5 w-1.5 rounded-full shrink-0", statusDot(status))} />
-                  <tab.icon className="h-3.5 w-3.5 shrink-0" />
-                  <span className="hidden sm:inline">{isAr ? tab.ar : tab.en}</span>
-                </TabsTrigger>
-              );
-            })}
-          </TabsList>
+      {/* ══ Layout: Side Nav + Content ══ */}
+      <div className="flex gap-0 mt-0">
+        {/* Side Navigation */}
+        <div className={cn(
+          "shrink-0 border-e border-border/40 transition-all duration-300 hidden lg:block",
+          showSideNav ? "w-48 pe-4 pt-5" : "w-0 pe-0 overflow-hidden"
+        )}>
+          {showSideNav && (
+            <nav className="sticky top-20 space-y-0.5">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">{isAr ? "الأقسام" : "Sections"}</p>
+              {TABS.map(tab => (
+                <QuickNavItem
+                  key={tab.id}
+                  icon={tab.icon}
+                  label={isAr ? tab.ar : tab.en}
+                  status={getTabStatus(tab.id)}
+                  active={activeTab === tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                />
+              ))}
+              <Separator className="my-3" />
+              <div className="px-3 space-y-2">
+                <div className="flex items-center justify-between text-[10px]">
+                  <span className="text-muted-foreground">{isAr ? "الاكتمال" : "Complete"}</span>
+                  <span className={cn("font-bold", completePct >= 80 ? "text-chart-2" : completePct >= 50 ? "text-amber-600" : "text-primary")}>{completePct}%</span>
+                </div>
+                <Progress value={completePct} className="h-1.5" />
+                <div className="flex items-center gap-3 text-[9px] text-muted-foreground mt-1">
+                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-chart-2" />{TABS.filter(t => getTabStatus(t.id) === "complete").length}</span>
+                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-amber-500" />{TABS.filter(t => getTabStatus(t.id) === "partial").length}</span>
+                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />{TABS.filter(t => getTabStatus(t.id) === "empty").length}</span>
+                </div>
+              </div>
+            </nav>
+          )}
         </div>
 
-        <div className="mt-6 pb-16">
-          {/* ═══ Identity Tab ═══ */}
-          <TabsContent value="identity" className="space-y-6 mt-0">
-            <SectionHeader icon={Building2} title={isAr ? "هوية المنظم" : "Organizer Identity"} desc={isAr ? "الاسم والوصف والرابط المختصر" : "Name, description & URL slug"} />
-
-            <BilingualField
-              labelAr="الاسم بالعربية *" labelEn="Name (EN)"
-              valueAr={form.name_ar} valueEn={form.name}
-              onChangeAr={v => setForm(f => ({ ...f, name_ar: v }))}
-              onChangeEn={v => { setForm(f => ({ ...f, name: v })); setFormErrors(e => ({ ...e, name: "" })); }}
-              translateField={translateField} context={translateCtx}
-              placeholder_ar="اسم المنظم بالعربية" placeholder_en="Organizer name in English"
-            />
-            {formErrors.name && <p className="text-[11px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
-
-            <div className="mt-4">
-              <FieldGroup label="Slug" hint={form.slug ? `${window.location.origin}/organizers/${form.slug}` : undefined}>
-                <div className="flex gap-2">
-                  <Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder={isAr ? "يُولَّد تلقائياً" : "auto-generated"} className="font-mono text-xs flex-1" dir="ltr" />
-                  {(form.name || form.name_ar) && (
-                    <Button type="button" variant="ghost" size="icon" className="h-10 w-10 shrink-0" onClick={() => setForm(f => ({ ...f, slug: generateSlug(f.name || f.name_ar) }))}>
-                      <RefreshCw className="h-3.5 w-3.5" />
-                    </Button>
-                  )}
-                </div>
-              </FieldGroup>
+        {/* Main Content */}
+        <div className={cn("flex-1 min-w-0", showSideNav ? "ps-0 lg:ps-6" : "ps-0")}>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* Mobile Tab Bar */}
+            <div className="overflow-x-auto lg:hidden -mx-4 md:-mx-6 px-4 md:px-6 pt-4">
+              <TabsList className="inline-flex h-10 gap-0.5 bg-muted/50 p-1 rounded-xl w-max">
+                {TABS.map(tab => {
+                  const status = getTabStatus(tab.id);
+                  return (
+                    <TabsTrigger key={tab.id} value={tab.id} className="gap-1.5 text-xs px-3 rounded-lg data-[state=active]:shadow-sm relative">
+                      <div className={cn(
+                        "h-1.5 w-1.5 rounded-full shrink-0",
+                        status === "complete" ? "bg-chart-2" : status === "partial" ? "bg-amber-500" : "bg-muted-foreground/30"
+                      )} />
+                      <tab.icon className="h-3.5 w-3.5 shrink-0" />
+                      <span className="hidden sm:inline">{isAr ? tab.ar : tab.en}</span>
+                    </TabsTrigger>
+                  );
+                })}
+              </TabsList>
             </div>
 
-            <BilingualField
-              labelAr="الوصف بالعربية" labelEn="Description (EN)"
-              valueAr={form.description_ar} valueEn={form.description}
-              onChangeAr={v => setForm(f => ({ ...f, description_ar: v }))}
-              onChangeEn={v => setForm(f => ({ ...f, description: v }))}
-              translateField={translateField} context={translateCtx}
-              multiline rows={4}
-              placeholder_ar="وصف المنظم بالعربية..." placeholder_en="Describe the organizer..."
-            />
-          </TabsContent>
+            <div className="mt-5 pb-16">
+              {/* ═══ Identity Tab ═══ */}
+              <TabsContent value="identity" className="space-y-6 mt-0">
+                <SectionHeader icon={Building2} title={isAr ? "هوية المنظم" : "Organizer Identity"} desc={isAr ? "الاسم والوصف والرابط المختصر" : "Name, description & URL slug"} />
 
-          {/* ═══ Images Tab ═══ */}
-          <TabsContent value="images" className="space-y-6 mt-0">
-            <SectionHeader icon={ImageIcon} title={isAr ? "الوسائط والصور" : "Media & Images"} desc={isAr ? "الشعار والغلاف ومعرض الصور" : "Logo, cover image & photo gallery"} />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Logo */}
-              <div className="space-y-3">
-                <Label className="text-xs font-medium">{isAr ? "الشعار" : "Logo"}</Label>
-                <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "logo"); }} />
-                {form.logo_url ? (
-                  <div className="rounded-2xl border bg-muted/20 p-4 flex items-center gap-4">
-                    <img src={form.logo_url} alt="Logo" className="h-20 w-20 rounded-xl object-cover shrink-0 border" loading="lazy" />
-                    <div className="flex-1 min-w-0 space-y-2">
-                      <p className="text-[10px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
-                      <div className="flex gap-2">
-                        <Button type="button" variant="outline" size="sm" className="h-7 text-xs" onClick={() => logoRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
-                        <Button type="button" variant="ghost" size="sm" className="h-7 text-xs text-destructive" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}><X className="h-3.5 w-3.5" /></Button>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <button type="button" onClick={() => logoRef.current?.click()} disabled={uploadingLogo}
-                    className="w-full rounded-2xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-all p-8 flex flex-col items-center gap-2 text-muted-foreground hover:bg-muted/30">
-                    {uploadingLogo ? <Loader2 className="h-6 w-6 animate-spin" /> : <Upload className="h-6 w-6" />}
-                    <span className="text-xs">{uploadingLogo ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع شعار" : "Upload Logo")}</span>
-                  </button>
-                )}
-                <Input value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-xs h-8" dir="ltr" />
-              </div>
-
-              {/* Cover */}
-              <div className="space-y-3">
-                <Label className="text-xs font-medium">{isAr ? "صورة الغلاف" : "Cover Image"}</Label>
-                <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "cover"); }} />
-                {form.cover_image_url ? (
-                  <div className="relative group rounded-2xl border overflow-hidden">
-                    <img src={form.cover_image_url} alt="Cover" className="w-full h-32 object-cover" loading="lazy" />
-                    <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                      <Button type="button" variant="secondary" size="sm" className="h-8" onClick={() => coverRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
-                      <Button type="button" variant="destructive" size="sm" className="h-8" onClick={() => setForm(f => ({ ...f, cover_image_url: "" }))}><X className="h-4 w-4" /></Button>
-                    </div>
-                  </div>
-                ) : (
-                  <button type="button" onClick={() => coverRef.current?.click()} disabled={uploadingCover}
-                    className="w-full rounded-2xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-all p-8 flex flex-col items-center gap-2 text-muted-foreground hover:bg-muted/30">
-                    {uploadingCover ? <Loader2 className="h-6 w-6 animate-spin" /> : <ImageIcon className="h-6 w-6" />}
-                    <span className="text-xs">{uploadingCover ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع غلاف" : "Upload Cover")}</span>
-                  </button>
-                )}
-                <Input value={form.cover_image_url} onChange={e => setForm(f => ({ ...f, cover_image_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-xs h-8" dir="ltr" />
-              </div>
-            </div>
-
-            {/* Gallery */}
-            <div className="mt-6">
-              <div className="flex items-center justify-between mb-3">
-                <Label className="text-xs font-medium">{isAr ? "معرض الصور" : "Photo Gallery"} <span className="text-muted-foreground">({form.gallery_urls.length})</span></Label>
-                <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "gallery"); }} />
-                <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => galleryRef.current?.click()} disabled={uploadingGallery}>
-                  {uploadingGallery ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
-                  {isAr ? "إضافة صورة" : "Add Photo"}
-                </Button>
-              </div>
-              {form.gallery_urls.length > 0 ? (
-                <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
-                  {form.gallery_urls.map((url, i) => (
-                    <div key={i} className="relative group aspect-square rounded-xl border overflow-hidden">
-                      <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                      <button type="button" onClick={() => removeGalleryImage(i)}
-                        className="absolute top-1 end-1 h-6 w-6 rounded-full bg-destructive/90 text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="rounded-xl border-2 border-dashed border-border/40 p-6 text-center text-muted-foreground/60">
-                  <ImageIcon className="h-6 w-6 mx-auto mb-1" />
-                  <p className="text-[10px]">{isAr ? "لا توجد صور في المعرض" : "No gallery photos yet"}</p>
-                </div>
-              )}
-            </div>
-          </TabsContent>
-
-          {/* ═══ Contact Tab ═══ */}
-          <TabsContent value="contact" className="space-y-6 mt-0">
-            <SectionHeader icon={Mail} title={isAr ? "معلومات التواصل" : "Contact Information"} desc={isAr ? "البريد الإلكتروني والهاتف والموقع" : "Email, phone & website"} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FieldGroup label={isAr ? "البريد الإلكتروني" : "Email"} error={formErrors.email}>
-                <Input value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setFormErrors(e2 => ({ ...e2, email: "" })); }} type="email" dir="ltr" />
-              </FieldGroup>
-              <FieldGroup label={isAr ? "الهاتف" : "Phone"}>
-                <Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} dir="ltr" placeholder="+966..." />
-              </FieldGroup>
-              <FieldGroup label={isAr ? "الموقع الإلكتروني" : "Website"} error={formErrors.website}>
-                <Input value={form.website} onChange={e => { setForm(f => ({ ...f, website: e.target.value })); setFormErrors(e2 => ({ ...e2, website: "" })); }} placeholder="https://..." dir="ltr" />
-              </FieldGroup>
-            </div>
-          </TabsContent>
-
-          {/* ═══ Location Tab ═══ */}
-          <TabsContent value="location" className="space-y-6 mt-0">
-            <SectionHeader icon={MapPin} title={isAr ? "الموقع والعنوان" : "Location & Address"} desc={isAr ? "العنوان التفصيلي والعنوان الوطني السعودي" : "Detailed address & Saudi National Address"} />
-
-            {/* Country & City */}
-            <BilingualField
-              labelAr="الدولة بالعربية" labelEn="Country (EN)"
-              valueAr={form.country_ar} valueEn={form.country}
-              onChangeAr={v => setForm(f => ({ ...f, country_ar: v }))}
-              onChangeEn={v => setForm(f => ({ ...f, country: v }))}
-              translateField={translateField} context={translateCtx}
-              placeholder_ar="المملكة العربية السعودية" placeholder_en="Saudi Arabia"
-            />
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-              <div className="md:col-span-2">
-                <FieldGroup label={isAr ? "المدينة بالعربية" : "City (AR)"}>
-                  <Input value={form.city_ar} onChange={e => setForm(f => ({ ...f, city_ar: e.target.value }))} dir="rtl" placeholder={isAr ? "الرياض" : "الرياض"} />
-                </FieldGroup>
-              </div>
-              <div className="md:col-span-2">
-                <FieldGroup label={isAr ? "المدينة (EN)" : "City (EN)"}>
-                  <Input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} dir="ltr" placeholder="Riyadh" />
-                </FieldGroup>
-              </div>
-              <FieldGroup label={isAr ? "رمز الدولة" : "Code"}>
-                <Input value={form.country_code} onChange={e => setForm(f => ({ ...f, country_code: e.target.value.toUpperCase() }))} maxLength={2} placeholder="SA" dir="ltr" />
-              </FieldGroup>
-            </div>
-
-            <Separator />
-
-            {/* Detailed Address */}
-            <div>
-              <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
-                <MapPinned className="h-3.5 w-3.5 text-primary" />
-                {isAr ? "العنوان التفصيلي" : "Detailed Address"}
-              </h4>
-              <BilingualField
-                labelAr="الحي بالعربية" labelEn="District (EN)"
-                valueAr={form.district_ar} valueEn={form.district}
-                onChangeAr={v => setForm(f => ({ ...f, district_ar: v }))}
-                onChangeEn={v => setForm(f => ({ ...f, district: v }))}
-                translateField={translateField} context={translateCtx}
-                placeholder_ar="حي العليا" placeholder_en="Al Olaya"
-              />
-              <div className="mt-4">
-                <BilingualField
-                  labelAr="الشارع بالعربية" labelEn="Street (EN)"
-                  valueAr={form.street_ar} valueEn={form.street}
-                  onChangeAr={v => setForm(f => ({ ...f, street_ar: v }))}
-                  onChangeEn={v => setForm(f => ({ ...f, street: v }))}
-                  translateField={translateField} context={translateCtx}
-                  placeholder_ar="شارع الملك فهد" placeholder_en="King Fahd Road"
-                />
-              </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-                <FieldGroup label={isAr ? "رقم المبنى" : "Building No."}>
-                  <Input value={form.building_number} onChange={e => setForm(f => ({ ...f, building_number: e.target.value }))} dir="ltr" placeholder="8228" />
-                </FieldGroup>
-                <FieldGroup label={isAr ? "الرقم الإضافي" : "Additional No."}>
-                  <Input value={form.additional_number} onChange={e => setForm(f => ({ ...f, additional_number: e.target.value }))} dir="ltr" placeholder="2121" />
-                </FieldGroup>
-                <FieldGroup label={isAr ? "الرمز البريدي" : "Postal Code"}>
-                  <Input value={form.postal_code} onChange={e => setForm(f => ({ ...f, postal_code: e.target.value }))} dir="ltr" placeholder="12345" />
-                </FieldGroup>
-              </div>
-              <div className="mt-4">
-                <BilingualField
-                  labelAr="العنوان الكامل بالعربية" labelEn="Full Address (EN)"
-                  valueAr={form.address_ar} valueEn={form.address}
-                  onChangeAr={v => setForm(f => ({ ...f, address_ar: v }))}
-                  onChangeEn={v => setForm(f => ({ ...f, address: v }))}
-                  translateField={translateField} context={translateCtx}
-                />
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Saudi National Address */}
-            <div>
-              <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
-                <Navigation className="h-3.5 w-3.5 text-primary" />
-                {isAr ? "العنوان الوطني السعودي" : "Saudi National Address"}
-              </h4>
-              <BilingualField
-                labelAr="العنوان الوطني بالعربية" labelEn="National Address (EN)"
-                valueAr={form.national_address_ar} valueEn={form.national_address}
-                onChangeAr={v => setForm(f => ({ ...f, national_address_ar: v }))}
-                onChangeEn={v => setForm(f => ({ ...f, national_address: v }))}
-                translateField={translateField} context={translateCtx}
-                placeholder_ar="AAAA1234 - 8228 شارع الملك فهد، حي العليا، الرياض 12345" placeholder_en="AAAA1234 - 8228 King Fahd Rd, Al Olaya, Riyadh 12345"
-              />
-            </div>
-
-            <Separator />
-
-            {/* GPS & Maps */}
-            <div>
-              <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
-                <Globe className="h-3.5 w-3.5 text-primary" />
-                {isAr ? "الإحداثيات والخريطة" : "GPS & Map"}
-              </h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FieldGroup label={isAr ? "خط العرض" : "Latitude"}>
-                  <Input value={form.latitude} onChange={e => setForm(f => ({ ...f, latitude: e.target.value }))} dir="ltr" placeholder="24.7136" />
-                </FieldGroup>
-                <FieldGroup label={isAr ? "خط الطول" : "Longitude"}>
-                  <Input value={form.longitude} onChange={e => setForm(f => ({ ...f, longitude: e.target.value }))} dir="ltr" placeholder="46.6753" />
-                </FieldGroup>
-                <FieldGroup label={isAr ? "رابط خرائط جوجل" : "Google Maps URL"}>
-                  <Input value={form.google_maps_url} onChange={e => setForm(f => ({ ...f, google_maps_url: e.target.value }))} dir="ltr" placeholder="https://maps.google.com/..." />
-                </FieldGroup>
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* ═══ Team Tab ═══ */}
-          <TabsContent value="team" className="space-y-6 mt-0">
-            <SectionHeader
-              icon={Users}
-              title={isAr ? "جهات الاتصال الرئيسية" : "Key Contacts"}
-              desc={isAr ? "أعضاء الفريق وجهات الاتصال" : "Team members & contact persons"}
-              actions={
-                <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={addContact}>
-                  <Plus className="h-3 w-3" />{isAr ? "إضافة" : "Add"}
-                </Button>
-              }
-            />
-            {form.key_contacts.length === 0 ? (
-              <div className="rounded-2xl border-2 border-dashed border-border/40 p-8 text-center">
-                <Users className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground">{isAr ? "لا توجد جهات اتصال بعد" : "No contacts added yet"}</p>
-                <Button type="button" variant="outline" size="sm" className="mt-3 gap-1 text-xs" onClick={addContact}>
-                  <Plus className="h-3 w-3" />{isAr ? "إضافة جهة اتصال" : "Add Contact"}
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {form.key_contacts.map((c, i) => (
-                  <Card key={i} className="rounded-2xl">
+                {/* Quick Summary Card for existing organizers */}
+                {organizerId && orgData && (
+                  <Card className="rounded-2xl bg-gradient-to-r from-primary/5 to-transparent border-primary/10">
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <Badge variant="outline" className="text-[10px]">{isAr ? `جهة اتصال ${i + 1}` : `Contact ${i + 1}`}</Badge>
-                        <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => removeContact(i)}>
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                        <FieldGroup label={isAr ? "الاسم بالعربية" : "Name (AR)"}>
-                          <Input value={c.name_ar} onChange={e => updateContact(i, "name_ar", e.target.value)} dir="rtl" className="h-9" />
-                        </FieldGroup>
-                        <FieldGroup label={isAr ? "الاسم (EN)" : "Name (EN)"}>
-                          <Input value={c.name} onChange={e => updateContact(i, "name", e.target.value)} className="h-9" />
-                        </FieldGroup>
-                        <FieldGroup label={isAr ? "المنصب بالعربية" : "Role (AR)"}>
-                          <Input value={c.role_ar} onChange={e => updateContact(i, "role_ar", e.target.value)} dir="rtl" className="h-9" placeholder={isAr ? "مدير" : "مدير"} />
-                        </FieldGroup>
-                        <FieldGroup label={isAr ? "المنصب (EN)" : "Role (EN)"}>
-                          <Input value={c.role} onChange={e => updateContact(i, "role", e.target.value)} className="h-9" placeholder="Director" />
-                        </FieldGroup>
-                        <FieldGroup label={isAr ? "البريد" : "Email"}>
-                          <Input value={c.email} onChange={e => updateContact(i, "email", e.target.value)} type="email" className="h-9" dir="ltr" />
-                        </FieldGroup>
-                        <FieldGroup label={isAr ? "الهاتف" : "Phone"}>
-                          <Input value={c.phone} onChange={e => updateContact(i, "phone", e.target.value)} dir="ltr" className="h-9" />
-                        </FieldGroup>
+                      <div className="flex items-center gap-4">
+                        {form.logo_url ? (
+                          <img src={form.logo_url} alt="" className="h-14 w-14 rounded-2xl object-cover border shadow-sm" />
+                        ) : (
+                          <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                            <Building2 className="h-6 w-6 text-primary" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-base truncate">{isAr ? (form.name_ar || form.name) : (form.name || form.name_ar)}</p>
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            {orgData.organizer_number && <span className="text-[10px] text-muted-foreground font-mono"><Hash className="h-3 w-3 inline" /> {orgData.organizer_number}</span>}
+                            {form.city && <span className="text-[10px] text-muted-foreground"><MapPin className="h-3 w-3 inline" /> {isAr ? (form.city_ar || form.city) : form.city}</span>}
+                            {form.founded_year && <span className="text-[10px] text-muted-foreground"><Calendar className="h-3 w-3 inline" /> {form.founded_year}</span>}
+                          </div>
+                        </div>
+                        <div className="hidden sm:flex gap-2">
+                          {[
+                            { v: orgData.total_exhibitions || 0, l: isAr ? "معارض" : "Events" },
+                            { v: (orgData.total_views || 0).toLocaleString(), l: isAr ? "مشاهدات" : "Views" },
+                            { v: orgData.follower_count || 0, l: isAr ? "متابعون" : "Followers" },
+                          ].map(s => (
+                            <div key={s.l} className="text-center px-3">
+                              <p className="text-sm font-bold">{s.v}</p>
+                              <p className="text-[9px] text-muted-foreground">{s.l}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
-                ))}
-              </div>
-            )}
-          </TabsContent>
+                )}
 
-          {/* ═══ Details Tab ═══ */}
-          <TabsContent value="details" className="space-y-6 mt-0">
-            <SectionHeader icon={Briefcase} title={isAr ? "التفاصيل والخدمات" : "Details & Services"} desc={isAr ? "الخدمات والقطاعات وسنة التأسيس" : "Services, sectors & founding year"} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <FieldGroup label={isAr ? "سنة التأسيس" : "Founded Year"} error={formErrors.founded_year}>
-                <Input value={form.founded_year} onChange={e => { setForm(f => ({ ...f, founded_year: e.target.value })); setFormErrors(e2 => ({ ...e2, founded_year: "" })); }} type="number" placeholder="2010" dir="ltr" />
-              </FieldGroup>
-              <FieldGroup label={isAr ? "الخدمات" : "Services"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
-                <Input value={form.services} onChange={e => setForm(f => ({ ...f, services: e.target.value }))} placeholder={isAr ? "معارض، تدريب..." : "Exhibitions, Training..."} />
-              </FieldGroup>
-              <FieldGroup label={isAr ? "القطاعات المستهدفة" : "Targeted Sectors"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
-                <Input value={form.targeted_sectors} onChange={e => setForm(f => ({ ...f, targeted_sectors: e.target.value }))} placeholder={isAr ? "أغذية ومشروبات..." : "Food & Beverage..."} />
-              </FieldGroup>
-            </div>
-            {(form.services || form.targeted_sectors) && (
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {form.services.split(",").filter(Boolean).map((s, i) => (
-                  <Badge key={`s-${i}`} variant="secondary" className="text-[10px]">{s.trim()}</Badge>
-                ))}
-                {form.targeted_sectors.split(",").filter(Boolean).map((s, i) => (
-                  <Badge key={`t-${i}`} variant="outline" className="text-[10px]">{s.trim()}</Badge>
-                ))}
-              </div>
-            )}
-            {form.founded_year && (
-              <p className="text-[10px] text-muted-foreground mt-2">
-                {isAr ? `تأسست منذ ${new Date().getFullYear() - parseInt(form.founded_year)} سنة` : `Established ${new Date().getFullYear() - parseInt(form.founded_year)} years ago`}
-              </p>
-            )}
-          </TabsContent>
+                <BilingualField
+                  labelAr="الاسم بالعربية *" labelEn="Name (EN)"
+                  valueAr={form.name_ar} valueEn={form.name}
+                  onChangeAr={v => setForm(f => ({ ...f, name_ar: v }))}
+                  onChangeEn={v => { setForm(f => ({ ...f, name: v })); setFormErrors(e => ({ ...e, name: "" })); }}
+                  translateField={translateField} context={translateCtx}
+                  placeholder_ar="اسم المنظم بالعربية" placeholder_en="Organizer name in English"
+                />
+                {formErrors.name && <p className="text-[11px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
 
-          {/* ═══ Social Tab ═══ */}
-          <TabsContent value="social" className="space-y-6 mt-0">
-            <SectionHeader icon={Globe} title={isAr ? "حسابات التواصل الاجتماعي" : "Social Media Profiles"} desc={isAr ? "جميع حسابات التواصل الاجتماعي" : "All social media links"} />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                { key: "social_twitter", label: "Twitter / X", icon: Twitter, ph: "https://twitter.com/..." },
-                { key: "social_facebook", label: "Facebook", icon: Facebook, ph: "https://facebook.com/..." },
-                { key: "social_linkedin", label: "LinkedIn", icon: Linkedin, ph: "https://linkedin.com/..." },
-                { key: "social_instagram", label: "Instagram", icon: Instagram, ph: "https://instagram.com/..." },
-                { key: "social_youtube", label: "YouTube", icon: Youtube, ph: "https://youtube.com/..." },
-                { key: "social_tiktok", label: "TikTok", icon: Globe, ph: "https://tiktok.com/@..." },
-                { key: "social_whatsapp", label: "WhatsApp", icon: MessageCircle, ph: "+966..." },
-                { key: "social_snapchat", label: "Snapchat", icon: Globe, ph: "username" },
-              ].map(s => (
-                <FieldGroup key={s.key} label={s.label}>
-                  <Input
-                    value={form[s.key as keyof OrganizerForm] as string}
-                    onChange={e => setForm(f => ({ ...f, [s.key]: e.target.value }))}
-                    placeholder={s.ph} dir="ltr"
-                  />
+                <FieldGroup label="Slug" hint={form.slug ? `${window.location.origin}/organizers/${form.slug}` : undefined}>
+                  <div className="flex gap-2">
+                    <Input value={form.slug} onChange={e => setForm(f => ({ ...f, slug: e.target.value }))} placeholder={isAr ? "يُولَّد تلقائياً" : "auto-generated"} className="font-mono text-xs flex-1" dir="ltr" />
+                    {(form.name || form.name_ar) && (
+                      <Button type="button" variant="ghost" size="icon" className="h-10 w-10 shrink-0 rounded-xl" onClick={() => setForm(f => ({ ...f, slug: generateSlug(f.name || f.name_ar) }))}>
+                        <RefreshCw className="h-3.5 w-3.5" />
+                      </Button>
+                    )}
+                  </div>
                 </FieldGroup>
-              ))}
-            </div>
-            <p className="text-[10px] text-muted-foreground">
-              {[form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram, form.social_youtube, form.social_tiktok, form.social_whatsapp, form.social_snapchat].filter(Boolean).length}/8 {isAr ? "حسابات مرتبطة" : "profiles linked"}
-            </p>
-          </TabsContent>
 
-          {/* ═══ Settings Tab ═══ */}
-          <TabsContent value="settings" className="space-y-6 mt-0">
-            <SectionHeader icon={Shield} title={isAr ? "الإعدادات" : "Settings"} desc={isAr ? "الحالة والتوثيق والتمييز" : "Status, verification & featuring"} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="rounded-2xl">
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="h-4 w-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-xs font-medium">{isAr ? "الحالة" : "Status"}</p>
-                      <p className="text-[10px] text-muted-foreground">{isAr ? "حالة حساب المنظم" : "Account status"}</p>
-                    </div>
-                  </div>
-                  <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
-                    <SelectTrigger className="w-28 h-8 text-xs"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-                      <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
-                      <SelectItem value="pending">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </CardContent>
-              </Card>
-              <Card className="rounded-2xl">
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4 text-primary" />
-                    <div>
-                      <p className="text-xs font-medium">{isAr ? "التوثيق" : "Verified"}</p>
-                      <p className="text-[10px] text-muted-foreground">{isAr ? "إظهار شارة التوثيق" : "Show verified badge"}</p>
-                    </div>
-                  </div>
-                  <Switch checked={form.is_verified} onCheckedChange={v => setForm(f => ({ ...f, is_verified: v }))} />
-                </CardContent>
-              </Card>
-              <Card className="rounded-2xl">
-                <CardContent className="p-4 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Star className="h-4 w-4 text-amber-500" />
-                    <div>
-                      <p className="text-xs font-medium">{isAr ? "مميز" : "Featured"}</p>
-                      <p className="text-[10px] text-muted-foreground">{isAr ? "إبراز في الصفحة الرئيسية" : "Highlight on homepage"}</p>
-                    </div>
-                  </div>
-                  <Switch checked={form.is_featured} onCheckedChange={v => setForm(f => ({ ...f, is_featured: v }))} />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+                <BilingualField
+                  labelAr="الوصف بالعربية" labelEn="Description (EN)"
+                  valueAr={form.description_ar} valueEn={form.description}
+                  onChangeAr={v => setForm(f => ({ ...f, description_ar: v }))}
+                  onChangeEn={v => setForm(f => ({ ...f, description: v }))}
+                  translateField={translateField} context={translateCtx}
+                  multiline rows={5}
+                  placeholder_ar="وصف المنظم بالعربية..." placeholder_en="Describe the organizer..."
+                />
 
-          {/* ═══ Exhibitions Tab ═══ */}
-          <TabsContent value="exhibitions" className="space-y-6 mt-0">
-            <SectionHeader
-              icon={BarChart3}
-              title={isAr ? "المعارض والفعاليات المرتبطة" : "Linked Exhibitions & Events"}
-              desc={isAr ? "الفعاليات المرتبطة بهذا المنظم" : "Events linked to this organizer"}
-              actions={organizerId ? (
-                <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => refreshStatsMutation.mutate()} disabled={refreshStatsMutation.isPending}>
-                  {refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-                  {isAr ? "تحديث الإحصائيات" : "Refresh Stats"}
-                </Button>
-              ) : undefined}
-            />
-            {!organizerId ? (
-              <Card className="rounded-2xl border-dashed">
-                <CardContent className="p-8 text-center">
-                  <Info className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">{isAr ? "احفظ المنظم أولاً لربط المعارض" : "Save the organizer first to link exhibitions"}</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <>
-                {orgData && (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-                    {[
-                      { label: isAr ? "المعارض" : "Events", value: orgData.total_exhibitions || 0, icon: Building2 },
-                      { label: isAr ? "المشاهدات" : "Views", value: (orgData.total_views || 0).toLocaleString(), icon: Eye },
-                      { label: isAr ? "التقييم" : "Rating", value: orgData.average_rating || "—", icon: Star },
-                      { label: isAr ? "المتابعون" : "Followers", value: orgData.follower_count || 0, icon: Activity },
-                    ].map(s => (
-                      <Card key={s.label} className="rounded-2xl group hover:shadow-md transition-all">
-                        <CardContent className="p-3 flex items-center gap-3">
-                          <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                            <s.icon className="h-4 w-4 text-primary" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold">{s.value}</p>
-                            <p className="text-[9px] text-muted-foreground">{s.label}</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-
-                {linkedExhibitions && linkedExhibitions.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {linkedExhibitions.map(ex => (
-                      <Link key={ex.id} to={`/admin/exhibitions?edit=${ex.id}`} className="block">
-                      <Card className="rounded-2xl hover:shadow-md transition-all group cursor-pointer">
-                        <CardContent className="p-3 flex items-center gap-3">
-                          {ex.cover_image_url ? (
-                            <img src={ex.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
-                          ) : (
-                            <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                              <Building2 className="h-5 w-5 text-muted-foreground" />
-                            </div>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <p className="text-sm font-semibold truncate">{isAr ? (ex.title_ar || ex.title) : ex.title}</p>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                              <Badge variant="outline" className="text-[9px] h-4 capitalize">{ex.type}</Badge>
-                              <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-[9px] h-4 capitalize">{ex.status}</Badge>
-                              {ex.edition_year && <span className="text-[9px] text-muted-foreground">{ex.edition_year}</span>}
-                            </div>
-                          </div>
-                          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
-                        </CardContent>
-                      </Card>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <Card className="rounded-2xl border-dashed">
-                    <CardContent className="p-8 text-center">
-                      <BarChart3 className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">{isAr ? "لا توجد معارض مرتبطة" : "No linked exhibitions"}</p>
-                    </CardContent>
-                  </Card>
-                )}
-              </>
-            )}
-          </TabsContent>
-
-          {/* ═══ Analytics Tab ═══ */}
-          <TabsContent value="analytics" className="space-y-6 mt-0">
-            <SectionHeader
-              icon={TrendingUp}
-              title={isAr ? "التحليلات والأداء" : "Analytics & Performance"}
-              desc={isAr ? "إحصائيات تفصيلية حول أداء المنظم" : "Detailed performance metrics and insights"}
-              actions={organizerId ? (
-                <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => refreshStatsMutation.mutate()} disabled={refreshStatsMutation.isPending}>
-                  {refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-                  {isAr ? "تحديث" : "Refresh"}
-                </Button>
-              ) : undefined}
-            />
-
-            {!organizerId ? (
-              <Card className="rounded-2xl border-dashed">
-                <CardContent className="p-8 text-center">
-                  <TrendingUp className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-                  <p className="text-xs text-muted-foreground">{isAr ? "احفظ المنظم أولاً لعرض التحليلات" : "Save the organizer first to view analytics"}</p>
-                </CardContent>
-              </Card>
-            ) : orgData && (
-              <>
-                {/* Primary KPIs */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {[
-                    { label: isAr ? "المعارض" : "Total Events", value: orgData.total_exhibitions || 0, icon: Calendar, color: "text-primary", bg: "bg-primary/10" },
-                    { label: isAr ? "المشاهدات" : "Total Views", value: (orgData.total_views || 0).toLocaleString(), icon: Eye, color: "text-chart-2", bg: "bg-chart-2/10" },
-                    { label: isAr ? "المتابعون" : "Followers", value: orgData.follower_count || 0, icon: Users, color: "text-purple-600", bg: "bg-purple-600/10" },
-                    { label: isAr ? "التقييم" : "Avg Rating", value: orgData.average_rating || "—", icon: Star, color: "text-amber-600", bg: "bg-amber-600/10", sub: orgData.average_rating > 0 ? "★".repeat(Math.round(orgData.average_rating)) : undefined },
-                  ].map(s => (
-                    <Card key={s.label} className="rounded-2xl group hover:shadow-md transition-all">
-                      <CardContent className="p-4">
-                        <div className="flex items-center gap-3 mb-2">
-                          <div className={`h-9 w-9 rounded-xl ${s.bg} flex items-center justify-center shrink-0`}>
-                            <s.icon className={`h-4 w-4 ${s.color}`} />
-                          </div>
-                          <p className="text-[10px] text-muted-foreground">{s.label}</p>
-                        </div>
-                        <p className="text-2xl font-bold">{s.value}</p>
-                        {s.sub && <p className="text-xs text-amber-500 mt-0.5">{s.sub}</p>}
-                      </CardContent>
-                    </Card>
-                  ))}
+                {/* Character counts */}
+                <div className="flex justify-between text-[9px] text-muted-foreground">
+                  <span>{form.description_ar.length} {isAr ? "حرف (عربي)" : "chars (AR)"}</span>
+                  <span>{form.description.length} {isAr ? "حرف (إنجليزي)" : "chars (EN)"}</span>
                 </div>
+              </TabsContent>
 
-                {/* Engagement Metrics */}
-                <Card className="rounded-2xl">
-                  <CardContent className="p-4 space-y-4">
-                    <h4 className="text-sm font-semibold flex items-center gap-2">
-                      <Activity className="h-4 w-4 text-primary" />
-                      {isAr ? "مؤشرات المشاركة" : "Engagement Metrics"}
-                    </h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {[
-                        { label: isAr ? "متوسط المشاهدات / معرض" : "Avg Views/Event", value: orgData.total_exhibitions > 0 ? Math.round((orgData.total_views || 0) / orgData.total_exhibitions).toLocaleString() : "—" },
-                        { label: isAr ? "نسبة المتابعة" : "Follow Rate", value: orgData.total_views > 0 ? `${((orgData.follower_count || 0) / orgData.total_views * 100).toFixed(1)}%` : "—" },
-                        { label: isAr ? "سنوات الخبرة" : "Years Active", value: form.founded_year ? `${new Date().getFullYear() - parseInt(form.founded_year)}` : "—" },
-                        { label: isAr ? "حسابات التواصل" : "Social Profiles", value: [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram, form.social_youtube, form.social_tiktok, form.social_whatsapp, form.social_snapchat].filter(Boolean).length },
-                      ].map(m => (
-                        <div key={m.label} className="rounded-xl bg-muted/40 p-3">
-                          <p className="text-[10px] text-muted-foreground mb-1">{m.label}</p>
-                          <p className="text-lg font-bold">{m.value}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+              {/* ═══ Images Tab ═══ */}
+              <TabsContent value="images" className="space-y-6 mt-0">
+                <SectionHeader icon={ImageIcon} title={isAr ? "الوسائط والصور" : "Media & Images"} desc={isAr ? "الشعار والغلاف ومعرض الصور" : "Logo, cover image & photo gallery"} />
 
-                {/* Profile Health */}
-                <Card className="rounded-2xl">
-                  <CardContent className="p-4 space-y-4">
-                    <h4 className="text-sm font-semibold flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-primary" />
-                      {isAr ? "صحة الملف الشخصي" : "Profile Health"}
-                    </h4>
-                    <div className="space-y-3">
-                      {[
-                        { label: isAr ? "الاسم ثنائي اللغة" : "Bilingual Name", ok: !!(form.name && form.name_ar) },
-                        { label: isAr ? "الوصف ثنائي اللغة" : "Bilingual Description", ok: !!(form.description && form.description_ar) },
-                        { label: isAr ? "الشعار" : "Logo Uploaded", ok: !!form.logo_url },
-                        { label: isAr ? "صورة الغلاف" : "Cover Image", ok: !!form.cover_image_url },
-                        { label: isAr ? "معلومات التواصل" : "Contact Info", ok: !!(form.email && form.phone) },
-                        { label: isAr ? "الموقع" : "Location Set", ok: !!(form.city && form.country) },
-                        { label: isAr ? "الموقع الإلكتروني" : "Website", ok: !!form.website },
-                        { label: isAr ? "حسابات اجتماعية" : "Social Media (3+)", ok: [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram].filter(Boolean).length >= 3 },
-                        { label: isAr ? "معرض الصور" : "Photo Gallery", ok: form.gallery_urls.length > 0 },
-                        { label: isAr ? "فريق العمل" : "Team Contacts", ok: form.key_contacts.length > 0 },
-                      ].map(item => (
-                        <div key={item.label} className="flex items-center gap-3">
-                          <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 ${item.ok ? "bg-chart-2/20" : "bg-muted"}`}>
-                            {item.ok ? <CheckCircle2 className="h-3 w-3 text-chart-2" /> : <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Logo */}
+                  <Card className="rounded-2xl">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium flex items-center gap-1.5">
+                          <Sparkles className="h-3.5 w-3.5 text-primary" />{isAr ? "الشعار" : "Logo"}
+                        </Label>
+                        {form.logo_url && <Badge variant="outline" className="text-[9px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
+                      </div>
+                      <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "logo"); }} />
+                      {form.logo_url ? (
+                        <div className="flex items-center gap-4">
+                          <img src={form.logo_url} alt="Logo" className="h-20 w-20 rounded-2xl object-cover shrink-0 border shadow-sm" loading="lazy" />
+                          <div className="flex-1 min-w-0 space-y-2">
+                            <p className="text-[10px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
+                            <div className="flex gap-2">
+                              <Button type="button" variant="outline" size="sm" className="h-7 text-xs rounded-lg" onClick={() => logoRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
+                              <Button type="button" variant="ghost" size="sm" className="h-7 text-xs text-destructive rounded-lg" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}><X className="h-3.5 w-3.5" /></Button>
+                            </div>
                           </div>
-                          <span className={`text-xs ${item.ok ? "text-foreground" : "text-muted-foreground"}`}>{item.label}</span>
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Timeline */}
-                <Card className="rounded-2xl">
-                  <CardContent className="p-4 space-y-3">
-                    <h4 className="text-sm font-semibold flex items-center gap-2">
-                      <History className="h-4 w-4 text-primary" />
-                      {isAr ? "السجل الزمني" : "Timeline"}
-                    </h4>
-                    <div className="space-y-2">
-                      {[
-                        { label: isAr ? "تاريخ الإنشاء" : "Created", value: orgData.created_at ? new Date(orgData.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" }) : "—" },
-                        { label: isAr ? "آخر تحديث" : "Last Updated", value: orgData.updated_at ? new Date(orgData.updated_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" }) : "—" },
-                        { label: isAr ? "سنة التأسيس" : "Founded", value: form.founded_year || "—" },
-                      ].map(t => (
-                        <div key={t.label} className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0">
-                          <span className="text-xs text-muted-foreground">{t.label}</span>
-                          <span className="text-xs font-medium">{t.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </TabsContent>
-
-          {/* ═══ Notes Tab ═══ */}
-          <TabsContent value="notes" className="space-y-6 mt-0">
-            <SectionHeader icon={StickyNote} title={isAr ? "ملاحظات إدارية" : "Admin Notes"} desc={isAr ? "ملاحظات داخلية وبيانات وصفية" : "Internal notes & record metadata"} />
-            <FieldGroup label={isAr ? "ملاحظات خاصة" : "Private Notes"} hint={isAr ? "مرئية فقط لفريق الإدارة" : "Only visible to admin team"}>
-              <Textarea value={form.admin_notes} onChange={e => setForm(f => ({ ...f, admin_notes: e.target.value }))} rows={4} placeholder={isAr ? "ملاحظات داخلية للفريق..." : "Internal team notes..."} />
-            </FieldGroup>
-            {organizerId && orgData && (
-              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
-                {[
-                  { label: "ID", value: organizerId.slice(0, 8) + "...", copyable: organizerId },
-                  { label: isAr ? "رقم المنظم" : "Number", value: orgData.organizer_number || "—" },
-                  { label: isAr ? "تاريخ الإنشاء" : "Created", value: orgData.created_at ? new Date(orgData.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US") : "—" },
-                  { label: isAr ? "آخر حفظ" : "Last Saved", value: lastSaved ? lastSaved.toLocaleTimeString(isAr ? "ar-SA" : "en-US") : "—" },
-                ].map(m => (
-                  <div key={m.label} className="rounded-xl bg-muted/40 p-3 group">
-                    <p className="text-[10px] text-muted-foreground">{m.label}</p>
-                    <div className="flex items-center gap-1 mt-0.5">
-                      <p className="text-xs font-medium font-mono truncate">{m.value}</p>
-                      {"copyable" in m && m.copyable && (
-                        <button type="button" onClick={() => { navigator.clipboard.writeText(m.copyable as string); toast.info("Copied!"); }}
-                          className="opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Copy className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                      ) : (
+                        <button type="button" onClick={() => logoRef.current?.click()} disabled={uploadingLogo}
+                          className="w-full rounded-2xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-all p-6 flex flex-col items-center gap-2 text-muted-foreground hover:bg-muted/30 active:scale-[0.98]">
+                          {uploadingLogo ? <Loader2 className="h-6 w-6 animate-spin" /> : <Upload className="h-6 w-6" />}
+                          <span className="text-xs">{uploadingLogo ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع شعار" : "Upload Logo")}</span>
                         </button>
                       )}
+                      <Input value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-xs h-8" dir="ltr" />
+                    </CardContent>
+                  </Card>
+
+                  {/* Cover */}
+                  <Card className="rounded-2xl">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-medium flex items-center gap-1.5">
+                          <ImageIcon className="h-3.5 w-3.5 text-primary" />{isAr ? "صورة الغلاف" : "Cover Image"}
+                        </Label>
+                        {form.cover_image_url && <Badge variant="outline" className="text-[9px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
+                      </div>
+                      <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "cover"); }} />
+                      {form.cover_image_url ? (
+                        <div className="relative group rounded-2xl border overflow-hidden">
+                          <img src={form.cover_image_url} alt="Cover" className="w-full h-32 object-cover" loading="lazy" />
+                          <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <Button type="button" variant="secondary" size="sm" className="h-8 rounded-lg" onClick={() => coverRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
+                            <Button type="button" variant="destructive" size="sm" className="h-8 rounded-lg" onClick={() => setForm(f => ({ ...f, cover_image_url: "" }))}><X className="h-4 w-4" /></Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <button type="button" onClick={() => coverRef.current?.click()} disabled={uploadingCover}
+                          className="w-full rounded-2xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-all p-6 flex flex-col items-center gap-2 text-muted-foreground hover:bg-muted/30 active:scale-[0.98]">
+                          {uploadingCover ? <Loader2 className="h-6 w-6 animate-spin" /> : <ImageIcon className="h-6 w-6" />}
+                          <span className="text-xs">{uploadingCover ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع غلاف" : "Upload Cover")}</span>
+                        </button>
+                      )}
+                      <Input value={form.cover_image_url} onChange={e => setForm(f => ({ ...f, cover_image_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-xs h-8" dir="ltr" />
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Gallery */}
+                <Card className="rounded-2xl">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label className="text-xs font-medium">{isAr ? "معرض الصور" : "Photo Gallery"} <Badge variant="outline" className="text-[9px] h-4 ms-1">{form.gallery_urls.length}</Badge></Label>
+                      <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "gallery"); }} />
+                      <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => galleryRef.current?.click()} disabled={uploadingGallery}>
+                        {uploadingGallery ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
+                        {isAr ? "إضافة صورة" : "Add Photo"}
+                      </Button>
                     </div>
+                    {form.gallery_urls.length > 0 ? (
+                      <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+                        {form.gallery_urls.map((url, i) => (
+                          <div key={i} className="relative group aspect-square rounded-xl border overflow-hidden">
+                            <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                            <button type="button" onClick={() => removeGalleryImage(i)}
+                              className="absolute top-1 end-1 h-6 w-6 rounded-full bg-destructive/90 text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="rounded-xl border-2 border-dashed border-border/40 p-6 text-center text-muted-foreground/60">
+                        <ImageIcon className="h-6 w-6 mx-auto mb-1" />
+                        <p className="text-[10px]">{isAr ? "لا توجد صور في المعرض" : "No gallery photos yet"}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* ═══ Contact Tab ═══ */}
+              <TabsContent value="contact" className="space-y-6 mt-0">
+                <SectionHeader icon={Mail} title={isAr ? "معلومات التواصل" : "Contact Information"} desc={isAr ? "البريد الإلكتروني والهاتف والموقع" : "Email, phone & website"} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FieldGroup label={isAr ? "البريد الإلكتروني" : "Email"} error={formErrors.email}>
+                    <Input value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setFormErrors(e2 => ({ ...e2, email: "" })); }} type="email" dir="ltr" placeholder="info@example.com" />
+                  </FieldGroup>
+                  <FieldGroup label={isAr ? "الهاتف" : "Phone"}>
+                    <Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} dir="ltr" placeholder="+966..." />
+                  </FieldGroup>
+                  <FieldGroup label={isAr ? "الموقع الإلكتروني" : "Website"} error={formErrors.website}>
+                    <Input value={form.website} onChange={e => { setForm(f => ({ ...f, website: e.target.value })); setFormErrors(e2 => ({ ...e2, website: "" })); }} placeholder="https://..." dir="ltr" />
+                  </FieldGroup>
+                </div>
+
+                {/* Contact Quick Preview */}
+                {(form.email || form.phone || form.website) && (
+                  <Card className="rounded-2xl bg-muted/30">
+                    <CardContent className="p-4">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معاينة سريعة" : "Quick Preview"}</p>
+                      <div className="flex flex-wrap gap-3">
+                        {form.email && (
+                          <a href={`mailto:${form.email}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline">
+                            <Mail className="h-3.5 w-3.5" />{form.email}
+                          </a>
+                        )}
+                        {form.phone && (
+                          <a href={`tel:${form.phone}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline">
+                            <Phone className="h-3.5 w-3.5" />{form.phone}
+                          </a>
+                        )}
+                        {form.website && (
+                          <a href={form.website} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs text-primary hover:underline">
+                            <Globe className="h-3.5 w-3.5" />{form.website.replace(/^https?:\/\//, "")}
+                          </a>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              {/* ═══ Location Tab ═══ */}
+              <TabsContent value="location" className="space-y-6 mt-0">
+                <SectionHeader icon={MapPin} title={isAr ? "الموقع والعنوان" : "Location & Address"} desc={isAr ? "العنوان التفصيلي والعنوان الوطني السعودي" : "Detailed address & Saudi National Address"} />
+
+                <BilingualField
+                  labelAr="الدولة بالعربية" labelEn="Country (EN)"
+                  valueAr={form.country_ar} valueEn={form.country}
+                  onChangeAr={v => setForm(f => ({ ...f, country_ar: v }))}
+                  onChangeEn={v => setForm(f => ({ ...f, country: v }))}
+                  translateField={translateField} context={translateCtx}
+                  placeholder_ar="المملكة العربية السعودية" placeholder_en="Saudi Arabia"
+                />
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div className="md:col-span-2">
+                    <FieldGroup label={isAr ? "المدينة بالعربية" : "City (AR)"}>
+                      <Input value={form.city_ar} onChange={e => setForm(f => ({ ...f, city_ar: e.target.value }))} dir="rtl" placeholder="الرياض" />
+                    </FieldGroup>
                   </div>
-                ))}
+                  <div className="md:col-span-2">
+                    <FieldGroup label={isAr ? "المدينة (EN)" : "City (EN)"}>
+                      <Input value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} dir="ltr" placeholder="Riyadh" />
+                    </FieldGroup>
+                  </div>
+                  <FieldGroup label={isAr ? "رمز الدولة" : "Code"}>
+                    <Input value={form.country_code} onChange={e => setForm(f => ({ ...f, country_code: e.target.value.toUpperCase() }))} maxLength={2} placeholder="SA" dir="ltr" />
+                  </FieldGroup>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
+                    <MapPinned className="h-3.5 w-3.5 text-primary" />
+                    {isAr ? "العنوان التفصيلي" : "Detailed Address"}
+                  </h4>
+                  <BilingualField
+                    labelAr="الحي بالعربية" labelEn="District (EN)"
+                    valueAr={form.district_ar} valueEn={form.district}
+                    onChangeAr={v => setForm(f => ({ ...f, district_ar: v }))}
+                    onChangeEn={v => setForm(f => ({ ...f, district: v }))}
+                    translateField={translateField} context={translateCtx}
+                    placeholder_ar="حي العليا" placeholder_en="Al Olaya"
+                  />
+                  <div className="mt-4">
+                    <BilingualField
+                      labelAr="الشارع بالعربية" labelEn="Street (EN)"
+                      valueAr={form.street_ar} valueEn={form.street}
+                      onChangeAr={v => setForm(f => ({ ...f, street_ar: v }))}
+                      onChangeEn={v => setForm(f => ({ ...f, street: v }))}
+                      translateField={translateField} context={translateCtx}
+                      placeholder_ar="شارع الملك فهد" placeholder_en="King Fahd Road"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                    <FieldGroup label={isAr ? "رقم المبنى" : "Building No."}>
+                      <Input value={form.building_number} onChange={e => setForm(f => ({ ...f, building_number: e.target.value }))} dir="ltr" placeholder="8228" />
+                    </FieldGroup>
+                    <FieldGroup label={isAr ? "الرقم الإضافي" : "Additional No."}>
+                      <Input value={form.additional_number} onChange={e => setForm(f => ({ ...f, additional_number: e.target.value }))} dir="ltr" placeholder="2121" />
+                    </FieldGroup>
+                    <FieldGroup label={isAr ? "الرمز البريدي" : "Postal Code"}>
+                      <Input value={form.postal_code} onChange={e => setForm(f => ({ ...f, postal_code: e.target.value }))} dir="ltr" placeholder="12345" />
+                    </FieldGroup>
+                  </div>
+                  <div className="mt-4">
+                    <BilingualField
+                      labelAr="العنوان الكامل بالعربية" labelEn="Full Address (EN)"
+                      valueAr={form.address_ar} valueEn={form.address}
+                      onChangeAr={v => setForm(f => ({ ...f, address_ar: v }))}
+                      onChangeEn={v => setForm(f => ({ ...f, address: v }))}
+                      translateField={translateField} context={translateCtx}
+                    />
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
+                    <Navigation className="h-3.5 w-3.5 text-primary" />
+                    {isAr ? "العنوان الوطني السعودي" : "Saudi National Address"}
+                  </h4>
+                  <BilingualField
+                    labelAr="العنوان الوطني بالعربية" labelEn="National Address (EN)"
+                    valueAr={form.national_address_ar} valueEn={form.national_address}
+                    onChangeAr={v => setForm(f => ({ ...f, national_address_ar: v }))}
+                    onChangeEn={v => setForm(f => ({ ...f, national_address: v }))}
+                    translateField={translateField} context={translateCtx}
+                  />
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
+                    <Globe className="h-3.5 w-3.5 text-primary" />
+                    {isAr ? "الإحداثيات والخريطة" : "GPS & Map"}
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FieldGroup label={isAr ? "خط العرض" : "Latitude"}>
+                      <Input value={form.latitude} onChange={e => setForm(f => ({ ...f, latitude: e.target.value }))} dir="ltr" placeholder="24.7136" />
+                    </FieldGroup>
+                    <FieldGroup label={isAr ? "خط الطول" : "Longitude"}>
+                      <Input value={form.longitude} onChange={e => setForm(f => ({ ...f, longitude: e.target.value }))} dir="ltr" placeholder="46.6753" />
+                    </FieldGroup>
+                    <FieldGroup label={isAr ? "رابط خرائط جوجل" : "Google Maps URL"}>
+                      <Input value={form.google_maps_url} onChange={e => setForm(f => ({ ...f, google_maps_url: e.target.value }))} dir="ltr" placeholder="https://maps.google.com/..." />
+                    </FieldGroup>
+                  </div>
+                  {form.latitude && form.longitude && (
+                    <a href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2">
+                      <ExternalLink className="h-3 w-3" />{isAr ? "فتح في خرائط جوجل" : "Open in Google Maps"}
+                    </a>
+                  )}
+                </div>
+              </TabsContent>
+
+              {/* ═══ Team Tab ═══ */}
+              <TabsContent value="team" className="space-y-6 mt-0">
+                <SectionHeader
+                  icon={Users}
+                  title={isAr ? "جهات الاتصال الرئيسية" : "Key Contacts"}
+                  desc={isAr ? "أعضاء الفريق وجهات الاتصال" : "Team members & contact persons"}
+                  actions={<Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={addContact}><Plus className="h-3 w-3" />{isAr ? "إضافة" : "Add"}</Button>}
+                />
+                {form.key_contacts.length === 0 ? (
+                  <Card className="rounded-2xl border-dashed">
+                    <CardContent className="p-8 text-center">
+                      <Users className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                      <p className="text-xs text-muted-foreground mb-3">{isAr ? "لا توجد جهات اتصال بعد" : "No contacts added yet"}</p>
+                      <Button type="button" variant="outline" size="sm" className="gap-1 text-xs rounded-lg" onClick={addContact}>
+                        <Plus className="h-3 w-3" />{isAr ? "إضافة جهة اتصال" : "Add Contact"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <div className="space-y-3">
+                    {form.key_contacts.map((c, i) => (
+                      <Card key={i} className="rounded-2xl hover:shadow-sm transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                              <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                                <Users className="h-3.5 w-3.5 text-primary" />
+                              </div>
+                              <span className="text-xs font-medium">{c.name || c.name_ar || `${isAr ? "جهة اتصال" : "Contact"} ${i + 1}`}</span>
+                              {c.role && <Badge variant="outline" className="text-[9px] h-4">{c.role}</Badge>}
+                            </div>
+                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive rounded-lg" onClick={() => removeContact(i)}>
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </Button>
+                          </div>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                            <FieldGroup label={isAr ? "الاسم بالعربية" : "Name (AR)"}>
+                              <Input value={c.name_ar} onChange={e => updateContact(i, "name_ar", e.target.value)} dir="rtl" className="h-9" />
+                            </FieldGroup>
+                            <FieldGroup label={isAr ? "الاسم (EN)" : "Name (EN)"}>
+                              <Input value={c.name} onChange={e => updateContact(i, "name", e.target.value)} className="h-9" />
+                            </FieldGroup>
+                            <FieldGroup label={isAr ? "المنصب بالعربية" : "Role (AR)"}>
+                              <Input value={c.role_ar} onChange={e => updateContact(i, "role_ar", e.target.value)} dir="rtl" className="h-9" />
+                            </FieldGroup>
+                            <FieldGroup label={isAr ? "المنصب (EN)" : "Role (EN)"}>
+                              <Input value={c.role} onChange={e => updateContact(i, "role", e.target.value)} className="h-9" placeholder="Director" />
+                            </FieldGroup>
+                            <FieldGroup label={isAr ? "البريد" : "Email"}>
+                              <Input value={c.email} onChange={e => updateContact(i, "email", e.target.value)} type="email" className="h-9" dir="ltr" />
+                            </FieldGroup>
+                            <FieldGroup label={isAr ? "الهاتف" : "Phone"}>
+                              <Input value={c.phone} onChange={e => updateContact(i, "phone", e.target.value)} dir="ltr" className="h-9" />
+                            </FieldGroup>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* ═══ Details Tab ═══ */}
+              <TabsContent value="details" className="space-y-6 mt-0">
+                <SectionHeader icon={Briefcase} title={isAr ? "التفاصيل والخدمات" : "Details & Services"} desc={isAr ? "الخدمات والقطاعات وسنة التأسيس" : "Services, sectors & founding year"} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FieldGroup label={isAr ? "سنة التأسيس" : "Founded Year"} error={formErrors.founded_year}>
+                    <Input value={form.founded_year} onChange={e => { setForm(f => ({ ...f, founded_year: e.target.value })); setFormErrors(e2 => ({ ...e2, founded_year: "" })); }} type="number" placeholder="2010" dir="ltr" />
+                  </FieldGroup>
+                  <FieldGroup label={isAr ? "الخدمات" : "Services"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
+                    <Input value={form.services} onChange={e => setForm(f => ({ ...f, services: e.target.value }))} placeholder={isAr ? "معارض، تدريب..." : "Exhibitions, Training..."} />
+                  </FieldGroup>
+                  <FieldGroup label={isAr ? "القطاعات المستهدفة" : "Targeted Sectors"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
+                    <Input value={form.targeted_sectors} onChange={e => setForm(f => ({ ...f, targeted_sectors: e.target.value }))} placeholder={isAr ? "أغذية ومشروبات..." : "Food & Beverage..."} />
+                  </FieldGroup>
+                </div>
+                {(form.services || form.targeted_sectors) && (
+                  <Card className="rounded-2xl bg-muted/30">
+                    <CardContent className="p-4">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">{isAr ? "العلامات" : "Tags"}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {form.services.split(",").filter(Boolean).map((s, i) => (
+                          <Badge key={`s-${i}`} variant="secondary" className="text-[10px]">{s.trim()}</Badge>
+                        ))}
+                        {form.targeted_sectors.split(",").filter(Boolean).map((s, i) => (
+                          <Badge key={`t-${i}`} variant="outline" className="text-[10px]">{s.trim()}</Badge>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+                {form.founded_year && (
+                  <p className="text-[10px] text-muted-foreground">
+                    {isAr ? `تأسست منذ ${new Date().getFullYear() - parseInt(form.founded_year)} سنة` : `Established ${new Date().getFullYear() - parseInt(form.founded_year)} years ago`}
+                  </p>
+                )}
+              </TabsContent>
+
+              {/* ═══ Social Tab ═══ */}
+              <TabsContent value="social" className="space-y-6 mt-0">
+                <SectionHeader icon={Globe} title={isAr ? "حسابات التواصل الاجتماعي" : "Social Media Profiles"} desc={isAr ? "جميع حسابات التواصل الاجتماعي" : "All social media links"} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {[
+                    { key: "social_twitter", label: "Twitter / X", icon: Twitter, ph: "https://twitter.com/..." },
+                    { key: "social_facebook", label: "Facebook", icon: Facebook, ph: "https://facebook.com/..." },
+                    { key: "social_linkedin", label: "LinkedIn", icon: Linkedin, ph: "https://linkedin.com/..." },
+                    { key: "social_instagram", label: "Instagram", icon: Instagram, ph: "https://instagram.com/..." },
+                    { key: "social_youtube", label: "YouTube", icon: Youtube, ph: "https://youtube.com/..." },
+                    { key: "social_tiktok", label: "TikTok", icon: Globe, ph: "https://tiktok.com/@..." },
+                    { key: "social_whatsapp", label: "WhatsApp", icon: MessageCircle, ph: "+966..." },
+                    { key: "social_snapchat", label: "Snapchat", icon: Globe, ph: "username" },
+                  ].map(s => {
+                    const val = form[s.key as keyof OrganizerForm] as string;
+                    return (
+                      <Card key={s.key} className={cn("rounded-xl transition-all", val ? "border-primary/20 bg-primary/[0.02]" : "")}>
+                        <CardContent className="p-3 flex items-center gap-3">
+                          <div className={cn("h-8 w-8 rounded-lg flex items-center justify-center shrink-0", val ? "bg-primary/10" : "bg-muted")}>
+                            <s.icon className={cn("h-4 w-4", val ? "text-primary" : "text-muted-foreground")} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <Label className="text-[10px] font-medium text-muted-foreground">{s.label}</Label>
+                            <Input
+                              value={val}
+                              onChange={e => setForm(f => ({ ...f, [s.key]: e.target.value }))}
+                              placeholder={s.ph} dir="ltr" className="h-8 text-xs mt-1"
+                            />
+                          </div>
+                          {val && <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <Progress value={(socialProfiles / 8) * 100} className="h-1.5 w-20" />
+                  {socialProfiles}/8 {isAr ? "حسابات مرتبطة" : "profiles linked"}
+                </div>
+              </TabsContent>
+
+              {/* ═══ Settings Tab ═══ */}
+              <TabsContent value="settings" className="space-y-6 mt-0">
+                <SectionHeader icon={Shield} title={isAr ? "الإعدادات والحالة" : "Settings & Status"} desc={isAr ? "الحالة والتوثيق والتمييز" : "Status, verification & featuring"} />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="rounded-2xl hover:shadow-sm transition-shadow">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-xl bg-muted flex items-center justify-center">
+                          <Building2 className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium">{isAr ? "الحالة" : "Status"}</p>
+                          <p className="text-[10px] text-muted-foreground">{isAr ? "حالة حساب المنظم" : "Account status"}</p>
+                        </div>
+                      </div>
+                      <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
+                        <SelectTrigger className="w-28 h-8 text-xs rounded-lg"><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+                          <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
+                          <SelectItem value="pending">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </CardContent>
+                  </Card>
+                  <Card className="rounded-2xl hover:shadow-sm transition-shadow">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                          <Shield className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium">{isAr ? "التوثيق" : "Verified"}</p>
+                          <p className="text-[10px] text-muted-foreground">{isAr ? "إظهار شارة التوثيق" : "Show verified badge"}</p>
+                        </div>
+                      </div>
+                      <Switch checked={form.is_verified} onCheckedChange={v => setForm(f => ({ ...f, is_verified: v }))} />
+                    </CardContent>
+                  </Card>
+                  <Card className="rounded-2xl hover:shadow-sm transition-shadow">
+                    <CardContent className="p-4 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="h-9 w-9 rounded-xl bg-amber-500/10 flex items-center justify-center">
+                          <Star className="h-4 w-4 text-amber-500" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium">{isAr ? "مميز" : "Featured"}</p>
+                          <p className="text-[10px] text-muted-foreground">{isAr ? "إبراز في الصفحة الرئيسية" : "Highlight on homepage"}</p>
+                        </div>
+                      </div>
+                      <Switch checked={form.is_featured} onCheckedChange={v => setForm(f => ({ ...f, is_featured: v }))} />
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              {/* ═══ Exhibitions Tab ═══ */}
+              <TabsContent value="exhibitions" className="space-y-6 mt-0">
+                <SectionHeader
+                  icon={Calendar}
+                  title={isAr ? "المعارض والفعاليات المرتبطة" : "Linked Exhibitions & Events"}
+                  desc={isAr ? "الفعاليات المرتبطة بهذا المنظم" : "Events linked to this organizer"}
+                  actions={organizerId ? (
+                    <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => refreshStatsMutation.mutate()} disabled={refreshStatsMutation.isPending}>
+                      {refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                      {isAr ? "تحديث" : "Refresh"}
+                    </Button>
+                  ) : undefined}
+                />
+                {!organizerId ? (
+                  <Card className="rounded-2xl border-dashed">
+                    <CardContent className="p-8 text-center">
+                      <Info className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                      <p className="text-xs text-muted-foreground">{isAr ? "احفظ المنظم أولاً لربط المعارض" : "Save organizer first to link exhibitions"}</p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <>
+                    {orgData && (
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                        {[
+                          { label: isAr ? "المعارض" : "Events", value: orgData.total_exhibitions || 0, icon: Calendar },
+                          { label: isAr ? "المشاهدات" : "Views", value: (orgData.total_views || 0).toLocaleString(), icon: Eye },
+                          { label: isAr ? "التقييم" : "Rating", value: orgData.average_rating || "—", icon: Star },
+                          { label: isAr ? "المتابعون" : "Followers", value: orgData.follower_count || 0, icon: Activity },
+                        ].map(s => (
+                          <Card key={s.label} className="rounded-2xl group hover:shadow-md transition-all">
+                            <CardContent className="p-3 flex items-center gap-3">
+                              <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                <s.icon className="h-4 w-4 text-primary" />
+                              </div>
+                              <div>
+                                <p className="text-sm font-bold">{s.value}</p>
+                                <p className="text-[9px] text-muted-foreground">{s.label}</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    )}
+
+                    {linkedExhibitions && linkedExhibitions.length > 0 ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {linkedExhibitions.map(ex => (
+                          <Link key={ex.id} to={`/admin/exhibitions?edit=${ex.id}`} className="block">
+                            <Card className="rounded-2xl hover:shadow-md transition-all group cursor-pointer">
+                              <CardContent className="p-3 flex items-center gap-3">
+                                {ex.cover_image_url ? (
+                                  <img src={ex.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
+                                ) : (
+                                  <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                                  </div>
+                                )}
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-sm font-semibold truncate">{isAr ? (ex.title_ar || ex.title) : ex.title}</p>
+                                  <div className="flex items-center gap-1.5 mt-0.5">
+                                    <Badge variant="outline" className="text-[9px] h-4 capitalize">{ex.type}</Badge>
+                                    <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-[9px] h-4 capitalize">{ex.status}</Badge>
+                                    {ex.edition_year && <span className="text-[9px] text-muted-foreground">{ex.edition_year}</span>}
+                                  </div>
+                                </div>
+                                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <Card className="rounded-2xl border-dashed">
+                        <CardContent className="p-8 text-center">
+                          <BarChart3 className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                          <p className="text-xs text-muted-foreground">{isAr ? "لا توجد معارض مرتبطة" : "No linked exhibitions"}</p>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </>
+                )}
+              </TabsContent>
+
+              {/* ═══ Analytics Tab ═══ */}
+              <TabsContent value="analytics" className="space-y-6 mt-0">
+                <SectionHeader
+                  icon={TrendingUp}
+                  title={isAr ? "التحليلات والأداء" : "Analytics & Performance"}
+                  desc={isAr ? "إحصائيات تفصيلية حول أداء المنظم" : "Detailed performance metrics and insights"}
+                  actions={organizerId ? (
+                    <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => refreshStatsMutation.mutate()} disabled={refreshStatsMutation.isPending}>
+                      {refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                      {isAr ? "تحديث" : "Refresh"}
+                    </Button>
+                  ) : undefined}
+                />
+                {!organizerId ? (
+                  <Card className="rounded-2xl border-dashed">
+                    <CardContent className="p-8 text-center">
+                      <TrendingUp className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                      <p className="text-xs text-muted-foreground">{isAr ? "احفظ المنظم أولاً لعرض التحليلات" : "Save organizer first to view analytics"}</p>
+                    </CardContent>
+                  </Card>
+                ) : orgData && (
+                  <>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                      {[
+                        { label: isAr ? "المعارض" : "Total Events", value: orgData.total_exhibitions || 0, icon: Calendar, color: "text-primary", bg: "bg-primary/10" },
+                        { label: isAr ? "المشاهدات" : "Total Views", value: (orgData.total_views || 0).toLocaleString(), icon: Eye, color: "text-chart-2", bg: "bg-chart-2/10" },
+                        { label: isAr ? "المتابعون" : "Followers", value: orgData.follower_count || 0, icon: Users, color: "text-purple-600", bg: "bg-purple-600/10" },
+                        { label: isAr ? "التقييم" : "Avg Rating", value: orgData.average_rating || "—", icon: Star, color: "text-amber-600", bg: "bg-amber-600/10" },
+                      ].map(s => (
+                        <Card key={s.label} className="rounded-2xl group hover:shadow-md transition-all">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center shrink-0", s.bg)}>
+                                <s.icon className={cn("h-4 w-4", s.color)} />
+                              </div>
+                              <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                            </div>
+                            <p className="text-2xl font-bold">{s.value}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+
+                    <Card className="rounded-2xl">
+                      <CardContent className="p-4 space-y-4">
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          <Activity className="h-4 w-4 text-primary" />
+                          {isAr ? "مؤشرات المشاركة" : "Engagement Metrics"}
+                        </h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {[
+                            { label: isAr ? "متوسط المشاهدات / معرض" : "Avg Views/Event", value: orgData.total_exhibitions > 0 ? Math.round((orgData.total_views || 0) / orgData.total_exhibitions).toLocaleString() : "—" },
+                            { label: isAr ? "نسبة المتابعة" : "Follow Rate", value: orgData.total_views > 0 ? `${((orgData.follower_count || 0) / orgData.total_views * 100).toFixed(1)}%` : "—" },
+                            { label: isAr ? "سنوات الخبرة" : "Years Active", value: form.founded_year ? `${new Date().getFullYear() - parseInt(form.founded_year)}` : "—" },
+                            { label: isAr ? "حسابات التواصل" : "Social Profiles", value: socialProfiles },
+                          ].map(m => (
+                            <div key={m.label} className="rounded-xl bg-muted/40 p-3">
+                              <p className="text-[10px] text-muted-foreground mb-1">{m.label}</p>
+                              <p className="text-lg font-bold">{m.value}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="rounded-2xl">
+                      <CardContent className="p-4 space-y-4">
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          <Zap className="h-4 w-4 text-primary" />
+                          {isAr ? "صحة الملف الشخصي" : "Profile Health"}
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {[
+                            { label: isAr ? "الاسم ثنائي اللغة" : "Bilingual Name", ok: !!(form.name && form.name_ar) },
+                            { label: isAr ? "الوصف ثنائي اللغة" : "Bilingual Description", ok: !!(form.description && form.description_ar) },
+                            { label: isAr ? "الشعار" : "Logo Uploaded", ok: !!form.logo_url },
+                            { label: isAr ? "صورة الغلاف" : "Cover Image", ok: !!form.cover_image_url },
+                            { label: isAr ? "معلومات التواصل" : "Contact Info", ok: !!(form.email && form.phone) },
+                            { label: isAr ? "الموقع" : "Location Set", ok: !!(form.city && form.country) },
+                            { label: isAr ? "الموقع الإلكتروني" : "Website", ok: !!form.website },
+                            { label: isAr ? "حسابات اجتماعية (3+)" : "Social Media (3+)", ok: socialProfiles >= 3 },
+                            { label: isAr ? "معرض الصور" : "Photo Gallery", ok: form.gallery_urls.length > 0 },
+                            { label: isAr ? "فريق العمل" : "Team Contacts", ok: form.key_contacts.length > 0 },
+                          ].map(item => (
+                            <div key={item.label} className={cn("flex items-center gap-2.5 p-2 rounded-lg", item.ok ? "bg-chart-2/5" : "bg-muted/30")}>
+                              <div className={cn("h-5 w-5 rounded-full flex items-center justify-center shrink-0", item.ok ? "bg-chart-2/20" : "bg-muted")}>
+                                {item.ok ? <CheckCircle2 className="h-3 w-3 text-chart-2" /> : <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />}
+                              </div>
+                              <span className={cn("text-xs", item.ok ? "text-foreground" : "text-muted-foreground")}>{item.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="rounded-2xl">
+                      <CardContent className="p-4 space-y-3">
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          <History className="h-4 w-4 text-primary" />
+                          {isAr ? "السجل الزمني" : "Timeline"}
+                        </h4>
+                        <div className="space-y-2">
+                          {[
+                            { label: isAr ? "تاريخ الإنشاء" : "Created", value: orgData.created_at ? new Date(orgData.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" }) : "—" },
+                            { label: isAr ? "آخر تحديث" : "Last Updated", value: orgData.updated_at ? new Date(orgData.updated_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" }) : "—" },
+                            { label: isAr ? "سنة التأسيس" : "Founded", value: form.founded_year || "—" },
+                          ].map(t => (
+                            <div key={t.label} className="flex items-center justify-between py-2 border-b border-border/30 last:border-0">
+                              <span className="text-xs text-muted-foreground">{t.label}</span>
+                              <span className="text-xs font-medium">{t.value}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </>
+                )}
+              </TabsContent>
+
+              {/* ═══ Notes Tab ═══ */}
+              <TabsContent value="notes" className="space-y-6 mt-0">
+                <SectionHeader icon={StickyNote} title={isAr ? "ملاحظات إدارية" : "Admin Notes"} desc={isAr ? "ملاحظات داخلية وبيانات وصفية" : "Internal notes & record metadata"} />
+                <FieldGroup label={isAr ? "ملاحظات خاصة" : "Private Notes"} hint={isAr ? "مرئية فقط لفريق الإدارة" : "Only visible to admin team"}>
+                  <Textarea value={form.admin_notes} onChange={e => setForm(f => ({ ...f, admin_notes: e.target.value }))} rows={5} placeholder={isAr ? "ملاحظات داخلية للفريق..." : "Internal team notes..."} />
+                </FieldGroup>
+                {organizerId && orgData && (
+                  <Card className="rounded-2xl">
+                    <CardContent className="p-4">
+                      <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معلومات السجل" : "Record Info"}</p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {[
+                          { label: "ID", value: organizerId.slice(0, 8) + "...", copyable: organizerId },
+                          { label: isAr ? "رقم المنظم" : "Number", value: orgData.organizer_number || "—" },
+                          { label: isAr ? "تاريخ الإنشاء" : "Created", value: orgData.created_at ? new Date(orgData.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US") : "—" },
+                          { label: isAr ? "آخر حفظ" : "Last Saved", value: lastSaved ? lastSaved.toLocaleTimeString(isAr ? "ar-SA" : "en-US") : "—" },
+                        ].map(m => (
+                          <div key={m.label} className="rounded-xl bg-muted/40 p-3 group">
+                            <p className="text-[10px] text-muted-foreground">{m.label}</p>
+                            <div className="flex items-center gap-1 mt-0.5">
+                              <p className="text-xs font-medium font-mono truncate">{m.value}</p>
+                              {"copyable" in m && m.copyable && (
+                                <button type="button" onClick={() => { navigator.clipboard.writeText(m.copyable as string); toast.info("Copied!"); }}
+                                  className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <Copy className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              {/* ── Tab Navigation Footer ── */}
+              <div className="flex items-center justify-between pt-6 mt-6 border-t border-border/40">
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={goPrevTab} disabled={currentTabIdx === 0}>
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  <span className="text-xs">{currentTabIdx > 0 ? (isAr ? TABS[currentTabIdx - 1].ar : TABS[currentTabIdx - 1].en) : (isAr ? "السابق" : "Previous")}</span>
+                </Button>
+                <span className="text-[10px] text-muted-foreground">{currentTabIdx + 1} / {TABS.length}</span>
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={goNextTab} disabled={currentTabIdx === TABS.length - 1}>
+                  <span className="text-xs">{currentTabIdx < TABS.length - 1 ? (isAr ? TABS[currentTabIdx + 1].ar : TABS[currentTabIdx + 1].en) : (isAr ? "التالي" : "Next")}</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Button>
               </div>
-            )}
-          </TabsContent>
+            </div>
+          </Tabs>
         </div>
-      </Tabs>
+      </div>
 
       {/* Discard confirmation */}
       <ConfirmDialog
         open={showDiscardConfirm}
         onOpenChange={setShowDiscardConfirm}
-        title={isAr ? "تراجع عن التغييرات؟" : "Discard changes?"}
-        description={isAr ? "سيتم فقدان جميع التغييرات غير المحفوظة" : "All unsaved changes will be lost"}
-        confirmLabel={isAr ? "تراجع" : "Discard"}
+        title={isAr ? "تجاهل التغييرات؟" : "Discard changes?"}
+        description={isAr ? "لديك تغييرات غير محفوظة. هل تريد تجاهلها؟" : "You have unsaved changes. Discard them?"}
+        confirmLabel={isAr ? "تجاهل" : "Discard"}
+        cancelLabel={isAr ? "البقاء" : "Stay"}
+        onConfirm={handleDiscard}
         variant="destructive"
-        onConfirm={() => { handleDiscard(); onClose(); }}
       />
     </div>
   );
