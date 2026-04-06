@@ -208,7 +208,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
     setAudienceInput((existingEdition.target_audience || []).join(", "));
     if (existingEdition.organizer_entity_id || existingEdition.organizer_company_id || existingEdition.organizer_user_id) {
       setOrganizer({
-        type: existingEdition.organizer_type || "custom",
+        type: (existingEdition.organizer_type as "entity" | "company" | "chef" | "custom") || "custom",
         entityId: existingEdition.organizer_entity_id || null,
         companyId: existingEdition.organizer_company_id || null,
         userId: existingEdition.organizer_user_id || null,
