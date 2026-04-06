@@ -23,7 +23,7 @@ import {
   Shield, Activity, CreditCard, Landmark, Package,
   GraduationCap, LayoutDashboard, Zap, MessageSquare,
   AlertTriangle, Send, Plus, Settings,
-  Heart, ChefHat,
+  Heart, ChefHat, Building2,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -76,6 +76,7 @@ export default function AdminDashboard() {
         { count: totalMasterclasses },
         { count: proUsers },
         { count: fanUsers },
+        { count: totalOrganizers },
         { data: recentActions },
         { data: recentUsers },
       ] = await Promise.all([
@@ -91,6 +92,7 @@ export default function AdminDashboard() {
         supabase.from("masterclasses").select("*", { count: "exact", head: true }),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "professional"),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "fan"),
+        supabase.from("organizers").select("*", { count: "exact", head: true }),
         supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(5),
         supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
       ]);
@@ -108,6 +110,7 @@ export default function AdminDashboard() {
         totalMasterclasses: totalMasterclasses || 0,
         proUsers: proUsers || 0,
         fanUsers: fanUsers || 0,
+        totalOrganizers: totalOrganizers || 0,
         recentActions: recentActions || [],
         recentUsers: recentUsers || [],
       };
@@ -180,18 +183,19 @@ export default function AdminDashboard() {
     { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, bg: "bg-destructive/10", color: "text-destructive", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
     { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, bg: "bg-chart-2/10", color: "text-chart-2", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
     { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, bg: "bg-chart-3/10", color: "text-chart-3", chartColor: "hsl(var(--chart-3))", link: "/admin/exhibitions" },
-    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, bg: "bg-chart-4/10", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/masterclasses" },
+    { title: isAr ? "المنظمون" : "Organizers", value: stats?.totalOrganizers || 0, icon: Building2, bg: "bg-chart-4/10", color: "text-chart-4", chartColor: "hsl(var(--chart-4))", link: "/admin/organizers" },
+    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, bg: "bg-accent/10", color: "text-accent", chartColor: "hsl(var(--accent))", link: "/admin/masterclasses" },
     { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, bg: "bg-chart-1/10", color: "text-chart-1", chartColor: "hsl(var(--chart-1))", link: "/admin/articles" },
-    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, bg: "bg-accent/10", color: "text-accent", chartColor: "hsl(var(--accent))", link: "/admin/orders" },
+    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, bg: "bg-chart-5/10", color: "text-chart-5", chartColor: "hsl(var(--chart-5))", link: "/admin/orders" },
   ], [stats, isAr]);
 
   const quickActions = useMemo(() => [
     { title: isAr ? "إدارة المستخدمين" : "Users", icon: Users, link: "/admin/users" },
+    { title: isAr ? "المنظمون" : "Organizers", icon: Building2, link: "/admin/organizers" },
     { title: isAr ? "إدارة الأدوار" : "Roles", icon: Shield, link: "/admin/roles" },
     { title: isAr ? "العضويات" : "Memberships", icon: CreditCard, link: "/admin/memberships" },
     { title: isAr ? "مراجعة المحتوى" : "Moderation", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
     { title: isAr ? "مسابقة جديدة" : "New Competition", icon: Plus, link: "/admin/competitions" },
-    { title: isAr ? "نشر مقال" : "Publish Article", icon: Send, link: "/admin/articles" },
     { title: isAr ? "إرسال إشعار" : "Notifications", icon: MessageSquare, link: "/admin/notifications" },
     { title: isAr ? "الإعدادات" : "Settings", icon: Settings, link: "/admin/settings" },
   ], [isAr, stats?.pendingReports]);

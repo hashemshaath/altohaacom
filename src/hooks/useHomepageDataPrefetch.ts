@@ -128,6 +128,7 @@ export function useHomepageDataPrefetch() {
             supabase.from("competitions").select("id", { count: "exact", head: true }),
             supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
             supabase.from("exhibitions").select("id", { count: "exact", head: true }),
+            supabase.from("organizers").select("id", { count: "exact", head: true }),
           ]),
         ]);
 
@@ -223,6 +224,7 @@ export function useHomepageDataPrefetch() {
           competitions: getCount(stats[1]),
           entities: getCount(stats[2]),
           exhibitions: getCount(stats[3]),
+          organizers: getCount(stats[4]),
         });
 
       } catch (err) {

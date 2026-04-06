@@ -12,7 +12,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
-import { Shield, Globe, Award } from "lucide-react";
+import { Shield, Globe, Award, Building2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -68,12 +68,13 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
   const members = (stats as any)?.members ?? 0;
   const exhibitions = (stats as any)?.exhibitions ?? 0;
   const competitions = (stats as any)?.competitions ?? 0;
-  const totalEvents = exhibitions + competitions;
+  const organizers = (stats as any)?.organizers ?? 0;
 
   const badges = [
     { icon: Shield, label: isAr ? "أعضاء" : "Members", sub: members > 0 ? `${members}+` : "—" },
     { icon: Globe, label: isAr ? "معارض" : "Exhibitions", sub: exhibitions > 0 ? `${exhibitions}+` : "—" },
-    { icon: Award, label: isAr ? "فعاليات" : "Events", sub: totalEvents > 0 ? `${totalEvents}+` : "—" },
+    { icon: Award, label: isAr ? "مسابقات" : "Competitions", sub: competitions > 0 ? `${competitions}+` : "—" },
+    { icon: Building2, label: isAr ? "منظمون" : "Organizers", sub: organizers > 0 ? `${organizers}+` : "—" },
   ];
 
   return (
