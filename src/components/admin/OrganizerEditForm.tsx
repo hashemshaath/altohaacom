@@ -566,10 +566,10 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     switch (id) {
       case "identity": return (form.name || form.name_ar) && (form.description || form.description_ar) ? "complete" : (form.name || form.name_ar) ? "partial" : "empty";
       case "images": return form.logo_url && form.cover_image_url ? "complete" : form.logo_url || form.cover_image_url || form.gallery_urls.length > 0 ? "partial" : "empty";
-      case "contact": return form.email && form.phone ? "complete" : form.email || form.phone || form.website ? "partial" : "empty";
+      case "contact": return form.email && form.phone ? "complete" : form.email || form.phone || form.website || form.fax ? "partial" : "empty";
       case "location": return (form.city || form.city_ar) && (form.country || form.country_ar) ? "complete" : (form.city || form.country || form.address || form.district) ? "partial" : "empty";
       case "team": return form.key_contacts.length > 0 && form.key_contacts[0]?.name ? "complete" : form.key_contacts.length > 0 ? "partial" : "empty";
-      case "details": return form.services && form.founded_year ? "complete" : form.services || form.founded_year ? "partial" : "empty";
+      case "details": return form.services && form.founded_year && form.registration_number ? "complete" : form.services || form.founded_year || form.registration_number ? "partial" : "empty";
       case "social": {
         const has = [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram, form.social_youtube, form.social_tiktok].filter(Boolean).length;
         return has >= 3 ? "complete" : has > 0 ? "partial" : "empty";
