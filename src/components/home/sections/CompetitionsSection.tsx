@@ -97,7 +97,7 @@ const CompetitionsSection = memo(function CompetitionsSection() {
               to={event.link}
               className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
             >
-              <Card className="overflow-hidden border-border/30 h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 rounded-2xl active:scale-[0.98]">
+              <Card className="overflow-hidden border-border/20 h-full transition-all duration-300 hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 rounded-2xl active:scale-[0.98] bg-card">
                 <div className="relative aspect-[16/10] overflow-hidden">
                   {event.cover_image_url ? (
                     <img src={event.cover_image_url} alt={event.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
