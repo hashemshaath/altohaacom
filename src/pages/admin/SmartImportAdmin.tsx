@@ -678,6 +678,19 @@ export default function SmartImportAdmin() {
         const { data: inserted, error } = await (supabase as any).from("competitions").insert(payload).select("id").single();
         if (error) throw error;
         recordId = inserted?.id;
+      } else if (targetTable === "organizers") {
+        subType = "organizer";
+        const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+        const payload = {
+          ...buildOrganizerPayload(details),
+          name: details.name_en || name,
+          slug,
+          status: "active",
+          created_by: user?.id || null,
+        };
+        const { data: inserted, error } = await supabase.from("organizers").insert(payload).select("id").single();
+        if (error) throw error;
+        recordId = inserted?.id;
       } else {
         subType = selectedEstablishmentType;
         const payload = { ...buildEstablishmentPayload(details), name: details.name_en || name, type: selectedEstablishmentType, is_active: true, is_verified: false, created_by: user?.id || null };
