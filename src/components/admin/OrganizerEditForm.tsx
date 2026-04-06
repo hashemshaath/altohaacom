@@ -80,7 +80,7 @@ const emptyForm: OrganizerForm = {
 
 /* ─── Tab Definitions ─── */
 const TABS = [
-  { id: "identity", icon: Building2, en: "Identity", ar: "الهوية" },
+  { id: "identity", icon: Building2, en: "Information", ar: "المعلومات" },
   { id: "images", icon: ImageIcon, en: "Media", ar: "الوسائط" },
   { id: "contact", icon: Mail, en: "Contact", ar: "التواصل" },
   { id: "location", icon: MapPin, en: "Location", ar: "الموقع" },
@@ -133,19 +133,19 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
   const [tAr, setTAr] = useState(false);
   const [tEn, setTEn] = useState(false);
 
-  const translateToAr = async () => {
-    if (!valueEn?.trim()) return;
-    setTAr(true);
-    const result = await translateField(valueEn, "en", "ar", context);
-    if (result) { onChangeAr(result); toast.success("تمت الترجمة للعربية"); }
-    setTAr(false);
-  };
   const translateToEn = async () => {
     if (!valueAr?.trim()) return;
     setTEn(true);
     const result = await translateField(valueAr, "ar", "en", context);
     if (result) { onChangeEn(result); toast.success("Translated to English"); }
     setTEn(false);
+  };
+  const translateToAr = async () => {
+    if (!valueEn?.trim()) return;
+    setTAr(true);
+    const result = await translateField(valueEn, "en", "ar", context);
+    if (result) { onChangeAr(result); toast.success("تمت الترجمة للعربية"); }
+    setTAr(false);
   };
 
   const InputComp = multiline ? Textarea : Input;
@@ -156,9 +156,9 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelAr}</Label>
-          {valueEn?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
-              {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} EN → AR
+          {valueAr?.trim() && (
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
+              {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} AR → EN
             </Button>
           )}
         </div>
@@ -167,9 +167,9 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelEn}</Label>
-          {valueAr?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
-              {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} AR → EN
+          {valueEn?.trim() && (
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
+              {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} EN → AR
             </Button>
           )}
         </div>
