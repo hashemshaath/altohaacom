@@ -290,6 +290,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         setSelectedVenue(null);
       }
       setLastSaved(existingEdition.updated_at ? new Date(existingEdition.updated_at) : null);
+      setLogoUrl(existingEdition.logo_url || "");
+      setAdminNotes((existingEdition as any).admin_notes || "");
     } else {
       setActiveEditingId(null);
       setEditionResolved(false);
