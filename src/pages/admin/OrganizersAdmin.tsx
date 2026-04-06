@@ -11,27 +11,18 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { usePagination } from "@/hooks/usePagination";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
-import { useEntityDedup } from "@/hooks/useEntityDedup";
-import { useAutoTranslate } from "@/hooks/useAutoTranslate";
-import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { OrganizerExhibitionsPanel } from "@/components/admin/OrganizerExhibitionsPanel";
 import OrganizerDetailDrawer from "@/components/admin/OrganizerDetailDrawer";
+import OrganizerEditForm from "@/components/admin/OrganizerEditForm";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
-} from "@/components/ui/dialog";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
@@ -42,10 +33,9 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
 import {
-  Building2, Plus, Search, MoreHorizontal, Eye, Pencil, Trash2,
+  Building2, Plus, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
-  Shield, ScanSearch, Languages, FileSpreadsheet, Upload, X, ImageIcon, Loader2,
-  Twitter, Facebook, Linkedin, Instagram, AlertCircle, Link2, ArrowUpDown, ArrowUp, ArrowDown,
+  Shield, ScanSearch, FileSpreadsheet, Link2, ArrowUpDown, ArrowUp, ArrowDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
