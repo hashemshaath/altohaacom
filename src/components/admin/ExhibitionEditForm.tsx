@@ -676,19 +676,26 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 }}
                 label={t("Search & Select Organizer", "البحث واختيار الجهة المنظمة")}
               />
-              {organizer && (
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <FieldGroup label={t("Email", "البريد الإلكتروني")}>
-                    <Input className="h-9" type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
-                  </FieldGroup>
-                  <FieldGroup label={t("Phone", "رقم الهاتف")}>
-                    <Input className="h-9" value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
-                  </FieldGroup>
-                  <FieldGroup label={t("Website", "الموقع الإلكتروني")}>
-                    <Input className="h-9" value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
-                  </FieldGroup>
-                </div>
-              )}
+              {/* Always show organizer name fields for manual entry or display */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FieldGroup label={t("Organizer Name (EN)", "اسم المنظم (إنجليزي)")}>
+                  <Input className="h-9" value={form.organizer_name || ""} onChange={e => updateField("organizer_name", e.target.value)} placeholder={t("Organizer name", "اسم الجهة المنظمة")} />
+                </FieldGroup>
+                <FieldGroup label={t("Organizer Name (AR)", "اسم المنظم (عربي)")}>
+                  <Input className="h-9" value={form.organizer_name_ar || ""} onChange={e => updateField("organizer_name_ar", e.target.value)} dir="rtl" />
+                </FieldGroup>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <FieldGroup label={t("Email", "البريد الإلكتروني")}>
+                  <Input className="h-9" type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
+                </FieldGroup>
+                <FieldGroup label={t("Phone", "رقم الهاتف")}>
+                  <Input className="h-9" value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
+                </FieldGroup>
+                <FieldGroup label={t("Website", "الموقع الإلكتروني")}>
+                  <Input className="h-9" value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
+                </FieldGroup>
+              </div>
             </section>
 
             {/* ═══ Section: Tickets ═══ */}
