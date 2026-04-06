@@ -19,6 +19,8 @@ const STATUS_STYLES: Record<string, { en: string; ar: string; class: string }> =
   registration_open: { en: "Open", ar: "مفتوح", class: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
   upcoming: { en: "Upcoming", ar: "قادم", class: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
   in_progress: { en: "Live", ar: "مباشر", class: "bg-destructive/10 text-destructive border-destructive/20" },
+  active: { en: "Active", ar: "نشط", class: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
+  completed: { en: "Completed", ar: "منتهي", class: "bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20" },
 };
 
 const CompetitionsSection = memo(function CompetitionsSection() {

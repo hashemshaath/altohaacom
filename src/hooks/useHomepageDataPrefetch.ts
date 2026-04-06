@@ -46,9 +46,9 @@ export function useHomepageDataPrefetch() {
           supabase
             .from("exhibitions")
             .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug, venue, venue_ar")
-            .in("status", ["upcoming", "active"])
+            .in("status", ["upcoming", "active", "completed"])
             .order("start_date", { ascending: true })
-            .limit(12),
+            .limit(20),
 
           // 3. articles — used by ArticlesSection
           supabase
