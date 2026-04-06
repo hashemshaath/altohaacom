@@ -1116,6 +1116,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                           <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                         </CardContent>
                       </Card>
+                      </Link>
                     ))}
                   </div>
                 ) : (
