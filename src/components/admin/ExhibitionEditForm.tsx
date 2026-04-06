@@ -581,31 +581,17 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                         {t("Checking edition...", "جارِ التحقق من النسخة...")}
                       </div>
                     ) : existingEdition ? (
-                      <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
-                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                      <div className="flex items-center gap-2 rounded-lg border border-chart-2/30 bg-chart-2/5 p-3">
+                        <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium">
-                            {t("Edition found", "تم العثور على النسخة")}: {isAr && existingEdition.title_ar ? existingEdition.title_ar : existingEdition.title}
+                          <p className="text-xs font-medium text-chart-2">
+                            {t("Edition loaded", "تم تحميل النسخة")}: {isAr && existingEdition.title_ar ? existingEdition.title_ar : existingEdition.title}
                           </p>
                           <p className="text-[10px] text-muted-foreground">
                             {t("Edition", "النسخة")} #{existingEdition.edition_number || "?"} — {existingEdition.status}
+                            {" · "}{t("Data loaded and ready to edit", "تم تحميل البيانات وجاهزة للتعديل")}
                           </p>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-7 text-xs shrink-0"
-                          onClick={() => {
-                            onClose();
-                            navigate(`/admin/exhibitions`);
-                            // Trigger edit of existing edition - use query params or direct state
-                            setTimeout(() => {
-                              window.dispatchEvent(new CustomEvent("edit-exhibition", { detail: { id: existingEdition.id } }));
-                            }, 200);
-                          }}
-                        >
-                          {t("Edit Edition", "تعديل النسخة")}
-                        </Button>
                       </div>
                     ) : !editionConfirmed ? (
                       <div className="flex items-center gap-2 rounded-lg border border-chart-4/30 bg-chart-4/5 p-3">
@@ -621,7 +607,20 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                         <Button
                           size="sm"
                           className="h-7 text-xs shrink-0"
-                          onClick={() => setEditionConfirmed(true)}
+                          onClick={() => {
+                            setEditionConfirmed(true);
+                            setEditionResolved(true);
+                            setActiveEditingId(null);
+                            // Reset form for new edition, keeping series defaults
+                            setForm(prev => ({
+                              ...emptyForm,
+                              venue: prev.venue, venue_ar: prev.venue_ar,
+                              city: prev.city, country: prev.country,
+                              organizer_name: prev.organizer_name, organizer_name_ar: prev.organizer_name_ar,
+                              organizer_email: prev.organizer_email,
+                              cover_image_url: prev.cover_image_url,
+                            }));
+                          }}
                         >
                           {t(`Add Edition ${editionYear}`, `إضافة نسخة ${editionYear}`)}
                         </Button>
