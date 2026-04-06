@@ -29,6 +29,7 @@ const QRCodesAdmin = lazy(() => import("@/pages/admin/QRCodesAdmin"));
 const MasterclassesAdmin = lazy(() => import("@/pages/admin/MasterclassesAdmin"));
 const AnalyticsDashboard = lazy(() => import("@/pages/admin/AnalyticsDashboard"));
 const ExhibitionsAdmin = lazy(() => import("@/pages/admin/ExhibitionsAdmin"));
+const ExhibitionStatsAdmin = lazy(() => import("@/pages/admin/ExhibitionStatsAdmin"));
 const EvaluationCenter = lazy(() => import("@/pages/admin/EvaluationCenter"));
 const CountriesAdmin = lazy(() => import("@/pages/admin/CountriesAdmin"));
 const ChefsTableAdmin = lazy(() => import("@/pages/admin/ChefsTableAdmin"));
@@ -91,6 +92,7 @@ export const adminRoutes = (
     <Route path="evaluation" element={<EvaluationCenter />} />
     <Route path="certificates" element={<CertificatesAdmin />} />
     <Route path="exhibitions" element={<ExhibitionsAdmin />} />
+    <Route path="exhibition-stats" element={<ExhibitionStatsAdmin />} />
     <Route path="global-events" element={<GlobalEventsAdmin />} />
     <Route path="chefs-table" element={<ChefsTableAdmin />} />
     <Route path="chef-schedule" element={<ChefScheduleAdmin />} />
