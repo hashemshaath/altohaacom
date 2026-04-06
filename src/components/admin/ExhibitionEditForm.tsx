@@ -923,7 +923,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               data-section="links"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
-              <SectionHeader icon={LinkIcon} title={t("Links & URLs", "الروابط")} status={getSectionStatus("links")} />
+              <SectionHeader icon={LinkIcon} title={t("Links & Social Media", "الروابط والتواصل الاجتماعي")} status={getSectionStatus("links")} />
               <div className="grid gap-4 sm:grid-cols-2">
                 <FieldGroup label={t("Registration URL", "رابط التسجيل")}>
                   <Input className="h-9" value={form.registration_url || ""} onChange={e => updateField("registration_url", e.target.value)} placeholder="https://..." />
@@ -932,13 +932,16 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   <Input className="h-9" value={form.website_url || ""} onChange={e => updateField("website_url", e.target.value)} placeholder="https://..." />
                 </FieldGroup>
               </div>
-            </section>
 
-            {/* ═══ Section: Sponsors & Partners ═══ */}
-            <section
-              ref={(el: HTMLDivElement | null) => { sectionRefs.current["sponsors"] = el; }}
-              data-section="sponsors"
-              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
+              <Separator />
+
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
+                  <Globe className="h-3 w-3" />
+                  {t("Social Media & Contact Links", "روابط التواصل الاجتماعي والاتصال")}
+                </p>
+                <ExhibitionSocialLinksEditor value={socialLinks} onChange={setSocialLinks} isAr={isAr} />
+              </div>
             >
               <SectionHeader icon={Award} title={t("Sponsors & Partners", "الرعاة والشركاء")} status={editingId ? "complete" : "empty"} />
               <ExhibitionSponsorsPanel exhibitionId={editingId || ""} isAr={isAr} />
