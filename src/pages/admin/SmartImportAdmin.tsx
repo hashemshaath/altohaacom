@@ -768,7 +768,12 @@ export default function SmartImportAdmin() {
       }
 
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === targetTable);
-      toast({ title: isAr ? "تم الإضافة بنجاح (بانتظار الموافقة)" : `${tableLabel?.label_en || 'Record'} added (pending approval)` });
+      toast({
+        title: isAr ? "تم الإضافة بنجاح (بانتظار الموافقة)" : `${tableLabel?.label_en || 'Record'} added (pending approval)`,
+        description: recordId ? (isAr ? "انقر لعرض السجل" : "Click to view record") : undefined,
+        action: recordId ? <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(targetTable, recordId!), '_blank')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button> : undefined,
+      });
+      if (recordId) setLastSavedRecord({ table: targetTable, id: recordId });
       await logImport('create', targetTable, recordId, subType);
 
       // Trigger admin notification for pending review
