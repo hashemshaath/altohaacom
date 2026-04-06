@@ -276,27 +276,48 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     enabled: !!organizerId,
   });
 
-  // Load linked exhibitions
+  // Load linked exhibitions with all editions
   const { data: linkedExhibitions } = useQuery({
     queryKey: ["organizer-exhibitions", organizerId, orgData?.name],
     queryFn: async () => {
       if (!organizerId) return [];
+      const fields = "id, title, title_ar, slug, type, status, start_date, end_date, edition_year, edition_number, cover_image_url, view_count, series_id";
       const { data: byId } = await supabase.from("exhibitions")
-        .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
+        .select(fields)
         .or(`organizer_id.eq.${organizerId},organizer_entity_id.eq.${organizerId}`)
-        .order("start_date", { ascending: false }).limit(20);
+        .order("edition_year", { ascending: false }).limit(50);
       if (byId && byId.length > 0) return byId;
       if (orgData?.name) {
         const { data: byName } = await supabase.from("exhibitions")
-          .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
+          .select(fields)
           .or(`organizer_name.ilike.${orgData.name},organizer_name_ar.ilike.${orgData.name_ar || ""}`)
-          .order("start_date", { ascending: false }).limit(20);
+          .order("edition_year", { ascending: false }).limit(50);
         return byName || [];
       }
       return [];
     },
     enabled: !!organizerId,
   });
+
+  // Group exhibitions by base title (series)
+  const exhibitionGroups = useMemo(() => {
+    if (!linkedExhibitions?.length) return [];
+    const groups: Record<string, typeof linkedExhibitions> = {};
+    for (const ex of linkedExhibitions) {
+      // Strip year from title to find base name
+      const baseTitle = ex.title.replace(/\s*\d{4}\s*$/, "").trim() || ex.title;
+      if (!groups[baseTitle]) groups[baseTitle] = [];
+      groups[baseTitle].push(ex);
+    }
+    return Object.entries(groups).map(([baseName, editions]) => ({
+      baseName,
+      baseNameAr: editions[0]?.title_ar?.replace(/\s*[\u0660-\u0669\d]{4}\s*$/, "").trim() || editions[0]?.title_ar || baseName,
+      editions: editions.sort((a, b) => (b.edition_year || 0) - (a.edition_year || 0)),
+      coverImage: editions.find(e => e.cover_image_url)?.cover_image_url,
+    }));
+  }, [linkedExhibitions]);
+
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
   // Populate form
   useEffect(() => {
