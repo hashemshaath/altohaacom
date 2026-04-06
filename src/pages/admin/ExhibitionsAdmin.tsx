@@ -161,7 +161,7 @@ export default function ExhibitionsAdmin() {
   });
 
   // Derived filter values
-  const uniqueYears = useMemo(() => [...new Set(exhibitions?.map(e => new Date(e.start_date).getFullYear().toString()) || [])].sort((a, b) => Number(b) - Number(a)), [exhibitions]);
+  const uniqueYears = useMemo(() => [...new Set(exhibitions?.map(e => (e as any).edition_year?.toString() || new Date(e.start_date).getFullYear().toString()) || [])].sort((a, b) => Number(b) - Number(a)), [exhibitions]);
   const uniqueCities = useMemo(() => [...new Set(exhibitions?.map(e => e.city).filter(Boolean) || [])].sort(), [exhibitions]);
   const uniqueOrganizers = useMemo(() => [...new Set(exhibitions?.map(e => e.organizer_name).filter(Boolean) || [])].sort(), [exhibitions]);
 
@@ -174,7 +174,7 @@ export default function ExhibitionsAdmin() {
       (ex.city && ex.city.toLowerCase().includes(q));
     const matchesStatus = statusFilter === "all" || ex.status === statusFilter;
     const matchesType = typeFilter === "all" || ex.type === typeFilter;
-    const matchesYear = yearFilter === "all" || new Date(ex.start_date).getFullYear().toString() === yearFilter;
+    const matchesYear = yearFilter === "all" || ((ex as any).edition_year?.toString() || new Date(ex.start_date).getFullYear().toString()) === yearFilter;
     const matchesCity = cityFilter === "all" || ex.city === cityFilter;
     const matchesOrganizer = organizerFilter === "all" || ex.organizer_name === organizerFilter;
     const matchesSeries = seriesFilter === "all" || (seriesFilter === "none" ? !(ex as any).series_id : (ex as any).series_id === seriesFilter);
@@ -516,7 +516,12 @@ export default function ExhibitionsAdmin() {
                         )}
                         <div className="min-w-0">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
-                            {isAr && ex.title_ar ? ex.title_ar : ex.title}
+                            {(() => {
+                              const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
+                              const year = (ex as any).edition_year;
+                              if (!year || title.includes(String(year))) return title;
+                              return `${title} ${year}`;
+                            })()}
                           </p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             {(ex as any).edition_year && (
