@@ -260,14 +260,24 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
   // Load linked exhibitions
   const { data: linkedExhibitions } = useQuery({
-    queryKey: ["organizer-exhibitions", organizerId],
+    queryKey: ["organizer-exhibitions", organizerId, orgData?.name],
     queryFn: async () => {
       if (!organizerId) return [];
-      const { data } = await supabase.from("exhibitions")
+      // First try by ID
+      const { data: byId } = await supabase.from("exhibitions")
         .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
         .or(`organizer_id.eq.${organizerId},organizer_entity_id.eq.${organizerId}`)
         .order("start_date", { ascending: false }).limit(20);
-      return data || [];
+      if (byId && byId.length > 0) return byId;
+      // Fallback: match by organizer name
+      if (orgData?.name) {
+        const { data: byName } = await supabase.from("exhibitions")
+          .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
+          .or(`organizer_name.ilike.${orgData.name},organizer_name_ar.ilike.${orgData.name_ar || ""}`)
+          .order("start_date", { ascending: false }).limit(20);
+        return byName || [];
+      }
+      return [];
     },
     enabled: !!organizerId,
   });
@@ -1085,17 +1095,18 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 {linkedExhibitions && linkedExhibitions.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {linkedExhibitions.map(ex => (
-                      <Card key={ex.id} className="rounded-2xl hover:shadow-md transition-all group">
+                      <Link key={ex.id} to={`/admin/exhibitions?edit=${ex.id}`} className="block">
+                      <Card className="rounded-2xl hover:shadow-md transition-all group cursor-pointer">
                         <CardContent className="p-3 flex items-center gap-3">
                           {ex.cover_image_url ? (
-                            <img src={ex.cover_image_url} alt="" className="h-12 w-16 rounded-xl object-cover shrink-0" />
+                            <img src={ex.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
                           ) : (
-                            <div className="h-12 w-16 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                              <Building2 className="h-4 w-4 text-muted-foreground" />
+                            <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                              <Building2 className="h-5 w-5 text-muted-foreground" />
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs font-medium truncate">{isAr ? (ex.title_ar || ex.title) : ex.title}</p>
+                            <p className="text-sm font-semibold truncate">{isAr ? (ex.title_ar || ex.title) : ex.title}</p>
                             <div className="flex items-center gap-1.5 mt-0.5">
                               <Badge variant="outline" className="text-[9px] h-4 capitalize">{ex.type}</Badge>
                               <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-[9px] h-4 capitalize">{ex.status}</Badge>
@@ -1105,6 +1116,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                           <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                         </CardContent>
                       </Card>
+                      </Link>
                     ))}
                   </div>
                 ) : (
