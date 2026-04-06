@@ -74,7 +74,7 @@ export const AddRecordForm = React.memo(({
         {/* Target Table Selector */}
         <div className="space-y-2">
           <Label className="text-sm font-medium">{isAr ? "الجدول المستهدف" : "Target Table"} *</Label>
-          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
             {TARGET_TABLE_OPTIONS.map((opt) => {
               const Icon = opt.icon;
               const isSelected = targetTable === opt.value;

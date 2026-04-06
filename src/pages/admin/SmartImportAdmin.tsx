@@ -647,6 +647,19 @@ export default function SmartImportAdmin() {
   }, [details, dbChecked, step, checkExistingEntity]);
 
   // ─── Update existing record ───
+  const getAdminEditUrl = (table: TargetTable, id: string) => {
+    switch (table) {
+      case 'culinary_entities': return `/admin/entities/${id}`;
+      case 'companies': return `/admin/companies/${id}`;
+      case 'establishments': return `/admin/establishments/${id}`;
+      case 'exhibitions': return `/admin/exhibitions/${id}`;
+      case 'competitions': return `/admin/competitions/${id}`;
+      case 'organizers': return `/admin/organizers/${id}`;
+    }
+  };
+
+  const [lastSavedRecord, setLastSavedRecord] = useState<{ table: TargetTable; id: string } | null>(null);
+
   const handleUpdateRecord = async (record: ExistingRecord) => {
     if (!details) return;
     setUpdating(true);
@@ -657,7 +670,12 @@ export default function SmartImportAdmin() {
       const { error } = await supabase.from(record.table).update(updatePayload).eq("id", record.id);
       if (error) throw error;
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === record.table);
-      toast({ title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully` });
+      toast({
+        title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully`,
+        description: isAr ? "انقر لعرض السجل" : "Click to view record",
+        action: <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button>,
+      });
+      setLastSavedRecord({ table: record.table, id: record.id });
       await logImport('update', record.table, record.id, record.sub_type);
       setDbChecked(false);
     } catch (err: unknown) {
@@ -750,7 +768,12 @@ export default function SmartImportAdmin() {
       }
 
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === targetTable);
-      toast({ title: isAr ? "تم الإضافة بنجاح (بانتظار الموافقة)" : `${tableLabel?.label_en || 'Record'} added (pending approval)` });
+      toast({
+        title: isAr ? "تم الإضافة بنجاح (بانتظار الموافقة)" : `${tableLabel?.label_en || 'Record'} added (pending approval)`,
+        description: recordId ? (isAr ? "انقر لعرض السجل" : "Click to view record") : undefined,
+        action: recordId ? <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(targetTable, recordId!), '_blank')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button> : undefined,
+      });
+      if (recordId) setLastSavedRecord({ table: targetTable, id: recordId });
       await logImport('create', targetTable, recordId, subType);
 
       // Trigger admin notification for pending review
@@ -900,6 +923,11 @@ export default function SmartImportAdmin() {
             edition_year: d.edition_year || now.getFullYear(),
           };
           const { data: inserted } = await (supabase as any).from("competitions").insert(payload).select("id").single();
+          recordId = inserted?.id;
+        } else if (tbl === 'organizers') {
+          const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+          const payload = { ...buildOrganizerPayload(d), name: d.name_en || name, slug, status: 'active', created_by: user?.id || null };
+          const { data: inserted } = await supabase.from("organizers").insert(payload).select("id").single();
           recordId = inserted?.id;
         } else {
           const payload = { ...buildEstablishmentPayload(d), name: d.name_en || name, type: suggestion.sub_type, is_active: true, is_verified: false, created_by: user?.id || null };
@@ -1514,7 +1542,23 @@ export default function SmartImportAdmin() {
             </CardContent>
           </Card>
 
-          {/* Tabbed Details */}
+          {/* Last saved record link */}
+          {lastSavedRecord && (
+            <Card className="border-green-500/30 bg-green-500/5">
+              <CardContent className="py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span className="text-sm font-medium text-green-700">{isAr ? "تم حفظ السجل بنجاح" : "Record saved successfully"}</span>
+                  </div>
+                  <Button size="sm" variant="outline" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(lastSavedRecord.table, lastSavedRecord.id), '_blank')}>
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    {isAr ? "فتح صفحة التعديل" : "Open Edit Page"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
           <DetailTabs details={details} activeTab={activeTab} onTabChange={setActiveTab} isAr={isAr} editing={editingFields} onFieldUpdate={handleFieldUpdate} />
         </div>
       )}
