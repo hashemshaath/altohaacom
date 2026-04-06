@@ -163,6 +163,34 @@ const Index = () => {
         jsonLd={[
           {
             "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "AlToha",
+            alternateName: "الطهاة",
+            url: "https://altoha.com",
+            logo: {
+              "@type": "ImageObject",
+              url: "https://altoha.com/og-image.png",
+              width: 1200,
+              height: 630,
+            },
+            description: seo.description,
+            contactPoint: {
+              "@type": "ContactPoint",
+              contactType: "customer support",
+              url: "https://altoha.com/contact",
+              availableLanguage: ["English", "Arabic"],
+            },
+            sameAs: [
+              "https://www.instagram.com/altohaglobal",
+              "https://www.facebook.com/altohaglobal",
+              "https://x.com/altohaglobal",
+              "https://www.linkedin.com/company/altoha",
+              "https://www.youtube.com/@altohaglobal",
+              "https://www.tiktok.com/@altohaglobal",
+            ],
+          },
+          {
+            "@context": "https://schema.org",
             "@type": "WebSite",
             name: isAr ? "الطهاة" : "AlToha",
             alternateName: isAr ? "AlToha" : "الطهاة",
@@ -191,6 +219,18 @@ const Index = () => {
                 { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: "https://altoha.com/" },
               ],
             },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "MobileApplication",
+            name: "AlToha",
+            operatingSystem: "Any",
+            applicationCategory: "SocialNetworkingApplication",
+            offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            url: "https://altoha.com",
+            description: isAr
+              ? "تطبيق الطهاة — شبكة الطهي الاحترافية"
+              : "AlToha — Professional Culinary Network App",
           },
         ]}
       />
