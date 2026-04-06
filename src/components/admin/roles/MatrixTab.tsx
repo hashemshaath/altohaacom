@@ -140,7 +140,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="sticky left-0 bg-background z-10 w-[220px]">
+                    <TableHead className="sticky start-0 bg-background z-10 w-[220px]">
                       {t("Permission", "الصلاحية")}
                     </TableHead>
                     {rolesToShow.map((role) => {
@@ -169,7 +169,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
                       </TableRow>
                       {perms.map((perm) => (
                         <TableRow key={perm.id} className="hover:bg-muted/20">
-                          <TableCell className="sticky left-0 bg-background z-10">
+                          <TableCell className="sticky start-0 bg-background z-10">
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
