@@ -1202,52 +1202,106 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               )}
             </section>
 
-            {/* ═══ Section: Media ═══ */}
+            {/* ═══ Section: Media Library ═══ */}
             <section
               ref={(el: HTMLDivElement | null) => { sectionRefs.current["media"] = el; }}
               data-section="media"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5 shadow-sm"
             >
-              <SectionHeader icon={Image} title={t("Media & Files", "الوسائط والملفات")} desc={t("Cover image, gallery & documents", "صورة الغلاف والمعرض والمستندات")} status={getSectionStatus("media")} />
-
-              {/* Cover Image with preview */}
-              <div className="space-y-2">
-                <FieldGroup label={t("Cover Image URL", "رابط صورة الغلاف")}>
-                  <Input className="h-9 max-w-md" value={form.cover_image_url || ""} onChange={e => updateField("cover_image_url", e.target.value)} placeholder="https://example.com/image.jpg" startIcon={<Image className="h-3 w-3" />} />
-                </FieldGroup>
-                {form.cover_image_url && (
-                  <div className="relative h-40 max-w-md rounded-xl overflow-hidden border border-border/40">
-                    <img src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute top-2 end-2 h-6 w-6 rounded-lg bg-black/50 text-white hover:bg-black/70"
-                      onClick={() => updateField("cover_image_url", "")}
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
+              <SectionHeader icon={FileText} title={t("Media Library", "مكتبة الوسائط")} desc={t("Upload & manage files, gallery & documents", "رفع وإدارة الملفات والمعرض والمستندات")} status={getSectionStatus("media")} />
+              {editingId ? (
+                <>
+                  <ExhibitionMediaLibrary
+                    exhibitionId={editingId}
+                    coverImageUrl={form.cover_image_url || undefined}
+                    onCoverChange={url => updateField("cover_image_url", url)}
+                    isAr={isAr}
+                  />
+                  <Separator />
+                  <div>
+                    <p className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+                      <FileText className="h-3 w-3" />
+                      {t("Documents & AI Knowledge Base", "المستندات وقاعدة معارف الذكاء الاصطناعي")}
+                    </p>
+                    <ExhibitionDocumentsPanel exhibitionId={editingId} />
                   </div>
-                )}
-              </div>
+                </>
+              ) : (
+                <EmptyHint icon={FileText} text={t("Save the exhibition first to upload media", "احفظ الفعالية أولاً لرفع الوسائط")} />
+              )}
+            </section>
 
-              <Separator />
-
-              <ExhibitionMediaLibrary
-                exhibitionId={editingId || ""}
-                coverImageUrl={form.cover_image_url || undefined}
-                onCoverChange={url => updateField("cover_image_url", url)}
-                isAr={isAr}
-              />
-
-              <Separator />
-
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
-                  <FileText className="h-3 w-3" />
-                  {t("Documents & AI Knowledge Base", "المستندات وقاعدة معارف الذكاء الاصطناعي")}
-                </p>
-                <ExhibitionDocumentsPanel exhibitionId={editingId || ""} />
-              </div>
+            {/* ═══ Section: Previous Editions ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["editions"] = el; }}
+              data-section="editions"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5 shadow-sm"
+            >
+              <SectionHeader icon={History} title={t("Previous Editions", "النسخ السابقة")} desc={t("Browse & manage edition history", "تصفح وإدارة تاريخ النسخ")} status={getSectionStatus("editions")} badge={previousEditions.length > 0 ? `${previousEditions.length}` : undefined} />
+              {selectedSeriesId ? (
+                previousEditions.length > 0 ? (
+                  <div className="space-y-2">
+                    {previousEditions.map((ed: any) => {
+                      const isCurrent = ed.id === editingId;
+                      const edStatus = statusOptions.find(s => s.value === ed.status);
+                      return (
+                        <div
+                          key={ed.id}
+                          className={cn(
+                            "flex items-center gap-3 rounded-xl border p-3 transition-all cursor-pointer hover:shadow-sm",
+                            isCurrent ? "border-primary/30 bg-primary/5 ring-1 ring-primary/10" : "border-border/30 hover:bg-muted/20"
+                          )}
+                          onClick={() => {
+                            if (!isCurrent && ed.edition_year) {
+                              setEditionYear(ed.edition_year);
+                            }
+                          }}
+                        >
+                          <div className="h-12 w-16 rounded-lg overflow-hidden border border-border/30 shrink-0 bg-muted/20">
+                            {ed.cover_image_url ? (
+                              <img src={ed.cover_image_url} alt="" className="h-full w-full object-cover" />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center"><Image className="h-4 w-4 text-muted-foreground/30" /></div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="text-xs font-semibold truncate">{isAr && ed.title_ar ? ed.title_ar : ed.title}</p>
+                              {isCurrent && <Badge className="text-[9px] h-4 px-1 bg-primary/10 text-primary border-0">{t("Current", "الحالية")}</Badge>}
+                            </div>
+                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                              <span className="font-mono font-bold">{ed.edition_year}</span>
+                              {ed.edition_number && <span>· {t("Edition", "النسخة")} #{ed.edition_number}</span>}
+                              {ed.city && <span>· {ed.city}</span>}
+                              {ed.view_count > 0 && <span>· <Eye className="h-2.5 w-2.5 inline" /> {ed.view_count}</span>}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <Badge variant="outline" className="text-[9px] h-5 gap-1">
+                              <span className={cn("h-1.5 w-1.5 rounded-full", edStatus?.color || "bg-muted-foreground")} />
+                              {isAr ? edStatus?.ar : edStatus?.en}
+                            </Badge>
+                            {!isCurrent && (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg">
+                                    <Pencil className="h-3 w-3" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>{t("Switch to this edition", "التبديل لهذه النسخة")}</TooltipContent>
+                              </Tooltip>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <EmptyHint icon={History} text={t("No previous editions found for this series", "لم يتم العثور على نسخ سابقة لهذه السلسلة")} />
+                )
+              ) : (
+                <EmptyHint icon={History} text={t("Select an event series to view editions", "اختر سلسلة فعاليات لعرض النسخ")} />
+              )}
             </section>
 
             {/* ═══ Section: Team ═══ */}
@@ -1261,6 +1315,46 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 <ExhibitionOfficialsPanel exhibitionId={editingId} />
               ) : (
                 <EmptyHint icon={Users} text={t("Save the exhibition first to assign team members", "احفظ الفعالية أولاً لتعيين أعضاء الفريق")} />
+              )}
+            </section>
+
+            {/* ═══ Section: Notes & Activity ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["notes"] = el; }}
+              data-section="notes"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5 shadow-sm"
+            >
+              <SectionHeader icon={StickyNote} title={t("Notes & Activity", "الملاحظات والنشاط")} desc={t("Internal notes & change log", "ملاحظات داخلية وسجل التغييرات")} status={getSectionStatus("notes")} />
+
+              <FieldGroup label={t("Internal Admin Notes", "ملاحظات المشرف الداخلية")} hint={t("Only visible to admins, not shown publicly", "مرئية فقط للمشرفين، لا تظهر للعامة")}>
+                <Textarea
+                  className="min-h-[80px] text-sm"
+                  value={adminNotes}
+                  onChange={e => setAdminNotes(e.target.value)}
+                  placeholder={t("Add internal notes about this exhibition...", "أضف ملاحظات داخلية حول هذه الفعالية...")}
+                />
+              </FieldGroup>
+
+              {editingId && (
+                <div className="rounded-xl border border-border/30 bg-muted/10 p-4 space-y-2">
+                  <p className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                    <Activity className="h-3 w-3" />
+                    {t("Quick Info", "معلومات سريعة")}
+                  </p>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {[
+                      { label: t("ID", "المعرف"), value: editingId.slice(0, 8) + "..." },
+                      { label: t("Status", "الحالة"), value: isAr ? statusOptions.find(s => s.value === form.status)?.ar : statusOptions.find(s => s.value === form.status)?.en },
+                      { label: t("Edition", "النسخة"), value: editionYear ? `${editionYear} #${editionNumber || "?"}` : "—" },
+                      { label: t("Last Saved", "آخر حفظ"), value: lastSaved ? lastSaved.toLocaleDateString() : "—" },
+                    ].map((item, i) => (
+                      <div key={i} className="text-center rounded-lg bg-muted/20 px-2 py-2">
+                        <p className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">{item.label}</p>
+                        <p className="text-xs font-semibold mt-0.5 truncate">{item.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </section>
 
