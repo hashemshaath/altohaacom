@@ -16325,9 +16325,11 @@ export type Database = {
       }
       organizers: {
         Row: {
+          additional_number: string | null
           address: string | null
           address_ar: string | null
           average_rating: number | null
+          building_number: string | null
           categories: string[] | null
           city: string | null
           city_ar: string | null
@@ -16340,26 +16342,36 @@ export type Database = {
           created_by: string | null
           description: string | null
           description_ar: string | null
+          district: string | null
+          district_ar: string | null
           email: string | null
           entity_id: string | null
           follower_count: number | null
           founded_year: number | null
           gallery_urls: string[] | null
+          google_maps_url: string | null
           id: string
           is_featured: boolean | null
           is_verified: boolean | null
           key_contacts: Json | null
+          latitude: number | null
           logo_url: string | null
+          longitude: number | null
           metadata: Json | null
           name: string
           name_ar: string | null
+          national_address: string | null
+          national_address_ar: string | null
           organizer_number: string | null
           phone: string | null
+          postal_code: string | null
           services: string[] | null
           services_ar: string[] | null
           slug: string
           social_links: Json | null
           status: string
+          street: string | null
+          street_ar: string | null
           targeted_sectors: string[] | null
           total_exhibitions: number | null
           total_views: number | null
@@ -16367,9 +16379,11 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
           average_rating?: number | null
+          building_number?: string | null
           categories?: string[] | null
           city?: string | null
           city_ar?: string | null
@@ -16382,26 +16396,36 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           description_ar?: string | null
+          district?: string | null
+          district_ar?: string | null
           email?: string | null
           entity_id?: string | null
           follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
+          google_maps_url?: string | null
           id?: string
           is_featured?: boolean | null
           is_verified?: boolean | null
           key_contacts?: Json | null
+          latitude?: number | null
           logo_url?: string | null
+          longitude?: number | null
           metadata?: Json | null
           name: string
           name_ar?: string | null
+          national_address?: string | null
+          national_address_ar?: string | null
           organizer_number?: string | null
           phone?: string | null
+          postal_code?: string | null
           services?: string[] | null
           services_ar?: string[] | null
           slug: string
           social_links?: Json | null
           status?: string
+          street?: string | null
+          street_ar?: string | null
           targeted_sectors?: string[] | null
           total_exhibitions?: number | null
           total_views?: number | null
@@ -16409,9 +16433,11 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
           average_rating?: number | null
+          building_number?: string | null
           categories?: string[] | null
           city?: string | null
           city_ar?: string | null
@@ -16424,26 +16450,36 @@ export type Database = {
           created_by?: string | null
           description?: string | null
           description_ar?: string | null
+          district?: string | null
+          district_ar?: string | null
           email?: string | null
           entity_id?: string | null
           follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
+          google_maps_url?: string | null
           id?: string
           is_featured?: boolean | null
           is_verified?: boolean | null
           key_contacts?: Json | null
+          latitude?: number | null
           logo_url?: string | null
+          longitude?: number | null
           metadata?: Json | null
           name?: string
           name_ar?: string | null
+          national_address?: string | null
+          national_address_ar?: string | null
           organizer_number?: string | null
           phone?: string | null
+          postal_code?: string | null
           services?: string[] | null
           services_ar?: string[] | null
           slug?: string
           social_links?: Json | null
           status?: string
+          street?: string | null
+          street_ar?: string | null
           targeted_sectors?: string[] | null
           total_exhibitions?: number | null
           total_views?: number | null
