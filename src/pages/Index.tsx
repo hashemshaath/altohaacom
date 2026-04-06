@@ -8,6 +8,7 @@ import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { Button } from "@/components/ui/button";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 import { HeroSection } from "@/components/home/sections/HeroSection";
+import { SectionDivider } from "@/components/home/SectionDivider";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
@@ -217,6 +218,8 @@ const Index = () => {
         </nav>
       </main>
 
+      {/* Curved transition into footer */}
+      <SectionDivider variant="curve" fillClass="fill-[hsl(213_33%_15%)] dark:fill-[hsl(213_35%_8%)]" />
       <Footer />
     </div>
   );
