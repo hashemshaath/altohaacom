@@ -18,7 +18,7 @@ import { DataFreshness } from "@/components/ui/data-freshness";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useInViewport } from "@/hooks/useInViewport";
 import {
-  Users, UserCheck, UserPlus, Flag, Trophy, FileText,
+  Users, UserCheck, UserPlus, Flag, Trophy, FileText, Calendar,
   TrendingUp, ArrowRight, ArrowUpRight, ArrowDownRight,
   Shield, Activity, CreditCard, Landmark, Package,
   GraduationCap, LayoutDashboard, Zap, MessageSquare,
