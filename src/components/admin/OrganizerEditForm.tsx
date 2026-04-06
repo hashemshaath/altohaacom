@@ -302,6 +302,20 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     enabled: !!organizerId,
   });
 
+  // Load linked competitions
+  const { data: linkedCompetitions } = useQuery({
+    queryKey: ["organizer-competitions", organizerId],
+    queryFn: async () => {
+      if (!organizerId) return [];
+      const { data } = await (supabase as any).from("competitions")
+        .select("id, title, title_ar, status, competition_start, competition_end, edition_year, competition_number, cover_image_url, country_code, slug")
+        .eq("organizer_id", organizerId)
+        .order("edition_year", { ascending: false }).limit(50);
+      return data || [];
+    },
+    enabled: !!organizerId,
+  });
+
   // Group exhibitions by base title (series)
   const exhibitionGroups = useMemo(() => {
     if (!linkedExhibitions?.length) return [];
@@ -332,7 +346,8 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       name: orgData.name || "", name_ar: orgData.name_ar || "", slug: orgData.slug || "",
       description: orgData.description || "", description_ar: orgData.description_ar || "",
       logo_url: orgData.logo_url || "", cover_image_url: orgData.cover_image_url || "",
-      email: orgData.email || "", phone: orgData.phone || "", website: orgData.website || "",
+      email: orgData.email || "", phone: orgData.phone || "",
+      fax: (orgData as any).fax || "", website: orgData.website || "",
       address: orgData.address || "", address_ar: orgData.address_ar || "",
       city: orgData.city || "", city_ar: orgData.city_ar || "",
       country: orgData.country || "", country_ar: orgData.country_ar || "",
@@ -342,6 +357,8 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       postal_code: (orgData as any).postal_code || "",
       building_number: (orgData as any).building_number || "",
       additional_number: (orgData as any).additional_number || "",
+      unit_number: (orgData as any).unit_number || "",
+      short_address: (orgData as any).short_address || "",
       national_address: (orgData as any).national_address || "",
       national_address_ar: (orgData as any).national_address_ar || "",
       latitude: (orgData as any).latitude?.toString() || "",
@@ -352,6 +369,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       services: (orgData.services as string[] || []).join(", "),
       targeted_sectors: (orgData.targeted_sectors as string[] || []).join(", "),
       founded_year: orgData.founded_year?.toString() || "",
+      registration_number: (orgData as any).registration_number || "",
+      license_number: (orgData as any).license_number || "",
+      vat_number: (orgData as any).vat_number || "",
       social_twitter: social.twitter || "", social_facebook: social.facebook || "",
       social_linkedin: social.linkedin || "", social_instagram: social.instagram || "",
       social_youtube: social.youtube || "", social_tiktok: social.tiktok || "",
@@ -452,7 +472,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         slug: f.slug || generateSlug(f.name || f.name_ar),
         description: f.description || null, description_ar: f.description_ar || null,
         logo_url: f.logo_url || null, cover_image_url: f.cover_image_url || null,
-        email: f.email || null, phone: f.phone || null, website: f.website || null,
+        email: f.email || null, phone: f.phone || null, fax: f.fax || null, website: f.website || null,
         address: f.address || null, address_ar: f.address_ar || null,
         city: f.city || null, city_ar: f.city_ar || null,
         country: f.country || null, country_ar: f.country_ar || null,
@@ -462,6 +482,8 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         postal_code: f.postal_code || null,
         building_number: f.building_number || null,
         additional_number: f.additional_number || null,
+        unit_number: f.unit_number || null,
+        short_address: f.short_address || null,
         national_address: f.national_address || null,
         national_address_ar: f.national_address_ar || null,
         latitude: f.latitude ? parseFloat(f.latitude) : null,
@@ -471,6 +493,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         services: f.services ? f.services.split(",").map(s => s.trim()).filter(Boolean) : null,
         targeted_sectors: f.targeted_sectors ? f.targeted_sectors.split(",").map(s => s.trim()).filter(Boolean) : null,
         founded_year: f.founded_year ? parseInt(f.founded_year) : null,
+        registration_number: f.registration_number || null,
+        license_number: f.license_number || null,
+        vat_number: f.vat_number || null,
         social_links: Object.keys(socialLinks).length > 0 ? socialLinks : null,
         gallery_urls: f.gallery_urls.length > 0 ? f.gallery_urls : null,
         key_contacts: f.key_contacts.length > 0 ? (f.key_contacts as unknown as any) : null,
@@ -904,12 +929,15 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
               {/* ═══ Contact Tab ═══ */}
               <TabsContent value="contact" className="space-y-6 mt-0">
                 <SectionHeader icon={Mail} title={isAr ? "معلومات التواصل" : "Contact Information"} desc={isAr ? "البريد الإلكتروني والهاتف والموقع" : "Email, phone & website"} />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <FieldGroup label={isAr ? "البريد الإلكتروني" : "Email"} error={formErrors.email}>
                     <Input value={form.email} onChange={e => { setForm(f => ({ ...f, email: e.target.value })); setFormErrors(e2 => ({ ...e2, email: "" })); }} type="email" dir="ltr" placeholder="info@example.com" />
                   </FieldGroup>
                   <FieldGroup label={isAr ? "الهاتف" : "Phone"}>
                     <Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} dir="ltr" placeholder="+966..." />
+                  </FieldGroup>
+                  <FieldGroup label={isAr ? "الفاكس" : "Fax"}>
+                    <Input value={form.fax} onChange={e => setForm(f => ({ ...f, fax: e.target.value }))} dir="ltr" placeholder="+966..." />
                   </FieldGroup>
                   <FieldGroup label={isAr ? "الموقع الإلكتروني" : "Website"} error={formErrors.website}>
                     <Input value={form.website} onChange={e => { setForm(f => ({ ...f, website: e.target.value })); setFormErrors(e2 => ({ ...e2, website: "" })); }} placeholder="https://..." dir="ltr" />
@@ -996,12 +1024,15 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                       placeholder_ar="شارع الملك فهد" placeholder_en="King Fahd Road"
                     />
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                     <FieldGroup label={isAr ? "رقم المبنى" : "Building No."}>
                       <Input value={form.building_number} onChange={e => setForm(f => ({ ...f, building_number: e.target.value }))} dir="ltr" placeholder="8228" />
                     </FieldGroup>
                     <FieldGroup label={isAr ? "الرقم الإضافي" : "Additional No."}>
                       <Input value={form.additional_number} onChange={e => setForm(f => ({ ...f, additional_number: e.target.value }))} dir="ltr" placeholder="2121" />
+                    </FieldGroup>
+                    <FieldGroup label={isAr ? "رقم الوحدة" : "Unit No."}>
+                      <Input value={form.unit_number} onChange={e => setForm(f => ({ ...f, unit_number: e.target.value }))} dir="ltr" placeholder="101" />
                     </FieldGroup>
                     <FieldGroup label={isAr ? "الرمز البريدي" : "Postal Code"}>
                       <Input value={form.postal_code} onChange={e => setForm(f => ({ ...f, postal_code: e.target.value }))} dir="ltr" placeholder="12345" />
@@ -1025,6 +1056,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     <Navigation className="h-3.5 w-3.5 text-primary" />
                     {isAr ? "العنوان الوطني السعودي" : "Saudi National Address"}
                   </h4>
+                  <FieldGroup label={isAr ? "العنوان المختصر" : "Short Address"} hint={isAr ? "مثال: RAAA1234" : "e.g. RAAA1234"} className="mb-4">
+                    <Input value={form.short_address} onChange={e => setForm(f => ({ ...f, short_address: e.target.value.toUpperCase() }))} dir="ltr" placeholder="RAAA1234" className="font-mono" />
+                  </FieldGroup>
                   <BilingualField
                     labelAr="العنوان الوطني بالعربية" labelEn="National Address (EN)"
                     valueAr={form.national_address_ar} valueEn={form.national_address}
@@ -1124,38 +1158,68 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
               {/* ═══ Details Tab ═══ */}
               <TabsContent value="details" className="space-y-6 mt-0">
-                <SectionHeader icon={Briefcase} title={isAr ? "التفاصيل والخدمات" : "Details & Services"} desc={isAr ? "الخدمات والقطاعات وسنة التأسيس" : "Services, sectors & founding year"} />
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <FieldGroup label={isAr ? "سنة التأسيس" : "Founded Year"} error={formErrors.founded_year}>
-                    <Input value={form.founded_year} onChange={e => { setForm(f => ({ ...f, founded_year: e.target.value })); setFormErrors(e2 => ({ ...e2, founded_year: "" })); }} type="number" placeholder="2010" dir="ltr" />
-                  </FieldGroup>
-                  <FieldGroup label={isAr ? "الخدمات" : "Services"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
-                    <Input value={form.services} onChange={e => setForm(f => ({ ...f, services: e.target.value }))} placeholder={isAr ? "معارض، تدريب..." : "Exhibitions, Training..."} />
-                  </FieldGroup>
-                  <FieldGroup label={isAr ? "القطاعات المستهدفة" : "Targeted Sectors"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
-                    <Input value={form.targeted_sectors} onChange={e => setForm(f => ({ ...f, targeted_sectors: e.target.value }))} placeholder={isAr ? "أغذية ومشروبات..." : "Food & Beverage..."} />
-                  </FieldGroup>
-                </div>
-                {(form.services || form.targeted_sectors) && (
-                  <Card className="rounded-2xl bg-muted/30">
-                    <CardContent className="p-4">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">{isAr ? "العلامات" : "Tags"}</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {form.services.split(",").filter(Boolean).map((s, i) => (
-                          <Badge key={`s-${i}`} variant="secondary" className="text-[10px]">{s.trim()}</Badge>
-                        ))}
-                        {form.targeted_sectors.split(",").filter(Boolean).map((s, i) => (
-                          <Badge key={`t-${i}`} variant="outline" className="text-[10px]">{s.trim()}</Badge>
-                        ))}
+                <SectionHeader icon={Briefcase} title={isAr ? "التفاصيل والخدمات" : "Details & Services"} desc={isAr ? "التسجيل والترخيص والخدمات" : "Registration, licensing & services"} />
+
+                {/* Registration & Legal */}
+                <Card className="rounded-2xl">
+                  <CardContent className="p-4 space-y-4">
+                    <h4 className="text-xs font-semibold flex items-center gap-2">
+                      <FileCheck className="h-3.5 w-3.5 text-primary" />
+                      {isAr ? "البيانات القانونية والتسجيل" : "Legal & Registration"}
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      <FieldGroup label={isAr ? "سنة التأسيس" : "Founded Year"} error={formErrors.founded_year}>
+                        <Input value={form.founded_year} onChange={e => { setForm(f => ({ ...f, founded_year: e.target.value })); setFormErrors(e2 => ({ ...e2, founded_year: "" })); }} type="number" placeholder="2010" dir="ltr" />
+                      </FieldGroup>
+                      <FieldGroup label={isAr ? "رقم السجل التجاري" : "Commercial Registration"}>
+                        <Input value={form.registration_number} onChange={e => setForm(f => ({ ...f, registration_number: e.target.value }))} placeholder="1010XXXXXX" dir="ltr" className="font-mono" />
+                      </FieldGroup>
+                      <FieldGroup label={isAr ? "رقم الترخيص" : "License Number"}>
+                        <Input value={form.license_number} onChange={e => setForm(f => ({ ...f, license_number: e.target.value }))} placeholder="XXXXXX" dir="ltr" className="font-mono" />
+                      </FieldGroup>
+                      <FieldGroup label={isAr ? "الرقم الضريبي (VAT)" : "VAT Number"}>
+                        <Input value={form.vat_number} onChange={e => setForm(f => ({ ...f, vat_number: e.target.value }))} placeholder="3XXXXXXXXXX003" dir="ltr" className="font-mono" />
+                      </FieldGroup>
+                    </div>
+                    {form.founded_year && (
+                      <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {isAr ? `تأسست منذ ${new Date().getFullYear() - parseInt(form.founded_year)} سنة` : `Established ${new Date().getFullYear() - parseInt(form.founded_year)} years ago`}
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Services & Sectors */}
+                <Card className="rounded-2xl">
+                  <CardContent className="p-4 space-y-4">
+                    <h4 className="text-xs font-semibold flex items-center gap-2">
+                      <Briefcase className="h-3.5 w-3.5 text-primary" />
+                      {isAr ? "الخدمات والقطاعات" : "Services & Sectors"}
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FieldGroup label={isAr ? "الخدمات المقدمة" : "Services Offered"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
+                        <Textarea value={form.services} onChange={e => setForm(f => ({ ...f, services: e.target.value }))} placeholder={isAr ? "تنظيم معارض، إدارة مؤتمرات، تدريب..." : "Exhibition management, Conference organizing, Training..."} rows={3} />
+                      </FieldGroup>
+                      <FieldGroup label={isAr ? "القطاعات المستهدفة" : "Targeted Sectors"} hint={isAr ? "مفصولة بفاصلة" : "Comma-separated"}>
+                        <Textarea value={form.targeted_sectors} onChange={e => setForm(f => ({ ...f, targeted_sectors: e.target.value }))} placeholder={isAr ? "أغذية ومشروبات، ضيافة، سياحة..." : "Food & Beverage, Hospitality, Tourism..."} rows={3} />
+                      </FieldGroup>
+                    </div>
+                    {(form.services || form.targeted_sectors) && (
+                      <div className="pt-2">
+                        <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">{isAr ? "العلامات" : "Tags Preview"}</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {form.services.split(",").filter(Boolean).map((s, i) => (
+                            <Badge key={`s-${i}`} variant="secondary" className="text-[10px]">{s.trim()}</Badge>
+                          ))}
+                          {form.targeted_sectors.split(",").filter(Boolean).map((s, i) => (
+                            <Badge key={`t-${i}`} variant="outline" className="text-[10px]">{s.trim()}</Badge>
+                          ))}
+                        </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
-                {form.founded_year && (
-                  <p className="text-[10px] text-muted-foreground">
-                    {isAr ? `تأسست منذ ${new Date().getFullYear() - parseInt(form.founded_year)} سنة` : `Established ${new Date().getFullYear() - parseInt(form.founded_year)} years ago`}
-                  </p>
-                )}
+                    )}
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               {/* ═══ Social Tab ═══ */}
@@ -1278,9 +1342,10 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 ) : (
                   <>
                     {orgData && (
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
                         {[
-                          { label: isAr ? "المعارض" : "Events", value: orgData.total_exhibitions || 0, icon: Calendar },
+                          { label: isAr ? "المعارض" : "Exhibitions", value: linkedExhibitions?.length || 0, icon: Calendar },
+                          { label: isAr ? "المسابقات" : "Competitions", value: linkedCompetitions?.length || 0, icon: Star },
                           { label: isAr ? "المشاهدات" : "Views", value: (orgData.total_views || 0).toLocaleString(), icon: Eye },
                           { label: isAr ? "التقييم" : "Rating", value: orgData.average_rating || "—", icon: Star },
                           { label: isAr ? "المتابعون" : "Followers", value: orgData.follower_count || 0, icon: Activity },
