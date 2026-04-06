@@ -4,10 +4,12 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
-function Select({ dir, ...props }: React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & { dir?: "ltr" | "rtl" }) {
-  const resolvedDir = dir ?? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | undefined) ?? undefined;
-  return <SelectPrimitive.Root dir={resolvedDir} {...props} />;
-}
+const Select = React.forwardRef<HTMLButtonElement, React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> & { dir?: "ltr" | "rtl" }>(
+  function Select({ dir, ...props }, _ref) {
+    const resolvedDir = dir ?? (document.documentElement.getAttribute("dir") as "ltr" | "rtl" | undefined) ?? undefined;
+    return <SelectPrimitive.Root dir={resolvedDir} {...props} />;
+  }
+);
 Select.displayName = "Select";
 
 const SelectGroup = SelectPrimitive.Group;
