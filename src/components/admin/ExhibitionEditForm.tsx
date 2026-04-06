@@ -160,7 +160,28 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
+  const [editionConfirmed, setEditionConfirmed] = useState(!!editingId);
   const [activeSection, setActiveSection] = useState("basic");
+
+  // Check if edition exists in DB when series + year are selected
+  const { data: existingEdition, isLoading: editionLoading } = useQuery({
+    queryKey: ["edition-check", selectedSeriesId, editionYear],
+    queryFn: async () => {
+      if (!selectedSeriesId || !editionYear) return null;
+      const { data } = await supabase
+        .from("exhibitions")
+        .select("id, title, title_ar, edition_number, status")
+        .eq("series_id", selectedSeriesId)
+        .eq("edition_year", editionYear)
+        .neq("id", editingId || "00000000-0000-0000-0000-000000000000")
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!selectedSeriesId && !!editionYear,
+  });
+
+  // Whether edition fields should be disabled (new edition not yet confirmed)
+  const editionFieldsDisabled = !editingId && !!selectedSeriesId && !!editionYear && !existingEdition && !editionConfirmed;
 
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -337,7 +358,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
             <X className="me-1.5 h-3.5 w-3.5" />
             {t("Cancel", "إلغاء")}
           </Button>
-          <Button size="sm" className="h-8" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.start_date || !form.end_date}>
+          <Button size="sm" className="h-8" onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.start_date || !form.end_date || editionFieldsDisabled}>
             {saveMutation.isPending ? <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" /> : <Save className="me-1.5 h-3.5 w-3.5" />}
             {editingId ? t("Save Changes", "حفظ التعديلات") : t("Create", "إنشاء")}
           </Button>
@@ -446,7 +467,11 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   </div>
                   <div>
                     <Label className="text-xs">{t("Edition Year", "سنة الإصدار")}</Label>
-                    <Select value={editionYear ? String(editionYear) : "none"} onValueChange={v => setEditionYear(v === "none" ? null : parseInt(v))}>
+                    <Select value={editionYear ? String(editionYear) : "none"} onValueChange={v => {
+                      const yr = v === "none" ? null : parseInt(v);
+                      setEditionYear(yr);
+                      setEditionConfirmed(!!editingId);
+                    }}>
                       <SelectTrigger className="h-9"><SelectValue placeholder={t("Select year", "اختر السنة")} /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">{t("Not set", "غير محدد")}</SelectItem>
@@ -461,7 +486,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   </div>
                   <div>
                     <Label className="text-xs">{t("Edition Number", "رقم الإصدار")}</Label>
-                    <Select value={editionNumber ? String(editionNumber) : "none"} onValueChange={v => setEditionNumber(v === "none" ? null : parseInt(v))}>
+                    <Select disabled={editionFieldsDisabled} value={editionNumber ? String(editionNumber) : "none"} onValueChange={v => setEditionNumber(v === "none" ? null : parseInt(v))}>
                       <SelectTrigger className="h-9">
                         <SelectValue placeholder={t("Select edition", "اختر الإصدار")} />
                       </SelectTrigger>
@@ -484,15 +509,81 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                       </SelectContent>
                     </Select>
                   </div>
-                  {(editionYear || editionNumber) && (
-                    <div className="flex items-end">
-                      <Badge variant="outline" className="text-xs gap-1 whitespace-nowrap">
-                        <Info className="h-3 w-3" />
-                        {form.title || "..."}{editionYear ? ` ${editionYear}` : ""}{editionNumber ? ` — ${isAr ? `النسخة ${editionNumber}` : `Edition #${editionNumber}`}` : ""}
-                      </Badge>
-                    </div>
-                  )}
                 </div>
+
+                {/* Edition status feedback */}
+                {selectedSeriesId && editionYear && (
+                  <div className="mt-2">
+                    {editionLoading ? (
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                        {t("Checking edition...", "جارِ التحقق من النسخة...")}
+                      </div>
+                    ) : existingEdition ? (
+                      <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
+                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium">
+                            {t("Edition found", "تم العثور على النسخة")}: {isAr && existingEdition.title_ar ? existingEdition.title_ar : existingEdition.title}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {t("Edition", "النسخة")} #{existingEdition.edition_number || "?"} — {existingEdition.status}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-7 text-xs shrink-0"
+                          onClick={() => {
+                            onClose();
+                            navigate(`/admin/exhibitions`);
+                            // Trigger edit of existing edition - use query params or direct state
+                            setTimeout(() => {
+                              window.dispatchEvent(new CustomEvent("edit-exhibition", { detail: { id: existingEdition.id } }));
+                            }, 200);
+                          }}
+                        >
+                          {t("Edit Edition", "تعديل النسخة")}
+                        </Button>
+                      </div>
+                    ) : !editionConfirmed ? (
+                      <div className="flex items-center gap-2 rounded-lg border border-chart-4/30 bg-chart-4/5 p-3">
+                        <Info className="h-4 w-4 text-chart-4 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium">
+                            {t(`No edition found for ${editionYear}`, `لا توجد نسخة لعام ${editionYear}`)}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {t("Confirm to create a new edition for this year", "أكد لإنشاء نسخة جديدة لهذا العام")}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          className="h-7 text-xs shrink-0"
+                          onClick={() => setEditionConfirmed(true)}
+                        >
+                          {t(`Add Edition ${editionYear}`, `إضافة نسخة ${editionYear}`)}
+                        </Button>
+                      </div>
+                    ) : (
+                      <Badge variant="outline" className="text-xs gap-1">
+                        <CheckCircle2 className="h-3 w-3 text-chart-2" />
+                        {t(`New edition ${editionYear} confirmed`, `تم تأكيد نسخة ${editionYear} الجديدة`)}
+                        {editionNumber ? ` — ${isAr ? `النسخة ${editionNumber}` : `Edition #${editionNumber}`}` : ""}
+                      </Badge>
+                    )}
+                  </div>
+                )}
+
+                {/* Standalone badge (no series) */}
+                {!selectedSeriesId && (editionYear || editionNumber) && (
+                  <div className="mt-2">
+                    <Badge variant="outline" className="text-xs gap-1 whitespace-nowrap">
+                      <Info className="h-3 w-3" />
+                      {form.title || "..."}{editionYear ? ` ${editionYear}` : ""}{editionNumber ? ` — ${isAr ? `النسخة ${editionNumber}` : `Edition #${editionNumber}`}` : ""}
+                    </Badge>
+                  </div>
+                )}
               </div>
 
               {/* Title */}
