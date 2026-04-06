@@ -78,6 +78,7 @@ const buildEntityPayload = (d: ImportedData) => {
   if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
   if (d.logo_url) payload.logo_url = d.logo_url;
   if (d.cover_url) payload.cover_image_url = d.cover_url;
+  if (d.google_maps_url) payload.google_maps_url = d.google_maps_url;
   return payload;
 };
 
