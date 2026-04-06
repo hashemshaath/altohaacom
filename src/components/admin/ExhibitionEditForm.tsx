@@ -440,7 +440,18 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   </div>
                   <div>
                     <Label className="text-xs">{t("Edition Year", "سنة الإصدار")}</Label>
-                    <Input className="h-9" type="number" value={editionYear || ""} onChange={e => setEditionYear(e.target.value ? parseInt(e.target.value) : null)} placeholder={new Date().getFullYear().toString()} min={2000} max={2100} />
+                    <Select value={editionYear ? String(editionYear) : "none"} onValueChange={v => setEditionYear(v === "none" ? null : parseInt(v))}>
+                      <SelectTrigger className="h-9"><SelectValue placeholder={t("Select year", "اختر السنة")} /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">{t("Not set", "غير محدد")}</SelectItem>
+                        {(() => {
+                          const currentYear = new Date().getFullYear();
+                          const years: number[] = [];
+                          for (let y = currentYear + 5; y >= currentYear - 20; y--) years.push(y);
+                          return years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>);
+                        })()}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label className="text-xs">{t("Edition Number", "رقم الإصدار")}</Label>
