@@ -982,6 +982,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               <ExhibitionOfficialsPanel exhibitionId={editingId || ""} />
             </section>
 
+            </div>{/* end formLocked wrapper */}
+
             {/* Bottom spacer */}
             <div className="h-6" />
           </div>
