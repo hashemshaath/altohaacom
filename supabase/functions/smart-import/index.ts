@@ -651,6 +651,14 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
     if (keywords.some(k => all.includes(k))) return { table: 'culinary_entities', sub_type: type, confidence: 0.8 };
   }
 
+  // Organizer patterns (must check before generic company/entity)
+  const organizerKeywords = ['organizer', 'event management', 'event organizer', 'exhibition organizer', 'conference organizer', 'event planner', 'event company', 'exhibitions management', 'منظم فعاليات', 'إدارة فعاليات', 'تنظيم معارض'];
+  if (organizerKeywords.some(k => all.includes(k))) return { table: 'organizers', sub_type: 'organizer', confidence: 0.85 };
+  // Check if organizer data fields suggest organizer
+  if (data.organizer_name_en && data.start_date && !all.includes('competition') && !all.includes('championship')) {
+    return { table: 'organizers', sub_type: 'organizer', confidence: 0.6 };
+  }
+
   if (data.rating || data.total_reviews) return { table: 'establishments', sub_type: 'restaurant', confidence: 0.5 };
   return { table: 'culinary_entities', sub_type: 'culinary_association', confidence: 0.3 };
 }
