@@ -3576,8 +3576,10 @@ export type Database = {
       }
       companies: {
         Row: {
+          additional_number: string | null
           address: string | null
           address_ar: string | null
+          building_number: string | null
           city: string | null
           classifications: string[] | null
           company_number: string | null
@@ -3595,6 +3597,7 @@ export type Database = {
           email: string | null
           fax: string | null
           featured_order: number | null
+          floor_number: string | null
           founded_year: number | null
           google_maps_url: string | null
           id: string
@@ -3617,8 +3620,11 @@ export type Database = {
           phone_secondary: string | null
           postal_code: string | null
           rating: number | null
+          region: string | null
+          region_ar: string | null
           registration_number: string | null
           response_time_hours: number | null
+          short_address: string | null
           social_links: Json | null
           specializations: string[] | null
           status: Database["public"]["Enums"]["company_status"] | null
@@ -3632,6 +3638,7 @@ export type Database = {
           total_orders: number | null
           total_reviews: number | null
           type: Database["public"]["Enums"]["company_type"]
+          unit_number: string | null
           updated_at: string | null
           verification_level: string | null
           verified_at: string | null
@@ -3639,8 +3646,10 @@ export type Database = {
           working_hours: Json | null
         }
         Insert: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
+          building_number?: string | null
           city?: string | null
           classifications?: string[] | null
           company_number?: string | null
@@ -3658,6 +3667,7 @@ export type Database = {
           email?: string | null
           fax?: string | null
           featured_order?: number | null
+          floor_number?: string | null
           founded_year?: number | null
           google_maps_url?: string | null
           id?: string
@@ -3680,8 +3690,11 @@ export type Database = {
           phone_secondary?: string | null
           postal_code?: string | null
           rating?: number | null
+          region?: string | null
+          region_ar?: string | null
           registration_number?: string | null
           response_time_hours?: number | null
+          short_address?: string | null
           social_links?: Json | null
           specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
@@ -3695,6 +3708,7 @@ export type Database = {
           total_orders?: number | null
           total_reviews?: number | null
           type: Database["public"]["Enums"]["company_type"]
+          unit_number?: string | null
           updated_at?: string | null
           verification_level?: string | null
           verified_at?: string | null
@@ -3702,8 +3716,10 @@ export type Database = {
           working_hours?: Json | null
         }
         Update: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
+          building_number?: string | null
           city?: string | null
           classifications?: string[] | null
           company_number?: string | null
@@ -3721,6 +3737,7 @@ export type Database = {
           email?: string | null
           fax?: string | null
           featured_order?: number | null
+          floor_number?: string | null
           founded_year?: number | null
           google_maps_url?: string | null
           id?: string
@@ -3743,8 +3760,11 @@ export type Database = {
           phone_secondary?: string | null
           postal_code?: string | null
           rating?: number | null
+          region?: string | null
+          region_ar?: string | null
           registration_number?: string | null
           response_time_hours?: number | null
+          short_address?: string | null
           social_links?: Json | null
           specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
@@ -3758,6 +3778,7 @@ export type Database = {
           total_orders?: number | null
           total_reviews?: number | null
           type?: Database["public"]["Enums"]["company_type"]
+          unit_number?: string | null
           updated_at?: string | null
           verification_level?: string | null
           verified_at?: string | null
@@ -8438,8 +8459,10 @@ export type Database = {
       }
       establishments: {
         Row: {
+          additional_number: string | null
           address: string | null
           address_ar: string | null
+          building_number: string | null
           city: string | null
           city_ar: string | null
           country_code: string | null
@@ -8450,8 +8473,11 @@ export type Database = {
           cuisine_type_ar: string | null
           description: string | null
           description_ar: string | null
+          district: string | null
+          district_ar: string | null
           email: string | null
           establishment_number: string | null
+          floor_number: string | null
           id: string
           is_active: boolean | null
           is_verified: boolean | null
@@ -8459,14 +8485,20 @@ export type Database = {
           name: string
           name_ar: string | null
           phone: string | null
+          region: string | null
+          region_ar: string | null
+          short_address: string | null
           star_rating: number | null
           type: string
+          unit_number: string | null
           updated_at: string
           website: string | null
         }
         Insert: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
+          building_number?: string | null
           city?: string | null
           city_ar?: string | null
           country_code?: string | null
@@ -8477,8 +8509,11 @@ export type Database = {
           cuisine_type_ar?: string | null
           description?: string | null
           description_ar?: string | null
+          district?: string | null
+          district_ar?: string | null
           email?: string | null
           establishment_number?: string | null
+          floor_number?: string | null
           id?: string
           is_active?: boolean | null
           is_verified?: boolean | null
@@ -8486,14 +8521,20 @@ export type Database = {
           name: string
           name_ar?: string | null
           phone?: string | null
+          region?: string | null
+          region_ar?: string | null
+          short_address?: string | null
           star_rating?: number | null
           type?: string
+          unit_number?: string | null
           updated_at?: string
           website?: string | null
         }
         Update: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
+          building_number?: string | null
           city?: string | null
           city_ar?: string | null
           country_code?: string | null
@@ -8504,8 +8545,11 @@ export type Database = {
           cuisine_type_ar?: string | null
           description?: string | null
           description_ar?: string | null
+          district?: string | null
+          district_ar?: string | null
           email?: string | null
           establishment_number?: string | null
+          floor_number?: string | null
           id?: string
           is_active?: boolean | null
           is_verified?: boolean | null
@@ -8513,8 +8557,12 @@ export type Database = {
           name?: string
           name_ar?: string | null
           phone?: string | null
+          region?: string | null
+          region_ar?: string | null
+          short_address?: string | null
           star_rating?: number | null
           type?: string
+          unit_number?: string | null
           updated_at?: string
           website?: string | null
         }
@@ -11675,8 +11723,10 @@ export type Database = {
       }
       exhibitions: {
         Row: {
+          additional_number: string | null
           address: string | null
           address_ar: string | null
+          building_number: string | null
           categories: string[] | null
           city: string | null
           country: string | null
@@ -11686,6 +11736,8 @@ export type Database = {
           currency: string | null
           description: string | null
           description_ar: string | null
+          district: string | null
+          district_ar: string | null
           documents: Json | null
           early_bird_deadline: string | null
           edition_number: number | null
@@ -11694,6 +11746,7 @@ export type Database = {
           end_date: string
           entry_details: Json | null
           exhibition_number: string | null
+          floor_number: string | null
           gallery_urls: string[] | null
           highlights: Json | null
           id: string
@@ -11718,12 +11771,16 @@ export type Database = {
           organizer_type: string | null
           organizer_user_id: string | null
           organizer_website: string | null
+          postal_code: string | null
           reasons_to_attend: Json | null
+          region: string | null
+          region_ar: string | null
           registration_deadline: string | null
           registration_url: string | null
           schedule: Json | null
           sections: Json | null
           series_id: string | null
+          short_address: string | null
           slug: string
           social_links: Json | null
           speakers: Json | null
@@ -11739,6 +11796,7 @@ export type Database = {
           title_ar: string | null
           type: Database["public"]["Enums"]["exhibition_type"]
           unique_features: Json | null
+          unit_number: string | null
           updated_at: string
           venue: string | null
           venue_ar: string | null
@@ -11749,8 +11807,10 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
+          building_number?: string | null
           categories?: string[] | null
           city?: string | null
           country?: string | null
@@ -11760,6 +11820,8 @@ export type Database = {
           currency?: string | null
           description?: string | null
           description_ar?: string | null
+          district?: string | null
+          district_ar?: string | null
           documents?: Json | null
           early_bird_deadline?: string | null
           edition_number?: number | null
@@ -11768,6 +11830,7 @@ export type Database = {
           end_date: string
           entry_details?: Json | null
           exhibition_number?: string | null
+          floor_number?: string | null
           gallery_urls?: string[] | null
           highlights?: Json | null
           id?: string
@@ -11792,12 +11855,16 @@ export type Database = {
           organizer_type?: string | null
           organizer_user_id?: string | null
           organizer_website?: string | null
+          postal_code?: string | null
           reasons_to_attend?: Json | null
+          region?: string | null
+          region_ar?: string | null
           registration_deadline?: string | null
           registration_url?: string | null
           schedule?: Json | null
           sections?: Json | null
           series_id?: string | null
+          short_address?: string | null
           slug: string
           social_links?: Json | null
           speakers?: Json | null
@@ -11813,6 +11880,7 @@ export type Database = {
           title_ar?: string | null
           type?: Database["public"]["Enums"]["exhibition_type"]
           unique_features?: Json | null
+          unit_number?: string | null
           updated_at?: string
           venue?: string | null
           venue_ar?: string | null
@@ -11823,8 +11891,10 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
+          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
+          building_number?: string | null
           categories?: string[] | null
           city?: string | null
           country?: string | null
@@ -11834,6 +11904,8 @@ export type Database = {
           currency?: string | null
           description?: string | null
           description_ar?: string | null
+          district?: string | null
+          district_ar?: string | null
           documents?: Json | null
           early_bird_deadline?: string | null
           edition_number?: number | null
@@ -11842,6 +11914,7 @@ export type Database = {
           end_date?: string
           entry_details?: Json | null
           exhibition_number?: string | null
+          floor_number?: string | null
           gallery_urls?: string[] | null
           highlights?: Json | null
           id?: string
@@ -11866,12 +11939,16 @@ export type Database = {
           organizer_type?: string | null
           organizer_user_id?: string | null
           organizer_website?: string | null
+          postal_code?: string | null
           reasons_to_attend?: Json | null
+          region?: string | null
+          region_ar?: string | null
           registration_deadline?: string | null
           registration_url?: string | null
           schedule?: Json | null
           sections?: Json | null
           series_id?: string | null
+          short_address?: string | null
           slug?: string
           social_links?: Json | null
           speakers?: Json | null
@@ -11887,6 +11964,7 @@ export type Database = {
           title_ar?: string | null
           type?: Database["public"]["Enums"]["exhibition_type"]
           unique_features?: Json | null
+          unit_number?: string | null
           updated_at?: string
           venue?: string | null
           venue_ar?: string | null
@@ -16347,6 +16425,7 @@ export type Database = {
           email: string | null
           entity_id: string | null
           fax: string | null
+          floor_number: string | null
           follower_count: number | null
           founded_year: number | null
           gallery_urls: string[] | null
@@ -16367,6 +16446,8 @@ export type Database = {
           organizer_number: string | null
           phone: string | null
           postal_code: string | null
+          region: string | null
+          region_ar: string | null
           registration_number: string | null
           services: string[] | null
           services_ar: string[] | null
@@ -16407,6 +16488,7 @@ export type Database = {
           email?: string | null
           entity_id?: string | null
           fax?: string | null
+          floor_number?: string | null
           follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
@@ -16427,6 +16509,8 @@ export type Database = {
           organizer_number?: string | null
           phone?: string | null
           postal_code?: string | null
+          region?: string | null
+          region_ar?: string | null
           registration_number?: string | null
           services?: string[] | null
           services_ar?: string[] | null
@@ -16467,6 +16551,7 @@ export type Database = {
           email?: string | null
           entity_id?: string | null
           fax?: string | null
+          floor_number?: string | null
           follower_count?: number | null
           founded_year?: number | null
           gallery_urls?: string[] | null
@@ -16487,6 +16572,8 @@ export type Database = {
           organizer_number?: string | null
           phone?: string | null
           postal_code?: string | null
+          region?: string | null
+          region_ar?: string | null
           registration_number?: string | null
           services?: string[] | null
           services_ar?: string[] | null

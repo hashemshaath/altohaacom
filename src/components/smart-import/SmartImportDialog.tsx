@@ -55,6 +55,9 @@ export interface ImportedData {
   unit_number?: string;
   district_en?: string;
   district_ar?: string;
+  region_en?: string;
+  region_ar?: string;
+  floor_number?: string;
   short_address?: string;
   national_address_en?: string;
   national_address_ar?: string;
@@ -81,6 +84,7 @@ export interface ImportedData {
   national_id?: string;
   registration_number?: string;
   license_number?: string;
+  vat_number?: string;
   founded_year?: number;
   president_name_en?: string;
   president_name_ar?: string;
