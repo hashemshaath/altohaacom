@@ -356,7 +356,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         founded_year: f.founded_year ? parseInt(f.founded_year) : null,
         social_links: Object.keys(socialLinks).length > 0 ? socialLinks : null,
         gallery_urls: f.gallery_urls.length > 0 ? f.gallery_urls : null,
-        key_contacts: f.key_contacts.length > 0 ? f.key_contacts : null,
+        key_contacts: f.key_contacts.length > 0 ? (f.key_contacts as unknown as any) : null,
       };
       if (organizerId) {
         const { error } = await supabase.from("organizers").update(payload).eq("id", organizerId);
