@@ -173,13 +173,9 @@ export const SECTION_THEMES: Record<string, SectionTheme> = {
     topBorder: true,
   },
 
-  /* ── Newsletter CTA — warm amber gradient with dark text ── */
+  /* ── Newsletter CTA — clean white ── */
   newsletter: {
-    bg: "bg-gradient-to-br from-[#FEF3C6] via-[#FDE68A] to-[#FCD34D] dark:from-[hsl(37_80%_22%)] dark:via-[hsl(37_70%_18%)] dark:to-[hsl(37_65%_14%)]",
-    overlay: (
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,white/30,transparent_60%)]" aria-hidden="true" />
-    ),
-    className: "relative overflow-hidden",
+    bg: "bg-white dark:bg-[hsl(213_22%_9%)]",
     topBorder: true,
   },
 
