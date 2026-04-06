@@ -190,6 +190,16 @@ const buildExhibitionPayload = (d: ImportedData) => {
   if (d.country_en || d.country_ar) payload.country = d.country_en || d.country_ar;
   if (d.full_address_en) payload.address = d.full_address_en;
   if (d.full_address_ar) payload.address_ar = d.full_address_ar;
+  if (d.region_en) payload.region = d.region_en;
+  if (d.region_ar) payload.region_ar = d.region_ar;
+  if (d.district_en) payload.district = d.district_en;
+  if (d.district_ar) payload.district_ar = d.district_ar;
+  if (d.postal_code) payload.postal_code = d.postal_code;
+  if (d.building_number) payload.building_number = d.building_number;
+  if (d.floor_number) payload.floor_number = d.floor_number;
+  if (d.additional_number) payload.additional_number = d.additional_number;
+  if (d.unit_number) payload.unit_number = d.unit_number;
+  if (d.short_address) payload.short_address = d.short_address;
   if (d.venue_en) payload.venue = d.venue_en;
   if (d.venue_ar) payload.venue_ar = d.venue_ar;
   if (d.organizer_phone) payload.organizer_phone = d.organizer_phone;
