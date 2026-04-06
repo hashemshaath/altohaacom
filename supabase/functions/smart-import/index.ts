@@ -461,6 +461,20 @@ ${lat && lng ? `- Coordinates: ${lat}, ${lng}` : ''}
 SEO: Write compelling keyword-rich descriptions (150-300 chars). Tags: 5-10 English SEO keywords.
 ${imageContext}
 
+SAUDI NATIONAL ADDRESS: If in Saudi Arabia, extract:
+- building_number (4 digits), additional_number (4 digits), unit_number
+- district_en/district_ar, postal_code (5 digits), short_address (e.g. RAAA1234)
+- national_address_en/ar: Full formatted address "Building No, Street, District, City, Postal Code, Additional No"
+
+EDITIONS & EVENTS: For exhibitions/competitions/events:
+- edition_year: The year of the event (e.g. 2025)
+- edition_number: The ordinal edition number (e.g. 1, 2, 3...)
+- edition_label_en/ar: Human-readable edition label (e.g. "First Edition" / "النسخة الأولى")
+- past_editions: Array of previous editions with year, visitors, exhibitors, countries counts
+- Extract organizer address details including city, country, building number, postal code
+
+COMPETITIONS: Extract all competition versions/categories, judging criteria with weights, judging committee, prizes, rounds, eligibility, participation requirements, scoring methods, dress code, equipment lists.
+
 IMPORTANT DESCRIPTION RULES:
 - description_short_en/ar: A concise 1-2 sentence summary (50-100 words) suitable for cards/listings
 - description_long_en/ar: A comprehensive detailed description (200-500 words) covering: what the event is about, its significance, history, what visitors can expect, key highlights
@@ -506,6 +520,10 @@ Return ONLY valid JSON:
   "social_media": {"instagram":null,"twitter":null,"facebook":null,"linkedin":null,"tiktok":null,"youtube":null,"snapchat":null,"whatsapp":null},
   "logo_url": null,
   "cover_url": null,
+  "building_number": null, "additional_number": null, "unit_number": null,
+  "district_en": null, "district_ar": null, "short_address": null,
+  "national_address_en": "Full Saudi National Address format in English if applicable",
+  "national_address_ar": "العنوان الوطني السعودي الكامل إن وجد",
   "venue_en": null, "venue_ar": null,
   "start_date": null, "end_date": null,
   "registration_url": null, "registration_deadline": null,
@@ -513,12 +531,35 @@ Return ONLY valid JSON:
   "organizer_name_en": null, "organizer_name_ar": null,
   "organizer_logo_url": null, "organizer_website": null,
   "organizer_email": null, "organizer_phone": null,
+  "organizer_city_en": null, "organizer_city_ar": null,
+  "organizer_country_en": null, "organizer_country_ar": null, "organizer_country_code": null,
+  "organizer_full_address_en": null, "organizer_full_address_ar": null,
+  "organizer_building_number": null, "organizer_postal_code": null,
+  "organizer_district_en": null, "organizer_district_ar": null,
   "map_url": null,
   "ticket_price": null, "is_free": null, "is_virtual": null, "virtual_link": null,
   "target_audience": [],
   "registration_fee": null,
   "rules_summary_en": null, "rules_summary_ar": null,
-  "edition_year": null,
+  "edition_year": null, "edition_number": null,
+  "edition_label_en": "e.g. First Edition, Second Edition",
+  "edition_label_ar": "مثال: النسخة الأولى، النسخة الثانية",
+  "competition_type": null,
+  "competition_versions": [],
+  "judging_criteria": [],
+  "judging_committee": [],
+  "terms_conditions_en": null, "terms_conditions_ar": null,
+  "eligibility_en": null, "eligibility_ar": null,
+  "participation_requirements_en": [], "participation_requirements_ar": [],
+  "prizes": [],
+  "competition_schedule": [],
+  "scoring_method_en": null, "scoring_method_ar": null,
+  "max_team_size": null, "min_team_size": null,
+  "allowed_entry_types": [], "blind_judging": null,
+  "competition_rounds": [],
+  "dress_code": null, "dress_code_ar": null,
+  "age_restrictions": null,
+  "equipment_provided": [], "equipment_required": [],
   "activities_en": [], "activities_ar": [],
   "reasons_to_attend": [],
   "unique_features": [],
@@ -536,7 +577,8 @@ Return ONLY valid JSON:
   "includes_seminars": null,
   "includes_training": null,
   "currency": null,
-  "early_bird_deadline": null
+  "early_bird_deadline": null,
+  "past_editions": []
 }
 
 Extract ALL data comprehensively. Services & specializations in BOTH languages. Business hours from ACTUAL data (24h format). Social media links.`;
@@ -635,12 +677,18 @@ Return ONLY valid JSON:
 {
   "name_en": null, "name_ar": null,
   "description_en": null, "description_ar": null,
+  "description_short_en": null, "description_short_ar": null,
+  "description_long_en": null, "description_long_ar": null,
   "competition_type": null, "edition_year": null,
+  "edition_number": null, "edition_label_en": null, "edition_label_ar": null,
   "start_date": null, "end_date": null,
   "registration_deadline": null, "registration_fee": null, "currency": null,
   "venue_en": null, "venue_ar": null,
   "city_en": null, "city_ar": null,
   "country_en": null, "country_ar": null, "country_code": null,
+  "building_number": null, "postal_code": null,
+  "district_en": null, "district_ar": null,
+  "national_address_en": null, "national_address_ar": null,
   "rules_summary_en": null, "rules_summary_ar": null,
   "terms_conditions_en": null, "terms_conditions_ar": null,
   "eligibility_en": null, "eligibility_ar": null,
@@ -659,11 +707,14 @@ Return ONLY valid JSON:
   "equipment_provided": [], "equipment_required": [],
   "organizer_name_en": null, "organizer_name_ar": null,
   "organizer_website": null, "organizer_email": null, "organizer_phone": null,
+  "organizer_city_en": null, "organizer_city_ar": null,
+  "organizer_country_en": null, "organizer_country_ar": null,
   "phone": null, "email": null, "website": null, "registration_url": null,
   "cover_url": null, "logo_url": null,
   "is_virtual": null, "virtual_link": null,
   "social_media": {"instagram":null,"twitter":null,"facebook":null},
-  "tags": []
+  "tags": [],
+  "past_editions": []
 }`;
 
   const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 45000);
