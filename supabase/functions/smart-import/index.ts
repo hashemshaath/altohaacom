@@ -543,6 +543,8 @@ Return ONLY valid JSON:
   "logo_url": null,
   "cover_url": null,
   "building_number": null, "additional_number": null, "unit_number": null,
+  "floor_number": null,
+  "region_en": null, "region_ar": null,
   "district_en": null, "district_ar": null, "short_address": null,
   "national_address_en": "Full Saudi National Address format in English if applicable",
   "national_address_ar": "العنوان الوطني السعودي الكامل إن وجد",
