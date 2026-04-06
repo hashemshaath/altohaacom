@@ -42,6 +42,57 @@ const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummar
 const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
 const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
 
+function RecentImportsWidget({ isAr }: { isAr: boolean }) {
+  const { data: imports } = useQuery({
+    queryKey: ["admin-recent-imports"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("bulk_imports")
+        .select("id, entity_type, status, total_rows, processed_rows, created_at, file_name")
+        .order("created_at", { ascending: false })
+        .limit(5);
+      return data || [];
+    },
+    staleTime: 1000 * 60 * 5,
+  });
+
+  if (!imports || imports.length === 0) return null;
+
+  return (
+    <Card className="rounded-xl">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-sm font-semibold flex items-center gap-2">
+            <Zap className="h-4 w-4 text-chart-2" />
+            {isAr ? "آخر عمليات الاستيراد" : "Recent Imports"}
+          </CardTitle>
+          <Button variant="ghost" size="sm" className="text-xs h-7 px-2" asChild>
+            <Link to="/admin/smart-import">{isAr ? "استيراد ذكي" : "Smart Import"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
+          </Button>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {imports.map((imp) => (
+            <div key={imp.id} className="flex items-center justify-between rounded-lg border border-border/30 p-2.5">
+              <div className="flex items-center gap-2.5">
+                <Badge variant={imp.status === "completed" ? "default" : imp.status === "failed" ? "destructive" : "outline"} className="text-[9px] h-4 capitalize">
+                  {imp.status}
+                </Badge>
+                <span className="text-xs font-medium">{imp.entity_type}</span>
+                {imp.total_rows && <span className="text-[10px] text-muted-foreground">({imp.processed_rows || 0}/{imp.total_rows})</span>}
+              </div>
+              <span className="text-[10px] text-muted-foreground tabular-nums">
+                {format(new Date(imp.created_at), "MMM d, HH:mm")}
+              </span>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 function LazySection({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
   const { ref, inView } = useInViewport("400px 0px");
   return (
@@ -452,6 +503,9 @@ export default function AdminDashboard() {
 
       {/* ── Upcoming Events Preview ── */}
       <UpcomingEventsPreview isAr={isAr} />
+
+      {/* ── Recent Smart Imports ── */}
+      <RecentImportsWidget isAr={isAr} />
 
       {/* Command Bar */}
       <Suspense fallback={null}><AdminCommandBar /></Suspense>
