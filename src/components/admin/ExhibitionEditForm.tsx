@@ -831,7 +831,136 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               data-section="location"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
-              <SectionHeader icon={MapPin} title={t("Location", "الموقع")} status={getSectionStatus("location")} />
+              <SectionHeader icon={MapPin} title={t("Location & Venue", "الموقع والمقر")} status={getSectionStatus("location")} />
+
+              <div className="flex items-center gap-3">
+                <Switch checked={form.is_virtual || false} onCheckedChange={v => updateField("is_virtual", v)} />
+                <Label className="flex items-center gap-1.5 text-xs">
+                  <Globe className="h-3.5 w-3.5" />
+                  {t("Virtual Event", "حدث افتراضي")}
+                </Label>
+              </div>
+
+              {form.is_virtual ? (
+                <FieldGroup label={t("Virtual Event Link", "رابط الحدث الافتراضي")}>
+                  <Input className="h-9 max-w-md" value={form.virtual_link || ""} onChange={e => updateField("virtual_link", e.target.value)} placeholder="https://zoom.us/..." />
+                </FieldGroup>
+              ) : (
+                <>
+                  {(() => {
+                    const currentYear = new Date().getFullYear();
+                    const canAssignVenue = !editionYear || (editionYear >= currentYear && editionYear <= currentYear + 1);
+                    return (
+                      <div className={cn(!canAssignVenue && "opacity-50 pointer-events-none")}>
+                        <VenueSearchSelector
+                          value={selectedVenue}
+                          onChange={setSelectedVenue}
+                          onVenueSelected={(v) => {
+                            updateField("venue", v.name);
+                            updateField("venue_ar", v.nameAr || "");
+                            if (v.city) updateField("city", v.city);
+                            if (v.country) updateField("country", v.country);
+                            if (v.mapUrl) updateField("map_url", v.mapUrl);
+                          }}
+                          isAr={isAr}
+                          disabled={!canAssignVenue}
+                        />
+                        {!canAssignVenue && (
+                          <p className="text-[10px] text-muted-foreground mt-1">
+                            {t("Venue can only be assigned for current or next year", "يمكن تعيين المقر فقط للسنة الحالية أو القادمة")}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  <div className="rounded-xl bg-muted/20 p-4 space-y-3 mt-2">
+                    <p className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3" />
+                      {t("Location Details", "تفاصيل الموقع")}
+                    </p>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <FieldGroup label={t("Venue (EN)", "المكان (EN)")} aiSlot={<AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />}>
+                        <Input className="h-9" value={form.venue || ""} onChange={e => updateField("venue", e.target.value)} />
+                      </FieldGroup>
+                      <FieldGroup label={t("Venue (AR)", "المكان (AR)")} aiSlot={<AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />}>
+                        <Input className="h-9" value={form.venue_ar || ""} onChange={e => updateField("venue_ar", e.target.value)} dir="rtl" />
+                      </FieldGroup>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <FieldGroup label={t("City", "المدينة")}>
+                        <Input className="h-9" value={form.city || ""} onChange={e => updateField("city", e.target.value)} />
+                      </FieldGroup>
+                      <FieldGroup label={t("Country", "الدولة")}>
+                        <Input className="h-9" value={form.country || ""} onChange={e => updateField("country", e.target.value)} />
+                      </FieldGroup>
+                    </div>
+                    <FieldGroup label={t("Map URL", "رابط الخريطة")}>
+                      <Input className="h-9" value={form.map_url || ""} onChange={e => updateField("map_url", e.target.value)} placeholder="https://maps.google.com/..." />
+                    </FieldGroup>
+                    {form.map_url && (
+                      <a href={form.map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
+                        <MapPin className="h-3 w-3" />
+                        {t("View on Map", "عرض على الخريطة")}
+                      </a>
+                    )}
+                  </div>
+                </>
+              )}
+            </section>
+
+            {/* ═══ Section: Organizer ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["organizer"] = el; }}
+              data-section="organizer"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
+            >
+              <SectionHeader icon={Building} title={t("Organizer", "الجهة المنظمة")} status={getSectionStatus("organizer")} />
+
+              <OrganizerSearchSelector
+                value={organizer}
+                onChange={(val) => {
+                  setOrganizer(val);
+                  if (val) {
+                    updateField("organizer_name", val.name);
+                    updateField("organizer_name_ar", val.nameAr);
+                    updateField("organizer_email", val.email || "");
+                    updateField("organizer_phone", val.phone || "");
+                    updateField("organizer_website", val.website || "");
+                    if (val.country) {
+                      const c = countries?.find(co => co.code === val.country || co.name === val.country);
+                      if (c?.currency_code) setCurrency(c.currency_code);
+                    }
+                  } else {
+                    updateField("organizer_name", "");
+                    updateField("organizer_name_ar", "");
+                    updateField("organizer_email", "");
+                    updateField("organizer_phone", "");
+                    updateField("organizer_website", "");
+                  }
+                }}
+                label={t("Search & Select Organizer", "البحث واختيار الجهة المنظمة")}
+              />
+              <div className="grid gap-3 sm:grid-cols-2">
+                <FieldGroup label={t("Organizer Name (EN)", "اسم المنظم (EN)")}>
+                  <Input className="h-9" value={form.organizer_name || ""} onChange={e => updateField("organizer_name", e.target.value)} placeholder={t("Organizer name", "اسم الجهة المنظمة")} />
+                </FieldGroup>
+                <FieldGroup label={t("Organizer Name (AR)", "اسم المنظم (AR)")}>
+                  <Input className="h-9" value={form.organizer_name_ar || ""} onChange={e => updateField("organizer_name_ar", e.target.value)} dir="rtl" />
+                </FieldGroup>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <FieldGroup label={t("Email", "البريد الإلكتروني")}>
+                  <Input className="h-9" type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
+                </FieldGroup>
+                <FieldGroup label={t("Phone", "رقم الهاتف")}>
+                  <Input className="h-9" value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
+                </FieldGroup>
+                <FieldGroup label={t("Website", "الموقع الإلكتروني")}>
+                  <Input className="h-9" value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
+                </FieldGroup>
+              </div>
+            </section>
 
               <div className="flex items-center gap-3">
                 <Switch checked={form.is_virtual || false} onCheckedChange={v => updateField("is_virtual", v)} />
