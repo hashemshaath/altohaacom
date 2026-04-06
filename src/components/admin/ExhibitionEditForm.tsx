@@ -475,7 +475,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                           ][n - 1] || `${n}`;
                           return (
                             <SelectItem key={n} value={String(n)}>
-                              {isAr ? `الدورة ${ordinalAr}` : `${ordinalEn} Edition`}
+                              {isAr ? `النسخة ${ordinalAr}` : `${ordinalEn} Edition`}
                             </SelectItem>
                           );
                         })}
@@ -486,7 +486,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                     <div className="flex items-end">
                       <Badge variant="outline" className="text-xs gap-1 whitespace-nowrap">
                         <Info className="h-3 w-3" />
-                        {form.title || "..."}{editionYear ? ` ${editionYear}` : ""}{editionNumber ? ` — ${isAr ? `الدورة ${editionNumber}` : `#${editionNumber}`}` : ""}
+                        {form.title || "..."}{editionYear ? ` ${editionYear}` : ""}{editionNumber ? ` — ${isAr ? `النسخة ${editionNumber}` : `Edition #${editionNumber}`}` : ""}
                       </Badge>
                     </div>
                   )}
