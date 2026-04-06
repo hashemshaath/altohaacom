@@ -394,7 +394,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Basic Info ═══ */}
             <section
-              ref={el => { sectionRefs.current["basic"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["basic"] = el; }}
               data-section="basic"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
@@ -494,7 +494,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Date & Schedule ═══ */}
             <section
-              ref={el => { sectionRefs.current["datetime"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["datetime"] = el; }}
               data-section="datetime"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
@@ -563,7 +563,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Location ═══ */}
             <section
-              ref={el => { sectionRefs.current["location"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["location"] = el; }}
               data-section="location"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
@@ -608,7 +608,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Organizer ═══ */}
             <section
-              ref={el => { sectionRefs.current["organizer"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["organizer"] = el; }}
               data-section="organizer"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
@@ -649,7 +649,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Tickets ═══ */}
             <section
-              ref={el => { sectionRefs.current["tickets"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["tickets"] = el; }}
               data-section="tickets"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
@@ -679,7 +679,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Links ═══ */}
             <section
-              ref={el => { sectionRefs.current["links"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["links"] = el; }}
               data-section="links"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
@@ -696,7 +696,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Media ═══ */}
             <section
-              ref={el => { sectionRefs.current["media"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["media"] = el; }}
               data-section="media"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
@@ -739,7 +739,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
             {/* ═══ Section: Team ═══ */}
             <section
-              ref={el => { sectionRefs.current["team"] = el; }}
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["team"] = el; }}
               data-section="team"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
