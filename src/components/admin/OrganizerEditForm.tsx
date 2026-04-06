@@ -260,14 +260,24 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
   // Load linked exhibitions
   const { data: linkedExhibitions } = useQuery({
-    queryKey: ["organizer-exhibitions", organizerId],
+    queryKey: ["organizer-exhibitions", organizerId, orgData?.name],
     queryFn: async () => {
       if (!organizerId) return [];
-      const { data } = await supabase.from("exhibitions")
+      // First try by ID
+      const { data: byId } = await supabase.from("exhibitions")
         .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
         .or(`organizer_id.eq.${organizerId},organizer_entity_id.eq.${organizerId}`)
         .order("start_date", { ascending: false }).limit(20);
-      return data || [];
+      if (byId && byId.length > 0) return byId;
+      // Fallback: match by organizer name
+      if (orgData?.name) {
+        const { data: byName } = await supabase.from("exhibitions")
+          .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
+          .or(`organizer_name.ilike.${orgData.name},organizer_name_ar.ilike.${orgData.name_ar || ""}`)
+          .order("start_date", { ascending: false }).limit(20);
+        return byName || [];
+      }
+      return [];
     },
     enabled: !!organizerId,
   });
