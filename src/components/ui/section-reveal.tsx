@@ -71,4 +71,4 @@ export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(func
       {children}
     </div>
   );
-}
+});
