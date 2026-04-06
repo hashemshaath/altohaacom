@@ -65,16 +65,12 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
     staleTime: 1000 * 60 * 10,
   });
 
-  const members = (stats as any)?.members ?? 0;
-  const exhibitions = (stats as any)?.exhibitions ?? 0;
-  const competitions = (stats as any)?.competitions ?? 0;
-  const organizers = (stats as any)?.organizers ?? 0;
-
+  const s = stats as any;
   const badges = [
-    { icon: Shield, label: isAr ? "أعضاء" : "Members", sub: members > 0 ? `${members}+` : "—" },
-    { icon: Globe, label: isAr ? "معارض" : "Exhibitions", sub: exhibitions > 0 ? `${exhibitions}+` : "—" },
-    { icon: Award, label: isAr ? "مسابقات" : "Competitions", sub: competitions > 0 ? `${competitions}+` : "—" },
-    { icon: Building2, label: isAr ? "منظمون" : "Organizers", sub: organizers > 0 ? `${organizers}+` : "—" },
+    { icon: Shield, label: isAr ? "أعضاء" : "Members", sub: s?.members > 0 ? `${s.members}+` : "—" },
+    { icon: Globe, label: isAr ? "معارض" : "Exhibitions", sub: s?.exhibitions > 0 ? `${s.exhibitions}+` : "—" },
+    { icon: Award, label: isAr ? "مسابقات" : "Competitions", sub: s?.competitions > 0 ? `${s.competitions}+` : "—" },
+    { icon: Building2, label: isAr ? "منظمون" : "Organizers", sub: s?.organizers > 0 ? `${s.organizers}+` : "—" },
   ];
 
   return (

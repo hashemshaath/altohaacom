@@ -19,6 +19,8 @@ const STATUS_STYLES: Record<string, { en: string; ar: string; class: string }> =
   registration_open: { en: "Open", ar: "مفتوح", class: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
   upcoming: { en: "Upcoming", ar: "قادم", class: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
   in_progress: { en: "Live", ar: "مباشر", class: "bg-destructive/10 text-destructive border-destructive/20" },
+  active: { en: "Active", ar: "نشط", class: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
+  completed: { en: "Completed", ar: "منتهي", class: "bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20" },
 };
 
 const CompetitionsSection = memo(function CompetitionsSection() {
@@ -54,13 +56,17 @@ const CompetitionsSection = memo(function CompetitionsSection() {
   const { data: exhibitions = [] } = useQuery({
     queryKey: ["home-exhibitions-minimal"],
     queryFn: async () => {
+      // Show active/upcoming first, then recently completed
       const { data } = await supabase
         .from("exhibitions")
         .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug, venue, venue_ar")
-        .in("status", ["upcoming", "active"])
+        .in("status", ["upcoming", "active", "completed"])
         .order("start_date", { ascending: true })
-        .limit(12);
-      return data || [];
+        .limit(20);
+      // Prioritize: active/upcoming first, then completed (most recent)
+      const active = (data || []).filter(e => e.status !== "completed");
+      const completed = (data || []).filter(e => e.status === "completed").reverse().slice(0, 4);
+      return [...active, ...completed].slice(0, 12);
     },
     staleTime: 1000 * 60 * 5,
   });

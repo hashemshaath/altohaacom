@@ -46,9 +46,9 @@ export function useHomepageDataPrefetch() {
           supabase
             .from("exhibitions")
             .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug, venue, venue_ar")
-            .in("status", ["upcoming", "active"])
+            .in("status", ["upcoming", "active", "completed"])
             .order("start_date", { ascending: true })
-            .limit(12),
+            .limit(20),
 
           // 3. articles — used by ArticlesSection
           supabase
@@ -154,9 +154,11 @@ export function useHomepageDataPrefetch() {
           })));
         }
 
-        // Exhibitions
+        // Exhibitions — prioritize active/upcoming, then recent completed
         if (exhibitions.data) {
-          qc.setQueryData(["home-exhibitions-minimal"], exhibitions.data);
+          const active = exhibitions.data.filter(e => (e as any).status !== "completed");
+          const completed = exhibitions.data.filter(e => (e as any).status === "completed").reverse().slice(0, 4);
+          qc.setQueryData(["home-exhibitions-minimal"], [...active, ...completed].slice(0, 12));
         }
 
         // Articles
