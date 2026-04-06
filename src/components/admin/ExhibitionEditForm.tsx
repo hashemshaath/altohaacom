@@ -182,60 +182,78 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
     enabled: !!selectedSeriesId && !!editionYear,
   });
 
-  // Load existing edition data into form when found
+  // React to edition query results: load existing or prepare for new
   useEffect(() => {
-    if (!existingEdition) return;
-    // Update the active editing ID to the found edition's ID
-    setActiveEditingId(existingEdition.id);
-    setForm({
-      title: existingEdition.title, title_ar: existingEdition.title_ar, slug: existingEdition.slug,
-      description: existingEdition.description, description_ar: existingEdition.description_ar,
-      type: existingEdition.type, status: existingEdition.status,
-      start_date: existingEdition.start_date?.slice(0, 16), end_date: existingEdition.end_date?.slice(0, 16),
-      venue: existingEdition.venue, venue_ar: existingEdition.venue_ar, city: existingEdition.city, country: existingEdition.country,
-      is_virtual: existingEdition.is_virtual, virtual_link: existingEdition.virtual_link,
-      organizer_name: existingEdition.organizer_name, organizer_name_ar: existingEdition.organizer_name_ar,
-      organizer_email: existingEdition.organizer_email, organizer_phone: existingEdition.organizer_phone,
-      organizer_website: existingEdition.organizer_website,
-      registration_url: existingEdition.registration_url, website_url: existingEdition.website_url, map_url: existingEdition.map_url,
-      ticket_price: existingEdition.ticket_price, ticket_price_ar: existingEdition.ticket_price_ar,
-      is_free: existingEdition.is_free, max_attendees: existingEdition.max_attendees, is_featured: existingEdition.is_featured,
-      cover_image_url: existingEdition.cover_image_url,
-      registration_deadline: existingEdition.registration_deadline?.slice(0, 16),
-    });
-    setEditionNumber(existingEdition.edition_number || null);
-    setCurrency(existingEdition.currency || "SAR");
-    setIncludesCompetitions(existingEdition.includes_competitions || false);
-    setIncludesTraining(existingEdition.includes_training || false);
-    setIncludesSeminars(existingEdition.includes_seminars || false);
-    setTagsInput((existingEdition.tags || []).join(", "));
-    setAudienceInput((existingEdition.target_audience || []).join(", "));
-    if (existingEdition.organizer_entity_id || existingEdition.organizer_company_id || existingEdition.organizer_user_id) {
-      setOrganizer({
-        type: (existingEdition.organizer_type as "entity" | "company" | "chef" | "custom") || "custom",
-        entityId: existingEdition.organizer_entity_id || null,
-        companyId: existingEdition.organizer_company_id || null,
-        userId: existingEdition.organizer_user_id || null,
-        name: existingEdition.organizer_name || "",
-        nameAr: existingEdition.organizer_name_ar || "",
-        email: existingEdition.organizer_email || undefined,
-        phone: existingEdition.organizer_phone || undefined,
-        website: existingEdition.organizer_website || undefined,
-        logoUrl: existingEdition.organizer_logo_url || undefined,
-        country: existingEdition.country || undefined,
-      });
-    }
-    setEditionResolved(true);
-    setEditionConfirmed(true);
-  }, [existingEdition]);
+    if (!selectedSeriesId || !editionYear || editionLoading) return;
 
-  // When no existing edition and user hasn't confirmed yet, reset form for new edition
-  useEffect(() => {
-    if (selectedSeriesId && editionYear && !existingEdition && !editionLoading && !editionConfirmed) {
+    if (existingEdition) {
+      // Load existing edition data into form
+      setActiveEditingId(existingEdition.id);
+      setForm({
+        title: existingEdition.title, title_ar: existingEdition.title_ar, slug: existingEdition.slug,
+        description: existingEdition.description, description_ar: existingEdition.description_ar,
+        type: existingEdition.type, status: existingEdition.status,
+        start_date: existingEdition.start_date?.slice(0, 16), end_date: existingEdition.end_date?.slice(0, 16),
+        venue: existingEdition.venue, venue_ar: existingEdition.venue_ar, city: existingEdition.city, country: existingEdition.country,
+        is_virtual: existingEdition.is_virtual, virtual_link: existingEdition.virtual_link,
+        organizer_name: existingEdition.organizer_name, organizer_name_ar: existingEdition.organizer_name_ar,
+        organizer_email: existingEdition.organizer_email, organizer_phone: existingEdition.organizer_phone,
+        organizer_website: existingEdition.organizer_website,
+        registration_url: existingEdition.registration_url, website_url: existingEdition.website_url, map_url: existingEdition.map_url,
+        ticket_price: existingEdition.ticket_price, ticket_price_ar: existingEdition.ticket_price_ar,
+        is_free: existingEdition.is_free, max_attendees: existingEdition.max_attendees, is_featured: existingEdition.is_featured,
+        cover_image_url: existingEdition.cover_image_url,
+        registration_deadline: existingEdition.registration_deadline?.slice(0, 16),
+      });
+      setEditionNumber(existingEdition.edition_number || null);
+      setCurrency(existingEdition.currency || "SAR");
+      setIncludesCompetitions(existingEdition.includes_competitions || false);
+      setIncludesTraining(existingEdition.includes_training || false);
+      setIncludesSeminars(existingEdition.includes_seminars || false);
+      setTagsInput((existingEdition.tags || []).join(", "));
+      setAudienceInput((existingEdition.target_audience || []).join(", "));
+      if (existingEdition.organizer_entity_id || existingEdition.organizer_company_id || existingEdition.organizer_user_id) {
+        setOrganizer({
+          type: (existingEdition.organizer_type as "entity" | "company" | "chef" | "custom") || "custom",
+          entityId: existingEdition.organizer_entity_id || null,
+          companyId: existingEdition.organizer_company_id || null,
+          userId: existingEdition.organizer_user_id || null,
+          name: existingEdition.organizer_name || "",
+          nameAr: existingEdition.organizer_name_ar || "",
+          email: existingEdition.organizer_email || undefined,
+          phone: existingEdition.organizer_phone || undefined,
+          website: existingEdition.organizer_website || undefined,
+          logoUrl: existingEdition.organizer_logo_url || undefined,
+          country: existingEdition.country || undefined,
+        });
+      } else {
+        setOrganizer(null);
+      }
+      setEditionResolved(true);
+      setEditionConfirmed(true);
+    } else {
+      // No edition found for this year — reset form and lock
       setActiveEditingId(null);
       setEditionResolved(false);
+      setEditionConfirmed(false);
+      // Keep series defaults but clear edition-specific data
+      const series = seriesList?.find(s => s.id === selectedSeriesId);
+      setForm({
+        ...emptyForm,
+        venue: series?.default_venue || "",
+        venue_ar: series?.default_venue_ar || "",
+        city: series?.default_city || "",
+        country: series?.default_country || "",
+        organizer_name: series?.default_organizer_name || "",
+        organizer_name_ar: series?.default_organizer_name_ar || "",
+        organizer_email: series?.default_organizer_email || "",
+        cover_image_url: series?.cover_image_url || "",
+      });
+      setEditionNumber(null);
+      setOrganizer(null);
+      if (series?.tags) setTagsInput(series.tags.join(", "));
     }
-  }, [selectedSeriesId, editionYear, existingEdition, editionLoading, editionConfirmed]);
+  }, [selectedSeriesId, editionYear, existingEdition, editionLoading, seriesList]);
 
   const editionHasData = !!existingEdition && !editionLoading;
 
