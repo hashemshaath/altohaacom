@@ -62,6 +62,24 @@ function HomeEmergencySections({ language }: { language: string }) {
 function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
   const { data: stats } = useQuery({
     queryKey: ["home-stats"],
+    queryFn: async () => {
+      const results = await Promise.allSettled([
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("competitions").select("id", { count: "exact", head: true }),
+        supabase.from("culinary_entities").select("id", { count: "exact", head: true }),
+        supabase.from("exhibitions").select("id", { count: "exact", head: true }),
+        supabase.from("organizers").select("id", { count: "exact", head: true }),
+      ]);
+      const getCount = (r: PromiseSettledResult<any>) =>
+        r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
+      return {
+        members: getCount(results[0]),
+        competitions: getCount(results[1]),
+        entities: getCount(results[2]),
+        exhibitions: getCount(results[3]),
+        organizers: getCount(results[4]),
+      };
+    },
     staleTime: 1000 * 60 * 10,
   });
 
