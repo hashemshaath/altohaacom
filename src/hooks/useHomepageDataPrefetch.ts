@@ -48,7 +48,7 @@ export function useHomepageDataPrefetch() {
             .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug, venue, venue_ar")
             .in("status", ["upcoming", "active"])
             .order("start_date", { ascending: true })
-            .limit(6),
+            .limit(12),
 
           // 3. articles — used by ArticlesSection
           supabase
@@ -98,11 +98,12 @@ export function useHomepageDataPrefetch() {
             .order("featured_order", { ascending: true, nullsFirst: false })
             .limit(8),
 
-          // 9. profiles (featured chefs fallback)
+          // 9. profiles (featured chefs fallback - show all professional chefs)
           supabase
             .from("profiles")
-            .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality")
-            .eq("is_verified", true)
+            .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality, account_type")
+            .in("account_type", ["professional"])
+            .order("is_verified", { ascending: false })
             .order("loyalty_points", { ascending: false, nullsFirst: false })
             .limit(8),
 

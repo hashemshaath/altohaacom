@@ -33,6 +33,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
   const { data: chefs = [], isLoading } = useQuery({
     queryKey: ["featured-chefs-home", itemCount],
     queryFn: async () => {
+      // Try ranked chefs first
       const { data: ranked } = await supabase
         .from("chef_rankings")
         .select("user_id, total_points, gold_medals, silver_medals, bronze_medals, rank")
@@ -50,10 +51,12 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
         return ranked.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
       }
 
+      // Fallback: show all professional chefs, prioritizing verified ones
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality")
-        .eq("is_verified", true)
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality, account_type")
+        .in("account_type", ["professional"])
+        .order("is_verified", { ascending: false })
         .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(itemCount);
       return (profiles || []).map((p) => ({

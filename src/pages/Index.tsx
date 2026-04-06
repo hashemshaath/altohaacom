@@ -13,6 +13,8 @@ import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 import { Shield, Globe, Award } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 /* ─── Emergency Fallbacks ─── */
 
@@ -55,13 +57,23 @@ function HomeEmergencySections({ language }: { language: string }) {
   );
 }
 
-/* ─── Trust Badges ─── */
+/* ─── Trust Badges (Real Data) ─── */
 
 function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
+  const { data: stats } = useQuery({
+    queryKey: ["home-stats"],
+    staleTime: 1000 * 60 * 10,
+  });
+
+  const members = (stats as any)?.members ?? 0;
+  const exhibitions = (stats as any)?.exhibitions ?? 0;
+  const competitions = (stats as any)?.competitions ?? 0;
+  const totalEvents = exhibitions + competitions;
+
   const badges = [
-    { icon: Shield, label: isAr ? "موثوقة" : "Trusted", sub: isAr ? "+50K طاهٍ" : "50K+ Chefs" },
-    { icon: Globe, label: isAr ? "عالمية" : "Global", sub: isAr ? "+120 دولة" : "120+ Countries" },
-    { icon: Award, label: isAr ? "معتمدة" : "Certified", sub: isAr ? "+500 فعالية" : "500+ Events" },
+    { icon: Shield, label: isAr ? "أعضاء" : "Members", sub: members > 0 ? `${members}+` : "—" },
+    { icon: Globe, label: isAr ? "معارض" : "Exhibitions", sub: exhibitions > 0 ? `${exhibitions}+` : "—" },
+    { icon: Award, label: isAr ? "فعاليات" : "Events", sub: totalEvents > 0 ? `${totalEvents}+` : "—" },
   ];
 
   return (
