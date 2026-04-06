@@ -700,7 +700,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
             <div className="mt-5 pb-16">
               {/* ═══ Identity Tab ═══ */}
               <TabsContent value="identity" className="space-y-6 mt-0">
-                <SectionHeader icon={Building2} title={isAr ? "هوية المنظم" : "Organizer Identity"} desc={isAr ? "الاسم والوصف والرابط المختصر" : "Name, description & URL slug"} />
+                <SectionHeader icon={Building2} title={isAr ? "معلومات المنظم" : "Organizer Information"} desc={isAr ? "الاسم والوصف والرابط المختصر" : "Name, description & URL slug"} />
 
                 {/* Quick Summary Card for existing organizers */}
                 {organizerId && orgData && (
