@@ -87,7 +87,8 @@ const TABS = [
   { id: "details", icon: Briefcase, en: "Details", ar: "التفاصيل" },
   { id: "social", icon: Globe, en: "Social", ar: "اجتماعي" },
   { id: "settings", icon: Shield, en: "Settings", ar: "إعدادات" },
-  { id: "exhibitions", icon: BarChart3, en: "Events", ar: "المعارض" },
+  { id: "exhibitions", icon: Calendar, en: "Events", ar: "المعارض" },
+  { id: "analytics", icon: TrendingUp, en: "Analytics", ar: "التحليلات" },
   { id: "notes", icon: StickyNote, en: "Notes", ar: "ملاحظات" },
 ];
 
