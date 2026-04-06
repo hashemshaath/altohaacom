@@ -71,6 +71,7 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
     { icon: Globe, label: isAr ? "معارض" : "Exhibitions", sub: s?.exhibitions > 0 ? `${s.exhibitions}+` : "—" },
     { icon: Award, label: isAr ? "مسابقات" : "Competitions", sub: s?.competitions > 0 ? `${s.competitions}+` : "—" },
     { icon: Building2, label: isAr ? "منظمون" : "Organizers", sub: s?.organizers > 0 ? `${s.organizers}+` : "—" },
+    { icon: Globe, label: isAr ? "جمعيات" : "Associations", sub: s?.entities > 0 ? `${s.entities}+` : "—" },
   ];
 
   return (

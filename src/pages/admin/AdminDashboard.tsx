@@ -61,9 +61,9 @@ function UpcomingEventsPreview({ isAr }: { isAr: boolean }) {
     queryFn: async () => {
       const now = new Date().toISOString();
       const [{ data: exh }, { data: comp }] = await Promise.all([
-        supabase.from("exhibitions").select("id, title, title_ar, start_date, city, country, status, slug")
+        supabase.from("exhibitions").select("id, title, title_ar, start_date, city, country, status, slug, edition_year")
           .gte("start_date", now).in("status", ["upcoming", "active"]).order("start_date").limit(4),
-        supabase.from("competitions").select("id, title, title_ar, competition_start, city, country, status")
+        supabase.from("competitions").select("id, title, title_ar, competition_start, city, country, status, edition_year")
           .gte("competition_start", now).in("status", ["upcoming", "registration_open", "in_progress"]).order("competition_start").limit(4),
       ]);
       const all = [
@@ -110,7 +110,12 @@ function UpcomingEventsPreview({ isAr }: { isAr: boolean }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
-                    {isAr ? (ev.title_ar || ev.title) : ev.title}
+                    {(() => {
+                      const title = isAr ? (ev.title_ar || ev.title) : ev.title;
+                      const year = (ev as any).edition_year;
+                      if (!year || title.includes(String(year))) return title;
+                      return `${title} ${year}`;
+                    })()}
                   </p>
                   <div className="flex items-center gap-1.5 mt-1">
                     <Badge variant="outline" className="text-[8px] h-4 px-1">
@@ -267,10 +272,10 @@ export default function AdminDashboard() {
   const quickActions = useMemo(() => [
     { title: isAr ? "إدارة المستخدمين" : "Users", icon: Users, link: "/admin/users" },
     { title: isAr ? "المنظمون" : "Organizers", icon: Building2, link: "/admin/organizers" },
+    { title: isAr ? "المعارض" : "Exhibitions", icon: Landmark, link: "/admin/exhibitions" },
+    { title: isAr ? "المسابقات" : "Competitions", icon: Trophy, link: "/admin/competitions" },
     { title: isAr ? "إدارة الأدوار" : "Roles", icon: Shield, link: "/admin/roles" },
-    { title: isAr ? "العضويات" : "Memberships", icon: CreditCard, link: "/admin/memberships" },
     { title: isAr ? "مراجعة المحتوى" : "Moderation", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
-    { title: isAr ? "مسابقة جديدة" : "New Competition", icon: Plus, link: "/admin/competitions" },
     { title: isAr ? "إرسال إشعار" : "Notifications", icon: MessageSquare, link: "/admin/notifications" },
     { title: isAr ? "الإعدادات" : "Settings", icon: Settings, link: "/admin/settings" },
   ], [isAr, stats?.pendingReports]);
