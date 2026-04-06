@@ -123,7 +123,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
-  const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const logoRef = useRef<HTMLInputElement>(null);
   const coverRef = useRef<HTMLInputElement>(null);
 
