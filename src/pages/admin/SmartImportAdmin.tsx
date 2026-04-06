@@ -901,6 +901,11 @@ export default function SmartImportAdmin() {
           };
           const { data: inserted } = await (supabase as any).from("competitions").insert(payload).select("id").single();
           recordId = inserted?.id;
+        } else if (tbl === 'organizers') {
+          const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
+          const payload = { ...buildOrganizerPayload(d), name: d.name_en || name, slug, status: 'active', created_by: user?.id || null };
+          const { data: inserted } = await supabase.from("organizers").insert(payload).select("id").single();
+          recordId = inserted?.id;
         } else {
           const payload = { ...buildEstablishmentPayload(d), name: d.name_en || name, type: suggestion.sub_type, is_active: true, is_verified: false, created_by: user?.id || null };
           const { data: inserted } = await supabase.from("establishments").insert(payload).select("id").single();

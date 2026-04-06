@@ -1072,6 +1072,54 @@ const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
         />
       </CardContent>
     </Card>
+
+    {/* Organizer Logo */}
+    {details.organizer_logo_url && (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-1.5">
+            <Users className="h-4 w-4" />
+            {isAr ? "شعار المنظم" : "Organizer Logo"}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ImagePreviewEditor
+            label={isAr ? "شعار المنظم" : "Organizer Logo"}
+            value={details.organizer_logo_url}
+            fieldKey="organizer_logo_url"
+            onUpdate={onFieldUpdate || (() => {})}
+            aspectRatio="square"
+            isAr={isAr}
+            readOnly={!editing && !onFieldUpdate}
+          />
+        </CardContent>
+      </Card>
+    )}
+
+    {/* Gallery */}
+    {details.gallery_urls && details.gallery_urls.length > 0 && (
+      <Card className="lg:col-span-2">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm flex items-center gap-1.5">
+            <ImageIcon className="h-4 w-4" />
+            {isAr ? "معرض الصور" : "Gallery"} 
+            <Badge variant="secondary" className="text-[10px]">{details.gallery_urls.length}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {details.gallery_urls.map((url, i) => (
+              <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="group relative aspect-video rounded-xl overflow-hidden border bg-accent/20 hover:ring-2 hover:ring-primary/30 transition-all">
+                <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                  <ExternalLink className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                </div>
+              </a>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    )}
   </div>
 ));
 MediaTab.displayName = "MediaTab";
