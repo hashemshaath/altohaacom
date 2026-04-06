@@ -51,6 +51,7 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
         <TabsTrigger value="services" className="gap-1.5"><Briefcase className="h-3.5 w-3.5" />{isAr ? "الخدمات" : "Services"}</TabsTrigger>
         <TabsTrigger value="hours" className="gap-1.5"><Clock className="h-3.5 w-3.5" />{isAr ? "ساعات العمل" : "Hours"}</TabsTrigger>
         <TabsTrigger value="event" className="gap-1.5"><Calendar className="h-3.5 w-3.5" />{isAr ? "الحدث" : "Event"}</TabsTrigger>
+        <TabsTrigger value="competition" className="gap-1.5"><Trophy className="h-3.5 w-3.5" />{isAr ? "المسابقة" : "Competition"}</TabsTrigger>
       </TabsList>
 
       <TabsContent value="overview" className="mt-4">
