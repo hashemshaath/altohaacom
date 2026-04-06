@@ -1,11 +1,14 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Mail, ArrowUpRight } from "lucide-react";
+import { Mail, Send, ArrowUp, Shield, Lock, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const SOCIAL_ICONS: Record<string, string> = {
   instagram: "M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z",
@@ -51,12 +54,21 @@ const navColumns = [
       { to: "/verify", en: "Verify Certificate", ar: "التحقق من الشهادات" },
     ],
   },
+  {
+    titleEn: "Legal",
+    titleAr: "قانوني",
+    links: [
+      { to: "/privacy", en: "Privacy Policy", ar: "سياسة الخصوصية" },
+      { to: "/terms", en: "Terms of Service", ar: "شروط الاستخدام" },
+      { to: "/cookies", en: "Cookie Policy", ar: "سياسة الكوكيز" },
+    ],
+  },
 ];
 
-const legalLinks = [
-  { to: "/privacy", en: "Privacy", ar: "الخصوصية" },
-  { to: "/terms", en: "Terms", ar: "الشروط" },
-  { to: "/cookies", en: "Cookies", ar: "الكوكيز" },
+const trustBadges = [
+  { icon: Shield, labelEn: "SSL Secured", labelAr: "محمي بـ SSL" },
+  { icon: Lock, labelEn: "Data Protected", labelAr: "بيانات محمية" },
+  { icon: CheckCircle2, labelEn: "GDPR Compliant", labelAr: "متوافق مع GDPR" },
 ];
 
 export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
@@ -67,6 +79,9 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
   const footerCfg = siteSettings.footer || {};
   const brandCfg = siteSettings.branding || {};
   const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
+  const { toast } = useToast();
+  const [nlEmail, setNlEmail] = useState("");
+  const [nlLoading, setNlLoading] = useState(false);
 
   if (footerCfg.showFooter === false) return null;
 
@@ -86,74 +101,104 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
     { href: footerCfg.youtubeUrl, label: "YouTube", icon: SOCIAL_ICONS.youtube },
   ].filter(s => s.href);
 
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nlEmail.trim()) return;
+    setNlLoading(true);
+    try {
+      const { error } = await supabase.from("newsletter_subscribers").insert({ email: nlEmail.trim() });
+      if (error) {
+        if (error.code === "23505") {
+          toast({ title: l("Already Subscribed", "مشترك بالفعل"), description: l("This email is already registered", "هذا البريد مسجل مسبقاً") });
+        } else throw error;
+      } else {
+        toast({ title: l("Subscribed!", "تم الاشتراك!"), description: l("Thanks for joining!", "شكراً لانضمامك!") });
+        setNlEmail("");
+      }
+    } catch {
+      toast({ variant: "destructive", title: l("Error", "خطأ"), description: l("Something went wrong", "حدث خطأ") });
+    } finally {
+      setNlLoading(false);
+    }
+  };
+
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
   return (
     <footer
       ref={ref}
       id="site-footer"
-      className="bg-[#F3F4F6] dark:bg-[hsl(213_35%_8%)] pb-24 sm:pb-0 safe-area-bottom"
+      className="border-t border-[hsl(220_13%_91%)] bg-[hsl(220_14%_96%)] dark:bg-[hsl(213_35%_8%)] dark:border-border/30 pb-24 sm:pb-0 safe-area-bottom"
       role="contentinfo"
     >
       <div className="container px-5 sm:px-6">
-        {/* Main grid: Brand col + 3 nav columns */}
-        <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-8 sm:grid-cols-3 lg:grid-cols-5">
-          {/* Brand column — spans 2 cols on lg */}
-          <div className="col-span-2 sm:col-span-3 lg:col-span-2 lg:pe-8">
-            <Link to="/" className="inline-flex items-center gap-2 group">
-              <img src={logoUrl} alt={siteName} className="h-7 w-auto" loading="lazy" />
-              <span className={cn("text-base font-bold text-foreground", !isAr && "font-serif")}>
+
+        {/* ── Top: Brand + Newsletter ── */}
+        <div className="py-10 sm:py-12 flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
+          {/* Brand */}
+          <div className="max-w-sm">
+            <Link to="/" className="inline-flex items-center gap-2.5 group">
+              <img src={logoUrl} alt={siteName} className="h-8 w-auto" loading="lazy" />
+              <span className={cn("text-lg font-bold text-[hsl(220_13%_11%)] dark:text-foreground", !isAr && "font-serif")}>
                 {siteName}
               </span>
             </Link>
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:${contactEmail}`}
-                className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <Mail className="h-3.5 w-3.5" />
-                {contactEmail}
-              </a>
-              {!user && (
-                <Button size="sm" asChild className="rounded-xl h-8 text-xs gap-1">
-                  <Link to="/register">
-                    {l("Join Free", "انضم مجاناً")}
-                    <ArrowUpRight className="h-3 w-3" />
-                  </Link>
-                </Button>
+            <p className="mt-3 text-sm leading-relaxed text-[hsl(220_9%_35%)] dark:text-muted-foreground">
+              {l(
+                "The premier platform connecting culinary professionals worldwide through competitions, education, and community.",
+                "المنصة الرائدة التي تربط المحترفين في عالم الطهي عبر المسابقات والتعليم والمجتمع."
               )}
-            </div>
-            {/* Social icons */}
-            {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (
-              <div className="mt-4 flex items-center gap-1.5">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={social.label}
-                    className="flex h-10 w-10 sm:h-8 sm:w-8 items-center justify-center rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
-                  >
-                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d={social.icon} />
-                    </svg>
-                  </a>
-                ))}
-              </div>
-            )}
+            </p>
+            <a
+              href={`mailto:${contactEmail}`}
+              className="mt-3 inline-flex items-center gap-2 text-xs text-[hsl(220_9%_46%)] hover:text-primary transition-colors duration-200"
+            >
+              <Mail className="h-3.5 w-3.5" />
+              {contactEmail}
+            </a>
           </div>
 
-          {/* Nav columns */}
+          {/* Newsletter */}
+          <div className="w-full max-w-md">
+            <h3 className="text-sm font-semibold text-[hsl(220_13%_11%)] dark:text-foreground">
+              {l("Stay Updated", "ابقَ على اطلاع")}
+            </h3>
+            <p className="mt-1 text-xs text-[hsl(220_9%_46%)] dark:text-muted-foreground">
+              {l("Get the latest news and updates directly to your inbox.", "احصل على آخر الأخبار والتحديثات مباشرة.")}
+            </p>
+            <form onSubmit={handleNewsletterSubmit} className="mt-3 flex gap-2">
+              <Input
+                type="email"
+                value={nlEmail}
+                onChange={(e) => setNlEmail(e.target.value)}
+                placeholder={l("your@email.com", "بريدك الإلكتروني")}
+                required
+                className="flex-1 h-10 rounded-xl border-[hsl(220_13%_87%)] bg-white dark:bg-background text-sm"
+              />
+              <Button type="submit" disabled={nlLoading} size="sm" className="h-10 px-5 rounded-xl gap-1.5 shrink-0">
+                <Send className="h-3.5 w-3.5" />
+                {nlLoading ? "..." : l("Subscribe", "اشتراك")}
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        {/* ── Divider ── */}
+        <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
+
+        {/* ── Nav columns ── */}
+        <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-10 sm:grid-cols-2 md:grid-cols-4">
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-3">
+              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[hsl(220_13%_11%)] dark:text-foreground mb-3.5">
                 {l(col.titleEn, col.titleAr)}
               </h3>
-              <ul className="space-y-2 sm:space-y-1.5">
+              <ul className="space-y-2">
                 {col.links.map((link) => (
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-[14px] sm:text-[13px] text-muted-foreground hover:text-foreground transition-colors duration-200 touch-manipulation inline-block py-0.5"
+                      className="relative text-[13px] text-[hsl(220_9%_46%)] hover:text-primary transition-colors duration-200 inline-block py-0.5 after:absolute after:bottom-0 after:start-0 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full touch-manipulation"
                     >
                       {l(link.en, link.ar)}
                     </Link>
@@ -164,21 +209,52 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
           ))}
         </div>
 
-        {/* Bottom bar */}
-        <div className="border-t border-border/30 py-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-muted-foreground/60">{copyrightText}</p>
-          <div className="flex items-center gap-3 text-[11px] text-muted-foreground/60">
-            {legalLinks.map((link, i) => (
-              <span key={link.to} className="flex items-center gap-3">
-                <Link to={link.to} className="hover:text-foreground transition-colors">
-                  {l(link.en, link.ar)}
-                </Link>
-                {i < legalLinks.length - 1 && <span className="text-border">·</span>}
-              </span>
-            ))}
-          </div>
+        {/* ── Trust badges ── */}
+        <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
+        <div className="py-5 flex flex-wrap items-center justify-center gap-6">
+          {trustBadges.map((badge) => (
+            <div key={badge.labelEn} className="flex items-center gap-2 text-[11px] text-[hsl(220_9%_46%)] dark:text-muted-foreground">
+              <badge.icon className="h-3.5 w-3.5 text-primary/70" />
+              <span>{l(badge.labelEn, badge.labelAr)}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Bottom bar ── */}
+        <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
+        <div className="py-5 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[11px] text-[hsl(220_9%_55%)] dark:text-muted-foreground/60">{copyrightText}</p>
+
+          {/* Social icons */}
+          {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (
+            <div className="flex items-center gap-1">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-[hsl(220_9%_55%)] hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
+                >
+                  <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d={social.icon} />
+                  </svg>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* ── Back to top ── */}
+      <button
+        onClick={scrollToTop}
+        aria-label={l("Back to top", "العودة للأعلى")}
+        className="fixed bottom-6 end-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(220_13%_87%)] bg-white/90 text-[hsl(220_9%_35%)] shadow-lg backdrop-blur-sm hover:text-primary hover:border-primary/30 transition-all duration-200 sm:bottom-8 sm:end-8 dark:bg-card/90 dark:border-border/40 dark:text-muted-foreground"
+      >
+        <ArrowUp className="h-4 w-4" />
+      </button>
     </footer>
   );
 });
