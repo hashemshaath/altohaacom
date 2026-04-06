@@ -1470,14 +1470,14 @@ export default function SmartImportAdmin() {
                   <Edit3 className="h-3 w-3" />{isAr ? "تغيير التصنيف" : "Change"}
                 </Button>
                 </div>
-                {details?.detected_entity_type && (
+                {(details as any)?.detected_entity_type && (
                   <p className="text-[10px] text-muted-foreground ps-6">
                     {isAr ? "سبب التصنيف:" : "Reason:"} {
-                      details.detected_entity_type === "organizer" ? (isAr ? "تم التعرف على هذا الكيان كشركة تنظيم (وليس فعالية)" : "Identified as an organizing company (not an event)") :
-                      details.detected_entity_type === "exhibition" ? (isAr ? "تم التعرف على هذا ككيان فعالية/معرض بتواريخ محددة" : "Identified as an event/exhibition with specific dates") :
-                      details.detected_entity_type === "competition" ? (isAr ? "تم التعرف على هذا كمسابقة طهي" : "Identified as a culinary competition") :
-                      details.detected_entity_type === "company" ? (isAr ? "تم التعرف على هذا كشركة تجارية" : "Identified as a business company") :
-                      (isAr ? `تم التصنيف كـ: ${details.detected_entity_type}` : `Classified as: ${details.detected_entity_type}`)
+                      (details as any).detected_entity_type === "organizer" ? (isAr ? "تم التعرف على هذا الكيان كشركة تنظيم (وليس فعالية)" : "Identified as an organizing company (not an event)") :
+                      (details as any).detected_entity_type === "exhibition" ? (isAr ? "تم التعرف على هذا ككيان فعالية/معرض بتواريخ محددة" : "Identified as an event/exhibition with specific dates") :
+                      (details as any).detected_entity_type === "competition" ? (isAr ? "تم التعرف على هذا كمسابقة طهي" : "Identified as a culinary competition") :
+                      (details as any).detected_entity_type === "company" ? (isAr ? "تم التعرف على هذا كشركة تجارية" : "Identified as a business company") :
+                      (isAr ? `تم التصنيف كـ: ${(details as any).detected_entity_type}` : `Classified as: ${(details as any).detected_entity_type}`)
                     }
                   </p>
                 )}
