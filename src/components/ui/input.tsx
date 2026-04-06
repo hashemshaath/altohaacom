@@ -16,7 +16,7 @@ export interface InputProps extends React.ComponentProps<"input"> {
 }
 
 const inputBaseClasses =
-  "flex h-11 md:h-10 w-full rounded-xl border border-input bg-background px-3.5 py-2.5 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm touch-manipulation transition-all duration-200 hover:border-ring/50 focus-visible:border-primary/40 focus-visible:shadow-[0_0_0_3px_hsl(var(--primary)/0.06)]";
+  "flex h-12 md:h-11 w-full rounded-xl border-2 border-input bg-background px-4 py-3 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/20 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm touch-manipulation transition-all duration-200 hover:border-ring/50 focus-visible:border-primary/40";
 
 const stateClasses: Record<string, string> = {
   error: "border-destructive/60 focus-visible:ring-destructive/30 focus-visible:border-destructive hover:border-destructive/80",
