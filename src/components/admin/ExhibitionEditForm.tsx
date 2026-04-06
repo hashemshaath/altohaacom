@@ -942,6 +942,13 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 </p>
                 <ExhibitionSocialLinksEditor value={socialLinks} onChange={setSocialLinks} isAr={isAr} />
               </div>
+            </section>
+
+            {/* ═══ Section: Sponsors & Partners ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["sponsors"] = el; }}
+              data-section="sponsors"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
               <SectionHeader icon={Award} title={t("Sponsors & Partners", "الرعاة والشركاء")} status={editingId ? "complete" : "empty"} />
               <ExhibitionSponsorsPanel exhibitionId={editingId || ""} isAr={isAr} />
