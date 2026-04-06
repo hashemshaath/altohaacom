@@ -677,12 +677,18 @@ Return ONLY valid JSON:
 {
   "name_en": null, "name_ar": null,
   "description_en": null, "description_ar": null,
+  "description_short_en": null, "description_short_ar": null,
+  "description_long_en": null, "description_long_ar": null,
   "competition_type": null, "edition_year": null,
+  "edition_number": null, "edition_label_en": null, "edition_label_ar": null,
   "start_date": null, "end_date": null,
   "registration_deadline": null, "registration_fee": null, "currency": null,
   "venue_en": null, "venue_ar": null,
   "city_en": null, "city_ar": null,
   "country_en": null, "country_ar": null, "country_code": null,
+  "building_number": null, "postal_code": null,
+  "district_en": null, "district_ar": null,
+  "national_address_en": null, "national_address_ar": null,
   "rules_summary_en": null, "rules_summary_ar": null,
   "terms_conditions_en": null, "terms_conditions_ar": null,
   "eligibility_en": null, "eligibility_ar": null,
@@ -701,11 +707,14 @@ Return ONLY valid JSON:
   "equipment_provided": [], "equipment_required": [],
   "organizer_name_en": null, "organizer_name_ar": null,
   "organizer_website": null, "organizer_email": null, "organizer_phone": null,
+  "organizer_city_en": null, "organizer_city_ar": null,
+  "organizer_country_en": null, "organizer_country_ar": null,
   "phone": null, "email": null, "website": null, "registration_url": null,
   "cover_url": null, "logo_url": null,
   "is_virtual": null, "virtual_link": null,
   "social_media": {"instagram":null,"twitter":null,"facebook":null},
-  "tags": []
+  "tags": [],
+  "past_editions": []
 }`;
 
   const content = await callAI(prompt, lovableKey, 'google/gemini-3-flash-preview', 0.1, 45000);
