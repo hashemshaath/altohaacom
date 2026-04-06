@@ -370,6 +370,9 @@ export default function AdminDashboard() {
       {/* Quick Actions Bar */}
       <AdminQuickActionsBar pendingReports={stats?.pendingReports} />
 
+      {/* ── Upcoming Events Preview ── */}
+      <UpcomingEventsPreview isAr={isAr} />
+
       {/* Command Bar */}
       <Suspense fallback={null}><AdminCommandBar /></Suspense>
 
