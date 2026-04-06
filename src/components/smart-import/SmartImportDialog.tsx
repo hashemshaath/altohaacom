@@ -49,6 +49,16 @@ export interface ImportedData {
   country_en?: string;
   country_ar?: string;
   country_code?: string;
+  // Saudi National Address fields
+  building_number?: string;
+  additional_number?: string;
+  unit_number?: string;
+  district_en?: string;
+  district_ar?: string;
+  short_address?: string;
+  national_address_en?: string;
+  national_address_ar?: string;
+  // Contact
   phone?: string;
   phone_secondary?: string;
   fax?: string;
@@ -100,6 +110,18 @@ export interface ImportedData {
   organizer_website?: string;
   organizer_email?: string;
   organizer_phone?: string;
+  // Organizer address fields
+  organizer_city_en?: string;
+  organizer_city_ar?: string;
+  organizer_country_en?: string;
+  organizer_country_ar?: string;
+  organizer_country_code?: string;
+  organizer_full_address_en?: string;
+  organizer_full_address_ar?: string;
+  organizer_building_number?: string;
+  organizer_postal_code?: string;
+  organizer_district_en?: string;
+  organizer_district_ar?: string;
   map_url?: string;
   ticket_price?: string;
   is_free?: boolean;
@@ -111,7 +133,10 @@ export interface ImportedData {
   rules_summary_en?: string;
   rules_summary_ar?: string;
   edition_year?: number;
-  // Extended competition fields from PDF/website import
+  edition_number?: number;
+  edition_label_en?: string;
+  edition_label_ar?: string;
+  // Extended competition fields
   competition_type?: string;
   competition_versions?: { name: string; name_ar?: string; description?: string; description_ar?: string; max_participants?: number }[];
   judging_criteria?: { criterion: string; criterion_ar?: string; weight?: number; description?: string; description_ar?: string }[];
@@ -160,6 +185,8 @@ export interface ImportedData {
   includes_training?: boolean;
   currency?: string;
   early_bird_deadline?: string;
+  // Edition history for exhibitions/competitions
+  past_editions?: { year: number; edition_number?: number; label_en?: string; label_ar?: string; visitors?: number; exhibitors?: number; countries?: number }[];
 }
 
 interface SmartImportDialogProps {
