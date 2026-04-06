@@ -461,6 +461,20 @@ ${lat && lng ? `- Coordinates: ${lat}, ${lng}` : ''}
 SEO: Write compelling keyword-rich descriptions (150-300 chars). Tags: 5-10 English SEO keywords.
 ${imageContext}
 
+SAUDI NATIONAL ADDRESS: If in Saudi Arabia, extract:
+- building_number (4 digits), additional_number (4 digits), unit_number
+- district_en/district_ar, postal_code (5 digits), short_address (e.g. RAAA1234)
+- national_address_en/ar: Full formatted address "Building No, Street, District, City, Postal Code, Additional No"
+
+EDITIONS & EVENTS: For exhibitions/competitions/events:
+- edition_year: The year of the event (e.g. 2025)
+- edition_number: The ordinal edition number (e.g. 1, 2, 3...)
+- edition_label_en/ar: Human-readable edition label (e.g. "First Edition" / "النسخة الأولى")
+- past_editions: Array of previous editions with year, visitors, exhibitors, countries counts
+- Extract organizer address details including city, country, building number, postal code
+
+COMPETITIONS: Extract all competition versions/categories, judging criteria with weights, judging committee, prizes, rounds, eligibility, participation requirements, scoring methods, dress code, equipment lists.
+
 IMPORTANT DESCRIPTION RULES:
 - description_short_en/ar: A concise 1-2 sentence summary (50-100 words) suitable for cards/listings
 - description_long_en/ar: A comprehensive detailed description (200-500 words) covering: what the event is about, its significance, history, what visitors can expect, key highlights
