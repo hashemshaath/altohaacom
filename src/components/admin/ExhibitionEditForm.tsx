@@ -103,7 +103,9 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const queryClient = useQueryClient();
   const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
-  const editingId = exhibition?.id || null;
+  const originalEditingId = exhibition?.id || null;
+  const [activeEditingId, setActiveEditingId] = useState<string | null>(originalEditingId);
+  const editingId = activeEditingId;
 
   const { data: countries } = useCountries();
   const { data: seriesList } = useQuery({
@@ -160,7 +162,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
-  const [editionConfirmed, setEditionConfirmed] = useState(!!editingId);
+  const [editionConfirmed, setEditionConfirmed] = useState(!!originalEditingId);
+  const [editionResolved, setEditionResolved] = useState(!!originalEditingId || !exhibition?.series_id);
   const [activeSection, setActiveSection] = useState("basic");
 
   // Check if edition exists in DB when series + year are selected
@@ -173,7 +176,6 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         .select("*")
         .eq("series_id", selectedSeriesId)
         .eq("edition_year", editionYear)
-        .neq("id", editingId || "00000000-0000-0000-0000-000000000000")
         .maybeSingle();
       return data;
     },
@@ -183,6 +185,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   // Load existing edition data into form when found
   useEffect(() => {
     if (!existingEdition) return;
+    // Update the active editing ID to the found edition's ID
+    setActiveEditingId(existingEdition.id);
     setForm({
       title: existingEdition.title, title_ar: existingEdition.title_ar, slug: existingEdition.slug,
       description: existingEdition.description, description_ar: existingEdition.description_ar,
@@ -221,12 +225,24 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         country: existingEdition.country || undefined,
       });
     }
+    setEditionResolved(true);
+    setEditionConfirmed(true);
   }, [existingEdition]);
+
+  // When no existing edition and user hasn't confirmed yet, reset form for new edition
+  useEffect(() => {
+    if (selectedSeriesId && editionYear && !existingEdition && !editionLoading && !editionConfirmed) {
+      setActiveEditingId(null);
+      setEditionResolved(false);
+    }
+  }, [selectedSeriesId, editionYear, existingEdition, editionLoading, editionConfirmed]);
 
   const editionHasData = !!existingEdition && !editionLoading;
 
-  // Whether edition fields should be disabled (new edition not yet confirmed)
-  const editionFieldsDisabled = !editingId && !!selectedSeriesId && !!editionYear && !existingEdition && !editionConfirmed;
+  // Edition must be resolved before form is usable (for series-based events)
+  const formLocked = !!selectedSeriesId && !editionResolved;
+
+  const editionFieldsDisabled = formLocked;
 
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -565,31 +581,17 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                         {t("Checking edition...", "جارِ التحقق من النسخة...")}
                       </div>
                     ) : existingEdition ? (
-                      <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
-                        <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                      <div className="flex items-center gap-2 rounded-lg border border-chart-2/30 bg-chart-2/5 p-3">
+                        <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium">
-                            {t("Edition found", "تم العثور على النسخة")}: {isAr && existingEdition.title_ar ? existingEdition.title_ar : existingEdition.title}
+                          <p className="text-xs font-medium text-chart-2">
+                            {t("Edition loaded", "تم تحميل النسخة")}: {isAr && existingEdition.title_ar ? existingEdition.title_ar : existingEdition.title}
                           </p>
                           <p className="text-[10px] text-muted-foreground">
                             {t("Edition", "النسخة")} #{existingEdition.edition_number || "?"} — {existingEdition.status}
+                            {" · "}{t("Data loaded and ready to edit", "تم تحميل البيانات وجاهزة للتعديل")}
                           </p>
                         </div>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="h-7 text-xs shrink-0"
-                          onClick={() => {
-                            onClose();
-                            navigate(`/admin/exhibitions`);
-                            // Trigger edit of existing edition - use query params or direct state
-                            setTimeout(() => {
-                              window.dispatchEvent(new CustomEvent("edit-exhibition", { detail: { id: existingEdition.id } }));
-                            }, 200);
-                          }}
-                        >
-                          {t("Edit Edition", "تعديل النسخة")}
-                        </Button>
                       </div>
                     ) : !editionConfirmed ? (
                       <div className="flex items-center gap-2 rounded-lg border border-chart-4/30 bg-chart-4/5 p-3">
@@ -605,7 +607,20 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                         <Button
                           size="sm"
                           className="h-7 text-xs shrink-0"
-                          onClick={() => setEditionConfirmed(true)}
+                          onClick={() => {
+                            setEditionConfirmed(true);
+                            setEditionResolved(true);
+                            setActiveEditingId(null);
+                            // Reset form for new edition, keeping series defaults
+                            setForm(prev => ({
+                              ...emptyForm,
+                              venue: prev.venue, venue_ar: prev.venue_ar,
+                              city: prev.city, country: prev.country,
+                              organizer_name: prev.organizer_name, organizer_name_ar: prev.organizer_name_ar,
+                              organizer_email: prev.organizer_email,
+                              cover_image_url: prev.cover_image_url,
+                            }));
+                          }}
                         >
                           {t(`Add Edition ${editionYear}`, `إضافة نسخة ${editionYear}`)}
                         </Button>
@@ -631,8 +646,17 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 )}
               </div>
 
+              {/* Lock overlay when edition not resolved */}
+              {formLocked && (
+                <div className="rounded-lg border border-chart-4/20 bg-chart-4/5 p-4 text-center">
+                  <Layers className="h-5 w-5 text-chart-4 mx-auto mb-2" />
+                  <p className="text-xs font-medium">{t("Select an edition year to continue", "اختر سنة الإصدار للمتابعة")}</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">{t("Choose a year above to load or create an edition", "اختر سنة أعلاه لتحميل أو إنشاء نسخة")}</p>
+                </div>
+              )}
+
               {/* Title */}
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className={cn("grid gap-4 sm:grid-cols-2", formLocked && "opacity-40 pointer-events-none")}>
                 <FieldGroup label={t("Title (English)", "العنوان (إنجليزي)")} required aiSlot={<AITextOptimizer text={form.title || ""} lang="en" onOptimized={v => updateField("title", v)} onTranslated={v => updateField("title_ar", v)} />}>
                   <Input className="h-9" value={form.title || ""} onChange={e => updateField("title", e.target.value)} placeholder={t("Exhibition title", "عنوان المعرض")} />
                 </FieldGroup>
@@ -641,6 +665,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 </FieldGroup>
               </div>
 
+              <div className={cn(formLocked && "opacity-40 pointer-events-none")}>
               {/* Slug */}
               <FieldGroup label={t("URL Slug", "الرابط المختصر")}>
                 <Input className="h-9 font-mono text-xs max-w-md" value={form.slug || ""} onChange={e => updateField("slug", e.target.value)} placeholder="auto-generated-from-title" />
@@ -670,7 +695,10 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 <Switch checked={form.is_featured || false} onCheckedChange={v => updateField("is_featured", v)} />
                 <Label className="text-xs">{t("Featured Event", "فعالية مميزة")}</Label>
               </div>
+              </div>
             </section>
+
+            <div className={cn(formLocked && "opacity-40 pointer-events-none select-none")}>
 
             {/* ═══ Section: Date & Schedule ═══ */}
             <section
@@ -953,6 +981,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               <SectionHeader icon={Users} title={t("Team & Officials", "الفريق والمسؤولون")} status={getSectionStatus("team")} />
               <ExhibitionOfficialsPanel exhibitionId={editingId || ""} />
             </section>
+
+            </div>{/* end formLocked wrapper */}
 
             {/* Bottom spacer */}
             <div className="h-6" />
