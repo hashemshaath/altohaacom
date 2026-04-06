@@ -106,7 +106,10 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
         <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-20 sm:w-32 bg-gradient-to-l from-[var(--marquee-bg,#F6F8FA)] to-transparent dark:from-[hsl(213_25%_10%)]" aria-hidden="true" />
 
         <div
-          className="flex items-center w-max animate-marquee group-hover/marquee:[animation-play-state:paused]"
+          className={cn(
+            "flex items-center w-max group-hover/marquee:[animation-play-state:paused]",
+            isAr ? "animate-marquee-rtl" : "animate-marquee"
+          )}
           style={{ animationDuration: "60s", gap: "100px" }}
         >
           {allLogos.map((item, i) => {
