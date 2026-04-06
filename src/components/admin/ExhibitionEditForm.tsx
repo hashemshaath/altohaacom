@@ -831,7 +831,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               data-section="location"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
-              <SectionHeader icon={MapPin} title={t("Location", "الموقع")} status={getSectionStatus("location")} />
+              <SectionHeader icon={MapPin} title={t("Location & Venue", "الموقع والمقر")} status={getSectionStatus("location")} />
 
               <div className="flex items-center gap-3">
                 <Switch checked={form.is_virtual || false} onCheckedChange={v => updateField("is_virtual", v)} />
@@ -847,7 +847,6 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 </FieldGroup>
               ) : (
                 <>
-                  {/* Venue Selector - only for current/next year */}
                   {(() => {
                     const currentYear = new Date().getFullYear();
                     const canAssignVenue = !editionYear || (editionYear >= currentYear && editionYear <= currentYear + 1);
@@ -868,34 +867,44 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                         />
                         {!canAssignVenue && (
                           <p className="text-[10px] text-muted-foreground mt-1">
-                            {t("Venue can only be assigned for the current or next year's edition", "يمكن تعيين المقر فقط لنسخة السنة الحالية أو القادمة")}
+                            {t("Venue can only be assigned for current or next year", "يمكن تعيين المقر فقط للسنة الحالية أو القادمة")}
                           </p>
                         )}
                       </div>
                     );
                   })()}
 
-                  <Separator className="my-2" />
-
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FieldGroup label={t("Venue Name (EN)", "اسم المكان (إنجليزي)")} aiSlot={<AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />}>
-                      <Input className="h-9" value={form.venue || ""} onChange={e => updateField("venue", e.target.value)} />
+                  <div className="rounded-xl bg-muted/20 p-4 space-y-3 mt-2">
+                    <p className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                      <MapPin className="h-3 w-3" />
+                      {t("Location Details", "تفاصيل الموقع")}
+                    </p>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <FieldGroup label={t("Venue (EN)", "المكان (EN)")} aiSlot={<AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />}>
+                        <Input className="h-9" value={form.venue || ""} onChange={e => updateField("venue", e.target.value)} />
+                      </FieldGroup>
+                      <FieldGroup label={t("Venue (AR)", "المكان (AR)")} aiSlot={<AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />}>
+                        <Input className="h-9" value={form.venue_ar || ""} onChange={e => updateField("venue_ar", e.target.value)} dir="rtl" />
+                      </FieldGroup>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <FieldGroup label={t("City", "المدينة")}>
+                        <Input className="h-9" value={form.city || ""} onChange={e => updateField("city", e.target.value)} />
+                      </FieldGroup>
+                      <FieldGroup label={t("Country", "الدولة")}>
+                        <Input className="h-9" value={form.country || ""} onChange={e => updateField("country", e.target.value)} />
+                      </FieldGroup>
+                    </div>
+                    <FieldGroup label={t("Map URL", "رابط الخريطة")}>
+                      <Input className="h-9" value={form.map_url || ""} onChange={e => updateField("map_url", e.target.value)} placeholder="https://maps.google.com/..." />
                     </FieldGroup>
-                    <FieldGroup label={t("Venue Name (AR)", "اسم المكان (عربي)")} aiSlot={<AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />}>
-                      <Input className="h-9" value={form.venue_ar || ""} onChange={e => updateField("venue_ar", e.target.value)} dir="rtl" />
-                    </FieldGroup>
+                    {form.map_url && (
+                      <a href={form.map_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline">
+                        <MapPin className="h-3 w-3" />
+                        {t("View on Map", "عرض على الخريطة")}
+                      </a>
+                    )}
                   </div>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <FieldGroup label={t("City", "المدينة")}>
-                      <Input className="h-9" value={form.city || ""} onChange={e => updateField("city", e.target.value)} />
-                    </FieldGroup>
-                    <FieldGroup label={t("Country", "الدولة")}>
-                      <Input className="h-9" value={form.country || ""} onChange={e => updateField("country", e.target.value)} />
-                    </FieldGroup>
-                  </div>
-                  <FieldGroup label={t("Map URL", "رابط الخريطة")}>
-                    <Input className="h-9 max-w-md" value={form.map_url || ""} onChange={e => updateField("map_url", e.target.value)} placeholder="https://maps.google.com/..." />
-                  </FieldGroup>
                 </>
               )}
             </section>
@@ -922,20 +931,25 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                       const c = countries?.find(co => co.code === val.country || co.name === val.country);
                       if (c?.currency_code) setCurrency(c.currency_code);
                     }
+                  } else {
+                    updateField("organizer_name", "");
+                    updateField("organizer_name_ar", "");
+                    updateField("organizer_email", "");
+                    updateField("organizer_phone", "");
+                    updateField("organizer_website", "");
                   }
                 }}
                 label={t("Search & Select Organizer", "البحث واختيار الجهة المنظمة")}
               />
-              {/* Always show organizer name fields for manual entry or display */}
-              <div className="grid gap-4 sm:grid-cols-2">
-                <FieldGroup label={t("Organizer Name (EN)", "اسم المنظم (إنجليزي)")}>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <FieldGroup label={t("Organizer Name (EN)", "اسم المنظم (EN)")}>
                   <Input className="h-9" value={form.organizer_name || ""} onChange={e => updateField("organizer_name", e.target.value)} placeholder={t("Organizer name", "اسم الجهة المنظمة")} />
                 </FieldGroup>
-                <FieldGroup label={t("Organizer Name (AR)", "اسم المنظم (عربي)")}>
+                <FieldGroup label={t("Organizer Name (AR)", "اسم المنظم (AR)")}>
                   <Input className="h-9" value={form.organizer_name_ar || ""} onChange={e => updateField("organizer_name_ar", e.target.value)} dir="rtl" />
                 </FieldGroup>
               </div>
-              <div className="grid gap-4 sm:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-3">
                 <FieldGroup label={t("Email", "البريد الإلكتروني")}>
                   <Input className="h-9" type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
                 </FieldGroup>
