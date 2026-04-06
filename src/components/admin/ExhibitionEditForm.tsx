@@ -327,8 +327,14 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       case "links": return (form.registration_url || form.website_url) ? "complete" : "empty";
       case "sponsors": return editingId ? "complete" : "empty";
       case "competitions": return editingId ? "complete" : "empty";
-      case "media": return form.cover_image_url ? "complete" : "empty";
+      case "images": {
+        const has = [form.cover_image_url, logoUrl].filter(Boolean).length;
+        return has >= 2 ? "complete" : has > 0 ? "partial" : "empty";
+      }
+      case "media": return editingId ? "complete" : "empty";
+      case "editions": return editingId && selectedSeriesId ? "complete" : "empty";
       case "team": return editingId ? "complete" : "empty";
+      case "notes": return adminNotes ? "partial" : "empty";
       default: return "empty";
     }
   }, [form, organizer, editingId]);
