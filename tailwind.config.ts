@@ -90,6 +90,10 @@ export default {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "marquee-reverse": {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0%)" },
+        },
         "marquee-rtl": {
           "0%": { transform: "translateX(0%)" },
           "100%": { transform: "translateX(50%)" },
@@ -103,6 +107,7 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         marquee: "marquee 30s linear infinite",
+        "marquee-reverse": "marquee-reverse 30s linear infinite",
         "marquee-rtl": "marquee-rtl 30s linear infinite",
         "ken-burns": "ken-burns 8s ease-out forwards",
       },

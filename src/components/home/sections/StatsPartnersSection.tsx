@@ -1,11 +1,12 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
-import { SectionHeader } from "@/components/home/SectionHeader";
-import { Handshake, Award, ExternalLink } from "lucide-react";
+import { SectionReveal } from "@/components/ui/section-reveal";
+import { Handshake, Award } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface LogoItem {
   id: string;
@@ -15,36 +16,78 @@ interface LogoItem {
   category: string;
 }
 
+/**
+ * Infinite marquee row — CSS-only, no JS timers.
+ * direction: "normal" scrolls left, "reverse" scrolls right.
+ */
+function MarqueeRow({ items, direction, isAr }: { items: LogoItem[]; direction: "normal" | "reverse"; isAr: boolean }) {
+  if (items.length === 0) return null;
+
+  // Duplicate items enough times for seamless loop
+  const repeated = [...items, ...items, ...items, ...items];
+
+  return (
+    <div className="relative overflow-hidden py-3 group">
+      {/* Gradient edge masks */}
+      <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-16 sm:w-24 bg-gradient-to-r from-[inherit] to-transparent" style={{ background: "linear-gradient(to right, var(--marquee-bg, #F6F8FA), transparent)" }} aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-16 sm:w-24 bg-gradient-to-l from-[inherit] to-transparent" style={{ background: "linear-gradient(to left, var(--marquee-bg, #F6F8FA), transparent)" }} aria-hidden="true" />
+
+      <div
+        className={cn(
+          "flex items-center gap-8 sm:gap-12 w-max",
+          direction === "normal" ? "animate-marquee" : "animate-marquee-reverse"
+        )}
+        style={{ animationDuration: `${items.length * 4}s` }}
+      >
+        {repeated.map((item, i) => {
+          const Wrapper = item.website_url ? "a" : "div";
+          const linkProps = item.website_url
+            ? { href: item.website_url, target: "_blank" as const, rel: "noopener noreferrer" }
+            : {};
+
+          return (
+            <Wrapper
+              key={`${item.id}-${i}`}
+              {...linkProps}
+              className="flex items-center gap-3 shrink-0 group/logo cursor-pointer px-2"
+              title={item.name}
+            >
+              <div className="flex h-10 sm:h-12 w-24 sm:w-32 items-center justify-center">
+                <img
+                  src={item.logo_url}
+                  alt={item.name}
+                  className="h-full max-w-full object-contain grayscale opacity-50 transition-all duration-500 group-hover/logo:grayscale-0 group-hover/logo:opacity-100"
+                  loading="lazy"
+                />
+              </div>
+            </Wrapper>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const StatsPartnersSection = memo(function StatsPartnersSection() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
 
-  const title = config
-    ? (isAr ? config.title_ar || config.title_en : config.title_en || "")
-    : "";
-  const showTitle = config?.show_title ?? true;
-  const showViewAll = config?.show_view_all ?? false;
-  const itemCount = config?.item_count || 12;
-
-  // Determine if this is sponsors or partners based on section key in config
   const sectionKey = config?.section_key || "sponsors";
   const isSponsors = sectionKey === "sponsors";
-
-  const defaultTitle = isSponsors
-    ? (isAr ? "الرعاة" : "Sponsors")
-    : (isAr ? "الشركاء" : "Partners");
-
-  const defaultBadge = isSponsors
-    ? (isAr ? "رعاتنا" : "Our Sponsors")
-    : (isAr ? "شركاؤنا" : "Our Partners");
+  const itemCount = config?.item_count || 24;
 
   const SectionIcon = isSponsors ? Award : Handshake;
+  const heading = isSponsors
+    ? (isAr ? "يثق بنا الرواد" : "Trusted by Leaders")
+    : (isAr ? "شركاؤنا" : "Our Partners");
+  const badgeText = isSponsors
+    ? (isAr ? "الرعاة" : "Sponsors")
+    : (isAr ? "شركاء النجاح" : "Partners");
 
   const { data: logos = [] } = useQuery({
     queryKey: ["section-logos", sectionKey, itemCount],
     queryFn: async () => {
-      // Fetch partner_logos filtered by category
       const query = supabase
         .from("partner_logos")
         .select("id, name, name_ar, logo_url, website_url, category, sort_order, is_active")
@@ -59,7 +102,6 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
 
       const { data } = await query.limit(itemCount);
 
-      // If no category-filtered results, fall back to all logos
       if (!data?.length) {
         const { data: allData } = await supabase
           .from("partner_logos")
@@ -87,7 +129,6 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
     staleTime: 1000 * 60 * 10,
   });
 
-  // Also fetch culinary entities as additional partners (only for partners section)
   const { data: entities = [] } = useQuery({
     queryKey: ["section-entity-logos", sectionKey, itemCount],
     enabled: !isSponsors,
@@ -115,66 +156,46 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
     ? logos
     : [...logos, ...entities].slice(0, itemCount);
 
+  // Split into two rows for dual-direction marquee
+  const { row1, row2 } = useMemo(() => {
+    const mid = Math.ceil(allLogos.length / 2);
+    return { row1: allLogos.slice(0, mid), row2: allLogos.slice(mid) };
+  }, [allLogos]);
+
   if (allLogos.length === 0) return null;
 
   return (
-    <section dir={isAr ? "rtl" : "ltr"}>
-      <div className="container">
-        <SectionHeader
-          icon={SectionIcon}
-          badge={defaultBadge}
-          title={showTitle ? (title || defaultTitle) : defaultTitle}
-          viewAllHref={showViewAll ? (isSponsors ? "/sponsors" : "/partners") : undefined}
-          isAr={isAr}
-        />
+    <section
+      dir={isAr ? "rtl" : "ltr"}
+      className="relative"
+      style={{ "--marquee-bg": "#F6F8FA" } as React.CSSProperties}
+    >
+      <div className="container px-5 sm:px-6">
+        <SectionReveal>
+          <div className="text-center mb-6 sm:mb-8">
+            <Badge variant="secondary" className="gap-1.5 px-3 py-1 text-[10px] font-bold uppercase tracking-wider mb-3">
+              <SectionIcon className="h-3 w-3" />
+              {badgeText}
+            </Badge>
+            <h2 className={cn(
+              "text-xl sm:text-2xl lg:text-3xl font-bold text-foreground tracking-tight",
+              !isAr && "font-serif"
+            )}>
+              {heading}
+            </h2>
+          </div>
+        </SectionReveal>
+      </div>
 
-        <div
-          className={cn(
-            "grid gap-3",
-            allLogos.length <= 4
-              ? "grid-cols-2 sm:grid-cols-4"
-              : "grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6"
-          )}
-        >
-          {allLogos.map((item) => {
-            const Wrapper = item.website_url ? "a" : "div";
-            const linkProps = item.website_url
-              ? { href: item.website_url, target: "_blank", rel: "noopener noreferrer" }
-              : {};
-
-            return (
-              <Wrapper
-                key={item.id}
-                {...linkProps}
-                className={cn(
-                  "group relative flex flex-col items-center justify-center gap-2 rounded-2xl border border-border/40 bg-card p-4 transition-all duration-300",
-                  "hover:border-primary/20 hover:shadow-md hover:shadow-primary/5 hover:-translate-y-0.5",
-                  "active:scale-[0.98] touch-manipulation",
-                  "aspect-[4/3] sm:aspect-[3/2]"
-                )}
-              >
-                <div className="flex h-10 sm:h-12 items-center justify-center">
-                  <img
-                    src={item.logo_url}
-                    alt={item.name}
-                    className="h-full max-w-[100px] sm:max-w-[120px] object-contain opacity-70 grayscale transition-all duration-300 group-hover:opacity-100 group-hover:grayscale-0"
-                    loading="lazy"
-                  />
-                </div>
-                <p className="text-[10px] sm:text-[11px] font-medium text-muted-foreground text-center line-clamp-1 leading-tight transition-colors group-hover:text-foreground">
-                  {item.name}
-                </p>
-                {item.website_url && (
-                  <ExternalLink className="absolute top-2 end-2 h-3 w-3 text-muted-foreground/0 transition-all group-hover:text-muted-foreground/60" />
-                )}
-              </Wrapper>
-            );
-          })}
-        </div>
+      {/* Full-width marquee rows */}
+      <div className="w-full">
+        <MarqueeRow items={row1} direction="normal" isAr={isAr} />
+        {row2.length > 0 && (
+          <MarqueeRow items={row2} direction="reverse" isAr={isAr} />
+        )}
       </div>
     </section>
   );
 });
 
 export default StatsPartnersSection;
-

@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Mail, Sparkles, Shield } from "lucide-react";
+import { Mail, Sparkles, Shield, Send } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 
@@ -45,46 +45,45 @@ export const NewsletterSignup = function NewsletterSignup() {
   return (
     <section ref={scrollRef} className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
       <div className="container relative px-5 sm:px-6">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-border/30 bg-gradient-to-br from-primary/10 via-card to-accent/10 px-6 py-10 sm:px-8 md:py-12">
         <div
           className={cn(
-            "mx-auto max-w-xl text-center transition-all duration-700",
+            "mx-auto max-w-3xl text-center transition-all duration-700",
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           )}
         >
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/5">
             <Mail className="h-7 w-7 text-primary" />
           </div>
-          <Badge variant="secondary" className="mb-2 gap-1">
+          <Badge variant="secondary" className="mb-3 gap-1">
             <Sparkles className="h-3 w-3" />
             {isAr ? "لا تفوّت الجديد" : "Stay in the Loop"}
           </Badge>
-          <h2 className={cn("text-[20px] font-bold sm:text-2xl tracking-tight", !isAr && "font-serif")}>
+          <h2 className={cn("text-xl font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
             {isAr ? "اشترك في نشرتنا الإخبارية" : "Subscribe to Our Newsletter"}
           </h2>
-          <p className="mt-1.5 text-[14px] sm:text-sm text-muted-foreground leading-relaxed">
+          <p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed max-w-xl mx-auto">
             {isAr
               ? "كن أول من يعرف عن المسابقات القادمة والمقالات الحصرية والفرص المميزة."
               : "Be the first to know about upcoming competitions, exclusive articles & special opportunities."}
           </p>
-          <form onSubmit={handleSubmit} className="mt-5 flex gap-2.5 sm:mx-auto sm:max-w-md">
+          <form onSubmit={handleSubmit} className="mt-6 flex gap-2.5 sm:mx-auto sm:max-w-lg">
             <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={isAr ? "بريدك الإلكتروني" : "Your email address"}
               required
-              className="flex-1 h-12 sm:h-11 text-base sm:text-sm rounded-xl"
+              className="flex-1 h-12 text-base sm:text-sm rounded-xl border-border/50 bg-white/80 dark:bg-background/80 backdrop-blur-sm"
             />
-            <Button type="submit" disabled={loading} className="h-12 sm:h-11 px-6 shadow-sm shadow-primary/15 rounded-xl text-[14px] sm:text-sm touch-manipulation">
+            <Button type="submit" disabled={loading} className="h-12 px-6 rounded-xl text-sm gap-2 shadow-md shadow-primary/15 touch-manipulation">
+              <Send className="h-4 w-4" />
               {loading ? "..." : (isAr ? "اشتراك" : "Subscribe")}
             </Button>
           </form>
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground/60">
+          <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground/60">
             <Shield className="h-3 w-3" />
             {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
           </div>
-        </div>
         </div>
       </div>
     </section>
