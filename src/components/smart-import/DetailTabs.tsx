@@ -716,7 +716,239 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
 ));
 EventTab.displayName = "EventTab";
 
-// ── Media Tab ──
+// ── Competition Tab ──
+const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => {
+  const hasCompetitionData = details.competition_type || details.competition_versions?.length ||
+    details.judging_criteria?.length || details.judging_committee?.length ||
+    details.prizes?.length || details.competition_rounds?.length ||
+    details.eligibility_en || details.terms_conditions_en ||
+    details.scoring_method_en || details.participation_requirements_en?.length ||
+    details.equipment_provided?.length || details.equipment_required?.length;
+
+  if (!hasCompetitionData) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center text-muted-foreground">
+          <Trophy className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <p className="text-sm">{isAr ? "لا توجد بيانات مسابقة" : "No competition data found"}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Competition Info */}
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Trophy className="h-4 w-4" />{isAr ? "معلومات المسابقة" : "Competition Info"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          {details.competition_type && <Field label={isAr ? "نوع المسابقة" : "Competition Type"} value={details.competition_type} fieldKey="competition_type" editing={editing} onFieldUpdate={onFieldUpdate} />}
+          {details.edition_number && (
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
+              <Calendar className="h-4 w-4 text-primary" />
+              <span className="text-sm">{isAr ? "رقم النسخة:" : "Edition #:"} <strong>{details.edition_number}</strong></span>
+            </div>
+          )}
+          {(details.edition_label_en || details.edition_label_ar) && (
+            <div className="grid grid-cols-2 gap-3">
+              <Field label={isAr ? "عنوان النسخة (EN)" : "Edition Label (EN)"} value={details.edition_label_en} fieldKey="edition_label_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+              <Field label={isAr ? "عنوان النسخة (AR)" : "Edition Label (AR)"} value={details.edition_label_ar} fieldKey="edition_label_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+            </div>
+          )}
+          <Field label={isAr ? "طريقة التقييم (EN)" : "Scoring Method (EN)"} value={details.scoring_method_en} fieldKey="scoring_method_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "طريقة التقييم (AR)" : "Scoring Method (AR)"} value={details.scoring_method_ar} fieldKey="scoring_method_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          {(details.max_team_size || details.min_team_size) && (
+            <div className="grid grid-cols-2 gap-3">
+              {details.min_team_size && <DataField label={isAr ? "الحد الأدنى للفريق" : "Min Team Size"} value={String(details.min_team_size)} />}
+              {details.max_team_size && <DataField label={isAr ? "الحد الأقصى للفريق" : "Max Team Size"} value={String(details.max_team_size)} />}
+            </div>
+          )}
+          {details.blind_judging !== undefined && details.blind_judging !== null && (
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-accent/30">
+              <span className="text-sm">{details.blind_judging ? "🔒 " : "👁️ "}{details.blind_judging ? (isAr ? "تحكيم مخفي الهوية" : "Blind Judging") : (isAr ? "تحكيم مكشوف" : "Open Judging")}</span>
+            </div>
+          )}
+          {details.age_restrictions && <Field label={isAr ? "قيود العمر" : "Age Restrictions"} value={details.age_restrictions} fieldKey="age_restrictions" editing={editing} onFieldUpdate={onFieldUpdate} />}
+          {(details.dress_code || details.dress_code_ar) && (
+            <div className="grid grid-cols-2 gap-3">
+              <Field label={isAr ? "الزي (EN)" : "Dress Code (EN)"} value={details.dress_code} fieldKey="dress_code" editing={editing} onFieldUpdate={onFieldUpdate} />
+              <Field label={isAr ? "الزي (AR)" : "Dress Code (AR)"} value={details.dress_code_ar} fieldKey="dress_code_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Eligibility & Requirements */}
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Shield className="h-4 w-4" />{isAr ? "الأهلية والمتطلبات" : "Eligibility & Requirements"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <Field label={isAr ? "الأهلية (EN)" : "Eligibility (EN)"} value={details.eligibility_en} fieldKey="eligibility_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <Field label={isAr ? "الأهلية (AR)" : "Eligibility (AR)"} value={details.eligibility_ar} fieldKey="eligibility_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          <TagList label={isAr ? "متطلبات المشاركة (EN)" : "Participation Requirements (EN)"} items={details.participation_requirements_en} />
+          <TagList label={isAr ? "متطلبات المشاركة (AR)" : "Participation Requirements (AR)"} items={details.participation_requirements_ar} />
+          <TagList label={isAr ? "أنواع المشاركة المسموحة" : "Allowed Entry Types"} items={details.allowed_entry_types} />
+        </CardContent>
+      </Card>
+
+      {/* Terms & Conditions */}
+      {(details.terms_conditions_en || details.terms_conditions_ar) && (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><ListChecks className="h-4 w-4" />{isAr ? "الشروط والأحكام" : "Terms & Conditions"}</CardTitle></CardHeader>
+          <CardContent className="space-y-3">
+            <Field label={isAr ? "الشروط (EN)" : "Terms (EN)"} value={details.terms_conditions_en} fieldKey="terms_conditions_en" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+            <Field label={isAr ? "الشروط (AR)" : "Terms (AR)"} value={details.terms_conditions_ar} fieldKey="terms_conditions_ar" editing={editing} onFieldUpdate={onFieldUpdate} multiline />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Competition Versions */}
+      {details.competition_versions && details.competition_versions.length > 0 && (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Layers className="h-4 w-4" />{isAr ? "فئات المسابقة" : "Competition Categories"}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {details.competition_versions.map((v, i) => (
+                <div key={i} className="p-3 rounded-xl border">
+                  <p className="text-sm font-medium">{v.name}</p>
+                  {v.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{v.name_ar}</p>}
+                  {v.description && <p className="text-xs text-muted-foreground mt-1">{v.description}</p>}
+                  {v.max_participants && <Badge variant="outline" className="text-[10px] mt-1">{isAr ? `${v.max_participants} مشارك` : `${v.max_participants} participants`}</Badge>}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Judging Criteria */}
+      {details.judging_criteria && details.judging_criteria.length > 0 && (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><BarChart3 className="h-4 w-4" />{isAr ? "معايير التحكيم" : "Judging Criteria"}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {details.judging_criteria.map((c, i) => (
+                <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl border">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{c.criterion}</p>
+                    {c.criterion_ar && <p className="text-xs text-muted-foreground" dir="rtl">{c.criterion_ar}</p>}
+                    {c.description && <p className="text-xs text-muted-foreground mt-0.5">{c.description}</p>}
+                  </div>
+                  {c.weight && <Badge variant="secondary" className="shrink-0">{c.weight}%</Badge>}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Judging Committee */}
+      {details.judging_committee && details.judging_committee.length > 0 && (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><UserCheck className="h-4 w-4" />{isAr ? "لجنة التحكيم" : "Judging Committee"}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {details.judging_committee.map((j, i) => (
+                <div key={i} className="p-3 rounded-xl border text-center">
+                  {j.photo_url ? (
+                    <img src={j.photo_url} alt={j.name} className="h-12 w-12 rounded-full mx-auto object-cover mb-2" />
+                  ) : (
+                    <div className="h-12 w-12 rounded-full bg-accent/50 flex items-center justify-center mx-auto mb-2 text-sm font-bold text-muted-foreground">{j.name.charAt(0)}</div>
+                  )}
+                  <p className="text-sm font-medium truncate">{j.name}</p>
+                  {j.name_ar && <p className="text-xs text-muted-foreground truncate" dir="rtl">{j.name_ar}</p>}
+                  {j.title && <p className="text-xs text-muted-foreground truncate">{j.title}</p>}
+                  {j.role && <Badge variant="outline" className="text-[10px] mt-1">{j.role}</Badge>}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Prizes */}
+      {details.prizes && details.prizes.length > 0 && (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Award className="h-4 w-4" />{isAr ? "الجوائز" : "Prizes"}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {details.prizes.map((p, i) => (
+                <div key={i} className="p-3 rounded-xl border text-center">
+                  <p className="text-xs text-muted-foreground">{p.place}</p>
+                  {p.place_ar && <p className="text-[10px] text-muted-foreground" dir="rtl">{p.place_ar}</p>}
+                  <p className="text-sm font-bold mt-1">{p.prize}</p>
+                  {p.prize_ar && <p className="text-xs text-muted-foreground" dir="rtl">{p.prize_ar}</p>}
+                  {p.value && <Badge variant="secondary" className="mt-1">{details.currency || '$'}{p.value.toLocaleString()}</Badge>}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Competition Rounds */}
+      {details.competition_rounds && details.competition_rounds.length > 0 && (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Layers className="h-4 w-4" />{isAr ? "جولات المسابقة" : "Competition Rounds"}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {details.competition_rounds.map((r, i) => (
+                <div key={i} className="flex items-start gap-3 p-2.5 rounded-xl border">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 text-sm font-bold text-primary">{i + 1}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium">{r.name}</p>
+                    {r.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{r.name_ar}</p>}
+                    {r.description && <p className="text-xs text-muted-foreground mt-0.5">{r.description}</p>}
+                  </div>
+                  {r.duration && <Badge variant="outline" className="shrink-0 text-[10px]">{r.duration}</Badge>}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Equipment */}
+      {(details.equipment_provided?.length || details.equipment_required?.length) ? (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm">{isAr ? "المعدات" : "Equipment"}</CardTitle></CardHeader>
+          <CardContent className="grid grid-cols-2 gap-4">
+            <div>
+              <TagList label={isAr ? "معدات مقدمة" : "Provided Equipment"} items={details.equipment_provided} />
+            </div>
+            <div>
+              <TagList label={isAr ? "معدات مطلوبة" : "Required Equipment"} items={details.equipment_required} />
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {/* Past Editions */}
+      {details.past_editions && details.past_editions.length > 0 && (
+        <Card className="lg:col-span-2">
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Calendar className="h-4 w-4" />{isAr ? "النسخ السابقة" : "Past Editions"}</CardTitle></CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+              {details.past_editions.map((ed, i) => (
+                <div key={i} className="p-3 rounded-xl border text-center">
+                  <p className="text-lg font-bold text-primary">{ed.year}</p>
+                  {ed.label_en && <p className="text-xs text-muted-foreground">{ed.label_en}</p>}
+                  <div className="mt-2 space-y-0.5">
+                    {ed.visitors && <p className="text-[10px]">{isAr ? "زوار:" : "Visitors:"} {ed.visitors.toLocaleString()}</p>}
+                    {ed.exhibitors && <p className="text-[10px]">{isAr ? "عارضون:" : "Exhibitors:"} {ed.exhibitors}</p>}
+                    {ed.countries && <p className="text-[10px]">{isAr ? "دول:" : "Countries:"} {ed.countries}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+});
+CompetitionTab.displayName = "CompetitionTab";
+
+
 const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <Card>
