@@ -192,6 +192,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   });
   const [activeSection, setActiveSection] = useState("basic");
   const [lastSaved, setLastSaved] = useState<Date | null>(exhibition?.updated_at ? new Date(exhibition.updated_at) : null);
+  const [logoUrl, setLogoUrl] = useState(exhibition?.logo_url || "");
+  const [adminNotes, setAdminNotes] = useState(exhibition?.admin_notes || "");
 
   // Check if edition exists in DB
   const { data: existingEdition, isLoading: editionLoading } = useQuery({
