@@ -90,7 +90,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
     <footer
       ref={ref}
       id="site-footer"
-      className="border-t border-border/40 bg-card/50 pb-24 sm:pb-0 safe-area-bottom"
+      className="bg-[hsl(213_33%_15%)] dark:bg-[hsl(213_35%_8%)] text-[hsl(210_18%_82%)] pb-24 sm:pb-0 safe-area-bottom"
       role="contentinfo"
     >
       <div className="container px-5 sm:px-6">

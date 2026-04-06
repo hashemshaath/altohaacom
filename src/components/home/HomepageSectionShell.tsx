@@ -1,6 +1,7 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useSectionConfig, useSectionKey } from "./SectionKeyContext";
+import { SectionBackgroundWrapper } from "./SectionBackground";
 
 const SPACING: Record<string, string> = {
   none: "py-0",
@@ -26,6 +27,7 @@ const ANIMATION_INITIAL: Record<string, string> = {
 
 export function HomepageSectionShell({ children }: { children: ReactNode }) {
   const config = useSectionConfig();
+  const sectionKey = useSectionKey();
   const sectionRef = useRef<HTMLElement | null>(null);
   const [visible, setVisible] = useState(false);
 
@@ -55,26 +57,27 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
     return () => observer.disconnect();
   }, [hasAnim]);
 
-  const sectionKey = useSectionKey();
   const noShellSpacing = sectionKey === "search";
   const spacing = noShellSpacing ? SPACING.none : SPACING[config?.spacing || "normal"];
 
   return (
-    <section
-      ref={sectionRef}
-      className={cn(
-        spacing,
-        config?.css_class,
-        hasAnim && "transition-[transform,opacity] duration-700 ease-out will-change-[transform,opacity]",
-        hasAnim && (visible ? ANIMATION_ACTIVE[animation] : ANIMATION_INITIAL[animation])
-      )}
-      style={
-        config?.bg_color && typeof window !== "undefined" && !document.documentElement.classList.contains("dark")
-          ? { backgroundColor: config.bg_color }
-          : undefined
-      }
-    >
-      {children}
-    </section>
+    <SectionBackgroundWrapper sectionKey={sectionKey || ""}>
+      <section
+        ref={sectionRef}
+        className={cn(
+          spacing,
+          config?.css_class,
+          hasAnim && "transition-[transform,opacity] duration-700 ease-out will-change-[transform,opacity]",
+          hasAnim && (visible ? ANIMATION_ACTIVE[animation] : ANIMATION_INITIAL[animation])
+        )}
+        style={
+          config?.bg_color && typeof window !== "undefined" && !document.documentElement.classList.contains("dark")
+            ? { backgroundColor: config.bg_color }
+            : undefined
+        }
+      >
+        {children}
+      </section>
+    </SectionBackgroundWrapper>
   );
 }
