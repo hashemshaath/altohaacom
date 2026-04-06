@@ -25,9 +25,16 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 
 const TIER_CONFIG: Record<string, { icon: any; color: string; label: string; labelAr: string }> = {
+  strategic_partner: { icon: Crown, color: "text-chart-4", label: "Strategic Partner", labelAr: "شريك استراتيجي" },
+  gold: { icon: Star, color: "text-chart-4", label: "Gold Sponsor", labelAr: "الراعي الذهبي" },
+  silver: { icon: Medal, color: "text-muted-foreground", label: "Silver Sponsor", labelAr: "الراعي الفضي" },
+  organizer: { icon: Award, color: "text-primary", label: "Organizer", labelAr: "الجهة المنظمة" },
+  official_contractor: { icon: Package, color: "text-chart-2", label: "Official Contractor", labelAr: "المقاول الرسمي" },
+  official_shipping: { icon: Package, color: "text-chart-3", label: "Official Shipping Provider", labelAr: "مزوّد الشحن الرسمي" },
+  commercial_supporter: { icon: Star, color: "text-chart-5", label: "Commercial Supporter", labelAr: "الداعم التجاري" },
+  media_partner: { icon: Star, color: "text-accent-foreground", label: "Media Partner", labelAr: "الشريك الإعلامي" },
+  partner: { icon: Star, color: "text-primary", label: "Partner", labelAr: "شريك" },
   platinum: { icon: Crown, color: "text-chart-3", label: "Platinum", labelAr: "بلاتيني" },
-  gold: { icon: Star, color: "text-chart-4", label: "Gold", labelAr: "ذهبي" },
-  silver: { icon: Medal, color: "text-muted-foreground", label: "Silver", labelAr: "فضي" },
   bronze: { icon: Award, color: "text-chart-2", label: "Bronze", labelAr: "برونزي" },
   custom: { icon: Package, color: "text-primary", label: "Custom", labelAr: "مخصص" },
 };
