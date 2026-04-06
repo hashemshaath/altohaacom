@@ -5981,6 +5981,7 @@ export type Database = {
           description_ar: string | null
           dress_code: string | null
           dress_code_ar: string | null
+          edition_number: number | null
           edition_year: number | null
           eligibility: string | null
           eligibility_ar: string | null
@@ -6051,6 +6052,7 @@ export type Database = {
           description_ar?: string | null
           dress_code?: string | null
           dress_code_ar?: string | null
+          edition_number?: number | null
           edition_year?: number | null
           eligibility?: string | null
           eligibility_ar?: string | null
@@ -6121,6 +6123,7 @@ export type Database = {
           description_ar?: string | null
           dress_code?: string | null
           dress_code_ar?: string | null
+          edition_number?: number | null
           edition_year?: number | null
           eligibility?: string | null
           eligibility_ar?: string | null
@@ -11558,6 +11561,7 @@ export type Database = {
           description_ar: string | null
           documents: Json | null
           early_bird_deadline: string | null
+          edition_number: number | null
           edition_stats: Json | null
           edition_year: number | null
           end_date: string
@@ -11630,6 +11634,7 @@ export type Database = {
           description_ar?: string | null
           documents?: Json | null
           early_bird_deadline?: string | null
+          edition_number?: number | null
           edition_stats?: Json | null
           edition_year?: number | null
           end_date: string
@@ -11702,6 +11707,7 @@ export type Database = {
           description_ar?: string | null
           documents?: Json | null
           early_bird_deadline?: string | null
+          edition_number?: number | null
           edition_stats?: Json | null
           edition_year?: number | null
           end_date?: string

@@ -155,6 +155,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [audienceInput, setAudienceInput] = useState((exhibition?.target_audience || []).join(", "));
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
+  const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
   const [activeSection, setActiveSection] = useState("basic");
 
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -250,6 +251,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         created_by: user?.id,
         series_id: selectedSeriesId || null,
         edition_year: editionYear || null,
+        edition_number: editionNumber || null,
       };
       if (editingId) {
         const { error } = await supabase.from("exhibitions").update(payload).eq("id", editingId);
@@ -406,7 +408,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   <Layers className="h-3 w-3" />
                   {t("Event Series & Edition", "سلسلة الفعالية والإصدار")}
                 </p>
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   <div>
                     <Label className="text-xs">{t("Event Series", "سلسلة الفعاليات")}</Label>
                     <Select value={selectedSeriesId || "none"} onValueChange={v => {
@@ -440,11 +442,36 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                     <Label className="text-xs">{t("Edition Year", "سنة الإصدار")}</Label>
                     <Input className="h-9" type="number" value={editionYear || ""} onChange={e => setEditionYear(e.target.value ? parseInt(e.target.value) : null)} placeholder={new Date().getFullYear().toString()} min={2000} max={2100} />
                   </div>
-                  {selectedSeriesId && editionYear && (
+                  <div>
+                    <Label className="text-xs">{t("Edition Number", "رقم الإصدار")}</Label>
+                    <Select value={editionNumber ? String(editionNumber) : "none"} onValueChange={v => setEditionNumber(v === "none" ? null : parseInt(v))}>
+                      <SelectTrigger className="h-9">
+                        <SelectValue placeholder={t("Select edition", "اختر الإصدار")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">{t("Not set", "غير محدد")}</SelectItem>
+                        {Array.from({ length: 50 }, (_, i) => i + 1).map(n => {
+                          const ordinalEn = n === 1 ? "1st" : n === 2 ? "2nd" : n === 3 ? "3rd" : `${n}th`;
+                          const ordinalAr = ["الأولى","الثانية","الثالثة","الرابعة","الخامسة","السادسة","السابعة","الثامنة","التاسعة","العاشرة",
+                            "الحادية عشرة","الثانية عشرة","الثالثة عشرة","الرابعة عشرة","الخامسة عشرة","السادسة عشرة","السابعة عشرة","الثامنة عشرة","التاسعة عشرة","العشرون",
+                            "الحادية والعشرون","الثانية والعشرون","الثالثة والعشرون","الرابعة والعشرون","الخامسة والعشرون","السادسة والعشرون","السابعة والعشرون","الثامنة والعشرون","التاسعة والعشرون","الثلاثون",
+                            "الحادية والثلاثون","الثانية والثلاثون","الثالثة والثلاثون","الرابعة والثلاثون","الخامسة والثلاثون","السادسة والثلاثون","السابعة والثلاثون","الثامنة والثلاثون","التاسعة والثلاثون","الأربعون",
+                            "الحادية والأربعون","الثانية والأربعون","الثالثة والأربعون","الرابعة والأربعون","الخامسة والأربعون","السادسة والأربعون","السابعة والأربعون","الثامنة والأربعون","التاسعة والأربعون","الخمسون"
+                          ][n - 1] || `${n}`;
+                          return (
+                            <SelectItem key={n} value={String(n)}>
+                              {isAr ? `الدورة ${ordinalAr}` : `${ordinalEn} Edition`}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {(editionYear || editionNumber) && (
                     <div className="flex items-end">
-                      <Badge variant="outline" className="text-xs gap-1">
+                      <Badge variant="outline" className="text-xs gap-1 whitespace-nowrap">
                         <Info className="h-3 w-3" />
-                        {form.title || "..."} #{editionYear}
+                        {form.title || "..."}{editionYear ? ` ${editionYear}` : ""}{editionNumber ? ` — ${isAr ? `الدورة ${editionNumber}` : `#${editionNumber}`}` : ""}
                       </Badge>
                     </div>
                   )}

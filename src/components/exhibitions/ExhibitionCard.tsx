@@ -44,6 +44,7 @@ export interface Exhibition {
   registration_url: string | null;
   view_count: number | null;
   edition_year?: number | null;
+  edition_number?: number | null;
   series_id?: string | null;
 }
 
