@@ -464,6 +464,9 @@ You MUST correctly classify the entity. The distinctions are:
 Set "detected_entity_type" to one of: "organizer", "exhibition", "competition", "company", "establishment", "culinary_entity"
 
 RULES:
+- Base classification on the PRIMARY identity of the entity name/business descriptor, not on event listings shown on the website.
+- If the website belongs to an organizing company, classify it as "organizer" even if the page also contains event dates, venues, app links, registrations, or current editions.
+- Names like "for Exhibitions and Conferences" / "للمعارض والمؤتمرات" / "لتنظيم المعارض" indicate an organizer unless the name clearly includes a specific edition/year/event title.
 - Every _en/_ar field pair: if only one language found, TRANSLATE to the other professionally
 - If a field has no data, set null
 - Search query was: "${query}"
@@ -604,8 +607,62 @@ Extract ALL data comprehensively. Services & specializations in BOTH languages. 
 }
 
 // ─── Auto-detect target ───
+const ORGANIZER_KEYWORDS = [
+  'organizer', 'organiser', 'organization', 'organisation',
+  'event management', 'event organizer', 'exhibition organizer', 'conference organizer',
+  'event planner', 'event company', 'exhibitions management', 'events company', 'event solutions',
+  'exhibitions organization', 'events organization', 'management company',
+  'for exhibitions', 'for events', 'for conferences', 'expo for exhibitions',
+  'منظم فعاليات', 'إدارة فعاليات', 'تنظيم معارض', 'شركة تنظيم', 'منظم معارض',
+  'إدارة مؤتمرات', 'لتنظيم المعارض', 'لتنظيم الفعاليات', 'لإدارة المعارض',
+  'شركة إدارة', 'تنظيم فعاليات', 'لتنظيم المؤتمرات', 'للمعارض والمؤتمرات',
+  'للمعارض', 'للفعاليات',
+];
+
+function normalizeClassifierText(...values: Array<string | null | undefined>) {
+  return values.filter(Boolean).join(' ').toLowerCase();
+}
+
+function hasYearToken(...values: Array<string | null | undefined>) {
+  return values.some((value) => /\b(19|20)\d{2}\b/.test(value || ''));
+}
+
+function hasStrongOrganizerIdentity(data: any) {
+  const identityText = normalizeClassifierText(
+    data.name_en,
+    data.name_ar,
+    data.business_type_en,
+    data.business_type_ar,
+    data.description_en,
+    data.description_ar,
+  );
+
+  const websiteText = normalizeClassifierText(data.website, data.organizer_website);
+  const hasOrganizerKeyword = ORGANIZER_KEYWORDS.some((keyword) => identityText.includes(keyword));
+  const hasEditionInName = hasYearToken(data.name_en, data.name_ar);
+  const hasEventSignals = Boolean(
+    data.start_date ||
+    data.end_date ||
+    data.registration_deadline ||
+    data.venue_en ||
+    data.venue_ar ||
+    data.edition_year ||
+    data.edition_number ||
+    data.registration_url ||
+    data.ticket_price ||
+    data.map_url
+  );
+  const looksLikeCorporateSite = websiteText.length > 0 && !/(register|ticket|event|edition|visit|attend)/.test(websiteText);
+
+  return hasOrganizerKeyword && !hasEditionInName && (!hasEventSignals || looksLikeCorporateSite);
+}
+
 function autoDetectTargetTable(data: any): { table: string; sub_type: string; confidence: number } {
-  // If AI already classified the entity type, use that first
+  if (hasStrongOrganizerIdentity(data)) {
+    return { table: 'organizers', sub_type: 'organizer', confidence: 0.98 };
+  }
+
+  // If AI already classified the entity type, use that first unless strong organizer identity says otherwise
   const aiType = (data.detected_entity_type || '').toLowerCase();
   if (aiType === 'organizer') return { table: 'organizers', sub_type: 'organizer', confidence: 0.95 };
   if (aiType === 'exhibition') return { table: 'exhibitions', sub_type: 'exhibition', confidence: 0.95 };
@@ -621,19 +678,9 @@ function autoDetectTargetTable(data: any): { table: string; sub_type: string; co
 
   // Organizer patterns — check FIRST. An organizer ORGANIZES events, it is NOT an event itself.
   // Key distinction: "X for Exhibitions Organization" = organizer, "X Exhibition 2025" = exhibition
-  const organizerKeywords = [
-    'organizer', 'organiser', 'organization', 'organisation',
-    'event management', 'event organizer', 'exhibition organizer', 'conference organizer',
-    'event planner', 'event company', 'exhibitions management', 'events company', 'event solutions',
-    'exhibitions organization', 'events organization', 'management company',
-    'for exhibitions', 'for events', 'for conferences',
-    'منظم فعاليات', 'إدارة فعاليات', 'تنظيم معارض', 'شركة تنظيم', 'منظم معارض',
-    'إدارة مؤتمرات', 'لتنظيم المعارض', 'لتنظيم الفعاليات', 'لإدارة المعارض',
-    'شركة إدارة', 'تنظيم فعاليات', 'لتنظيم المؤتمرات',
-  ];
   // Check organizer keywords but ensure the name doesn't have a year (which would indicate an event edition)
   const hasYearInName = /\b(19|20)\d{2}\b/.test(data.name_en || '');
-  if (!hasYearInName && organizerKeywords.some(k => all.includes(k))) {
+  if (!hasYearInName && ORGANIZER_KEYWORDS.some(k => all.includes(k))) {
     return { table: 'organizers', sub_type: 'organizer', confidence: 0.9 };
   }
 

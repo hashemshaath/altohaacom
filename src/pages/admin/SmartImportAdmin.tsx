@@ -271,7 +271,6 @@ const buildOrganizerPayload = (d: ImportedData) => {
   if (d.description_en) payload.description = d.description_en;
   if (d.description_ar) payload.description_ar = d.description_ar;
   if (d.phone) payload.phone = d.phone;
-  if (d.fax) payload.fax = d.fax;
   if (d.email) payload.email = d.email;
   if (d.website) payload.website = d.website;
   if (d.city_en || d.city_ar) payload.city = d.city_en || d.city_ar;
@@ -287,28 +286,21 @@ const buildOrganizerPayload = (d: ImportedData) => {
   if (d.district_ar || d.neighborhood_ar) payload.district_ar = d.district_ar || d.neighborhood_ar;
   if (d.building_number) payload.building_number = d.building_number;
   if (d.additional_number) payload.additional_number = d.additional_number;
-  if (d.unit_number) payload.unit_number = d.unit_number;
   if (d.postal_code) payload.postal_code = d.postal_code;
-  if (d.short_address) payload.short_address = d.short_address;
   if (d.national_address_en) payload.national_address = d.national_address_en;
   if (d.national_address_ar) payload.national_address_ar = d.national_address_ar;
   if (d.latitude) payload.latitude = d.latitude;
   if (d.longitude) payload.longitude = d.longitude;
   if (d.google_maps_url) payload.google_maps_url = d.google_maps_url;
   if (d.founded_year) payload.founded_year = d.founded_year;
-  if (d.registration_number) payload.registration_number = d.registration_number;
-  if (d.license_number) payload.license_number = d.license_number;
   if (d.logo_url) payload.logo_url = d.logo_url;
   if (d.cover_url) payload.cover_image_url = d.cover_url;
   if (d.gallery_urls?.length) payload.gallery_urls = d.gallery_urls;
   if (d.services_en?.length) payload.services = d.services_en;
   if (d.services_ar?.length) payload.services_ar = d.services_ar;
-  if (d.specializations_en?.length) payload.specializations = d.specializations_en;
   if (d.targeted_sectors?.length) payload.targeted_sectors = d.targeted_sectors;
   if (d.categories?.length) payload.categories = d.categories;
-  if (d.tags?.length) payload.tags = d.tags;
   if (d.social_media && Object.values(d.social_media).some(Boolean)) payload.social_links = d.social_media;
-  payload.import_source = 'smart_import';
   return payload;
 };
 
@@ -320,6 +312,23 @@ const getPayloadForTable = (d: ImportedData, table: TargetTable) => {
     case "exhibitions": return buildExhibitionPayload(d);
     case "competitions": return buildCompetitionPayload(d);
     case "organizers": return buildOrganizerPayload(d);
+  }
+};
+
+const normalizeWebsiteHost = (value?: string | null) => {
+  if (!value) return null;
+  const trimmed = value.trim().toLowerCase();
+  if (!trimmed) return null;
+
+  try {
+    const parsed = new URL(trimmed.startsWith("http") ? trimmed : `https://${trimmed}`);
+    return parsed.hostname.replace(/^www\./, "");
+  } catch {
+    return trimmed
+      .replace(/^https?:\/\//, "")
+      .replace(/^www\./, "")
+      .split("/")[0]
+      .trim() || null;
   }
 };
 
@@ -557,6 +566,7 @@ export default function SmartImportAdmin() {
       const nameAr = details.name_ar?.trim();
       const phone = details.phone?.trim();
       const email = details.email?.trim()?.toLowerCase();
+      const websiteHost = normalizeWebsiteHost(details.website || details.organizer_website);
 
       // Strip year patterns (e.g., "2025", "2026") from names for broader matching
       const stripYear = (s: string | undefined) => s?.replace(/\b(19|20)\d{2}\b/g, '').replace(/\s+/g, ' ').trim();
@@ -595,6 +605,7 @@ export default function SmartImportAdmin() {
       }
       if (phone) orConditions.push(`phone.eq.${phone}`);
       if (email) orConditions.push(`email.ilike.${email}`);
+      if (websiteHost) orConditions.push(`website.ilike.%${websiteHost}%`);
 
       // Title-based conditions for exhibitions/competitions
       const titleOrConditions: string[] = [];
@@ -607,6 +618,11 @@ export default function SmartImportAdmin() {
       }
       for (const bg of arBigrams) {
         titleOrConditions.push(`title_ar.ilike.%${bg}%`);
+      }
+      if (websiteHost) {
+        titleOrConditions.push(`website_url.ilike.%${websiteHost}%`);
+        titleOrConditions.push(`organizer_website.ilike.%${websiteHost}%`);
+        titleOrConditions.push(`competition_website.ilike.%${websiteHost}%`);
       }
 
       if (orConditions.length === 0 && titleOrConditions.length === 0) { setCheckingDb(false); setDbChecked(true); return; }
@@ -631,6 +647,18 @@ export default function SmartImportAdmin() {
       (compResComp.data || []).forEach((c) => records.push({ id: c.id, name: c.title, name_ar: c.title_ar, identifier: c.competition_number || c.id.slice(0, 8), sub_type: "competition", city: c.city, phone: null, email: null, website: null, table: "competitions" }));
       (orgRes.data || []).forEach((o: any) => records.push({ id: o.id, name: o.name, name_ar: o.name_ar, identifier: o.organizer_number || o.id.slice(0, 8), sub_type: "organizer", city: o.city, phone: o.phone, email: o.email, website: o.website, table: "organizers" }));
 
+      const preferredTable = suggestedTarget?.table as TargetTable | undefined;
+      const normalizedHost = websiteHost;
+      records.sort((a, b) => {
+        const preferredDelta = Number(b.table === preferredTable) - Number(a.table === preferredTable);
+        if (preferredDelta !== 0) return preferredDelta;
+
+        const websiteDelta = Number(normalizeWebsiteHost(b.website) === normalizedHost) - Number(normalizeWebsiteHost(a.website) === normalizedHost);
+        if (websiteDelta !== 0) return websiteDelta;
+
+        return a.name.localeCompare(b.name);
+      });
+
       setExistingRecords(records);
     } catch (err: unknown) {
       console.error("DB check error:", err);
@@ -638,7 +666,7 @@ export default function SmartImportAdmin() {
       setCheckingDb(false);
       setDbChecked(true);
     }
-  }, [details]);
+  }, [details, suggestedTarget?.table]);
 
   useEffect(() => {
     if (details && !dbChecked && step === "details") {
