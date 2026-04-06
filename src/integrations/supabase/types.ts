@@ -11461,6 +11461,81 @@ export type Database = {
           },
         ]
       }
+      exhibition_venues: {
+        Row: {
+          address: string | null
+          address_ar: string | null
+          capacity: number | null
+          city: string | null
+          city_ar: string | null
+          country: string | null
+          cover_image_url: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          email: string | null
+          id: string
+          is_active: boolean
+          is_verified: boolean
+          logo_url: string | null
+          map_url: string | null
+          name: string
+          name_ar: string | null
+          phone: string | null
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          address_ar?: string | null
+          capacity?: number | null
+          city?: string | null
+          city_ar?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_verified?: boolean
+          logo_url?: string | null
+          map_url?: string | null
+          name: string
+          name_ar?: string | null
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          address_ar?: string | null
+          capacity?: number | null
+          city?: string | null
+          city_ar?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          id?: string
+          is_active?: boolean
+          is_verified?: boolean
+          logo_url?: string | null
+          map_url?: string | null
+          name?: string
+          name_ar?: string | null
+          phone?: string | null
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       exhibition_volunteer_tasks: {
         Row: {
           assigned_by: string | null
@@ -11668,6 +11743,7 @@ export type Database = {
           venue: string | null
           venue_ar: string | null
           venue_details: Json | null
+          venue_id: string | null
           view_count: number | null
           virtual_link: string | null
           website_url: string | null
@@ -11741,6 +11817,7 @@ export type Database = {
           venue?: string | null
           venue_ar?: string | null
           venue_details?: Json | null
+          venue_id?: string | null
           view_count?: number | null
           virtual_link?: string | null
           website_url?: string | null
@@ -11814,6 +11891,7 @@ export type Database = {
           venue?: string | null
           venue_ar?: string | null
           venue_details?: Json | null
+          venue_id?: string | null
           view_count?: number | null
           virtual_link?: string | null
           website_url?: string | null
@@ -11845,6 +11923,13 @@ export type Database = {
             columns: ["series_id"]
             isOneToOne: false
             referencedRelation: "event_series"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibitions_venue_id_fkey"
+            columns: ["venue_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_venues"
             referencedColumns: ["id"]
           },
         ]

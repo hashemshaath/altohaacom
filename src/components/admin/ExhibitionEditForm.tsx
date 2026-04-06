@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
+import { VenueSearchSelector, type VenueValue } from "@/components/admin/VenueSearchSelector";
 import { ExhibitionMediaLibrary } from "@/components/admin/ExhibitionMediaLibrary";
 import { ExhibitionSocialLinksEditor } from "@/components/admin/ExhibitionSocialLinksEditor";
 import { ExhibitionOfficialsPanel } from "@/components/admin/ExhibitionOfficialsPanel";
@@ -169,6 +170,20 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
   const [editionConfirmed, setEditionConfirmed] = useState(!!originalEditingId);
   const [editionResolved, setEditionResolved] = useState(!!originalEditingId || !exhibition?.series_id);
+  const [selectedVenue, setSelectedVenue] = useState<VenueValue | null>(() => {
+    if (!exhibition?.venue_id) return null;
+    return {
+      id: exhibition.venue_id,
+      name: exhibition.venue || "",
+      nameAr: exhibition.venue_ar || null,
+      city: exhibition.city || null,
+      country: exhibition.country || null,
+      address: null,
+      capacity: null,
+      logoUrl: null,
+      mapUrl: exhibition.map_url || null,
+    };
+  });
   const [activeSection, setActiveSection] = useState("basic");
 
   // Check if edition exists in DB when series + year are selected
@@ -237,11 +252,26 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       }
       setEditionResolved(true);
       setEditionConfirmed(true);
+      // Load venue
+      if (existingEdition.venue_id) {
+        setSelectedVenue({
+          id: existingEdition.venue_id,
+          name: existingEdition.venue || "",
+          nameAr: existingEdition.venue_ar || null,
+          city: existingEdition.city || null,
+          country: existingEdition.country || null,
+          address: null, capacity: null, logoUrl: null,
+          mapUrl: existingEdition.map_url || null,
+        });
+      } else {
+        setSelectedVenue(null);
+      }
     } else {
       // No edition found for this year — reset form and lock
       setActiveEditingId(null);
       setEditionResolved(false);
       setEditionConfirmed(false);
+      setSelectedVenue(null);
       // Keep series defaults but clear edition-specific data
       const series = seriesList?.find(s => s.id === selectedSeriesId);
       setForm({
@@ -366,6 +396,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         series_id: selectedSeriesId || null,
         edition_year: editionYear || null,
         edition_number: editionNumber || null,
+        venue_id: selectedVenue?.id || null,
       };
       if (editingId) {
         const { error } = await supabase.from("exhibitions").update(payload).eq("id", editingId);
@@ -816,11 +847,41 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 </FieldGroup>
               ) : (
                 <>
+                  {/* Venue Selector - only for current/next year */}
+                  {(() => {
+                    const currentYear = new Date().getFullYear();
+                    const canAssignVenue = !editionYear || (editionYear >= currentYear && editionYear <= currentYear + 1);
+                    return (
+                      <div className={cn(!canAssignVenue && "opacity-50 pointer-events-none")}>
+                        <VenueSearchSelector
+                          value={selectedVenue}
+                          onChange={setSelectedVenue}
+                          onVenueSelected={(v) => {
+                            updateField("venue", v.name);
+                            updateField("venue_ar", v.nameAr || "");
+                            if (v.city) updateField("city", v.city);
+                            if (v.country) updateField("country", v.country);
+                            if (v.mapUrl) updateField("map_url", v.mapUrl);
+                          }}
+                          isAr={isAr}
+                          disabled={!canAssignVenue}
+                        />
+                        {!canAssignVenue && (
+                          <p className="text-[10px] text-muted-foreground mt-1">
+                            {t("Venue can only be assigned for the current or next year's edition", "يمكن تعيين المقر فقط لنسخة السنة الحالية أو القادمة")}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  <Separator className="my-2" />
+
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <FieldGroup label={t("Venue (EN)", "المكان (إنجليزي)")} aiSlot={<AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />}>
+                    <FieldGroup label={t("Venue Name (EN)", "اسم المكان (إنجليزي)")} aiSlot={<AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />}>
                       <Input className="h-9" value={form.venue || ""} onChange={e => updateField("venue", e.target.value)} />
                     </FieldGroup>
-                    <FieldGroup label={t("Venue (AR)", "المكان (عربي)")} aiSlot={<AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />}>
+                    <FieldGroup label={t("Venue Name (AR)", "اسم المكان (عربي)")} aiSlot={<AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />}>
                       <Input className="h-9" value={form.venue_ar || ""} onChange={e => updateField("venue_ar", e.target.value)} dir="rtl" />
                     </FieldGroup>
                   </div>
