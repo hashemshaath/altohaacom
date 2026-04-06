@@ -959,6 +959,77 @@ const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: Ta
 });
 CompetitionTab.displayName = "CompetitionTab";
 
+// ── Organizer Tab ──
+const OrganizerTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => {
+  const hasData = details.organizer_name_en || details.organizer_name_ar || details.organizer_email || details.organizer_phone || details.organizer_website;
+  if (!hasData) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center text-muted-foreground">
+          <Users className="h-8 w-8 mx-auto mb-2 opacity-30" />
+          <p className="text-sm">{isAr ? "لا توجد بيانات منظم" : "No organizer data found"}</p>
+        </CardContent>
+      </Card>
+    );
+  }
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><Users className="h-4 w-4" />{isAr ? "معلومات المنظم" : "Organizer Info"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <Field label={isAr ? "اسم المنظم (EN)" : "Organizer Name (EN)"} value={details.organizer_name_en} fieldKey="organizer_name_en" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="organizer_name_ar" pairedFieldValue={details.organizer_name_ar} />
+          <Field label={isAr ? "اسم المنظم (AR)" : "Organizer Name (AR)"} value={details.organizer_name_ar} fieldKey="organizer_name_ar" editing={editing} onFieldUpdate={onFieldUpdate} pairedFieldKey="organizer_name_en" pairedFieldValue={details.organizer_name_en} />
+          <Field label={isAr ? "البريد الإلكتروني" : "Email"} value={details.organizer_email} fieldKey="organizer_email" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+          <Field label={isAr ? "الهاتف" : "Phone"} value={details.organizer_phone} fieldKey="organizer_phone" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+          <Field label={isAr ? "الموقع الإلكتروني" : "Website"} value={details.organizer_website} fieldKey="organizer_website" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><MapPin className="h-4 w-4" />{isAr ? "عنوان المنظم" : "Organizer Address"}</CardTitle></CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={isAr ? "المدينة (EN)" : "City (EN)"} value={details.organizer_city_en} fieldKey="organizer_city_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+            <Field label={isAr ? "المدينة (AR)" : "City (AR)"} value={details.organizer_city_ar} fieldKey="organizer_city_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+            <Field label={isAr ? "الدولة (EN)" : "Country (EN)"} value={details.organizer_country_en} fieldKey="organizer_country_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+            <Field label={isAr ? "الدولة (AR)" : "Country (AR)"} value={details.organizer_country_ar} fieldKey="organizer_country_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+          </div>
+          <Field label={isAr ? "العنوان الكامل (EN)" : "Full Address (EN)"} value={details.organizer_full_address_en} fieldKey="organizer_full_address_en" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+          <Field label={isAr ? "العنوان الكامل (AR)" : "Full Address (AR)"} value={details.organizer_full_address_ar} fieldKey="organizer_full_address_ar" editing={editing} onFieldUpdate={onFieldUpdate} copyable />
+          {(details.organizer_building_number || details.organizer_postal_code) && (
+            <>
+              <Separator />
+              <div className="grid grid-cols-2 gap-3">
+                <Field label={isAr ? "رقم المبنى" : "Building No."} value={details.organizer_building_number} fieldKey="organizer_building_number" editing={editing} onFieldUpdate={onFieldUpdate} />
+                <Field label={isAr ? "الرمز البريدي" : "Postal Code"} value={details.organizer_postal_code} fieldKey="organizer_postal_code" editing={editing} onFieldUpdate={onFieldUpdate} />
+                <Field label={isAr ? "الحي (EN)" : "District (EN)"} value={details.organizer_district_en} fieldKey="organizer_district_en" editing={editing} onFieldUpdate={onFieldUpdate} />
+                <Field label={isAr ? "الحي (AR)" : "District (AR)"} value={details.organizer_district_ar} fieldKey="organizer_district_ar" editing={editing} onFieldUpdate={onFieldUpdate} />
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {details.organizer_logo_url && (
+        <Card>
+          <CardHeader className="pb-2"><CardTitle className="text-sm flex items-center gap-1.5"><ImageIcon className="h-4 w-4" />{isAr ? "شعار المنظم" : "Organizer Logo"}</CardTitle></CardHeader>
+          <CardContent>
+            <ImagePreviewEditor
+              label={isAr ? "شعار المنظم" : "Organizer Logo"}
+              value={details.organizer_logo_url}
+              fieldKey="organizer_logo_url"
+              onUpdate={onFieldUpdate || (() => {})}
+              aspectRatio="square"
+              isAr={isAr}
+              readOnly={!editing && !onFieldUpdate}
+            />
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+});
+OrganizerTab.displayName = "OrganizerTab";
 
 const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps) => (
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
