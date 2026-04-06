@@ -93,21 +93,25 @@ function TrustBadges({ isAr, dir }: { isAr: boolean; dir: "ltr" | "rtl" }) {
   ];
 
   return (
-    <section className="border-y border-border/10 bg-gradient-to-r from-primary/[0.03] via-transparent to-primary/[0.03]" dir={dir}>
+    <section
+      className="border-y border-border/10 bg-gradient-to-r from-primary/[0.03] via-transparent to-primary/[0.03]"
+      dir={dir}
+      aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}
+    >
       <div className="container px-5 sm:px-6 py-2.5">
-        <div className="flex items-center justify-around gap-1">
+        <ul className="flex items-center justify-around gap-1" role="list">
           {badges.map((b, i) => (
-            <div key={i} className="group flex items-center gap-2 transition-transform duration-200 hover:scale-105 cursor-default">
-              <div className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/10 transition-all group-hover:bg-primary/15 group-hover:shadow-sm">
+            <li key={i} className="group flex items-center gap-2 transition-transform duration-200 hover:scale-105 cursor-default">
+              <div className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/10 transition-all group-hover:bg-primary/15 group-hover:shadow-sm" aria-hidden="true">
                 <b.icon className="h-3.5 w-3.5" />
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] sm:text-xs font-bold text-foreground leading-none">{b.label}</p>
                 <p className="text-[9px] sm:text-[10px] text-muted-foreground leading-none mt-0.5 font-medium">{b.sub}</p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
@@ -153,32 +157,53 @@ const Index = () => {
         ogImage="https://altoha.com/og-image.png"
         canonical="https://altoha.com/"
         lang={language}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: isAr ? "الطهاة" : "AlToha",
-          alternateName: isAr ? "AlToha" : "الطهاة",
-          url: "https://altoha.com",
-          inLanguage: ["en", "ar"],
-          description: seo.description,
-          potentialAction: {
-            "@type": "SearchAction",
-            target: {
-              "@type": "EntryPoint",
-              urlTemplate: "https://altoha.com/search?q={search_term_string}",
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: isAr ? "الطهاة" : "AlToha",
+            alternateName: isAr ? "AlToha" : "الطهاة",
+            url: "https://altoha.com",
+            inLanguage: ["en", "ar"],
+            description: seo.description,
+            potentialAction: {
+              "@type": "SearchAction",
+              target: {
+                "@type": "EntryPoint",
+                urlTemplate: "https://altoha.com/search?q={search_term_string}",
+              },
+              "query-input": "required name=search_term_string",
             },
-            "query-input": "required name=search_term_string",
           },
-        }}
+          {
+            "@context": "https://schema.org",
+            "@type": "CollectionPage",
+            name: isAr ? "الصفحة الرئيسية — الطهاة" : "Homepage — AlToha",
+            description: seo.description,
+            url: "https://altoha.com/",
+            isPartOf: { "@type": "WebSite", url: "https://altoha.com" },
+            breadcrumb: {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: "https://altoha.com/" },
+              ],
+            },
+          },
+        ]}
       />
 
       <Header />
 
-      <main className="flex-1 safe-area-x" aria-label="Homepage content">
+      <main className="flex-1 safe-area-x" role="main" aria-label={isAr ? "المحتوى الرئيسي" : "Homepage content"}>
+        {/* Hero — above-fold, eagerly rendered for LCP */}
         <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
           {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
         </ErrorBoundary>
+
+        {/* Social proof — trust badges */}
         <TrustBadges isAr={isAr} dir={isAr ? "rtl" : "ltr"} />
+
+        {/* Dynamic sections — lazy-loaded below fold */}
         <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
           {isError ? (
             <HomeEmergencySections language={language} />
@@ -186,9 +211,10 @@ const Index = () => {
             <HomeSectionsRenderer sections={dbSections} />
           )}
         </ErrorBoundary>
-        <div className="container px-5 sm:px-6 pb-12 pt-4">
+
+        <nav className="container px-5 sm:px-6 pb-12 pt-4" aria-label={isAr ? "صفحات ذات صلة" : "Related pages"}>
           <RelatedPages currentPath="/" />
-        </div>
+        </nav>
       </main>
 
       <Footer />

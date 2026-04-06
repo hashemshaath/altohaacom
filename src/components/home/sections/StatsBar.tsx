@@ -71,12 +71,16 @@ export default function StatsBar() {
   ];
 
   return (
-    <section ref={ref} dir={isAr ? "rtl" : "ltr"}>
+    <section
+      ref={ref}
+      dir={isAr ? "rtl" : "ltr"}
+      aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}
+    >
       <div className="container px-5 sm:px-6">
-        <div className="grid grid-cols-5 gap-1.5 sm:gap-3">
+        <div className="grid grid-cols-5 gap-1.5 sm:gap-3" role="list">
           {isLoading ? (
             Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="rounded-xl border border-border/30 bg-card/50 p-2 sm:p-3 animate-pulse">
+              <div key={i} role="listitem" className="rounded-xl border border-border/30 bg-card/50 p-2 sm:p-3 animate-pulse">
                 <div className="flex flex-col items-center gap-1 sm:gap-2">
                   <div className="h-6 w-6 sm:h-8 sm:w-8 rounded-lg bg-muted" />
                   <div className="h-4 w-10 bg-muted rounded" />

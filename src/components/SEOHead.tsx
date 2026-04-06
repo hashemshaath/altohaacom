@@ -7,7 +7,7 @@ interface SEOHeadProps {
   ogImage?: string;
   ogType?: string;
   canonical?: string;
-  jsonLd?: Record<string, unknown>;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noIndex?: boolean;
   lang?: string;
   /** Additional keywords for meta keywords tag */
