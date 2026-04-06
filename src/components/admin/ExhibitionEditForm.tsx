@@ -23,10 +23,12 @@ import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin
 import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
 import { ExhibitionOfficialsPanel } from "@/components/admin/ExhibitionOfficialsPanel";
 import { ExhibitionDocumentsPanel } from "@/components/admin/ExhibitionDocumentsPanel";
+import { ExhibitionSponsorsPanel } from "@/components/admin/ExhibitionSponsorsPanel";
+import { ExhibitionCompetitionsPanel } from "@/components/admin/ExhibitionCompetitionsPanel";
 import {
   Landmark, Calendar, MapPin, Building, Ticket, Tag, Globe, Save, X,
   Loader2, Trophy, GraduationCap, Mic, Image, Users, FileText, Layers,
-  ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot,
+  ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot, Award,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
@@ -83,6 +85,8 @@ const SECTIONS: SectionDef[] = [
   { id: "organizer", icon: Building, en: "Organizer", ar: "الجهة المنظمة", fields: ["organizer_name"] },
   { id: "tickets", icon: Ticket, en: "Tickets & Pricing", ar: "التذاكر والأسعار", fields: ["is_free"] },
   { id: "links", icon: LinkIcon, en: "Links & URLs", ar: "الروابط", fields: ["registration_url", "website_url"] },
+  { id: "sponsors", icon: Award, en: "Sponsors & Partners", ar: "الرعاة والشركاء", fields: [] },
+  { id: "competitions", icon: Trophy, en: "Competitions", ar: "المسابقات", fields: [] },
   { id: "media", icon: Image, en: "Media & Files", ar: "الوسائط والملفات", fields: ["cover_image_url"] },
   { id: "team", icon: Users, en: "Team & Officials", ar: "الفريق والمسؤولون", fields: [] },
 ];
@@ -182,6 +186,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       case "organizer": return (organizer || form.organizer_name) ? "complete" : "empty";
       case "tickets": return "complete"; // always valid (free or priced)
       case "links": return (form.registration_url || form.website_url) ? "complete" : "empty";
+      case "sponsors": return editingId ? "complete" : "empty";
+      case "competitions": return editingId ? "complete" : "empty";
       case "media": return form.cover_image_url ? "complete" : "empty";
       case "team": return editingId ? "complete" : "empty";
       default: return "empty";
@@ -471,7 +477,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                           ][n - 1] || `${n}`;
                           return (
                             <SelectItem key={n} value={String(n)}>
-                              {isAr ? `الدورة ${ordinalAr}` : `${ordinalEn} Edition`}
+                              {isAr ? `النسخة ${ordinalAr}` : `${ordinalEn} Edition`}
                             </SelectItem>
                           );
                         })}
@@ -482,7 +488,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                     <div className="flex items-end">
                       <Badge variant="outline" className="text-xs gap-1 whitespace-nowrap">
                         <Info className="h-3 w-3" />
-                        {form.title || "..."}{editionYear ? ` ${editionYear}` : ""}{editionNumber ? ` — ${isAr ? `الدورة ${editionNumber}` : `#${editionNumber}`}` : ""}
+                        {form.title || "..."}{editionYear ? ` ${editionYear}` : ""}{editionNumber ? ` — ${isAr ? `النسخة ${editionNumber}` : `Edition #${editionNumber}`}` : ""}
                       </Badge>
                     </div>
                   )}
@@ -670,19 +676,26 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 }}
                 label={t("Search & Select Organizer", "البحث واختيار الجهة المنظمة")}
               />
-              {organizer && (
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <FieldGroup label={t("Email", "البريد الإلكتروني")}>
-                    <Input className="h-9" type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
-                  </FieldGroup>
-                  <FieldGroup label={t("Phone", "رقم الهاتف")}>
-                    <Input className="h-9" value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
-                  </FieldGroup>
-                  <FieldGroup label={t("Website", "الموقع الإلكتروني")}>
-                    <Input className="h-9" value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
-                  </FieldGroup>
-                </div>
-              )}
+              {/* Always show organizer name fields for manual entry or display */}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <FieldGroup label={t("Organizer Name (EN)", "اسم المنظم (إنجليزي)")}>
+                  <Input className="h-9" value={form.organizer_name || ""} onChange={e => updateField("organizer_name", e.target.value)} placeholder={t("Organizer name", "اسم الجهة المنظمة")} />
+                </FieldGroup>
+                <FieldGroup label={t("Organizer Name (AR)", "اسم المنظم (عربي)")}>
+                  <Input className="h-9" value={form.organizer_name_ar || ""} onChange={e => updateField("organizer_name_ar", e.target.value)} dir="rtl" />
+                </FieldGroup>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-3">
+                <FieldGroup label={t("Email", "البريد الإلكتروني")}>
+                  <Input className="h-9" type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
+                </FieldGroup>
+                <FieldGroup label={t("Phone", "رقم الهاتف")}>
+                  <Input className="h-9" value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
+                </FieldGroup>
+                <FieldGroup label={t("Website", "الموقع الإلكتروني")}>
+                  <Input className="h-9" value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
+                </FieldGroup>
+              </div>
             </section>
 
             {/* ═══ Section: Tickets ═══ */}
@@ -730,6 +743,26 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   <Input className="h-9" value={form.website_url || ""} onChange={e => updateField("website_url", e.target.value)} placeholder="https://..." />
                 </FieldGroup>
               </div>
+            </section>
+
+            {/* ═══ Section: Sponsors & Partners ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["sponsors"] = el; }}
+              data-section="sponsors"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
+            >
+              <SectionHeader icon={Award} title={t("Sponsors & Partners", "الرعاة والشركاء")} status={editingId ? "complete" : "empty"} />
+              <ExhibitionSponsorsPanel exhibitionId={editingId || ""} isAr={isAr} />
+            </section>
+
+            {/* ═══ Section: Competitions ═══ */}
+            <section
+              ref={(el: HTMLDivElement | null) => { sectionRefs.current["competitions"] = el; }}
+              data-section="competitions"
+              className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
+            >
+              <SectionHeader icon={Trophy} title={t("Competitions", "المسابقات")} status={editingId ? "complete" : "empty"} />
+              <ExhibitionCompetitionsPanel exhibitionId={editingId || ""} editionYear={editionYear} isAr={isAr} />
             </section>
 
             {/* ═══ Section: Media ═══ */}

@@ -9809,6 +9809,58 @@ export type Database = {
           },
         ]
       }
+      exhibition_competitions: {
+        Row: {
+          competition_id: string
+          created_at: string
+          created_by: string | null
+          edition_year: number | null
+          exhibition_id: string
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          created_by?: string | null
+          edition_year?: number | null
+          exhibition_id: string
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          created_by?: string | null
+          edition_year?: number | null
+          exhibition_id?: string
+          id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_competitions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_competitions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_competitions_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exhibition_cooking_sessions: {
         Row: {
           actual_end: string | null
