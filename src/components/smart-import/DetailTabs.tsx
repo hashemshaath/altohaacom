@@ -85,6 +85,10 @@ export const DetailTabs = React.memo(({ details, activeTab, onTabChange, isAr, e
       <TabsContent value="event" className="mt-4">
         <EventTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
       </TabsContent>
+
+      <TabsContent value="competition" className="mt-4">
+        <CompetitionTab details={details} isAr={isAr} editing={editing} onFieldUpdate={onFieldUpdate} />
+      </TabsContent>
     </Tabs>
   );
 });
