@@ -3,18 +3,12 @@ import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
+
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import { ExhibitionAnalyticsWidget } from "@/components/admin/ExhibitionAnalyticsWidget";
-import { ExhibitionTicketStatsWidget } from "@/components/admin/ExhibitionTicketStatsWidget";
 import { deriveExhibitionStatus, EXHIBITION_STATUS_LEGEND } from "@/lib/exhibitionStatus";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { ExhibitionLiveStatsWidget } from "@/components/admin/ExhibitionLiveStatsWidget";
-import { ExhibitionManagementWidget } from "@/components/admin/ExhibitionManagementWidget";
-import { ExhibitionActivityLog } from "@/components/admin/ExhibitionActivityLog";
-import { ExhibitionAdvancedAnalytics } from "@/components/admin/ExhibitionAdvancedAnalytics";
 import { ExhibitionEditForm } from "@/components/admin/ExhibitionEditForm";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -302,32 +296,6 @@ export default function ExhibitionsAdmin() {
           </div>
         }
       />
-
-      {/* Quick Stats */}
-      {exhibitions && exhibitions.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-          {[
-            { label: t("Total", "الإجمالي"), value: exhibitions.length, color: "text-foreground", icon: Landmark },
-            { label: t("Pending", "معلقة"), value: exhibitions.filter(e => e.status === "pending").length, color: "text-chart-4", icon: Clock },
-            { label: t("Active", "نشطة"), value: exhibitions.filter(e => e.status === "active").length, color: "text-chart-2", icon: TrendingUp },
-            { label: t("Upcoming", "قادمة"), value: exhibitions.filter(e => e.status === "upcoming").length, color: "text-chart-4", icon: Calendar },
-            { label: t("Completed", "مكتملة"), value: exhibitions.filter(e => e.status === "completed").length, color: "text-chart-1", icon: CheckCircle },
-            { label: t("Total Views", "المشاهدات"), value: exhibitions.reduce((sum, e) => sum + (e.view_count || 0), 0), color: "text-primary", icon: Eye },
-          ].map((stat) => (
-            <Card key={stat.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-              <CardContent className="p-3 flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 shrink-0 transition-transform duration-300 group-hover:scale-110">
-                  <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                </div>
-                <div>
-                  <p className={`text-xl font-bold ${stat.color}`}><AnimatedCounter value={stat.value} /></p>
-                  <p className="text-[10px] text-muted-foreground">{stat.label}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
 
       {/* Event Series Manager */}
       {showSeries && (
