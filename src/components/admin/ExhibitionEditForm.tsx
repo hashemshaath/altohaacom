@@ -665,6 +665,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 </FieldGroup>
               </div>
 
+              <div className={cn(formLocked && "opacity-40 pointer-events-none")}>
               {/* Slug */}
               <FieldGroup label={t("URL Slug", "الرابط المختصر")}>
                 <Input className="h-9 font-mono text-xs max-w-md" value={form.slug || ""} onChange={e => updateField("slug", e.target.value)} placeholder="auto-generated-from-title" />
