@@ -114,33 +114,6 @@ function hexToHsl(hex: string) {
   return `${Math.round(h)} ${Math.round(s * 100)}% ${Math.round(l * 100)}%`;
 }
 
-/* ── Logo Upload Slot ── */
-function LogoSlot({ label, labelAr, isAr, value, onChange, bgClass }: {
-  label: string; labelAr: string; isAr: boolean;
-  value: string; onChange: (v: string) => void; bgClass: string;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <Label className="text-xs">{isAr ? labelAr : label}</Label>
-      <div className={cn("rounded-xl border-2 border-dashed border-border/50 p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] transition-colors", bgClass)}>
-        {value ? (
-          <img src={value} alt={label} className="max-h-16 object-contain" loading="lazy" />
-        ) : (
-          <div className="flex flex-col items-center gap-1 text-muted-foreground">
-            <Upload className="h-5 w-5" />
-            <span className="text-[10px]">{isAr ? "رفع الشعار" : "Upload Logo"}</span>
-          </div>
-        )}
-      </div>
-      <Input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={isAr ? "رابط الشعار" : "Logo URL"}
-        className="text-xs h-7"
-      />
-    </div>
-  );
-}
 
 /* ── Seasonal Identity ── */
 const OCCASION_PRESETS = [
