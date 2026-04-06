@@ -1452,9 +1452,10 @@ export default function SmartImportAdmin() {
 
           {/* AI Suggestion */}
           {suggestedTarget && (
-            <Card className="border-primary/20 bg-primary/5">
-              <CardContent className="py-3">
-                <div className="flex items-center gap-2">
+            <Card className="border-primary/20 bg-primary/5 rounded-xl">
+              <CardContent className="py-3 space-y-2">
+                <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Sparkles className="h-4 w-4 text-primary" />
                   <span className="text-sm font-medium">{isAr ? "اقتراح AI:" : "AI Suggestion:"}</span>
                   <Badge variant="secondary" className="gap-1">
@@ -1465,6 +1466,21 @@ export default function SmartImportAdmin() {
                   <Badge variant="outline" className="text-xs">{suggestedTarget.sub_type}</Badge>
                   <span className="text-xs text-muted-foreground">({Math.round(suggestedTarget.confidence * 100)}%)</span>
                 </div>
+                <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground" onClick={() => setShowAddForm(true)}>
+                  <Edit3 className="h-3 w-3" />{isAr ? "تغيير التصنيف" : "Change"}
+                </Button>
+                </div>
+                {details?.detected_entity_type && (
+                  <p className="text-[10px] text-muted-foreground ps-6">
+                    {isAr ? "سبب التصنيف:" : "Reason:"} {
+                      details.detected_entity_type === "organizer" ? (isAr ? "تم التعرف على هذا الكيان كشركة تنظيم (وليس فعالية)" : "Identified as an organizing company (not an event)") :
+                      details.detected_entity_type === "exhibition" ? (isAr ? "تم التعرف على هذا ككيان فعالية/معرض بتواريخ محددة" : "Identified as an event/exhibition with specific dates") :
+                      details.detected_entity_type === "competition" ? (isAr ? "تم التعرف على هذا كمسابقة طهي" : "Identified as a culinary competition") :
+                      details.detected_entity_type === "company" ? (isAr ? "تم التعرف على هذا كشركة تجارية" : "Identified as a business company") :
+                      (isAr ? `تم التصنيف كـ: ${details.detected_entity_type}` : `Classified as: ${details.detected_entity_type}`)
+                    }
+                  </p>
+                )}
               </CardContent>
             </Card>
           )}
@@ -1538,12 +1554,42 @@ export default function SmartImportAdmin() {
                                 <span>{typeLabel}</span>
                                 {record.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{record.city}</span>}
                               </div>
+                              {/* Side-by-side diff hints */}
+                              {details && (
+                                <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                                  {record.website && details.website && record.website !== details.website && (
+                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
+                                      <Globe className="h-2.5 w-2.5" />{isAr ? "موقع مختلف" : "Different website"}
+                                    </Badge>
+                                  )}
+                                  {record.email && details.email && record.email.toLowerCase() !== details.email.toLowerCase() && (
+                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
+                                      {isAr ? "بريد مختلف" : "Different email"}
+                                    </Badge>
+                                  )}
+                                  {record.phone && details.phone && record.phone !== details.phone && (
+                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
+                                      {isAr ? "هاتف مختلف" : "Different phone"}
+                                    </Badge>
+                                  )}
+                                  {record.table !== suggestedTarget?.table && (
+                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-blue-400/50 text-blue-700">
+                                      {isAr ? "تصنيف مختلف" : "Different type"}
+                                    </Badge>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
-                          <Button size="default" variant="default" className="gap-2 bg-yellow-600 hover:bg-yellow-700 text-white shadow-md" onClick={() => handleUpdateRecord(record)} disabled={updating}>
+                          <div className="flex flex-col gap-1.5 items-end shrink-0">
+                          <Button size="default" variant="default" className="gap-2 bg-yellow-600 hover:bg-yellow-700 text-white shadow-md whitespace-nowrap" onClick={() => handleUpdateRecord(record)} disabled={updating}>
                             {updating && selectedExistingId === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                             {isAr ? "تحديث المعلومات" : "Update Information"}
                           </Button>
+                          <Button size="sm" variant="ghost" className="gap-1 text-[10px] text-muted-foreground h-6" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank')}>
+                            <ExternalLink className="h-2.5 w-2.5" />{isAr ? "فتح السجل" : "Open Record"}
+                          </Button>
+                          </div>
                         </div>
                       );
                     })}
