@@ -126,27 +126,19 @@ export const adminNavSections: NavSection[] = [
     ],
   },
 
-  /* ── 5. Competitions ── */
+  /* ── 5. Events & Competitions ── */
   {
-    titleEn: "Competitions",
-    titleAr: "المسابقات",
+    titleEn: "Events & Competitions",
+    titleAr: "الفعاليات والمسابقات",
     fullAdminOnly: true,
     items: [
+      { to: "/admin/exhibitions", icon: Earth, labelEn: "Exhibitions", labelAr: "المعارض" },
+      { to: "/admin/exhibition-stats", icon: BarChart3, labelEn: "Event Statistics", labelAr: "إحصائيات الفعاليات" },
       { to: "/admin/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
       { to: "/admin/evaluation", icon: ClipboardCheck, labelEn: "Evaluation", labelAr: "التقييم" },
       { to: "/admin/certificates", icon: Award, labelEn: "Certificates", labelAr: "الشهادات" },
       { to: "/admin/chefs-table", icon: ChefHat, labelEn: "Chef's Table", labelAr: "طاولة الشيف" },
       { to: "/admin/chef-schedule", icon: Calendar, labelEn: "Schedules", labelAr: "الجداول" },
-    ],
-  },
-
-  /* ── 6. Events ── */
-  {
-    titleEn: "Events",
-    titleAr: "الفعاليات",
-    fullAdminOnly: true,
-    items: [
-      { to: "/admin/exhibitions", icon: Earth, labelEn: "Exhibitions", labelAr: "المعارض" },
       { to: "/admin/global-events", icon: CalendarRange, labelEn: "Global Events", labelAr: "التقويم العالمي" },
     ],
   },
