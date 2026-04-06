@@ -217,6 +217,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       setIncludesSeminars(existingEdition.includes_seminars || false);
       setTagsInput((existingEdition.tags || []).join(", "));
       setAudienceInput((existingEdition.target_audience || []).join(", "));
+      setSocialLinks(existingEdition.social_links && typeof existingEdition.social_links === "object" && !Array.isArray(existingEdition.social_links) ? existingEdition.social_links as Record<string, string> : {});
       if (existingEdition.organizer_entity_id || existingEdition.organizer_company_id || existingEdition.organizer_user_id) {
         setOrganizer({
           type: (existingEdition.organizer_type as "entity" | "company" | "chef" | "custom") || "custom",
@@ -256,6 +257,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       });
       setEditionNumber(null);
       setOrganizer(null);
+      setSocialLinks({});
       if (series?.tags) setTagsInput(series.tags.join(", "));
     }
   }, [selectedSeriesId, editionYear, existingEdition, editionLoading, seriesList]);
