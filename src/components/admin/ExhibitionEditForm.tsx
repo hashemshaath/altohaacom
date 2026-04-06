@@ -32,6 +32,8 @@ import {
   Loader2, Trophy, GraduationCap, Mic, Image, Users, FileText, Layers,
   ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot, Award,
   Clock, Star, Sparkles, ExternalLink, Hash, AlertTriangle, ArrowUpRight,
+  ImageIcon, History, Activity, Camera, Upload, Palette, StickyNote,
+  BarChart3, Copy, Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
@@ -85,6 +87,7 @@ interface SectionDef {
 
 const SECTIONS: SectionDef[] = [
   { id: "basic", icon: Landmark, en: "Basic Info", ar: "المعلومات الأساسية", descEn: "Title, description & series", descAr: "العنوان والوصف والسلسلة", fields: ["title", "title_ar", "description", "type"] },
+  { id: "images", icon: Camera, en: "Images", ar: "الصور", descEn: "Cover, logo & display image", descAr: "الغلاف والشعار وصورة العرض", fields: ["cover_image_url"] },
   { id: "datetime", icon: Calendar, en: "Date & Schedule", ar: "التاريخ والجدول", descEn: "Timing & event content", descAr: "التوقيت ومحتوى الفعالية", fields: ["start_date", "end_date"] },
   { id: "location", icon: MapPin, en: "Location", ar: "الموقع", descEn: "Venue & address", descAr: "المقر والعنوان", fields: ["venue", "city", "country"] },
   { id: "organizer", icon: Building, en: "Organizer", ar: "الجهة المنظمة", descEn: "Organizer details", descAr: "بيانات المنظم", fields: ["organizer_name"] },
@@ -92,8 +95,10 @@ const SECTIONS: SectionDef[] = [
   { id: "links", icon: LinkIcon, en: "Links & Social", ar: "الروابط والتواصل", descEn: "URLs & social media", descAr: "الروابط ووسائل التواصل", fields: ["registration_url", "website_url"] },
   { id: "sponsors", icon: Award, en: "Sponsors & Partners", ar: "الرعاة والشركاء", descEn: "Manage sponsors", descAr: "إدارة الرعاة", fields: [] },
   { id: "competitions", icon: Trophy, en: "Competitions", ar: "المسابقات", descEn: "Linked competitions", descAr: "المسابقات المرتبطة", fields: [] },
-  { id: "media", icon: Image, en: "Media & Files", ar: "الوسائط والملفات", descEn: "Images & documents", descAr: "الصور والمستندات", fields: ["cover_image_url"] },
+  { id: "media", icon: FileText, en: "Media Library", ar: "مكتبة الوسائط", descEn: "Files & documents", descAr: "الملفات والمستندات", fields: [] },
+  { id: "editions", icon: History, en: "Previous Editions", ar: "النسخ السابقة", descEn: "Edition history", descAr: "تاريخ النسخ", fields: [] },
   { id: "team", icon: Users, en: "Team & Officials", ar: "الفريق والمسؤولون", descEn: "Staff & officials", descAr: "الطاقم والمسؤولون", fields: [] },
+  { id: "notes", icon: StickyNote, en: "Notes & Activity", ar: "الملاحظات والنشاط", descEn: "Internal notes & log", descAr: "ملاحظات داخلية وسجل", fields: [] },
 ];
 
 interface ExhibitionEditFormProps {
