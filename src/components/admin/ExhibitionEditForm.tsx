@@ -20,6 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
+import { VenueSearchSelector, type VenueValue } from "@/components/admin/VenueSearchSelector";
 import { ExhibitionMediaLibrary } from "@/components/admin/ExhibitionMediaLibrary";
 import { ExhibitionSocialLinksEditor } from "@/components/admin/ExhibitionSocialLinksEditor";
 import { ExhibitionOfficialsPanel } from "@/components/admin/ExhibitionOfficialsPanel";
