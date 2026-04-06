@@ -157,6 +157,15 @@ const buildEstablishmentPayload = (d: ImportedData) => {
   if (d.country_code) payload.country_code = d.country_code;
   if (d.full_address_en) payload.address = d.full_address_en;
   if (d.full_address_ar) payload.address_ar = d.full_address_ar;
+  if (d.region_en) payload.region = d.region_en;
+  if (d.region_ar) payload.region_ar = d.region_ar;
+  if (d.district_en) payload.district = d.district_en;
+  if (d.district_ar) payload.district_ar = d.district_ar;
+  if (d.building_number) payload.building_number = d.building_number;
+  if (d.floor_number) payload.floor_number = d.floor_number;
+  if (d.additional_number) payload.additional_number = d.additional_number;
+  if (d.unit_number) payload.unit_number = d.unit_number;
+  if (d.short_address) payload.short_address = d.short_address;
   if (d.business_type_en) payload.cuisine_type = d.business_type_en;
   if (d.business_type_ar) payload.cuisine_type_ar = d.business_type_ar;
   if (d.rating) payload.star_rating = Math.round(d.rating);
