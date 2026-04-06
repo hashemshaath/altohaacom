@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect, memo, type ReactNode } from "react";
+import { useState, useCallback, useRef, useEffect, memo, useMemo, type ReactNode } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -80,7 +80,7 @@ const emptyForm: OrganizerForm = {
 
 /* ─── Tab Definitions ─── */
 const TABS = [
-  { id: "identity", icon: Building2, en: "Identity", ar: "الهوية" },
+  { id: "identity", icon: Building2, en: "Information", ar: "المعلومات" },
   { id: "images", icon: ImageIcon, en: "Media", ar: "الوسائط" },
   { id: "contact", icon: Mail, en: "Contact", ar: "التواصل" },
   { id: "location", icon: MapPin, en: "Location", ar: "الموقع" },
@@ -133,19 +133,19 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
   const [tAr, setTAr] = useState(false);
   const [tEn, setTEn] = useState(false);
 
-  const translateToAr = async () => {
-    if (!valueEn?.trim()) return;
-    setTAr(true);
-    const result = await translateField(valueEn, "en", "ar", context);
-    if (result) { onChangeAr(result); toast.success("تمت الترجمة للعربية"); }
-    setTAr(false);
-  };
   const translateToEn = async () => {
     if (!valueAr?.trim()) return;
     setTEn(true);
     const result = await translateField(valueAr, "ar", "en", context);
     if (result) { onChangeEn(result); toast.success("Translated to English"); }
     setTEn(false);
+  };
+  const translateToAr = async () => {
+    if (!valueEn?.trim()) return;
+    setTAr(true);
+    const result = await translateField(valueEn, "en", "ar", context);
+    if (result) { onChangeAr(result); toast.success("تمت الترجمة للعربية"); }
+    setTAr(false);
   };
 
   const InputComp = multiline ? Textarea : Input;
@@ -156,9 +156,9 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelAr}</Label>
-          {valueEn?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
-              {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} EN → AR
+          {valueAr?.trim() && (
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
+              {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} AR → EN
             </Button>
           )}
         </div>
@@ -167,9 +167,9 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelEn}</Label>
-          {valueAr?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
-              {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} AR → EN
+          {valueEn?.trim() && (
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
+              {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} EN → AR
             </Button>
           )}
         </div>
@@ -276,27 +276,48 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     enabled: !!organizerId,
   });
 
-  // Load linked exhibitions
+  // Load linked exhibitions with all editions
   const { data: linkedExhibitions } = useQuery({
     queryKey: ["organizer-exhibitions", organizerId, orgData?.name],
     queryFn: async () => {
       if (!organizerId) return [];
+      const fields = "id, title, title_ar, slug, type, status, start_date, end_date, edition_year, edition_number, cover_image_url, view_count, series_id";
       const { data: byId } = await supabase.from("exhibitions")
-        .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
+        .select(fields)
         .or(`organizer_id.eq.${organizerId},organizer_entity_id.eq.${organizerId}`)
-        .order("start_date", { ascending: false }).limit(20);
+        .order("edition_year", { ascending: false }).limit(50);
       if (byId && byId.length > 0) return byId;
       if (orgData?.name) {
         const { data: byName } = await supabase.from("exhibitions")
-          .select("id, title, title_ar, slug, type, status, start_date, end_date, edition_year, cover_image_url")
+          .select(fields)
           .or(`organizer_name.ilike.${orgData.name},organizer_name_ar.ilike.${orgData.name_ar || ""}`)
-          .order("start_date", { ascending: false }).limit(20);
+          .order("edition_year", { ascending: false }).limit(50);
         return byName || [];
       }
       return [];
     },
     enabled: !!organizerId,
   });
+
+  // Group exhibitions by base title (series)
+  const exhibitionGroups = useMemo(() => {
+    if (!linkedExhibitions?.length) return [];
+    const groups: Record<string, typeof linkedExhibitions> = {};
+    for (const ex of linkedExhibitions) {
+      // Strip year from title to find base name
+      const baseTitle = ex.title.replace(/\s*\d{4}\s*$/, "").trim() || ex.title;
+      if (!groups[baseTitle]) groups[baseTitle] = [];
+      groups[baseTitle].push(ex);
+    }
+    return Object.entries(groups).map(([baseName, editions]) => ({
+      baseName,
+      baseNameAr: editions[0]?.title_ar?.replace(/\s*[\u0660-\u0669\d]{4}\s*$/, "").trim() || editions[0]?.title_ar || baseName,
+      editions: editions.sort((a, b) => (b.edition_year || 0) - (a.edition_year || 0)),
+      coverImage: editions.find(e => e.cover_image_url)?.cover_image_url,
+    }));
+  }, [linkedExhibitions]);
+
+  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
   // Populate form
   useEffect(() => {
@@ -700,7 +721,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
             <div className="mt-5 pb-16">
               {/* ═══ Identity Tab ═══ */}
               <TabsContent value="identity" className="space-y-6 mt-0">
-                <SectionHeader icon={Building2} title={isAr ? "هوية المنظم" : "Organizer Identity"} desc={isAr ? "الاسم والوصف والرابط المختصر" : "Name, description & URL slug"} />
+                <SectionHeader icon={Building2} title={isAr ? "معلومات المنظم" : "Organizer Information"} desc={isAr ? "الاسم والوصف والرابط المختصر" : "Name, description & URL slug"} />
 
                 {/* Quick Summary Card for existing organizers */}
                 {organizerId && orgData && (
@@ -1276,32 +1297,85 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                       </div>
                     )}
 
-                    {linkedExhibitions && linkedExhibitions.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {linkedExhibitions.map(ex => (
-                          <Link key={ex.id} to={`/admin/exhibitions?edit=${ex.id}`} className="block">
-                            <Card className="rounded-2xl hover:shadow-md transition-all group cursor-pointer">
-                              <CardContent className="p-3 flex items-center gap-3">
-                                {ex.cover_image_url ? (
-                                  <img src={ex.cover_image_url} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
-                                ) : (
-                                  <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                    {exhibitionGroups.length > 0 ? (
+                      <div className="space-y-3">
+                        {exhibitionGroups.map(group => {
+                          const isExpanded = expandedGroup === group.baseName;
+                          return (
+                            <Card key={group.baseName} className="rounded-2xl overflow-hidden">
+                              <CardContent className="p-0">
+                                {/* Group Header - clickable */}
+                                <button
+                                  type="button"
+                                  onClick={() => setExpandedGroup(isExpanded ? null : group.baseName)}
+                                  className="w-full p-3 flex items-center gap-3 hover:bg-muted/30 transition-colors text-start"
+                                >
+                                  {group.coverImage ? (
+                                    <img src={group.coverImage} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
+                                  ) : (
+                                    <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
+                                      <Building2 className="h-5 w-5 text-muted-foreground" />
+                                    </div>
+                                  )}
+                                  <div className="min-w-0 flex-1">
+                                    <p className="text-sm font-semibold truncate">{isAr ? group.baseNameAr : group.baseName}</p>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                      <Badge variant="outline" className="text-[9px] h-4">
+                                        {group.editions.length} {isAr ? "نسخة" : group.editions.length === 1 ? "edition" : "editions"}
+                                      </Badge>
+                                      {group.editions[0]?.edition_year && (
+                                        <span className="text-[9px] text-muted-foreground">
+                                          {group.editions[group.editions.length - 1]?.edition_year} — {group.editions[0]?.edition_year}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <ChevronRight className={cn("h-4 w-4 text-muted-foreground transition-transform shrink-0", isExpanded && "rotate-90")} />
+                                </button>
+
+                                {/* Expanded Editions */}
+                                {isExpanded && (
+                                  <div className="border-t border-border/40 bg-muted/10">
+                                    <div className="p-3 space-y-2">
+                                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                        {isAr ? "النسخ المسجلة" : "Registered Editions"}
+                                      </p>
+                                      {group.editions.map(ed => (
+                                        <Link key={ed.id} to={`/admin/exhibitions?edit=${ed.id}`} className="block">
+                                          <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-background border border-transparent hover:border-border/50 transition-all group/ed cursor-pointer">
+                                            {ed.cover_image_url ? (
+                                              <img src={ed.cover_image_url} alt="" className="h-10 w-14 rounded-lg object-cover shrink-0" />
+                                            ) : (
+                                              <div className="h-10 w-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                                              </div>
+                                            )}
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex items-center gap-2">
+                                                <span className="text-xs font-bold text-primary">{ed.edition_year || "—"}</span>
+                                                {ed.edition_number && (
+                                                  <span className="text-[9px] text-muted-foreground">
+                                                    {isAr ? `النسخة ${ed.edition_number}` : `Edition #${ed.edition_number}`}
+                                                  </span>
+                                                )}
+                                              </div>
+                                              <div className="flex items-center gap-1.5 mt-0.5">
+                                                <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-[8px] h-3.5 capitalize">{ed.status}</Badge>
+                                                {ed.start_date && <span className="text-[9px] text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
+                                                {ed.view_count ? <span className="text-[9px] text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
+                                              </div>
+                                            </div>
+                                            <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover/ed:opacity-100 transition-opacity shrink-0" />
+                                          </div>
+                                        </Link>
+                                      ))}
+                                    </div>
                                   </div>
                                 )}
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-sm font-semibold truncate">{isAr ? (ex.title_ar || ex.title) : ex.title}</p>
-                                  <div className="flex items-center gap-1.5 mt-0.5">
-                                    <Badge variant="outline" className="text-[9px] h-4 capitalize">{ex.type}</Badge>
-                                    <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-[9px] h-4 capitalize">{ex.status}</Badge>
-                                    {ex.edition_year && <span className="text-[9px] text-muted-foreground">{ex.edition_year}</span>}
-                                  </div>
-                                </div>
-                                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                               </CardContent>
                             </Card>
-                          </Link>
-                        ))}
+                          );
+                        })}
                       </div>
                     ) : (
                       <Card className="rounded-2xl border-dashed">
