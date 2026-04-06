@@ -1134,6 +1134,131 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
             )}
           </TabsContent>
 
+          {/* ═══ Analytics Tab ═══ */}
+          <TabsContent value="analytics" className="space-y-6 mt-0">
+            <SectionHeader
+              icon={TrendingUp}
+              title={isAr ? "التحليلات والأداء" : "Analytics & Performance"}
+              desc={isAr ? "إحصائيات تفصيلية حول أداء المنظم" : "Detailed performance metrics and insights"}
+              actions={organizerId ? (
+                <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => refreshStatsMutation.mutate()} disabled={refreshStatsMutation.isPending}>
+                  {refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                  {isAr ? "تحديث" : "Refresh"}
+                </Button>
+              ) : undefined}
+            />
+
+            {!organizerId ? (
+              <Card className="rounded-2xl border-dashed">
+                <CardContent className="p-8 text-center">
+                  <TrendingUp className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                  <p className="text-xs text-muted-foreground">{isAr ? "احفظ المنظم أولاً لعرض التحليلات" : "Save the organizer first to view analytics"}</p>
+                </CardContent>
+              </Card>
+            ) : orgData && (
+              <>
+                {/* Primary KPIs */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {[
+                    { label: isAr ? "المعارض" : "Total Events", value: orgData.total_exhibitions || 0, icon: Calendar, color: "text-primary", bg: "bg-primary/10" },
+                    { label: isAr ? "المشاهدات" : "Total Views", value: (orgData.total_views || 0).toLocaleString(), icon: Eye, color: "text-chart-2", bg: "bg-chart-2/10" },
+                    { label: isAr ? "المتابعون" : "Followers", value: orgData.follower_count || 0, icon: Users, color: "text-purple-600", bg: "bg-purple-600/10" },
+                    { label: isAr ? "التقييم" : "Avg Rating", value: orgData.average_rating || "—", icon: Star, color: "text-amber-600", bg: "bg-amber-600/10", sub: orgData.average_rating > 0 ? "★".repeat(Math.round(orgData.average_rating)) : undefined },
+                  ].map(s => (
+                    <Card key={s.label} className="rounded-2xl group hover:shadow-md transition-all">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className={`h-9 w-9 rounded-xl ${s.bg} flex items-center justify-center shrink-0`}>
+                            <s.icon className={`h-4 w-4 ${s.color}`} />
+                          </div>
+                          <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                        </div>
+                        <p className="text-2xl font-bold">{s.value}</p>
+                        {s.sub && <p className="text-xs text-amber-500 mt-0.5">{s.sub}</p>}
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Engagement Metrics */}
+                <Card className="rounded-2xl">
+                  <CardContent className="p-4 space-y-4">
+                    <h4 className="text-sm font-semibold flex items-center gap-2">
+                      <Activity className="h-4 w-4 text-primary" />
+                      {isAr ? "مؤشرات المشاركة" : "Engagement Metrics"}
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[
+                        { label: isAr ? "متوسط المشاهدات / معرض" : "Avg Views/Event", value: orgData.total_exhibitions > 0 ? Math.round((orgData.total_views || 0) / orgData.total_exhibitions).toLocaleString() : "—" },
+                        { label: isAr ? "نسبة المتابعة" : "Follow Rate", value: orgData.total_views > 0 ? `${((orgData.follower_count || 0) / orgData.total_views * 100).toFixed(1)}%` : "—" },
+                        { label: isAr ? "سنوات الخبرة" : "Years Active", value: form.founded_year ? `${new Date().getFullYear() - parseInt(form.founded_year)}` : "—" },
+                        { label: isAr ? "حسابات التواصل" : "Social Profiles", value: [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram, form.social_youtube, form.social_tiktok, form.social_whatsapp, form.social_snapchat].filter(Boolean).length },
+                      ].map(m => (
+                        <div key={m.label} className="rounded-xl bg-muted/40 p-3">
+                          <p className="text-[10px] text-muted-foreground mb-1">{m.label}</p>
+                          <p className="text-lg font-bold">{m.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Profile Health */}
+                <Card className="rounded-2xl">
+                  <CardContent className="p-4 space-y-4">
+                    <h4 className="text-sm font-semibold flex items-center gap-2">
+                      <Zap className="h-4 w-4 text-primary" />
+                      {isAr ? "صحة الملف الشخصي" : "Profile Health"}
+                    </h4>
+                    <div className="space-y-3">
+                      {[
+                        { label: isAr ? "الاسم ثنائي اللغة" : "Bilingual Name", ok: !!(form.name && form.name_ar) },
+                        { label: isAr ? "الوصف ثنائي اللغة" : "Bilingual Description", ok: !!(form.description && form.description_ar) },
+                        { label: isAr ? "الشعار" : "Logo Uploaded", ok: !!form.logo_url },
+                        { label: isAr ? "صورة الغلاف" : "Cover Image", ok: !!form.cover_image_url },
+                        { label: isAr ? "معلومات التواصل" : "Contact Info", ok: !!(form.email && form.phone) },
+                        { label: isAr ? "الموقع" : "Location Set", ok: !!(form.city && form.country) },
+                        { label: isAr ? "الموقع الإلكتروني" : "Website", ok: !!form.website },
+                        { label: isAr ? "حسابات اجتماعية" : "Social Media (3+)", ok: [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram].filter(Boolean).length >= 3 },
+                        { label: isAr ? "معرض الصور" : "Photo Gallery", ok: form.gallery_urls.length > 0 },
+                        { label: isAr ? "فريق العمل" : "Team Contacts", ok: form.key_contacts.length > 0 },
+                      ].map(item => (
+                        <div key={item.label} className="flex items-center gap-3">
+                          <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 ${item.ok ? "bg-chart-2/20" : "bg-muted"}`}>
+                            {item.ok ? <CheckCircle2 className="h-3 w-3 text-chart-2" /> : <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />}
+                          </div>
+                          <span className={`text-xs ${item.ok ? "text-foreground" : "text-muted-foreground"}`}>{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Timeline */}
+                <Card className="rounded-2xl">
+                  <CardContent className="p-4 space-y-3">
+                    <h4 className="text-sm font-semibold flex items-center gap-2">
+                      <History className="h-4 w-4 text-primary" />
+                      {isAr ? "السجل الزمني" : "Timeline"}
+                    </h4>
+                    <div className="space-y-2">
+                      {[
+                        { label: isAr ? "تاريخ الإنشاء" : "Created", value: orgData.created_at ? new Date(orgData.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" }) : "—" },
+                        { label: isAr ? "آخر تحديث" : "Last Updated", value: orgData.updated_at ? new Date(orgData.updated_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long", day: "numeric" }) : "—" },
+                        { label: isAr ? "سنة التأسيس" : "Founded", value: form.founded_year || "—" },
+                      ].map(t => (
+                        <div key={t.label} className="flex items-center justify-between py-1.5 border-b border-border/30 last:border-0">
+                          <span className="text-xs text-muted-foreground">{t.label}</span>
+                          <span className="text-xs font-medium">{t.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+          </TabsContent>
+
           {/* ═══ Notes Tab ═══ */}
           <TabsContent value="notes" className="space-y-6 mt-0">
             <SectionHeader icon={StickyNote} title={isAr ? "ملاحظات إدارية" : "Admin Notes"} desc={isAr ? "ملاحظات داخلية وبيانات وصفية" : "Internal notes & record metadata"} />
