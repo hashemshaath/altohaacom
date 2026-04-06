@@ -68,7 +68,7 @@ const CompetitionsSection = memo(function CompetitionsSection() {
   const allEvents = [
     ...competitions.map((c) => ({ ...c, type: "competition", date: c.competition_start, link: ROUTES.competition(c.id) })),
     ...exhibitions.map((e) => ({ ...e, type: "exhibition", date: e.start_date, link: ROUTES.exhibition(e.slug || e.id) })),
-  ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, itemCount);
+  ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, Math.max(itemCount, 12));
 
   if (allEvents.length === 0) return null;
 
