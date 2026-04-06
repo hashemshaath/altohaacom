@@ -2,11 +2,13 @@ import { cn } from "@/lib/utils";
 import { type ReactNode } from "react";
 
 /**
- * Maps section keys to distinct background personalities.
- * Each section gets a unique feel while sharing brand accent colors.
+ * World-class light clean section background system.
  *
- * Uses CSS custom properties from index.css for theming consistency.
- * All colors are HSL-based for dark mode compatibility.
+ * Pure white base with subtle warm/cool alternation for visual rhythm.
+ * Each section has a distinct personality using extremely subtle tints,
+ * hairline borders, and decorative overlays.
+ *
+ * Dark mode provides complementary deep tones.
  */
 
 export type SectionTheme = {
@@ -16,162 +18,175 @@ export type SectionTheme = {
   overlay?: ReactNode;
   /** Extra wrapper classes */
   className?: string;
+  /** Hairline border on top */
+  topBorder?: boolean;
 };
 
-/**
- * Section background theme map.
- * Uses semantic tokens to maintain dark mode compatibility.
- */
 export const SECTION_THEMES: Record<string, SectionTheme> = {
-  /* ── Search — clean, minimal ── */
+
+  /* ── Search — crisp white ── */
   search: {
-    bg: "bg-gradient-to-b from-[hsl(210_33%_98%)] to-background dark:from-background dark:to-background",
+    bg: "bg-white dark:bg-background",
   },
 
-  /* ── Stats — soft radial glow ── */
+  /* ── Stats — soft cool tint ── */
   stats: {
-    bg: "bg-gradient-to-br from-[hsl(213_30%_97%)] via-background to-[hsl(37_40%_97%)] dark:from-[hsl(213_30%_10%)] dark:via-background dark:to-[hsl(37_20%_10%)]",
+    bg: "bg-[#F8FAFC] dark:bg-[hsl(213_30%_9%)]",
+    topBorder: true,
   },
 
-  /* ── Events — clean white with floating geometric accents ── */
+  /* ── Events — pure white with floating accent blobs ── */
   events_by_category: {
-    bg: "bg-[hsl(0_0%_100%)] dark:bg-card",
+    bg: "bg-white dark:bg-card",
     overlay: (
       <>
-        <div className="absolute top-8 start-[10%] h-32 w-32 rounded-full bg-primary/[0.03] blur-3xl" aria-hidden="true" />
-        <div className="absolute bottom-12 end-[8%] h-24 w-24 rounded-2xl rotate-12 bg-accent/[0.04] blur-2xl" aria-hidden="true" />
+        <div className="absolute top-12 start-[8%] h-48 w-48 rounded-full bg-primary/[0.04] blur-[80px]" aria-hidden="true" />
+        <div className="absolute bottom-16 end-[6%] h-36 w-36 rounded-full bg-accent/[0.05] blur-[60px]" aria-hidden="true" />
       </>
     ),
     className: "relative overflow-hidden",
+    topBorder: true,
   },
 
   /* ── Regional events — warm off-white ── */
   regional_events: {
-    bg: "bg-[hsl(20_30%_98%)] dark:bg-[hsl(213_30%_9%)]",
+    bg: "bg-[#FAFAF9] dark:bg-[hsl(20_12%_9%)]",
+    topBorder: true,
   },
 
-  /* ── Events calendar — cool slate tint ── */
+  /* ── Events calendar — cool tint with soft radial ── */
   events_calendar: {
-    bg: "bg-[hsl(210_25%_97%)] dark:bg-[hsl(213_28%_10%)]",
+    bg: "bg-[#F8FAFC] dark:bg-[hsl(213_28%_10%)]",
     overlay: (
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.03),transparent_70%)]" aria-hidden="true" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.02),transparent_70%)]" aria-hidden="true" />
     ),
     className: "relative overflow-hidden",
+    topBorder: true,
   },
 
-  /* ── Featured chefs — warm off-white with soft shadow separator ── */
+  /* ── Featured chefs — warm ivory ── */
   featured_chefs: {
-    bg: "bg-[hsl(25_33%_98%)] dark:bg-[hsl(20_15%_9%)]",
-    overlay: (
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border/30 to-transparent" aria-hidden="true" />
-    ),
-    className: "relative",
+    bg: "bg-[#FDFCF8] dark:bg-[hsl(20_15%_9%)]",
+    topBorder: true,
   },
 
-  /* ── Newly joined — alternating light ── */
+  /* ── Newly joined — whisper gray ── */
   newly_joined: {
-    bg: "bg-[hsl(0_0%_98%)] dark:bg-[hsl(213_25%_8%)]",
+    bg: "bg-[#F9FAFB] dark:bg-[hsl(213_25%_8%)]",
+    topBorder: true,
   },
 
-  /* ── Sponsors/Partners — glass-morphism inspired ── */
+  /* ── Sponsors — very light slate with subtle grid ── */
   sponsors: {
-    bg: "bg-gradient-to-b from-[hsl(210_20%_97%)] to-[hsl(210_20%_95%)] dark:from-[hsl(213_25%_10%)] dark:to-[hsl(213_25%_8%)]",
+    bg: "bg-[#F6F8FA] dark:bg-[hsl(213_25%_10%)]",
     overlay: (
-      <>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,hsl(var(--primary)/0.04),transparent_50%)]" aria-hidden="true" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_50%,hsl(var(--accent)/0.04),transparent_50%)]" aria-hidden="true" />
-      </>
-    ),
-    className: "relative overflow-hidden",
-  },
-  partners: {
-    bg: "bg-[hsl(25_20%_98%)] dark:bg-[hsl(20_12%_9%)]",
-  },
-
-  /* ── Pro suppliers — clean white with subtle pattern ── */
-  pro_suppliers: {
-    bg: "bg-[hsl(0_0%_100%)] dark:bg-card",
-    overlay: (
-      <div className="absolute inset-0 opacity-[0.015] dark:opacity-[0.03]" style={{
-        backgroundImage: `radial-gradient(circle, hsl(var(--primary)) 1px, transparent 1px)`,
-        backgroundSize: "24px 24px",
+      <div className="absolute inset-0 opacity-[0.025] dark:opacity-[0.04]" style={{
+        backgroundImage: `linear-gradient(to right, #94A3B8 1px, transparent 1px), linear-gradient(to bottom, #94A3B8 1px, transparent 1px)`,
+        backgroundSize: "40px 40px",
       }} aria-hidden="true" />
     ),
     className: "relative overflow-hidden",
+    topBorder: true,
+  },
+
+  /* ── Partners — warm off-white ── */
+  partners: {
+    bg: "bg-[#FAFAF9] dark:bg-[hsl(20_12%_9%)]",
+    topBorder: true,
+  },
+
+  /* ── Pro suppliers — pure white with micro dot pattern ── */
+  pro_suppliers: {
+    bg: "bg-white dark:bg-card",
+    overlay: (
+      <div className="absolute inset-0 opacity-[0.012] dark:opacity-[0.025]" style={{
+        backgroundImage: `radial-gradient(circle, #64748B 0.8px, transparent 0.8px)`,
+        backgroundSize: "20px 20px",
+      }} aria-hidden="true" />
+    ),
+    className: "relative overflow-hidden",
+    topBorder: true,
   },
 
   /* ── Masterclasses — cool slate ── */
   masterclasses: {
-    bg: "bg-[hsl(210_25%_97%)] dark:bg-[hsl(213_28%_10%)]",
+    bg: "bg-[#F8FAFC] dark:bg-[hsl(213_28%_10%)]",
+    topBorder: true,
   },
 
-  /* ── Articles — warm off-white ── */
+  /* ── Articles — warm ivory ── */
   articles: {
-    bg: "bg-[hsl(25_33%_99%)] dark:bg-[hsl(20_12%_8%)]",
+    bg: "bg-[#FDFCF8] dark:bg-[hsl(20_12%_8%)]",
+    topBorder: true,
   },
 
-  /* ── Trending — alternating light rhythm ── */
+  /* ── Trending — whisper gray ── */
   trending_content: {
-    bg: "bg-[hsl(0_0%_98%)] dark:bg-[hsl(213_22%_9%)]",
+    bg: "bg-[#F9FAFB] dark:bg-[hsl(213_22%_9%)]",
+    topBorder: true,
   },
 
-  /* ── Testimonials — warm off-white with shadow separators ── */
+  /* ── Testimonials — elegant warm ivory with paper texture ── */
   testimonials: {
-    bg: "bg-[hsl(25_40%_98%)] dark:bg-[hsl(20_18%_9%)]",
+    bg: "bg-[#FDFCF8] dark:bg-[hsl(20_18%_9%)]",
     overlay: (
-      <>
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border/25 to-transparent" aria-hidden="true" />
-        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-border/25 to-transparent" aria-hidden="true" />
-      </>
+      <div
+        className="absolute inset-0 opacity-[0.03] dark:opacity-[0.015] mix-blend-multiply"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E")`,
+          backgroundSize: "150px 150px",
+        }}
+        aria-hidden="true"
+      />
     ),
-    className: "relative",
+    className: "relative overflow-hidden",
+    topBorder: true,
   },
 
   /* ── Sponsorships — cool glass ── */
   sponsorships: {
-    bg: "bg-gradient-to-br from-[hsl(210_25%_97%)] to-[hsl(210_20%_95%)] dark:from-[hsl(213_25%_10%)] dark:to-[hsl(213_20%_8%)]",
+    bg: "bg-[#F6F8FA] dark:bg-[hsl(213_25%_10%)]",
+    topBorder: true,
   },
 
-  /* ── Platform features — white with geometric ── */
+  /* ── Platform features — white with floating accents ── */
   features: {
-    bg: "bg-[hsl(0_0%_100%)] dark:bg-card",
+    bg: "bg-white dark:bg-card",
     overlay: (
       <>
-        <div className="absolute top-[15%] end-[5%] h-40 w-40 rounded-full bg-primary/[0.025] blur-3xl" aria-hidden="true" />
-        <div className="absolute bottom-[10%] start-[3%] h-32 w-32 rounded-full bg-accent/[0.03] blur-3xl" aria-hidden="true" />
+        <div className="absolute top-[20%] end-[4%] h-44 w-44 rounded-full bg-primary/[0.025] blur-[80px]" aria-hidden="true" />
+        <div className="absolute bottom-[15%] start-[3%] h-36 w-36 rounded-full bg-accent/[0.03] blur-[60px]" aria-hidden="true" />
       </>
     ),
     className: "relative overflow-hidden",
+    topBorder: true,
   },
   platform_features: {
-    bg: "bg-[hsl(0_0%_100%)] dark:bg-card",
+    bg: "bg-white dark:bg-card",
     overlay: (
       <>
-        <div className="absolute top-[15%] end-[5%] h-40 w-40 rounded-full bg-primary/[0.025] blur-3xl" aria-hidden="true" />
-        <div className="absolute bottom-[10%] start-[3%] h-32 w-32 rounded-full bg-accent/[0.03] blur-3xl" aria-hidden="true" />
+        <div className="absolute top-[20%] end-[4%] h-44 w-44 rounded-full bg-primary/[0.025] blur-[80px]" aria-hidden="true" />
+        <div className="absolute bottom-[15%] start-[3%] h-36 w-36 rounded-full bg-accent/[0.03] blur-[60px]" aria-hidden="true" />
       </>
     ),
     className: "relative overflow-hidden",
+    topBorder: true,
   },
 
-  /* ── Newsletter CTA — bold primary gradient ── */
+  /* ── Newsletter CTA — warm amber gradient with dark text ── */
   newsletter: {
-    bg: "bg-gradient-to-br from-primary via-[hsl(213_75%_25%)] to-[hsl(213_80%_20%)] dark:from-primary dark:via-[hsl(213_60%_35%)] dark:to-[hsl(213_65%_22%)]",
+    bg: "bg-gradient-to-br from-[#FEF3C6] via-[#FDE68A] to-[#FCD34D] dark:from-[hsl(37_80%_22%)] dark:via-[hsl(37_70%_18%)] dark:to-[hsl(37_65%_14%)]",
     overlay: (
-      <>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--accent)/0.12),transparent_60%)]" aria-hidden="true" />
-        <div className="absolute inset-0 opacity-[0.04]" style={{
-          backgroundImage: `radial-gradient(circle, white 1px, transparent 1px)`,
-          backgroundSize: "32px 32px",
-        }} aria-hidden="true" />
-      </>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,white/30,transparent_60%)]" aria-hidden="true" />
     ),
     className: "relative overflow-hidden",
+    topBorder: true,
   },
 
-  /* ── Quick actions — soft gradient ── */
+  /* ── Quick actions — whisper gray ── */
   quick_actions: {
-    bg: "bg-gradient-to-b from-[hsl(210_20%_97%)] to-background dark:from-[hsl(213_22%_10%)] dark:to-background",
+    bg: "bg-[#F9FAFB] dark:bg-[hsl(213_22%_9%)]",
+    topBorder: true,
   },
 
   /* ── Ad banners — transparent ── */
@@ -180,16 +195,10 @@ export const SECTION_THEMES: Record<string, SectionTheme> = {
   ad_banner_bottom: { bg: "bg-transparent" },
 };
 
-/**
- * Returns the theme for a section key, with a sensible default.
- */
 export function getSectionTheme(sectionKey: string): SectionTheme {
-  return SECTION_THEMES[sectionKey] || { bg: "bg-background" };
+  return SECTION_THEMES[sectionKey] || { bg: "bg-white dark:bg-background" };
 }
 
-/**
- * Wraps section content with its themed background and decorative overlays.
- */
 export function SectionBackgroundWrapper({
   sectionKey,
   children,
@@ -203,6 +212,10 @@ export function SectionBackgroundWrapper({
 
   return (
     <div className={cn(theme.bg, theme.className, className)}>
+      {/* Hairline separator — 1px gradient border */}
+      {theme.topBorder && (
+        <div className="h-px bg-gradient-to-r from-transparent via-[#E5E7EB] to-transparent dark:via-border/30" aria-hidden="true" />
+      )}
       {theme.overlay}
       <div className="relative">{children}</div>
     </div>
