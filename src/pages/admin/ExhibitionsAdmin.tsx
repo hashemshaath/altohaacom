@@ -303,21 +303,6 @@ export default function ExhibitionsAdmin() {
         }
       />
 
-      {/* Analytics Widgets */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <ExhibitionLiveStatsWidget />
-        <ExhibitionTicketStatsWidget />
-      </div>
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <ExhibitionAnalyticsWidget />
-        </div>
-        <ExhibitionActivityLog />
-      </div>
-
-      <ExhibitionManagementWidget />
-      <ExhibitionAdvancedAnalytics />
-
       {/* Quick Stats */}
       {exhibitions && exhibitions.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
