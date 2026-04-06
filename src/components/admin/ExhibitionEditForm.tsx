@@ -20,7 +20,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { OrganizerSearchSelector, type OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
-import { ExhibitionMediaUploader } from "@/components/admin/ExhibitionMediaUploader";
+import { ExhibitionMediaLibrary } from "@/components/admin/ExhibitionMediaLibrary";
+import { ExhibitionSocialLinksEditor } from "@/components/admin/ExhibitionSocialLinksEditor";
 import { ExhibitionOfficialsPanel } from "@/components/admin/ExhibitionOfficialsPanel";
 import { ExhibitionDocumentsPanel } from "@/components/admin/ExhibitionDocumentsPanel";
 import { ExhibitionSponsorsPanel } from "@/components/admin/ExhibitionSponsorsPanel";
@@ -84,7 +85,7 @@ const SECTIONS: SectionDef[] = [
   { id: "location", icon: MapPin, en: "Location", ar: "الموقع", fields: ["venue", "city", "country"] },
   { id: "organizer", icon: Building, en: "Organizer", ar: "الجهة المنظمة", fields: ["organizer_name"] },
   { id: "tickets", icon: Ticket, en: "Tickets & Pricing", ar: "التذاكر والأسعار", fields: ["is_free"] },
-  { id: "links", icon: LinkIcon, en: "Links & URLs", ar: "الروابط", fields: ["registration_url", "website_url"] },
+  { id: "links", icon: LinkIcon, en: "Links & Social", ar: "الروابط والتواصل", fields: ["registration_url", "website_url"] },
   { id: "sponsors", icon: Award, en: "Sponsors & Partners", ar: "الرعاة والشركاء", fields: [] },
   { id: "competitions", icon: Trophy, en: "Competitions", ar: "المسابقات", fields: [] },
   { id: "media", icon: Image, en: "Media & Files", ar: "الوسائط والملفات", fields: ["cover_image_url"] },
@@ -159,6 +160,10 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const [includesSeminars, setIncludesSeminars] = useState(exhibition?.includes_seminars || false);
   const [tagsInput, setTagsInput] = useState((exhibition?.tags || []).join(", "));
   const [audienceInput, setAudienceInput] = useState((exhibition?.target_audience || []).join(", "));
+  const [socialLinks, setSocialLinks] = useState<Record<string, string>>(() => {
+    if (!exhibition?.social_links || typeof exhibition.social_links !== "object") return {};
+    return exhibition.social_links as Record<string, string>;
+  });
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
   const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number || null);
@@ -212,6 +217,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       setIncludesSeminars(existingEdition.includes_seminars || false);
       setTagsInput((existingEdition.tags || []).join(", "));
       setAudienceInput((existingEdition.target_audience || []).join(", "));
+      setSocialLinks(existingEdition.social_links && typeof existingEdition.social_links === "object" && !Array.isArray(existingEdition.social_links) ? existingEdition.social_links as Record<string, string> : {});
       if (existingEdition.organizer_entity_id || existingEdition.organizer_company_id || existingEdition.organizer_user_id) {
         setOrganizer({
           type: (existingEdition.organizer_type as "entity" | "company" | "chef" | "custom") || "custom",
@@ -251,6 +257,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       });
       setEditionNumber(null);
       setOrganizer(null);
+      setSocialLinks({});
       if (series?.tags) setTagsInput(series.tags.join(", "));
     }
   }, [selectedSeriesId, editionYear, existingEdition, editionLoading, seriesList]);
@@ -354,6 +361,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
         includes_seminars: includesSeminars,
         tags: tagsInput ? tagsInput.split(",").map(t => t.trim()) : [],
         target_audience: audienceInput ? audienceInput.split(",").map(t => t.trim()) : [],
+        social_links: Object.fromEntries(Object.entries(socialLinks).filter(([, v]) => v && v.trim().length > 0)),
         created_by: user?.id,
         series_id: selectedSeriesId || null,
         edition_year: editionYear || null,
@@ -915,7 +923,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               data-section="links"
               className="rounded-2xl border border-border/40 bg-card p-5 space-y-5"
             >
-              <SectionHeader icon={LinkIcon} title={t("Links & URLs", "الروابط")} status={getSectionStatus("links")} />
+              <SectionHeader icon={LinkIcon} title={t("Links & Social Media", "الروابط والتواصل الاجتماعي")} status={getSectionStatus("links")} />
               <div className="grid gap-4 sm:grid-cols-2">
                 <FieldGroup label={t("Registration URL", "رابط التسجيل")}>
                   <Input className="h-9" value={form.registration_url || ""} onChange={e => updateField("registration_url", e.target.value)} placeholder="https://..." />
@@ -923,6 +931,16 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 <FieldGroup label={t("Website URL", "رابط الموقع")}>
                   <Input className="h-9" value={form.website_url || ""} onChange={e => updateField("website_url", e.target.value)} placeholder="https://..." />
                 </FieldGroup>
+              </div>
+
+              <Separator />
+
+              <div>
+                <p className="text-[11px] font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
+                  <Globe className="h-3 w-3" />
+                  {t("Social Media & Contact Links", "روابط التواصل الاجتماعي والاتصال")}
+                </p>
+                <ExhibitionSocialLinksEditor value={socialLinks} onChange={setSocialLinks} isAr={isAr} />
               </div>
             </section>
 
@@ -958,25 +976,14 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 <Input className="h-9 max-w-md" value={form.cover_image_url || ""} onChange={e => updateField("cover_image_url", e.target.value)} placeholder="https://example.com/image.jpg" />
               </FieldGroup>
 
-              {form.cover_image_url && (
-                <div className="rounded-xl border overflow-hidden max-w-xs">
-                  <img src={form.cover_image_url} alt="Cover" className="w-full h-36 object-cover" />
-                </div>
-              )}
-
               <Separator />
 
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
-                  <Image className="h-3 w-3" />
-                  {t("Media Library", "مكتبة الوسائط")}
-                </p>
-                <ExhibitionMediaUploader
-                  exhibitionId={editingId || ""}
-                  coverImageUrl={form.cover_image_url || undefined}
-                  onCoverChange={url => updateField("cover_image_url", url)}
-                />
-              </div>
+              <ExhibitionMediaLibrary
+                exhibitionId={editingId || ""}
+                coverImageUrl={form.cover_image_url || undefined}
+                onCoverChange={url => updateField("cover_image_url", url)}
+                isAr={isAr}
+              />
 
               <Separator />
 
