@@ -12,7 +12,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
-import { Shield, Globe, Award } from "lucide-react";
+import { Shield, Globe, Award, Building2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
