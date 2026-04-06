@@ -211,6 +211,23 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
     enabled: !!selectedSeriesId && !!editionYear,
   });
 
+  // Fetch previous editions for this series
+  const { data: previousEditions = [] } = useQuery({
+    queryKey: ["previous-editions", selectedSeriesId, editingId],
+    queryFn: async () => {
+      if (!selectedSeriesId) return [];
+      const { data } = await supabase
+        .from("exhibitions")
+        .select("id, title, title_ar, edition_year, edition_number, status, start_date, end_date, city, country, cover_image_url, view_count")
+        .eq("series_id", selectedSeriesId)
+        .order("edition_year", { ascending: false })
+        .limit(20);
+      return data || [];
+    },
+    enabled: !!selectedSeriesId,
+    staleTime: 1000 * 60 * 5,
+  });
+
   useEffect(() => {
     if (!selectedSeriesId || !editionYear || editionLoading) return;
 
