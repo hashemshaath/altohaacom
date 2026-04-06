@@ -976,25 +976,14 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 <Input className="h-9 max-w-md" value={form.cover_image_url || ""} onChange={e => updateField("cover_image_url", e.target.value)} placeholder="https://example.com/image.jpg" />
               </FieldGroup>
 
-              {form.cover_image_url && (
-                <div className="rounded-xl border overflow-hidden max-w-xs">
-                  <img src={form.cover_image_url} alt="Cover" className="w-full h-36 object-cover" />
-                </div>
-              )}
-
               <Separator />
 
-              <div>
-                <p className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
-                  <Image className="h-3 w-3" />
-                  {t("Media Library", "مكتبة الوسائط")}
-                </p>
-                <ExhibitionMediaUploader
-                  exhibitionId={editingId || ""}
-                  coverImageUrl={form.cover_image_url || undefined}
-                  onCoverChange={url => updateField("cover_image_url", url)}
-                />
-              </div>
+              <ExhibitionMediaLibrary
+                exhibitionId={editingId || ""}
+                coverImageUrl={form.cover_image_url || undefined}
+                onCoverChange={url => updateField("cover_image_url", url)}
+                isAr={isAr}
+              />
 
               <Separator />
 
