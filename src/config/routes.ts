@@ -119,6 +119,7 @@ export const ROUTES = {
   adminCompetitions: '/admin/competitions',
   adminExhibitions: '/admin/exhibitions',
   adminExhibitionStats: '/admin/exhibition-stats',
+  adminOrganizers: '/admin/organizers',
   adminSettings: '/admin/settings',
   adminAnalytics: '/admin/analytics',
 

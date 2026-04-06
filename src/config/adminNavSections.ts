@@ -132,8 +132,9 @@ export const adminNavSections: NavSection[] = [
     titleAr: "الفعاليات والمسابقات",
     fullAdminOnly: true,
     items: [
-      { to: "/admin/exhibitions", icon: Earth, labelEn: "Exhibitions", labelAr: "المعارض" },
+      { to: "/admin/exhibitions", icon: Earth, labelEn: "Exhibitions & Events", labelAr: "المعارض والفعاليات" },
       { to: "/admin/exhibition-stats", icon: BarChart3, labelEn: "Event Statistics", labelAr: "إحصائيات الفعاليات" },
+      { to: "/admin/organizers", icon: Building2, labelEn: "Organizers", labelAr: "المنظمون" },
       { to: "/admin/competitions", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
       { to: "/admin/evaluation", icon: ClipboardCheck, labelEn: "Evaluation", labelAr: "التقييم" },
       { to: "/admin/certificates", icon: Award, labelEn: "Certificates", labelAr: "الشهادات" },
