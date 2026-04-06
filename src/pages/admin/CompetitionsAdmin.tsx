@@ -728,8 +728,12 @@ export default function CompetitionsAdmin() {
                         <div className="max-w-[220px]">
                           <p className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                             {isAr && comp.title_ar ? comp.title_ar : comp.title}
-                            {comp.edition_year && <span className="ms-1.5 text-primary font-bold text-[10px]">+{comp.edition_year}</span>}
                           </p>
+                          {comp.edition_year && (
+                            <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-mono border-primary/20 text-primary mt-0.5">
+                              {isAr ? `نسخة ${comp.edition_year}` : `Edition ${comp.edition_year}`}
+                            </Badge>
+                          )}
                           {types.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
                               {types.slice(0, 2).map((t) => (
