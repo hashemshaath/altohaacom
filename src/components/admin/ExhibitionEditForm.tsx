@@ -170,7 +170,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       if (!selectedSeriesId || !editionYear) return null;
       const { data } = await supabase
         .from("exhibitions")
-        .select("id, title, title_ar, edition_number, status")
+        .select("*")
         .eq("series_id", selectedSeriesId)
         .eq("edition_year", editionYear)
         .neq("id", editingId || "00000000-0000-0000-0000-000000000000")
@@ -179,6 +179,51 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
     },
     enabled: !!selectedSeriesId && !!editionYear,
   });
+
+  // Load existing edition data into form when found
+  useEffect(() => {
+    if (!existingEdition) return;
+    setForm({
+      title: existingEdition.title, title_ar: existingEdition.title_ar, slug: existingEdition.slug,
+      description: existingEdition.description, description_ar: existingEdition.description_ar,
+      type: existingEdition.type, status: existingEdition.status,
+      start_date: existingEdition.start_date?.slice(0, 16), end_date: existingEdition.end_date?.slice(0, 16),
+      venue: existingEdition.venue, venue_ar: existingEdition.venue_ar, city: existingEdition.city, country: existingEdition.country,
+      is_virtual: existingEdition.is_virtual, virtual_link: existingEdition.virtual_link,
+      organizer_name: existingEdition.organizer_name, organizer_name_ar: existingEdition.organizer_name_ar,
+      organizer_email: existingEdition.organizer_email, organizer_phone: existingEdition.organizer_phone,
+      organizer_website: existingEdition.organizer_website,
+      registration_url: existingEdition.registration_url, website_url: existingEdition.website_url, map_url: existingEdition.map_url,
+      ticket_price: existingEdition.ticket_price, ticket_price_ar: existingEdition.ticket_price_ar,
+      is_free: existingEdition.is_free, max_attendees: existingEdition.max_attendees, is_featured: existingEdition.is_featured,
+      cover_image_url: existingEdition.cover_image_url,
+      registration_deadline: existingEdition.registration_deadline?.slice(0, 16),
+    });
+    setEditionNumber(existingEdition.edition_number || null);
+    setCurrency(existingEdition.currency || "SAR");
+    setIncludesCompetitions(existingEdition.includes_competitions || false);
+    setIncludesTraining(existingEdition.includes_training || false);
+    setIncludesSeminars(existingEdition.includes_seminars || false);
+    setTagsInput((existingEdition.tags || []).join(", "));
+    setAudienceInput((existingEdition.target_audience || []).join(", "));
+    if (existingEdition.organizer_entity_id || existingEdition.organizer_company_id || existingEdition.organizer_user_id) {
+      setOrganizer({
+        type: (existingEdition.organizer_type as "entity" | "company" | "chef" | "custom") || "custom",
+        entityId: existingEdition.organizer_entity_id || null,
+        companyId: existingEdition.organizer_company_id || null,
+        userId: existingEdition.organizer_user_id || null,
+        name: existingEdition.organizer_name || "",
+        nameAr: existingEdition.organizer_name_ar || "",
+        email: existingEdition.organizer_email || undefined,
+        phone: existingEdition.organizer_phone || undefined,
+        website: existingEdition.organizer_website || undefined,
+        logoUrl: existingEdition.organizer_logo_url || undefined,
+        country: existingEdition.country || undefined,
+      });
+    }
+  }, [existingEdition]);
+
+  const editionHasData = !!existingEdition && !editionLoading;
 
   // Whether edition fields should be disabled (new edition not yet confirmed)
   const editionFieldsDisabled = !editingId && !!selectedSeriesId && !!editionYear && !existingEdition && !editionConfirmed;
@@ -472,7 +517,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                       setEditionYear(yr);
                       setEditionConfirmed(!!editingId);
                     }}>
-                      <SelectTrigger className="h-9"><SelectValue placeholder={t("Select year", "اختر السنة")} /></SelectTrigger>
+                      <SelectTrigger className={cn("h-9", editionHasData && "border-green-500 bg-green-50 dark:bg-green-950/20 text-green-700 dark:text-green-400 ring-1 ring-green-500/30")}><SelectValue placeholder={t("Select year", "اختر السنة")} /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">{t("Not set", "غير محدد")}</SelectItem>
                         {(() => {
