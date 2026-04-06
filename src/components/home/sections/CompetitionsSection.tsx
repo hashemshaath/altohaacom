@@ -54,13 +54,17 @@ const CompetitionsSection = memo(function CompetitionsSection() {
   const { data: exhibitions = [] } = useQuery({
     queryKey: ["home-exhibitions-minimal"],
     queryFn: async () => {
+      // Show active/upcoming first, then recently completed
       const { data } = await supabase
         .from("exhibitions")
         .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug, venue, venue_ar")
-        .in("status", ["upcoming", "active"])
+        .in("status", ["upcoming", "active", "completed"])
         .order("start_date", { ascending: true })
-        .limit(12);
-      return data || [];
+        .limit(20);
+      // Prioritize: active/upcoming first, then completed (most recent)
+      const active = (data || []).filter(e => e.status !== "completed");
+      const completed = (data || []).filter(e => e.status === "completed").reverse().slice(0, 4);
+      return [...active, ...completed].slice(0, 12);
     },
     staleTime: 1000 * 60 * 5,
   });
