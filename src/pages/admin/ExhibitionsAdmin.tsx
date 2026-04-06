@@ -30,7 +30,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, MapPin, Building, Ticket, Globe, X, Search, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers, Download, TrendingUp, Clock } from "lucide-react";
+import { Plus, Pencil, Trash2, Eye, Landmark, Calendar, Building, Ticket, Globe, X, Search, Copy, FileSpreadsheet, CheckCircle, XCircle, Layers, Download, TrendingUp, Clock } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { EventSeriesManager } from "@/components/admin/EventSeriesManager";
 import { format } from "date-fns";
@@ -42,8 +42,6 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import ExhibitionDetailDrawer from "@/components/admin/ExhibitionDetailDrawer";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
-type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
-type ExhibitionInsert = Database["public"]["Tables"]["exhibitions"]["Insert"];
 
 const statusOptions: { value: ExhibitionStatus; en: string; ar: string }[] = [
   { value: "pending", en: "Pending Approval", ar: "بانتظار الموافقة" },
@@ -54,7 +52,7 @@ const statusOptions: { value: ExhibitionStatus; en: string; ar: string }[] = [
   { value: "cancelled", en: "Cancelled", ar: "ملغاة" },
 ];
 
-const typeOptions: { value: ExhibitionType; en: string; ar: string }[] = [
+const typeOptions: { value: string; en: string; ar: string }[] = [
   { value: "exhibition", en: "Exhibition", ar: "معرض" },
   { value: "conference", en: "Conference", ar: "مؤتمر" },
   { value: "summit", en: "Summit", ar: "قمة" },
@@ -73,63 +71,38 @@ const statusColorMap: Record<string, string> = {
   cancelled: "bg-destructive/10 text-destructive",
 };
 
-const emptyForm: Partial<ExhibitionInsert> = {
-  title: "", title_ar: "", slug: "", description: "", description_ar: "",
-  type: "exhibition", status: "draft",
-  start_date: "", end_date: "",
-  venue: "", venue_ar: "", city: "", country: "",
-  is_virtual: false, virtual_link: "",
-  organizer_name: "", organizer_name_ar: "",
-  organizer_email: "", organizer_phone: "", organizer_website: "",
-  registration_url: "", website_url: "", map_url: "",
-  ticket_price: "", ticket_price_ar: "", is_free: false,
-  max_attendees: undefined, is_featured: false,
-  cover_image_url: "",
-};
-
 export default function ExhibitionsAdmin() {
   const { language } = useLanguage();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
+
+  // UI state
   const [showForm, setShowForm] = useState(false);
+  const [editingExhibition, setEditingExhibition] = useState<any>(null);
   const [showBulkImport, setShowBulkImport] = useState(false);
   const [showDedupScanner, setShowDedupScanner] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [form, setForm] = useState<Partial<ExhibitionInsert>>(emptyForm);
-  const [tagsInput, setTagsInput] = useState("");
-  const [audienceInput, setAudienceInput] = useState("");
+  const [showSeries, setShowSeries] = useState(false);
+  const [drawerExhibitionId, setDrawerExhibitionId] = useState<string | null>(null);
+
+  // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [yearFilter, setYearFilter] = useState<string>("all");
   const [cityFilter, setCityFilter] = useState<string>("all");
   const [organizerFilter, setOrganizerFilter] = useState<string>("all");
-  const [currency, setCurrency] = useState("SAR");
-  const [includesCompetitions, setIncludesCompetitions] = useState(false);
-  const [includesTraining, setIncludesTraining] = useState(false);
-  const [includesSeminars, setIncludesSeminars] = useState(false);
-  const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(null);
-  const [editionYear, setEditionYear] = useState<number | null>(null);
-  const [showSeries, setShowSeries] = useState(false);
   const [seriesFilter, setSeriesFilter] = useState<string>("all");
-  const { data: countries } = useCountries();
-  const [drawerExhibitionId, setDrawerExhibitionId] = useState<string | null>(null);
 
   const t = (en: string, ar: string) => isAr ? ar : en;
 
-  // Fetch event series for selector
   const { data: seriesList } = useQuery({
     queryKey: ["event-series-select"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar, series_type, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, default_organizer_phone, default_organizer_website, default_organizer_logo_url, cover_image_url, logo_url, tags, website_url").eq("is_active", true).order("name");
-      if (error) throw error;
-      return data as any[];
+      const { data } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name");
+      return data as any[] || [];
     },
   });
-
-  const [organizer, setOrganizer] = useState<OrganizerValue | null>(null);
 
   const { data: exhibitions, isLoading } = useQuery({
     queryKey: ["admin-exhibitions"],
@@ -143,13 +116,13 @@ export default function ExhibitionsAdmin() {
     },
   });
 
-  // Derive unique values for filters
+  // Derived filter values
   const uniqueYears = [...new Set(exhibitions?.map(e => new Date(e.start_date).getFullYear().toString()) || [])].sort((a, b) => Number(b) - Number(a));
   const uniqueCities = [...new Set(exhibitions?.map(e => e.city).filter(Boolean) || [])].sort();
   const uniqueOrganizers = [...new Set(exhibitions?.map(e => e.organizer_name).filter(Boolean) || [])].sort();
 
   const filteredExhibitions = exhibitions?.filter((ex) => {
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = !searchQuery ||
       ex.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (ex.title_ar && ex.title_ar.includes(searchQuery)) ||
       (ex.organizer_name && ex.organizer_name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -178,6 +151,7 @@ export default function ExhibitionsAdmin() {
     filename: "exhibitions",
   });
 
+  // Bulk actions
   const bulkStatusChange = async (status: string) => {
     const ids = [...bulk.selected];
     const { error } = await supabase.from("exhibitions").update({ status: status as any }).in("id", ids);
@@ -195,60 +169,6 @@ export default function ExhibitionsAdmin() {
     bulk.clearSelection();
     toast({ title: isAr ? `تم حذف ${ids.length} فعالية` : `${ids.length} deleted` });
   };
-
-  const saveMutation = useMutation({
-    mutationFn: async () => {
-      const slug = form.slug || form.title?.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") || "";
-      const payload: any = {
-        ...form,
-        slug,
-        organizer_name: organizer?.name || form.organizer_name || null,
-        organizer_name_ar: organizer?.nameAr || form.organizer_name_ar || null,
-        organizer_email: organizer?.email || form.organizer_email || null,
-        organizer_phone: organizer?.phone || form.organizer_phone || null,
-        organizer_website: organizer?.website || form.organizer_website || null,
-        organizer_logo_url: organizer?.logoUrl || null,
-        organizer_type: organizer?.type || "custom",
-        organizer_entity_id: organizer?.entityId || null,
-        organizer_company_id: organizer?.companyId || null,
-        organizer_user_id: organizer?.userId || null,
-        currency,
-        includes_competitions: includesCompetitions,
-        includes_training: includesTraining,
-        includes_seminars: includesSeminars,
-        tags: tagsInput ? tagsInput.split(",").map(t => t.trim()) : [],
-        target_audience: audienceInput ? audienceInput.split(",").map(t => t.trim()) : [],
-        created_by: user?.id,
-        series_id: selectedSeriesId || null,
-        edition_year: editionYear || null,
-      };
-
-      if (editingId) {
-        const { error } = await supabase.from("exhibitions").update(payload).eq("id", editingId);
-        if (error) throw error;
-        return { slug, id: editingId, isNew: false };
-      } else {
-        const { data, error } = await supabase.from("exhibitions").insert(payload).select("id, slug").single();
-        if (error) throw error;
-        return { slug: data.slug, id: data.id, isNew: true };
-      }
-    },
-    onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
-      toast({ title: editingId ? t("Exhibition updated", "تم تحديث الفعالية") : t("Exhibition created", "تم إنشاء الفعالية") });
-      
-      // Redirect to the exhibition detail page if it includes sub-content
-      if (result.isNew && (includesCompetitions || includesTraining || includesSeminars)) {
-        resetForm();
-        navigate(`/exhibitions/${result.slug}`);
-      } else {
-        resetForm();
-      }
-    },
-    onError: (err: Error) => {
-      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
-    },
-  });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
@@ -282,7 +202,7 @@ export default function ExhibitionsAdmin() {
       toast({ title: t("Exhibition duplicated", "تم تكرار الفعالية") });
     },
     onError: (err: Error) => {
-      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
+      toast({ title: t("Error", "خطأ"), description: err.message, variant: "destructive" });
     },
   });
 
@@ -295,10 +215,7 @@ export default function ExhibitionsAdmin() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
       queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
-      toast({ title: t("Exhibition approved and moved to draft", "تمت الموافقة ونقلها إلى مسودة") });
-    },
-    onError: (err: Error) => {
-      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
+      toast({ title: t("Exhibition approved", "تمت الموافقة") });
     },
   });
 
@@ -313,91 +230,46 @@ export default function ExhibitionsAdmin() {
       queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] });
       toast({ title: t("Exhibition rejected", "تم رفض الفعالية") });
     },
-    onError: (err: Error) => {
-      toast({ title: t("Error", "خطأ"), description: err instanceof Error ? err.message : String(err), variant: "destructive" });
-    },
   });
 
-  const resetForm = () => {
-    setForm(emptyForm);
-    setTagsInput("");
-    setAudienceInput("");
-    setOrganizer(null);
-    setCurrency("SAR");
-    setIncludesCompetitions(false);
-    setIncludesTraining(false);
-    setIncludesSeminars(false);
-    setSelectedSeriesId(null);
-    setEditionYear(null);
-    setEditingId(null);
-    setShowForm(false);
+  const openCreateForm = () => {
+    setEditingExhibition(null);
+    setShowForm(true);
+    setShowBulkImport(false);
+    setShowDedupScanner(false);
   };
 
-  const startEdit = (ex) => {
-    setForm({
-      title: ex.title, title_ar: ex.title_ar, slug: ex.slug,
-      description: ex.description, description_ar: ex.description_ar,
-      type: ex.type, status: ex.status,
-      start_date: ex.start_date?.slice(0, 16), end_date: ex.end_date?.slice(0, 16),
-      venue: ex.venue, venue_ar: ex.venue_ar, city: ex.city, country: ex.country,
-      is_virtual: ex.is_virtual, virtual_link: ex.virtual_link,
-      organizer_name: ex.organizer_name, organizer_name_ar: ex.organizer_name_ar,
-      organizer_email: ex.organizer_email, organizer_phone: ex.organizer_phone,
-      organizer_website: ex.organizer_website,
-      registration_url: ex.registration_url, website_url: ex.website_url, map_url: ex.map_url,
-      ticket_price: ex.ticket_price, ticket_price_ar: ex.ticket_price_ar,
-      is_free: ex.is_free, max_attendees: ex.max_attendees, is_featured: ex.is_featured,
-      cover_image_url: ex.cover_image_url,
-      registration_deadline: ex.registration_deadline?.slice(0, 16),
-    });
-    // Restore organizer from saved data
-    if (ex.organizer_entity_id || ex.organizer_company_id || ex.organizer_user_id) {
-      setOrganizer({
-        type: ex.organizer_type || "custom",
-        entityId: ex.organizer_entity_id || null,
-        companyId: ex.organizer_company_id || null,
-        userId: ex.organizer_user_id || null,
-        name: ex.organizer_name || "",
-        nameAr: ex.organizer_name_ar || "",
-        email: ex.organizer_email || undefined,
-        phone: ex.organizer_phone || undefined,
-        website: ex.organizer_website || undefined,
-        logoUrl: ex.organizer_logo_url || undefined,
-        country: ex.country || undefined,
-      });
-    } else {
-      setOrganizer(null);
-    }
-    setCurrency(ex.currency || "SAR");
-    setIncludesCompetitions(ex.includes_competitions || false);
-    setIncludesTraining(ex.includes_training || false);
-    setIncludesSeminars(ex.includes_seminars || false);
-    setTagsInput((ex.tags || []).join(", "));
-    setAudienceInput((ex.target_audience || []).join(", "));
-    setSelectedSeriesId(ex.series_id || null);
-    setEditionYear(ex.edition_year || null);
-    setEditingId(ex.id);
+  const openEditForm = (ex: any) => {
+    setEditingExhibition(ex);
     setShowForm(true);
   };
 
-  const updateField = (key: string, value: any) => setForm(prev => ({ ...prev, [key]: value }));
+  const closeForm = () => {
+    setShowForm(false);
+    setEditingExhibition(null);
+  };
 
   const getTypeName = (type: string) => {
     const opt = typeOptions.find(o => o.value === type);
     return opt ? (isAr ? opt.ar : opt.en) : type;
   };
 
-  const getStatusName = (status: string) => {
-    const opt = statusOptions.find(o => o.value === status);
-    return opt ? (isAr ? opt.ar : opt.en) : status;
-  };
-
-  const SectionHeader = ({ icon: Icon, title }: { icon: any; title: string }) => (
-    <div className="flex items-center gap-2 mb-3">
-      <Icon className="h-4 w-4 text-primary" />
-      <h3 className="text-sm font-semibold">{title}</h3>
-    </div>
-  );
+  // If form is open, show the full-screen edit form
+  if (showForm) {
+    return (
+      <div className="space-y-4">
+        <AdminPageHeader
+          icon={Landmark}
+          title={editingExhibition ? t("Edit Exhibition", "تعديل المعرض") : t("Create Exhibition", "إنشاء معرض")}
+          description={editingExhibition ? (isAr && editingExhibition.title_ar ? editingExhibition.title_ar : editingExhibition.title) : t("Fill in the details to create a new exhibition", "أدخل التفاصيل لإنشاء معرض جديد")}
+        />
+        <ExhibitionEditForm
+          exhibition={editingExhibition}
+          onClose={closeForm}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -407,7 +279,7 @@ export default function ExhibitionsAdmin() {
         description={t("Create, manage, and monitor all exhibitions, conferences, and events", "إنشاء وإدارة ومراقبة جميع المعارض والمؤتمرات والفعاليات")}
         actions={
           <div className="flex gap-2 flex-wrap">
-            <Button variant="outline" size="sm" onClick={() => { setShowSeries(!showSeries); }}>
+            <Button variant="outline" size="sm" onClick={() => setShowSeries(!showSeries)}>
               <Layers className="me-2 h-4 w-4" />
               {t("Series", "السلاسل")}
             </Button>
@@ -415,7 +287,7 @@ export default function ExhibitionsAdmin() {
               <Search className="me-2 h-4 w-4" />
               {t("Dedup Scanner", "فاحص التكرارات")}
             </Button>
-            <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showForm) setShowForm(false); if (showDedupScanner) setShowDedupScanner(false); }}>
+            <Button variant="outline" size="sm" onClick={() => { setShowBulkImport(!showBulkImport); if (showDedupScanner) setShowDedupScanner(false); }}>
               <FileSpreadsheet className="me-2 h-4 w-4" />
               {t("Bulk Import", "استيراد جماعي")}
             </Button>
@@ -423,14 +295,15 @@ export default function ExhibitionsAdmin() {
               <Download className="me-2 h-4 w-4" />
               {t("Export CSV", "تصدير CSV")}
             </Button>
-            <Button onClick={() => { resetForm(); setShowForm(!showForm); if (showBulkImport) setShowBulkImport(false); }} size="sm">
-              {showForm ? <><X className="me-2 h-4 w-4" />{t("Close", "إغلاق")}</> : <><Plus className="me-2 h-4 w-4" />{t("Add Event", "إضافة فعالية")}</>}
+            <Button onClick={openCreateForm} size="sm">
+              <Plus className="me-2 h-4 w-4" />
+              {t("Add Event", "إضافة فعالية")}
             </Button>
           </div>
         }
       />
 
-      {/* Exhibition Analytics Widgets */}
+      {/* Analytics Widgets */}
       <div className="grid gap-4 md:grid-cols-2">
         <ExhibitionLiveStatsWidget />
         <ExhibitionTicketStatsWidget />
@@ -442,10 +315,7 @@ export default function ExhibitionsAdmin() {
         <ExhibitionActivityLog />
       </div>
 
-      {/* Exhibition Management Widget */}
       <ExhibitionManagementWidget />
-
-      {/* Advanced Analytics */}
       <ExhibitionAdvancedAnalytics />
 
       {/* Quick Stats */}
@@ -461,7 +331,7 @@ export default function ExhibitionsAdmin() {
           ].map((stat) => (
             <Card key={stat.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
               <CardContent className="p-3 flex items-center gap-3">
-                <div className={`flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 shrink-0 transition-transform duration-300 group-hover:scale-110`}>
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-muted/60 shrink-0 transition-transform duration-300 group-hover:scale-110">
                   <stat.icon className={`h-4 w-4 ${stat.color}`} />
                 </div>
                 <div>
@@ -477,20 +347,23 @@ export default function ExhibitionsAdmin() {
       {/* Event Series Manager */}
       {showSeries && (
         <EventSeriesManager onCreateEdition={(series, year) => {
-          resetForm();
-          setSelectedSeriesId(series.id);
-          setEditionYear(year);
-          updateField("title", `${series.name} ${year}`);
-          updateField("title_ar", series.name_ar ? `${series.name_ar} ${year}` : "");
-          if (series.default_venue) updateField("venue", series.default_venue);
-          if (series.default_venue_ar) updateField("venue_ar", series.default_venue_ar);
-          if (series.default_city) updateField("city", series.default_city);
-          if (series.default_country) updateField("country", series.default_country);
-          if (series.default_organizer_name) updateField("organizer_name", series.default_organizer_name);
-          if (series.default_organizer_name_ar) updateField("organizer_name_ar", series.default_organizer_name_ar);
-          if (series.default_organizer_email) updateField("organizer_email", series.default_organizer_email);
-          if (series.cover_image_url) updateField("cover_image_url", series.cover_image_url);
-          if (series.tags) setTagsInput(series.tags.join(", "));
+          setEditingExhibition({
+            title: `${series.name} ${year}`,
+            title_ar: series.name_ar ? `${series.name_ar} ${year}` : "",
+            venue: series.default_venue || "",
+            venue_ar: series.default_venue_ar || "",
+            city: series.default_city || "",
+            country: series.default_country || "",
+            organizer_name: series.default_organizer_name || "",
+            organizer_name_ar: series.default_organizer_name_ar || "",
+            organizer_email: series.default_organizer_email || "",
+            cover_image_url: series.cover_image_url || "",
+            tags: series.tags || [],
+            series_id: series.id,
+            edition_year: year,
+            type: "exhibition",
+            status: "draft",
+          });
           setShowForm(true);
           setShowSeries(false);
         }} />
@@ -509,436 +382,6 @@ export default function ExhibitionsAdmin() {
         />
       )}
 
-      {/* Inline Form */}
-      {showForm && (
-        <Card className="border-primary/20">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-base">
-              {editingId ? t("Edit Event", "تعديل الفعالية") : t("Create New Event", "إنشاء فعالية جديدة")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <EntityFormGuard
-              entity={{ name: (form.title as string) || "", name_ar: (form.title_ar as string) || "", website: (form.website_url as string) || "", city: (form.city as string) || "", country: (form.country as string) || "" }}
-              tables={["exhibitions", "organizers", "companies"]}
-              excludeId={editingId || undefined}
-              translationFields={[
-                { en: (form.title as string) || null, ar: (form.title_ar as string) || null, key: "title" },
-                { en: (form.description as string) || null, ar: (form.description_ar as string) || null, key: "description" },
-              ]}
-              translationContext="exhibition / food event / trade show"
-              onTranslated={(u) => setForm(f => ({ ...f, ...u }))}
-            />
-            {/* Section: Series & Edition */}
-            <div>
-              <SectionHeader icon={Layers} title={t("Event Series & Edition", "سلسلة الفعالية والإصدار")} />
-              <p className="text-xs text-muted-foreground mb-3">
-                {t("Link to a recurring series (e.g. Foodex). The edition year becomes part of the display title.", "اربط بسلسلة متكررة (مثل فودكس). سنة الإصدار تصبح جزءاً من العنوان المعروض.")}
-              </p>
-              <div className="grid gap-4 sm:grid-cols-3">
-                <div>
-                  <Label>{t("Event Series", "سلسلة الفعاليات")}</Label>
-                  <Select value={selectedSeriesId || "none"} onValueChange={v => {
-                    const sid = v === "none" ? null : v;
-                    setSelectedSeriesId(sid);
-                    if (sid && !editingId) {
-                      const series = seriesList?.find(s => s.id === sid);
-                      if (series) {
-                        if (series.default_venue) updateField("venue", series.default_venue);
-                        if (series.default_venue_ar) updateField("venue_ar", series.default_venue_ar);
-                        if (series.default_city) updateField("city", series.default_city);
-                        if (series.default_country) updateField("country", series.default_country);
-                        if (series.default_organizer_name) updateField("organizer_name", series.default_organizer_name);
-                        if (series.default_organizer_name_ar) updateField("organizer_name_ar", series.default_organizer_name_ar);
-                        if (series.default_organizer_email) updateField("organizer_email", series.default_organizer_email);
-                        if (series.cover_image_url) updateField("cover_image_url", series.cover_image_url);
-                        if (series.tags) setTagsInput(series.tags.join(", "));
-                      }
-                    }
-                  }}>
-                    <SelectTrigger><SelectValue placeholder={t("No series", "بدون سلسلة")} /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">{t("No series (standalone)", "بدون سلسلة (مستقل)")}</SelectItem>
-                      {seriesList?.map(s => (
-                        <SelectItem key={s.id} value={s.id}>
-                          {isAr && s.name_ar ? s.name_ar : s.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>{t("Edition Year", "سنة الإصدار")}</Label>
-                  <Input
-                    type="number"
-                    value={editionYear || ""}
-                    onChange={e => setEditionYear(e.target.value ? parseInt(e.target.value) : null)}
-                    placeholder={new Date().getFullYear().toString()}
-                    min={2000}
-                    max={2100}
-                  />
-                </div>
-                {selectedSeriesId && editionYear && (
-                  <div className="flex items-end">
-                    <div className="rounded-xl border bg-primary/5 px-3 py-2 text-sm">
-                      <span className="text-muted-foreground">{t("Display title:", "العنوان المعروض:")}</span>{" "}
-                      <span className="font-bold text-primary">
-                        {form.title || seriesList?.find(s => s.id === selectedSeriesId)?.name || "..."} +{editionYear}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Section: Basic Info */}
-            <div>
-              <SectionHeader icon={Landmark} title={t("Basic Information", "المعلومات الأساسية")} />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label>{t("Title (English)", "العنوان (إنجليزي)")}</Label>
-                    <AITextOptimizer text={form.title || ""} lang="en" onOptimized={v => updateField("title", v)} onTranslated={v => updateField("title_ar", v)} />
-                  </div>
-                  <Input value={form.title || ""} onChange={e => updateField("title", e.target.value)} placeholder={t("Event title in English", "عنوان الفعالية بالإنجليزية")} />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label>{t("Title (Arabic)", "العنوان (عربي)")}</Label>
-                    <AITextOptimizer text={form.title_ar || ""} lang="ar" onOptimized={v => updateField("title_ar", v)} onTranslated={v => updateField("title", v)} />
-                  </div>
-                  <Input value={form.title_ar || ""} onChange={e => updateField("title_ar", e.target.value)} dir="rtl" placeholder={t("Event title in Arabic", "عنوان الفعالية بالعربية")} />
-                </div>
-                <div>
-                  <Label>{t("URL Slug", "الرابط المختصر")}</Label>
-                  <Input value={form.slug || ""} onChange={e => updateField("slug", e.target.value)} placeholder={t("auto-generated-from-title", "يُنشأ تلقائياً من العنوان")} className="font-mono text-xs" />
-                </div>
-                <div>
-                  <Label>{t("Cover Image URL (or use Media Library below)", "رابط صورة الغلاف (أو استخدم مكتبة الوسائط أدناه)")}</Label>
-                  <Input value={form.cover_image_url || ""} onChange={e => updateField("cover_image_url", e.target.value)} placeholder="https://example.com/image.jpg" />
-                </div>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 mt-4">
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label>{t("Description (English)", "الوصف (إنجليزي)")}</Label>
-                    <AITextOptimizer text={form.description || ""} lang="en" onOptimized={v => updateField("description", v)} onTranslated={v => updateField("description_ar", v)} />
-                  </div>
-                  <Textarea value={form.description || ""} onChange={e => updateField("description", e.target.value)} rows={3} placeholder={t("Event description", "وصف الفعالية")} />
-                </div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <Label>{t("Description (Arabic)", "الوصف (عربي)")}</Label>
-                    <AITextOptimizer text={form.description_ar || ""} lang="ar" onOptimized={v => updateField("description_ar", v)} onTranslated={v => updateField("description", v)} />
-                  </div>
-                  <Textarea value={form.description_ar || ""} onChange={e => updateField("description_ar", e.target.value)} rows={3} dir="rtl" placeholder={t("Event description in Arabic", "وصف الفعالية بالعربية")} />
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Section: Type, Status, Dates */}
-            <div>
-              <SectionHeader icon={Calendar} title={t("Type, Status & Schedule", "النوع والحالة والجدول الزمني")} />
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div>
-                  <Label>{t("Event Type", "نوع الفعالية")}</Label>
-                  <Select value={form.type} onValueChange={v => updateField("type", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {typeOptions.map(opt => (
-                        <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>{t("Status", "الحالة")}</Label>
-                  <Select value={form.status} onValueChange={v => updateField("status", v)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {statusOptions.map(opt => (
-                        <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>{t("Start Date", "تاريخ البدء")}</Label>
-                  <Input type="datetime-local" value={form.start_date || ""} onChange={e => updateField("start_date", e.target.value)} />
-                </div>
-                <div>
-                  <Label>{t("End Date", "تاريخ الانتهاء")}</Label>
-                  <Input type="datetime-local" value={form.end_date || ""} onChange={e => updateField("end_date", e.target.value)} />
-                </div>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-3 mt-4">
-                <div>
-                  <Label>{t("Registration Deadline", "آخر موعد للتسجيل")}</Label>
-                  <Input type="datetime-local" value={(form as any).registration_deadline || ""} onChange={e => updateField("registration_deadline", e.target.value)} />
-                </div>
-                <div>
-                  <Label>{t("Registration URL", "رابط التسجيل")}</Label>
-                  <Input value={form.registration_url || ""} onChange={e => updateField("registration_url", e.target.value)} placeholder="https://..." />
-                </div>
-                <div>
-                  <Label>{t("Website URL", "رابط الموقع الإلكتروني")}</Label>
-                  <Input value={form.website_url || ""} onChange={e => updateField("website_url", e.target.value)} placeholder="https://..." />
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Section: Location */}
-            <div>
-              <SectionHeader icon={MapPin} title={t("Location", "الموقع")} />
-              <div className="flex items-center gap-3 mb-4">
-                <Switch checked={form.is_virtual || false} onCheckedChange={v => updateField("is_virtual", v)} />
-                <Label className="flex items-center gap-1.5">
-                  <Globe className="h-4 w-4" />
-                  {t("Virtual Event", "حدث افتراضي")}
-                </Label>
-              </div>
-              {form.is_virtual ? (
-                <div className="max-w-md">
-                  <Label>{t("Virtual Event Link", "رابط الحدث الافتراضي")}</Label>
-                  <Input value={form.virtual_link || ""} onChange={e => updateField("virtual_link", e.target.value)} placeholder="https://zoom.us/..." />
-                </div>
-              ) : (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <Label>{t("Venue (English)", "المكان (إنجليزي)")}</Label>
-                      <AITextOptimizer text={form.venue || ""} lang="en" onTranslated={v => updateField("venue_ar", v)} compact />
-                    </div>
-                    <Input value={form.venue || ""} onChange={e => updateField("venue", e.target.value)} placeholder={t("Venue name", "اسم المكان")} />
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <Label>{t("Venue (Arabic)", "المكان (عربي)")}</Label>
-                      <AITextOptimizer text={form.venue_ar || ""} lang="ar" onTranslated={v => updateField("venue", v)} compact />
-                    </div>
-                    <Input value={form.venue_ar || ""} onChange={e => updateField("venue_ar", e.target.value)} dir="rtl" placeholder={t("Venue name in Arabic", "اسم المكان بالعربية")} />
-                  </div>
-                  <div>
-                    <Label>{t("City", "المدينة")}</Label>
-                    <Input value={form.city || ""} onChange={e => updateField("city", e.target.value)} />
-                  </div>
-                  <div>
-                    <Label>{t("Country", "الدولة")}</Label>
-                    <Input value={form.country || ""} onChange={e => updateField("country", e.target.value)} />
-                  </div>
-                </div>
-              )}
-              {!form.is_virtual && (
-                <div className="mt-4 max-w-md">
-                  <Label>{t("Map URL", "رابط الخريطة")}</Label>
-                  <Input value={form.map_url || ""} onChange={e => updateField("map_url", e.target.value)} placeholder="https://maps.google.com/..." />
-                </div>
-              )}
-            </div>
-
-            <Separator />
-
-            {/* Section: Organizer */}
-            <div>
-              <SectionHeader icon={Building} title={t("Organizer Information", "الجهة المنظمة")} />
-              <OrganizerSearchSelector
-                value={organizer}
-                onChange={(val) => {
-                  setOrganizer(val);
-                  if (val) {
-                    updateField("organizer_name", val.name);
-                    updateField("organizer_name_ar", val.nameAr);
-                    updateField("organizer_email", val.email || "");
-                    updateField("organizer_phone", val.phone || "");
-                    updateField("organizer_website", val.website || "");
-                    // Auto-set currency from country
-                    if (val.country) {
-                      const c = countries?.find(co => co.code === val.country || co.name === val.country);
-                      if (c?.currency_code) setCurrency(c.currency_code);
-                    }
-                  }
-                }}
-                label={t("Search & Select Organizer", "البحث واختيار الجهة المنظمة")}
-              />
-              {/* Manual contact override */}
-              {organizer && (
-                <div className="grid gap-4 sm:grid-cols-3 mt-4">
-                  <div>
-                    <Label>{t("Email", "البريد الإلكتروني")}</Label>
-                    <Input type="email" value={form.organizer_email || ""} onChange={e => updateField("organizer_email", e.target.value)} />
-                  </div>
-                  <div>
-                    <Label>{t("Phone", "رقم الهاتف")}</Label>
-                    <Input value={form.organizer_phone || ""} onChange={e => updateField("organizer_phone", e.target.value)} />
-                  </div>
-                  <div>
-                    <Label>{t("Website", "الموقع الإلكتروني")}</Label>
-                    <Input value={form.organizer_website || ""} onChange={e => updateField("organizer_website", e.target.value)} placeholder="https://..." />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Separator />
-
-            {/* Section: Currency */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <Label>{t("Currency", "العملة")}</Label>
-                <Select value={currency} onValueChange={setCurrency}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {countries?.filter(c => c.currency_code).map(c => (
-                      <SelectItem key={c.code} value={c.currency_code!}>
-                        {c.currency_code} — {isAr ? (c.name_ar || c.name) : c.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Section: Event Content Types */}
-            <div>
-              <SectionHeader icon={Trophy} title={t("Event Content", "محتوى الفعالية")} />
-              <p className="text-xs text-muted-foreground mb-3">
-                {t("Select what this event includes. After creation, you'll be redirected to complete the details.", "حدد ما تتضمنه الفعالية. بعد الإنشاء سيتم توجيهك لإكمال التفاصيل.")}
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox checked={includesCompetitions} onCheckedChange={(v) => setIncludesCompetitions(!!v)} />
-                  <Trophy className="h-4 w-4 text-chart-4" />
-                  <span className="text-sm">{t("Competitions", "مسابقات")}</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox checked={includesTraining} onCheckedChange={(v) => setIncludesTraining(!!v)} />
-                  <GraduationCap className="h-4 w-4 text-chart-2" />
-                  <span className="text-sm">{t("Training / Workshops", "تدريب / ورش عمل")}</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <Checkbox checked={includesSeminars} onCheckedChange={(v) => setIncludesSeminars(!!v)} />
-                  <Mic className="h-4 w-4 text-chart-1" />
-                  <span className="text-sm">{t("Seminars / Talks", "ندوات / محاضرات")}</span>
-                </label>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Section: Tickets */}
-            <div>
-              <SectionHeader icon={Ticket} title={t("Tickets & Registration", "التذاكر والتسجيل")} />
-              <div className="flex items-center gap-3 mb-4">
-                <Switch checked={form.is_free || false} onCheckedChange={v => updateField("is_free", v)} />
-                <Label>{t("Free Entry", "دخول مجاني")}</Label>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {!form.is_free && (
-                  <>
-                    <div>
-                      <Label>{t("Ticket Price (English)", "سعر التذكرة (إنجليزي)")}</Label>
-                      <Input value={form.ticket_price || ""} onChange={e => updateField("ticket_price", e.target.value)} placeholder="SAR 50" />
-                    </div>
-                    <div>
-                      <Label>{t("Ticket Price (Arabic)", "سعر التذكرة (عربي)")}</Label>
-                      <Input value={form.ticket_price_ar || ""} onChange={e => updateField("ticket_price_ar", e.target.value)} dir="rtl" placeholder="٥٠ دولار" />
-                    </div>
-                  </>
-                )}
-                <div>
-                  <Label>{t("Maximum Attendees", "الحد الأقصى للحضور")}</Label>
-                  <Input type="number" value={form.max_attendees || ""} onChange={e => updateField("max_attendees", parseInt(e.target.value) || undefined)} />
-                </div>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Section: Tags & Options */}
-            <div>
-              <SectionHeader icon={Tag} title={t("Tags & Options", "الوسوم والخيارات")} />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <Label>{t("Tags (comma-separated)", "الوسوم (مفصولة بفاصلة)")}</Label>
-                  <Input value={tagsInput} onChange={e => setTagsInput(e.target.value)} placeholder={t("food, beverages, cooking", "طعام، مشروبات، طبخ")} />
-                </div>
-                <div>
-                  <Label>{t("Target Audience (comma-separated)", "الجمهور المستهدف (مفصول بفاصلة)")}</Label>
-                  <Input value={audienceInput} onChange={e => setAudienceInput(e.target.value)} placeholder={t("Chefs, Restaurant Owners", "طهاة، أصحاب مطاعم")} />
-                </div>
-              </div>
-              <div className="flex items-center gap-3 mt-4">
-                <Switch checked={form.is_featured || false} onCheckedChange={v => updateField("is_featured", v)} />
-                <Label>{t("Featured Event", "فعالية مميزة")}</Label>
-              </div>
-            </div>
-
-            <Separator />
-
-            {/* Section: Media Library */}
-            <div>
-              <SectionHeader icon={Image} title={t("Media Library", "مكتبة الوسائط")} />
-              <p className="text-xs text-muted-foreground mb-3">
-                {t("Upload logos, cover images, and gallery photos for this exhibition.", "ارفع الشعارات وصور الغلاف ومعرض الصور لهذه الفعالية.")}
-              </p>
-              <ExhibitionMediaUploader
-                exhibitionId={editingId || ""}
-                coverImageUrl={form.cover_image_url || undefined}
-                onCoverChange={url => updateField("cover_image_url", url)}
-              />
-            </div>
-
-            <Separator />
-
-            {/* Section: Officials & Team */}
-            <div>
-              <SectionHeader icon={Users} title={t("Officials & Team", "المسؤولون وفريق العمل")} />
-              <p className="text-xs text-muted-foreground mb-3">
-                {t("Add event officials, their roles, and contact details.", "أضف مسؤولي الفعالية وأدوارهم وبيانات الاتصال.")}
-              </p>
-              <ExhibitionOfficialsPanel exhibitionId={editingId || ""} />
-            </div>
-
-            <Separator />
-
-            {/* Section: Documents & AI Knowledge */}
-            <div>
-              <SectionHeader icon={FileText} title={t("Documents & AI Knowledge Base", "المستندات وقاعدة معارف الذكاء الاصطناعي")} />
-              <p className="text-xs text-muted-foreground mb-3">
-                {t(
-                  "Upload rules, guidelines, and reference files. Mark files as 'Feed to AI' to enable the AI support center to answer exhibition questions.",
-                  "ارفع القواعد والإرشادات والملفات المرجعية. حدد الملفات لـ 'تغذية الذكاء الاصطناعي' لتمكين مركز الدعم من الإجابة على أسئلة المعرض."
-                )}
-              </p>
-              <ExhibitionDocumentsPanel exhibitionId={editingId || ""} />
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-3 pt-2">
-              <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.start_date || !form.end_date}>
-                {saveMutation.isPending ? (
-                  <><Loader2 className="me-2 h-4 w-4 animate-spin" />{t("Saving...", "جاري الحفظ...")}</>
-                ) : (
-                  <><Save className="me-2 h-4 w-4" />{editingId ? t("Update Event", "تحديث الفعالية") : t("Create Event", "إنشاء الفعالية")}</>
-                )}
-              </Button>
-              <Button variant="outline" onClick={resetForm}>
-                <X className="me-2 h-4 w-4" />
-                {t("Cancel", "إلغاء")}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       {/* Search & Filter */}
       <AdminFilterBar
         searchValue={searchQuery}
@@ -946,70 +389,46 @@ export default function ExhibitionsAdmin() {
         searchPlaceholder={t("Search by name, organizer...", "بحث بالاسم، المنظم...")}
       >
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[140px] rounded-xl">
-            <SelectValue placeholder={t("Status", "الحالة")} />
-          </SelectTrigger>
+          <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={t("Status", "الحالة")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("All Statuses", "جميع الحالات")}</SelectItem>
-            {statusOptions.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
-            ))}
+            {statusOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={typeFilter} onValueChange={setTypeFilter}>
-          <SelectTrigger className="w-[140px] rounded-xl">
-            <SelectValue placeholder={t("Type", "النوع")} />
-          </SelectTrigger>
+          <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={t("Type", "النوع")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("All Types", "جميع الأنواع")}</SelectItem>
-            {typeOptions.map(opt => (
-              <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>
-            ))}
+            {typeOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{isAr ? opt.ar : opt.en}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={yearFilter} onValueChange={setYearFilter}>
-          <SelectTrigger className="w-[120px] rounded-xl">
-            <SelectValue placeholder={t("Year", "السنة")} />
-          </SelectTrigger>
+          <SelectTrigger className="w-[120px] rounded-xl"><SelectValue placeholder={t("Year", "السنة")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("All Years", "جميع السنوات")}</SelectItem>
-            {uniqueYears.map(y => (
-              <SelectItem key={y} value={y}>{y}</SelectItem>
-            ))}
+            {uniqueYears.map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={cityFilter} onValueChange={setCityFilter}>
-          <SelectTrigger className="w-[140px] rounded-xl">
-            <SelectValue placeholder={t("City", "المدينة")} />
-          </SelectTrigger>
+          <SelectTrigger className="w-[140px] rounded-xl"><SelectValue placeholder={t("City", "المدينة")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("All Cities", "جميع المدن")}</SelectItem>
-            {uniqueCities.map(c => (
-              <SelectItem key={c!} value={c!}>{c}</SelectItem>
-            ))}
+            {uniqueCities.map(c => <SelectItem key={c!} value={c!}>{c}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={organizerFilter} onValueChange={setOrganizerFilter}>
-          <SelectTrigger className="w-[160px] rounded-xl">
-            <SelectValue placeholder={t("Organizer", "المنظم")} />
-          </SelectTrigger>
+          <SelectTrigger className="w-[160px] rounded-xl"><SelectValue placeholder={t("Organizer", "المنظم")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("All Organizers", "جميع المنظمين")}</SelectItem>
-            {uniqueOrganizers.map(o => (
-              <SelectItem key={o!} value={o!}>{o}</SelectItem>
-            ))}
+            {uniqueOrganizers.map(o => <SelectItem key={o!} value={o!}>{o}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={seriesFilter} onValueChange={setSeriesFilter}>
-          <SelectTrigger className="w-[160px] rounded-xl">
-            <SelectValue placeholder={t("Series", "السلسلة")} />
-          </SelectTrigger>
+          <SelectTrigger className="w-[160px] rounded-xl"><SelectValue placeholder={t("Series", "السلسلة")} /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("All Series", "جميع السلاسل")}</SelectItem>
             <SelectItem value="none">{t("No Series", "بدون سلسلة")}</SelectItem>
-            {seriesList?.map(s => (
-              <SelectItem key={s.id} value={s.id}>{isAr && s.name_ar ? s.name_ar : s.name}</SelectItem>
-            ))}
+            {seriesList?.map(s => <SelectItem key={s.id} value={s.id}>{isAr && s.name_ar ? s.name_ar : s.name}</SelectItem>)}
           </SelectContent>
         </Select>
       </AdminFilterBar>
@@ -1039,56 +458,56 @@ export default function ExhibitionsAdmin() {
 
       {/* Table */}
       <AdminTableCard>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/30 hover:bg-muted/30">
-                <TableHead className="w-10">
-                  <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
-                </TableHead>
-                <SortableTableHead column="title" label={t("Event", "الفعالية")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                <TableHead className="font-semibold">{t("Organizer", "المنظم")}</TableHead>
-                <SortableTableHead column="type" label={t("Type", "النوع")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                <SortableTableHead column="status" label={t("Status", "الحالة")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                <TableHead className="font-semibold">{t("Tickets", "التذاكر")}</TableHead>
-                <SortableTableHead column="start_date" label={t("Date", "التاريخ")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
-                <TableHead className="font-semibold">{t("Location", "الموقع")}</TableHead>
-                <TableHead className="text-end font-semibold">{t("Actions", "الإجراءات")}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading ? (
-                Array.from({ length: 5 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell><Skeleton className="h-4 w-4 rounded" /></TableCell>
-                    <TableCell><div className="flex items-center gap-2"><Skeleton className="h-8 w-8 rounded-xl" /><div><Skeleton className="h-4 w-28" /><Skeleton className="h-3 w-20 mt-1" /></div></div></TableCell>
-                    <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-20" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-4 w-8" /></TableCell>
-                    <TableCell><Skeleton className="h-7 w-7 rounded" /></TableCell>
-                  </TableRow>
-                ))
-              ) : sortedExhibitions?.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={9} className="p-0">
-                    <AdminEmptyState
-                      icon={Landmark}
-                      title="No events found"
-                      titleAr="لا توجد فعاليات"
-                      description="Try adjusting your filters or create a new event"
-                      descriptionAr="جرب تعديل الفلاتر أو أنشئ فعالية جديدة"
-                      actionLabel="Add Event"
-                      actionLabelAr="إضافة فعالية"
-                      onAction={() => { resetForm(); setShowForm(true); }}
-                    />
-                  </TableCell>
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead className="w-10">
+                <Checkbox checked={bulk.isAllSelected} onCheckedChange={bulk.toggleAll} />
+              </TableHead>
+              <SortableTableHead column="title" label={t("Event", "الفعالية")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+              <TableHead className="font-semibold">{t("Organizer", "المنظم")}</TableHead>
+              <SortableTableHead column="type" label={t("Type", "النوع")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+              <SortableTableHead column="status" label={t("Status", "الحالة")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+              <TableHead className="font-semibold">{t("Tickets", "التذاكر")}</TableHead>
+              <SortableTableHead column="start_date" label={t("Date", "التاريخ")} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleSort} />
+              <TableHead className="font-semibold">{t("Location", "الموقع")}</TableHead>
+              <TableHead className="text-end font-semibold">{t("Actions", "الإجراءات")}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton className="h-4 w-4 rounded" /></TableCell>
+                  <TableCell><div className="flex items-center gap-2"><Skeleton className="h-8 w-8 rounded-xl" /><div><Skeleton className="h-4 w-28" /><Skeleton className="h-3 w-20 mt-1" /></div></div></TableCell>
+                  <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-5 w-16 rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-8" /></TableCell>
+                  <TableCell><Skeleton className="h-7 w-7 rounded" /></TableCell>
                 </TableRow>
-              ) : (
-                exPagination.paginated?.map((ex) => {
-                  const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
-                  return (
+              ))
+            ) : sortedExhibitions?.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={9} className="p-0">
+                  <AdminEmptyState
+                    icon={Landmark}
+                    title="No events found"
+                    titleAr="لا توجد فعاليات"
+                    description="Try adjusting your filters or create a new event"
+                    descriptionAr="جرب تعديل الفلاتر أو أنشئ فعالية جديدة"
+                    actionLabel="Add Event"
+                    actionLabelAr="إضافة فعالية"
+                    onAction={openCreateForm}
+                  />
+                </TableCell>
+              </TableRow>
+            ) : (
+              exPagination.paginated?.map((ex) => {
+                const orgLogoUrl = (ex as any).organizer_logo_url || ex.logo_url;
+                return (
                   <TableRow key={ex.id} className={`group hover:bg-muted/20 transition-colors duration-150 cursor-pointer ${bulk.isSelected(ex.id) ? "bg-primary/5" : ""}`} onClick={() => setDrawerExhibitionId(ex.id)}>
                     <TableCell onClick={e => e.stopPropagation()}>
                       <Checkbox checked={bulk.isSelected(ex.id)} onCheckedChange={() => bulk.toggleOne(ex.id)} />
@@ -1123,9 +542,9 @@ export default function ExhibitionsAdmin() {
                           </div>
                         ) : null}
                         {ex.organizer_name ? (
-                          <Link to={`/organizers/${encodeURIComponent(ex.organizer_name)}`} className="text-xs text-muted-foreground truncate max-w-[120px] hover:text-primary hover:underline transition-colors">
+                          <span className="text-xs text-muted-foreground truncate max-w-[120px]">
                             {isAr && ex.organizer_name_ar ? ex.organizer_name_ar : ex.organizer_name}
-                          </Link>
+                          </span>
                         ) : (
                           <span className="text-xs text-muted-foreground">—</span>
                         )}
@@ -1204,7 +623,7 @@ export default function ExhibitionsAdmin() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <div className="flex justify-end gap-1">
+                      <div className="flex justify-end gap-1" onClick={e => e.stopPropagation()}>
                         {ex.status === "pending" && (
                           <>
                             <Button size="icon" variant="ghost" onClick={() => approveExhibition.mutate(ex.id)} className="h-8 w-8 text-chart-2 hover:text-chart-2" title={t("Approve", "موافقة")}>
@@ -1220,7 +639,7 @@ export default function ExhibitionsAdmin() {
                             <Eye className="h-4 w-4" />
                           </Link>
                         </Button>
-                        <Button size="icon" variant="ghost" onClick={() => startEdit(ex)} className="h-8 w-8" title={t("Edit", "تعديل")}>
+                        <Button size="icon" variant="ghost" onClick={() => openEditForm(ex)} className="h-8 w-8" title={t("Edit", "تعديل")}>
                           <Pencil className="h-4 w-4" />
                         </Button>
                         <Button size="icon" variant="ghost" onClick={() => duplicateMutation.mutate(ex)} className="h-8 w-8" title={t("Duplicate", "تكرار")}>
@@ -1232,17 +651,17 @@ export default function ExhibitionsAdmin() {
                       </div>
                     </TableCell>
                   </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-          <AdminTablePagination
-            page={exPagination.page} totalPages={exPagination.totalPages} totalItems={exPagination.totalItems}
-            startItem={exPagination.startItem} endItem={exPagination.endItem} pageSize={exPagination.pageSize}
-            pageSizeOptions={exPagination.pageSizeOptions} hasNext={exPagination.hasNext} hasPrev={exPagination.hasPrev}
-            onPageChange={exPagination.goTo} onPageSizeChange={exPagination.changePageSize}
-          />
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+        <AdminTablePagination
+          page={exPagination.page} totalPages={exPagination.totalPages} totalItems={exPagination.totalItems}
+          startItem={exPagination.startItem} endItem={exPagination.endItem} pageSize={exPagination.pageSize}
+          pageSizeOptions={exPagination.pageSizeOptions} hasNext={exPagination.hasNext} hasPrev={exPagination.hasPrev}
+          onPageChange={exPagination.goTo} onPageSizeChange={exPagination.changePageSize}
+        />
       </AdminTableCard>
       <ExhibitionDetailDrawer
         exhibitionId={drawerExhibitionId}
