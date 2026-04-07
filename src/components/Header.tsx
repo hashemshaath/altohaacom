@@ -74,7 +74,7 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           "h-[60px] lg:h-[72px]",
           scrolled
             ? "bg-[var(--bg-white)] shadow-[0_1px_0_rgba(0,0,0,0.06),0_2px_12px_rgba(0,0,0,0.04)] border-b border-[var(--color-border)]"
-            : "bg-[rgba(255,255,255,0.95)] backdrop-blur-[20px] backdrop-saturate-[180%] border-b border-[rgba(229,231,235,0.8)]"
+            : "bg-[var(--bg-white)]/95 dark:bg-[rgba(17,24,39,0.95)] backdrop-blur-[20px] backdrop-saturate-[180%] border-b border-[var(--color-border-light)] dark:border-[rgba(55,65,81,0.8)]"
         )}
         style={{ WebkitBackdropFilter: scrolled ? undefined : "blur(20px) saturate(180%)" }}
       >

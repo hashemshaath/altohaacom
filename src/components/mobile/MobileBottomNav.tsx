@@ -57,15 +57,15 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
     <nav
       className={cn(
         "fixed bottom-0 inset-x-0 z-50 md:hidden transition-transform duration-300 will-change-transform",
+        "bg-white/92 dark:bg-[rgba(17,24,39,0.92)]",
+        "border-t border-[rgba(229,231,235,0.8)] dark:border-[rgba(55,65,81,0.8)]",
         visible ? "translate-y-0" : "translate-y-full"
       )}
       style={{
         height: "calc(56px + env(safe-area-inset-bottom, 0px))",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        background: "rgba(255,255,255,0.92)",
         backdropFilter: "blur(24px) saturate(180%)",
         WebkitBackdropFilter: "blur(24px) saturate(180%)",
-        borderTop: "1px solid rgba(229,231,235,0.8)",
         boxShadow: "0 -1px 0 rgba(0,0,0,0.05)",
       }}
       role="navigation"
