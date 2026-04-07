@@ -113,7 +113,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                       <div className="relative">
                         <Avatar className={cn("h-16 w-16 ring-2 ring-border/30 transition-all duration-300 group-hover:ring-primary/40 group-hover:scale-105", idx < 3 && "ring-primary/30")}>
                           <AvatarImage src={chef.avatar_url} alt={name} loading="lazy" />
-                          <AvatarFallback className="<AvatarFallback className="bg-primary/10 text-foreground font-bold">{initials}</AvatarFallback> text-foreground font-bold">{initials}</AvatarFallback>
+                          <AvatarFallback className="bg-primary/10 text-foreground font-bold">{initials}</AvatarFallback>
                         </Avatar>
                         {chef.is_verified && (
                           <div className="absolute -bottom-0.5 -end-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
