@@ -546,25 +546,39 @@ export default function SEODashboard() {
         {/* KPI Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { icon: Eye, label: isAr ? "مشاهدات الصفحة" : "Page Views", value: totalViews, sub: isAr ? `آخر ${range} أيام` : `Last ${range} days` },
-            { icon: Activity, label: isAr ? "جلسات فريدة" : "Unique Sessions", value: uniqueSessions },
-            { icon: TrendingUp, label: isAr ? "معدل الارتداد" : "Bounce Rate", value: bounceRate, suffix: "%", badge: bounceRate > 60 ? "destructive" : bounceRate > 40 ? "secondary" : "default", badgeText: bounceRate > 60 ? (isAr ? "مرتفع" : "High") : bounceRate > 40 ? (isAr ? "متوسط" : "Medium") : (isAr ? "جيد" : "Good") },
-            { icon: Clock, label: isAr ? "متوسط المدة" : "Avg Duration", value: avgDuration, suffix: "s" },
-          ].map((kpi, i) => (
+            { icon: Eye, label: isAr ? "مشاهدات الصفحة" : "Page Views", value: totalViews, prev: prevTotalViews, sub: isAr ? `آخر ${range} أيام` : `Last ${range} days` },
+            { icon: Activity, label: isAr ? "جلسات فريدة" : "Unique Sessions", value: uniqueSessions, prev: prevUniqueSessions },
+            { icon: TrendingUp, label: isAr ? "معدل الارتداد" : "Bounce Rate", value: bounceRate, prev: prevBounceRate, suffix: "%", invert: true, badge: bounceRate > 60 ? "destructive" : bounceRate > 40 ? "secondary" : "default", badgeText: bounceRate > 60 ? (isAr ? "مرتفع" : "High") : bounceRate > 40 ? (isAr ? "متوسط" : "Medium") : (isAr ? "جيد" : "Good") },
+            { icon: Clock, label: isAr ? "متوسط المدة" : "Avg Duration", value: avgDuration, prev: prevAvgDuration, suffix: "s" },
+          ].map((kpi, i) => {
+            const diff = kpi.value - kpi.prev;
+            const pctChange = kpi.prev > 0 ? Math.round(((kpi.value - kpi.prev) / kpi.prev) * 100) : 0;
+            const isPositive = kpi.invert ? diff < 0 : diff > 0;
+            const isNegative = kpi.invert ? diff > 0 : diff < 0;
+            return (
             <Card key={i} className="border-border/40 hover:border-primary/20 transition-colors">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1.5">
                   <kpi.icon className="h-3.5 w-3.5" />
                   {kpi.label}
                 </div>
-                <p className="text-2xl font-bold tabular-nums"><AnimatedCounter value={kpi.value} />{kpi.suffix && <span className="text-sm font-normal text-muted-foreground ms-0.5">{kpi.suffix}</span>}</p>
+                <div className="flex items-end gap-2">
+                  <p className="text-2xl font-bold tabular-nums"><AnimatedCounter value={kpi.value} />{kpi.suffix && <span className="text-sm font-normal text-muted-foreground ms-0.5">{kpi.suffix}</span>}</p>
+                  {kpi.prev > 0 && diff !== 0 && (
+                    <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium mb-1 ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
+                      {isPositive ? <ArrowUp className="h-2.5 w-2.5" /> : <ArrowDown className="h-2.5 w-2.5" />}
+                      {Math.abs(pctChange)}%
+                    </span>
+                  )}
+                </div>
                 {kpi.sub && <p className="text-[10px] text-muted-foreground mt-0.5">{kpi.sub}</p>}
                 {kpi.badge && (
                   <Badge variant={kpi.badge as any} className="text-[9px] mt-1">{kpi.badgeText}</Badge>
                 )}
               </CardContent>
             </Card>
-          ))}
+          );
+          })}
         </div>
 
         {/* SEO Score */}
