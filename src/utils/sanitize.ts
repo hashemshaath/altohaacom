@@ -54,3 +54,10 @@ export function sanitizeUrl(url: string): string {
     return "";
   }
 }
+
+/**
+ * Sanitize a filename — strips unsafe characters and limits length.
+ */
+export function sanitizeFilename(name: string): string {
+  return name.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 100);
+}
