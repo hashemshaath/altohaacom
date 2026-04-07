@@ -229,7 +229,7 @@ export default function SEODashboard() {
     },
   });
 
-
+  const { data: vitalsData, isLoading: loadingVitals, error: vitalsDataError } = useQuery({
     queryKey: ["seo-web-vitals", range],
     queryFn: async () => {
       const { data, error } = await supabase
