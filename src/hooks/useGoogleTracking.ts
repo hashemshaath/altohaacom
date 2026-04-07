@@ -53,6 +53,9 @@ export function useGoogleTracking() {
     (window as any).dataLayer = (window as any).dataLayer || [];
 
     configs.forEach((row) => {
+      // Skip if this type was already injected
+      if (injectedTypes.current.has(row.integration_type)) return;
+      injectedTypes.current.add(row.integration_type);
       const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
       switch (row.integration_type) {
         case "google_tag_manager":
