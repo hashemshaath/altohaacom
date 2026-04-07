@@ -33,7 +33,7 @@ export const SECTION_THEMES: Record<string, SectionTheme> = {
   platform_features: { bg: "bg-background", topBorder: true },
   newsletter: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
   quick_actions: { bg: "bg-background", topBorder: true },
-  premium_cta: { bg: "bg-transparent" },
+  premium_cta: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
   ad_banner_top: { bg: "bg-transparent" },
   ad_banner_mid: { bg: "bg-transparent" },
   ad_banner_bottom: { bg: "bg-transparent" },

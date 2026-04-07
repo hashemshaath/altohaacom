@@ -89,7 +89,7 @@ const ArticlesSection = memo(function ArticlesSection() {
                 to={ROUTES.article(article.slug)}
                 className="group block snap-start shrink-0 w-[75vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
               >
-                <div className="overflow-hidden rounded-2xl border border-border/30 bg-white dark:bg-card h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.98] shadow-sm">
+                <div className="overflow-hidden rounded-2xl border border-border/30 bg-card h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.98] shadow-sm">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     {article.featured_image_url ? (
                       <img src={article.featured_image_url} alt={isAr ? article.title_ar || article.title : article.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
