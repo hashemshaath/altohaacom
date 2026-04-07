@@ -48,21 +48,20 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
       if (ranked && ranked.length > 0) {
         const userIds = ranked.map((r) => r.user_id);
         const { data: profiles } = await supabase
-          .from("profiles")
-          .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality, show_nationality")
+          .from("profiles_public")
+          .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality")
           .in("user_id", userIds);
         const profileMap = new Map((profiles || []).map((p) => [p.user_id, p]));
-        return ranked.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
+        return ranked.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}), show_nationality: true }));
       }
 
       const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, loyalty_points, nationality, show_nationality, account_type")
+        .from("profiles_public")
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, country_code, city, specialization, specialization_ar, is_verified, nationality, account_type")
         .in("account_type", ["professional"])
         .order("is_verified", { ascending: false })
-        .order("loyalty_points", { ascending: false, nullsFirst: false })
         .limit(itemCount);
-      return (profiles || []).map((p) => ({ ...p, total_points: p.loyalty_points || 0, gold_medals: 0, silver_medals: 0, bronze_medals: 0 }));
+      return (profiles || []).map((p) => ({ ...p, total_points: 0, gold_medals: 0, silver_medals: 0, bronze_medals: 0, show_nationality: true }));
     },
     staleTime: 1000 * 60 * 10,
   });
