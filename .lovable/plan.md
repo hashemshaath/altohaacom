@@ -1,23 +1,28 @@
-## خطة التحسين الشاملة
 
-### 1. تحسين صفحة تعديل المنظمين
-- إضافة تبويب **المسابقات المنظّمة** مع عداد وروابط مباشرة
-- تحسين قسم **المعلومات القانونية** (التسجيل التجاري، الرخصة، الرقم الضريبي)
-- إضافة **ProgressRing** لإتمام الملف الشخصي على مستوى كل تبويب
-- تحسين عرض **الخدمات والقطاعات المستهدفة** بـ chips قابلة للتعديل
+## SEO Optimization Sprint — 4 Areas
 
-### 2. تحسين الاستيراد الذكي
-- تعزيز منطق **التصنيف التلقائي** مع عرض سبب التصنيف للأدمن
-- إضافة زر **تعديل التصنيف يدوياً** عند عدم الموافقة على اقتراح AI
-- تحسين عرض **البيانات المكررة** مع مقارنة جنب-لجنب (side-by-side diff)
-- إضافة **مؤشر تقدم** للحقول المكتملة vs المفقودة
+### 1. Image SEO Audit
+- Scan all `<img>` tags for missing `alt`, `width`, `height`, `loading` attributes
+- Verify hero images use `fetchPriority="high"` and `loading="eager"`
+- Check all other images use `loading="lazy"`
+- Ensure WebP format usage where possible
+- Create a reusable `OptimizedImage` component if missing
 
-### 3. تحسين الصفحة الرئيسية العامة
-- تحسين **قسم المنظمين المميزين** بتصميم بطاقات أنيق
-- تحسين **أداء التحميل** وتقليل CLS
-- إضافة **قسم إحصائيات** محسّن بأرقام حقيقية
+### 2. Internal Linking Strategy
+- Audit for orphan pages (pages with no internal links pointing to them)
+- Check that `RelatedPages` component is used on all major content pages
+- Add contextual cross-links between related sections (competitions↔exhibitions, recipes↔masterclasses)
+- Verify breadcrumb coverage on all public pages
 
-### 4. تحسين لوحة تحكم الأدمن
-- إضافة **widget سريع** لآخر عمليات الاستيراد الذكي
-- تحسين عرض **الأحداث القادمة** مع تمييز المنظّم
-- إضافة **KPI جديد** لعدد المنظمين النشطين
+### 3. Mobile SEO Audit
+- Verify `viewport` meta tag configuration
+- Check tap target sizes (minimum 48x48px)
+- Audit font sizes for readability (minimum 16px base)
+- Verify mobile-specific schema (MobileApplication)
+- Check for horizontal scroll issues
+
+### 4. Content Gap Analysis
+- Analyze existing page titles/descriptions for keyword opportunities
+- Identify thin content pages (low word count)
+- Check for duplicate/similar meta descriptions
+- Generate recommendations for missing topic coverage
