@@ -109,7 +109,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                     to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
                     className="group snap-start shrink-0 w-[38vw] sm:w-[28vw] md:w-[20vw] lg:w-[15vw] xl:w-[12vw] touch-manipulation"
                   >
-                    <div className="flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-1 h-full active:scale-[0.98]">
+                    <div className="flex flex-col items-center gap-3 rounded-2xl border border-border/30 bg-white dark:bg-card p-5 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20 hover:-translate-y-1 h-full active:scale-[0.98] shadow-sm">
                       <div className="relative">
                         <Avatar className={cn("h-16 w-16 ring-2 ring-border/30 transition-all duration-300 group-hover:ring-primary/40 group-hover:scale-105", idx < 3 && "ring-primary/30")}>
                           <AvatarImage src={chef.avatar_url} alt={name} loading="lazy" />
