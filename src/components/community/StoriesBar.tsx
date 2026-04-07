@@ -145,6 +145,11 @@ export const StoriesBar = memo(function StoriesBar() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif", "video/mp4", "video/webm"];
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast({ variant: "destructive", title: isAr ? "نوع ملف غير مدعوم" : "Unsupported file type" });
+      return;
+    }
     if (file.size > 10 * 1024 * 1024) {
       toast({ variant: "destructive", title: isAr ? "الملف كبير جداً" : "File too large (max 10MB)" });
       return;

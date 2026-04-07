@@ -1,4 +1,5 @@
 import { useState, memo } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSubmitVerification, useMyVerificationRequests } from "@/hooks/useVerification";
@@ -41,6 +42,7 @@ const statusConfig: Record<string, { icon: typeof CheckCircle; color: string; la
 export const VerificationRequestForm = memo(function VerificationRequestForm() {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { toast } = useToast();
   const isAr = language === "ar";
   const submitMutation = useSubmitVerification();
   const { data: myRequests, isLoading: loadingRequests } = useMyVerificationRequests();
@@ -58,6 +60,17 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
+    const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast({ variant: "destructive", title: language === "ar" ? "نوع ملف غير مدعوم — يُسمح بالصور و PDF فقط" : "Unsupported file type — only images and PDF allowed" });
+      return;
+    }
+    if (file.size > MAX_SIZE) {
+      toast({ variant: "destructive", title: language === "ar" ? "الملف كبير جداً — الحد الأقصى 10 ميجابايت" : "File too large — max 10MB" });
+      return;
+    }
+
     setUploading(true);
     const ext = file.name.split(".").pop();
     const path = `${user.id}/${Date.now()}.${ext}`;
@@ -73,7 +86,6 @@ export const VerificationRequestForm = memo(function VerificationRequestForm() {
 
     // Bucket is private — store path reference, admins can view via signed URLs
     setUploadedDocs((prev) => [...prev, { type: docType, url: path, name: file.name }]);
-    setUploading(false);
     setUploading(false);
   };
 
