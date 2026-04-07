@@ -369,6 +369,13 @@ export default function SEODashboard() {
   const bounceRate = totalViews > 0 ? Math.round((bounceCount / totalViews) * 100) : 0;
   const avgDuration = totalViews > 0 ? Math.round((pageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / totalViews) : 0;
 
+  // Previous period metrics
+  const prevTotalViews = prevPageViews?.length || 0;
+  const prevUniqueSessions = new Set(prevPageViews?.map((v) => v.session_id) || []).size;
+  const prevBounceCount = prevPageViews?.filter((v) => v.is_bounce)?.length || 0;
+  const prevBounceRate = prevTotalViews > 0 ? Math.round((prevBounceCount / prevTotalViews) * 100) : 0;
+  const prevAvgDuration = prevTotalViews > 0 ? Math.round((prevPageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / prevTotalViews) : 0;
+
   const devices = { mobile: 0, tablet: 0, desktop: 0 };
   pageViews?.forEach((v) => {
     if (v.device_type === "mobile") devices.mobile++;
