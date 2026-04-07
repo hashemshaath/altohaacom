@@ -5,7 +5,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, MapPin, Trophy, Flame } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -15,12 +14,12 @@ import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 
-const STATUS_STYLES: Record<string, { en: string; ar: string; class: string }> = {
-  registration_open: { en: "Open", ar: "مفتوح", class: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
-  upcoming: { en: "Upcoming", ar: "قادم", class: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
-  in_progress: { en: "Live", ar: "مباشر", class: "bg-destructive/10 text-destructive border-destructive/20" },
-  active: { en: "Active", ar: "نشط", class: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
-  completed: { en: "Completed", ar: "منتهي", class: "bg-muted-foreground/10 text-muted-foreground border-muted-foreground/20" },
+const STATUS_STYLES: Record<string, { en: string; ar: string; dot: string }> = {
+  registration_open: { en: "Open", ar: "مفتوح", dot: "bg-emerald-500" },
+  upcoming: { en: "Upcoming", ar: "قادم", dot: "bg-blue-500" },
+  in_progress: { en: "Live", ar: "مباشر", dot: "bg-red-500" },
+  active: { en: "Active", ar: "نشط", dot: "bg-emerald-500" },
+  completed: { en: "Completed", ar: "منتهي", dot: "bg-gray-400" },
 };
 
 const CompetitionsSection = memo(function CompetitionsSection() {
@@ -30,12 +29,11 @@ const CompetitionsSection = memo(function CompetitionsSection() {
 
   const itemCount = config?.item_count || 6;
   const title = config
-    ? (isAr ? config.title_ar || "انضم إلى الأحداث القادمة" : config.title_en || "Upcoming Events")
-    : (isAr ? "انضم إلى الأحداث القادمة" : "Upcoming Events");
+    ? (isAr ? config.title_ar || "الفعاليات القادمة" : config.title_en || "Upcoming Events")
+    : (isAr ? "الفعاليات القادمة" : "Upcoming Events");
   const subtitle = config
     ? (isAr ? config.subtitle_ar || "" : config.subtitle_en || "")
-    : (isAr ? "تنافس وشارك في أفضل الفعاليات الطهوية حول العالم" : "Compete and participate in world-class culinary events");
-  const showTitle = config?.show_title ?? true;
+    : (isAr ? "تنافس وشارك في أفضل الفعاليات الطهوية" : "Compete in world-class culinary events");
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
@@ -56,14 +54,12 @@ const CompetitionsSection = memo(function CompetitionsSection() {
   const { data: exhibitions = [] } = useQuery({
     queryKey: ["home-exhibitions-minimal"],
     queryFn: async () => {
-      // Show active/upcoming first, then recently completed
       const { data } = await supabase
         .from("exhibitions")
         .select("id, title, title_ar, cover_image_url, status, start_date, city, country, slug, venue, venue_ar")
         .in("status", ["upcoming", "active", "completed"])
         .order("start_date", { ascending: true })
         .limit(20);
-      // Prioritize: active/upcoming first, then completed (most recent)
       const active = (data || []).filter(e => e.status !== "completed");
       const completed = (data || []).filter(e => e.status === "completed").reverse().slice(0, 4);
       return [...active, ...completed].slice(0, 12);
@@ -72,8 +68,8 @@ const CompetitionsSection = memo(function CompetitionsSection() {
   });
 
   const allEvents = [
-    ...competitions.map((c) => ({ ...c, type: "competition", date: c.competition_start, link: ROUTES.competition(c.id) })),
-    ...exhibitions.map((e) => ({ ...e, type: "exhibition", date: e.start_date, link: ROUTES.exhibition(e.slug || e.id) })),
+    ...competitions.map((c) => ({ ...c, type: "competition" as const, date: c.competition_start, link: ROUTES.competition(c.id) })),
+    ...exhibitions.map((e) => ({ ...e, type: "exhibition" as const, date: e.start_date, link: ROUTES.exhibition(e.slug || e.id) })),
   ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, Math.max(itemCount, 12));
 
   if (allEvents.length === 0) return null;
@@ -83,7 +79,7 @@ const CompetitionsSection = memo(function CompetitionsSection() {
       <div className="container">
         <SectionHeader
           icon={Trophy}
-          badge={isAr ? "مسابقات وفعاليات" : "Competitions & Events"}
+          badge={isAr ? "فعاليات" : "Events"}
           title={title}
           subtitle={showSubtitle ? subtitle : undefined}
           viewAllHref={showViewAll ? "/events-calendar" : undefined}
@@ -91,56 +87,60 @@ const CompetitionsSection = memo(function CompetitionsSection() {
         />
 
         <HorizontalScrollRow isAr={isAr}>
-          {allEvents.map((event) => (
-            <Link
-              key={event.id}
-              to={event.link}
-              className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
-            >
-              <Card className="overflow-hidden border-border/20 h-full transition-all duration-300 hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 rounded-2xl active:scale-[0.98] bg-card">
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  {event.cover_image_url ? (
-                    <img src={event.cover_image_url} alt={event.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                  ) : (
-                    <div className="h-full w-full bg-muted flex items-center justify-center">
-                      <Trophy className="h-8 w-8 text-muted-foreground/20" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <div className="absolute top-2 start-2 flex gap-1.5">
-                    {event.status && STATUS_STYLES[event.status] && (
-                      <Badge variant="outline" className={cn("text-[12px] font-bold", STATUS_STYLES[event.status].class)}>
-                        {event.status === "in_progress" && <Flame className="h-3 w-3 me-0.5" />}
-                        {isAr ? STATUS_STYLES[event.status].ar : STATUS_STYLES[event.status].en}
-                      </Badge>
+          {allEvents.map((event) => {
+            const status = event.status && STATUS_STYLES[event.status];
+            return (
+              <Link
+                key={event.id}
+                to={event.link}
+                className="group block snap-start shrink-0 w-[75vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
+              >
+                <div className="overflow-hidden rounded-2xl border border-border/40 bg-card h-full transition-all duration-300 hover:shadow-xl hover:shadow-primary/8 hover:-translate-y-1 active:scale-[0.98]">
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    {event.cover_image_url ? (
+                      <img src={event.cover_image_url} alt={isAr ? event.title_ar || event.title : event.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                    ) : (
+                      <div className="h-full w-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                        <Trophy className="h-10 w-10 text-muted-foreground/20" />
+                      </div>
                     )}
-                    <Badge variant="outline" className="text-[12px] bg-background/80 backdrop-blur-sm">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute top-2.5 start-2.5 flex gap-1.5">
+                      {status && (
+                        <Badge className="text-xs font-bold bg-white/90 text-foreground backdrop-blur-sm border-0 gap-1.5 shadow-sm">
+                          <span className={cn("h-1.5 w-1.5 rounded-full", status.dot)} />
+                          {event.status === "in_progress" && <Flame className="h-3 w-3 text-red-500" />}
+                          {isAr ? status.ar : status.en}
+                        </Badge>
+                      )}
+                    </div>
+                    <Badge className="absolute bottom-2.5 start-2.5 text-xs bg-white/90 text-foreground backdrop-blur-sm border-0 shadow-sm">
                       {event.type === "competition" ? (isAr ? "مسابقة" : "Competition") : (isAr ? "معرض" : "Exhibition")}
                     </Badge>
                   </div>
-                </div>
-                <CardContent className="p-3">
-                  <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
-                    {isAr ? event.title_ar || event.title : event.title}
-                  </h3>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12px] text-muted-foreground">
-                    {event.date && (
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3" />
-                        {format(new Date(event.date), "d MMM yyyy", { locale: isAr ? ar : undefined })}
-                      </span>
-                    )}
-                    {(event.city || event.country) && (
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {localizeLocation({ city: event.city, country: event.country }, isAr)}
-                      </span>
-                    )}
+                  <div className="p-4">
+                    <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                      {isAr ? event.title_ar || event.title : event.title}
+                    </h3>
+                    <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+                      {event.date && (
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3.5 w-3.5" />
+                          {format(new Date(event.date), "d MMM yyyy", { locale: isAr ? ar : undefined })}
+                        </span>
+                      )}
+                      {(event.city || event.country) && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="h-3.5 w-3.5" />
+                          {localizeLocation({ city: event.city, country: event.country }, isAr)}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
+                </div>
+              </Link>
+            );
+          })}
         </HorizontalScrollRow>
       </div>
     </section>
