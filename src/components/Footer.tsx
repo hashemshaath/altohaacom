@@ -190,7 +190,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-10 sm:grid-cols-2 md:grid-cols-4">
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h3 className="text-[11px] font-semibold uppercase tracking-widest text-[hsl(220_13%_11%)] dark:text-foreground mb-3.5">
+              <h3 className="text-[12px] font-semibold uppercase tracking-widest text-[hsl(220_13%_11%)] dark:text-foreground mb-3.5">
                 {l(col.titleEn, col.titleAr)}
               </h3>
               <ul className="space-y-2">
@@ -213,7 +213,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
         <div className="py-5 flex flex-wrap items-center justify-center gap-6">
           {trustBadges.map((badge) => (
-            <div key={badge.labelEn} className="flex items-center gap-2 text-[11px] text-[hsl(220_9%_46%)] dark:text-muted-foreground">
+            <div key={badge.labelEn} className="flex items-center gap-2 text-[12px] text-[hsl(220_9%_46%)] dark:text-muted-foreground">
               <badge.icon className="h-3.5 w-3.5 text-primary/70" />
               <span>{l(badge.labelEn, badge.labelAr)}</span>
             </div>
@@ -223,7 +223,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         {/* ── Bottom bar ── */}
         <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
         <div className="py-5 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[11px] text-[hsl(220_9%_55%)] dark:text-muted-foreground/60">{copyrightText}</p>
+          <p className="text-[12px] text-[hsl(220_9%_55%)] dark:text-muted-foreground/60">{copyrightText}</p>
 
           {/* Social icons */}
           {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (

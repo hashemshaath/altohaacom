@@ -156,7 +156,7 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
                           <span className="absolute -top-1 -start-1 text-sm leading-none drop-shadow">{nationalityEmoji}</span>
                         )}
                         {isTop3 && (
-                          <div className="absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground text-[9px] font-bold shadow-sm">
+                          <div className="absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground text-[12px] font-bold shadow-sm">
                             #{idx + 1}
                           </div>
                         )}
@@ -165,19 +165,19 @@ export const FeaturedChefs = memo(function FeaturedChefs() {
                         {name || (isAr ? "طاهٍ" : "Chef")}
                       </h3>
                       {spec && (
-                        <div className="mt-0.5 flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
+                        <div className="mt-0.5 flex items-center justify-center gap-1 text-[12px] text-muted-foreground">
                           <ChefHat className="h-3 w-3 shrink-0" />
                           <span className="truncate">{spec}</span>
                         </div>
                       )}
                       {chef.country_code && (
-                        <div className="mt-0.5 flex items-center justify-center gap-1 text-[10px] text-muted-foreground/70">
+                        <div className="mt-0.5 flex items-center justify-center gap-1 text-[12px] text-muted-foreground/70">
                           <MapPin className="h-2.5 w-2.5 shrink-0" />
                           <span className="truncate">{countryFlag(chef.country_code)} {locationParts}</span>
                         </div>
                       )}
                       {hasMedals && (
-                        <div className="mt-2 flex items-center justify-center gap-2.5 text-[11px]">
+                        <div className="mt-2 flex items-center justify-center gap-2.5 text-[12px]">
                           {chef.gold_medals > 0 && <span className="flex items-center gap-0.5 text-chart-4"><Trophy className="h-3 w-3" />{chef.gold_medals}</span>}
                           {chef.silver_medals > 0 && <span className="flex items-center gap-0.5 text-muted-foreground"><Trophy className="h-3 w-3" />{chef.silver_medals}</span>}
                           {chef.bronze_medals > 0 && <span className="flex items-center gap-0.5 text-chart-3"><Trophy className="h-3 w-3" />{chef.bronze_medals}</span>}

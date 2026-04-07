@@ -135,7 +135,7 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
 
               {/* Label */}
               <span
-                className="text-[10px] leading-none transition-colors duration-150"
+                className="text-[12px] leading-none transition-colors duration-150"
                 style={{
                   color: isActive ? "var(--color-primary)" : "#9CA3AF",
                   fontWeight: isActive ? 600 : 500,
