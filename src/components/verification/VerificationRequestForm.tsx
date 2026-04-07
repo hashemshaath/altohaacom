@@ -1,4 +1,5 @@
 import { useState, memo } from "react";
+import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSubmitVerification, useMyVerificationRequests } from "@/hooks/useVerification";
