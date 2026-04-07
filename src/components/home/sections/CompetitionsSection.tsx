@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,16 +13,17 @@ import { localizeLocation } from "@/lib/localizeLocation";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
+import { ImageWithFallback } from "@/components/home/ImageWithFallback";
 
 const STATUS_STYLES: Record<string, { en: string; ar: string; dot: string }> = {
   registration_open: { en: "Open", ar: "مفتوح", dot: "bg-emerald-500" },
   upcoming: { en: "Upcoming", ar: "قادم", dot: "bg-blue-500" },
   in_progress: { en: "Live", ar: "مباشر", dot: "bg-red-500" },
   active: { en: "Active", ar: "نشط", dot: "bg-emerald-500" },
-  completed: { en: "Completed", ar: "منتهي", dot: "bg-gray-400" },
+  completed: { en: "Completed", ar: "منتهي", dot: "bg-muted-foreground" },
 };
 
-const CompetitionsSection = memo(function CompetitionsSection() {
+const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSection(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
@@ -97,24 +98,24 @@ const CompetitionsSection = memo(function CompetitionsSection() {
               >
                 <div className="overflow-hidden rounded-2xl border border-border/30 bg-card h-full transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 active:scale-[0.98] shadow-sm">
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    {event.cover_image_url ? (
-                      <img src={event.cover_image_url} alt={isAr ? event.title_ar || event.title : event.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                    ) : (
-                      <div className="h-full w-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                        <Trophy className="h-10 w-10 text-muted-foreground/20" />
-                      </div>
-                    )}
+                    <ImageWithFallback
+                      src={event.cover_image_url}
+                      alt={isAr ? event.title_ar || event.title : event.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      fallbackIcon={<Trophy className="h-10 w-10 text-muted-foreground/20" />}
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                     <div className="absolute top-2.5 start-2.5 flex gap-1.5">
                       {status && (
-                        <Badge className="text-xs font-bold bg-white/90 text-foreground backdrop-blur-sm border-0 gap-1.5 shadow-sm">
+                        <Badge className="text-xs font-bold bg-card/90 text-foreground backdrop-blur-sm border-0 gap-1.5 shadow-sm">
                           <span className={cn("h-1.5 w-1.5 rounded-full", status.dot)} />
-                          {event.status === "in_progress" && <Flame className="h-3 w-3 text-red-500" />}
+                          {event.status === "in_progress" && <Flame className="h-3 w-3 text-destructive" />}
                           {isAr ? status.ar : status.en}
                         </Badge>
                       )}
                     </div>
-                    <Badge className="absolute bottom-2.5 start-2.5 text-xs bg-white/90 text-foreground backdrop-blur-sm border-0 shadow-sm">
+                    <Badge className="absolute bottom-2.5 start-2.5 text-xs bg-card/90 text-foreground backdrop-blur-sm border-0 shadow-sm">
                       {event.type === "competition" ? (isAr ? "مسابقة" : "Competition") : (isAr ? "معرض" : "Exhibition")}
                     </Badge>
                   </div>
@@ -145,6 +146,6 @@ const CompetitionsSection = memo(function CompetitionsSection() {
       </div>
     </section>
   );
-});
+}));
 
 export default CompetitionsSection;

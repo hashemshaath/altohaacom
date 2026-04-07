@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { countryFlag } from "@/lib/countryFlag";
 import { useAllCountries } from "@/hooks/useCountries";
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
@@ -19,7 +19,7 @@ const RANK_COLORS = [
   "from-orange-400 to-amber-600",
 ];
 
-const FeaturedChefsSection = memo(function FeaturedChefsSection() {
+const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefsSection(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { data: allCountries = [] } = useAllCountries();
@@ -67,7 +67,12 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
     staleTime: 1000 * 60 * 10,
   });
 
-  if (!isLoading && chefs.length === 0) {
+  // Deduplicate by user_id
+  const uniqueChefs = chefs.filter(
+    (chef, index, self) => chef.user_id && self.findIndex((c) => c.user_id === chef.user_id) === index
+  );
+
+  if (!isLoading && uniqueChefs.length === 0) {
     return (
       <section dir={isAr ? "rtl" : "ltr"}>
         <div className="container">
@@ -94,7 +99,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                   </div>
                 </div>
               ))
-            : chefs.map((chef, idx) => {
+            : uniqueChefs.map((chef, idx) => {
                 const name = getDisplayName(chef, isAr);
                 const spec = isAr && chef.specialization_ar ? chef.specialization_ar : chef.specialization;
                 const initials = name ? name.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase() : "?";
@@ -105,7 +110,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
 
                 return (
                   <Link
-                    key={chef.user_id || idx}
+                    key={chef.user_id}
                     to={chef.username ? `/${chef.username}` : `/profile/${chef.user_id}`}
                     className="group snap-start shrink-0 w-[38vw] sm:w-[28vw] md:w-[20vw] lg:w-[15vw] xl:w-[12vw] touch-manipulation"
                   >
@@ -152,6 +157,6 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
       </div>
     </section>
   );
-});
+}));
 
 export default FeaturedChefsSection;
