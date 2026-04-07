@@ -1,10 +1,8 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useUserRoles } from "@/hooks/useUserRole";
-import { useScrolled } from "@/hooks/useScrolled";
-import { useScrollDirection } from "@/hooks/useScrollDirection";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
@@ -42,22 +40,28 @@ export const moreLinks = [
   { to: "/rankings", icon: Medal, labelEn: "Rankings", labelAr: "التصنيفات" },
 ];
 
-const HEADER_HEIGHT = "h-14";
-
 export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const { data: userRoles = [] } = useUserRoles();
   const isJudge = userRoles.includes("judge");
   const isAr = language === "ar";
-  const scrolled = useScrolled();
-  const { visible: headerVisible } = useScrollDirection(12);
   const siteSettings = useSiteSettingsContext();
   const headerCfg = siteSettings.header || {};
   const brandCfg = siteSettings.branding || {};
   const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
   const logoUrl = identityLogos.natural || identityLogos.variation2 || brandCfg.logoUrl || "/altoha-logo.png";
-  const isFixed = headerCfg.stickyHeader !== false;
+
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <>
@@ -65,41 +69,39 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
         ref={ref}
         role="banner"
         className={cn(
-          "inset-x-0 top-0 z-50 transition-all duration-300 will-change-transform",
-          isFixed ? "fixed" : "relative",
+          "sticky inset-x-0 top-0 z-50 transition-all duration-300",
+          /* Desktop: 72px, Mobile: 60px */
+          "h-[60px] lg:h-[72px]",
           scrolled
-            ? "bg-card/90 backdrop-blur-2xl border-b border-border/50 shadow-[var(--shadow-sm)]"
-            : "bg-card/70 backdrop-blur-md border-b border-transparent",
-          isFixed && !headerVisible && "-translate-y-full"
+            ? "bg-[var(--bg-white)] shadow-[0_1px_0_rgba(0,0,0,0.06),0_2px_12px_rgba(0,0,0,0.04)] border-b border-[var(--color-border)]"
+            : "bg-[rgba(255,255,255,0.95)] backdrop-blur-[20px] backdrop-saturate-[180%] border-b border-[rgba(229,231,235,0.8)]"
         )}
+        style={{ WebkitBackdropFilter: scrolled ? undefined : "blur(20px) saturate(180%)" }}
       >
-        <div className={cn("container flex items-center gap-2 px-4 sm:px-6", HEADER_HEIGHT)}>
-          {/* Left: Mobile menu + Logo */}
-          <div className="flex items-center gap-2 shrink-0">
-            <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
-            <Link
-              to="/"
-              aria-label="Altoha homepage"
-              className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-lg"
-            >
-              {headerCfg.showLogo !== false && (
-                <img
-                  src={logoUrl}
-                  alt={isAr ? "الطهاة — الصفحة الرئيسية" : "Altoha — Homepage"}
-                  className="h-7 w-auto sm:h-8 transition-transform duration-300 group-hover:scale-105"
-                  loading="eager"
-                />
-              )}
-              {headerCfg.showBrandName !== false && (
-                <span className={cn(
-                  "text-base font-bold text-foreground hidden sm:inline tracking-tight",
-                  !isAr && "font-serif"
-                )}>
-                  {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
-                </span>
-              )}
-            </Link>
-          </div>
+        <div className="mx-auto flex h-full max-w-[var(--container-max)] items-center gap-4 px-4 lg:px-6">
+          {/* Mobile: hamburger on the left (LTR) / right (RTL) */}
+          <MobileMenu primaryNav={primaryNav} moreLinks={moreLinks} />
+
+          {/* Logo */}
+          <Link
+            to="/"
+            aria-label="Altoha homepage"
+            className="flex items-center gap-2.5 shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)] focus-visible:rounded-lg"
+          >
+            {headerCfg.showLogo !== false && (
+              <img
+                src={logoUrl}
+                alt={isAr ? "الطهاة — الصفحة الرئيسية" : "Altoha — Homepage"}
+                className="h-8 w-auto transition-transform duration-300 group-hover:scale-105"
+                loading="eager"
+              />
+            )}
+            {headerCfg.showBrandName !== false && (
+              <span className="text-base font-bold text-[var(--color-heading)] hidden sm:inline tracking-tight">
+                {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
+              </span>
+            )}
+          </Link>
 
           {/* Center: Desktop Nav */}
           <DesktopNav
@@ -110,10 +112,12 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           />
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-1 sm:gap-0.5 ms-auto shrink-0">
+          <div className="flex items-center gap-1 ms-auto shrink-0">
             {headerCfg.showSearch !== false && (
-              <Button variant="ghost" size="icon" asChild className="rounded-xl h-9 w-9 sm:h-8 sm:w-8 text-muted-foreground hover:text-foreground hover:bg-accent/10 touch-manipulation">
-                <Link to="/search" aria-label={isAr ? "البحث" : "Search"}><Search className="h-[18px] w-[18px] sm:h-4 sm:w-4" aria-hidden="true" /></Link>
+              <Button variant="ghost" size="icon" asChild className="rounded-full h-10 w-10 text-[var(--color-muted)] hover:text-[var(--color-heading)] hover:bg-[var(--bg-surface)] touch-manipulation transition-colors duration-[var(--transition-fast)]">
+                <Link to="/search" aria-label={isAr ? "البحث" : "Search"}>
+                  <Search className="h-[18px] w-[18px]" aria-hidden="true" />
+                </Link>
               </Button>
             )}
             {user && headerCfg.showNotifications !== false && <NotificationBell />}
@@ -123,8 +127,6 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           </div>
         </div>
       </header>
-
-      {isFixed && <div className={HEADER_HEIGHT} aria-hidden="true" />}
     </>
   );
 });

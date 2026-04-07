@@ -15,24 +15,16 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import {
-  User,
-  LogOut,
-  MessageSquare,
-  Settings,
-  HelpCircle,
-  Shield,
-  LayoutDashboard,
-  Crown,
-  ChevronDown,
+  User, LogOut, MessageSquare, Settings,
+  HelpCircle, Shield, LayoutDashboard, Crown, ChevronDown,
 } from "lucide-react";
 
 const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
-  basic: { en: "Basic", ar: "أساسي", color: "bg-muted text-muted-foreground" },
-  professional: { en: "Professional", ar: "محترف", color: "bg-primary/10 text-primary" },
-  enterprise: { en: "Enterprise", ar: "مؤسسات", color: "bg-chart-4/15 text-chart-4" },
+  basic: { en: "Basic", ar: "أساسي", color: "bg-[var(--bg-surface)] text-[var(--color-muted)]" },
+  professional: { en: "Professional", ar: "محترف", color: "bg-[var(--color-primary-light)] text-[var(--color-primary)]" },
+  enterprise: { en: "Enterprise", ar: "مؤسسات", color: "bg-[var(--color-info-bg)] text-[var(--color-info)]" },
 };
 
 export const UserDropdown = memo(function UserDropdown() {
@@ -65,12 +57,15 @@ export const UserDropdown = memo(function UserDropdown() {
   if (!user) {
     return (
       <div className="hidden items-center gap-2 lg:flex">
-        <Button variant="ghost" size="sm" asChild className="text-muted-foreground">
+        <Button variant="ghost" size="sm" asChild className="text-[var(--color-body)] border border-[var(--color-border)] rounded-[var(--radius-sm)] h-10 px-4 text-[13px] font-semibold hover:bg-[var(--bg-surface)]">
           <Link to="/login">{t("signIn")}</Link>
         </Button>
-        <Button size="sm" asChild className="shadow-sm shadow-primary/15">
-          <Link to="/register">{t("signUp")}</Link>
-        </Button>
+        <Link
+          to="/register"
+          className="btn btn-primary btn-sm"
+        >
+          {t("signUp")}
+        </Link>
       </div>
     );
   }
@@ -81,40 +76,44 @@ export const UserDropdown = memo(function UserDropdown() {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="h-auto gap-1.5 rounded-full px-2 py-1.5 hover:bg-primary/5 transition-all duration-200"
+            className="h-auto gap-1.5 rounded-full px-2 py-1.5 hover:bg-[var(--bg-surface)] transition-all duration-200"
           >
-            <Avatar className="h-8 w-8 border-2 border-primary/20">
+            <Avatar className="h-8 w-8 border-2 border-[var(--color-primary-light)]">
               <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
-              <AvatarFallback className="text-[11px] font-bold bg-primary/10 text-primary">
+              <AvatarFallback className="text-[11px] font-bold bg-[var(--color-primary-light)] text-[var(--color-primary)]">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div className="hidden xl:flex flex-col items-start max-w-[120px]">
-              <span className="text-xs font-semibold text-foreground truncate w-full">
+              <span className="text-[13px] font-semibold text-[var(--color-heading)] truncate w-full">
                 {displayName}
               </span>
               {tierInfo && (
-                <span className="text-[10px] text-muted-foreground leading-tight">
+                <span className="text-[10px] text-[var(--color-muted)] leading-tight">
                   {isAr ? tierInfo.ar : tierInfo.en}
                 </span>
               )}
             </div>
-            <ChevronDown className="h-3 w-3 text-muted-foreground hidden xl:block" />
+            <ChevronDown className="h-3 w-3 text-[var(--color-muted)] hidden xl:block" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64 animate-in fade-in-0 zoom-in-95 duration-200 p-0 rounded-2xl shadow-xl shadow-foreground/[0.06] border-border/50">
+        <DropdownMenuContent
+          align="end"
+          className="w-64 p-0 rounded-[var(--radius-md)] border-[var(--color-border-light)]"
+          style={{ boxShadow: "var(--shadow-lg)" }}
+        >
           {/* Profile header */}
-          <div className="px-4 py-3 border-b border-border/50 bg-muted/30">
+          <div className="px-4 py-3 border-b border-[var(--color-border-light)] bg-[var(--bg-surface)]">
             <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 border-2 border-primary/20">
+              <Avatar className="h-10 w-10 border-2 border-[var(--color-primary-light)]">
                 <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
-                <AvatarFallback className="text-sm font-bold bg-primary/10 text-primary">
+                <AvatarFallback className="text-sm font-bold bg-[var(--color-primary-light)] text-[var(--color-primary)]">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold truncate">{displayName}</p>
-                <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
+                <p className="text-[14px] font-semibold text-[var(--color-heading)] truncate">{displayName}</p>
+                <p className="text-[11px] text-[var(--color-muted)] truncate">{user.email}</p>
                 {tierInfo && (
                   <Badge variant="secondary" className={`mt-1 text-[10px] h-4 px-1.5 ${tierInfo.color}`}>
                     <Crown className="h-2.5 w-2.5 me-0.5" />
@@ -126,46 +125,30 @@ export const UserDropdown = memo(function UserDropdown() {
           </div>
 
           <div className="py-1">
-            <DropdownMenuItem asChild className="rounded-lg mx-1">
-              <Link to="/dashboard" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
-                <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-                {label("Dashboard", "لوحة التحكم")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild className="rounded-lg mx-1">
-              <Link to="/profile" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
-                <User className="h-4 w-4 text-muted-foreground" />
-                {t("myProfile")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild className="rounded-lg mx-1">
-              <Link to="/messages" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
-                <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                {label("Messages", "الرسائل")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild className="rounded-lg mx-1">
-              <Link to="/notification-preferences" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
-                <Settings className="h-4 w-4 text-muted-foreground" />
-                {t("notificationPreferences")}
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild className="rounded-lg mx-1">
-              <Link to="/help" className="flex items-center gap-2.5 px-3 py-2 transition-colors">
-                <HelpCircle className="h-4 w-4 text-muted-foreground" />
-                {label("Help Center", "مركز المساعدة")}
-              </Link>
-            </DropdownMenuItem>
+            {[
+              { to: "/dashboard", icon: LayoutDashboard, en: "Dashboard", ar: "لوحة التحكم" },
+              { to: "/profile", icon: User, en: "Profile", ar: "الملف الشخصي" },
+              { to: "/messages", icon: MessageSquare, en: "Messages", ar: "الرسائل" },
+              { to: "/notification-preferences", icon: Settings, en: "Settings", ar: "الإعدادات" },
+              { to: "/help", icon: HelpCircle, en: "Help Center", ar: "مركز المساعدة" },
+            ].map((item) => (
+              <DropdownMenuItem key={item.to} asChild className="rounded-[var(--radius-sm)] mx-1">
+                <Link to={item.to} className="flex items-center gap-2.5 px-3 py-2 transition-colors">
+                  <item.icon className="h-4 w-4 text-[var(--color-muted)]" />
+                  <span className="text-[13px]">{label(item.en, item.ar)}</span>
+                </Link>
+              </DropdownMenuItem>
+            ))}
           </div>
 
           {isAdmin && (
             <>
               <DropdownMenuSeparator />
               <div className="py-1">
-                <DropdownMenuItem asChild>
-                  <Link to="/admin" className="flex items-center gap-2.5 px-4 py-2">
-                    <Shield className="h-4 w-4 text-muted-foreground" />
-                    {t("adminPanel")}
+                <DropdownMenuItem asChild className="mx-1 rounded-[var(--radius-sm)]">
+                  <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2">
+                    <Shield className="h-4 w-4 text-[var(--color-muted)]" />
+                    <span className="text-[13px]">{t("adminPanel")}</span>
                   </Link>
                 </DropdownMenuItem>
               </div>
@@ -176,10 +159,10 @@ export const UserDropdown = memo(function UserDropdown() {
           <div className="py-1">
             <DropdownMenuItem
               onClick={signOut}
-              className="text-destructive focus:text-destructive px-4 py-2"
+              className="text-[var(--color-error)] focus:text-[var(--color-error)] px-4 py-2 mx-1 rounded-[var(--radius-sm)]"
             >
               <LogOut className="h-4 w-4 me-2.5" />
-              {t("signOut")}
+              <span className="text-[13px]">{t("signOut")}</span>
             </DropdownMenuItem>
           </div>
         </DropdownMenuContent>

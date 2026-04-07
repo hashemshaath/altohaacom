@@ -1,12 +1,5 @@
-import { forwardRef } from "react";
+import { forwardRef, useState, useRef, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { Scale, ChevronDown, Compass } from "lucide-react";
 
@@ -33,125 +26,160 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
     location.pathname === path || (path !== "/" && location.pathname.startsWith(path + "/"));
   const label = (en: string, ar: string) => (isAr ? ar : en);
 
-  // Split moreLinks into 2 columns
-  const half = Math.ceil(moreLinks.length / 2);
-  const col1 = moreLinks.slice(0, half);
-  const col2 = moreLinks.slice(half);
+  // Split moreLinks into 3 columns for mega dropdown
+  const colSize = Math.ceil(moreLinks.length / 3);
+  const col1 = moreLinks.slice(0, colSize);
+  const col2 = moreLinks.slice(colSize, colSize * 2);
+  const col3 = moreLinks.slice(colSize * 2);
 
   const anyMoreActive = moreLinks.some((l) => isActive(l.to));
 
+  // Hover-triggered mega dropdown
+  const [megaOpen, setMegaOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  const openMega = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    setMegaOpen(true);
+  }, []);
+
+  const closeMega = useCallback(() => {
+    closeTimer.current = setTimeout(() => setMegaOpen(false), 150);
+  }, []);
+
   return (
-    <nav ref={ref} className="hidden items-center gap-0.5 lg:flex flex-1 justify-center" aria-label="Primary navigation">
+    <nav
+      ref={ref}
+      className="hidden items-center lg:flex flex-1 justify-center"
+      style={{ gap: "32px" }}
+      aria-label="Primary navigation"
+    >
       {primaryNav.map((link) => {
         const active = isActive(link.to);
         return (
-          <Button
+          <Link
             key={link.to}
-            variant="ghost"
-            size="sm"
-            asChild
+            to={link.to}
             className={cn(
-              "h-9 px-3 text-[13px] font-medium rounded-xl transition-all duration-200 relative",
+              "relative text-[14px] font-medium transition-colors duration-[150ms] whitespace-nowrap",
               active
-                ? "text-primary bg-primary/8"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent/8"
+                ? "text-[var(--color-primary)] font-semibold"
+                : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
             )}
           >
-            <Link to={link.to} className="flex items-center gap-1.5">
-              <link.icon className="h-3.5 w-3.5 shrink-0" />
-              <span>{label(link.labelEn, link.labelAr)}</span>
-              {active && (
-                <span className="absolute -bottom-[9px] inset-x-3 h-[2px] rounded-full bg-primary" />
-              )}
-            </Link>
-          </Button>
+            {label(link.labelEn, link.labelAr)}
+          </Link>
         );
       })}
 
-      <Button
-        variant="ghost"
-        size="sm"
-        asChild
+      {/* Chef's Table */}
+      <Link
+        to="/chefs-table"
         className={cn(
-          "h-9 px-3 text-[13px] font-medium rounded-xl transition-all duration-200 relative",
+          "relative text-[14px] font-medium transition-colors duration-[150ms] whitespace-nowrap",
           isActive("/chefs-table")
-            ? "text-primary bg-primary/8"
-            : "text-muted-foreground hover:text-foreground hover:bg-accent/8"
+            ? "text-[var(--color-primary)] font-semibold"
+            : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
         )}
       >
-        <Link to="/chefs-table" className="flex items-center gap-1.5">
-          <Scale className="h-3.5 w-3.5" />
-          {label("Chef's Table", "طاولة الشيف")}
-          {isActive("/chefs-table") && (
-            <span className="absolute -bottom-[9px] inset-x-3 h-[2px] rounded-full bg-primary" />
-          )}
-        </Link>
-      </Button>
+        {label("Chef's Table", "طاولة الشيف")}
+      </Link>
 
-      {/* Mega-menu dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn(
-              "h-9 px-3 text-[13px] font-medium rounded-xl gap-1 group transition-all duration-200 relative",
-              anyMoreActive
-                ? "text-primary bg-primary/8"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent/8"
-            )}
-          >
-            <Compass className="h-3.5 w-3.5" />
-            {label("Explore", "اكتشف")}
-            <ChevronDown className="h-3 w-3 opacity-40 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-            {anyMoreActive && (
-              <span className="absolute -bottom-[9px] inset-x-3 h-[2px] rounded-full bg-primary" />
-            )}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="center"
-          className="w-[460px] p-4 rounded-2xl shadow-[var(--shadow-lg)] border-border/40"
-          sideOffset={12}
+      {/* Explore with mega dropdown */}
+      <div
+        className="relative"
+        onMouseEnter={openMega}
+        onMouseLeave={closeMega}
+      >
+        <button
+          className={cn(
+            "flex items-center gap-1.5 text-[14px] font-medium transition-colors duration-[150ms] whitespace-nowrap",
+            anyMoreActive || megaOpen
+              ? "text-[var(--color-primary)]"
+              : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
+          )}
+          aria-expanded={megaOpen}
+          aria-haspopup="true"
         >
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/50 mb-3 px-1">
-            {label("Explore the Platform", "اكتشف المنصة")}
-          </p>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
-            {[col1, col2].map((col, ci) => (
-              <div key={ci} className="space-y-0.5">
-                {col.map((link) => {
-                  const active = isActive(link.to);
-                  return (
-                    <DropdownMenuItem key={link.to} asChild className="rounded-xl p-0 focus:bg-transparent">
+          {label("Explore", "اكتشف")}
+          <ChevronDown
+            className={cn(
+              "h-3 w-3 opacity-60 transition-transform duration-200",
+              megaOpen && "rotate-180"
+            )}
+          />
+        </button>
+
+        {/* Mega Dropdown */}
+        <div
+          className={cn(
+            "absolute top-full pt-2 z-50",
+            isAr ? "right-1/2 translate-x-1/2" : "left-1/2 -translate-x-1/2",
+            megaOpen
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 -translate-y-1 pointer-events-none"
+          )}
+          style={{ transition: "opacity 150ms ease, transform 150ms ease" }}
+          onMouseEnter={openMega}
+          onMouseLeave={closeMega}
+        >
+          <div
+            className="w-[680px] rounded-b-[16px] border border-[var(--color-border-light)] border-t-0 bg-[var(--bg-white)] p-6"
+            style={{
+              boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
+            }}
+          >
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--color-subtle)] mb-4">
+              {label("Explore the Platform", "اكتشف المنصة")}
+            </p>
+            <div className="grid grid-cols-3 gap-x-3 gap-y-1">
+              {[col1, col2, col3].map((col, ci) => (
+                <div key={ci} className="space-y-0.5">
+                  {col.map((link) => {
+                    const active = isActive(link.to);
+                    const Icon = link.icon;
+                    return (
                       <Link
+                        key={link.to}
                         to={link.to}
                         className={cn(
-                          "flex items-center gap-3 px-3 py-2 rounded-xl transition-all duration-200 group/item",
-                          active ? "bg-primary/8" : "hover:bg-accent/8"
+                          "flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 transition-all duration-[var(--transition-fast)] group/item",
+                          active
+                            ? "bg-[var(--bg-purple-wash)]"
+                            : "hover:bg-[var(--bg-surface)]"
                         )}
                       >
-                        <div className={cn(
-                          "flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors",
-                          active ? "bg-primary/15 text-primary" : "bg-muted/40 text-muted-foreground group-hover/item:bg-muted/60 group-hover/item:text-foreground"
-                        )}>
-                          <link.icon className="h-4 w-4" />
+                        <div
+                          className={cn(
+                            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors",
+                            active
+                              ? "bg-[var(--color-primary-light)] text-[var(--color-primary)]"
+                              : "bg-[var(--bg-purple-wash)] text-[var(--color-muted)] group-hover/item:text-[var(--color-primary)]"
+                          )}
+                        >
+                          <Icon className="h-[18px] w-[18px]" />
                         </div>
-                        <span className={cn(
-                          "text-[13px] font-medium transition-colors",
-                          active ? "text-primary" : "text-foreground/80 group-hover/item:text-foreground"
-                        )}>
-                          {label(link.labelEn, link.labelAr)}
-                        </span>
+                        <div className="min-w-0">
+                          <span
+                            className={cn(
+                              "block text-[14px] font-semibold transition-colors",
+                              active
+                                ? "text-[var(--color-primary)]"
+                                : "text-[var(--color-heading)] group-hover/item:text-[var(--color-primary)]"
+                            )}
+                          >
+                            {label(link.labelEn, link.labelAr)}
+                          </span>
+                        </div>
                       </Link>
-                    </DropdownMenuItem>
-                  );
-                })}
-              </div>
-            ))}
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
           </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </div>
+      </div>
     </nav>
   );
 });
