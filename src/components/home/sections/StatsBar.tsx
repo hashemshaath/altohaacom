@@ -75,7 +75,7 @@ const StatsBar = forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {!stats
             ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className={cn("rounded-2xl p-6 animate-pulse bg-white dark:bg-card shadow-sm ring-1", COLORS[i].ring)}>
+                <div key={i} className={cn("rounded-2xl p-6 animate-pulse bg-card shadow-sm ring-1", COLORS[i].ring)}>
                   <div className="flex flex-col items-center gap-3">
                     <div className="h-11 w-11 rounded-xl bg-muted/50" />
                     <div className="h-8 w-20 bg-muted/50 rounded-lg" />
