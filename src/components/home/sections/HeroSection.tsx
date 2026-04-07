@@ -234,8 +234,7 @@ export function HeroSection() {
                 : "opacity-0 scale-[1.03] pointer-events-none transition-all duration-[1200ms] ease-in-out"
             )}
           >
-            <img
-              src={idx === 0 ? heroImgUrl(s.image_url, 800) : s.image_url}
+            <img src={idx === 0 ? heroImgUrl(s.image_url, 800) : s.image_url}
               srcSet={idx === 0 ? heroSrcSet(s.image_url) : undefined}
               sizes={idx === 0 ? "100vw" : undefined}
               alt={s.title}

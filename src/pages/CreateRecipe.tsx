@@ -200,7 +200,7 @@ export default function CreateRecipe() {
                   <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
                   {imagePreview || imageUrl ? (
                     <div className="relative rounded-xl border border-border overflow-hidden group">
-                      <img src={imagePreview || imageUrl} alt="" className="w-full h-48 object-cover" />
+                      <img loading="lazy" src={imagePreview || imageUrl} alt="" className="w-full h-48 object-cover" />
                       <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <Button variant="secondary" size="sm" onClick={() => imageInputRef.current?.click()}>
                           {isAr ? "تغيير" : "Change"}

@@ -379,11 +379,10 @@ export default function CompetitionDetail() {
         <section className="relative overflow-hidden">
           <div className="relative h-44 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
             {competition.cover_image_url ? (
-              <img
-                src={competition.cover_image_url}
+              <img loading="lazy" src={competition.cover_image_url}
                 alt={title}
                 className="h-full w-full object-cover"
-                loading="eager"
+               
                 decoding="async"
                 fetchPriority="high"
               />

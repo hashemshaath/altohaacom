@@ -129,7 +129,7 @@ const CompareExhibitions = () => {
               {selected[slot] ? (
                 <Card className="relative overflow-hidden border-primary/20">
                   {selectedExhibitions[slot]?.cover_image_url && (
-                    <img src={selectedExhibitions[slot]!.cover_image_url!} alt="" className="h-24 w-full object-cover" />
+                    <img src={selectedExhibitions[slot]!.cover_image_url!} alt="" loading="lazy" className="h-24 w-full object-cover" />
                   )}
                   <CardContent className="p-3">
                     <div className="flex items-start justify-between gap-2">

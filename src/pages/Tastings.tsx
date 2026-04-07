@@ -113,7 +113,7 @@ export default function Tastings() {
                 <Card key={session.id} className="group cursor-pointer overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card" onClick={() => navigate(`/tastings/${session.id}`)}>
                   {session.cover_image_url && (
                     <div className="aspect-video overflow-hidden">
-                      <img src={session.cover_image_url} alt={session.title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                      <img loading="lazy" src={session.cover_image_url} alt={session.title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" />
                     </div>
                   )}
                   <CardContent className="p-6">

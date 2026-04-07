@@ -164,8 +164,7 @@ export default function ShopProduct() {
           <div className="space-y-2.5 sm:space-y-3">
             <div className="aspect-square overflow-hidden rounded-xl sm:rounded-2xl bg-muted ring-1 ring-border/50">
               {allImages.length > 0 ? (
-                <img
-                  src={allImages[selectedImage]}
+                <img loading="lazy" src={allImages[selectedImage]}
                   alt={title}
                   className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                   fetchPriority="high"
@@ -186,7 +185,7 @@ export default function ShopProduct() {
                       i === selectedImage ? "border-primary ring-2 ring-primary/20 scale-105" : "border-transparent hover:border-muted-foreground/30"
                     }`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" />
+                    <img src={img} alt="" loading="lazy" className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>

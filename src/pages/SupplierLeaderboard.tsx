@@ -170,7 +170,7 @@ export default function SupplierLeaderboard() {
                   </div>
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted">
                     {s.logo_url ? (
-                      <img src={s.logo_url} className="h-7 w-7 object-contain" alt={s.name} />
+                      <img loading="lazy" src={s.logo_url} className="h-7 w-7 object-contain" alt={s.name} />
                     ) : (
                       <Building2 className="h-5 w-5 text-muted-foreground" />
                     )}

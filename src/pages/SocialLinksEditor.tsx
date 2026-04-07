@@ -918,7 +918,7 @@ export default function SocialLinksEditor() {
                                   const customColor = form.button_color !== "#000000" ? { backgroundColor: form.button_color, color: form.text_color, border: "1px solid transparent" } : { background: pt.card, border: `1px solid ${pt.border}` };
                                   return (
                                     <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 ${btnRadius} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`} style={customColor}>
-                                      {item.thumbnail_url && <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-xl object-cover shrink-0" />}
+                                      {item.thumbnail_url && <img loading="lazy" src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-xl object-cover shrink-0" />}
                                       {item.icon && !item.thumbnail_url && <span className="text-sm">{item.icon}</span>}
                                       <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass}`} style={{ color: (customColor as any).color || pt.text }}>{item.title}</span>
                                     </div>
@@ -1526,7 +1526,7 @@ export default function SocialLinksEditor() {
                                       )}
                                       {item.thumbnail_url && (
                                         <div className="flex items-center gap-2">
-                                          <img src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-md object-cover" />
+                                          <img loading="lazy" src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-md object-cover" />
                                           <Button size="sm" variant="ghost" className="h-6 text-[10px] text-destructive" onClick={() => updateItem.mutate({ id: item.id, thumbnail_url: null })}>
                                             {isAr ? "إزالة الصورة" : "Remove thumbnail"}
                                           </Button>
@@ -1973,7 +1973,7 @@ export default function SocialLinksEditor() {
                       <CardContent className="space-y-3 pt-3">
                         {form.background_image_url && (
                           <div className="relative group rounded-xl overflow-hidden">
-                            <img src={form.background_image_url} alt="BG" className="w-full h-32 object-cover" />
+                            <img loading="lazy" src={form.background_image_url} alt="BG" className="w-full h-32 object-cover" />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <Button size="sm" variant="destructive" className="h-8 text-xs gap-1" onClick={() => updateForm({ background_image_url: "" })}>
                                 <Trash2 className="h-3 w-3" />{isAr ? "إزالة" : "Remove"}
@@ -2066,7 +2066,7 @@ export default function SocialLinksEditor() {
                       <CardContent className="space-y-3 pt-3">
                         {extra.cover_image_url && (
                           <div className="relative group rounded-xl overflow-hidden">
-                            <img src={extra.cover_image_url} alt="Cover" className="w-full h-28 object-cover" />
+                            <img loading="lazy" src={extra.cover_image_url} alt="Cover" className="w-full h-28 object-cover" />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                               <Button size="sm" variant="destructive" className="h-8 text-xs gap-1" onClick={() => updateExtra({ cover_image_url: "" })}>
                                 <Trash2 className="h-3 w-3" />{isAr ? "إزالة" : "Remove"}
@@ -2308,7 +2308,7 @@ export default function SocialLinksEditor() {
                           <p className="text-[9px] text-muted-foreground mt-1">{isAr ? "الحجم المثالي: 1200×630 بكسل" : "Recommended: 1200×630px"}</p>
                           {extra.og_image_url && (
                             <div className="mt-2 rounded-xl overflow-hidden border border-border/50">
-                              <img src={extra.og_image_url} alt="OG Preview" className="w-full h-auto max-h-32 object-cover" onError={e => (e.currentTarget.style.display = "none")} />
+                              <img loading="lazy" src={extra.og_image_url} alt="OG Preview" className="w-full h-auto max-h-32 object-cover" onError={e => (e.currentTarget.style.display = "none")} />
                             </div>
                           )}
                         </div>
@@ -2324,8 +2324,7 @@ export default function SocialLinksEditor() {
                               </div>
                               {(extra.og_image_url || profile?.avatar_url) && (
                                 <div className="h-28 bg-muted/20 overflow-hidden">
-                                  <img
-                                    src={extra.og_image_url || profile?.avatar_url || ""}
+                                  <img loading="lazy" src={extra.og_image_url || profile?.avatar_url || ""}
                                     alt=""
                                     className="w-full h-full object-cover"
                                     onError={e => (e.currentTarget.style.display = "none")}
@@ -2351,8 +2350,7 @@ export default function SocialLinksEditor() {
                               <div className="flex gap-2 p-2">
                                 {(extra.og_image_url || profile?.avatar_url) && (
                                   <div className="w-16 h-16 rounded-md overflow-hidden shrink-0 bg-muted/20">
-                                    <img
-                                      src={extra.og_image_url || profile?.avatar_url || ""}
+                                    <img loading="lazy" src={extra.og_image_url || profile?.avatar_url || ""}
                                       alt=""
                                       className="w-full h-full object-cover"
                                       onError={e => (e.currentTarget.style.display = "none")}

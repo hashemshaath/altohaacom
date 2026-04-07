@@ -214,7 +214,7 @@ export default function ProSupplierDetail() {
         {/* Hero */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
           {company.cover_image_url && (
-            <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-15" alt="" />
+            <img src={company.cover_image_url} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-15" alt="" />
           )}
           <div className="container relative py-10 md:py-16">
             <div className="flex items-center justify-between mb-6">
@@ -227,7 +227,7 @@ export default function ProSupplierDetail() {
             <div className="flex flex-col gap-6 md:flex-row md:items-start">
               <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[2rem] bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-2xl shadow-primary/20">
                 {company.logo_url ? (
-                  <img src={company.logo_url} className="h-16 w-16 object-contain" alt={company.name} />
+                  <img loading="lazy" src={company.logo_url} className="h-16 w-16 object-contain" alt={company.name} />
                 ) : (
                   <Building2 className="h-12 w-12" />
                 )}
@@ -458,7 +458,7 @@ export default function ProSupplierDetail() {
                       <Card key={p.id} className="rounded-xl overflow-hidden cursor-pointer hover:shadow-md transition-shadow" onClick={() => setQuickViewProduct(p)}>
                         {p.image_url ? (
                           <div className="h-32 bg-muted">
-                            <img src={p.image_url} className="h-full w-full object-cover" alt={p.name} />
+                            <img loading="lazy" src={p.image_url} className="h-full w-full object-cover" alt={p.name} />
                           </div>
                         ) : (
                           <div className="h-32 bg-muted/50 flex items-center justify-center">
@@ -504,7 +504,7 @@ export default function ProSupplierDetail() {
                           <Card key={p.id} className="rounded-xl overflow-hidden group cursor-pointer" onClick={() => setQuickViewProduct(p)}>
                             {p.image_url ? (
                               <div className="h-40 bg-muted overflow-hidden">
-                                <img src={p.image_url} className="h-full w-full object-cover transition-transform group-hover:scale-105" alt={p.name} />
+                                <img loading="lazy" src={p.image_url} className="h-full w-full object-cover transition-transform group-hover:scale-105" alt={p.name} />
                               </div>
                             ) : (
                               <div className="h-40 bg-muted/50 flex items-center justify-center">

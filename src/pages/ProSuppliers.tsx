@@ -275,7 +275,7 @@ export default function ProSuppliers() {
                       <div className="absolute -bottom-8 start-5">
                         <div className="flex h-16 w-16 items-center justify-center rounded-2xl border-4 border-background bg-card shadow-lg">
                           {company.logo_url ? (
-                            <img src={company.logo_url} className="h-10 w-10 object-contain" alt={company.name} />
+                            <img loading="lazy" src={company.logo_url} className="h-10 w-10 object-contain" alt={company.name} />
                           ) : (
                             <Building2 className="h-7 w-7 text-muted-foreground" />
                           )}

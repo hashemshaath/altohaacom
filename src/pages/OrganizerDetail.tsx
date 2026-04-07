@@ -356,7 +356,7 @@ export default function OrganizerDetail() {
         <div className="relative">
           {coverImage ? (
             <div className="h-56 md:h-72 overflow-hidden relative">
-              <img src={coverImage} alt={`${orgName} cover`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+              <img src={coverImage} alt={`${orgName} cover`} loading="lazy" className="w-full h-full object-cover" decoding="async" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/10" />
             </div>
           ) : (
@@ -707,7 +707,7 @@ export default function OrganizerDetail() {
                               <Card className="hover:shadow-md transition-all border-border/40 hover:border-primary/30 rounded-2xl">
                                 <CardContent className="p-3 flex items-center gap-4">
                                   {ex.cover_image_url && (
-                                    <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} className="h-16 w-24 rounded-xl object-cover shrink-0" loading="lazy" decoding="async" />
+                                    <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} loading="lazy" className="h-16 w-24 rounded-xl object-cover shrink-0" decoding="async" />
                                   )}
                                   <div className="flex-1 min-w-0">
                                     <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
@@ -751,7 +751,7 @@ export default function OrganizerDetail() {
                             <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                               {ex.cover_image_url && (
                                 <div className="relative h-36 overflow-hidden">
-                                  <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async" />
+                                  <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" decoding="async" />
                                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                                   <div className="absolute bottom-2 start-2 end-2 flex items-center justify-between">
                                     <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium backdrop-blur-sm ${derived.color}`}>
@@ -895,11 +895,10 @@ export default function OrganizerDetail() {
                         className="relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer group"
                         onClick={() => { setGalleryOpen(url); setGalleryIndex(i); }}
                       >
-                        <img
-                          src={url}
+                        <img loading="lazy" src={url}
                           alt={`${orgName} ${i + 1}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
+                         
                           decoding="async"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
@@ -1182,7 +1181,7 @@ export default function OrganizerDetail() {
                     <Card key={i} className="border-border/40 rounded-2xl">
                       <CardContent className="p-4 flex items-center gap-3">
                         {sponsor.logo ? (
-                          <img src={sponsor.logo} alt={sponsor.name} className="h-10 w-10 rounded-xl object-contain bg-muted p-1" loading="lazy" />
+                          <img src={sponsor.logo} alt={sponsor.name} loading="lazy" className="h-10 w-10 rounded-xl object-contain bg-muted p-1" />
                         ) : (
                           <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                             <Award className="h-5 w-5 text-primary" />
@@ -1207,7 +1206,7 @@ export default function OrganizerDetail() {
                     <Link key={article.id} to={`/blog/${article.slug}`} className="group">
                       <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                         {article.featured_image_url && (
-                          <img src={article.featured_image_url} alt={isAr && article.title_ar ? article.title_ar : article.title} className="w-full h-36 object-cover" loading="lazy" decoding="async" />
+                          <img src={article.featured_image_url} alt={isAr && article.title_ar ? article.title_ar : article.title} loading="lazy" className="w-full h-36 object-cover" decoding="async" />
                         )}
                         <CardContent className="p-3">
                           <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">
@@ -1263,7 +1262,7 @@ export default function OrganizerDetail() {
               </button>
             </>
           )}
-          <img src={galleryOpen} alt={`${orgName} gallery`} className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
+          <img loading="lazy" src={galleryOpen} alt={`${orgName} gallery`} className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
           <div className="absolute bottom-4 text-white/60 text-xs">
             {galleryIndex + 1} / {uniqueGallery.length}
           </div>

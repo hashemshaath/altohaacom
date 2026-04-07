@@ -323,8 +323,7 @@ export default function ArticleDetail() {
         <section className="relative w-full overflow-hidden bg-card">
           {hasHeroImage ? (
             <div className="relative w-full aspect-[2/1] sm:aspect-[2.4/1] max-h-[600px]">
-              <img
-                src={article.featured_image_url!}
+              <img src={article.featured_image_url!}
                 alt={title}
                 className="absolute inset-0 w-full h-full object-cover will-change-transform"
                 onError={() => setImageFailed(true)}
@@ -641,11 +640,10 @@ export default function ArticleDetail() {
                           onClick={() => setLightboxIdx(i)}
                           className="group relative aspect-video rounded-2xl overflow-hidden ring-1 ring-border/20 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-zoom-in"
                         >
-                          <img
-                            src={url}
+                          <img loading="lazy" src={url}
                             alt={`${title} - ${i + 1}`}
                             className="w-full h-full object-cover"
-                            loading="lazy"
+                           
                             decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">

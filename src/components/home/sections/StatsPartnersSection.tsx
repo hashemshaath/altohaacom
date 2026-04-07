@@ -125,11 +125,10 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
                 className="shrink-0 flex items-center justify-center"
                 title={item.name}
               >
-                <img
-                  src={item.logo_url}
+                <img loading="lazy" src={item.logo_url}
                   alt={item.name}
                   className="h-12 w-auto max-w-[120px] object-contain grayscale opacity-[0.7] transition-all duration-500 hover:grayscale-0 hover:opacity-100"
-                  loading="lazy"
+                 
                 />
               </Wrapper>
             );

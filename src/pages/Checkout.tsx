@@ -180,7 +180,7 @@ export default function Checkout() {
               <div key={item.product_id} className="flex items-center gap-2.5">
                 <div className="h-10 w-10 rounded-xl overflow-hidden bg-muted shrink-0">
                   {item.image_url
-                    ? <img src={item.image_url} alt={title} className="h-full w-full object-cover" />
+                    ? <img src={item.image_url} alt={title} loading="lazy" className="h-full w-full object-cover" />
                     : <div className="h-full w-full flex items-center justify-center"><ShoppingBag className="h-4 w-4 text-muted-foreground/30" /></div>}
                 </div>
                 <div className="flex-1 min-w-0">

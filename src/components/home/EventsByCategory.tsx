@@ -325,7 +325,7 @@ function renderExhibitionCard(item: any, isAr: boolean, statusBadge: (s: string)
           {organizerName && (
             <div className="mb-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
               {item.logo_url ? (
-                <img src={item.logo_url} alt={organizerName} className="h-4 w-4 rounded object-contain shrink-0" />
+                <img loading="lazy" src={item.logo_url} alt={organizerName} className="h-4 w-4 rounded object-contain shrink-0" />
               ) : (
                 <Globe className="h-3 w-3 shrink-0 text-primary/50" />
               )}

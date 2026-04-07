@@ -204,7 +204,7 @@ export default function ShopMyProducts() {
                   <CardContent className="flex items-center gap-4 p-4">
                     <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted">
                       {p.image_url ? (
-                        <img src={p.image_url} alt={title} className="h-full w-full object-cover" />
+                        <img loading="lazy" src={p.image_url} alt={title} className="h-full w-full object-cover" />
                       ) : (
                         <div className="flex h-full items-center justify-center"><ShoppingBag className="h-6 w-6 text-muted-foreground/30" /></div>
                       )}
