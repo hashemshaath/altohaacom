@@ -56,6 +56,7 @@ const SEOTechnicalChecklist = lazy(() => import("@/components/admin/seo/SEOTechn
 const SEOCrawlAnalytics = lazy(() => import("@/components/admin/seo/SEOCrawlAnalytics").then(m => ({ default: m.SEOCrawlAnalytics })));
 const SEOInternalLinkAnalyzer = lazy(() => import("@/components/admin/seo/SEOInternalLinkAnalyzer").then(m => ({ default: m.SEOInternalLinkAnalyzer })));
 const SEOPageSpeedMonitor = lazy(() => import("@/components/admin/seo/SEOPageSpeedMonitor").then(m => ({ default: m.SEOPageSpeedMonitor })));
+const SEOGSCPerformance = lazy(() => import("@/components/admin/seo/SEOGSCPerformance").then(m => ({ default: m.SEOGSCPerformance })));
 
 // SEO route registry
 const PUBLIC_ROUTES = [
@@ -101,7 +102,7 @@ function getVitalStatus(metric: keyof typeof CWV_THRESHOLDS, value: number): "go
 type SectionKey = "overview" | "vitals" | "keywords" | "indexing" | "crawlers" | "pages" | "devices"
   | "keyword-gaps" | "competitors" | "backlinks" | "content" | "meta" | "schema" | "technical"
   | "audit" | "crawl" | "crawl-analytics" | "internal-links" | "page-speed" | "health" | "recommendations"
-  | "url-health" | "sitemap-config" | "robots-txt";
+  | "url-health" | "sitemap-config" | "robots-txt" | "gsc-performance";
 
 interface NavGroup {
   label: string;
@@ -115,6 +116,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Analytics", labelAr: "التحليلات", icon: BarChart3,
     items: [
       { key: "overview", label: "Overview", labelAr: "نظرة عامة", icon: LayoutDashboard },
+      { key: "gsc-performance", label: "GSC Performance", labelAr: "أداء البحث", icon: TrendingUp },
       { key: "vitals", label: "Web Vitals", labelAr: "Web Vitals", icon: Gauge },
       { key: "page-speed", label: "Page Speed", labelAr: "سرعة الصفحات", icon: Zap },
       { key: "pages", label: "Top Pages", labelAr: "الصفحات", icon: BarChart3 },
@@ -196,6 +198,8 @@ export default function SEODashboard() {
   }, [sectionFromQuery, activeSection]);
 
   // ── Data Queries ──
+  const prevFromDate = startOfDay(subDays(new Date(), range * 2)).toISOString();
+
   const { data: pageViews, isLoading: loadingViews, error: pageViewsError } = useQuery({
     queryKey: ["seo-page-views", range],
     queryFn: async () => {
@@ -204,6 +208,21 @@ export default function SEODashboard() {
         .select("path, device_type, is_bounce, duration_seconds, created_at, session_id")
         .gte("created_at", fromDate)
         .order("created_at", { ascending: false })
+        .limit(1000);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  // Previous period page views for comparison
+  const { data: prevPageViews } = useQuery({
+    queryKey: ["seo-page-views-prev", range],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("seo_page_views")
+        .select("path, device_type, is_bounce, duration_seconds, session_id")
+        .gte("created_at", prevFromDate)
+        .lt("created_at", fromDate)
         .limit(1000);
       if (error) throw error;
       return data || [];
@@ -350,6 +369,13 @@ export default function SEODashboard() {
   const bounceRate = totalViews > 0 ? Math.round((bounceCount / totalViews) * 100) : 0;
   const avgDuration = totalViews > 0 ? Math.round((pageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / totalViews) : 0;
 
+  // Previous period metrics
+  const prevTotalViews = prevPageViews?.length || 0;
+  const prevUniqueSessions = new Set(prevPageViews?.map((v) => v.session_id) || []).size;
+  const prevBounceCount = prevPageViews?.filter((v) => v.is_bounce)?.length || 0;
+  const prevBounceRate = prevTotalViews > 0 ? Math.round((prevBounceCount / prevTotalViews) * 100) : 0;
+  const prevAvgDuration = prevTotalViews > 0 ? Math.round((prevPageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / prevTotalViews) : 0;
+
   const devices = { mobile: 0, tablet: 0, desktop: 0 };
   pageViews?.forEach((v) => {
     if (v.device_type === "mobile") devices.mobile++;
@@ -474,6 +500,7 @@ export default function SEODashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "overview": return renderOverview();
+      case "gsc-performance": return <Suspense fallback={<SectionSkeleton />}><SEOGSCPerformance isAr={isAr} /></Suspense>;
       case "vitals": return renderVitals();
       case "keywords": return renderKeywords();
       case "indexing": return renderIndexing();
@@ -519,25 +546,39 @@ export default function SEODashboard() {
         {/* KPI Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           {[
-            { icon: Eye, label: isAr ? "مشاهدات الصفحة" : "Page Views", value: totalViews, sub: isAr ? `آخر ${range} أيام` : `Last ${range} days` },
-            { icon: Activity, label: isAr ? "جلسات فريدة" : "Unique Sessions", value: uniqueSessions },
-            { icon: TrendingUp, label: isAr ? "معدل الارتداد" : "Bounce Rate", value: bounceRate, suffix: "%", badge: bounceRate > 60 ? "destructive" : bounceRate > 40 ? "secondary" : "default", badgeText: bounceRate > 60 ? (isAr ? "مرتفع" : "High") : bounceRate > 40 ? (isAr ? "متوسط" : "Medium") : (isAr ? "جيد" : "Good") },
-            { icon: Clock, label: isAr ? "متوسط المدة" : "Avg Duration", value: avgDuration, suffix: "s" },
-          ].map((kpi, i) => (
+            { icon: Eye, label: isAr ? "مشاهدات الصفحة" : "Page Views", value: totalViews, prev: prevTotalViews, sub: isAr ? `آخر ${range} أيام` : `Last ${range} days` },
+            { icon: Activity, label: isAr ? "جلسات فريدة" : "Unique Sessions", value: uniqueSessions, prev: prevUniqueSessions },
+            { icon: TrendingUp, label: isAr ? "معدل الارتداد" : "Bounce Rate", value: bounceRate, prev: prevBounceRate, suffix: "%", invert: true, badge: bounceRate > 60 ? "destructive" : bounceRate > 40 ? "secondary" : "default", badgeText: bounceRate > 60 ? (isAr ? "مرتفع" : "High") : bounceRate > 40 ? (isAr ? "متوسط" : "Medium") : (isAr ? "جيد" : "Good") },
+            { icon: Clock, label: isAr ? "متوسط المدة" : "Avg Duration", value: avgDuration, prev: prevAvgDuration, suffix: "s" },
+          ].map((kpi, i) => {
+            const diff = kpi.value - kpi.prev;
+            const pctChange = kpi.prev > 0 ? Math.round(((kpi.value - kpi.prev) / kpi.prev) * 100) : 0;
+            const isPositive = kpi.invert ? diff < 0 : diff > 0;
+            const isNegative = kpi.invert ? diff > 0 : diff < 0;
+            return (
             <Card key={i} className="border-border/40 hover:border-primary/20 transition-colors">
               <CardContent className="p-4">
                 <div className="flex items-center gap-2 text-muted-foreground text-xs mb-1.5">
                   <kpi.icon className="h-3.5 w-3.5" />
                   {kpi.label}
                 </div>
-                <p className="text-2xl font-bold tabular-nums"><AnimatedCounter value={kpi.value} />{kpi.suffix && <span className="text-sm font-normal text-muted-foreground ms-0.5">{kpi.suffix}</span>}</p>
+                <div className="flex items-end gap-2">
+                  <p className="text-2xl font-bold tabular-nums"><AnimatedCounter value={kpi.value} />{kpi.suffix && <span className="text-sm font-normal text-muted-foreground ms-0.5">{kpi.suffix}</span>}</p>
+                  {kpi.prev > 0 && diff !== 0 && (
+                    <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium mb-1 ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
+                      {isPositive ? <ArrowUp className="h-2.5 w-2.5" /> : <ArrowDown className="h-2.5 w-2.5" />}
+                      {Math.abs(pctChange)}%
+                    </span>
+                  )}
+                </div>
                 {kpi.sub && <p className="text-[10px] text-muted-foreground mt-0.5">{kpi.sub}</p>}
                 {kpi.badge && (
                   <Badge variant={kpi.badge as any} className="text-[9px] mt-1">{kpi.badgeText}</Badge>
                 )}
               </CardContent>
             </Card>
-          ))}
+          );
+          })}
         </div>
 
         {/* SEO Score */}
