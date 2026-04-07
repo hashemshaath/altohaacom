@@ -90,4 +90,6 @@ const StatsBar = forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
       </div>
     </section>
   );
-}
+});
+
+export default StatsBar;
