@@ -146,6 +146,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Content & Technical", labelAr: "المحتوى والتقنية", icon: FileText,
     items: [
       { key: "content", label: "Content Quality", labelAr: "جودة المحتوى", icon: FileText },
+      { key: "content-gaps", label: "Content Gaps", labelAr: "فجوات المحتوى", icon: Sparkles },
       { key: "meta", label: "Meta Config", labelAr: "إعدادات Meta", icon: Settings2 },
       { key: "schema", label: "Structured Data", labelAr: "البيانات المنظمة", icon: Code2 },
       { key: "internal-links", label: "Internal Links", labelAr: "الروابط الداخلية", icon: Link2 },
@@ -514,6 +515,7 @@ export default function SEODashboard() {
       case "competitors": return <Suspense fallback={<SectionSkeleton />}><SEOCompetitorTracker isAr={isAr} /></Suspense>;
       case "backlinks": return <Suspense fallback={<SectionSkeleton />}><SEOBacklinkMonitor isAr={isAr} /></Suspense>;
       case "content": return <Suspense fallback={<SectionSkeleton />}><SEOContentAnalysis isAr={isAr} /></Suspense>;
+      case "content-gaps": return <Suspense fallback={<SectionSkeleton />}><SEOContentGapAnalyzer isAr={isAr} /></Suspense>;
       case "meta": return <Suspense fallback={<SectionSkeleton />}><SEOMetaConfigurator isAr={isAr} /></Suspense>;
       case "schema": return <Suspense fallback={<SectionSkeleton />}><SEOStructuredData isAr={isAr} /></Suspense>;
       case "technical": return <Suspense fallback={<SectionSkeleton />}><SEOTechnicalChecklist isAr={isAr} /></Suspense>;
