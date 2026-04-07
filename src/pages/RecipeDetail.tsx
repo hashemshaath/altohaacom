@@ -278,7 +278,7 @@ export default function RecipeDetail() {
                   <h2 className="text-xl font-semibold mb-3">{isAr ? "معرض الصور" : "Gallery"}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     {recipe.gallery_urls.map((url, i) => (
-                      <img key={i} src={url} alt={`${title} ${i + 1}`} className="rounded-xl aspect-video object-cover" />
+                      <img loading="lazy" key={i} src={url} alt={`${title} ${i + 1}`} className="rounded-xl aspect-video object-cover" />
                     ))}
                   </div>
                 </section>

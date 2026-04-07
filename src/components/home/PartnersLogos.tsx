@@ -81,8 +81,7 @@ export const PartnersLogos = memo(function PartnersLogos() {
               className="group flex flex-col items-center gap-2 snap-start shrink-0 w-[28vw] sm:w-[20vw] md:w-[14vw] lg:w-[10vw] touch-manipulation"
             >
               <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-muted/50 p-2.5 ring-1 ring-border/30 transition-all duration-300 group-hover:ring-primary/30 group-hover:shadow-md group-hover:scale-105">
-                <img
-                  src={item.logo}
+                <img loading="lazy" src={item.logo}
                   alt={item.name}
                   className={cn(
                     "h-full w-full object-contain grayscale opacity-60 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"

@@ -473,7 +473,7 @@ export default function RegisterCompany() {
                     {form.logo_url && (
                       <div className="mt-3 flex items-center gap-4">
                         <div className="flex h-20 w-20 items-center justify-center rounded-2xl border-2 border-dashed border-border bg-muted/50 p-2">
-                          <img src={form.logo_url} alt="Logo preview" className="max-h-full max-w-full object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
+                          <img loading="lazy" src={form.logo_url} alt="Logo preview" className="max-h-full max-w-full object-contain" onError={(e) => (e.currentTarget.style.display = "none")} />
                         </div>
                         <p className="text-xs text-muted-foreground">{isAr ? "معاينة الشعار" : "Logo Preview"}</p>
                       </div>
@@ -495,7 +495,7 @@ export default function RegisterCompany() {
                     />
                     {form.cover_image_url && (
                       <div className="mt-3 overflow-hidden rounded-xl border border-border">
-                        <img src={form.cover_image_url} alt="Cover preview" className="h-32 w-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
+                        <img loading="lazy" src={form.cover_image_url} alt="Cover preview" className="h-32 w-full object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
                       </div>
                     )}
                     <p className="text-xs text-muted-foreground">

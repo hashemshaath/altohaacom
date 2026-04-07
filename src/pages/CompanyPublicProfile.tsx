@@ -135,7 +135,7 @@ export default function CompanyPublicProfile() {
             <div className="flex flex-col gap-6 md:flex-row md:items-center">
               <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[2rem] bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-2xl shadow-primary/20">
                 {company.logo_url ? (
-                  <img src={company.logo_url} className="h-16 w-16 object-contain" alt={company.name} />
+                  <img loading="lazy" src={company.logo_url} className="h-16 w-16 object-contain" alt={company.name} />
                 ) : (
                   <Building2 className="h-12 w-12" />
                 )}

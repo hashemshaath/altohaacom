@@ -110,8 +110,7 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
           className="group block overflow-hidden rounded-2xl border border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
         >
           <div className="relative aspect-[4/1] sm:aspect-[5/1] md:aspect-[6/1] bg-muted overflow-hidden">
-            <img
-              src={creative.image_url}
+            <img loading="lazy" src={creative.image_url}
               alt={title || "Advertisement"}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
               loading="lazy"

@@ -895,8 +895,7 @@ export default function OrganizerDetail() {
                         className="relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer group"
                         onClick={() => { setGalleryOpen(url); setGalleryIndex(i); }}
                       >
-                        <img
-                          src={url}
+                        <img loading="lazy" src={url}
                           alt={`${orgName} ${i + 1}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
@@ -1263,7 +1262,7 @@ export default function OrganizerDetail() {
               </button>
             </>
           )}
-          <img src={galleryOpen} alt={`${orgName} gallery`} className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
+          <img loading="lazy" src={galleryOpen} alt={`${orgName} gallery`} className="max-h-[85vh] max-w-[90vw] rounded-2xl object-contain" onClick={e => e.stopPropagation()} />
           <div className="absolute bottom-4 text-white/60 text-xs">
             {galleryIndex + 1} / {uniqueGallery.length}
           </div>

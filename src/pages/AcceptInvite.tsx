@@ -111,7 +111,7 @@ export default function AcceptInvite() {
         <div className="bg-gradient-to-br from-primary/10 via-background to-accent/10 p-8 text-center">
           <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-xl">
             {company?.logo_url ? (
-              <img src={company.logo_url} className="h-14 w-14 object-contain" alt={companyName} />
+              <img loading="lazy" src={company.logo_url} className="h-14 w-14 object-contain" alt={companyName} />
             ) : (
               <Building2 className="h-10 w-10" />
             )}

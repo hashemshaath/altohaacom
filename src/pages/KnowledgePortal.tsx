@@ -274,8 +274,7 @@ export default function KnowledgePortal() {
                     {references.map(ref => (
                       <Card key={ref.id} className="group overflow-hidden hover:shadow-md hover:-translate-y-0.5 transition-all duration-300">
                         <div className="aspect-video relative overflow-hidden">
-                          <img
-                            src={ref.image_url}
+                          <img loading="lazy" src={ref.image_url}
                             alt={ref.title}
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             onError={(e) => { (e.target as HTMLImageElement).src = "/placeholder.svg"; }}

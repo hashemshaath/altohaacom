@@ -107,8 +107,7 @@ export default function Jobs() {
         {/* ═══════ CINEMATIC HERO ═══════ */}
         <section className="relative min-h-[520px] md:min-h-[600px] flex items-center overflow-hidden">
           {/* Background image */}
-          <img
-            src={heroImage}
+          <img loading="lazy" src={heroImage}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"

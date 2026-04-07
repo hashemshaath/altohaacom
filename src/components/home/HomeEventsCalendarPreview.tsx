@@ -288,8 +288,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
       {/* Cover image or gradient header */}
       <div className={cn("relative h-36 sm:h-40 overflow-hidden", !event.cover_image_url && colors.bg)}>
         {event.cover_image_url ? (
-          <img
-            src={event.cover_image_url}
+          <img loading="lazy" src={event.cover_image_url}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
@@ -297,8 +296,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
           />
         ) : event.logo_url ? (
           <div className="flex items-center justify-center h-full bg-gradient-to-br from-background to-muted/50 p-4">
-            <img
-              src={event.logo_url}
+            <img loading="lazy" src={event.logo_url}
               alt={title}
               className="max-h-20 max-w-[80%] object-contain"
               loading="lazy"

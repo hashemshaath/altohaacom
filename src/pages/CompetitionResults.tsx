@@ -231,7 +231,7 @@ export default function CompetitionResults() {
                           {/* Dish Image */}
                           <div className="relative mx-auto mb-3 h-16 w-16 md:h-20 md:w-20">
                             {winner.dish_image_url ? (
-                              <img src={winner.dish_image_url} alt={winner.dish_name || "Dish"} className={`h-full w-full rounded-full object-cover ring-2 ring-offset-2 ${config.ring} ring-offset-card`} />
+                              <img loading="lazy" src={winner.dish_image_url} alt={winner.dish_name || "Dish"} className={`h-full w-full rounded-full object-cover ring-2 ring-offset-2 ${config.ring} ring-offset-card`} />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
                                 <ChefHat className="h-7 w-7 text-muted-foreground/50" />
