@@ -76,7 +76,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
             </div>
             {isAr ? "نظرة عامة على الولاء" : "Loyalty Overview"}
           </CardTitle>
-          <Badge variant="outline" className="text-[10px] gap-1 rounded-lg">
+          <Badge variant="outline" className="text-[12px] gap-1 rounded-lg">
             <Star className="h-2.5 w-2.5 text-chart-4" />
             {data?.referralCodes || 0} {isAr ? "رموز إحالة" : "referrals"}
           </Badge>
@@ -92,7 +92,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
             <div key={i} className={`text-center p-2.5 rounded-xl border transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5 group ${m.bg}`}>
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-sm font-bold tabular-nums"><AnimatedCounter value={m.value || 0} /></p>
-              <p className="text-[9px] text-muted-foreground">{m.label}</p>
+              <p className="text-[12px] text-muted-foreground">{m.label}</p>
             </div>
           ))}
         </div>
@@ -119,7 +119,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
           <div className="text-center p-2.5 rounded-xl bg-chart-2/5 border border-chart-2/10 transition-all hover:shadow-sm">
             <TrendingUp className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2" />
             <AnimatedCounter value={data?.totalAwarded || 0} className="text-sm font-bold text-chart-2" />
-            <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط ممنوحة" : "Points Awarded"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "نقاط ممنوحة" : "Points Awarded"}</p>
             {data?.totalAwarded && data.totalAwarded > 0 && (
               <div className="mt-1 h-1 rounded-full bg-chart-2/10 overflow-hidden">
                 <div className="h-full rounded-full bg-chart-2/40 transition-all" style={{ width: `${Math.min(100, (data.totalAwarded / (data.totalAwarded + (data?.totalRedeemed || 1))) * 100)}%` }} />
@@ -129,7 +129,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
           <div className="text-center p-2.5 rounded-xl bg-chart-4/5 border border-chart-4/10 transition-all hover:shadow-sm">
             <Gift className="h-3.5 w-3.5 mx-auto mb-1 text-chart-4" />
             <AnimatedCounter value={data?.totalRedeemed || 0} className="text-sm font-bold text-chart-4" />
-            <p className="text-[9px] text-muted-foreground">{isAr ? "نقاط مستبدلة" : "Points Redeemed"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "نقاط مستبدلة" : "Points Redeemed"}</p>
             {data?.totalRedeemed && data.totalRedeemed > 0 && (
               <div className="mt-1 h-1 rounded-full bg-chart-4/10 overflow-hidden">
                 <div className="h-full rounded-full bg-chart-4/40 transition-all" style={{ width: `${Math.min(100, (data.totalRedeemed / (data.totalAwarded || 1)) * 100)}%` }} />

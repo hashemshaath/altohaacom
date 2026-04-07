@@ -254,7 +254,7 @@ const FilterPill = memo(
         {count > 0 && (
           <span
             className={cn(
-              "text-[11px] tabular-nums",
+              "text-[12px] tabular-nums",
               active ? "opacity-80" : "opacity-50"
             )}
           >
@@ -312,7 +312,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
         <div className="absolute top-2.5 start-2.5 end-2.5 flex items-start justify-between">
           <Badge
             className={cn(
-              "text-[11px] px-2 py-0.5 gap-1 rounded-lg font-bold shadow-sm backdrop-blur-sm",
+              "text-[12px] px-2 py-0.5 gap-1 rounded-lg font-bold shadow-sm backdrop-blur-sm",
               colors.bg,
               colors.text,
               colors.border
@@ -324,7 +324,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
           {!countdown.past && (
             <Badge
               variant={countdown.urgent ? "destructive" : "secondary"}
-              className="text-[11px] px-2 py-0.5 gap-1 rounded-lg font-bold shadow-sm backdrop-blur-sm"
+              className="text-[12px] px-2 py-0.5 gap-1 rounded-lg font-bold shadow-sm backdrop-blur-sm"
             >
               <Timer className="h-3 w-3" />
               {countdown.text}
@@ -334,7 +334,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
 
         {/* Date chip — bottom-end */}
         <div className="absolute bottom-2.5 end-2.5 flex flex-col items-center justify-center h-12 w-12 rounded-xl bg-background/90 backdrop-blur-sm shadow-sm border border-border/20">
-          <span className="text-[10px] font-bold uppercase leading-none text-primary">
+          <span className="text-[12px] font-bold uppercase leading-none text-primary">
             {dateParts.month}
           </span>
           <span className="text-lg font-extrabold leading-none mt-0.5 text-foreground">
@@ -351,7 +351,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
 
         {/* Organizer */}
         {(event.organizer_name || event.organizer_name_ar) && (
-          <p className="text-[11px] text-muted-foreground truncate">
+          <p className="text-[12px] text-muted-foreground truncate">
             {isAr ? event.organizer_name_ar || event.organizer_name : event.organizer_name}
           </p>
         )}

@@ -375,7 +375,7 @@ export default function JobSearch() {
                       {copiedShare ? <Check className="h-3.5 w-3.5 text-[hsl(var(--success))]" /> : <Share2 className="h-3.5 w-3.5 text-muted-foreground" />}
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="text-[10px]">{isAr ? "مشاركة البحث" : "Share search"}</TooltipContent>
+                  <TooltipContent className="text-[12px]">{isAr ? "مشاركة البحث" : "Share search"}</TooltipContent>
                 </Tooltip>
               </div>
             </div>
@@ -393,7 +393,7 @@ export default function JobSearch() {
               >
                 <Search className="h-3.5 w-3.5" />
                 {isAr ? "الكل" : "All"}
-                <span className="text-[10px] opacity-70">({stats.totalJobs})</span>
+                <span className="text-[12px] opacity-70">({stats.totalJobs})</span>
               </button>
               {CULINARY_CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
@@ -412,7 +412,7 @@ export default function JobSearch() {
                   >
                     <Icon className="h-3.5 w-3.5" />
                     {isAr ? cat.ar : cat.en}
-                    {count > 0 && <span className="text-[10px] opacity-60">({count})</span>}
+                    {count > 0 && <span className="text-[12px] opacity-60">({count})</span>}
                   </button>
                 );
               })}
@@ -438,7 +438,7 @@ export default function JobSearch() {
                         <X className="h-3.5 w-3.5 text-muted-foreground" />
                       </button>
                     ) : (
-                      <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-border/30 bg-muted/30 px-1.5 text-[9px] font-mono text-muted-foreground/50">
+                      <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border border-border/30 bg-muted/30 px-1.5 text-[12px] font-mono text-muted-foreground/50">
                         /
                       </kbd>
                     )}
@@ -447,7 +447,7 @@ export default function JobSearch() {
                   {/* Recent searches dropdown */}
                   {showRecentSearches && recentSearches.length > 0 && (
                     <div className="absolute top-full mt-1.5 start-0 end-0 bg-card border border-border/20 rounded-xl shadow-xl z-50 p-2 animate-in fade-in-0 slide-in-from-top-1 duration-200">
-                      <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+                      <div className="flex items-center gap-1.5 px-2 py-1 text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                         <History className="h-3 w-3" />
                         {isAr ? "عمليات بحث سابقة" : "Recent Searches"}
                       </div>
@@ -474,7 +474,7 @@ export default function JobSearch() {
                 >
                   <SlidersHorizontal className="h-4 w-4" />
                   {activeFilterCount > 0 && (
-                    <span className="absolute -top-1 -end-1 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
+                    <span className="absolute -top-1 -end-1 h-4 w-4 rounded-full bg-primary text-primary-foreground text-[12px] font-bold flex items-center justify-center">
                       {activeFilterCount}
                     </span>
                   )}
@@ -537,7 +537,7 @@ export default function JobSearch() {
 
                 <div className="flex items-center gap-2 rounded-xl border border-border/20 bg-card px-3 h-10">
                   <Switch id="salary-only" checked={showSalaryOnly} onCheckedChange={setShowSalaryOnly} className="scale-75" />
-                  <Label htmlFor="salary-only" className="text-[10px] text-muted-foreground cursor-pointer whitespace-nowrap">
+                  <Label htmlFor="salary-only" className="text-[12px] text-muted-foreground cursor-pointer whitespace-nowrap">
                     {isAr ? "الراتب ظاهر فقط" : "With salary only"}
                   </Label>
                 </div>
@@ -563,7 +563,7 @@ export default function JobSearch() {
                         <LayoutList className="h-3.5 w-3.5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="text-[10px]">{isAr ? "قائمة" : "List"}</TooltipContent>
+                    <TooltipContent side="bottom" className="text-[12px]">{isAr ? "قائمة" : "List"}</TooltipContent>
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -571,7 +571,7 @@ export default function JobSearch() {
                         <LayoutGrid className="h-3.5 w-3.5" />
                       </button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="text-[10px]">{isAr ? "شبكة" : "Grid"}</TooltipContent>
+                    <TooltipContent side="bottom" className="text-[12px]">{isAr ? "شبكة" : "Grid"}</TooltipContent>
                   </Tooltip>
                 </div>
               </div>
@@ -582,37 +582,37 @@ export default function JobSearch() {
               <div className="flex flex-wrap items-center gap-2 mt-3">
                 <span className="text-xs text-muted-foreground font-medium">{isAr ? "نشط:" : "Active:"}</span>
                 {selectedCategory && (
-                  <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setSelectedCategory(null)}>
+                  <Badge variant="secondary" className="gap-1 rounded-full text-[12px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setSelectedCategory(null)}>
                     {isAr ? CULINARY_CATEGORIES.find(c => c.key === selectedCategory)?.ar : CULINARY_CATEGORIES.find(c => c.key === selectedCategory)?.en}
                     <X className="h-2.5 w-2.5" />
                   </Badge>
                 )}
                 {jobTypeFilter !== "all" && (
-                  <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setJobTypeFilter("all")}>
+                  <Badge variant="secondary" className="gap-1 rounded-full text-[12px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setJobTypeFilter("all")}>
                     {isAr ? JOB_TYPE_LABELS[jobTypeFilter]?.ar : JOB_TYPE_LABELS[jobTypeFilter]?.en}<X className="h-2.5 w-2.5" />
                   </Badge>
                 )}
                 {cityFilter !== "all" && (
-                  <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setCityFilter("all")}>
+                  <Badge variant="secondary" className="gap-1 rounded-full text-[12px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setCityFilter("all")}>
                     {cityFilter}<X className="h-2.5 w-2.5" />
                   </Badge>
                 )}
                 {expFilter !== "all" && (
-                  <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setExpFilter("all")}>
+                  <Badge variant="secondary" className="gap-1 rounded-full text-[12px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setExpFilter("all")}>
                     {isAr ? EXP_LEVELS[expFilter]?.ar : EXP_LEVELS[expFilter]?.en}<X className="h-2.5 w-2.5" />
                   </Badge>
                 )}
                 {salaryFilter !== "all" && (
-                  <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setSalaryFilter("all")}>
+                  <Badge variant="secondary" className="gap-1 rounded-full text-[12px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setSalaryFilter("all")}>
                     {isAr ? SALARY_RANGES.find(s => s.key === salaryFilter)?.ar : SALARY_RANGES.find(s => s.key === salaryFilter)?.en}<X className="h-2.5 w-2.5" />
                   </Badge>
                 )}
                 {showSalaryOnly && (
-                  <Badge variant="secondary" className="gap-1 rounded-full text-[10px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setShowSalaryOnly(false)}>
+                  <Badge variant="secondary" className="gap-1 rounded-full text-[12px] px-2.5 py-0.5 cursor-pointer hover:bg-destructive/10 transition-colors" onClick={() => setShowSalaryOnly(false)}>
                     {isAr ? "الراتب ظاهر" : "With salary"}<X className="h-2.5 w-2.5" />
                   </Badge>
                 )}
-                <Button variant="ghost" size="sm" className="text-[10px] h-6 px-2 text-destructive hover:text-destructive" onClick={clearAllFilters}>
+                <Button variant="ghost" size="sm" className="text-[12px] h-6 px-2 text-destructive hover:text-destructive" onClick={clearAllFilters}>
                   {isAr ? "مسح الكل" : "Clear all"}
                 </Button>
               </div>
@@ -633,16 +633,16 @@ export default function JobSearch() {
                         <TabsTrigger value="postings" className="gap-1.5 rounded-lg data-[state=active]:shadow-sm text-xs px-5 py-2.5">
                           <Building2 className="h-3.5 w-3.5" />
                           {isAr ? "الوظائف" : "Jobs"}
-                          {filteredPostings.length > 0 && <Badge variant="secondary" className="ms-1 text-[10px] px-1.5 h-4">{filteredPostings.length}</Badge>}
+                          {filteredPostings.length > 0 && <Badge variant="secondary" className="ms-1 text-[12px] px-1.5 h-4">{filteredPostings.length}</Badge>}
                         </TabsTrigger>
                         <TabsTrigger value="chefs" className="gap-1.5 rounded-lg data-[state=active]:shadow-sm text-xs px-5 py-2.5">
                           <ChefHat className="h-3.5 w-3.5" />
                           {isAr ? "المواهب" : "Talent"}
-                          {filteredChefs.length > 0 && <Badge variant="secondary" className="ms-1 text-[10px] px-1.5 h-4">{filteredChefs.length}</Badge>}
+                          {filteredChefs.length > 0 && <Badge variant="secondary" className="ms-1 text-[12px] px-1.5 h-4">{filteredChefs.length}</Badge>}
                         </TabsTrigger>
                       </TabsList>
 
-                      <p className="text-[11px] text-muted-foreground hidden sm:block">
+                      <p className="text-[12px] text-muted-foreground hidden sm:block">
                         {tab === "postings"
                           ? (isAr
                             ? `عرض ${Math.min(visibleCount, filteredPostings.length)} من ${filteredPostings.length}`
@@ -719,10 +719,10 @@ export default function JobSearch() {
                       </div>
                       <div>
                         <h4 className="text-xs font-bold">{isAr ? "تنبيهات الوظائف" : "Job Alerts"}</h4>
-                        <p className="text-[10px] text-muted-foreground">{isAr ? "احصل على إشعار فوري" : "Get notified instantly"}</p>
+                        <p className="text-[12px] text-muted-foreground">{isAr ? "احصل على إشعار فوري" : "Get notified instantly"}</p>
                       </div>
                     </div>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    <p className="text-[12px] text-muted-foreground leading-relaxed">
                       {isAr
                         ? "فعّل تنبيهات الوظائف واحصل على إشعارات فورية عند نشر وظائف جديدة تطابق اهتماماتك"
                         : "Enable job alerts and get instant notifications when new jobs matching your interests are posted"}
@@ -752,7 +752,7 @@ export default function JobSearch() {
                       </h4>
                       <div className="space-y-2.5">
                         <div className="flex justify-between items-center">
-                          <span className="text-[10px] text-muted-foreground">{isAr ? "الأدنى" : "Min"}</span>
+                          <span className="text-[12px] text-muted-foreground">{isAr ? "الأدنى" : "Min"}</span>
                           <span className="text-xs font-bold tabular-nums">{salaryInsights.min.toLocaleString()}</span>
                         </div>
                         <div className="relative h-2 rounded-full bg-muted/30 overflow-hidden">
@@ -763,15 +763,15 @@ export default function JobSearch() {
                           />
                         </div>
                         <div className="flex justify-between items-center">
-                          <span className="text-[10px] text-muted-foreground">{isAr ? "الأعلى" : "Max"}</span>
+                          <span className="text-[12px] text-muted-foreground">{isAr ? "الأعلى" : "Max"}</span>
                           <span className="text-xs font-bold tabular-nums">{salaryInsights.max.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center justify-center gap-1.5 pt-1 border-t border-border/10">
                           <Target className="h-3 w-3 text-primary" />
-                          <span className="text-[10px] text-muted-foreground">{isAr ? "المتوسط" : "Median"}:</span>
+                          <span className="text-[12px] text-muted-foreground">{isAr ? "المتوسط" : "Median"}:</span>
                           <span className="text-xs font-bold text-primary tabular-nums">{salaryInsights.median.toLocaleString()}</span>
                         </div>
-                        <p className="text-[9px] text-muted-foreground/50 text-center">
+                        <p className="text-[12px] text-muted-foreground/50 text-center">
                           {isAr ? `بناءً على ${salaryInsights.count} وظيفة` : `Based on ${salaryInsights.count} jobs`}
                         </p>
                       </div>
@@ -807,17 +807,17 @@ export default function JobSearch() {
                       <div className="space-y-2">
                         {topCompanies.map((c, i) => (
                           <div key={c.name} className="flex items-center gap-2.5 group">
-                            <span className="text-[9px] font-bold text-muted-foreground/40 w-3 tabular-nums">{i + 1}</span>
+                            <span className="text-[12px] font-bold text-muted-foreground/40 w-3 tabular-nums">{i + 1}</span>
                             <Avatar className="h-7 w-7 rounded-lg shrink-0 border border-border/10">
                               {c.logo && <AvatarImage src={c.logo} alt={c.name} />}
-                              <AvatarFallback className="rounded-lg text-[9px] bg-primary/5 text-primary font-bold">{c.name[0]}</AvatarFallback>
+                              <AvatarFallback className="rounded-lg text-[12px] bg-primary/5 text-primary font-bold">{c.name[0]}</AvatarFallback>
                             </Avatar>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[11px] font-semibold truncate group-hover:text-primary transition-colors">
+                              <p className="text-[12px] font-semibold truncate group-hover:text-primary transition-colors">
                                 {isAr ? c.nameAr : c.name}
                               </p>
                             </div>
-                            <Badge variant="secondary" className="text-[9px] px-1.5 h-4 tabular-nums shrink-0">{c.count}</Badge>
+                            <Badge variant="secondary" className="text-[12px] px-1.5 h-4 tabular-nums shrink-0">{c.count}</Badge>
                           </div>
                         ))}
                       </div>
@@ -833,10 +833,10 @@ export default function JobSearch() {
                         <Bookmark className="h-3.5 w-3.5 text-[hsl(var(--warning))] fill-[hsl(var(--warning))]" />
                         {isAr ? "الوظائف المحفوظة" : "Saved Jobs"}
                       </h4>
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-[12px] text-muted-foreground">
                         {savedJobs.size} {isAr ? "وظيفة محفوظة" : "jobs saved"}
                       </p>
-                      <Button variant="outline" size="sm" className="w-full rounded-xl text-[10px] h-7" onClick={() => {
+                      <Button variant="outline" size="sm" className="w-full rounded-xl text-[12px] h-7" onClick={() => {
                         setSavedJobs(new Set());
                         localStorage.removeItem("saved-jobs");
                         toast(isAr ? "تم مسح الوظائف المحفوظة" : "Saved jobs cleared");
@@ -861,7 +861,7 @@ export default function JobSearch() {
                             key={city}
                             onClick={() => setCityFilter(city === cityFilter ? "all" : city)}
                             className={cn(
-                              "text-[10px] px-2.5 py-1 rounded-lg border transition-colors",
+                              "text-[12px] px-2.5 py-1 rounded-lg border transition-colors",
                               cityFilter === city
                                 ? "bg-primary/10 border-primary/30 text-primary font-semibold"
                                 : "border-border/20 text-muted-foreground hover:border-primary/20 hover:text-foreground"
@@ -882,7 +882,7 @@ export default function JobSearch() {
                       <Building2 className="h-6 w-6 text-primary/60" />
                     </div>
                     <h4 className="text-xs font-bold">{isAr ? "هل أنت صاحب عمل؟" : "Are you an employer?"}</h4>
-                    <p className="text-[10px] text-muted-foreground leading-relaxed">
+                    <p className="text-[12px] text-muted-foreground leading-relaxed">
                       {isAr ? "انشر وظيفتك ووصل لأفضل المواهب في مجال الطهي والضيافة" : "Post your job and reach top culinary & hospitality talent"}
                     </p>
                     <Link to="/company-login" className="block">
@@ -895,10 +895,10 @@ export default function JobSearch() {
 
                 {/* Keyboard shortcuts hint */}
                 <div className="text-center px-4 py-3">
-                  <p className="text-[9px] text-muted-foreground/40 flex items-center justify-center gap-2">
-                    <kbd className="h-4 px-1 rounded border border-border/20 bg-muted/20 text-[8px] font-mono inline-flex items-center">/</kbd>
+                  <p className="text-[12px] text-muted-foreground/40 flex items-center justify-center gap-2">
+                    <kbd className="h-4 px-1 rounded border border-border/20 bg-muted/20 text-[12px] font-mono inline-flex items-center">/</kbd>
                     {isAr ? "للبحث السريع" : "Quick search"}
-                    <kbd className="h-4 px-1 rounded border border-border/20 bg-muted/20 text-[8px] font-mono inline-flex items-center">Esc</kbd>
+                    <kbd className="h-4 px-1 rounded border border-border/20 bg-muted/20 text-[12px] font-mono inline-flex items-center">Esc</kbd>
                     {isAr ? "للإغلاق" : "Close"}
                   </p>
                 </div>
@@ -917,7 +917,7 @@ export default function JobSearch() {
 function StatRow({ icon: Icon, label, value, accent }: { icon: any; label: string; value: number; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+      <span className="text-[12px] text-muted-foreground flex items-center gap-1.5">
         <Icon className="h-3 w-3" />{label}
       </span>
       <span className={cn("text-xs font-bold tabular-nums", accent && "text-primary")}>{value}</span>
@@ -1027,15 +1027,15 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr, viewMode, isSav
         {/* Top badges */}
         <div className="absolute top-0 end-0 flex items-center gap-1 p-3 z-10">
           {job.is_featured && (
-            <Badge className="bg-primary text-primary-foreground text-[9px] font-bold px-2 h-5 rounded-lg gap-0.5">
+            <Badge className="bg-primary text-primary-foreground text-[12px] font-bold px-2 h-5 rounded-lg gap-0.5">
               <Megaphone className="h-2.5 w-2.5" />{isAr ? "مميزة" : "Featured"}
             </Badge>
           )}
           {isNew && !job.is_featured && (
-            <Badge className="bg-[hsl(var(--chart-2))] text-primary-foreground text-[9px] font-bold px-2 h-5 rounded-lg">{isAr ? "جديدة" : "New"}</Badge>
+            <Badge className="bg-[hsl(var(--chart-2))] text-primary-foreground text-[12px] font-bold px-2 h-5 rounded-lg">{isAr ? "جديدة" : "New"}</Badge>
           )}
           {isUrgent && (
-            <Badge variant="destructive" className="text-[9px] font-bold px-2 h-5 rounded-lg gap-0.5">
+            <Badge variant="destructive" className="text-[12px] font-bold px-2 h-5 rounded-lg gap-0.5">
               <AlertCircle className="h-2.5 w-2.5" />{isAr ? "عاجل" : "Urgent"}
             </Badge>
           )}
@@ -1070,10 +1070,10 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr, viewMode, isSav
                 {job.is_salary_visible && job.salary_min && (
                   <span className="text-sm font-bold text-foreground">
                     {job.salary_min.toLocaleString()}{job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : "+"} {job.salary_currency || ""}
-                    <span className="text-[10px] text-muted-foreground font-normal"> / {isAr ? "شهرياً" : "mo"}</span>
+                    <span className="text-[12px] text-muted-foreground font-normal"> / {isAr ? "شهرياً" : "mo"}</span>
                   </span>
                 )}
-                <Badge variant="secondary" className="text-[10px] rounded-lg">{isAr ? typeLabel.ar : typeLabel.en}</Badge>
+                <Badge variant="secondary" className="text-[12px] rounded-lg">{isAr ? typeLabel.ar : typeLabel.en}</Badge>
               </div>
 
               {viewMode === "list" && job.description && (
@@ -1091,18 +1091,18 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr, viewMode, isSav
               </div>
 
               <div className="flex items-center justify-between pt-1">
-                <div className="flex items-center gap-3 text-[10px] text-muted-foreground/40">
+                <div className="flex items-center gap-3 text-[12px] text-muted-foreground/40">
                   <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{job.applications_count || 0}</span>
                   <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{job.views_count || 0}</span>
                   <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{daysAgo === 0 ? (isAr ? "اليوم" : "Today") : `${daysAgo}d`}</span>
                 </div>
-                <Button size="sm" className="rounded-xl text-[10px] h-7 px-3 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                <Button size="sm" className="rounded-xl text-[12px] h-7 px-3 font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                   {isAr ? "تفاصيل" : "View"} <ArrowRight className="h-3 w-3 ms-1" />
                 </Button>
               </div>
 
               {job.application_deadline && (
-                <div className={cn("text-[10px] flex items-center gap-1", isUrgent ? "text-destructive font-medium" : "text-muted-foreground/50")}>
+                <div className={cn("text-[12px] flex items-center gap-1", isUrgent ? "text-destructive font-medium" : "text-muted-foreground/50")}>
                   <Clock className="h-2.5 w-2.5" />{isAr ? "آخر موعد:" : "Deadline:"} {format(new Date(job.application_deadline), "MMM d, yyyy")}
                 </div>
               )}
@@ -1148,12 +1148,12 @@ const AvailableChefCard = memo(function AvailableChefCard({ chef, isAr }: { chef
 
           {spec && <p className="text-xs text-muted-foreground/70 line-clamp-1">{spec}</p>}
 
-          <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground/60">
+          <div className="flex flex-wrap gap-2 text-[12px] text-muted-foreground/60">
             {chef.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{chef.city}</span>}
             {chef.years_of_experience && <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{chef.years_of_experience} {isAr ? "سنة" : "yrs"}</span>}
-            {expLabel && <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4">{expLabel}</Badge>}
+            {expLabel && <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-4">{expLabel}</Badge>}
             {chef.willing_to_relocate && (
-              <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 border-[hsl(var(--chart-2))]/20 text-[hsl(var(--chart-2))]">
+              <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-4 border-[hsl(var(--chart-2))]/20 text-[hsl(var(--chart-2))]">
                 <Globe className="h-2 w-2 me-0.5" />{isAr ? "انتقال" : "Relocate"}
               </Badge>
             )}
@@ -1162,7 +1162,7 @@ const AvailableChefCard = memo(function AvailableChefCard({ chef, isAr }: { chef
           {(chef.preferred_job_types || []).length > 0 && (
             <div className="flex flex-wrap gap-1">
               {(chef.preferred_job_types as string[]).slice(0, 3).map((t: string) => (
-                <Badge key={t} variant="secondary" className="text-[9px] px-1.5 py-0 h-4">
+                <Badge key={t} variant="secondary" className="text-[12px] px-1.5 py-0 h-4">
                   {isAr ? (JOB_TYPE_LABELS[t]?.ar || t) : (JOB_TYPE_LABELS[t]?.en || t)}
                 </Badge>
               ))}
@@ -1170,10 +1170,10 @@ const AvailableChefCard = memo(function AvailableChefCard({ chef, isAr }: { chef
           )}
 
           {note && (
-            <p className="text-[10px] text-muted-foreground/50 line-clamp-2 italic border-s-2 border-[hsl(var(--chart-2))]/20 ps-2">"{note}"</p>
+            <p className="text-[12px] text-muted-foreground/50 line-clamp-2 italic border-s-2 border-[hsl(var(--chart-2))]/20 ps-2">"{note}"</p>
           )}
 
-          <Button variant="outline" size="sm" className="w-full rounded-xl text-[10px] h-7 font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
+          <Button variant="outline" size="sm" className="w-full rounded-xl text-[12px] h-7 font-semibold opacity-80 group-hover:opacity-100 transition-opacity">
             {isAr ? "عرض الملف" : "View Profile"} <ArrowRight className="h-3 w-3 ms-1" />
           </Button>
         </CardContent>

@@ -164,7 +164,7 @@ export const JudgeDashboard = memo(function JudgeDashboard({ onSelectCompetition
                 </span>
               </div>
               <Progress value={stats.total > 0 ? (stats.scored / stats.total) * 100 : 0} className="h-2.5" />
-              <p className="mt-1.5 text-[11px] text-muted-foreground">
+              <p className="mt-1.5 text-[12px] text-muted-foreground">
                 {stats.scored}/{stats.total} {isAr ? "تم تقييمهم" : "entries scored"} · {competitions.length} {isAr ? "مسابقة" : "competitions"}
               </p>
             </div>
@@ -181,7 +181,7 @@ export const JudgeDashboard = memo(function JudgeDashboard({ onSelectCompetition
             </div>
             {isAr ? "تقدم التقييم" : "Scoring Progress"}
           </h3>
-          <Badge variant="secondary" className="text-[10px]">
+          <Badge variant="secondary" className="text-[12px]">
             {competitions.length} {isAr ? "مسابقة" : "competitions"}
           </Badge>
         </div>
@@ -216,7 +216,7 @@ export const JudgeDashboard = memo(function JudgeDashboard({ onSelectCompetition
                         {isAr && comp.title_ar ? comp.title_ar : comp.title}
                       </h4>
                       <div className="flex items-center gap-2">
-                        <Badge className={`text-[10px] border-0 ${statusClass}`}>
+                        <Badge className={`text-[12px] border-0 ${statusClass}`}>
                           {comp.status.replace("_", " ")}
                         </Badge>
                         <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -228,7 +228,7 @@ export const JudgeDashboard = memo(function JudgeDashboard({ onSelectCompetition
                         {comp.progress}%
                       </span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                    <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
                       <CheckCircle className="h-3 w-3 text-chart-5" />
                       <span>{comp.scoredParticipants} / {comp.totalParticipants} {isAr ? "مشارك تم تقييمه" : "participants scored"}</span>
                     </div>

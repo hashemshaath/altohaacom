@@ -371,15 +371,15 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
                     </div>
                     <div className="flex-1">
                       <p className="text-xs font-medium">{pair.name}</p>
-                      <p className="text-[11px] text-muted-foreground font-mono">{ratio.toFixed(2)}:1</p>
+                      <p className="text-[12px] text-muted-foreground font-mono">{ratio.toFixed(2)}:1</p>
                     </div>
-                    <Badge variant="outline" className={cn("text-[10px] font-bold", color)}>
+                    <Badge variant="outline" className={cn("text-[12px] font-bold", color)}>
                       {grade}
                     </Badge>
                   </div>
                 );
               })}
-              <div className="flex items-start gap-2 pt-2 text-[11px] text-muted-foreground">
+              <div className="flex items-start gap-2 pt-2 text-[12px] text-muted-foreground">
                 <Eye className="h-3.5 w-3.5 mt-0.5 shrink-0" />
                 <span>{isAr ? "AAA = 7:1+ (ممتاز) | AA = 4.5:1+ (جيد) | AA Large = 3:1+ (نص كبير فقط)" : "AAA = 7:1+ (Excellent) | AA = 4.5:1+ (Good) | AA Large = 3:1+ (Large text only)"}</span>
               </div>
@@ -505,7 +505,7 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
                             />
                           </div>
                           {activeSeasonalId === item.id && (
-                            <Badge variant="default" className="text-[9px]">
+                            <Badge variant="default" className="text-[12px]">
                               <Star className="h-2.5 w-2.5 me-1" />{isAr ? "نشط" : "Active"}
                             </Badge>
                           )}
@@ -525,7 +525,7 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
                       {/* Date range */}
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">
-                          <Label className="text-[10px]">{isAr ? "تاريخ البدء" : "Start Date"}</Label>
+                          <Label className="text-[12px]">{isAr ? "تاريخ البدء" : "Start Date"}</Label>
                           <Input type="date" className="text-xs h-7"
                             value={item.startDate || ""}
                             onChange={e => {
@@ -535,7 +535,7 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
                             }} />
                         </div>
                         <div className="space-y-1">
-                          <Label className="text-[10px]">{isAr ? "تاريخ الانتهاء" : "End Date"}</Label>
+                          <Label className="text-[12px]">{isAr ? "تاريخ الانتهاء" : "End Date"}</Label>
                           <Input type="date" className="text-xs h-7"
                             value={item.endDate || ""}
                             onChange={e => {
@@ -548,7 +548,7 @@ export const BrandIdentityPanel = memo(function BrandIdentityPanel({ settings, o
 
                       {/* Seasonal logo */}
                       <div className="space-y-1">
-                        <Label className="text-[10px]">{isAr ? "شعار المناسبة" : "Occasion Logo URL"}</Label>
+                        <Label className="text-[12px]">{isAr ? "شعار المناسبة" : "Occasion Logo URL"}</Label>
                         <Input className="text-xs h-7"
                           value={item.logoUrl || ""}
                           placeholder={isAr ? "رابط شعار المناسبة" : "Seasonal logo URL"}

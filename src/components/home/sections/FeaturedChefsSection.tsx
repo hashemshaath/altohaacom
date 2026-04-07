@@ -145,7 +145,7 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                     )}
                     {idx < 3 && (
                       <div className={cn(
-                        "absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full text-[9px] font-bold shadow-sm ring-2 ring-background",
+                        "absolute -top-1.5 -end-1.5 flex h-5 w-5 items-center justify-center rounded-full text-[12px] font-bold shadow-sm ring-2 ring-background",
                         idx === 0 && "bg-chart-4 text-chart-4-foreground",
                         idx === 1 && "bg-muted-foreground/70 text-background",
                         idx === 2 && "bg-chart-3 text-chart-3-foreground"
@@ -164,19 +164,19 @@ const FeaturedChefsSection = memo(function FeaturedChefsSection() {
                       {name || (isAr ? "طاهٍ" : "Chef")}
                     </h3>
                     {spec && (
-                      <p className="mt-0.5 text-[10px] text-muted-foreground truncate flex items-center justify-center gap-1">
+                      <p className="mt-0.5 text-[12px] text-muted-foreground truncate flex items-center justify-center gap-1">
                         <ChefHat className="h-2.5 w-2.5 shrink-0" />
                         {spec}
                       </p>
                     )}
                     {countryName && (
-                      <p className="mt-0.5 text-[9px] text-muted-foreground/50 truncate">
+                      <p className="mt-0.5 text-[12px] text-muted-foreground/50 truncate">
                         {countryFlag(chef.country_code)} {countryName}
                       </p>
                     )}
                   </div>
                   {hasMedals && (
-                    <div className="flex items-center justify-center gap-1.5 text-[10px]">
+                    <div className="flex items-center justify-center gap-1.5 text-[12px]">
                       {chef.gold_medals > 0 && <span>🥇{chef.gold_medals}</span>}
                       {chef.silver_medals > 0 && <span>🥈{chef.silver_medals}</span>}
                       {chef.bronze_medals > 0 && <span>🥉{chef.bronze_medals}</span>}

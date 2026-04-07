@@ -196,7 +196,7 @@ export const PreparationChecklistPanel = memo(function PreparationChecklistPanel
               <span className={`text-sm ${item.completed ? "line-through text-muted-foreground" : ""}`}>
                 {isAr && item.label_ar ? item.label_ar : item.label}
               </span>
-              <Badge variant="outline" className="text-[9px] ms-2">
+              <Badge variant="outline" className="text-[12px] ms-2">
                 {CATEGORIES[item.category] ? (isAr ? CATEGORIES[item.category].ar : CATEGORIES[item.category].en) : item.category}
               </Badge>
             </div>

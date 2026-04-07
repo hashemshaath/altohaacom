@@ -65,7 +65,7 @@ export const DatabaseOverviewWidget = memo(function DatabaseOverviewWidget() {
                 <Icon className={`h-4 w-4 shrink-0 ${r.color}`} />
                 <div className="min-w-0">
                   <AnimatedCounter value={isLoading ? 0 : val} className="text-sm leading-none" />
-                  <p className="text-[10px] text-muted-foreground truncate">{isAr ? r.ar : r.en}</p>
+                  <p className="text-[12px] text-muted-foreground truncate">{isAr ? r.ar : r.en}</p>
                 </div>
               </div>
             );

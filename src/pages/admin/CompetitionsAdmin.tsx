@@ -576,7 +576,7 @@ export default function CompetitionsAdmin() {
               <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${stat.bg} shrink-0 transition-transform duration-300 group-hover:scale-110`}>{stat.icon}</div>
               <div>
                 <AnimatedCounter value={stat.value} className="text-2xl font-bold" />
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
+                <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -735,21 +735,21 @@ export default function CompetitionsAdmin() {
                             })()}
                           </p>
                           {comp.edition_year && (
-                            <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-mono border-primary/20 text-primary mt-0.5">
+                            <Badge variant="outline" className="text-[12px] h-4 px-1.5 font-mono border-primary/20 text-primary mt-0.5">
                               {isAr ? `نسخة ${comp.edition_year}` : `Edition ${comp.edition_year}`}
                             </Badge>
                           )}
                           {types.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-1">
                               {types.slice(0, 2).map((t) => (
-                                <Badge key={t.type?.id} variant="outline" className="text-[9px] px-1.5 py-0">
+                                <Badge key={t.type?.id} variant="outline" className="text-[12px] px-1.5 py-0">
                                   {isAr && t.type?.name_ar ? t.type.name_ar : t.type?.name}
                                 </Badge>
                               ))}
-                              {types.length > 2 && <Badge variant="outline" className="text-[9px] px-1.5 py-0">+{types.length - 2}</Badge>}
+                              {types.length > 2 && <Badge variant="outline" className="text-[12px] px-1.5 py-0">+{types.length - 2}</Badge>}
                             </div>
                           )}
-                          <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                          <p className="text-[12px] text-muted-foreground font-mono mt-0.5">
                             {comp.competition_number || (comp.is_virtual ? (isAr ? "افتراضية" : "Virtual") : "")}
                           </p>
                         </div>
@@ -773,7 +773,7 @@ export default function CompetitionsAdmin() {
                             <span className="text-xs text-muted-foreground">—</span>
                           )}
                           {comp.exhibition && (
-                            <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                            <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
                               <Building2 className="h-3 w-3" />
                               <span className="truncate max-w-[120px]">{isAr && (comp.exhibition as any).title_ar ? (comp.exhibition as any).title_ar : (comp.exhibition as any).title}</span>
                             </div>
@@ -781,7 +781,7 @@ export default function CompetitionsAdmin() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge className={`text-[10px] font-semibold border-0 ${statusConfig[comp.status as CompetitionStatus].bg}`}>
+                        <Badge className={`text-[12px] font-semibold border-0 ${statusConfig[comp.status as CompetitionStatus].bg}`}>
                           <span className={`me-1 inline-block h-1.5 w-1.5 rounded-full ${statusConfig[comp.status as CompetitionStatus].dot}`} />
                           {isAr ? statusConfig[comp.status as CompetitionStatus].labelAr : statusConfig[comp.status as CompetitionStatus].label}
                         </Badge>
@@ -794,7 +794,7 @@ export default function CompetitionsAdmin() {
                               {format(new Date(comp.competition_start), "MMM d, yyyy")}
                             </div>
                             {comp.city && (
-                              <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5">
+                              <div className="flex items-center gap-1 text-[12px] text-muted-foreground mt-0.5">
                                 <MapPin className="h-2.5 w-2.5" />
                                 {comp.city}{comp.country ? `, ${comp.country}` : ""}
                               </div>
@@ -808,17 +808,17 @@ export default function CompetitionsAdmin() {
                         {categories.length > 0 ? (
                           <div className="flex flex-wrap gap-1">
                             {categories.slice(0, 3).map(cat => (
-                              <Badge key={cat.id} variant="secondary" className="text-[9px] px-1.5 py-0 gap-1">
+                              <Badge key={cat.id} variant="secondary" className="text-[12px] px-1.5 py-0 gap-1">
                                 <Tag className="h-2.5 w-2.5" />
                                 {isAr && cat.name_ar ? cat.name_ar : cat.name}
                               </Badge>
                             ))}
                             {categories.length > 3 && (
-                              <Badge variant="outline" className="text-[9px] px-1.5 py-0">+{categories.length - 3}</Badge>
+                              <Badge variant="outline" className="text-[12px] px-1.5 py-0">+{categories.length - 3}</Badge>
                             )}
                           </div>
                         ) : (
-                          <span className="text-[10px] text-muted-foreground">—</span>
+                          <span className="text-[12px] text-muted-foreground">—</span>
                         )}
                       </TableCell>
                       <TableCell>
@@ -954,7 +954,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
-                  <p className="text-[10px] text-muted-foreground font-mono">{comp.competition_number}</p>
+                  <p className="text-[12px] text-muted-foreground font-mono">{comp.competition_number}</p>
                 </div>
                 <Badge className={statusConfig[comp.status as CompetitionStatus]?.bg || "bg-muted"}>
                   {isAr ? statusConfig[comp.status as CompetitionStatus]?.labelAr : statusConfig[comp.status as CompetitionStatus]?.label}
@@ -963,19 +963,19 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
               <div className="grid grid-cols-3 gap-3">
                 <div className="text-center rounded-xl border border-border/40 p-2.5 bg-muted/20">
                   <AnimatedCounter value={regs.length} className="text-lg font-bold" />
-                  <p className="text-[10px] text-muted-foreground">{isAr ? "مسجلين" : "Registered"}</p>
+                  <p className="text-[12px] text-muted-foreground">{isAr ? "مسجلين" : "Registered"}</p>
                 </div>
                 <div className="text-center rounded-xl border border-border/40 p-2.5 bg-chart-5/5">
                   <AnimatedCounter value={uniqueParticipants} className="text-lg font-bold text-chart-5" />
-                  <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدين" : "Approved"}</p>
+                  <p className="text-[12px] text-muted-foreground">{isAr ? "معتمدين" : "Approved"}</p>
                 </div>
                 <div className="text-center rounded-xl border border-border/40 p-2.5 bg-chart-4/5">
                   <AnimatedCounter value={regs.filter((r) => r.status === "pending").length} className="text-lg font-bold text-chart-4" />
-                  <p className="text-[10px] text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
+                  <p className="text-[12px] text-muted-foreground">{isAr ? "معلق" : "Pending"}</p>
                 </div>
               </div>
               <div className="space-y-1">
-                <div className="flex justify-between text-[10px] text-muted-foreground">
+                <div className="flex justify-between text-[12px] text-muted-foreground">
                   <span>{isAr ? "تقدم التحكيم" : "Judging Progress"}</span>
                   <span>{progress}%</span>
                 </div>
@@ -1032,7 +1032,7 @@ function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
-                <Badge variant="secondary" className="text-[10px]">{compResults.length} {isAr ? "نتيجة" : "results"}</Badge>
+                <Badge variant="secondary" className="text-[12px]">{compResults.length} {isAr ? "نتيجة" : "results"}</Badge>
               </div>
               {compResults.length > 0 ? (
                 <div className="space-y-2">
@@ -1046,10 +1046,10 @@ function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
                           </p>
                         </div>
                         {result.total_score != null && (
-                          <Badge variant="outline" className="text-[10px]">{result.total_score} {isAr ? "نقطة" : "pts"}</Badge>
+                          <Badge variant="outline" className="text-[12px]">{result.total_score} {isAr ? "نقطة" : "pts"}</Badge>
                         )}
                         {result.medal && (
-                          <Badge className="text-[10px] bg-chart-4/10 text-chart-4 border-0">{result.medal}</Badge>
+                          <Badge className="text-[12px] bg-chart-4/10 text-chart-4 border-0">{result.medal}</Badge>
                         )}
                       </div>
                     );

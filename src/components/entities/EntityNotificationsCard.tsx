@@ -89,7 +89,7 @@ export const EntityNotificationsCard = memo(function EntityNotificationsCard({ e
             <Bell className="h-3.5 w-3.5 text-chart-4" />
           </div>
           {isAr ? "آخر الأنشطة" : "Recent Activity"}
-          <Badge variant="secondary" className="ms-auto text-[9px] h-4">{recentActivity.length}</Badge>
+          <Badge variant="secondary" className="ms-auto text-[12px] h-4">{recentActivity.length}</Badge>
         </h3>
       </div>
       <CardContent className="p-0">
@@ -106,9 +106,9 @@ export const EntityNotificationsCard = memo(function EntityNotificationsCard({ e
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium truncate">{activity.title}</p>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <Badge variant="outline" className="text-[9px] h-4">{activity.type}</Badge>
+                  <Badge variant="outline" className="text-[12px] h-4">{activity.type}</Badge>
                   {activity.date && (
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-[12px] text-muted-foreground">
                       {format(new Date(activity.date), "MMM d, yyyy")}
                     </span>
                   )}

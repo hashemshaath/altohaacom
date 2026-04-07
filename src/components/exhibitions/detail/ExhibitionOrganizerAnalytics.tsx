@@ -290,7 +290,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
               </div>
               <div>
                 <p className={`text-sm font-bold ${kpi.color}`}>{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} className="inline" />{(kpi as any).suffix || ""}</> : kpi.value}</p>
-                <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -384,7 +384,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
             <CardTitle className="text-sm flex items-center gap-2">
               <Globe className="h-3.5 w-3.5 text-chart-3" />
               {t("Follower Growth (30 days)", "نمو المتابعين (30 يوم)")}
-              <Badge variant="secondary" className="text-[10px]">{followerTimeline.length} {t("total", "إجمالي")}</Badge>
+              <Badge variant="secondary" className="text-[12px]">{followerTimeline.length} {t("total", "إجمالي")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-2 pe-4">
@@ -476,7 +476,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
             <CardHeader className="py-3 px-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm">{t("Booth Categories", "فئات الأجنحة")}</CardTitle>
-                <Badge variant="secondary" className="text-[10px]">{boothStats.length} {t("total", "إجمالي")}</Badge>
+                <Badge variant="secondary" className="text-[12px]">{boothStats.length} {t("total", "إجمالي")}</Badge>
               </div>
             </CardHeader>
             <CardContent className="p-2 flex items-center justify-center">
@@ -495,8 +495,8 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
                   {boothCategories.map((cat, i) => (
                     <div key={cat.name} className="flex items-center gap-2">
                       <div className="h-2.5 w-2.5 rounded-sm shrink-0" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
-                      <span className="text-[10px] text-muted-foreground capitalize">{cat.name}</span>
-                      <span className="text-[10px] font-semibold">{cat.value}</span>
+                      <span className="text-[12px] text-muted-foreground capitalize">{cat.name}</span>
+                      <span className="text-[12px] font-semibold">{cat.value}</span>
                     </div>
                   ))}
                 </div>

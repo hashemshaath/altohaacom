@@ -80,7 +80,7 @@ export const UserDropdown = memo(function UserDropdown() {
           >
             <Avatar className="h-8 w-8 border-2 border-[var(--color-primary-light)]">
               <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
-              <AvatarFallback className="text-[11px] font-bold bg-[var(--color-primary-light)] text-[var(--color-primary)]">
+              <AvatarFallback className="text-[12px] font-bold bg-[var(--color-primary-light)] text-[var(--color-primary)]">
                 {initials}
               </AvatarFallback>
             </Avatar>
@@ -89,7 +89,7 @@ export const UserDropdown = memo(function UserDropdown() {
                 {displayName}
               </span>
               {tierInfo && (
-                <span className="text-[10px] text-[var(--color-muted)] leading-tight">
+                <span className="text-[12px] text-[var(--color-muted)] leading-tight">
                   {isAr ? tierInfo.ar : tierInfo.en}
                 </span>
               )}
@@ -113,9 +113,9 @@ export const UserDropdown = memo(function UserDropdown() {
               </Avatar>
               <div className="min-w-0 flex-1">
                 <p className="text-[14px] font-semibold text-[var(--color-heading)] truncate">{displayName}</p>
-                <p className="text-[11px] text-[var(--color-muted)] truncate">{user.email}</p>
+                <p className="text-[12px] text-[var(--color-muted)] truncate">{user.email}</p>
                 {tierInfo && (
-                  <Badge variant="secondary" className={`mt-1 text-[10px] h-4 px-1.5 ${tierInfo.color}`}>
+                  <Badge variant="secondary" className={`mt-1 text-[12px] h-4 px-1.5 ${tierInfo.color}`}>
                     <Crown className="h-2.5 w-2.5 me-0.5" />
                     {isAr ? tierInfo.ar : tierInfo.en}
                   </Badge>

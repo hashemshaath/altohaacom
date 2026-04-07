@@ -107,7 +107,7 @@ const TrackingStatusCard = memo(function TrackingStatusCard() {
             return (
               <div key={p.type} className="flex items-center gap-1.5 rounded-xl border border-border/40 p-2.5 transition-colors hover:bg-muted/50">
                 <div className={`h-2 w-2 rounded-full shrink-0 ${isActive ? "bg-green-500" : "bg-muted-foreground/30"}`} />
-                <span className="text-[11px] font-medium">{p.name}</span>
+                <span className="text-[12px] font-medium">{p.name}</span>
               </div>
             );
           })}
@@ -157,7 +157,7 @@ function QuickStatsCards({ settings, completion, isAr }: { settings: Record<stri
             </div>
             <div className="min-w-0">
               <p className={item.isText ? "text-sm font-semibold" : "text-2xl font-bold tabular-nums"}>{item.isText ? item.value : <AnimatedCounter value={typeof item.value === "number" ? item.value : 0} />}</p>
-              <p className="text-[10px] text-muted-foreground truncate">{item.label}</p>
+              <p className="text-[12px] text-muted-foreground truncate">{item.label}</p>
             </div>
           </CardContent>
         </Card>
@@ -232,7 +232,7 @@ export default function SystemSettings() {
               </div>
               <Progress value={completion.percent} className="h-2" />
               {completion.percent < 100 && (
-                <p className="text-[10px] text-muted-foreground mt-1.5">
+                <p className="text-[12px] text-muted-foreground mt-1.5">
                   {isAr
                     ? "أكمل جميع الأقسام للحصول على أفضل تجربة"
                     : "Complete all sections for the best experience"}
@@ -271,7 +271,7 @@ export default function SystemSettings() {
                             <div className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                           )}
                         </div>
-                        <span className="hidden sm:block text-[10px] text-muted-foreground leading-tight">
+                        <span className="hidden sm:block text-[12px] text-muted-foreground leading-tight">
                           {isAr ? tab.descAr : tab.descEn}
                         </span>
                       </TabsTrigger>

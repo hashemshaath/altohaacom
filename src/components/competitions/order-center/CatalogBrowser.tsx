@@ -132,7 +132,7 @@ export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOr
                 <CardContent className="p-3 text-center">
                   <CatIcon className="mx-auto mb-1.5 h-5 w-5 text-primary" />
                   <p className="text-xs font-medium truncate">{isAr ? cat.labelAr : cat.label}</p>
-                  <p className="text-[10px] text-muted-foreground">{count} {isAr ? "عنصر" : "items"}</p>
+                  <p className="text-[12px] text-muted-foreground">{count} {isAr ? "عنصر" : "items"}</p>
                 </CardContent>
               </Card>
             );
@@ -162,7 +162,7 @@ export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOr
               <div className="flex items-center gap-2 pt-2">
                 <CatIcon className="h-4 w-4 text-primary" />
                 <h4 className="text-sm font-semibold">{isAr ? catInfo?.labelAr : catInfo?.label || cat}</h4>
-                <Badge variant="outline" className="text-[10px]">{catItems!.length}</Badge>
+                <Badge variant="outline" className="text-[12px]">{catItems!.length}</Badge>
               </div>
               <div className="grid gap-2 sm:grid-cols-2">
                 {catItems!.map((item) => (
@@ -180,15 +180,15 @@ export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOr
                           {isAr && item.name_ar ? item.name_ar : item.name}
                         </p>
                         {item.description && (
-                          <p className="text-[10px] text-muted-foreground line-clamp-1">{isAr && item.description_ar ? item.description_ar : item.description}</p>
+                          <p className="text-[12px] text-muted-foreground line-clamp-1">{isAr && item.description_ar ? item.description_ar : item.description}</p>
                         )}
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          <Badge variant="secondary" className="text-[10px]">{item.unit}</Badge>
+                          <Badge variant="secondary" className="text-[12px]">{item.unit}</Badge>
                           {item.estimated_cost && (
-                            <span className="text-[10px] text-muted-foreground">$<AnimatedCounter value={Math.round(Number(item.estimated_cost))} className="inline" /></span>
+                            <span className="text-[12px] text-muted-foreground">$<AnimatedCounter value={Math.round(Number(item.estimated_cost))} className="inline" /></span>
                           )}
                           {item.brand && (
-                            <span className="text-[10px] text-muted-foreground">{item.brand}</span>
+                            <span className="text-[12px] text-muted-foreground">{item.brand}</span>
                           )}
                         </div>
                       </div>

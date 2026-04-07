@@ -75,7 +75,7 @@ export const StreakWidget = memo(function StreakWidget() {
             <p className="text-2xl font-bold tabular-nums text-foreground">
               {streak}
             </p>
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
               {isAr ? "يوم متتالي" : "Day Streak"}
             </p>
           </div>
@@ -85,12 +85,12 @@ export const StreakWidget = memo(function StreakWidget() {
         <div className="flex items-center justify-between gap-1">
           {weekDays.map((day, i) => (
             <div key={i} className="flex flex-col items-center gap-1">
-              <span className="text-[9px] font-medium text-muted-foreground">
+              <span className="text-[12px] font-medium text-muted-foreground">
                 {dayLabels[day.dayOfWeek]}
               </span>
               <div
                 className={cn(
-                  "h-6 w-6 rounded-xl flex items-center justify-center transition-all text-[10px] font-bold",
+                  "h-6 w-6 rounded-xl flex items-center justify-center transition-all text-[12px] font-bold",
                   day.isToday && !day.active && "ring-1 ring-primary/30 bg-primary/5 text-primary",
                   day.active && "bg-primary text-primary-foreground shadow-sm",
                   !day.active && !day.isToday && "bg-muted/50 text-muted-foreground/40"
@@ -103,7 +103,7 @@ export const StreakWidget = memo(function StreakWidget() {
         </div>
 
         {streak >= 7 && (
-          <p className="mt-2 text-[10px] text-center font-semibold text-chart-4">
+          <p className="mt-2 text-[12px] text-center font-semibold text-chart-4">
             🔥 {isAr ? "سلسلة رائعة! استمر!" : "Amazing streak! Keep going!"}
           </p>
         )}

@@ -902,7 +902,7 @@ export default function Auth() {
                     <p className={`text-sm font-bold ${accountType === "professional" ? "text-primary" : "text-foreground"}`}>
                       {isAr ? "محترف" : "Professional"}
                     </p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
+                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">
                       {isAr ? "طاهٍ أو محترف في مجال الطهي" : "Chef or culinary professional"}
                     </p>
                   </div>
@@ -925,7 +925,7 @@ export default function Auth() {
                      <p className={`text-sm font-bold ${accountType === "fan" ? "text-primary" : "text-foreground"}`}>
                        {isAr ? "مستخدم عادي" : "Regular User"}
                      </p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">
+                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">
                       {isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}
                     </p>
                   </div>
@@ -943,7 +943,7 @@ export default function Auth() {
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
                 <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
-                <p className="text-[10px] text-muted-foreground">{isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}</p>
+                <p className="text-[12px] text-muted-foreground">{isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}</p>
                 {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
               </div>
             )}
@@ -992,7 +992,7 @@ export default function Auth() {
                   {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
                 </div>
               </div>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 altoha.com/<span className="font-medium">{username || "username"}</span>
               </p>
               {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
@@ -1034,7 +1034,7 @@ export default function Auth() {
                     maxLength={8}
                   />
                 </div>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   {isAr ? "إذا أحالك أحد الأصدقاء، أدخل الكود هنا" : "If a friend referred you, enter their code here"}
                 </p>
               </div>
@@ -1281,7 +1281,7 @@ export default function Auth() {
                     label={isAr ? "رقم الهاتف" : "Phone Number"}
                     isAr={isAr}
                   />
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[12px] text-muted-foreground">
                     {isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}
                   </p>
                 </>
@@ -1308,7 +1308,7 @@ export default function Auth() {
                       placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
                     />
                     {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-                    <p className="text-[10px] text-muted-foreground">
+                    <p className="text-[12px] text-muted-foreground">
                       {isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}
                     </p>
                   </div>
@@ -1425,7 +1425,7 @@ export default function Auth() {
                   )}
                   {loginAttempts > 0 && loginAttempts < MAX_LOGIN_ATTEMPTS && !isLockedOut && (
                     <div className="rounded-xl border border-chart-4/30 bg-chart-4/5 px-3 py-2 text-center animate-in fade-in">
-                      <p className="text-[11px] text-chart-4 font-medium">
+                      <p className="text-[12px] text-chart-4 font-medium">
                         {isAr
                           ? `${MAX_LOGIN_ATTEMPTS - loginAttempts} محاولات متبقية قبل القفل المؤقت`
                           : `${MAX_LOGIN_ATTEMPTS - loginAttempts} attempts remaining before temporary lock`}
@@ -1456,7 +1456,7 @@ export default function Auth() {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-                      <button type="button" className="text-[10px] text-primary hover:underline" onClick={() => setForgotOpen(true)}>
+                      <button type="button" className="text-[12px] text-primary hover:underline" onClick={() => setForgotOpen(true)}>
                         {isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}
                       </button>
                     </div>

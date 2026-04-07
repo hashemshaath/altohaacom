@@ -106,15 +106,15 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-3 text-center">
           <AnimatedCounter value={comments.length} className="text-xl" />
-          <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
         </Card>
         <Card className="p-3 text-center">
           <AnimatedCounter value={flaggedCount} className="text-xl text-amber-500" />
-          <p className="text-[10px] text-muted-foreground">{isAr ? "مبلّغ عنها" : "Flagged"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "مبلّغ عنها" : "Flagged"}</p>
         </Card>
         <Card className="p-3 text-center">
           <AnimatedCounter value={hiddenCount} className="text-xl text-muted-foreground" />
-          <p className="text-[10px] text-muted-foreground">{isAr ? "مخفية" : "Hidden"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "مخفية" : "Hidden"}</p>
         </Card>
       </div>
 
@@ -145,7 +145,7 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
                     <div className="flex items-center gap-2">
                       <Avatar className="h-6 w-6">
                         <AvatarImage src={c.author?.avatar_url} />
-                        <AvatarFallback className="text-[9px]">{(c.author?.full_name || "?")[0]}</AvatarFallback>
+                        <AvatarFallback className="text-[12px]">{(c.author?.full_name || "?")[0]}</AvatarFallback>
                       </Avatar>
                       <span className="text-xs truncate max-w-[100px]">{c.author?.full_name || c.author?.username || "—"}</span>
                     </div>
@@ -154,16 +154,16 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
                     <p className="text-xs truncate">{c.content}</p>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="text-[9px]">{c.event_type}</Badge>
+                    <Badge variant="outline" className="text-[12px]">{c.event_type}</Badge>
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      {c.is_flagged && <Badge variant="destructive" className="text-[9px]"><Flag className="h-2.5 w-2.5 me-0.5" />{isAr ? "مبلّغ" : "Flagged"}</Badge>}
-                      {c.is_hidden && <Badge variant="secondary" className="text-[9px]"><EyeOff className="h-2.5 w-2.5 me-0.5" />{isAr ? "مخفي" : "Hidden"}</Badge>}
-                      {!c.is_flagged && !c.is_hidden && <Badge variant="outline" className="text-[9px]">{isAr ? "عادي" : "Normal"}</Badge>}
+                      {c.is_flagged && <Badge variant="destructive" className="text-[12px]"><Flag className="h-2.5 w-2.5 me-0.5" />{isAr ? "مبلّغ" : "Flagged"}</Badge>}
+                      {c.is_hidden && <Badge variant="secondary" className="text-[12px]"><EyeOff className="h-2.5 w-2.5 me-0.5" />{isAr ? "مخفي" : "Hidden"}</Badge>}
+                      {!c.is_flagged && !c.is_hidden && <Badge variant="outline" className="text-[12px]">{isAr ? "عادي" : "Normal"}</Badge>}
                     </div>
                   </TableCell>
-                  <TableCell className="text-[10px] text-muted-foreground whitespace-nowrap">
+                  <TableCell className="text-[12px] text-muted-foreground whitespace-nowrap">
                     {formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
                   </TableCell>
                   <TableCell>

@@ -220,14 +220,14 @@ const SecurityDashboard = memo(function SecurityDashboard() {
                             <span className="text-sm font-medium">
                               {event.event_type.replace(/_/g, " ")}
                             </span>
-                            <Badge className={`text-[10px] ${SEVERITY_STYLES[event.severity] || ""}`}>
+                            <Badge className={`text-[12px] ${SEVERITY_STYLES[event.severity] || ""}`}>
                               {event.severity}
                             </Badge>
                           </div>
                           <p className="text-xs text-muted-foreground mt-0.5 truncate">
                             {isAr ? event.description_ar || event.description : event.description}
                           </p>
-                          <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
+                          <div className="flex items-center gap-3 mt-1 text-[12px] text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <Clock className="h-3 w-3" />
                               {new Date(event.created_at).toLocaleString(isAr ? "ar" : "en")}
@@ -283,7 +283,7 @@ const SecurityDashboard = memo(function SecurityDashboard() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-0.5">
                           <span className="text-xs">{type.replace(/_/g, " ")}</span>
-                          <Badge variant="outline" className="text-[10px]">{count}</Badge>
+                          <Badge variant="outline" className="text-[12px]">{count}</Badge>
                         </div>
                         <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                           <div
@@ -470,7 +470,7 @@ function PermissionsOverview() {
                         {o.user_id?.substring(0, 8)}...
                       </TableCell>
                       <TableCell>
-                        <Badge variant={o.granted ? "default" : "destructive"} className="text-[9px] h-4 px-1.5">
+                        <Badge variant={o.granted ? "default" : "destructive"} className="text-[12px] h-4 px-1.5">
                           {o.granted ? (isAr ? "ممنوح" : "Granted") : (isAr ? "محظور" : "Denied")}
                         </Badge>
                       </TableCell>

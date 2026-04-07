@@ -57,18 +57,18 @@ export const AdminTodayTicker = memo(function AdminTodayTicker() {
         <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
           <Sparkles className="h-3 w-3 text-primary" />
         </div>
-        <span className="text-[11px] font-bold text-foreground">{isAr ? "اليوم" : "Today"}</span>
-        <span className="text-[11px] font-mono font-black text-primary tabular-nums">
+        <span className="text-[12px] font-bold text-foreground">{isAr ? "اليوم" : "Today"}</span>
+        <span className="text-[12px] font-mono font-black text-primary tabular-nums">
           <AnimatedCounter value={total} className="inline" />
         </span>
       </div>
       {items.map((item) => (
         <div key={item.label} className={cn("flex items-center gap-1.5 shrink-0 px-2 py-1 rounded-xl transition-colors hover:bg-muted/40", item.bg)}>
           <item.icon className={cn("h-3 w-3", item.color)} />
-          <span className={cn("text-[11px] font-mono font-bold tabular-nums", item.color)}>
+          <span className={cn("text-[12px] font-mono font-bold tabular-nums", item.color)}>
             <AnimatedCounter value={item.value} className="inline" />
           </span>
-          <span className="text-[10px] text-muted-foreground hidden sm:inline">{item.label}</span>
+          <span className="text-[12px] text-muted-foreground hidden sm:inline">{item.label}</span>
         </div>
       ))}
     </div>

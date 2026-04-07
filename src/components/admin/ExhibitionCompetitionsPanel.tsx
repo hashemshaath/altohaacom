@@ -153,7 +153,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
                 <button key={c.id} className="w-full flex items-center justify-between px-3 py-2 text-xs hover:bg-accent text-start" onClick={() => linkMutation.mutate(c.id)}>
                   <div>
                     <p className="font-medium">{isAr && c.title_ar ? c.title_ar : c.title}</p>
-                    <Badge variant="secondary" className="text-[9px] mt-0.5">{c.status}</Badge>
+                    <Badge variant="secondary" className="text-[12px] mt-0.5">{c.status}</Badge>
                   </div>
                   <Plus className="h-3.5 w-3.5 text-primary shrink-0" />
                 </button>
@@ -174,8 +174,8 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
             <div className="rounded-lg border border-chart-2/20 bg-chart-2/5 p-3 space-y-3">
               <p className="text-xs font-semibold">{t("Create New Competition", "إنشاء مسابقة جديدة")}</p>
               <div className="grid gap-3 sm:grid-cols-2">
-                <div><Label className="text-[11px]">{t("Title (EN)", "العنوان (EN)")}</Label><Input className="h-8 text-xs" value={newTitle} onChange={e => setNewTitle(e.target.value)} /></div>
-                <div><Label className="text-[11px]">{t("Title (AR)", "العنوان (AR)")}</Label><Input className="h-8 text-xs" value={newTitleAr} onChange={e => setNewTitleAr(e.target.value)} dir="rtl" /></div>
+                <div><Label className="text-[12px]">{t("Title (EN)", "العنوان (EN)")}</Label><Input className="h-8 text-xs" value={newTitle} onChange={e => setNewTitle(e.target.value)} /></div>
+                <div><Label className="text-[12px]">{t("Title (AR)", "العنوان (AR)")}</Label><Input className="h-8 text-xs" value={newTitleAr} onChange={e => setNewTitleAr(e.target.value)} dir="rtl" /></div>
               </div>
               <div className="flex gap-2">
                 <Button size="sm" className="h-7 text-xs rounded-xl gap-1" onClick={() => createMutation.mutate()} disabled={!newTitle || createMutation.isPending}>
@@ -206,14 +206,14 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{comp ? (isAr && comp.title_ar ? comp.title_ar : comp.title) : "-"}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    {l.edition_year && <Badge variant="secondary" className="text-[9px] h-4">{l.edition_year}</Badge>}
-                    <Badge variant={comp?.status === "active" ? "default" : "secondary"} className="text-[9px] h-4">{comp?.status || "-"}</Badge>
+                    {l.edition_year && <Badge variant="secondary" className="text-[12px] h-4">{l.edition_year}</Badge>}
+                    <Badge variant={comp?.status === "active" ? "default" : "secondary"} className="text-[12px] h-4">{comp?.status || "-"}</Badge>
                   </div>
                 </div>
 
                 {isDeleting ? (
                   <div className="flex items-center gap-1.5 animate-in fade-in-0 duration-200">
-                    <span className="text-[10px] text-destructive font-medium flex items-center gap-1">
+                    <span className="text-[12px] text-destructive font-medium flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" />
                       {t("Unlink?", "إلغاء الربط؟")}
                     </span>

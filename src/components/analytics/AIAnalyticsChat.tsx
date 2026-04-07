@@ -89,7 +89,7 @@ export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
           <CardTitle className="flex items-center gap-2 text-base">
             <Brain className="h-5 w-5 text-primary" />
             {isAr ? "مساعد التحليلات الذكي" : "AI Analytics Assistant"}
-            <Badge variant="secondary" className="text-[10px] gap-1">
+            <Badge variant="secondary" className="text-[12px] gap-1">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مدعوم بالذكاء الاصطناعي" : "AI-Powered"}
             </Badge>

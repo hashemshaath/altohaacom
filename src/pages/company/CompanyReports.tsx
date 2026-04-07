@@ -208,9 +208,9 @@ export default function CompanyReports() {
                   <k.icon className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-[10px] text-muted-foreground">{k.label}</p>
+                  <p className="text-[12px] text-muted-foreground">{k.label}</p>
                   <p className="text-lg font-bold">{k.value}</p>
-                  <p className="text-[10px] text-muted-foreground">{k.sub}</p>
+                  <p className="text-[12px] text-muted-foreground">{k.sub}</p>
                 </div>
               </CardContent>
             </Card>
@@ -268,7 +268,7 @@ export default function CompanyReports() {
                       <tr key={o.order_number} className="border-b last:border-0 hover:bg-muted/30">
                         <td className="p-3 font-mono text-xs">{o.order_number}</td>
                         <td className="p-3">{o.title}</td>
-                        <td className="p-3"><Badge variant="outline" className="text-[10px]">{o.status}</Badge></td>
+                        <td className="p-3"><Badge variant="outline" className="text-[12px]">{o.status}</Badge></td>
                         <td className="p-3 text-end font-medium">{formatCurrency(o.total_amount || 0, language as "en" | "ar")}</td>
                         <td className="p-3 text-xs text-muted-foreground">{o.order_date || o.created_at?.split("T")[0]}</td>
                       </tr>
@@ -322,7 +322,7 @@ export default function CompanyReports() {
                       <tr key={i.invoice_number} className="border-b last:border-0 hover:bg-muted/30">
                         <td className="p-3 font-mono text-xs">{i.invoice_number}</td>
                         <td className="p-3">{i.title}</td>
-                        <td className="p-3"><Badge variant="outline" className={`text-[10px] ${i.status === "paid" ? "text-chart-2" : i.status === "overdue" ? "text-destructive" : ""}`}>{i.status}</Badge></td>
+                        <td className="p-3"><Badge variant="outline" className={`text-[12px] ${i.status === "paid" ? "text-chart-2" : i.status === "overdue" ? "text-destructive" : ""}`}>{i.status}</Badge></td>
                         <td className="p-3 text-end font-medium">{formatCurrency(i.amount || 0, language as "en" | "ar")}</td>
                         <td className="p-3 text-xs text-muted-foreground">{i.due_date || "—"}</td>
                       </tr>
@@ -401,7 +401,7 @@ export default function CompanyReports() {
                       return (
                         <tr key={t.transaction_number} className="border-b last:border-0 hover:bg-muted/30">
                           <td className="p-3 font-mono text-xs">{t.transaction_number}</td>
-                          <td className="p-3"><Badge variant="outline" className={`text-[10px] ${isCredit ? "text-chart-2" : "text-destructive"}`}>{t.type}</Badge></td>
+                          <td className="p-3"><Badge variant="outline" className={`text-[12px] ${isCredit ? "text-chart-2" : "text-destructive"}`}>{t.type}</Badge></td>
                           <td className="p-3 text-muted-foreground truncate max-w-[200px]">{isAr ? (t as any).description_ar || t.description : t.description}</td>
                           <td className={`p-3 text-end font-medium ${isCredit ? "text-chart-2" : "text-destructive"}`}>
                             {isCredit ? "+" : "−"}{formatCurrency(t.amount || 0, language as "en" | "ar")}

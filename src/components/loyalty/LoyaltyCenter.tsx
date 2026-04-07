@@ -88,7 +88,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                 {tiers.map((t) => (
                   <div key={t.id} className={`flex flex-col items-center transition-all duration-300 ${points >= t.min_points ? "opacity-100 scale-100" : "opacity-40 scale-95"}`}>
                     <span className="text-sm">{t.icon_emoji}</span>
-                    <span className="text-[10px] text-muted-foreground tabular-nums"><AnimatedCounter value={t.min_points} className="inline" /></span>
+                    <span className="text-[12px] text-muted-foreground tabular-nums"><AnimatedCounter value={t.min_points} className="inline" /></span>
                   </div>
                 ))}
               </div>
@@ -146,12 +146,12 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm">{isAr ? c.title_ar : c.title}</h3>
-                      <Badge variant="outline" className={`text-[10px] ${difficultyColors[c.difficulty] || ""}`}>{c.difficulty}</Badge>
+                      <Badge variant="outline" className={`text-[12px] ${difficultyColors[c.difficulty] || ""}`}>{c.difficulty}</Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{isAr ? c.description_ar : c.description}</p>
                     <div className="mt-2">
                       <Progress value={pct} className="h-1.5" />
-                      <p className="text-[10px] text-muted-foreground mt-1 tabular-nums">
+                      <p className="text-[12px] text-muted-foreground mt-1 tabular-nums">
                         {userProgress?.progress || 0} / {c.target_count}
                       </p>
                     </div>
@@ -165,7 +165,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                     ) : (
                       <div>
                         <p className="text-lg font-bold text-primary">{c.reward_points}</p>
-                        <p className="text-[10px] text-muted-foreground">{isAr ? "نقطة" : "pts"}</p>
+                        <p className="text-[12px] text-muted-foreground">{isAr ? "نقطة" : "pts"}</p>
                       </div>
                     )}
                   </div>
@@ -189,7 +189,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                 <Card key={r.id} className={`transition-all hover:shadow-md ${(r as any).is_featured ? "border-primary/30 ring-1 ring-primary/10" : "hover:border-border/60"} ${tierLocked ? "opacity-60" : ""}`}>
                   <CardContent className="p-4 space-y-3">
                     {(r as any).is_featured && (
-                      <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]">
+                      <Badge className="bg-primary/10 text-primary border-primary/20 text-[12px]">
                         <Sparkles className="h-2.5 w-2.5 me-0.5" />
                         {isAr ? "مميز" : "Featured"}
                       </Badge>
@@ -201,7 +201,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                     {!tierLocked && !canAfford && (
                       <div className="space-y-1">
                         <Progress value={affordPct} className="h-1" />
-                        <p className="text-[10px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? `${r.points_cost - points} نقطة متبقية` : `${r.points_cost - points} pts away`}
                         </p>
                       </div>
@@ -213,7 +213,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                         <span className="font-bold text-primary tabular-nums"><AnimatedCounter value={r.points_cost} className="inline" /></span>
                       </div>
                       {tierLocked ? (
-                        <Badge variant="outline" className="text-[10px] gap-1">
+                        <Badge variant="outline" className="text-[12px] gap-1">
                           <Lock className="h-3 w-3" />
                           {(r as any).min_tier}
                         </Badge>
@@ -245,7 +245,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                   <CardContent className="p-4 space-y-2">
                     <span className="text-3xl block transition-transform duration-500 group-hover/badge:scale-125 group-hover/badge:rotate-6">{b.badge_icon}</span>
                     <p className="font-medium text-sm">{isAr ? b.badge_name_ar : b.badge_name}</p>
-                    <p className="text-[10px] text-muted-foreground">
+                    <p className="text-[12px] text-muted-foreground">
                       {new Date(b.earned_at).toLocaleDateString()}
                     </p>
                   </CardContent>
@@ -281,7 +281,7 @@ export const LoyaltyCenter = memo(function LoyaltyCenter() {
                     <p className="text-sm text-muted-foreground"><AnimatedCounter value={t.min_points} className="inline" /> {isAr ? "نقطة" : "points"} • ×{t.multiplier} {isAr ? "مضاعف" : "multiplier"}</p>
                     <div className="flex flex-wrap gap-1 mt-2">
                       {(t.benefits as string[] || []).map((b: string, i: number) => (
-                        <Badge key={i} variant="outline" className="text-[10px]">{b}</Badge>
+                        <Badge key={i} variant="outline" className="text-[12px]">{b}</Badge>
                       ))}
                     </div>
                   </div>

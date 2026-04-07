@@ -124,11 +124,11 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
                 <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] text-muted-foreground font-medium truncate">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground font-medium truncate">{kpi.label}</p>
                 <div className="flex items-baseline gap-1.5">
                   <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : 0} className="text-lg font-bold tabular-nums" />
                   {kpi.growth !== 0 && (
-                    <Badge variant={kpi.growth > 0 ? "default" : "destructive"} className="text-[8px] h-4 px-1 font-semibold">
+                    <Badge variant={kpi.growth > 0 ? "default" : "destructive"} className="text-[12px] h-4 px-1 font-semibold">
                       {kpi.growth > 0 ? "+" : ""}{kpi.growth}%
                     </Badge>
                   )}
@@ -148,7 +148,7 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
                 <TrendingUp className="h-4 w-4 text-primary" />
                 {isAr ? "اتجاه التسجيل (30 يوم)" : "Registration Trend (30 Days)"}
               </CardTitle>
-              <Badge variant="outline" className="text-[9px]">
+              <Badge variant="outline" className="text-[12px]">
                 {isAr ? "آخر 30 يوم" : "Last 30 days"}
               </Badge>
             </div>

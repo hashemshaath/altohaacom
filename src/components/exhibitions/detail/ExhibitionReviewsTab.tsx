@@ -80,7 +80,7 @@ function HelpfulButton({ reviewId, helpfulCount, isAr }: { reviewId: string; hel
     <button
       onClick={() => user && toggleVote.mutate()}
       disabled={!user || toggleVote.isPending}
-      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-medium transition-all ${
+      className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[12px] font-medium transition-all ${
         myVote ? "bg-primary/10 text-primary" : "bg-muted/60 text-muted-foreground hover:bg-muted"
       }`}
     >
@@ -118,14 +118,14 @@ function OrganizerResponse({ review, isAr, isOrganizer, exhibitionId }: { review
     return (
       <div className="mt-2 ms-6 rounded-xl p-2.5 border-s-2 bg-primary/5 border-primary/40">
         <div className="flex items-center gap-1.5">
-          <Badge variant="secondary" className="text-[8px] h-3.5 px-1 bg-primary/10 text-primary border-0">
+          <Badge variant="secondary" className="text-[12px] h-3.5 px-1 bg-primary/10 text-primary border-0">
             {isAr ? "رد المنظم" : "Organizer Response"}
           </Badge>
           {review.organizer_response_at && (
-            <span className="text-[9px] text-muted-foreground">{format(new Date(review.organizer_response_at), "MMM d")}</span>
+            <span className="text-[12px] text-muted-foreground">{format(new Date(review.organizer_response_at), "MMM d")}</span>
           )}
         </div>
-        <p className="text-[11px] text-muted-foreground mt-1">{review.organizer_response}</p>
+        <p className="text-[12px] text-muted-foreground mt-1">{review.organizer_response}</p>
       </div>
     );
   }
@@ -140,7 +140,7 @@ function OrganizerResponse({ review, isAr, isOrganizer, exhibitionId }: { review
       </Button>
     </div>
   ) : (
-    <button onClick={() => setShowInput(true)} className="mt-2 ms-6 text-[10px] text-primary hover:underline flex items-center gap-1">
+    <button onClick={() => setShowInput(true)} className="mt-2 ms-6 text-[12px] text-primary hover:underline flex items-center gap-1">
       <Reply className="h-2.5 w-2.5" /> {isAr ? "رد كمنظم" : "Reply as Organizer"}
     </button>
   );
@@ -188,20 +188,20 @@ function ReviewReplySection({ reviewId, isAr, isOrganizer, exhibitionCreatorId }
         return (
           <div key={r.id} className={`ms-6 rounded-xl p-2.5 border-s-2 ${isOrganizerReply ? "bg-primary/5 border-primary/40" : "bg-muted/40 border-primary/20"}`}>
             <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold text-foreground">{r.profile?.full_name || r.profile?.username || (isAr ? "مستخدم" : "User")}</span>
+              <span className="text-[12px] font-semibold text-foreground">{r.profile?.full_name || r.profile?.username || (isAr ? "مستخدم" : "User")}</span>
               {isOrganizerReply && (
-                <Badge variant="secondary" className="text-[8px] h-3.5 px-1 bg-primary/10 text-primary border-0">
+                <Badge variant="secondary" className="text-[12px] h-3.5 px-1 bg-primary/10 text-primary border-0">
                   {isAr ? "المنظم" : "Organizer"}
                 </Badge>
               )}
-              <span className="text-[9px] text-muted-foreground">{format(new Date(r.created_at), "MMM d")}</span>
+              <span className="text-[12px] text-muted-foreground">{format(new Date(r.created_at), "MMM d")}</span>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">{r.content}</p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">{r.content}</p>
           </div>
         );
       })}
       {user && (isOrganizer || replies.length > 0) && !showReply && (
-        <button onClick={() => setShowReply(true)} className="ms-6 text-[10px] text-primary hover:underline flex items-center gap-1">
+        <button onClick={() => setShowReply(true)} className="ms-6 text-[12px] text-primary hover:underline flex items-center gap-1">
           <Reply className="h-2.5 w-2.5" /> {isAr ? "رد" : "Reply"}
         </button>
       )}
@@ -396,7 +396,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
                   <div className="h-2.5 flex-1 rounded-full bg-muted/60 overflow-hidden">
                     <div className="h-full rounded-full bg-gradient-to-r from-chart-4/80 to-chart-4 transition-all duration-500" style={{ width: `${d.pct}%` }} />
                   </div>
-                  <span className="w-6 text-[10px] text-muted-foreground text-end tabular-nums font-medium">{d.count}</span>
+                  <span className="w-6 text-[12px] text-muted-foreground text-end tabular-nums font-medium">{d.count}</span>
                 </div>
               ))}
             </div>
@@ -494,7 +494,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
           <div className="flex items-center gap-1">
             <button
               onClick={() => setFilterRating(null)}
-              className={`px-2 py-1 rounded-md text-[10px] font-medium transition-colors ${filterRating === null ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"}`}
+              className={`px-2 py-1 rounded-md text-[12px] font-medium transition-colors ${filterRating === null ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"}`}
             >
               {isAr ? "الكل" : "All"}
             </button>
@@ -502,7 +502,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
               <button
                 key={r}
                 onClick={() => setFilterRating(filterRating === r ? null : r)}
-                className={`px-2 py-1 rounded-md text-[10px] font-medium transition-colors ${filterRating === r ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"}`}
+                className={`px-2 py-1 rounded-md text-[12px] font-medium transition-colors ${filterRating === r ? "bg-primary text-primary-foreground" : "bg-muted/60 text-muted-foreground hover:bg-muted"}`}
               >
                 {r}⭐
               </button>
@@ -529,7 +529,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
                       {review.profile?.full_name || review.profile?.username || (isAr ? "مستخدم" : "User")}
                     </span>
                     {review.is_verified_attendee && (
-                      <Badge variant="outline" className="text-[8px] h-4 px-1.5 text-chart-3 border-chart-3/30 gap-0.5">
+                      <Badge variant="outline" className="text-[12px] h-4 px-1.5 text-chart-3 border-chart-3/30 gap-0.5">
                         <Shield className="h-2 w-2" />
                         {isAr ? "حاضر" : "Verified"}
                       </Badge>
@@ -557,7 +557,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
 
                   <div className="mt-3 flex items-center gap-3">
                     <HelpfulButton reviewId={review.id} helpfulCount={review.helpful_count || 0} isAr={isAr} />
-                    <span className="text-[10px] text-muted-foreground/60 font-medium">{format(new Date(review.created_at), "MMM d, yyyy")}</span>
+                    <span className="text-[12px] text-muted-foreground/60 font-medium">{format(new Date(review.created_at), "MMM d, yyyy")}</span>
                   </div>
                   <OrganizerResponse review={review} isAr={isAr} isOrganizer={!!creatorId && user?.id === creatorId} exhibitionId={exhibitionId} />
                   <ReviewReplySection reviewId={review.id} isAr={isAr} isOrganizer={!!creatorId && user?.id === creatorId} exhibitionCreatorId={creatorId} />

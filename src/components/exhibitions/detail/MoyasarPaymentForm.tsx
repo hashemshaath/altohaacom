@@ -213,7 +213,7 @@ export const MoyasarPaymentForm = memo(function MoyasarPaymentForm({
             )}
           </div>
 
-          <p className="text-[9px] text-muted-foreground text-center flex items-center justify-center gap-1">
+          <p className="text-[12px] text-muted-foreground text-center flex items-center justify-center gap-1">
             <Lock className="h-2.5 w-2.5" />
             {t("Secured by Moyasar • Saudi payment gateway", "مؤمن بواسطة مُيسّر • بوابة دفع سعودية")}
           </p>

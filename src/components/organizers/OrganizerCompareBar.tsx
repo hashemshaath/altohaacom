@@ -27,9 +27,9 @@ export const OrganizerCompareBar = memo(function OrganizerCompareBar({ items, on
             <div key={org.id} className="flex items-center gap-1.5 shrink-0 rounded-xl border border-border/40 bg-muted/50 px-2 py-1">
               <Avatar className="h-6 w-6 rounded-lg">
                 {org.logo_url && <AvatarImage src={org.logo_url} />}
-                <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-[9px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-[12px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
               </Avatar>
-              <span className="text-[11px] font-medium max-w-[80px] truncate">{org.name}</span>
+              <span className="text-[12px] font-medium max-w-[80px] truncate">{org.name}</span>
               <button onClick={() => onRemove(org.id)} className="text-muted-foreground hover:text-destructive transition-colors">
                 <X className="h-3 w-3" />
               </button>
@@ -76,7 +76,7 @@ function CompareTable({ items, isAr }: { items: any[]; isAr: boolean }) {
           </Avatar>
           <div>
             <p className="font-semibold text-sm">{isAr && org.name_ar ? org.name_ar : org.name}</p>
-            {org.is_verified && <Badge variant="secondary" className="text-[8px] mt-0.5"><CheckCircle2 className="h-2.5 w-2.5 me-0.5" />{isAr ? "موثق" : "Verified"}</Badge>}
+            {org.is_verified && <Badge variant="secondary" className="text-[12px] mt-0.5"><CheckCircle2 className="h-2.5 w-2.5 me-0.5" />{isAr ? "موثق" : "Verified"}</Badge>}
           </div>
         </div>
       ),
@@ -119,7 +119,7 @@ function CompareTable({ items, isAr }: { items: any[]; isAr: boolean }) {
       render: (org) => (
         <div className="flex flex-wrap gap-1">
           {(org.categories || []).map((c: string) => (
-            <Badge key={c} variant="outline" className="text-[8px] rounded-full">{c}</Badge>
+            <Badge key={c} variant="outline" className="text-[12px] rounded-full">{c}</Badge>
           ))}
           {(!org.categories || org.categories.length === 0) && <span className="text-muted-foreground">—</span>}
         </div>

@@ -164,7 +164,7 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
   }
 
   const TrendBadge = ({ value }: { value: number }) => (
-    <Badge variant={value > 0 ? "default" : value < 0 ? "destructive" : "secondary"} className="text-[10px] gap-0.5">
+    <Badge variant={value > 0 ? "default" : value < 0 ? "destructive" : "secondary"} className="text-[12px] gap-0.5">
       {value > 0 ? <TrendingUp className="h-3 w-3" /> : value < 0 ? <TrendingDown className="h-3 w-3" /> : null}
       {value > 0 ? "+" : ""}{value}%
     </Badge>

@@ -59,7 +59,7 @@ export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organiz
               key={tab.key}
               variant={metric === tab.key ? "default" : "ghost"}
               size="sm"
-              className="h-7 text-[10px] gap-1 rounded-lg px-2"
+              className="h-7 text-[12px] gap-1 rounded-lg px-2"
               onClick={() => setMetric(tab.key)}
             >
               <tab.icon className="h-3 w-3" />
@@ -100,13 +100,13 @@ export const OrganizerLeaderboard = memo(function OrganizerLeaderboard({ organiz
                   {org.is_verified && <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />}
                 </div>
                 {org.city && (
-                  <p className="text-[10px] text-muted-foreground truncate">{org.city}{org.country ? `, ${org.country}` : ""}</p>
+                  <p className="text-[12px] text-muted-foreground truncate">{org.city}{org.country ? `, ${org.country}` : ""}</p>
                 )}
               </div>
 
               <div className="text-end shrink-0">
                 <p className="text-sm font-bold text-foreground">{getValue(org)}</p>
-                <p className="text-[9px] text-muted-foreground">{getLabel()}</p>
+                <p className="text-[12px] text-muted-foreground">{getLabel()}</p>
               </div>
             </Link>
           );

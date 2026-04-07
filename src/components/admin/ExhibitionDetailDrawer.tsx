@@ -184,15 +184,15 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                     </SheetTitle>
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
                       {(exh as any).exhibition_number && (
-                        <Badge variant="outline" className="font-mono text-[10px] h-5">{(exh as any).exhibition_number}</Badge>
+                        <Badge variant="outline" className="font-mono text-[12px] h-5">{(exh as any).exhibition_number}</Badge>
                       )}
                       {derived && (
-                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium ${derived.color}`}>
+                        <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium ${derived.color}`}>
                           <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />
                           {isAr ? derived.labelAr : derived.label}
                         </span>
                       )}
-                      <Badge variant="secondary" className="text-[10px]">{exh.type}</Badge>
+                      <Badge variant="secondary" className="text-[12px]">{exh.type}</Badge>
                     </div>
                   </div>
                 </div>
@@ -215,7 +215,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                     <p className="text-sm font-bold">
                       {(kpi as any).isText ? kpi.value : <AnimatedCounter value={kpi.value as number} />}
                     </p>
-                    <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
+                    <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
                   </div>
                 ))}
               </div>
@@ -263,7 +263,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                               <p className="text-sm font-medium truncate">
                                 {isAr && exh.organizer_name_ar ? exh.organizer_name_ar : exh.organizer_name}
                               </p>
-                              <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                              <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                                 {exh.organizer_email && <span className="flex items-center gap-1"><Mail className="h-3 w-3" />{exh.organizer_email}</span>}
                                 {exh.organizer_phone && <span className="flex items-center gap-1"><Phone className="h-3 w-3" />{exh.organizer_phone}</span>}
                               </div>
@@ -312,7 +312,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                             <div key={sp.id} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/30">
                               {sp.logo_url && <img src={sp.logo_url} alt="" className="h-6 w-6 rounded object-contain" />}
                               <span className="truncate flex-1">{isAr && sp.name_ar ? sp.name_ar : sp.name}</span>
-                              <Badge variant="outline" className="text-[9px] h-4">{sp.tier}</Badge>
+                              <Badge variant="outline" className="text-[12px] h-4">{sp.tier}</Badge>
                             </div>
                           ))}
                         </div>
@@ -340,7 +340,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                     ].map(k => (
                       <div key={k.label} className="text-center p-2.5 rounded-xl bg-muted/40">
                         <p className={`text-lg font-bold ${k.color}`}><AnimatedCounter value={k.value} /></p>
-                        <p className="text-[10px] text-muted-foreground">{k.label}</p>
+                        <p className="text-[12px] text-muted-foreground">{k.label}</p>
                       </div>
                     ))}
                   </div>
@@ -382,9 +382,9 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                         <p className="text-xs font-medium mb-2">{t("Recent Tickets", "آخر التذاكر")}</p>
                         <div className="space-y-1.5">
                           {analytics.recentTickets.map((tk) => (
-                            <div key={tk.id} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/30">
+                            <div key={tk.id} className="flex items-center justify-between text-[12px] p-1.5 rounded bg-muted/30">
                               <span className="truncate flex-1">{tk.attendee_name || "—"}</span>
-                              <Badge variant={tk.status === "confirmed" ? "default" : "secondary"} className="text-[9px] h-4">
+                              <Badge variant={tk.status === "confirmed" ? "default" : "secondary"} className="text-[12px] h-4">
                                 {tk.status === "confirmed" ? t("OK", "مؤكد") : t("Pending", "معلق")}
                               </Badge>
                             </div>
@@ -469,7 +469,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                         <p className="text-lg font-bold">
                           {(k as any).isText ? k.value : <AnimatedCounter value={k.value as number} />}
                         </p>
-                        <p className="text-[10px] text-muted-foreground">{k.label}</p>
+                        <p className="text-[12px] text-muted-foreground">{k.label}</p>
                       </div>
                     ))}
                   </div>
@@ -490,17 +490,17 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                                 </div>
                                 <div className="flex items-center gap-1.5">
                                   {rv.is_verified_attendee && (
-                                    <Badge variant="outline" className="text-[8px] h-4 text-chart-2 border-chart-2/30">
+                                    <Badge variant="outline" className="text-[12px] h-4 text-chart-2 border-chart-2/30">
                                       <CheckCircle2 className="h-2.5 w-2.5 me-0.5" />{t("Verified", "موثق")}
                                     </Badge>
                                   )}
-                                  <span className="text-[10px] text-muted-foreground">
+                                  <span className="text-[12px] text-muted-foreground">
                                     {format(new Date(rv.created_at), "dd MMM")}
                                   </span>
                                 </div>
                               </div>
                               {rv.content && (
-                                <p className="text-[11px] text-muted-foreground line-clamp-2">{rv.content}</p>
+                                <p className="text-[12px] text-muted-foreground line-clamp-2">{rv.content}</p>
                               )}
                             </div>
                           ))}

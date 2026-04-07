@@ -107,7 +107,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
               <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
               <div>
                 <p className="text-lg font-bold">{kpi.value}</p>
-                <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -122,7 +122,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
         </div>
         <div className="flex gap-1">
           {["all", "available", "reserved", "occupied"].map(s => (
-            <Button key={s} size="sm" variant={filterStatus === s ? "default" : "outline"} className="text-[10px] h-9 px-2" onClick={() => setFilterStatus(s)}>
+            <Button key={s} size="sm" variant={filterStatus === s ? "default" : "outline"} className="text-[12px] h-9 px-2" onClick={() => setFilterStatus(s)}>
               {s === "all" ? t("All", "الكل") : s === "available" ? t("Available", "متاح") : s === "reserved" ? t("Reserved", "محجوز") : t("Occupied", "مشغول")}
             </Button>
           ))}
@@ -136,7 +136,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
             <CardTitle className="text-sm flex items-center gap-2">
               <MapPin className="h-4 w-4 text-primary" />
               {hallName}
-              <Badge variant="outline" className="text-[9px]">{hallBooths.length} {t("booths", "أجنحة")}</Badge>
+              <Badge variant="outline" className="text-[12px]">{hallBooths.length} {t("booths", "أجنحة")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4">
@@ -156,10 +156,10 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
                           ) : (
                             <LayoutGrid className="h-5 w-5 mb-1 opacity-60" />
                           )}
-                          <span className="text-[10px] font-bold">{booth.booth_number}</span>
-                          <span className="text-[8px] truncate max-w-full">{isAr && booth.name_ar ? booth.name_ar : booth.name}</span>
+                          <span className="text-[12px] font-bold">{booth.booth_number}</span>
+                          <span className="text-[12px] truncate max-w-full">{isAr && booth.name_ar ? booth.name_ar : booth.name}</span>
                           {booth.price > 0 && (
-                            <span className="text-[8px] font-semibold mt-0.5">{booth.price} {booth.currency}</span>
+                            <span className="text-[12px] font-semibold mt-0.5">{booth.price} {booth.currency}</span>
                           )}
                           {booth.is_featured && <Badge className="absolute -top-1 -end-1 text-[7px] h-3.5 px-1">⭐</Badge>}
                         </button>

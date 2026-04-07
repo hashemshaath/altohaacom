@@ -31,7 +31,7 @@ export function CountdownBadge({ targetDate, isAr, className }: Props) {
   return (
     <Badge
       variant={urgent ? "destructive" : "secondary"}
-      className={cn("text-[9px] px-1.5 py-0 gap-0.5 font-mono tabular-nums", className)}
+      className={cn("text-[12px] px-1.5 py-0 gap-0.5 font-mono tabular-nums", className)}
     >
       <Timer className="h-2.5 w-2.5" />
       {text}

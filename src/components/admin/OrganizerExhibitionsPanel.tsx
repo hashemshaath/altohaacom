@@ -148,7 +148,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
             </Avatar>
             <div className="min-w-0">
               <SheetTitle className="text-sm truncate">{organizerName}</SheetTitle>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 {isAr ? `${linked?.length || 0} معرض مرتبط` : `${linked?.length || 0} linked exhibitions`}
               </p>
             </div>
@@ -187,16 +187,16 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
                   <div key={exh.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/40 transition-colors">
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{isAr ? exh.title_ar || exh.title : exh.title}</p>
-                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                         {exh.start_date && <span className="flex items-center gap-0.5"><Calendar className="h-2.5 w-2.5" />{format(new Date(exh.start_date), "MMM yyyy")}</span>}
                         {exh.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{exh.city}</span>}
                       </div>
                     </div>
-                    <Badge variant="outline" className="text-[9px] capitalize">{exh.status}</Badge>
+                    <Badge variant="outline" className="text-[12px] capitalize">{exh.status}</Badge>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="h-6 text-[10px] px-2 gap-1"
+                      className="h-6 text-[12px] px-2 gap-1"
                       onClick={() => linkMutation.mutate({ exhibitionId: exh.id, role: "organizer" })}
                       disabled={linkMutation.isPending}
                     >
@@ -244,12 +244,12 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <p className="text-sm font-medium truncate">{isAr ? exh.title_ar || exh.title : exh.title}</p>
-                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                          <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-0.5">
                             {exh.start_date && <span className="flex items-center gap-0.5"><Calendar className="h-2.5 w-2.5" />{format(new Date(exh.start_date), "MMM d, yyyy")}</span>}
                             {exh.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{exh.city}, {exh.country}</span>}
                           </div>
                         </div>
-                        <Badge variant={exh.status === "active" ? "default" : "secondary"} className="text-[9px] capitalize shrink-0">
+                        <Badge variant={exh.status === "active" ? "default" : "secondary"} className="text-[12px] capitalize shrink-0">
                           {exh.status}
                         </Badge>
                       </div>
@@ -258,7 +258,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
                           value={link.role || "organizer"}
                           onValueChange={v => updateRoleMutation.mutate({ linkId: link.id, role: v })}
                         >
-                          <SelectTrigger className="h-7 text-[10px] flex-1"><SelectValue /></SelectTrigger>
+                          <SelectTrigger className="h-7 text-[12px] flex-1"><SelectValue /></SelectTrigger>
                           <SelectContent>
                             {roles.map(r => <SelectItem key={r} value={r} className="text-xs capitalize">{r}</SelectItem>)}
                           </SelectContent>
@@ -266,7 +266,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-[10px] text-destructive gap-1 px-2"
+                          className="h-7 text-[12px] text-destructive gap-1 px-2"
                           onClick={() => { if (confirm(isAr ? "إلغاء الربط؟" : "Unlink?")) unlinkMutation.mutate(link.id); }}
                         >
                           <Unlink className="h-3 w-3" />{isAr ? "إلغاء" : "Unlink"}

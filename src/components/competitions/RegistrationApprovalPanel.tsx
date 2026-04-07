@@ -318,7 +318,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
                         {registration.dish_name || (language === "ar" ? "طبق بدون اسم" : "Unnamed Dish")}
                       </h4>
                       {registration.registration_number && (
-                        <Badge variant="outline" className="font-mono text-[10px]">
+                        <Badge variant="outline" className="font-mono text-[12px]">
                           {registration.registration_number}
                         </Badge>
                       )}

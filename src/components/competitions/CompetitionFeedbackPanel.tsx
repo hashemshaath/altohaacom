@@ -79,7 +79,7 @@ export const CompetitionFeedbackPanel = memo(function CompetitionFeedbackPanel({
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <Badge variant="outline" className="text-[10px]">{isAr ? cat.ar : cat.en}</Badge>
+                      <Badge variant="outline" className="text-[12px]">{isAr ? cat.ar : cat.en}</Badge>
                     </div>
                     <p className="text-sm leading-relaxed text-muted-foreground">
                       {isAr && fb.comment_ar ? fb.comment_ar : fb.comment}
@@ -88,7 +88,7 @@ export const CompetitionFeedbackPanel = memo(function CompetitionFeedbackPanel({
                       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
                         {Object.entries(fb.score_breakdown as Record<string, number>).map(([key, val]) => (
                           <div key={key} className="rounded-xl bg-muted/50 p-2 text-center">
-                            <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{key}</p>
+                            <p className="text-[12px] text-muted-foreground uppercase tracking-wide">{key}</p>
                             <p className="text-sm font-bold text-primary">{val}</p>
                           </div>
                         ))}

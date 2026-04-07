@@ -199,7 +199,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
             <p className="text-sm font-medium flex items-center gap-2">
               <Clock className="h-4 w-4 text-chart-4" />
               {isAr ? "طلبات رعاية قيد المراجعة" : "Pending Sponsorship Applications"}
-              <Badge variant="secondary" className="text-[10px]">{pendingSponsors.length}</Badge>
+              <Badge variant="secondary" className="text-[12px]">{pendingSponsors.length}</Badge>
             </p>
             {pendingSponsors.map((sponsor) => {
               const companyName = isAr && sponsor.companies?.name_ar ? sponsor.companies.name_ar : sponsor.companies?.name;
@@ -356,7 +356,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
                               <p className={`truncate font-semibold group-hover:text-primary transition-colors ${isPlatinum ? "text-base" : "text-sm"}`}>
                                 {companyName}
                               </p>
-                              <Badge variant="outline" className={`mt-1 text-[9px] uppercase tracking-wider ${config.color}`}>
+                              <Badge variant="outline" className={`mt-1 text-[12px] uppercase tracking-wider ${config.color}`}>
                                 <Icon className="me-1 h-2.5 w-2.5" />
                                 {isAr ? config.labelAr : config.label}
                               </Badge>

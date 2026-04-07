@@ -76,7 +76,7 @@ export const MembershipInvoicesSection = memo(function MembershipInvoicesSection
                       <p className="text-sm font-medium truncate">
                         {isAr ? (inv.title_ar || inv.title || inv.invoice_number) : (inv.title || inv.invoice_number)}
                       </p>
-                      <Badge variant={st.variant} className="text-[10px] shrink-0">
+                      <Badge variant={st.variant} className="text-[12px] shrink-0">
                         {isAr ? st.labelAr : st.label}
                       </Badge>
                     </div>
@@ -95,7 +95,7 @@ export const MembershipInvoicesSection = memo(function MembershipInvoicesSection
                   <div className="text-end shrink-0">
                     <p className="text-sm font-bold">{inv.amount} {inv.currency || "SAR"}</p>
                     {inv.tax_amount ? (
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-[12px] text-muted-foreground">
                         {isAr ? "ضريبة:" : "Tax:"} {inv.tax_amount} SAR
                       </p>
                     ) : null}

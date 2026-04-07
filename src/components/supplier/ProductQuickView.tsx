@@ -66,10 +66,10 @@ export const ProductQuickView = memo(function ProductQuickView({ product, open, 
             )}
             <div className="flex flex-wrap gap-1.5">
               {product.category && (
-                <Badge variant="outline" className="text-[10px]">{product.category}</Badge>
+                <Badge variant="outline" className="text-[12px]">{product.category}</Badge>
               )}
               {product.sku && (
-                <Badge variant="outline" className="text-[10px] font-mono">SKU: {product.sku}</Badge>
+                <Badge variant="outline" className="text-[12px] font-mono">SKU: {product.sku}</Badge>
               )}
             </div>
           </div>

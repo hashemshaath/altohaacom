@@ -71,17 +71,17 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
               <div className="flex flex-1 flex-col justify-between min-w-0">
                 <div>
                   <div className="flex items-center gap-1.5 mb-1.5">
-                    <Badge variant="secondary" className="text-[8px] rounded-md gap-1 px-1.5 py-0">
+                    <Badge variant="secondary" className="text-[12px] rounded-md gap-1 px-1.5 py-0">
                       <TypeIcon className="h-2 w-2" />
                       {typeBadgeLabel(article.type)}
                     </Badge>
-                    <span className="text-[9px] text-muted-foreground/60 flex items-center gap-0.5">
+                    <span className="text-[12px] text-muted-foreground/60 flex items-center gap-0.5">
                       <BookOpen className="h-2 w-2" /> {readTime} {isAr ? "د" : "m"}
                     </span>
                   </div>
                   <h3 className="text-sm font-semibold line-clamp-2 group-hover:text-primary transition-colors">{title}</h3>
                 </div>
-                <div className="flex items-center gap-3 text-[10px] text-muted-foreground mt-1">
+                <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-1">
                   <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(article.published_at || article.created_at)}</span>
                   <span className="flex items-center gap-1"><Eye className="h-2.5 w-2.5" />{article.view_count}</span>
                 </div>
@@ -105,12 +105,12 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
                 <TypeIcon className="h-10 w-10 text-primary/20" />
               </div>
             )}
-            <Badge className="absolute start-3 top-3 gap-1 text-[10px] rounded-xl" variant="secondary">
+            <Badge className="absolute start-3 top-3 gap-1 text-[12px] rounded-xl" variant="secondary">
               <TypeIcon className="h-2.5 w-2.5" />
               {typeBadgeLabel(article.type)}
             </Badge>
             <div className="absolute top-3 end-3 flex items-center gap-1.5">
-              <div className="flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-0.5 text-[10px] text-muted-foreground">
+              <div className="flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-0.5 text-[12px] text-muted-foreground">
                 <BookOpen className="h-2.5 w-2.5" />
                 {readTime} {isAr ? "د" : "min"}
               </div>
@@ -131,11 +131,11 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
                 )}
               </div>
             )}
-            <div className="flex items-center justify-between border-t border-border/40 pt-3 text-[11px] text-muted-foreground mt-auto">
+            <div className="flex items-center justify-between border-t border-border/40 pt-3 text-[12px] text-muted-foreground mt-auto">
               <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formatDate(article.published_at || article.created_at)}</span>
               <div className="flex items-center gap-2.5">
                 {(article.view_count ?? 0) >= 100 && (
-                  <Badge variant="secondary" className="text-[8px] px-1.5 py-0 h-4 rounded-lg gap-0.5 bg-chart-4/10 text-chart-4 border-0">
+                  <Badge variant="secondary" className="text-[12px] px-1.5 py-0 h-4 rounded-lg gap-0.5 bg-chart-4/10 text-chart-4 border-0">
                     🔥 {isAr ? "رائج" : "Trending"}
                   </Badge>
                 )}

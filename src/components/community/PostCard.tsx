@@ -87,14 +87,14 @@ export const PostCard = memo(function PostCard({
       )}
 
       {!isEditing && post.is_pinned && (
-        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-muted-foreground">
+        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[12px] font-bold text-muted-foreground">
           <Pin className="h-3 w-3" />
           {isAr ? "منشور مثبت" : "Pinned"}
         </div>
       )}
 
       {!isEditing && isViral && !post.is_pinned && (
-        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[10px] font-bold text-chart-4 animate-in fade-in-50">
+        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[12px] font-bold text-chart-4 animate-in fade-in-50">
           🔥 {isAr ? "منشور رائج" : "Trending post"}
           <span className="text-muted-foreground font-normal">• {totalEngagement} {isAr ? "تفاعل" : "interactions"}</span>
         </div>
@@ -133,7 +133,7 @@ export const PostCard = memo(function PostCard({
               <PostReadTime content={post.content} />
               {post.edited_at && (
                 <button
-                  className="shrink-0 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                  className="shrink-0 text-[12px] text-muted-foreground hover:text-primary transition-colors"
                   onClick={(e) => { e.stopPropagation(); onViewHistory(post.id); }}
                   title={isAr ? "تم التعديل" : "Edited"}
                 >
@@ -258,7 +258,7 @@ export const PostCard = memo(function PostCard({
 
             {/* Hot post indicator */}
             {isHotPost && !isViral && (
-              <div className="mt-2 flex items-center gap-1.5 text-[10px] text-chart-4/80">
+              <div className="mt-2 flex items-center gap-1.5 text-[12px] text-chart-4/80">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4 animate-pulse" />
                 {isAr ? "محتوى نشط" : "Active thread"}
               </div>
@@ -286,7 +286,7 @@ export const PostCard = memo(function PostCard({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[11px] sm:text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 touch-manipulation active:scale-95"
+                  className="h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[12px] sm:text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 touch-manipulation active:scale-95"
                   onClick={() => onOpenThread(post.id)}
                 >
                   <MessageCircle className="h-4 w-4" />
@@ -296,7 +296,7 @@ export const PostCard = memo(function PostCard({
                   variant="ghost"
                   size="sm"
                   className={cn(
-                    "h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[11px] sm:text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90 touch-manipulation",
+                    "h-9 gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 text-[12px] sm:text-xs hover:text-chart-3 hover:bg-chart-3/10 transition-transform active:scale-90 touch-manipulation",
                     post.is_reposted ? "text-chart-3" : "text-muted-foreground"
                   )}
                   onClick={() => onRepost(post.id, post.is_reposted)}

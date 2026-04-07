@@ -212,7 +212,7 @@ export default function ShopMyProducts() {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium line-clamp-1">{title}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <Badge variant="outline" className="text-[10px]">{p.category}</Badge>
+                        <Badge variant="outline" className="text-[12px]">{p.category}</Badge>
                         <span className="text-sm font-bold text-primary">{p.currency} {Number(p.price).toFixed(2)}</span>
                         {p.product_type === "physical" && (
                           <span className="text-xs text-muted-foreground">{p.stock_quantity} {isAr ? "متاح" : "in stock"}</span>

@@ -61,7 +61,7 @@ export const PostEditHistory = memo(function PostEditHistory({ postId, onClose }
             <div className="space-y-4 p-1">
               {edits.map((edit, idx) => (
                 <div key={edit.id} className="rounded-xl border border-border p-3">
-                  <p className="text-[10px] font-medium text-muted-foreground mb-2">
+                  <p className="text-[12px] font-medium text-muted-foreground mb-2">
                     {isAr ? "النسخة السابقة" : "Previous version"} · {toEnglishDigits(
                       format(new Date(edit.edited_at), "MMM d, yyyy HH:mm", {
                         locale: isAr ? ar : enUS,

@@ -58,7 +58,7 @@ export const TrendForecastChart = memo(function TrendForecastChart({
     }[trend.direction];
     const DirIcon = cfg.icon;
     return (
-      <Badge variant="outline" className={`gap-1 text-[10px] ${cfg.cls}`}>
+      <Badge variant="outline" className={`gap-1 text-[12px] ${cfg.cls}`}>
         <DirIcon className="h-3 w-3" />
         {cfg.label} · R²={trend.r2.toFixed(2)}
       </Badge>
@@ -86,7 +86,7 @@ export const TrendForecastChart = memo(function TrendForecastChart({
           <div className="flex items-center gap-1.5 flex-wrap">
             <TrendBadge trend={trend} />
             {anomalies.length > 0 && (
-              <Badge variant="outline" className="gap-1 text-[10px] text-chart-4 border-chart-4/30">
+              <Badge variant="outline" className="gap-1 text-[12px] text-chart-4 border-chart-4/30">
                 <AlertTriangle className="h-3 w-3" />
                 {anomalies.length} {isAr ? "شذوذ" : "anomal."}
               </Badge>

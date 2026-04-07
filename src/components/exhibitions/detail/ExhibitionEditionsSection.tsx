@@ -57,7 +57,7 @@ const GrowthBadge = memo(function GrowthBadge({ current, previous }: { current?:
   if (pct === 0) return null;
   return (
     <span className={cn(
-      "inline-flex items-center gap-0.5 text-[10px] font-bold rounded-full px-1.5 py-0.5",
+      "inline-flex items-center gap-0.5 text-[12px] font-bold rounded-full px-1.5 py-0.5",
       pct > 0 ? "bg-primary/10 text-primary" : "bg-destructive/10 text-destructive"
     )}>
       {pct > 0 ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
@@ -72,7 +72,7 @@ const StatPill = forwardRef<HTMLDivElement, { value: string; label: string; grow
     return (
       <div ref={ref} className="flex flex-col items-center gap-0.5 rounded-xl bg-muted/50 px-3 py-2 min-w-[70px]">
         <span className="text-sm font-bold tabular-nums">{value}</span>
-        <span className="text-[9px] text-muted-foreground leading-none">{label}</span>
+        <span className="text-[12px] text-muted-foreground leading-none">{label}</span>
         {growth}
       </div>
     );
@@ -189,7 +189,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
           </div>
         </div>
         {growthSummary && (
-          <Badge variant="outline" className="text-[10px] font-semibold hidden sm:flex gap-1">
+          <Badge variant="outline" className="text-[12px] font-semibold hidden sm:flex gap-1">
             <BarChart3 className="h-3 w-3" />
             {growthSummary.totalEditions} {isAr ? "نسخة" : "editions"} · {growthSummary.firstYear}–{growthSummary.lastYear}
           </Badge>
@@ -274,12 +274,12 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 flex-wrap mb-1">
                             {compCount > 0 && (
-                              <Badge variant="secondary" className="text-[9px] gap-0.5">
+                              <Badge variant="secondary" className="text-[12px] gap-0.5">
                                 <Trophy className="h-2.5 w-2.5" />{compCount}
                               </Badge>
                             )}
                             {galleryCount > 0 && (
-                              <Badge variant="outline" className="text-[9px] gap-0.5">
+                              <Badge variant="outline" className="text-[12px] gap-0.5">
                                 <ImageIcon className="h-2.5 w-2.5" />{galleryCount}
                               </Badge>
                             )}
@@ -300,7 +300,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                       </div>
 
                       {/* Meta line */}
-                      <div className="flex items-center gap-2.5 text-[11px] text-muted-foreground mb-2.5 flex-wrap">
+                      <div className="flex items-center gap-2.5 text-[12px] text-muted-foreground mb-2.5 flex-wrap">
                         <time className="flex items-center gap-1" dateTime={edition.start_date}>
                           <Calendar className="h-3 w-3" />
                           {format(new Date(edition.start_date), "MMM yyyy", { locale: isAr ? ar : undefined })}
@@ -346,7 +346,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                         {(desc || galleryCount > 0) && (
                           <button
                             onClick={() => setExpandedEdition(isExpanded ? null : edition.id)}
-                            className="text-[11px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
+                            className="text-[12px] font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
                             aria-expanded={isExpanded}
                           >
                             <ChevronDown className={cn("h-3 w-3 transition-transform", isExpanded && "rotate-180")} />
@@ -355,7 +355,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                         )}
                         <Link
                           to={`/exhibitions/${edition.slug}`}
-                          className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1 ms-auto"
+                          className="text-[12px] font-semibold text-primary hover:underline flex items-center gap-1 ms-auto"
                         >
                           {isAr ? "عرض النسخة الكاملة" : "View Full Edition"}
                           <ChevronRight className="h-3 w-3" />
@@ -365,7 +365,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                       {/* Expanded gallery */}
                       {isExpanded && galleryCount > 0 && (
                         <div className="mt-3 pt-3 border-t border-border/20">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
+                          <p className="text-[12px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
                             {isAr ? "صور من النسخة" : "Edition Gallery"}
                           </p>
                           <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
@@ -382,7 +382,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                             {galleryCount > 5 && (
                               <Link
                                 to={`/exhibitions/${edition.slug}`}
-                                className="h-16 w-24 shrink-0 rounded-lg bg-muted/60 border border-border/30 flex items-center justify-center text-[10px] font-semibold text-muted-foreground hover:text-primary transition-colors"
+                                className="h-16 w-24 shrink-0 rounded-lg bg-muted/60 border border-border/30 flex items-center justify-center text-[12px] font-semibold text-muted-foreground hover:text-primary transition-colors"
                               >
                                 +{galleryCount - 5}
                               </Link>

@@ -44,7 +44,7 @@ export const OfflineJudgingPanel = memo(function OfflineJudgingPanel({ onSelectC
             )}
             {isAr ? "التحكيم بدون اتصال" : "Offline Judging"}
           </CardTitle>
-          <Badge variant={isOnline ? "secondary" : "destructive"} className="text-[10px]">
+          <Badge variant={isOnline ? "secondary" : "destructive"} className="text-[12px]">
             {isOnline ? (isAr ? "متصل" : "Online") : (isAr ? "غير متصل" : "Offline")}
           </Badge>
         </div>
@@ -55,17 +55,17 @@ export const OfflineJudgingPanel = memo(function OfflineJudgingPanel({ onSelectC
           <div className="rounded-xl border border-border/50 p-2.5 text-center">
             <Trophy className="h-4 w-4 mx-auto text-primary mb-1" />
             <AnimatedCounter value={cachedCompetitions.length} className="text-lg font-bold" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "مخزنة" : "Cached"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "مخزنة" : "Cached"}</p>
           </div>
           <div className="rounded-xl border border-border/50 p-2.5 text-center">
             <Cloud className={cn("h-4 w-4 mx-auto mb-1", pendingCount > 0 ? "text-chart-4" : "text-muted-foreground")} />
             <AnimatedCounter value={pendingCount} className="text-lg font-bold" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "بانتظار المزامنة" : "Pending"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "بانتظار المزامنة" : "Pending"}</p>
           </div>
           <div className="rounded-xl border border-border/50 p-2.5 text-center">
             <Clock className="h-4 w-4 mx-auto text-muted-foreground mb-1" />
             <p className="text-xs font-medium mt-0.5 leading-tight">{lastSyncText}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "آخر مزامنة" : "Last sync"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "آخر مزامنة" : "Last sync"}</p>
           </div>
         </div>
 
@@ -127,7 +127,7 @@ export const OfflineJudgingPanel = memo(function OfflineJudgingPanel({ onSelectC
                   <p className="text-sm font-medium truncate">
                     {isAr ? (item.competition.title_ar || item.competition.title) : item.competition.title}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[12px] text-muted-foreground">
                     {item.registrations.length} {isAr ? "مشارك" : "participant"}{item.registrations.length !== 1 ? "s" : ""} · {item.criteria.length} {isAr ? "معيار" : "criteria"}
                   </p>
                 </div>

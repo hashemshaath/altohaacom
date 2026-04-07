@@ -47,7 +47,7 @@ export const CountryDiscovery = memo(forwardRef<HTMLElement, Props>(function Cou
         <h2 className="text-sm font-bold tracking-tight">
           {isAr ? "اكتشف حسب الدولة" : "Discover by Country"}
         </h2>
-        <Badge variant="secondary" className="ms-auto text-[9px] font-bold rounded-lg">
+        <Badge variant="secondary" className="ms-auto text-[12px] font-bold rounded-lg">
           {countries.length} {isAr ? "دول" : "countries"}
         </Badge>
       </div>
@@ -64,8 +64,8 @@ export const CountryDiscovery = memo(forwardRef<HTMLElement, Props>(function Cou
                 <span className="text-2xl transition-transform group-hover:scale-110">
                   {countryFlag(country.code)}
                 </span>
-                <span className="text-[11px] font-bold truncate w-full">{country.name}</span>
-                <div className="flex items-center gap-2 text-[9px] text-muted-foreground">
+                <span className="text-[12px] font-bold truncate w-full">{country.name}</span>
+                <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                   <span className="flex items-center gap-0.5">
                     <Trophy className="h-2.5 w-2.5" />
                     {country.count}

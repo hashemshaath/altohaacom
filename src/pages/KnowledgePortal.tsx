@@ -136,7 +136,7 @@ export default function KnowledgePortal() {
             <div>
               <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                 <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                <span className="text-[12px] font-bold uppercase tracking-widest text-primary">
                   {language === "ar" ? "مركز المعرفة" : "Knowledge Hub"}
                 </span>
               </div>
@@ -240,15 +240,15 @@ export default function KnowledgePortal() {
                               </p>
                             )}
                             <div className="flex flex-wrap items-center gap-1.5 mt-2.5">
-                              <Badge variant="outline" className="text-[10px] rounded-xl">{resource.resource_type}</Badge>
+                              <Badge variant="outline" className="text-[12px] rounded-xl">{resource.resource_type}</Badge>
                               {resource.is_judge_resource && (
-                                <Badge variant="secondary" className="text-[10px] rounded-xl">
+                                <Badge variant="secondary" className="text-[12px] rounded-xl">
                                   <Scale className="me-1 h-3 w-3" />
                                   {language === "ar" ? "للحكام" : "Judge Resource"}
                                 </Badge>
                               )}
                               {resource.tags?.map(tag => (
-                                <Badge key={tag} variant="outline" className="text-[10px] rounded-xl">{tag}</Badge>
+                                <Badge key={tag} variant="outline" className="text-[12px] rounded-xl">{tag}</Badge>
                               ))}
                             </div>
                           </div>

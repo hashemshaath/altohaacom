@@ -52,7 +52,7 @@ export const AdminSearchCommand = memo(function AdminSearchCommand() {
       >
         <Search className="h-3.5 w-3.5" />
         <span>{isAr ? "بحث سريع..." : "Quick search..."}</span>
-        <kbd className="ms-2 hidden sm:inline rounded bg-muted px-1.5 py-0.5 text-[10px] font-mono border border-border/40">
+        <kbd className="ms-2 hidden sm:inline rounded bg-muted px-1.5 py-0.5 text-[12px] font-mono border border-border/40">
           ⌘K
         </kbd>
       </button>

@@ -197,7 +197,7 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
     const improved = lowerIsBetter ? diff < 0 : diff > 0;
     if (Math.abs(pct) < 2) return <Minus className="h-3 w-3 text-muted-foreground" />;
     return (
-      <span className={`flex items-center gap-0.5 text-[10px] ${improved ? "text-green-500" : "text-destructive"}`}>
+      <span className={`flex items-center gap-0.5 text-[12px] ${improved ? "text-green-500" : "text-destructive"}`}>
         {improved ? <TrendingDown className="h-3 w-3" /> : <TrendingUp className="h-3 w-3" />}
         {Math.abs(pct)}%
       </span>
@@ -234,13 +234,13 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
               const { grade: g, color: c } = score != null ? getGrade(score) : { grade: "-", color: "text-muted-foreground" };
               return (
                 <div key={m} className="rounded-lg border border-border/50 bg-card p-3 text-center">
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{m.toUpperCase()}</p>
+                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{m.toUpperCase()}</p>
                   <p className={`text-xl font-bold mt-1 ${c}`}>
                     {val != null ? (m === "cls" ? val.toFixed(3) : Math.round(val)) : "-"}
-                    {val != null && m !== "cls" && <span className="text-[10px] font-normal text-muted-foreground">ms</span>}
+                    {val != null && m !== "cls" && <span className="text-[12px] font-normal text-muted-foreground">ms</span>}
                   </p>
                   <div className="flex items-center justify-center gap-1 mt-1">
-                    <Badge variant="outline" className="text-[9px] px-1">{g}</Badge>
+                    <Badge variant="outline" className="text-[12px] px-1">{g}</Badge>
                     {renderDelta(val, prevVal)}
                   </div>
                 </div>
@@ -334,7 +334,7 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
         </CardHeader>
         <CardContent>
           <div className="space-y-1 max-h-[320px] overflow-y-auto">
-            <div className="grid grid-cols-[1fr,70px,70px,70px,50px,50px] gap-2 text-[10px] font-semibold text-muted-foreground uppercase pb-1 border-b border-border sticky top-0 bg-card">
+            <div className="grid grid-cols-[1fr,70px,70px,70px,50px,50px] gap-2 text-[12px] font-semibold text-muted-foreground uppercase pb-1 border-b border-border sticky top-0 bg-card">
               <span>{isAr ? "الصفحة" : "Page"}</span>
               <span className="text-center">LCP</span>
               <span className="text-center">FCP</span>
@@ -346,13 +346,13 @@ export const SEOPageSpeedMonitor = memo(function SEOPageSpeedMonitor({ isAr }: {
               const { grade: g, color: c } = getGrade(p.score);
               return (
                 <div key={p.path} className="grid grid-cols-[1fr,70px,70px,70px,50px,50px] gap-2 items-center py-1.5 text-xs border-b border-border/10">
-                  <code className="truncate text-[11px]">{p.path}</code>
+                  <code className="truncate text-[12px]">{p.path}</code>
                   <span className="text-center tabular-nums">{p.lcp != null ? Math.round(p.lcp) : "-"}</span>
                   <span className="text-center tabular-nums">{p.fcp != null ? Math.round(p.fcp) : "-"}</span>
                   <span className="text-center tabular-nums">{p.ttfb != null ? Math.round(p.ttfb) : "-"}</span>
                   <span className="text-center tabular-nums text-muted-foreground">{p.samples}</span>
                   <div className="flex justify-center">
-                    <Badge variant={p.score >= 75 ? "default" : p.score >= 50 ? "secondary" : "destructive"} className={`text-[9px] px-1.5 ${c}`}>
+                    <Badge variant={p.score >= 75 ? "default" : p.score >= 50 ? "secondary" : "destructive"} className={`text-[12px] px-1.5 ${c}`}>
                       {g}
                     </Badge>
                   </div>

@@ -83,7 +83,7 @@ export const ExhibitionNotificationPreferences = memo(function ExhibitionNotific
             {t("Notification Preferences", "تفضيلات الإشعارات")}
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Label className="text-[10px] text-muted-foreground">{t("All", "الكل")}</Label>
+            <Label className="text-[12px] text-muted-foreground">{t("All", "الكل")}</Label>
             <Switch checked={allEnabled} onCheckedChange={toggleAll} />
           </div>
         </div>
@@ -97,7 +97,7 @@ export const ExhibitionNotificationPreferences = memo(function ExhibitionNotific
               </div>
               <div>
                 <p className="text-xs font-medium">{isAr ? item.labelAr : item.label}</p>
-                <p className="text-[9px] text-muted-foreground">{isAr ? item.descAr : item.desc}</p>
+                <p className="text-[12px] text-muted-foreground">{isAr ? item.descAr : item.desc}</p>
               </div>
             </div>
             <Switch

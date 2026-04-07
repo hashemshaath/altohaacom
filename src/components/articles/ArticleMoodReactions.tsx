@@ -133,7 +133,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
       <p className="text-sm font-semibold mb-1">
         {isAr ? "ما شعورك تجاه هذا المقال؟" : "How does this article make you feel?"}
       </p>
-      <p className="text-[11px] text-muted-foreground mb-5">
+      <p className="text-[12px] text-muted-foreground mb-5">
         {isAr ? "اختر تفاعلك — يمكنك اختيار أكثر من واحد" : "Pick your reaction — select as many as you like"}
       </p>
       
@@ -165,14 +165,14 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
                 {r.emoji}
               </span>
               <span className={cn(
-                "text-[9px] font-medium transition-colors",
+                "text-[12px] font-medium transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground"
               )}>
                 {isAr ? r.labelAr : r.labelEn}
               </span>
               {count > 0 && (
                 <span className={cn(
-                  "text-[9px] tabular-nums",
+                  "text-[12px] tabular-nums",
                   isActive ? "text-primary/70" : "text-muted-foreground/50"
                 )}>
                   {count}

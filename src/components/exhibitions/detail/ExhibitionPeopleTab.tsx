@@ -86,7 +86,7 @@ export const ExhibitionPeopleTab = memo(function ExhibitionPeopleTab({ judgeProf
                         <p className="text-xs text-primary/80 font-medium truncate">{judgeTitle}</p>
                       )}
                       {(jp?.current_position || jp?.current_employer) && (
-                        <p className="text-[11px] text-muted-foreground truncate">
+                        <p className="text-[12px] text-muted-foreground truncate">
                           {jp.current_position}
                           {jp.current_position && jp.current_employer ? " · " : ""}
                           {jp.current_employer}
@@ -96,13 +96,13 @@ export const ExhibitionPeopleTab = memo(function ExhibitionPeopleTab({ judgeProf
                   </div>
                   <div className="border-t bg-muted/20 px-5 py-2.5 flex items-center gap-2 flex-wrap">
                     {jp?.judge_level && (
-                      <Badge variant="outline" className="text-[9px] h-5 gap-0.5">
+                      <Badge variant="outline" className="text-[12px] h-5 gap-0.5">
                         <Award className="h-2.5 w-2.5" />
                         {jp.judge_level}
                       </Badge>
                     )}
                     {jp?.judge_category && (
-                      <Badge variant="secondary" className="text-[9px] h-5">
+                      <Badge variant="secondary" className="text-[12px] h-5">
                         {jp.judge_category}
                       </Badge>
                     )}

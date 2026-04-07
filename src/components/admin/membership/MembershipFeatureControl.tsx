@@ -241,7 +241,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
               <TabsTrigger key={cat} value={cat} className="gap-1 text-xs h-7 px-2">
                 <cfg.icon className="h-3 w-3" />
                 {isAr ? cfg.labelAr : cfg.label}
-                <Badge variant="secondary" className="text-[9px] h-4 px-1 ms-0.5">{catCount}</Badge>
+                <Badge variant="secondary" className="text-[12px] h-4 px-1 ms-0.5">{catCount}</Badge>
               </TabsTrigger>
             );
           })}

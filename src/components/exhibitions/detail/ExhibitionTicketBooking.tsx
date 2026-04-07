@@ -115,10 +115,10 @@ export const ExhibitionTicketBooking = memo(function ExhibitionTicketBooking({ e
               </div>
               <div>
                 <p className="text-sm font-bold">{isAr ? "تذكرتك مؤكدة" : "Ticket Confirmed"}</p>
-                <p className="text-[10px] text-muted-foreground">{isAr ? "جاهز للدخول" : "Ready for entry"}</p>
+                <p className="text-[12px] text-muted-foreground">{isAr ? "جاهز للدخول" : "Ready for entry"}</p>
               </div>
             </div>
-            <Badge className="bg-chart-3/15 text-chart-3 border-chart-3/25 font-semibold text-[10px] uppercase tracking-wider">
+            <Badge className="bg-chart-3/15 text-chart-3 border-chart-3/25 font-semibold text-[12px] uppercase tracking-wider">
               <Shield className="me-1 h-2.5 w-2.5" />
               {isAr ? "مؤكدة" : "Valid"}
             </Badge>
@@ -133,7 +133,7 @@ export const ExhibitionTicketBooking = memo(function ExhibitionTicketBooking({ e
 
         <CardContent className="p-4 space-y-4">
           <div className="rounded-xl border border-border/50 bg-muted/30 p-3">
-            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-1">{isAr ? "رقم التذكرة" : "Ticket Number"}</p>
+            <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-1">{isAr ? "رقم التذكرة" : "Ticket Number"}</p>
             <p className="font-mono text-base font-bold tracking-widest text-foreground">{existingTicket.ticket_number}</p>
           </div>
           
@@ -192,7 +192,7 @@ export const ExhibitionTicketBooking = memo(function ExhibitionTicketBooking({ e
             {!isFree && ticketPrice && (
               <p className="text-xs font-semibold text-primary">{ticketPrice}</p>
             )}
-            <p className="text-[10px] text-muted-foreground mt-0.5">{isAr ? "احصل على رمز QR للدخول السريع" : "Get a QR code for quick entry"}</p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "احصل على رمز QR للدخول السريع" : "Get a QR code for quick entry"}</p>
           </div>
           <div className={`transition-transform duration-300 ${expanded ? "rotate-180" : ""}`}>
             <ChevronDown className="h-4 w-4 text-muted-foreground" />

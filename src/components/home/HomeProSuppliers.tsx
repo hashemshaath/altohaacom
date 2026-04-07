@@ -125,19 +125,19 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
                   <div>
                     <p className="text-xs sm:text-sm font-bold truncate text-foreground">{name}</p>
                     {s.supplier_category && (
-                      <Badge variant="outline" className="text-[8px] sm:text-[9px] mt-1">{(() => { const cl = SUPPLIER_CAT_LABELS[s.supplier_category.toLowerCase()]; return cl ? (isAr ? cl.ar : cl.en) : s.supplier_category; })()}</Badge>
+                      <Badge variant="outline" className="text-[12px] sm:text-[12px] mt-1">{(() => { const cl = SUPPLIER_CAT_LABELS[s.supplier_category.toLowerCase()]; return cl ? (isAr ? cl.ar : cl.en) : s.supplier_category; })()}</Badge>
                     )}
                     {s.is_verified && (
-                      <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-0.5 text-[8px] mt-1 ms-1">
+                      <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-0.5 text-[12px] mt-1 ms-1">
                         <CheckCircle className="h-2 w-2" />{isAr ? "موثّق" : "Verified"}
                       </Badge>
                     )}
                   </div>
                   {tagline && (
-                    <p className="text-[9px] sm:text-[10px] text-muted-foreground line-clamp-1">{tagline}</p>
+                    <p className="text-[12px] sm:text-[12px] text-muted-foreground line-clamp-1">{tagline}</p>
                   )}
                   {s.country_code && (
-                    <p className="text-[9px] text-muted-foreground/70 flex items-center justify-center gap-1">
+                    <p className="text-[12px] text-muted-foreground/70 flex items-center justify-center gap-1">
                       <MapPin className="h-2 w-2 shrink-0" />
                       {countryFlag(s.country_code)} {localizeLocation({ city: s.city, countryCode: s.country_code }, isAr)}
                     </p>

@@ -15,7 +15,7 @@ export const DataField = React.memo(({ label, value, copyable, multiline }: Data
   if (!value) return null;
   return (
     <div className="space-y-1">
-      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
+      <span className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
       <div className="flex items-start gap-1.5">
         {multiline ? (
           <p className="text-sm leading-relaxed flex-1">{value}</p>
@@ -45,7 +45,7 @@ export const TagList = React.memo(({ label, items }: TagListProps) => {
   if (!items?.length) return null;
   return (
     <div className="space-y-1.5">
-      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
+      <span className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
       <div className="flex flex-wrap gap-1.5">
         {items.map((item, i) => (
           <Badge key={i} variant="outline" className="text-xs">{item}</Badge>

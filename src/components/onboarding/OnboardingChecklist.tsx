@@ -113,7 +113,7 @@ export const OnboardingChecklist = memo(function OnboardingChecklist() {
             </div>
             {isAr ? "ابدأ رحلتك" : "Get Started"}
           </CardTitle>
-          <Badge variant="secondary" className="text-[10px] tabular-nums">
+          <Badge variant="secondary" className="text-[12px] tabular-nums">
             {completed}/{total}
           </Badge>
         </div>
@@ -149,7 +149,7 @@ export const OnboardingChecklist = memo(function OnboardingChecklist() {
         <Button
           variant="ghost"
           size="sm"
-          className="w-full text-[10px] text-muted-foreground mt-2"
+          className="w-full text-[12px] text-muted-foreground mt-2"
           onClick={handleDismiss}
         >
           {isAr ? "تجاهل" : "Dismiss"}

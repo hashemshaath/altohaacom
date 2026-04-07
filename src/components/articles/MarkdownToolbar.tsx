@@ -221,7 +221,7 @@ export const MarkdownToolbar = memo(function MarkdownToolbar({ textareaRef, onIn
               {isAr ? "إلغاء" : "Cancel"}
             </Button>
           </div>
-          <p className="text-[9px] text-muted-foreground">
+          <p className="text-[12px] text-muted-foreground">
             💡 {isAr ? "استخدم نصاً بديلاً وصفياً لتحسين السيو" : "Use descriptive alt text for better SEO"}
           </p>
         </PopoverContent>
@@ -273,7 +273,7 @@ export const MarkdownToolbar = memo(function MarkdownToolbar({ textareaRef, onIn
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-64 p-1 rounded-xl max-h-80 overflow-y-auto" align="start">
-          <p className="px-2 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="px-2 py-1.5 text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
             {isAr ? "قوالب الأقسام" : "Section Templates"}
           </p>
           {SECTION_TEMPLATES.map((section) => (

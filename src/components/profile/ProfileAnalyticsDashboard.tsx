@@ -163,9 +163,9 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
                 </div>
                 <div>
                   <AnimatedCounter value={typeof stat.value === "number" ? stat.value : parseInt(String(stat.value)) || 0} className="text-2xl" />
-                  <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+                  <p className="text-[12px] text-muted-foreground leading-tight">{stat.label}</p>
                   {"trend" in stat && (stat as any).trend !== undefined && (stat as any).trend !== 0 && (
-                    <p className={`text-[10px] font-medium ${(stat as any).trend > 0 ? "text-chart-5" : "text-destructive"}`}>
+                    <p className={`text-[12px] font-medium ${(stat as any).trend > 0 ? "text-chart-5" : "text-destructive"}`}>
                       {(stat as any).trend > 0 ? "↑ +" : "↓ "}{(stat as any).trend}% {isAr ? "أسبوعياً" : "vs prev week"}
                     </p>
                   )}
@@ -221,14 +221,14 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
                     </div>
                     <div>
                       <AnimatedCounter value={typeof stat.value === "number" ? stat.value : parseInt(String(stat.value)) || 0} className="text-2xl" />
-                      <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+                      <p className="text-[12px] text-muted-foreground leading-tight">{stat.label}</p>
                       {"trend" in stat && stat.trend !== undefined && stat.trend !== 0 && (
-                        <p className={`text-[10px] font-medium ${(stat.trend as number) > 0 ? "text-chart-5" : "text-destructive"}`}>
+                        <p className={`text-[12px] font-medium ${(stat.trend as number) > 0 ? "text-chart-5" : "text-destructive"}`}>
                           {(stat.trend as number) > 0 ? "+" : ""}{stat.trend}%
                         </p>
                       )}
                       {"sub" in stat && stat.sub && (
-                        <p className="text-[10px] text-muted-foreground">{stat.sub}</p>
+                        <p className="text-[12px] text-muted-foreground">{stat.sub}</p>
                       )}
                     </div>
                   </div>

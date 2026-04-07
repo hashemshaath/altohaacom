@@ -69,15 +69,15 @@ export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidg
         <div className="grid grid-cols-3 gap-3">
           <div className="text-center p-2 rounded-xl bg-primary/5">
             <AnimatedCounter value={data?.totalRegs || 0} className="text-lg font-bold text-primary" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي التسجيلات" : "Total Registrations"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي التسجيلات" : "Total Registrations"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-chart-2/5">
             <AnimatedCounter value={data?.approvedRegs || 0} className="text-lg font-bold text-chart-2" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "موافق عليها" : "Approved"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "موافق عليها" : "Approved"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-chart-4/5">
             <AnimatedCounter value={data?.totalRegs ? Math.round((data.approvedRegs / data.totalRegs) * 100) : 0} className="text-lg font-bold text-chart-4" suffix="%" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "معدل القبول" : "Approval Rate"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "معدل القبول" : "Approval Rate"}</p>
           </div>
         </div>
 
@@ -109,7 +109,7 @@ export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidg
                 <div key={comp.id} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/30">
                   <span className="truncate flex-1">{isAr && comp.title_ar ? comp.title_ar : comp.title}</span>
                   {daysLeft !== null && (
-                    <Badge variant={daysLeft <= 3 ? "destructive" : "secondary"} className="text-[10px] px-1.5 py-0 shrink-0 ms-2">
+                    <Badge variant={daysLeft <= 3 ? "destructive" : "secondary"} className="text-[12px] px-1.5 py-0 shrink-0 ms-2">
                       <Clock className="h-2.5 w-2.5 me-0.5" />
                       {daysLeft <= 0 ? (isAr ? "انتهى" : "Ended") : `${daysLeft}d`}
                     </Badge>

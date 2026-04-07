@@ -59,14 +59,14 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           {recipe.difficulty && (
-            <Badge variant="outline" className={cn("absolute top-2 end-2 text-[9px] backdrop-blur-sm", diff.cls)}>
+            <Badge variant="outline" className={cn("absolute top-2 end-2 text-[12px] backdrop-blur-sm", diff.cls)}>
               {isAr ? diff.ar : diff.en}
             </Badge>
           )}
         </div>
         <CardContent className="p-3">
           <h3 className="line-clamp-1 text-sm font-semibold mb-1.5 group-hover:text-primary transition-colors duration-200">{title}</h3>
-          <div className="flex items-center gap-3 text-[10px] text-muted-foreground flex-wrap tabular-nums">
+          <div className="flex items-center gap-3 text-[12px] text-muted-foreground flex-wrap tabular-nums">
             {totalTime > 0 && (
               <span className="flex items-center gap-0.5">
                 <Clock className="h-2.5 w-2.5" /> {totalTime}{isAr ? "د" : "m"}
@@ -95,13 +95,13 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
           </div>
           {/* Quick prep indicator */}
           {totalTime > 0 && totalTime <= 15 && (
-            <Badge variant="outline" className="mt-1.5 text-[8px] py-0 px-1.5 border-chart-3/30 text-chart-3">
+            <Badge variant="outline" className="mt-1.5 text-[12px] py-0 px-1.5 border-chart-3/30 text-chart-3">
               ⚡ {isAr ? "سريع التحضير" : "Quick prep"}
             </Badge>
           )}
           {/* Popular recipe indicator */}
           {recipe.save_count != null && recipe.save_count >= 25 && (
-            <Badge variant="outline" className="mt-1.5 text-[8px] py-0 px-1.5 border-primary/30 text-primary ms-1">
+            <Badge variant="outline" className="mt-1.5 text-[12px] py-0 px-1.5 border-primary/30 text-primary ms-1">
               🔥 {isAr ? "وصفة شائعة" : "Popular"}
             </Badge>
           )}

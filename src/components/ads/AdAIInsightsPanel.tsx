@@ -111,7 +111,7 @@ export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
             { label: isAr ? "الإنفاق" : "Spent", value: `SAR ${rawStats.totalSpent?.toLocaleString()}` },
           ].map(s => (
             <div key={s.label} className="p-3 rounded-xl bg-muted/50 text-center">
-              <p className="text-[10px] text-muted-foreground">{s.label}</p>
+              <p className="text-[12px] text-muted-foreground">{s.label}</p>
               <p className="text-lg font-bold">{s.value}</p>
             </div>
           ))}
@@ -132,7 +132,7 @@ export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
                 <ul className="space-y-2">
                   {section.content.map((item: string, i: number) => (
                     <li key={i} className="flex items-start gap-2 text-sm">
-                      <Badge variant="outline" className="shrink-0 h-5 w-5 p-0 items-center justify-center text-[10px]">{i + 1}</Badge>
+                      <Badge variant="outline" className="shrink-0 h-5 w-5 p-0 items-center justify-center text-[12px]">{i + 1}</Badge>
                       <span className="text-muted-foreground">{item}</span>
                     </li>
                   ))}

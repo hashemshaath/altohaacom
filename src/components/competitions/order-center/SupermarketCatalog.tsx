@@ -315,7 +315,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
           >
             <AisleIcon className="h-4 w-4 shrink-0" />
             <span className="truncate flex-1">{isAr ? aisle.labelAr : aisle.labelEn}</span>
-            <Badge variant="secondary" className="text-[10px] h-5 min-w-[24px] justify-center">{count}</Badge>
+            <Badge variant="secondary" className="text-[12px] h-5 min-w-[24px] justify-center">{count}</Badge>
           </button>
         );
       })}
@@ -330,7 +330,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
           <Store className="h-5 w-5 text-primary shrink-0" />
           <div className="min-w-0">
             <h2 className="text-base sm:text-lg font-bold truncate">{isAr ? "السوبرماركت" : "Supermarket"}</h2>
-            <p className="text-[10px] sm:text-xs text-muted-foreground">
+            <p className="text-[12px] sm:text-xs text-muted-foreground">
               {items.length} {isAr ? "صنف" : "items"}
             </p>
           </div>
@@ -406,7 +406,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
       <div className="flex gap-4">
         {/* ── Desktop Sidebar ── */}
         <div className="hidden lg:block w-48 shrink-0">
-          <p className="text-[10px] font-semibold text-muted-foreground mb-2 px-1 uppercase tracking-wider">
+          <p className="text-[12px] font-semibold text-muted-foreground mb-2 px-1 uppercase tracking-wider">
             {isAr ? "الأقسام" : "AISLES"}
           </p>
           <ScrollArea className="max-h-[70vh]">
@@ -429,7 +429,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
                     <button
                       key={aisle.key}
                       onClick={() => { setActiveAisle(aisle.key); setActiveSubcategory(null); }}
-                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-medium whitespace-nowrap transition-all border shrink-0
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[12px] font-medium whitespace-nowrap transition-all border shrink-0
                         ${isActive ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
                     >
                       <AisleIcon className="h-3 w-3" />
@@ -448,7 +448,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
               <div className="flex gap-1 pb-1">
                 <button
                   onClick={() => setActiveSubcategory(null)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all border shrink-0
+                  className={`px-2.5 py-1 rounded-full text-[12px] font-medium transition-all border shrink-0
                     ${!activeSubcategory ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
                 >
                   {isAr ? "الكل" : "All"}
@@ -457,7 +457,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
                   <button
                     key={sub}
                     onClick={() => setActiveSubcategory(activeSubcategory === sub ? null : sub)}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all border capitalize shrink-0
+                    className={`px-2.5 py-1 rounded-full text-[12px] font-medium transition-all border capitalize shrink-0
                       ${activeSubcategory === sub ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
                   >
                     {sub.replace(/_/g, " ")} ({count})
@@ -560,7 +560,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{isAr && item.name_ar ? item.name_ar : item.name}</p>
-                        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
                           <span className="capitalize truncate">{(item.subcategory || item.category).replace(/_/g, " ")}</span>
                           <span>·</span>
                           <span className="shrink-0">{item.default_quantity || 1} {item.unit || "pc"}</span>
@@ -608,7 +608,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
                     <ClipboardList className="h-4 w-4 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{isAr && list.title_ar ? list.title_ar : list.title}</p>
-                      <p className="text-[10px] text-muted-foreground capitalize">{list.category?.replace(/_/g, " ")}</p>
+                      <p className="text-[12px] text-muted-foreground capitalize">{list.category?.replace(/_/g, " ")}</p>
                     </div>
                     <Plus className="h-4 w-4 text-muted-foreground shrink-0" />
                   </button>
@@ -646,8 +646,8 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold">{isAr ? dish.nameAr : dish.name}</p>
-                      <p className="text-[11px] text-muted-foreground">{isAr ? dish.descriptionAr : dish.description}</p>
-                      <p className="text-[10px] text-primary mt-0.5">{dish.ingredients.length} {isAr ? "مكون" : "ingredients"}</p>
+                      <p className="text-[12px] text-muted-foreground">{isAr ? dish.descriptionAr : dish.description}</p>
+                      <p className="text-[12px] text-primary mt-0.5">{dish.ingredients.length} {isAr ? "مكون" : "ingredients"}</p>
                     </div>
                   </button>
                 );

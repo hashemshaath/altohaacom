@@ -91,7 +91,7 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
         <div className="flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           <h3 className="font-semibold">{isAr ? "الجدول الزمني المتقدم" : "Advanced Schedule"}</h3>
-          <Badge variant="outline" className="text-[10px]">
+          <Badge variant="outline" className="text-[12px]">
             {rounds.length} {isAr ? "جولة" : "rounds"} · {stations.length} {isAr ? "محطة" : "stations"}
           </Badge>
         </div>
@@ -158,7 +158,7 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
                           <h4 className="text-sm font-semibold">
                             {isAr && round.name_ar ? round.name_ar : round.name || `Round ${round.round_number}`}
                           </h4>
-                          <Badge variant="outline" className="text-[10px]">
+                          <Badge variant="outline" className="text-[12px]">
                             {isAr ? `جولة ${round.round_number}` : `Round ${round.round_number}`}
                           </Badge>
                           <RoundStatusBadge status={round.status} isAr={isAr} />
@@ -222,7 +222,7 @@ export const AdvancedSchedulingPanel = memo(function AdvancedSchedulingPanel({ c
                     <p className="text-xs font-medium truncate">
                       {isAr && station.station_name_ar ? station.station_name_ar : station.station_name}
                     </p>
-                    <p className="text-[10px] text-muted-foreground capitalize">{station.status || "available"}</p>
+                    <p className="text-[12px] text-muted-foreground capitalize">{station.status || "available"}</p>
                   </div>
                 </div>
               ))}
@@ -241,7 +241,7 @@ function RoundStatusBadge({ status, isAr }: { status: string; isAr: boolean }) {
     completed: { label: "Completed", labelAr: "مكتملة", variant: "outline" },
   };
   const s = map[status] || map.pending;
-  return <Badge variant={s.variant} className="text-[10px]">{isAr ? s.labelAr : s.label}</Badge>;
+  return <Badge variant={s.variant} className="text-[12px]">{isAr ? s.labelAr : s.label}</Badge>;
 }
 
 function detectConflicts(rounds: any[], stations: any[]): string[] {

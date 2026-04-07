@@ -241,7 +241,7 @@ export default function CompetitionResults() {
 
                           <p className="mb-1 truncate text-xs md:text-sm font-semibold">{winner.dish_name || (isAr ? "طبق" : "Dish")}</p>
 
-                          <div className="flex items-center justify-center gap-1.5 text-[10px] md:text-xs text-muted-foreground mb-2">
+                          <div className="flex items-center justify-center gap-1.5 text-[12px] md:text-xs text-muted-foreground mb-2">
                             <Avatar className="h-4 w-4">
                               <AvatarImage src={winner.participant_avatar || undefined} />
                               <AvatarFallback><User className="h-2 w-2" /></AvatarFallback>
@@ -250,7 +250,7 @@ export default function CompetitionResults() {
                           </div>
 
                           {winner.category_name && (
-                            <Badge variant="outline" className="mb-2 text-[8px] md:text-[9px] h-4 px-1.5">
+                            <Badge variant="outline" className="mb-2 text-[12px] md:text-[12px] h-4 px-1.5">
                               {isAr && winner.category_name_ar ? winner.category_name_ar : winner.category_name}
                             </Badge>
                           )}
@@ -260,7 +260,7 @@ export default function CompetitionResults() {
                             <span className="text-sm font-normal text-muted-foreground">.{Math.round((winner.total_score % 1) * 10)}</span>
                           </p>
 
-                          <Badge className={`mt-2 text-[9px] ${isFirst ? "bg-chart-4/10 text-chart-4 border-chart-4/20" : ""}`} variant="outline">
+                          <Badge className={`mt-2 text-[12px] ${isFirst ? "bg-chart-4/10 text-chart-4 border-chart-4/20" : ""}`} variant="outline">
                             {isAr ? config.medalAr : config.medal}
                           </Badge>
 
@@ -307,7 +307,7 @@ export default function CompetitionResults() {
                   <User className="h-3.5 w-3.5 text-muted-foreground" />
                 </div>
                 {isAr ? "المشاركون الآخرون" : "Other Participants"}
-                <Badge variant="secondary" className="ms-1 text-[10px]">{others.length}</Badge>
+                <Badge variant="secondary" className="ms-1 text-[12px]">{others.length}</Badge>
               </h2>
               <div className="space-y-2">
                 {others.map((winner) => (
@@ -332,7 +332,7 @@ export default function CompetitionResults() {
                             <span className="truncate max-w-[100px]">{winner.participant_name || winner.participant_username || "—"}</span>
                           </div>
                           {winner.category_name && (
-                            <Badge variant="outline" className="text-[9px] h-4 px-1.5">
+                            <Badge variant="outline" className="text-[12px] h-4 px-1.5">
                               {isAr && winner.category_name_ar ? winner.category_name_ar : winner.category_name}
                             </Badge>
                           )}

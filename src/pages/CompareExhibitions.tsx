@@ -90,7 +90,7 @@ const CompareExhibitions = () => {
     {
       label: "Competitions", labelAr: "مسابقات", icon: Trophy,
       render: (e) => (
-        <Badge variant={e.includes_competitions ? "default" : "secondary"} className="text-[10px]">
+        <Badge variant={e.includes_competitions ? "default" : "secondary"} className="text-[12px]">
           {e.includes_competitions ? (isAr ? "نعم" : "Yes") : (isAr ? "لا" : "No")}
         </Badge>
       ),
@@ -98,7 +98,7 @@ const CompareExhibitions = () => {
     {
       label: "Seminars", labelAr: "ندوات", icon: Users,
       render: (e) => (
-        <Badge variant={e.includes_seminars ? "default" : "secondary"} className="text-[10px]">
+        <Badge variant={e.includes_seminars ? "default" : "secondary"} className="text-[12px]">
           {e.includes_seminars ? (isAr ? "نعم" : "Yes") : (isAr ? "لا" : "No")}
         </Badge>
       ),

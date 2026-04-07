@@ -52,9 +52,9 @@ function parseStats(raw: any): { visitors?: number; exhibitors?: number; countri
 function TrendIcon({ current, previous }: { current?: number; previous?: number }) {
   if (!current || !previous) return null;
   const pct = Math.round(((current - previous) / previous) * 100);
-  if (pct > 0) return <span className="inline-flex items-center gap-0.5 text-emerald-600 text-[10px] font-semibold"><TrendingUp className="h-3 w-3" />+{pct}%</span>;
-  if (pct < 0) return <span className="inline-flex items-center gap-0.5 text-red-500 text-[10px] font-semibold"><TrendingDown className="h-3 w-3" />{pct}%</span>;
-  return <span className="inline-flex items-center gap-0.5 text-muted-foreground text-[10px]"><Minus className="h-3 w-3" />0%</span>;
+  if (pct > 0) return <span className="inline-flex items-center gap-0.5 text-emerald-600 text-[12px] font-semibold"><TrendingUp className="h-3 w-3" />+{pct}%</span>;
+  if (pct < 0) return <span className="inline-flex items-center gap-0.5 text-red-500 text-[12px] font-semibold"><TrendingDown className="h-3 w-3" />{pct}%</span>;
+  return <span className="inline-flex items-center gap-0.5 text-muted-foreground text-[12px]"><Minus className="h-3 w-3" />0%</span>;
 }
 
 export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ seriesId, currentExhibitionId, isAr }: Props) {
@@ -144,7 +144,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
             <div className="flex items-center gap-2 mb-4">
               <BarChart3 className="h-5 w-5 text-primary" />
               <h3 className="font-bold text-sm">{isAr ? "نمو السلسلة عبر السنوات" : "Series Growth Over the Years"}</h3>
-              <Badge variant="secondary" className="text-[10px] ms-auto">
+              <Badge variant="secondary" className="text-[12px] ms-auto">
                 {growthData.totalEditions} {isAr ? "نسخة" : "editions"}
               </Badge>
             </div>
@@ -178,7 +178,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                 <div key={item.label} className="text-center">
                   <item.icon className="h-4 w-4 mx-auto text-primary/60 mb-1" />
                   <p className="text-lg font-bold">{item.latest?.toLocaleString() || "—"}</p>
-                  <p className="text-[10px] text-muted-foreground">{item.label}</p>
+                  <p className="text-[12px] text-muted-foreground">{item.label}</p>
                   <TrendIcon current={item.latest} previous={item.earliest} />
                 </div>
               ))}
@@ -239,7 +239,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                               {title}
                             </h4>
                             {isCurrent && (
-                              <Badge className="text-[9px] gap-1 bg-primary/10 text-primary border-primary/20">
+                              <Badge className="text-[12px] gap-1 bg-primary/10 text-primary border-primary/20">
                                 <span className="relative flex h-1.5 w-1.5">
                                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
@@ -248,7 +248,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                               </Badge>
                             )}
                             {edition.status === "completed" && (
-                              <Badge variant="outline" className="text-[9px]">
+                              <Badge variant="outline" className="text-[12px]">
                                 {isAr ? "منتهية" : "Completed"}
                               </Badge>
                             )}
@@ -279,7 +279,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
 
                       {/* Description snippet */}
                       {desc && (
-                        <p className="text-[11px] text-muted-foreground line-clamp-2 mb-3">{desc}</p>
+                        <p className="text-[12px] text-muted-foreground line-clamp-2 mb-3">{desc}</p>
                       )}
 
                       {/* Stats Grid */}
@@ -289,7 +289,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                             <div className="text-center">
                               <Users className="h-3.5 w-3.5 mx-auto text-blue-500 mb-0.5" />
                               <p className="text-sm font-bold">{stats.visitors.toLocaleString()}</p>
-                              <p className="text-[9px] text-muted-foreground">{isAr ? "زائر" : "Visitors"}</p>
+                              <p className="text-[12px] text-muted-foreground">{isAr ? "زائر" : "Visitors"}</p>
                               <TrendIcon current={stats.visitors} previous={prevStats.visitors} />
                             </div>
                           )}
@@ -297,7 +297,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                             <div className="text-center">
                               <Landmark className="h-3.5 w-3.5 mx-auto text-emerald-500 mb-0.5" />
                               <p className="text-sm font-bold">{stats.exhibitors.toLocaleString()}</p>
-                              <p className="text-[9px] text-muted-foreground">{isAr ? "عارض" : "Exhibitors"}</p>
+                              <p className="text-[12px] text-muted-foreground">{isAr ? "عارض" : "Exhibitors"}</p>
                               <TrendIcon current={stats.exhibitors} previous={prevStats.exhibitors} />
                             </div>
                           )}
@@ -305,7 +305,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                             <div className="text-center">
                               <Globe className="h-3.5 w-3.5 mx-auto text-orange-500 mb-0.5" />
                               <p className="text-sm font-bold">{stats.countries}</p>
-                              <p className="text-[9px] text-muted-foreground">{isAr ? "دولة" : "Countries"}</p>
+                              <p className="text-[12px] text-muted-foreground">{isAr ? "دولة" : "Countries"}</p>
                               <TrendIcon current={stats.countries} previous={prevStats.countries} />
                             </div>
                           )}
@@ -313,7 +313,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                             <div className="text-center">
                               <MapPin className="h-3.5 w-3.5 mx-auto text-violet-500 mb-0.5" />
                               <p className="text-sm font-bold">{stats.area.toLocaleString()}</p>
-                              <p className="text-[9px] text-muted-foreground">{isAr ? "م²" : "m²"}</p>
+                              <p className="text-[12px] text-muted-foreground">{isAr ? "م²" : "m²"}</p>
                               <TrendIcon current={stats.area} previous={prevStats.area} />
                             </div>
                           )}
@@ -321,7 +321,7 @@ export const ExhibitionEditionsTab = memo(function ExhibitionEditionsTab({ serie
                       )}
 
                       {/* Bottom meta row */}
-                      <div className="flex items-center gap-3 mt-3 text-[10px] text-muted-foreground flex-wrap">
+                      <div className="flex items-center gap-3 mt-3 text-[12px] text-muted-foreground flex-wrap">
                         {(edition.view_count || 0) > 0 && (
                           <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{(edition.view_count || 0).toLocaleString()} {isAr ? "مشاهدة" : "views"}</span>
                         )}

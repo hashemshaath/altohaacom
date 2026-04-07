@@ -22,7 +22,7 @@ export const PostEngagementSummary = memo(function PostEngagementSummary({ likes
   const isTrending = totalEngagement >= 10;
 
   return (
-    <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+    <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
       {viewCount != null && viewCount > 0 && (
         <span className="inline-flex items-center gap-0.5">
           <Eye className="h-2.5 w-2.5" />

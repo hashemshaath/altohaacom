@@ -48,7 +48,7 @@ const EntityStatsCards = memo(function EntityStatsCards({ stats, activeFilter, o
             <div className="space-y-1">
               <p className={`text-2xl font-bold ${c.color} transition-transform group-hover:scale-105`}><AnimatedCounter value={c.value} /></p>
               <p className="text-xs font-medium">{c.label}</p>
-              <p className="text-[10px] text-muted-foreground leading-tight">{c.subtitle}</p>
+              <p className="text-[12px] text-muted-foreground leading-tight">{c.subtitle}</p>
             </div>
             <div className={`flex h-9 w-9 items-center justify-center rounded-xl ${c.bgColor} transition-transform duration-300 group-hover:scale-110`}>
               <c.icon className={`h-4.5 w-4.5 ${c.color}`} />

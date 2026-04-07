@@ -629,7 +629,7 @@ export default function CommunicationsAdmin() {
                               <div className="flex shrink-0 flex-col items-end gap-1">
                                 {msg.direction === "outgoing" && msg.status === "unread" && <div className="h-2 w-2 rounded-full bg-primary" />}
                                 {msg.direction === "incoming" && msg.status === "read" && <CheckCheck className="h-3.5 w-3.5 text-primary" />}
-                                <span className="text-[10px] text-muted-foreground">{format(new Date(msg.created_at), "MM/dd HH:mm")}</span>
+                                <span className="text-[12px] text-muted-foreground">{format(new Date(msg.created_at), "MM/dd HH:mm")}</span>
                                 {getPriorityBadge(msg.priority)}
                               </div>
                             </div>
@@ -875,7 +875,7 @@ export default function CommunicationsAdmin() {
                           <div key={i} className="flex flex-col items-center gap-1 flex-1">
                             <span className="text-xs font-medium">{count}</span>
                             <div className="w-full rounded-t-md bg-primary/80 transition-all" style={{ height: `${height}%` }} />
-                            <span className="text-[10px] text-muted-foreground">{day}</span>
+                            <span className="text-[12px] text-muted-foreground">{day}</span>
                           </div>
                         );
                       })}
@@ -901,7 +901,7 @@ export default function CommunicationsAdmin() {
                             <div key={bucket.label} className="space-y-1">
                               <p className="text-2xl font-bold">{pct}%</p>
                               <p className="text-xs text-muted-foreground">{bucket.label}</p>
-                              <p className="text-[10px] text-muted-foreground">({count})</p>
+                              <p className="text-[12px] text-muted-foreground">({count})</p>
                             </div>
                           );
                         })}

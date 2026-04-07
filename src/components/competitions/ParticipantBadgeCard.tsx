@@ -125,12 +125,12 @@ export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
           />
         )}
         <div className="flex flex-col gap-0.5 min-w-0">
-          <Badge variant="outline" className="w-fit text-[9px] gap-1">
+          <Badge variant="outline" className="w-fit text-[12px] gap-1">
             <Icon className="h-2.5 w-2.5" />
             {isAr ? config.labelAr : config.labelEn}
           </Badge>
           {qrCode && (
-            <span className="font-mono text-[10px] text-muted-foreground tracking-widest">{qrCode.code}</span>
+            <span className="font-mono text-[12px] text-muted-foreground tracking-widest">{qrCode.code}</span>
           )}
         </div>
       </div>
@@ -149,7 +149,7 @@ export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
         {status && (
           <Badge
             variant={status === "approved" ? "default" : "secondary"}
-            className="ms-auto text-[9px]"
+            className="ms-auto text-[12px]"
           >
             {status === "approved" ? (
               <><CheckCircle2 className="h-2.5 w-2.5 me-0.5" />{isAr ? "مؤكد" : "Confirmed"}</>
@@ -170,13 +170,13 @@ export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-sm truncate">{personName}</p>
             {organizationName && (
-              <p className="text-[11px] text-muted-foreground flex items-center gap-1 truncate">
+              <p className="text-[12px] text-muted-foreground flex items-center gap-1 truncate">
                 <Building2 className="h-3 w-3 shrink-0" />
                 {organizationName}
               </p>
             )}
             {categoryName && (
-              <Badge variant="outline" className="text-[9px] mt-0.5">{categoryName}</Badge>
+              <Badge variant="outline" className="text-[12px] mt-0.5">{categoryName}</Badge>
             )}
           </div>
         </div>
@@ -209,20 +209,20 @@ export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
           </Badge>
         )}
         {registrationNumber && (
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-[12px] text-muted-foreground">
             {isAr ? "رقم التسجيل:" : "Reg #:"} <span className="font-mono font-medium">{registrationNumber}</span>
           </p>
         )}
-        <p className="text-[10px] text-center text-muted-foreground line-clamp-1">{competitionTitle}</p>
+        <p className="text-[12px] text-center text-muted-foreground line-clamp-1">{competitionTitle}</p>
 
         {/* Actions */}
         {qrCode && (
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={handleCopy}>
+            <Button variant="outline" size="sm" className="h-7 text-[12px]" onClick={handleCopy}>
               <Copy className="h-3 w-3 me-1" />
               {isAr ? "نسخ" : "Copy"}
             </Button>
-            <Button variant="outline" size="sm" className="h-7 text-[10px]" onClick={handleDownload}>
+            <Button variant="outline" size="sm" className="h-7 text-[12px]" onClick={handleDownload}>
               <Download className="h-3 w-3 me-1" />
               {isAr ? "تحميل" : "Download"}
             </Button>

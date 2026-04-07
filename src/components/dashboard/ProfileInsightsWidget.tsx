@@ -155,7 +155,7 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
             </div>
             <p className="text-lg font-bold tabular-nums">{data.totalLast7}</p>
             {data.changePercent !== 0 && (
-              <p className={cn("text-[10px] font-medium", data.changePercent > 0 ? "text-chart-5" : "text-destructive")}>
+              <p className={cn("text-[12px] font-medium", data.changePercent > 0 ? "text-chart-5" : "text-destructive")}>
                 <TrendingUp className="inline h-2.5 w-2.5 me-0.5" />
                 {data.changePercent > 0 ? "+" : ""}{data.changePercent}%
               </p>
@@ -173,7 +173,7 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
               {data.mobile > data.desktop ? <Smartphone className="h-3 w-3" /> : <Monitor className="h-3 w-3" />}
               <span>{isAr ? "الأجهزة" : "Devices"}</span>
             </div>
-            <p className="text-[10px] font-medium tabular-nums mt-1">
+            <p className="text-[12px] font-medium tabular-nums mt-1">
               📱 {data.mobile} / 💻 {data.desktop}
             </p>
           </div>

@@ -162,7 +162,7 @@ export const EvaluationStagesPanel = memo(function EvaluationStagesPanel({ compe
       {stages && stages.length > 0 && (
         <div className="flex items-center gap-3">
           <Progress value={Math.min(totalWeight, 100)} className="flex-1 h-2" />
-          <Badge variant={weightValid ? "default" : "destructive"} className="text-[10px] shrink-0">
+          <Badge variant={weightValid ? "default" : "destructive"} className="text-[12px] shrink-0">
             {totalWeight.toFixed(0)}% / 100%
           </Badge>
         </div>
@@ -192,9 +192,9 @@ export const EvaluationStagesPanel = memo(function EvaluationStagesPanel({ compe
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-semibold">{isAr && stage.name_ar ? stage.name_ar : stage.name}</span>
-                      <Badge variant="outline" className="text-[10px]">{typeLabel ? (isAr ? typeLabel.ar : typeLabel.en) : stage.stage_type}</Badge>
+                      <Badge variant="outline" className="text-[12px]">{typeLabel ? (isAr ? typeLabel.ar : typeLabel.en) : stage.stage_type}</Badge>
                     </div>
-                    <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-0.5">
+                    <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-0.5">
                       <span>{isAr ? "الوزن" : "Weight"}: <strong>{Number(stage.weight_percentage).toFixed(0)}%</strong></span>
                       {scoreCount > 0 && <span>{scoreCount} {isAr ? "تقييم" : "scores"}</span>}
                     </div>

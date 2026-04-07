@@ -117,7 +117,7 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
           <div className="flex items-center gap-2">
             <Brain className="h-5 w-5 text-primary" />
             <span className="text-sm font-medium">{isAr ? "التنبؤات الذكية بالذكاء الاصطناعي" : "AI-Powered ML Predictions"}</span>
-            <Badge variant="secondary" className="text-[10px] gap-1">
+            <Badge variant="secondary" className="text-[12px] gap-1">
               <Sparkles className="h-3 w-3" />
               Gemini
             </Badge>
@@ -196,7 +196,7 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
                         <Icon className="h-4 w-4 text-primary" />
                         <span className="text-sm font-medium capitalize">{f.metric}</span>
                       </div>
-                      <Badge variant="outline" className="gap-1 text-[10px]">
+                      <Badge variant="outline" className="gap-1 text-[12px]">
                         <TIcon className={`h-3 w-3 ${f.trend === "up" ? "text-chart-2" : f.trend === "down" ? "text-destructive" : "text-muted-foreground"}`} />
                         {f.trend}
                       </Badge>
@@ -217,9 +217,9 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] text-muted-foreground">{isAr ? "الثقة" : "Confidence"}</span>
+                      <span className="text-[12px] text-muted-foreground">{isAr ? "الثقة" : "Confidence"}</span>
                       <Progress value={f.confidence} className="flex-1 h-1.5" />
-                      <span className="text-[10px] font-medium">{f.confidence}%</span>
+                      <span className="text-[12px] font-medium">{f.confidence}%</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -257,7 +257,7 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
                 <CardTitle className="text-sm flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4 text-chart-5" />
                   {isAr ? "حالات شاذة مكتشفة" : "Detected Anomalies"}
-                  <Badge variant="secondary" className="text-[10px]">{data.anomalies.length}</Badge>
+                  <Badge variant="secondary" className="text-[12px]">{data.anomalies.length}</Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -268,7 +268,7 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
                       <p className="text-sm font-medium">{a.metric}</p>
                       <p className="text-xs text-muted-foreground">{a.description}</p>
                     </div>
-                    <Badge variant="outline" className="ms-auto text-[10px] shrink-0">{a.severity}</Badge>
+                    <Badge variant="outline" className="ms-auto text-[12px] shrink-0">{a.severity}</Badge>
                   </div>
                 ))}
               </CardContent>
@@ -290,16 +290,16 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
                     <div className="flex items-center justify-between gap-2">
                       <p className="text-sm font-medium">{r.title}</p>
                       <div className="flex gap-1 shrink-0">
-                        <Badge variant="outline" className={`text-[10px] ${getImpactColor(r.impact)}`}>
+                        <Badge variant="outline" className={`text-[12px] ${getImpactColor(r.impact)}`}>
                           {isAr ? "الأثر:" : "Impact:"} {r.impact}
                         </Badge>
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-[12px]">
                           {isAr ? "الجهد:" : "Effort:"} {r.effort}
                         </Badge>
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground">{r.description}</p>
-                    <p className="text-[10px] text-primary">{isAr ? "العائد المتوقع:" : "Est. ROI:"} {r.estimated_roi}</p>
+                    <p className="text-[12px] text-primary">{isAr ? "العائد المتوقع:" : "Est. ROI:"} {r.estimated_roi}</p>
                   </div>
                 ))}
               </CardContent>

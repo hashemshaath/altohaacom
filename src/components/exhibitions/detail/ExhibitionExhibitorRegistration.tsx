@@ -101,7 +101,7 @@ export const ExhibitionExhibitorRegistration = memo(function ExhibitionExhibitor
             </div>
             <div>
               <h3 className="text-sm font-bold">{t("Your Exhibitor Application", "طلب العارض الخاص بك")}</h3>
-              <Badge variant="outline" className={`text-[10px] mt-0.5 ${statusConfig.color}`}>
+              <Badge variant="outline" className={`text-[12px] mt-0.5 ${statusConfig.color}`}>
                 {statusConfig.label}
               </Badge>
             </div>
@@ -113,7 +113,7 @@ export const ExhibitionExhibitorRegistration = memo(function ExhibitionExhibitor
           </div>
           {existingRequest.admin_notes && (
             <div className="mt-3 rounded-xl bg-muted/50 p-3">
-              <p className="text-[10px] font-medium text-muted-foreground mb-1">{t("Organizer notes:", "ملاحظات المنظم:")}</p>
+              <p className="text-[12px] font-medium text-muted-foreground mb-1">{t("Organizer notes:", "ملاحظات المنظم:")}</p>
               <p className="text-xs">{existingRequest.admin_notes}</p>
             </div>
           )}
@@ -131,7 +131,7 @@ export const ExhibitionExhibitorRegistration = memo(function ExhibitionExhibitor
           </div>
           <div>
             <CardTitle className="text-sm">{t("Apply as Exhibitor", "التقديم كعارض")}</CardTitle>
-            <p className="text-[10px] text-muted-foreground mt-0.5">{t("Request a booth at this exhibition", "اطلب جناح في هذا المعرض")}</p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">{t("Request a booth at this exhibition", "اطلب جناح في هذا المعرض")}</p>
           </div>
         </div>
       </CardHeader>

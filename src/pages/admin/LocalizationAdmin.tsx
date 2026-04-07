@@ -584,7 +584,7 @@ export default function LocalizationAdmin() {
                                 <AlertCircle className="h-4 w-4 text-orange-500" />
                               )}
                               {t.is_verified && (
-                                <Badge variant="default" className="text-[10px] px-1 py-0">
+                                <Badge variant="default" className="text-[12px] px-1 py-0">
                                   ✓
                                 </Badge>
                               )}

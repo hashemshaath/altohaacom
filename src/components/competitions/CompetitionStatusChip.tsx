@@ -48,7 +48,7 @@ export const CompetitionStatusChip = memo(function CompetitionStatusChip({
   return (
     <span className={cn(
       "inline-flex items-center gap-1 rounded-full border font-medium",
-      size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-3 py-1 text-xs",
+      size === "sm" ? "px-2 py-0.5 text-[12px]" : "px-3 py-1 text-xs",
       derived.color, "border-current/20",
     )}>
       {derived.status === "in_progress" ? (

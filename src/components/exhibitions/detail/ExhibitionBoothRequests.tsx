@@ -65,9 +65,9 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
 
   const statusBadge = (status: string) => {
     switch (status) {
-      case "approved": return <Badge className="bg-chart-3/10 text-chart-3 text-[10px]"><CheckCircle2 className="me-1 h-2.5 w-2.5" />{t("Approved", "مقبول")}</Badge>;
-      case "rejected": return <Badge className="bg-destructive/10 text-destructive text-[10px]"><XCircle className="me-1 h-2.5 w-2.5" />{t("Declined", "مرفوض")}</Badge>;
-      default: return <Badge variant="outline" className="text-[10px]"><Clock className="me-1 h-2.5 w-2.5" />{t("Pending", "بانتظار")}</Badge>;
+      case "approved": return <Badge className="bg-chart-3/10 text-chart-3 text-[12px]"><CheckCircle2 className="me-1 h-2.5 w-2.5" />{t("Approved", "مقبول")}</Badge>;
+      case "rejected": return <Badge className="bg-destructive/10 text-destructive text-[12px]"><XCircle className="me-1 h-2.5 w-2.5" />{t("Declined", "مرفوض")}</Badge>;
+      default: return <Badge variant="outline" className="text-[12px]"><Clock className="me-1 h-2.5 w-2.5" />{t("Pending", "بانتظار")}</Badge>;
     }
   };
 
@@ -88,7 +88,7 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
         <div className="flex items-center justify-between">
           <CardTitle className="text-sm">{t("Booth Requests", "طلبات الأجنحة")} ({requests.length})</CardTitle>
           {pendingCount > 0 && (
-            <Badge className="bg-chart-4/10 text-chart-4 text-[10px]">{pendingCount} {t("pending", "بانتظار")}</Badge>
+            <Badge className="bg-chart-4/10 text-chart-4 text-[12px]">{pendingCount} {t("pending", "بانتظار")}</Badge>
           )}
         </div>
       </CardHeader>
@@ -113,12 +113,12 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
                     <TableCell className="text-xs font-medium">{req.company_name}</TableCell>
                     <TableCell className="text-xs">
                       <div>{req.contact_name}</div>
-                      <div className="text-[10px] text-muted-foreground">{req.contact_email}</div>
+                      <div className="text-[12px] text-muted-foreground">{req.contact_email}</div>
                     </TableCell>
-                    <TableCell><Badge variant="secondary" className="text-[10px] capitalize">{req.preferred_category}</Badge></TableCell>
+                    <TableCell><Badge variant="secondary" className="text-[12px] capitalize">{req.preferred_category}</Badge></TableCell>
                     <TableCell className="text-xs capitalize">{req.preferred_size}</TableCell>
                     <TableCell>{statusBadge(req.status)}</TableCell>
-                    <TableCell className="text-[10px] text-muted-foreground">{format(new Date(req.created_at), "MMM d")}</TableCell>
+                    <TableCell className="text-[12px] text-muted-foreground">{format(new Date(req.created_at), "MMM d")}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setExpandedId(expandedId === req.id ? null : req.id)}>
@@ -143,13 +143,13 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
                         <div className="space-y-3 max-w-2xl">
                           {req.description && (
                             <div>
-                              <p className="text-[10px] font-medium text-muted-foreground mb-0.5">{t("Description", "الوصف")}</p>
+                              <p className="text-[12px] font-medium text-muted-foreground mb-0.5">{t("Description", "الوصف")}</p>
                               <p className="text-xs">{req.description}</p>
                             </div>
                           )}
                           {req.special_requirements && (
                             <div>
-                              <p className="text-[10px] font-medium text-muted-foreground mb-0.5">{t("Special Requirements", "متطلبات خاصة")}</p>
+                              <p className="text-[12px] font-medium text-muted-foreground mb-0.5">{t("Special Requirements", "متطلبات خاصة")}</p>
                               <p className="text-xs">{req.special_requirements}</p>
                             </div>
                           )}

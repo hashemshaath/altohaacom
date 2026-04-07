@@ -39,7 +39,7 @@ export const AdminQuickActionsBar = memo(function AdminQuickActionsBar({ pending
     <Card className="border-border/50 bg-gradient-to-r from-muted/30 to-transparent">
       <CardContent className="py-3 px-4">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
-          <span className="text-[10px] text-muted-foreground whitespace-nowrap font-medium">
+          <span className="text-[12px] text-muted-foreground whitespace-nowrap font-medium">
             <Zap className="inline h-3 w-3 me-1" />{isAr ? "إنشاء سريع:" : "Quick Create:"}
           </span>
           {actions.map((action) => (
@@ -48,7 +48,7 @@ export const AdminQuickActionsBar = memo(function AdminQuickActionsBar({ pending
                 <action.icon className={`h-3 w-3 ${action.color}`} />
                 {isAr ? action.labelAr : action.labelEn}
                 {action.badge && action.badge > 0 && (
-                  <Badge variant="destructive" className="absolute -top-1 -end-1 h-4 min-w-4 text-[8px] p-0 flex items-center justify-center">
+                  <Badge variant="destructive" className="absolute -top-1 -end-1 h-4 min-w-4 text-[12px] p-0 flex items-center justify-center">
                     {action.badge}
                   </Badge>
                 )}

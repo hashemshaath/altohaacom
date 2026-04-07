@@ -148,20 +148,20 @@ export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
                     <card.icon className={cn("h-4 w-4", card.color)} />
                   </div>
                   <div>
-                    <p className="text-[10px] text-muted-foreground font-medium">{card.label}</p>
+                    <p className="text-[12px] text-muted-foreground font-medium">{card.label}</p>
                     {isLoading ? (
                       <Skeleton className="h-5 w-20 rounded-xl" />
                     ) : (
                       <p className={cn("text-sm font-black", card.color)}>
                         <AnimatedCounter value={card.value} className="inline" />
-                        {card.suffix && <span className="text-[10px] font-medium text-muted-foreground">{card.suffix}</span>}
+                        {card.suffix && <span className="text-[12px] font-medium text-muted-foreground">{card.suffix}</span>}
                       </p>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
                   {card.badge && card.badge > 0 && (
-                    <Badge variant="secondary" className="text-[9px] h-5 px-1.5">
+                    <Badge variant="secondary" className="text-[12px] h-5 px-1.5">
                       {card.badge}
                     </Badge>
                   )}
@@ -183,7 +183,7 @@ export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
             {isAr ? "العضويات" : "Memberships"}
           </CardTitle>
           <Link to="/admin/memberships">
-            <Badge variant="outline" className="text-[9px] gap-1 cursor-pointer hover:bg-accent">
+            <Badge variant="outline" className="text-[12px] gap-1 cursor-pointer hover:bg-accent">
               {isAr ? "عرض الكل" : "View All"}
               <ArrowRight className="h-2.5 w-2.5" />
             </Badge>
@@ -226,7 +226,7 @@ export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <ArrowUpRight className="h-3.5 w-3.5 text-chart-2" />
-                  <span className="text-[10px] font-medium text-muted-foreground">
+                  <span className="text-[12px] font-medium text-muted-foreground">
                     {isAr ? "معدل التحويل" : "Conversion Rate"}
                   </span>
                 </div>

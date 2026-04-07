@@ -119,7 +119,7 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-2xl font-black tabular-nums">{data.score}</span>
-              <span className="text-[9px] text-muted-foreground">/100</span>
+              <span className="text-[12px] text-muted-foreground">/100</span>
             </div>
           </div>
 
@@ -132,7 +132,7 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
               <TrendIcon className="h-3.5 w-3.5" />
               {delta > 0 ? `+${delta}` : delta} {isAr ? "عن الشهر الماضي" : "vs last month"}
             </div>
-            <Badge variant="outline" className="text-[10px] rounded-xl">
+            <Badge variant="outline" className="text-[12px] rounded-xl">
               {isAr ? "آخر 30 يوم" : "Last 30 days"}
             </Badge>
           </div>
@@ -145,14 +145,14 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
             const isMaxed = pct >= 100;
             return (
               <div key={item.label} className="flex items-center gap-2">
-                <span className="text-[10px] text-muted-foreground w-20 truncate">{item.label}</span>
+                <span className="text-[12px] text-muted-foreground w-20 truncate">{item.label}</span>
                 <div className="flex-1 h-1.5 bg-muted/40 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-700 ${isMaxed ? "bg-chart-2/80" : "bg-primary/70"}`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
-                <span className={`text-[10px] font-bold tabular-nums w-6 text-end ${isMaxed ? "text-chart-2" : ""}`}>
+                <span className={`text-[12px] font-bold tabular-nums w-6 text-end ${isMaxed ? "text-chart-2" : ""}`}>
                   {isMaxed ? "✓" : item.value}
                 </span>
               </div>

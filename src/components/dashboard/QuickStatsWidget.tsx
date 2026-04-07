@@ -29,12 +29,12 @@ function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColo
           <div className="flex items-baseline gap-1.5">
             <p className="text-2xl sm:text-3xl font-black leading-none tracking-tight text-foreground tabular-nums group-hover:text-primary transition-colors">{typeof value === "number" ? value : value}</p>
             {numValue > 0 && (
-              <span className={`text-[9px] font-bold ${iconColor} opacity-0 group-hover:opacity-100 transition-opacity`}>
+              <span className={`text-[12px] font-bold ${iconColor} opacity-0 group-hover:opacity-100 transition-opacity`}>
                 ●
               </span>
             )}
           </div>
-          <p className="mt-1 sm:mt-2 truncate text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">{label}</p>
+          <p className="mt-1 sm:mt-2 truncate text-[12px] sm:text-[12px] font-bold uppercase tracking-widest text-muted-foreground/80">{label}</p>
         </div>
       </CardContent>
     </Card>

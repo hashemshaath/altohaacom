@@ -25,14 +25,14 @@ export const NextEventHighlight = memo(function NextEventHighlight({ exhibition,
   return (
     <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4 sm:p-5 backdrop-blur-sm shadow-sm">
       <div className="flex items-start gap-1.5 mb-3">
-        <Badge className="bg-primary/15 text-primary border-0 text-[9px] font-black uppercase tracking-wider">
+        <Badge className="bg-primary/15 text-primary border-0 text-[12px] font-black uppercase tracking-wider">
           {isAr ? "الفعالية القادمة" : "Next Event"}
         </Badge>
       </div>
 
       <h3 className="text-sm sm:text-base font-bold line-clamp-1 mb-2">{title}</h3>
 
-      <div className="flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground mb-3">
+      <div className="flex flex-wrap items-center gap-3 text-[12px] text-muted-foreground mb-3">
         <span className="flex items-center gap-1.5">
           <Calendar className="h-3 w-3 text-primary/60" />
           {toEnglishDigits(format(start, "MMM d, yyyy"))}
@@ -52,11 +52,11 @@ export const NextEventHighlight = memo(function NextEventHighlight({ exhibition,
       <div className="flex items-center gap-4 mb-3">
         <div className="flex flex-col items-center rounded-xl bg-primary/10 px-3 py-2 min-w-[52px]">
           <span className="text-xl font-black text-primary tabular-nums leading-none"><AnimatedCounter value={daysLeft} /></span>
-          <span className="text-[8px] font-bold uppercase tracking-wider text-primary/60 mt-0.5">{isAr ? "يوم" : "days"}</span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-primary/60 mt-0.5">{isAr ? "يوم" : "days"}</span>
         </div>
         <div className="flex flex-col items-center rounded-xl bg-primary/10 px-3 py-2 min-w-[52px]">
           <span className="text-xl font-black text-primary tabular-nums leading-none"><AnimatedCounter value={hoursLeft} /></span>
-          <span className="text-[8px] font-bold uppercase tracking-wider text-primary/60 mt-0.5">{isAr ? "ساعة" : "hrs"}</span>
+          <span className="text-[12px] font-bold uppercase tracking-wider text-primary/60 mt-0.5">{isAr ? "ساعة" : "hrs"}</span>
         </div>
       </div>
 

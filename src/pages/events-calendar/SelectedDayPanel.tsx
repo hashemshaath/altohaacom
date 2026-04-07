@@ -23,7 +23,7 @@ export function SelectedDayPanel({ day, events, onClose, isAr }: {
             {format(day, isAr ? "EEEE, d MMMM yyyy" : "EEEE, MMMM d, yyyy", isAr ? { locale: arLocale } : undefined)}
           </h3>
           <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-[10px] tabular-nums">
+            <Badge variant="outline" className="text-[12px] tabular-nums">
               {events.length} {isAr ? "فعاليات" : "events"}
             </Badge>
             <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={onClose}>

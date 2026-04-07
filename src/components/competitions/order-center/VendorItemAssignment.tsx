@@ -48,7 +48,7 @@ export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped
                 <CardTitle className="text-sm">
                   {isAr && list.title_ar ? list.title_ar : list.title}
                 </CardTitle>
-                <Badge variant="outline" className="text-[10px]">
+                <Badge variant="outline" className="text-[12px]">
                   {list.items.filter(i => (i as any).assigned_vendor_id).length}/{list.items.length} {isAr ? "معين" : "assigned"}
                 </Badge>
               </div>
@@ -70,9 +70,9 @@ export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped
                     )}
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{name || "—"}</p>
-                      <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                      <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                         <span>{item.quantity} {item.unit}</span>
-                        <Badge variant="outline" className="text-[9px] h-4">
+                        <Badge variant="outline" className="text-[12px] h-4">
                           {getStatusLabel(ITEM_STATUS_LABELS, item.status || "pending", language)}
                         </Badge>
                       </div>
@@ -82,7 +82,7 @@ export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped
                         value={currentVendor || "none"}
                         onValueChange={(v) => onAssign(item.id, v === "none" ? null : v)}
                       >
-                        <SelectTrigger className="h-7 w-32 sm:w-40 text-[10px]">
+                        <SelectTrigger className="h-7 w-32 sm:w-40 text-[12px]">
                           <Building2 className="me-1 h-3 w-3 shrink-0" />
                           <SelectValue placeholder={isAr ? "تعيين مورد..." : "Assign vendor..."} />
                         </SelectTrigger>
@@ -96,7 +96,7 @@ export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped
                         </SelectContent>
                       </Select>
                     ) : currentVendor ? (
-                      <Badge variant="secondary" className="text-[10px]">
+                      <Badge variant="secondary" className="text-[12px]">
                         <Building2 className="me-1 h-3 w-3" />
                         {(() => {
                           const c = companies?.find(c => c.id === currentVendor);
@@ -104,7 +104,7 @@ export const VendorItemAssignment = memo(function VendorItemAssignment({ grouped
                         })()}
                       </Badge>
                     ) : (
-                      <span className="text-[10px] text-muted-foreground">{isAr ? "غير معين" : "Unassigned"}</span>
+                      <span className="text-[12px] text-muted-foreground">{isAr ? "غير معين" : "Unassigned"}</span>
                     )}
                   </div>
                 );

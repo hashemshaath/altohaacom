@@ -33,7 +33,7 @@ export const ExhibitionInteractiveStats = memo(function ExhibitionInteractiveSta
           <CardContent className="p-3 text-center">
             <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} group-hover:scale-110 transition-transform`} />
             <p className={`text-sm font-bold ${s.color}`}>{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
-            <p className="text-[9px] text-muted-foreground">{s.label}</p>
+            <p className="text-[12px] text-muted-foreground">{s.label}</p>
           </CardContent>
         </Card>
       ))}

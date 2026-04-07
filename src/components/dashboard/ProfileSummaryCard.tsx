@@ -66,7 +66,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-chart-3 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-chart-3" />
           </span>
-          <span className="text-[9px] font-semibold text-chart-3">{isAr ? "متصل" : "Online"}</span>
+          <span className="text-[12px] font-semibold text-chart-3">{isAr ? "متصل" : "Online"}</span>
         </div>
       </div>
       <CardContent className="relative -mt-10 px-4 pb-4">
@@ -81,7 +81,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
               {profile.is_verified && <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" />}
             </div>
             {profile.username && (
-              <p className="text-[10px] text-muted-foreground">@{profile.username}</p>
+              <p className="text-[12px] text-muted-foreground">@{profile.username}</p>
             )}
           </div>
         </div>
@@ -89,12 +89,12 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
         {/* Badges row */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           <MembershipBadge tier={profile.membership_tier} isAr={isAr} size="sm" />
-          <Badge variant="outline" className="text-[9px] gap-1 px-1.5 py-0.5">
+          <Badge variant="outline" className="text-[12px] gap-1 px-1.5 py-0.5">
             {profile.account_type === "professional" ? <Briefcase className="h-2.5 w-2.5" /> : <Users className="h-2.5 w-2.5" />}
             {profile.account_type === "professional" ? (isAr ? "محترف" : "Pro") : (isAr ? "مستخدم عادي" : "Regular")}
           </Badge>
           {spec && (
-            <Badge variant="secondary" className="text-[9px] px-1.5 py-0.5 truncate max-w-[120px]">
+            <Badge variant="secondary" className="text-[12px] px-1.5 py-0.5 truncate max-w-[120px]">
               {spec}
             </Badge>
           )}
@@ -110,7 +110,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
             ].map((s, i) => (
               <div key={i} className="text-center bg-muted/40 rounded-xl py-2 border border-border/30 hover:bg-muted/60 hover:border-primary/20 hover:shadow-sm transition-all duration-300 cursor-default group/stat">
                 <div className="text-sm font-bold tabular-nums group-hover/stat:text-primary transition-colors">{s.value}</div>
-                <div className="text-[8px] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
+                <div className="text-[12px] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
               </div>
             ))}
           </div>
@@ -121,7 +121,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
           <div className="flex items-center gap-2 bg-chart-4/10 rounded-xl px-3 py-2 mb-3">
             <Star className="h-3.5 w-3.5 text-chart-4" />
             <span className="text-xs font-bold">{profile.loyalty_points}</span>
-            <span className="text-[10px] text-muted-foreground">{isAr ? "نقاط" : "Points"}</span>
+            <span className="text-[12px] text-muted-foreground">{isAr ? "نقاط" : "Points"}</span>
           </div>
         )}
 

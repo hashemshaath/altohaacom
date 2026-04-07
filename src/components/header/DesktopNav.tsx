@@ -129,7 +129,7 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
               boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
             }}
           >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[var(--color-subtle)] mb-4">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-[var(--color-subtle)] mb-4">
               {label("Explore the Platform", "اكتشف المنصة")}
             </p>
             <div className="grid grid-cols-3 gap-x-3 gap-y-1">

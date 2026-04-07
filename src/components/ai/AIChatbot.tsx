@@ -113,7 +113,7 @@ const AIChatbot = memo(function AIChatbot() {
             <p className="text-sm font-bold leading-none">
               {isAr ? "مساعد الطهاة" : "Altoha AI"}
             </p>
-            <p className="text-[10px] opacity-70 mt-0.5">
+            <p className="text-[12px] opacity-70 mt-0.5">
               {isAr ? "مدعوم بالذكاء الاصطناعي" : "AI-powered assistant"}
             </p>
           </div>
@@ -151,7 +151,7 @@ const AIChatbot = memo(function AIChatbot() {
                     setInput(q);
                     setTimeout(() => inputRef.current?.focus(), 50);
                   }}
-                  className="text-[11px] px-2.5 py-1.5 rounded-lg border border-border bg-muted/50 text-foreground hover:bg-muted transition-colors"
+                  className="text-[12px] px-2.5 py-1.5 rounded-lg border border-border bg-muted/50 text-foreground hover:bg-muted transition-colors"
                 >
                   {q}
                 </button>
@@ -170,7 +170,7 @@ const AIChatbot = memo(function AIChatbot() {
           >
             <div
               className={cn(
-                "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px]",
+                "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[12px]",
                 msg.role === "user"
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground"

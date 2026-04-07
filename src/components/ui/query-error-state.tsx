@@ -88,10 +88,10 @@ export const QueryErrorState = memo(function QueryErrorState({
       )}
       {error && import.meta.env.DEV && (
         <details className="mt-2 text-start max-w-sm w-full">
-          <summary className="text-[10px] text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
+          <summary className="text-[12px] text-muted-foreground cursor-pointer hover:text-foreground transition-colors">
             {isAr ? "تفاصيل تقنية" : "Technical details"}
           </summary>
-          <pre className="mt-1 text-[10px] bg-muted/50 rounded-xl p-2 overflow-auto max-h-20 text-destructive font-mono">
+          <pre className="mt-1 text-[12px] bg-muted/50 rounded-xl p-2 overflow-auto max-h-20 text-destructive font-mono">
             {error.message}
           </pre>
         </details>

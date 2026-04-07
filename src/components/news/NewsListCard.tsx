@@ -52,15 +52,15 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
             <div className="flex flex-1 flex-col justify-between min-w-0">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary" className="text-[9px] rounded-md gap-1 px-1.5 py-0">
+                  <Badge variant="secondary" className="text-[12px] rounded-md gap-1 px-1.5 py-0">
                     <TypeIcon className="h-2.5 w-2.5" />
                     {typeBadgeLabel(article.type)}
                   </Badge>
-                  <span className="text-[10px] text-muted-foreground/60 flex items-center gap-0.5">
+                  <span className="text-[12px] text-muted-foreground/60 flex items-center gap-0.5">
                     <BookOpen className="h-2.5 w-2.5" /> {readTime} {isAr ? "د" : "min"}
                   </span>
                   {(article.view_count ?? 0) >= 100 && (
-                    <Badge variant="secondary" className="text-[8px] px-1.5 py-0 h-4 rounded-lg gap-0.5 bg-chart-4/10 text-chart-4 border-0">
+                    <Badge variant="secondary" className="text-[12px] px-1.5 py-0 h-4 rounded-lg gap-0.5 bg-chart-4/10 text-chart-4 border-0">
                       🔥 {isAr ? "رائج" : "Trending"}
                     </Badge>
                   )}
@@ -69,7 +69,7 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
                 {excerpt && <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{excerpt}</p>}
               </div>
               <div className="flex items-center justify-between mt-2">
-                <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                   <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(article.published_at || article.created_at)}</span>
                   <span className="flex items-center gap-1"><Eye className="h-2.5 w-2.5" />{article.view_count}</span>
                 </div>

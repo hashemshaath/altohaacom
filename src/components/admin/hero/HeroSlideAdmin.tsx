@@ -156,7 +156,7 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
 // ─── Section heading ──────────────────────────────────────────────────────────
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-2">
+    <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-2">
       {children}
     </p>
   );
@@ -345,7 +345,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
 
       {/* ── Quick-add template picker ───────────────────────────────────────── */}
       <div className="rounded-xl border border-border/50 bg-muted/20 p-3">
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-2.5">
+        <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground mb-2.5">
           {isAr ? "إضافة سريعة بقالب" : "Quick-add by template"}
         </p>
         <div className="flex flex-wrap gap-2">
@@ -395,7 +395,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                 {/* Drag handle + order */}
                 <div className="flex flex-col items-center gap-0.5 shrink-0 cursor-grab active:cursor-grabbing">
                   <GripVertical className="h-4 w-4 text-muted-foreground/40" />
-                  <span className="text-[9px] text-muted-foreground/50 font-mono">{idx + 1}</span>
+                  <span className="text-[12px] text-muted-foreground/50 font-mono">{idx + 1}</span>
                 </div>
 
                 {/* Thumbnail */}
@@ -422,23 +422,23 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                 >
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="text-sm font-semibold truncate">{slide.title || <span className="text-muted-foreground italic">Untitled</span>}</span>
-                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 shrink-0">{tpl.label}</Badge>
+                    <Badge variant="outline" className="text-[12px] px-1.5 py-0 shrink-0">{tpl.label}</Badge>
                     {isDirty && (
-                      <Badge variant="outline" className="text-[9px] px-1.5 py-0 shrink-0 border-amber-300 text-amber-600">
+                      <Badge variant="outline" className="text-[12px] px-1.5 py-0 shrink-0 border-amber-300 text-amber-600">
                         {isAr ? "غير محفوظ" : "Unsaved"}
                       </Badge>
                     )}
                   </div>
-                  <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                  <p className="text-[12px] text-muted-foreground truncate mt-0.5">
                     {slide.subtitle || slide.image_url || "—"}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[9px] text-muted-foreground/60 font-mono">
+                    <span className="text-[12px] text-muted-foreground/60 font-mono">
                       {HEIGHT_PRESETS[slide.height_preset]?.label ?? slide.height_preset}
                       {slide.height_preset === "custom" && slide.custom_height ? ` · ${slide.custom_height}px` : ""}
                     </span>
                     {slide.animation_effect !== "none" && (
-                      <span className="text-[9px] text-muted-foreground/60">
+                      <span className="text-[12px] text-muted-foreground/60">
                         · {ANIMATION_EFFECTS.find(a => a.value === slide.animation_effect)?.label}
                       </span>
                     )}
@@ -504,13 +504,13 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                     <div>
                       <Tabs defaultValue="content" className="space-y-3">
                         <TabsList className="h-8 flex-wrap gap-0.5 h-auto">
-                          <TabsTrigger value="content"    className="h-7 px-2 text-[11px] gap-1"><Type className="h-3 w-3" />{isAr ? "المحتوى" : "Content"}</TabsTrigger>
-                          <TabsTrigger value="template"   className="h-7 px-2 text-[11px] gap-1"><LayoutTemplate className="h-3 w-3" />{isAr ? "القالب" : "Template"}</TabsTrigger>
-                          <TabsTrigger value="design"     className="h-7 px-2 text-[11px] gap-1"><Palette className="h-3 w-3" />{isAr ? "التصميم" : "Design"}</TabsTrigger>
-                          <TabsTrigger value="image"      className="h-7 px-2 text-[11px] gap-1"><Image className="h-3 w-3" />{isAr ? "الصورة" : "Image"}</TabsTrigger>
-                          <TabsTrigger value="dimensions" className="h-7 px-2 text-[11px] gap-1"><Monitor className="h-3 w-3" />{isAr ? "الأبعاد" : "Size"}</TabsTrigger>
-                          <TabsTrigger value="links"      className="h-7 px-2 text-[11px] gap-1"><Link2 className="h-3 w-3" />{isAr ? "الروابط" : "Links"}</TabsTrigger>
-                          <TabsTrigger value="animation"  className="h-7 px-2 text-[11px] gap-1"><Zap className="h-3 w-3" />{isAr ? "الحركة" : "Motion"}</TabsTrigger>
+                          <TabsTrigger value="content"    className="h-7 px-2 text-[12px] gap-1"><Type className="h-3 w-3" />{isAr ? "المحتوى" : "Content"}</TabsTrigger>
+                          <TabsTrigger value="template"   className="h-7 px-2 text-[12px] gap-1"><LayoutTemplate className="h-3 w-3" />{isAr ? "القالب" : "Template"}</TabsTrigger>
+                          <TabsTrigger value="design"     className="h-7 px-2 text-[12px] gap-1"><Palette className="h-3 w-3" />{isAr ? "التصميم" : "Design"}</TabsTrigger>
+                          <TabsTrigger value="image"      className="h-7 px-2 text-[12px] gap-1"><Image className="h-3 w-3" />{isAr ? "الصورة" : "Image"}</TabsTrigger>
+                          <TabsTrigger value="dimensions" className="h-7 px-2 text-[12px] gap-1"><Monitor className="h-3 w-3" />{isAr ? "الأبعاد" : "Size"}</TabsTrigger>
+                          <TabsTrigger value="links"      className="h-7 px-2 text-[12px] gap-1"><Link2 className="h-3 w-3" />{isAr ? "الروابط" : "Links"}</TabsTrigger>
+                          <TabsTrigger value="animation"  className="h-7 px-2 text-[12px] gap-1"><Zap className="h-3 w-3" />{isAr ? "الحركة" : "Motion"}</TabsTrigger>
                         </TabsList>
 
                         {/* ── CONTENT ── */}
@@ -542,7 +542,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                           <div className="flex items-center justify-between rounded-xl border border-border/50 p-3">
                             <div>
                               <p className="text-xs font-medium">{isAr ? "تفعيل الشريحة" : "Active"}</p>
-                              <p className="text-[10px] text-muted-foreground">{isAr ? "إخفاء الشريحة من الموقع" : "Show this slide publicly"}</p>
+                              <p className="text-[12px] text-muted-foreground">{isAr ? "إخفاء الشريحة من الموقع" : "Show this slide publicly"}</p>
                             </div>
                             <Switch checked={slide.is_active} onCheckedChange={v => update(slide.id, "is_active", v)} />
                           </div>
@@ -584,11 +584,11 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 </div>
                                 <div className="flex items-start justify-between gap-1">
                                   <div>
-                                    <p className="text-[11px] font-semibold">{tpl.label}</p>
-                                    <p className="text-[10px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{tpl.description}</p>
+                                    <p className="text-[12px] font-semibold">{tpl.label}</p>
+                                    <p className="text-[12px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{tpl.description}</p>
                                   </div>
                                   {slide.template === tpl.id && (
-                                    <Badge className="text-[9px] px-1.5 shrink-0">✓</Badge>
+                                    <Badge className="text-[12px] px-1.5 shrink-0">✓</Badge>
                                   )}
                                 </div>
                               </button>
@@ -611,7 +611,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                     update(slide.id, "overlay_color", p.color);
                                     update(slide.id, "overlay_opacity", p.opacity);
                                   }}
-                                  className="flex items-center gap-1.5 rounded-xl border border-border/50 px-2.5 py-1 text-[10px] font-medium hover:border-primary/50 transition-all"
+                                  className="flex items-center gap-1.5 rounded-xl border border-border/50 px-2.5 py-1 text-[12px] font-medium hover:border-primary/50 transition-all"
                                 >
                                   <span
                                     className="h-3 w-3 rounded-full border border-border/50"
@@ -649,7 +649,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 min={0} max={90} step={5}
                                 className="w-full mt-3"
                               />
-                              <div className="flex justify-between text-[9px] text-muted-foreground mt-1">
+                              <div className="flex justify-between text-[12px] text-muted-foreground mt-1">
                                 <span>0% Transparent</span><span>90% Very Dark</span>
                               </div>
                             </FieldRow>
@@ -712,7 +712,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 className="h-full w-full"
                                 style={{ objectFit: slide.object_fit as any, objectPosition: slide.object_position }}
                               />
-                              <div className="absolute top-2 end-2 rounded-md bg-background/70 backdrop-blur-sm px-2 py-1 text-[10px] font-mono">
+                              <div className="absolute top-2 end-2 rounded-md bg-background/70 backdrop-blur-sm px-2 py-1 text-[12px] font-mono">
                                 {slide.object_fit} · {slide.object_position}
                               </div>
                             </div>
@@ -759,7 +759,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                               >
                                 <p className="text-lg mb-1">{preset.icon}</p>
                                 <p className="text-xs font-semibold">{preset.label}</p>
-                                <p className="text-[10px] text-muted-foreground mt-0.5">{preset.desc}</p>
+                                <p className="text-[12px] text-muted-foreground mt-0.5">{preset.desc}</p>
                               </button>
                             ))}
                           </div>
@@ -777,7 +777,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 <span className="text-xs text-muted-foreground shrink-0">px</span>
                               </div>
                               {slide.custom_height && (
-                                <p className="text-[10px] text-muted-foreground">
+                                <p className="text-[12px] text-muted-foreground">
                                   ≈ {(slide.custom_height / 1080 * 100).toFixed(0)}% of typical 1080p screen
                                 </p>
                               )}
@@ -785,7 +785,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                           )}
 
                           <div className="rounded-xl border border-border/40 bg-muted/30 p-3 space-y-2">
-                            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">
+                            <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wide">
                               {isAr ? "المعايير الموصى بها" : "Industry Standards"}
                             </p>
                             <div className="grid sm:grid-cols-3 gap-2">
@@ -794,7 +794,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 { icon: <Tablet className="h-3 w-3" />,  label: "Tablet",  spec: "4:3 · 1024×768" },
                                 { icon: <Smartphone className="h-3 w-3" />, label: "Mobile", spec: "9:16 · 390×844" },
                               ].map(d => (
-                                <div key={d.label} className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                                <div key={d.label} className="flex items-center gap-2 text-[12px] text-muted-foreground">
                                   {d.icon}<span>{d.label}: {d.spec}</span>
                                 </div>
                               ))}
@@ -805,7 +805,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 { label: "Editorial",      spec: "~800px tall" },
                                 { label: "Full Viewport",  spec: "100vh" },
                               ].map(d => (
-                                <div key={d.label} className="text-[10px] text-muted-foreground">
+                                <div key={d.label} className="text-[12px] text-muted-foreground">
                                   <span className="font-medium text-foreground/70">{d.label}:</span> {d.spec}
                                 </div>
                               ))}
@@ -868,7 +868,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                               >
                                 <Zap className={cn("h-4 w-4 mb-1.5", slide.animation_effect === anim.value ? "text-primary" : "text-muted-foreground/50")} />
                                 <p className="text-xs font-semibold">{anim.label}</p>
-                                <p className="text-[10px] text-muted-foreground mt-0.5">{anim.desc}</p>
+                                <p className="text-[12px] text-muted-foreground mt-0.5">{anim.desc}</p>
                               </button>
                             ))}
                           </div>
@@ -880,7 +880,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                     {livePreview && (
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                          <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground">
                             {isAr ? "معاينة مباشرة" : "Live Preview"}
                           </p>
                           <div className="flex items-center gap-1">
@@ -985,7 +985,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
           <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/40 bg-card/80 backdrop-blur-sm shrink-0">
             <div className="flex items-center gap-2">
               <p className="text-sm font-semibold truncate max-w-[200px]">{previewSlide.title}</p>
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[12px]">
                 {HERO_TEMPLATES.find(t => t.id === previewSlide.template)?.label}
               </Badge>
             </div>
@@ -1021,7 +1021,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
 
           {/* Footer with info */}
           <div className="px-4 py-2 border-t border-border/40 bg-card/60 backdrop-blur-sm shrink-0">
-            <div className="flex items-center justify-center gap-4 text-[10px] text-muted-foreground">
+            <div className="flex items-center justify-center gap-4 text-[12px] text-muted-foreground">
               <span>Template: {templateLabels[previewSlide.template]}</span>
               <span>·</span>
               <span>Height: {HEIGHT_PRESETS[previewSlide.height_preset]?.label ?? previewSlide.height_preset}</span>

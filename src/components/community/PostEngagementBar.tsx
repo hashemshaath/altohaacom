@@ -39,7 +39,7 @@ export const PostEngagementBar = memo(function PostEngagementBar({
   if (totalEngagement === 0 && wordCount < 20) return null;
 
   return (
-    <div className={cn("flex items-center gap-3 mt-1.5 text-[10px] text-muted-foreground/70", className)}>
+    <div className={cn("flex items-center gap-3 mt-1.5 text-[12px] text-muted-foreground/70", className)}>
       {wordCount >= 15 && (
         <span className="flex items-center gap-0.5">
           <Clock className="h-2.5 w-2.5" />

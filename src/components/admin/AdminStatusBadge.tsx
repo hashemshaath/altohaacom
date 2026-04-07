@@ -67,7 +67,7 @@ export const AdminStatusBadge = memo(function AdminStatusBadge({
     <Badge
       variant="outline"
       className={cn(
-        "text-[11px] font-medium px-2 py-0.5 rounded-md capitalize",
+        "text-[12px] font-medium px-2 py-0.5 rounded-md capitalize",
         style,
         className
       )}

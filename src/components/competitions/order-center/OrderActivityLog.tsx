@@ -113,7 +113,7 @@ export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }
           <Activity className="h-4 w-4 text-primary" />
           <h4 className="text-sm font-semibold">{isAr ? "سجل النشاطات" : "Activity Log"}</h4>
           {logs?.length ? (
-            <Badge variant="secondary" className="text-[10px]">{logs.length}</Badge>
+            <Badge variant="secondary" className="text-[12px]">{logs.length}</Badge>
           ) : null}
         </div>
         <div className="flex items-center gap-2">
@@ -145,7 +145,7 @@ export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }
           )}
           <Filter className="h-3.5 w-3.5 text-muted-foreground" />
           <Select value={filterEntity} onValueChange={setFilterEntity}>
-            <SelectTrigger className="h-7 w-28 text-[10px]">
+            <SelectTrigger className="h-7 w-28 text-[12px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -198,18 +198,18 @@ export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }
                       <p className="text-xs text-muted-foreground mt-0.5 truncate">{detailText}</p>
                     )}
                     {details.from_status && details.to_status && (
-                      <div className="flex items-center gap-1 mt-1 text-[10px]">
-                        <Badge variant="outline" className="text-[9px] h-4">{details.from_status}</Badge>
+                      <div className="flex items-center gap-1 mt-1 text-[12px]">
+                        <Badge variant="outline" className="text-[12px] h-4">{details.from_status}</Badge>
                         <span className="text-muted-foreground">→</span>
-                        <Badge variant="outline" className="text-[9px] h-4">{details.to_status}</Badge>
+                        <Badge variant="outline" className="text-[12px] h-4">{details.to_status}</Badge>
                       </div>
                     )}
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <Badge variant="outline" className={`text-[9px] h-4 ${entityColor}`}>
+                    <Badge variant="outline" className={`text-[12px] h-4 ${entityColor}`}>
                       {log.entity_type}
                     </Badge>
-                    <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                    <span className="text-[12px] text-muted-foreground flex items-center gap-0.5">
                       <Clock className="h-3 w-3" />
                       {formatDistanceToNow(new Date(log.created_at), { addSuffix: true })}
                     </span>

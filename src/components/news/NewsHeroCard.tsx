@@ -57,12 +57,12 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
             </div>
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
-          <Badge className="absolute start-4 top-4 gap-1.5 text-[10px] rounded-xl" variant="secondary">
+          <Badge className="absolute start-4 top-4 gap-1.5 text-[12px] rounded-xl" variant="secondary">
             <TypeIcon className="h-3 w-3" />
             {typeBadgeLabel(article.type)}
           </Badge>
           <div className="absolute top-4 end-4 flex items-center gap-2">
-            <div className="flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-1 text-[10px] text-muted-foreground">
+            <div className="flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-1 text-[12px] text-muted-foreground">
               <BookOpen className="h-2.5 w-2.5" />
               {readTime} {isAr ? "د" : "min"}
             </div>
@@ -71,13 +71,13 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
         </div>
         <div className="absolute bottom-0 inset-x-0 p-5 md:p-6">
           {(article.view_count ?? 0) >= 100 && (
-            <Badge variant="secondary" className="text-[9px] px-2 py-0.5 rounded-lg gap-1 bg-chart-4/10 text-chart-4 border-0 mb-2">
+            <Badge variant="secondary" className="text-[12px] px-2 py-0.5 rounded-lg gap-1 bg-chart-4/10 text-chart-4 border-0 mb-2">
               🔥 {isAr ? "رائج" : "Trending"}
             </Badge>
           )}
           <h3 className="text-xl md:text-2xl font-bold line-clamp-2 mb-2 group-hover:text-primary transition-colors">{title}</h3>
           {excerpt && <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{excerpt}</p>}
-          <div className="flex items-center gap-4 text-[11px] text-muted-foreground">
+          <div className="flex items-center gap-4 text-[12px] text-muted-foreground">
             <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formatDate(article.published_at || article.created_at)}</span>
             <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{article.view_count}</span>
             <span className="ms-auto flex items-center gap-1 text-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">

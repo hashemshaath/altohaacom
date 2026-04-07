@@ -278,7 +278,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
               {overdueItems.map((item, idx) => (
                 <div key={item.id} className="flex items-center justify-between text-xs animate-in fade-in slide-in-from-left-2" style={{ animationDelay: `${idx * 50}ms` }}>
                   <span className="truncate">{getItemDisplayName(item, isAr)}</span>
-                  <Badge variant="destructive" className="text-[9px] shrink-0">
+                  <Badge variant="destructive" className="text-[12px] shrink-0">
                     {format(new Date(item.deadline!), "MMM d")}
                   </Badge>
                 </div>
@@ -306,8 +306,8 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
               return (
                 <div key={stage.labelEn} className="flex flex-col items-center" style={{ width: `${width}%`, minWidth: "36px" }}>
                   <div className={`w-full h-2.5 rounded-full ${stage.color.split(" ")[0]} transition-all duration-500`} />
-                  <span className="text-[10px] font-bold mt-1.5">{stage.count}</span>
-                  <span className="text-[9px] text-muted-foreground">{isAr ? stage.labelAr : stage.labelEn}</span>
+                  <span className="text-[12px] font-bold mt-1.5">{stage.count}</span>
+                  <span className="text-[12px] text-muted-foreground">{isAr ? stage.labelAr : stage.labelEn}</span>
                 </div>
               );
             })}
@@ -322,7 +322,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
             <p className="text-sm font-medium">{isAr ? "تقدم التسليم" : "Delivery Progress"}</p>
             <div className="flex items-center gap-1.5">
               {stats.overdue > 0 && (
-                <Badge variant="destructive" className="text-[10px] px-1.5 py-0">
+                <Badge variant="destructive" className="text-[12px] px-1.5 py-0">
                   <AlertTriangle className="me-0.5 h-3 w-3" />
                   {stats.overdue} {isAr ? "متأخرة" : "overdue"}
                 </Badge>
@@ -337,7 +337,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
           </div>
           {/* Completion estimate */}
           {stats.total > 0 && stats.delivered < stats.total && stats.delivered > 0 && (
-            <div className="mt-2 flex items-center gap-1.5 text-[10px] text-muted-foreground bg-muted/30 rounded-lg px-2 py-1">
+            <div className="mt-2 flex items-center gap-1.5 text-[12px] text-muted-foreground bg-muted/30 rounded-lg px-2 py-1">
               <Clock className="h-3 w-3 shrink-0" />
               <span>
                 {isAr
@@ -363,7 +363,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
                 return (
                   <div key={item.id} className="flex items-center justify-between text-xs">
                     <span className="truncate">{getItemDisplayName(item, isAr)}</span>
-                    <Badge variant="outline" className={`text-[9px] shrink-0 ${daysLeft <= 2 ? "border-destructive/50 text-destructive" : ""}`}>
+                    <Badge variant="outline" className={`text-[12px] shrink-0 ${daysLeft <= 2 ? "border-destructive/50 text-destructive" : ""}`}>
                       {daysLeft === 0 ? (isAr ? "اليوم" : "Today") : `${daysLeft}d`}
                     </Badge>
                   </div>
@@ -396,9 +396,9 @@ function MetricCard({ icon: Icon, value, label, iconColor, trend, trendLabel, tr
           <Icon className={`h-4.5 w-4.5 ${iconColor}`} />
         </div>
         <p className={`font-bold ${isValueString ? "text-base" : "text-xl"}`}>{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
-        <p className="text-[10px] text-muted-foreground uppercase">{label}</p>
+        <p className="text-[12px] text-muted-foreground uppercase">{label}</p>
         {trend !== undefined && trendLabel && (
-          <p className={`text-[10px] mt-0.5 font-medium ${trendPositive ? "text-chart-5" : "text-muted-foreground"}`}>
+          <p className={`text-[12px] mt-0.5 font-medium ${trendPositive ? "text-chart-5" : "text-muted-foreground"}`}>
             {trend} {trendLabel}
           </p>
         )}
@@ -420,7 +420,7 @@ function StatusCard({ icon: Icon, iconColor, label, value, badge }: {
           <span className="text-xs font-medium truncate">{label}</span>
         </div>
         <p className="text-2xl font-bold">{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
-        {badge && <Badge variant="secondary" className="text-[10px] mt-1 animate-in fade-in">{badge}</Badge>}
+        {badge && <Badge variant="secondary" className="text-[12px] mt-1 animate-in fade-in">{badge}</Badge>}
       </CardContent>
     </Card>
   );

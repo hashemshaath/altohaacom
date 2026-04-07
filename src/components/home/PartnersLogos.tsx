@@ -90,7 +90,7 @@ export const PartnersLogos = memo(function PartnersLogos() {
                 />
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-[10px] text-muted-foreground font-medium text-center line-clamp-1">{item.name}</span>
+                <span className="text-[12px] text-muted-foreground font-medium text-center line-clamp-1">{item.name}</span>
                 {item.verified && <CheckCircle className="h-2.5 w-2.5 shrink-0 text-chart-5" />}
               </div>
             </a>

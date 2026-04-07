@@ -110,8 +110,8 @@ export const CountryAuditLog = memo(function CountryAuditLog({ countryCode }: { 
                 <div key={entry.id} className="flex items-start gap-3 p-3 rounded-xl border hover:bg-muted/30 transition-colors">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className="font-mono text-[10px]">{entry.country_code}</Badge>
-                      <Badge className={`text-[10px] ${actionColors[entry.action] || "bg-muted"}`}>
+                      <Badge variant="outline" className="font-mono text-[12px]">{entry.country_code}</Badge>
+                      <Badge className={`text-[12px] ${actionColors[entry.action] || "bg-muted"}`}>
                         {entry.action}
                       </Badge>
                     </div>
@@ -119,12 +119,12 @@ export const CountryAuditLog = memo(function CountryAuditLog({ countryCode }: { 
                     {entry.changes && Object.keys(entry.changes).length > 0 && (
                       <div className="mt-1.5 space-y-0.5">
                         {Object.entries(entry.changes).slice(0, 4).map(([field, change]) => (
-                          <p key={field} className="text-[10px] text-muted-foreground">
+                          <p key={field} className="text-[12px] text-muted-foreground">
                             <span className="font-medium">{field}</span>: {String(change.old ?? "—")} → {String(change.new ?? "—")}
                           </p>
                         ))}
                         {Object.keys(entry.changes).length > 4 && (
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             +{Object.keys(entry.changes).length - 4} {isAr ? "تغييرات أخرى" : "more changes"}
                           </p>
                         )}
@@ -132,7 +132,7 @@ export const CountryAuditLog = memo(function CountryAuditLog({ countryCode }: { 
                     )}
                   </div>
                   <div className="text-end shrink-0">
-                    <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
                       <Clock className="h-3 w-3" />
                       {format(new Date(entry.created_at), "MMM dd, HH:mm")}
                     </div>

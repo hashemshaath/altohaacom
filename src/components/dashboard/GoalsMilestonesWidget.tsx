@@ -112,7 +112,7 @@ export const GoalsMilestonesWidget = memo(function GoalsMilestonesWidget() {
                   )}
                   <span className="font-medium">{isAr ? m.labelAr : m.labelEn}</span>
                 </div>
-                <Badge variant="secondary" className="text-[9px] px-1.5 py-0 h-4 tabular-nums">
+                <Badge variant="secondary" className="text-[12px] px-1.5 py-0 h-4 tabular-nums">
                   {m.current}/{m.target}
                 </Badge>
               </div>

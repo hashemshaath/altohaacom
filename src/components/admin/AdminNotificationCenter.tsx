@@ -138,7 +138,7 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
                     <p className="text-xs text-muted-foreground mt-0.5 truncate">
                       {isAr ? notif.body_ar || notif.body : notif.body}
                     </p>
-                    <p className="text-[10px] text-muted-foreground/70 mt-1 flex items-center gap-1">
+                    <p className="text-[12px] text-muted-foreground/70 mt-1 flex items-center gap-1">
                       <Clock className="h-2.5 w-2.5" />
                       {formatDistanceToNow(new Date(notif.created_at), {
                         addSuffix: true,

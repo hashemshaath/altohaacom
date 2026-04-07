@@ -76,7 +76,7 @@ export const AchievementCelebration = forwardRef<HTMLDivElement>(function Achiev
                   <Star className="h-3.5 w-3.5 text-chart-3-foreground" />
                 </div>
                 {event.points && event.points >= 50 && (
-                  <div className="absolute -bottom-1 -start-1 h-5 w-5 rounded-full bg-chart-4 flex items-center justify-center text-[8px] font-black text-chart-4-foreground">
+                  <div className="absolute -bottom-1 -start-1 h-5 w-5 rounded-full bg-chart-4 flex items-center justify-center text-[12px] font-black text-chart-4-foreground">
                     ⚡
                   </div>
                 )}

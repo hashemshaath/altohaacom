@@ -73,14 +73,14 @@ export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomp
               >
                 <Avatar className="h-9 w-9 rounded-xl border border-border/30 shrink-0">
                   {org.logo_url && <AvatarImage src={org.logo_url} />}
-                  <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-[10px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                  <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-[12px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1">
                     <span className="text-sm font-medium truncate">{name}</span>
                     {org.is_verified && <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />}
                   </div>
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                     {org.city && (
                       <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{org.city}</span>
                     )}
@@ -95,7 +95,7 @@ export const OrganizerSearchAutocomplete = memo(function OrganizerSearchAutocomp
               </Link>
             );
           })}
-          <div className="px-3 py-2 border-t border-border/30 text-[10px] text-muted-foreground text-center">
+          <div className="px-3 py-2 border-t border-border/30 text-[12px] text-muted-foreground text-center">
             {isAr ? `${suggestions.length} نتيجة — اضغط Enter لعرض الكل` : `${suggestions.length} results — press Enter for all`}
           </div>
         </div>

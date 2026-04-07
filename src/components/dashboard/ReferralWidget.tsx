@@ -57,7 +57,7 @@ export const ReferralWidget = memo(function ReferralWidget() {
             </div>
             <div>
               <h3 className="font-semibold text-sm">{isAr ? "ادعُ واكسب" : "Invite & Earn"}</h3>
-              <p className="text-[10px] text-muted-foreground">{isAr ? "اكسب نقاطاً لكل صديق" : "Earn points per friend"}</p>
+              <p className="text-[12px] text-muted-foreground">{isAr ? "اكسب نقاطاً لكل صديق" : "Earn points per friend"}</p>
             </div>
           </div>
           <Badge className="bg-chart-4/20 text-chart-4 font-bold">
@@ -70,18 +70,18 @@ export const ReferralWidget = memo(function ReferralWidget() {
         <div className="grid grid-cols-3 gap-1.5 mb-4">
           <div className="rounded-xl bg-muted/50 p-2 text-center">
             <p className="text-lg font-bold">{invites}</p>
-            <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "دعوات" : "Invites"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "دعوات" : "Invites"}</p>
           </div>
           <div className="rounded-xl bg-muted/50 p-2 text-center">
             <p className="text-lg font-bold">{converts}</p>
-            <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "تحويلات" : "Converts"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "تحويلات" : "Converts"}</p>
           </div>
           <div className="rounded-xl bg-muted/50 p-2 text-center">
             <p className="text-lg font-bold flex items-center justify-center gap-0.5">
               {conversionRate}%
               <TrendingUp className="h-3 w-3 text-chart-5" />
             </p>
-            <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "معدل" : "Rate"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "معدل" : "Rate"}</p>
           </div>
         </div>
 
@@ -91,16 +91,16 @@ export const ReferralWidget = memo(function ReferralWidget() {
             <div className="flex items-center justify-between mb-1.5">
               <div className="flex items-center gap-1.5">
                 <Target className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[11px] font-semibold">
+                <span className="text-[12px] font-semibold">
                   {isAr ? `هدف ${nextTier.labelAr}` : `${nextTier.label} Goal`}
                 </span>
               </div>
-              <span className="text-[10px] text-muted-foreground font-medium">
+              <span className="text-[12px] text-muted-foreground font-medium">
                 {converts}/{nextTier.target}
               </span>
             </div>
             <Progress value={progressToNext} className="h-1.5" />
-            <p className="text-[9px] text-muted-foreground mt-1.5">
+            <p className="text-[12px] text-muted-foreground mt-1.5">
               {isAr
                 ? `${nextTier.target - converts} دعوة متبقية لكسب ${nextTier.reward} نقطة`
                 : `${nextTier.target - converts} more to earn ${nextTier.reward} points`}

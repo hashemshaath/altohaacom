@@ -502,13 +502,13 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 {editingId ? (form.title || t("Edit Exhibition", "تعديل الفعالية")) : t("New Exhibition", "فعالية جديدة")}
               </h2>
               {editionYear && (
-                <Badge variant="outline" className="text-[10px] h-5 px-1.5 shrink-0 font-mono">{editionYear}</Badge>
+                <Badge variant="outline" className="text-[12px] h-5 px-1.5 shrink-0 font-mono">{editionYear}</Badge>
               )}
               {form.is_featured && (
                 <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500 shrink-0" />
               )}
             </div>
-            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+            <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
               {currentType && (
                 <span className="flex items-center gap-1">
                   <currentType.icon className="h-2.5 w-2.5" />
@@ -548,7 +548,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                     <circle cx="10" cy="10" r="8" fill="none" stroke={completeness === 100 ? "hsl(var(--chart-2))" : "hsl(var(--primary))"} strokeWidth="2.5" strokeDasharray={`${completeness * 0.5} 100`} strokeLinecap="round" className="transition-all duration-500" />
                   </svg>
                 </div>
-                <span className="text-[10px] font-bold tabular-nums">{completeness}%</span>
+                <span className="text-[12px] font-bold tabular-nums">{completeness}%</span>
               </div>
             </TooltipTrigger>
             <TooltipContent>{t("Form completeness", "اكتمال النموذج")}</TooltipContent>
@@ -556,7 +556,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
           {/* Countdown badge */}
           {daysUntilStart !== null && daysUntilStart > 0 && daysUntilStart <= 90 && (
-            <Badge variant="outline" className="hidden lg:flex text-[10px] h-6 gap-1 font-medium">
+            <Badge variant="outline" className="hidden lg:flex text-[12px] h-6 gap-1 font-medium">
               <Clock className="h-3 w-3" />
               {daysUntilStart} {t("days", "يوم")}
             </Badge>
@@ -613,8 +613,8 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               <img src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-2 start-2.5 end-2.5">
-                <p className="text-[10px] text-white/90 font-medium truncate">{form.title || t("Untitled", "بدون عنوان")}</p>
-                {editionYear && <p className="text-[9px] text-white/70">{t("Edition", "النسخة")} {editionYear}</p>}
+                <p className="text-[12px] text-white/90 font-medium truncate">{form.title || t("Untitled", "بدون عنوان")}</p>
+                {editionYear && <p className="text-[12px] text-white/70">{t("Edition", "النسخة")} {editionYear}</p>}
               </div>
             </div>
           )}
@@ -643,7 +643,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-xs font-medium block truncate">{isAr ? sec.ar : sec.en}</span>
-                    <span className={cn("text-[9px] block truncate transition-colors", isActive ? "text-primary/60" : "text-muted-foreground/50")}>{isAr ? sec.descAr : sec.descEn}</span>
+                    <span className={cn("text-[12px] block truncate transition-colors", isActive ? "text-primary/60" : "text-muted-foreground/50")}>{isAr ? sec.descAr : sec.descEn}</span>
                   </div>
                   <span className={cn("h-2 w-2 rounded-full shrink-0 transition-colors", dotColor)} />
                 </button>
@@ -662,7 +662,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 </a>
               </Button>
             )}
-            <div className="text-[9px] text-muted-foreground/50 text-center">
+            <div className="text-[12px] text-muted-foreground/50 text-center">
               ⌘S {t("to save", "للحفظ")}
             </div>
           </div>
@@ -694,7 +694,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
               {/* Series & Edition */}
               <div className="rounded-xl border border-primary/10 bg-gradient-to-br from-primary/[0.02] to-transparent p-4 space-y-3">
-                <p className="text-[11px] font-semibold text-primary/80 flex items-center gap-1.5">
+                <p className="text-[12px] font-semibold text-primary/80 flex items-center gap-1.5">
                   <Layers className="h-3.5 w-3.5" />
                   {t("Event Series & Edition", "سلسلة الفعالية والإصدار")}
                 </p>
@@ -790,12 +790,12 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                           <p className="text-xs font-semibold text-chart-2">
                             {t("Edition loaded", "تم تحميل النسخة")}
                           </p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {isAr && existingEdition.title_ar ? existingEdition.title_ar : existingEdition.title}
                             {" · "}{t("Edition", "النسخة")} #{existingEdition.edition_number || "?"}
                           </p>
                         </div>
-                        <Badge variant="outline" className="text-[10px] h-5">{existingEdition.status}</Badge>
+                        <Badge variant="outline" className="text-[12px] h-5">{existingEdition.status}</Badge>
                       </div>
                     ) : !editionConfirmed ? (
                       <div className="flex items-center gap-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-3">
@@ -804,13 +804,13 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-chart-4">{t("New edition", "نسخة جديدة")}</p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {t("No data found for", "لم يتم العثور على بيانات لعام")} {editionYear}
                           </p>
                         </div>
                         <Button
                           size="sm"
-                          className="h-7 text-[11px] px-3 gap-1.5"
+                          className="h-7 text-[12px] px-3 gap-1.5"
                           onClick={() => { setEditionResolved(true); setEditionConfirmed(true); }}
                         >
                           <Sparkles className="h-3 w-3" />
@@ -821,7 +821,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                       <div className="flex items-center gap-2 text-xs text-chart-2">
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         {t("New edition confirmed", "تم تأكيد النسخة الجديدة")}
-                        <Badge variant="outline" className="text-[10px] h-5 ms-auto">{editionYear}</Badge>
+                        <Badge variant="outline" className="text-[12px] h-5 ms-auto">{editionYear}</Badge>
                       </div>
                     )}
                   </div>
@@ -907,12 +907,12 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                           <X className="h-3.5 w-3.5" />
                         </Button>
                       </div>
-                      <Badge className="absolute bottom-1.5 start-1.5 text-[9px] h-4 bg-black/60 text-white border-0">{t("Cover", "غلاف")}</Badge>
+                      <Badge className="absolute bottom-1.5 start-1.5 text-[12px] h-4 bg-black/60 text-white border-0">{t("Cover", "غلاف")}</Badge>
                     </div>
                   ) : (
                     <div className="h-32 rounded-xl border-2 border-dashed border-border/40 flex flex-col items-center justify-center text-muted-foreground/40">
                       <Image className="h-6 w-6 mb-1" />
-                      <span className="text-[10px]">{t("No cover image", "لا توجد صورة غلاف")}</span>
+                      <span className="text-[12px]">{t("No cover image", "لا توجد صورة غلاف")}</span>
                     </div>
                   )}
                 </div>
@@ -928,12 +928,12 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                       <Button variant="ghost" size="icon" className="absolute top-1.5 end-1.5 h-6 w-6 rounded-lg bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setLogoUrl("")}>
                         <X className="h-3 w-3" />
                       </Button>
-                      <Badge className="absolute bottom-1.5 start-1.5 text-[9px] h-4 bg-black/60 text-white border-0">{t("Logo", "شعار")}</Badge>
+                      <Badge className="absolute bottom-1.5 start-1.5 text-[12px] h-4 bg-black/60 text-white border-0">{t("Logo", "شعار")}</Badge>
                     </div>
                   ) : (
                     <div className="h-32 rounded-xl border-2 border-dashed border-border/40 flex flex-col items-center justify-center text-muted-foreground/40">
                       <Palette className="h-6 w-6 mb-1" />
-                      <span className="text-[10px]">{t("No logo", "لا يوجد شعار")}</span>
+                      <span className="text-[12px]">{t("No logo", "لا يوجد شعار")}</span>
                     </div>
                   )}
                 </div>
@@ -941,7 +941,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
               {/* Image summary */}
               {(form.cover_image_url || logoUrl) && (
-                <div className="flex items-center gap-2 text-[10px] text-muted-foreground rounded-lg bg-muted/20 px-3 py-1.5 w-fit">
+                <div className="flex items-center gap-2 text-[12px] text-muted-foreground rounded-lg bg-muted/20 px-3 py-1.5 w-fit">
                   <CheckCircle2 className="h-3 w-3 text-chart-2" />
                   {[form.cover_image_url && t("Cover", "غلاف"), logoUrl && t("Logo", "شعار")].filter(Boolean).join(" · ")} {t("uploaded", "مرفوعة")}
                 </div>
@@ -1000,7 +1000,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
               {/* Duration display */}
               {form.start_date && form.end_date && (
-                <div className="flex items-center gap-2 text-[11px] text-muted-foreground rounded-lg bg-muted/30 px-3 py-1.5 w-fit">
+                <div className="flex items-center gap-2 text-[12px] text-muted-foreground rounded-lg bg-muted/30 px-3 py-1.5 w-fit">
                   <Clock className="h-3 w-3" />
                   {(() => {
                     const days = Math.ceil((new Date(form.end_date).getTime() - new Date(form.start_date).getTime()) / 86400000);
@@ -1011,7 +1011,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
               {/* Event Content Types */}
               <div className="rounded-xl border border-border/30 bg-muted/20 p-4">
-                <p className="text-[11px] font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
+                <p className="text-[12px] font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
                   <Sparkles className="h-3 w-3" />
                   {t("Event Content", "محتوى الفعالية")}
                 </p>
@@ -1072,7 +1072,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                           disabled={!canAssignVenue}
                         />
                         {!canAssignVenue && (
-                          <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+                          <p className="text-[12px] text-muted-foreground mt-1 flex items-center gap-1">
                             <Info className="h-3 w-3" />
                             {t("Venue can only be assigned for current or next year", "يمكن تعيين المقر فقط للسنة الحالية أو القادمة")}
                           </p>
@@ -1082,7 +1082,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   })()}
 
                   <div className="rounded-xl border border-border/30 bg-muted/10 p-4 space-y-3 mt-2">
-                    <p className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                    <p className="text-[12px] font-semibold text-muted-foreground flex items-center gap-1.5">
                       <MapPin className="h-3 w-3" />
                       {t("Location Details", "تفاصيل الموقع")}
                     </p>
@@ -1184,7 +1184,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               <div className="flex items-center gap-3 rounded-xl bg-muted/20 px-3 py-2">
                 <Switch checked={form.is_free || false} onCheckedChange={v => updateField("is_free", v)} />
                 <Label className="text-xs font-medium">{t("Free Entry", "دخول مجاني")}</Label>
-                {form.is_free && <Badge variant="outline" className="text-[10px] h-5 bg-chart-2/5 text-chart-2 border-chart-2/20">{t("Free", "مجاني")}</Badge>}
+                {form.is_free && <Badge variant="outline" className="text-[12px] h-5 bg-chart-2/5 text-chart-2 border-chart-2/20">{t("Free", "مجاني")}</Badge>}
               </div>
 
               <div className="grid gap-4 sm:grid-cols-3">
@@ -1229,7 +1229,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               <Separator />
 
               <div>
-                <p className="text-[11px] font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
+                <p className="text-[12px] font-semibold text-muted-foreground mb-3 flex items-center gap-1.5">
                   <Globe className="h-3 w-3" />
                   {t("Social Media & Contact Links", "روابط التواصل الاجتماعي والاتصال")}
                 </p>
@@ -1282,7 +1282,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   />
                   <Separator />
                   <div>
-                    <p className="text-[11px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
+                    <p className="text-[12px] font-semibold text-muted-foreground mb-2 flex items-center gap-1.5">
                       <FileText className="h-3 w-3" />
                       {t("Documents & AI Knowledge Base", "المستندات وقاعدة معارف الذكاء الاصطناعي")}
                     </p>
@@ -1330,9 +1330,9 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <p className="text-xs font-semibold truncate">{isAr && ed.title_ar ? ed.title_ar : ed.title}</p>
-                              {isCurrent && <Badge className="text-[9px] h-4 px-1 bg-primary/10 text-primary border-0">{t("Current", "الحالية")}</Badge>}
+                              {isCurrent && <Badge className="text-[12px] h-4 px-1 bg-primary/10 text-primary border-0">{t("Current", "الحالية")}</Badge>}
                             </div>
-                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                            <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-0.5">
                               <span className="font-mono font-bold">{ed.edition_year}</span>
                               {ed.edition_number && <span>· {t("Edition", "النسخة")} #{ed.edition_number}</span>}
                               {ed.city && <span>· {ed.city}</span>}
@@ -1340,7 +1340,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                             </div>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
-                            <Badge variant="outline" className="text-[9px] h-5 gap-1">
+                            <Badge variant="outline" className="text-[12px] h-5 gap-1">
                               <span className={cn("h-1.5 w-1.5 rounded-full", edStatus?.color || "bg-muted-foreground")} />
                               {isAr ? edStatus?.ar : edStatus?.en}
                             </Badge>
@@ -1400,7 +1400,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
               {editingId && (
                 <div className="rounded-xl border border-border/30 bg-muted/10 p-4 space-y-2">
-                  <p className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                  <p className="text-[12px] font-semibold text-muted-foreground flex items-center gap-1.5">
                     <Activity className="h-3 w-3" />
                     {t("Quick Info", "معلومات سريعة")}
                   </p>
@@ -1412,7 +1412,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                       { label: t("Last Saved", "آخر حفظ"), value: lastSaved ? lastSaved.toLocaleDateString() : "—" },
                     ].map((item, i) => (
                       <div key={i} className="text-center rounded-lg bg-muted/20 px-2 py-2">
-                        <p className="text-[9px] text-muted-foreground/60 uppercase tracking-wider">{item.label}</p>
+                        <p className="text-[12px] text-muted-foreground/60 uppercase tracking-wider">{item.label}</p>
                         <p className="text-xs font-semibold mt-0.5 truncate">{item.value}</p>
                       </div>
                     ))}
@@ -1443,10 +1443,10 @@ function SectionHeader({ icon: Icon, title, desc, status, badge }: { icon: any; 
       </div>
       <div className="flex-1 min-w-0">
         <h3 className="text-sm font-bold">{title}</h3>
-        {desc && <p className="text-[10px] text-muted-foreground">{desc}</p>}
+        {desc && <p className="text-[12px] text-muted-foreground">{desc}</p>}
       </div>
       {badge && (
-        <Badge variant="outline" className="text-[10px] h-5 px-1.5">{badge}</Badge>
+        <Badge variant="outline" className="text-[12px] h-5 px-1.5">{badge}</Badge>
       )}
       <span className={cn("h-2.5 w-2.5 rounded-full shrink-0 transition-colors", dotColor)} title={status} />
     </div>
@@ -1464,7 +1464,7 @@ function FieldGroup({ label, required, aiSlot, hint, children }: { label: string
         {aiSlot}
       </div>
       {children}
-      {hint && <p className="text-[10px] text-muted-foreground/60">{hint}</p>}
+      {hint && <p className="text-[12px] text-muted-foreground/60">{hint}</p>}
     </div>
   );
 }

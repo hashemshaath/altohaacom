@@ -76,13 +76,13 @@ function RecentImportsWidget({ isAr }: { isAr: boolean }) {
           {imports.map((imp) => (
             <div key={imp.id} className="flex items-center justify-between rounded-lg border border-border/30 p-2.5">
               <div className="flex items-center gap-2.5">
-                <Badge variant={imp.status === "completed" ? "default" : imp.status === "failed" ? "destructive" : "outline"} className="text-[9px] h-4 capitalize">
+                <Badge variant={imp.status === "completed" ? "default" : imp.status === "failed" ? "destructive" : "outline"} className="text-[12px] h-4 capitalize">
                   {imp.status}
                 </Badge>
                 <span className="text-xs font-medium">{imp.entity_type}</span>
-                {imp.total_rows && <span className="text-[10px] text-muted-foreground">({imp.processed_rows || 0}/{imp.total_rows})</span>}
+                {imp.total_rows && <span className="text-[12px] text-muted-foreground">({imp.processed_rows || 0}/{imp.total_rows})</span>}
               </div>
-              <span className="text-[10px] text-muted-foreground tabular-nums">
+              <span className="text-[12px] text-muted-foreground tabular-nums">
                 {format(new Date(imp.created_at), "MMM d, HH:mm")}
               </span>
             </div>
@@ -152,7 +152,7 @@ function UpcomingEventsPreview({ isAr }: { isAr: boolean }) {
             <Link key={ev.id} to={ev.link}>
               <div className="group flex items-start gap-3 rounded-xl border border-border/40 p-3 transition-all hover:bg-muted/30 hover:border-primary/20">
                 <div className="flex flex-col items-center rounded-lg bg-primary/10 p-2 text-center min-w-[44px]">
-                  <span className="text-[10px] font-semibold text-primary uppercase">
+                  <span className="text-[12px] font-semibold text-primary uppercase">
                     {format(new Date(ev.date), "MMM")}
                   </span>
                   <span className="text-lg font-bold text-primary leading-none">
@@ -169,11 +169,11 @@ function UpcomingEventsPreview({ isAr }: { isAr: boolean }) {
                     })()}
                   </p>
                   <div className="flex items-center gap-1.5 mt-1">
-                    <Badge variant="outline" className="text-[8px] h-4 px-1">
+                    <Badge variant="outline" className="text-[12px] h-4 px-1">
                       {ev.type === "competition" ? (isAr ? "مسابقة" : "Competition") : (isAr ? "معرض" : "Exhibition")}
                     </Badge>
                     {ev.city && (
-                      <span className="text-[10px] text-muted-foreground truncate">{ev.city}</span>
+                      <span className="text-[12px] text-muted-foreground truncate">{ev.city}</span>
                     )}
                   </div>
                 </div>
@@ -405,7 +405,7 @@ export default function AdminDashboard() {
                           <AnimatedCounter value={stat.value} />
                         </p>
                       )}
-                      <p className="text-[11px] text-muted-foreground font-medium mt-1">{stat.title}</p>
+                      <p className="text-[12px] text-muted-foreground font-medium mt-1">{stat.title}</p>
                     </div>
                     <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200 group-hover:scale-110", stat.bg)}>
                       <stat.icon className={cn("h-4 w-4", stat.color)} />
@@ -421,7 +421,7 @@ export default function AdminDashboard() {
                         </ResponsiveContainer>
                       </div>
                       {trend !== 0 && (
-                        <span className={cn("text-[10px] font-semibold tabular-nums flex items-center gap-0.5",
+                        <span className={cn("text-[12px] font-semibold tabular-nums flex items-center gap-0.5",
                           trend > 0 ? "text-chart-5" : "text-destructive"
                         )}>
                           {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
@@ -455,9 +455,9 @@ export default function AdminDashboard() {
                 <Link key={action.title} to={action.link}>
                   <div className="group relative flex flex-col items-center gap-2 rounded-xl border border-border/40 p-3 text-center transition-all duration-200 hover:bg-muted/50 hover:border-primary/20 active:scale-95">
                     <action.icon className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                    <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
+                    <span className="text-[12px] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
                     {action.badge && action.badge > 0 && (
-                      <Badge variant="destructive" className="absolute -top-1.5 -end-1.5 text-[9px] h-4 min-w-4 px-1">{action.badge}</Badge>
+                      <Badge variant="destructive" className="absolute -top-1.5 -end-1.5 text-[12px] h-4 min-w-4 px-1">{action.badge}</Badge>
                     )}
                   </div>
                 </Link>
@@ -489,7 +489,7 @@ export default function AdminDashboard() {
                     <p className={cn("text-base font-bold tabular-nums leading-none", item.color)}>
                       <AnimatedCounter value={Number(item.value) || 0} className="inline" />
                     </p>
-                    <p className="text-[9px] text-muted-foreground mt-0.5 font-medium">{item.label}</p>
+                    <p className="text-[12px] text-muted-foreground mt-0.5 font-medium">{item.label}</p>
                   </div>
                 </div>
               ))}
@@ -540,7 +540,7 @@ export default function AdminDashboard() {
                           <span className="text-xs font-medium">{type.label}</span>
                           <span className={cn("text-sm font-bold tabular-nums", type.color)}>
                             <AnimatedCounter value={type.value} />
-                            <span className="text-[10px] text-muted-foreground ms-1">{pct}%</span>
+                            <span className="text-[12px] text-muted-foreground ms-1">{pct}%</span>
                           </span>
                         </div>
                         <div className="h-1.5 rounded-full bg-muted overflow-hidden">
@@ -566,7 +566,7 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-chart-5">{isAr ? "النظام يعمل بشكل طبيعي" : "System Healthy"}</p>
-                  <p className="text-[11px] text-muted-foreground">{isAr ? "جميع الخدمات تعمل" : "All services operational"}</p>
+                  <p className="text-[12px] text-muted-foreground">{isAr ? "جميع الخدمات تعمل" : "All services operational"}</p>
                 </div>
               </div>
             </CardContent>
@@ -610,7 +610,7 @@ export default function AdminDashboard() {
                 {stats?.recentActions?.map((action) => (
                   <div key={action.id} className="flex items-center justify-between rounded-lg border border-border/30 p-2.5">
                     {getActionBadge(action.action_type)}
-                    <span className="text-[11px] text-muted-foreground tabular-nums">
+                    <span className="text-[12px] text-muted-foreground tabular-nums">
                       {format(new Date(action.created_at), "MMM d, HH:mm")}
                     </span>
                   </div>
@@ -648,7 +648,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{user.display_name || user.full_name || "Unknown"}</p>
-                    <p className="text-[10px] text-muted-foreground tabular-nums">{format(new Date(user.created_at), "MMM d, yyyy")}</p>
+                    <p className="text-[12px] text-muted-foreground tabular-nums">{format(new Date(user.created_at), "MMM d, yyyy")}</p>
                   </div>
                 </Link>
               ))}

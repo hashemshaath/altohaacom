@@ -147,7 +147,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
             </div>
             <div className="flex gap-2 items-end mt-2">
               <div className="space-y-1 flex-1">
-                <Label className="text-[10px] text-muted-foreground">{isAr ? "أو أدخل اللون (HEX أو HSL)" : "Or enter color (HEX or HSL)"}</Label>
+                <Label className="text-[12px] text-muted-foreground">{isAr ? "أو أدخل اللون (HEX أو HSL)" : "Or enter color (HEX or HSL)"}</Label>
                 <div className="flex gap-2">
                   <Input
                     value={cover.gradientColor}
@@ -184,7 +184,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
                   <button
                     key={opt.value}
                     onClick={() => setCover({ ...cover, gradientDirection: opt.value })}
-                    className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-[10px] transition-all ${active ? "border-primary bg-primary/10 text-primary" : "border-border/40 text-muted-foreground hover:bg-muted/30"}`}
+                    className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-[12px] transition-all ${active ? "border-primary bg-primary/10 text-primary" : "border-border/40 text-muted-foreground hover:bg-muted/30"}`}
                   >
                     <Icon className="h-4 w-4" />
                     <span className="leading-tight text-center">{isAr ? opt.ar : opt.en}</span>
@@ -201,7 +201,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-xs">{isAr ? "شفافية البداية" : "Start Opacity"}</Label>
-                <Badge variant="outline" className="text-[10px] font-mono px-2">{cover.gradientOpacityStart ?? 90}%</Badge>
+                <Badge variant="outline" className="text-[12px] font-mono px-2">{cover.gradientOpacityStart ?? 90}%</Badge>
               </div>
               <Slider
                 value={[cover.gradientOpacityStart ?? 90]}
@@ -212,7 +212,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-xs">{isAr ? "شفافية النهاية" : "End Opacity"}</Label>
-                <Badge variant="outline" className="text-[10px] font-mono px-2">{cover.gradientOpacityEnd ?? 0}%</Badge>
+                <Badge variant="outline" className="text-[12px] font-mono px-2">{cover.gradientOpacityEnd ?? 0}%</Badge>
               </div>
               <Slider
                 value={[cover.gradientOpacityEnd ?? 0]}
@@ -226,14 +226,14 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-xs">{isAr ? "شدة التدرج الإجمالية" : "Overall Gradient Intensity"}</Label>
-              <Badge variant="outline" className="text-[10px] font-mono px-2">{cover.gradientIntensity ?? 60}%</Badge>
+              <Badge variant="outline" className="text-[12px] font-mono px-2">{cover.gradientIntensity ?? 60}%</Badge>
             </div>
             <Slider
               value={[cover.gradientIntensity ?? 60]}
               onValueChange={([v]) => setCover({ ...cover, gradientIntensity: v })}
               min={0} max={100} step={5}
             />
-            <div className="flex justify-between text-[10px] text-muted-foreground">
+            <div className="flex justify-between text-[12px] text-muted-foreground">
               <span>{isAr ? "شفاف" : "Transparent"}</span>
               <span>{isAr ? "معتدل" : "Moderate"}</span>
               <span>{isAr ? "داكن" : "Dark"}</span>
@@ -255,7 +255,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
               }}
             >
               <div className="absolute inset-0" style={{ background: buildPreview() }} />
-              <div className="absolute inset-x-0 bottom-2 text-center text-[10px] font-medium text-foreground/70">
+              <div className="absolute inset-x-0 bottom-2 text-center text-[12px] font-medium text-foreground/70">
                 {isAr ? "معاينة التدرج المباشر" : "Live Gradient Preview"}
               </div>
             </div>
@@ -305,8 +305,8 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
                     {isAr ? t.ar : t.en}
                   </span>
                   <div className="flex gap-2 mt-0.5">
-                    <Badge variant="outline" className="text-[9px] font-mono px-1.5 py-0">{t.width}×{t.height}</Badge>
-                    <Badge variant="secondary" className="text-[9px] font-mono px-1.5 py-0">{t.ratio}</Badge>
+                    <Badge variant="outline" className="text-[12px] font-mono px-1.5 py-0">{t.width}×{t.height}</Badge>
+                    <Badge variant="secondary" className="text-[12px] font-mono px-1.5 py-0">{t.ratio}</Badge>
                   </div>
                 </div>
                 <div
@@ -316,7 +316,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
               </button>
             ))}
           </div>
-          <p className="text-[10px] text-muted-foreground mt-3">
+          <p className="text-[12px] text-muted-foreground mt-3">
             {isAr
               ? "اضغط على أي قالب لتطبيق ارتفاعه كارتفاع افتراضي. الحد الأقصى 800px."
               : "Click any template to apply its height as default. Max height is 800px."}
@@ -346,7 +346,7 @@ export const CoverSettings = memo(function CoverSettings({ settings, onSave, isP
               >
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{isAr ? page.ar : page.en}</span>
-                  <Badge variant="outline" className="text-[9px] font-mono px-1.5 py-0">{page.slug}</Badge>
+                  <Badge variant="outline" className="text-[12px] font-mono px-1.5 py-0">{page.slug}</Badge>
                 </div>
                 <Select
                   value={cover.pages[page.slug]?.mode || "medium"}

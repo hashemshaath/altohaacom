@@ -80,7 +80,7 @@ export const NewsletterSignup = function NewsletterSignup() {
               {loading ? "..." : (isAr ? "اشتراك" : "Subscribe")}
             </Button>
           </form>
-          <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground/60">
+          <div className="mt-4 flex items-center justify-center gap-1.5 text-[12px] text-muted-foreground/60">
             <Shield className="h-3 w-3" />
             {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
           </div>

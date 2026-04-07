@@ -223,7 +223,7 @@ export default function LoyaltyAdmin() {
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {(t.benefits as string[] || []).map((b: string, i: number) => (
-                            <Badge key={i} variant="outline" className="text-[10px] rounded-lg">{b}</Badge>
+                            <Badge key={i} variant="outline" className="text-[12px] rounded-lg">{b}</Badge>
                           ))}
                         </div>
                       </TableCell>
@@ -258,7 +258,7 @@ export default function LoyaltyAdmin() {
                           <span className="font-medium text-sm">{isAr ? c.title_ar : c.title}</span>
                         </div>
                       </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{c.category}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[12px] uppercase rounded-lg">{c.category}</Badge></TableCell>
                       <TableCell className="text-center font-mono tabular-nums">{c.target_count}</TableCell>
                       <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{c.reward_points}</TableCell>
                       <TableCell>
@@ -292,9 +292,9 @@ export default function LoyaltyAdmin() {
                   {rwPagination.paginated.map((r) => (
                     <TableRow key={r.id} className="transition-colors duration-200 hover:bg-muted/40">
                       <TableCell className="font-medium text-sm">{isAr ? r.name_ar : r.name}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{r.category}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[12px] uppercase rounded-lg">{r.category}</Badge></TableCell>
                       <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{r.points_cost}</TableCell>
-                      <TableCell className="text-center"><Badge variant="secondary" className="text-[10px] rounded-lg">{r.min_tier}</Badge></TableCell>
+                      <TableCell className="text-center"><Badge variant="secondary" className="text-[12px] rounded-lg">{r.min_tier}</Badge></TableCell>
                       <TableCell className="text-center">
                         <Switch checked={r.is_featured} onCheckedChange={v => updateReward.mutate({ id: r.id, updates: { is_featured: v } })} />
                       </TableCell>

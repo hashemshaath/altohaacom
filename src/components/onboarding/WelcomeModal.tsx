@@ -128,7 +128,7 @@ export function WelcomeModal() {
             {profile.avatar_url && (
               <Avatar className="absolute -bottom-1 -end-1 h-7 w-7 ring-2 ring-card">
                 <AvatarImage src={profile.avatar_url} />
-                <AvatarFallback className="text-[10px]">{(profile.full_name || "U")[0]}</AvatarFallback>
+                <AvatarFallback className="text-[12px]">{(profile.full_name || "U")[0]}</AvatarFallback>
               </Avatar>
             )}
           </div>
@@ -185,7 +185,7 @@ export function WelcomeModal() {
                       {isAr ? field.labelAr : field.labelEn}
                     </p>
                     {!done && (
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-[12px] text-muted-foreground">
                         {isAr ? field.actionAr : field.actionEn}
                       </p>
                     )}

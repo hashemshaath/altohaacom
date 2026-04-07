@@ -57,7 +57,7 @@ export const CompetitionsQuickNav = memo(function CompetitionsQuickNav() {
             {count > 0 && (
               <Badge
                 variant={item.countKey === "pending" ? "destructive" : "secondary"}
-                className="text-[9px] px-1.5 py-0 h-4 min-w-[18px] justify-center"
+                className="text-[12px] px-1.5 py-0 h-4 min-w-[18px] justify-center"
               >
                 {count}
               </Badge>

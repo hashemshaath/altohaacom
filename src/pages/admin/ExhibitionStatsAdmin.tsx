@@ -60,7 +60,7 @@ export default function ExhibitionStatsAdmin() {
                   <p className={`text-xl font-bold ${stat.color}`}>
                     <AnimatedCounter value={stat.value} />
                   </p>
-                  <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                  <p className="text-[12px] text-muted-foreground">{stat.label}</p>
                 </div>
               </CardContent>
             </Card>

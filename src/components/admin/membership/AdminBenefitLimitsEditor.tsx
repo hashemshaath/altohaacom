@@ -168,7 +168,7 @@ const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
                     <td className="py-3 px-4">
                       <div>
                         <p className="font-medium">{isAr ? benefit.nameAr || benefit.name : benefit.name}</p>
-                        <Badge variant="outline" className="text-[9px] px-1.5 py-0 mt-0.5">{benefit.category}</Badge>
+                        <Badge variant="outline" className="text-[12px] px-1.5 py-0 mt-0.5">{benefit.category}</Badge>
                       </div>
                     </td>
                     {TIERS.map((tier) => {
@@ -202,7 +202,7 @@ const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-7 px-2 text-[10px]"
+                                className="h-7 px-2 text-[12px]"
                                 onClick={() => updateEdit(row.id, "monthly_limit", isUnlimited ? 10 : null)}
                               >
                                 {isUnlimited ? (isAr ? "حدد" : "Set") : <Infinity className="h-3 w-3" />}
@@ -214,7 +214,7 @@ const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
                                 onCheckedChange={(v) => updateEdit(row.id, "is_active", v)}
                                 className="scale-75"
                               />
-                              <span className="text-[10px] text-muted-foreground">
+                              <span className="text-[12px] text-muted-foreground">
                                 {edit.is_active ? (isAr ? "مفعل" : "Active") : (isAr ? "معطل" : "Off")}
                               </span>
                             </div>

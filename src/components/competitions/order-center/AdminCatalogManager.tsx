@@ -162,7 +162,7 @@ export const AdminCatalogManager = memo(function AdminCatalogManager() {
               onClick={() => setCategoryFilter(categoryFilter === cat.value ? "all" : cat.value)}>
               <CardContent className="p-2.5 text-center">
                 <CatIcon className="mx-auto mb-1 h-4 w-4 text-primary" />
-                <p className="text-[10px] font-medium truncate">{isAr ? cat.labelAr : cat.label}</p>
+                <p className="text-[12px] font-medium truncate">{isAr ? cat.labelAr : cat.label}</p>
                 <p className="text-xs font-bold">{catCounts[cat.value] || 0}</p>
               </CardContent>
             </Card>
@@ -311,11 +311,11 @@ export const AdminCatalogManager = memo(function AdminCatalogManager() {
                       <TableCell>
                         <div>
                           <p className="text-sm font-medium">{isAr && item.name_ar ? item.name_ar : item.name}</p>
-                          {item.description && <p className="text-[10px] text-muted-foreground line-clamp-1">{isAr && item.description_ar ? item.description_ar : item.description}</p>}
+                          {item.description && <p className="text-[12px] text-muted-foreground line-clamp-1">{isAr && item.description_ar ? item.description_ar : item.description}</p>}
                         </div>
                       </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[9px]">{catDef ? (isAr ? catDef.labelAr : catDef.label) : item.category}</Badge></TableCell>
-                      <TableCell className="text-[10px] text-muted-foreground">{item.subcategory || "—"}</TableCell>
+                      <TableCell><Badge variant="outline" className="text-[12px]">{catDef ? (isAr ? catDef.labelAr : catDef.label) : item.category}</Badge></TableCell>
+                      <TableCell className="text-[12px] text-muted-foreground">{item.subcategory || "—"}</TableCell>
                       <TableCell className="text-center text-xs">{item.default_quantity || "—"}</TableCell>
                       <TableCell className="text-xs">{item.unit || "—"}</TableCell>
                       <TableCell className="text-xs">{item.estimated_cost ? <>SAR <AnimatedCounter value={Math.round(Number(item.estimated_cost))} className="inline" /></> : "—"}</TableCell>

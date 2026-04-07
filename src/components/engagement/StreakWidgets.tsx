@@ -34,7 +34,7 @@ export const StreakBadge = memo(function StreakBadge({ className }: { className?
       <Flame className={cn("h-3.5 w-3.5", isOnFire && "animate-pulse")} />
       <AnimatedCounter value={currentStreak} className="inline" />
       {multiplier > 1 && (
-        <span className="flex items-center gap-0.5 text-[10px] opacity-80">
+        <span className="flex items-center gap-0.5 text-[12px] opacity-80">
           <Zap className="h-2.5 w-2.5" />
           {multiplier}x
         </span>
@@ -72,23 +72,23 @@ export const StreakWidget = memo(function StreakWidget({ className }: { classNam
         <div className="text-center rounded-xl bg-muted/50 p-2.5">
           <Flame className="h-4 w-4 mx-auto text-chart-4 mb-1" />
           <AnimatedCounter value={currentStreak} className="text-lg font-bold block" />
-          <p className="text-[10px] text-muted-foreground">{isAr ? "الحالي" : "Current"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "الحالي" : "Current"}</p>
         </div>
         <div className="text-center rounded-xl bg-muted/50 p-2.5">
           <Trophy className="h-4 w-4 mx-auto text-primary mb-1" />
           <AnimatedCounter value={longestStreak} className="text-lg font-bold block" />
-          <p className="text-[10px] text-muted-foreground">{isAr ? "الأطول" : "Best"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "الأطول" : "Best"}</p>
         </div>
         <div className="text-center rounded-xl bg-muted/50 p-2.5">
           <Zap className="h-4 w-4 mx-auto text-chart-2 mb-1" />
           <AnimatedCounter value={totalLogins} className="text-lg font-bold block" />
-          <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي" : "Total"}</p>
         </div>
       </div>
 
       {/* Streak progress bar (7-day goal) */}
       <div className="space-y-1">
-        <div className="flex justify-between text-[10px] text-muted-foreground">
+        <div className="flex justify-between text-[12px] text-muted-foreground">
           <span>{isAr ? "هدف 7 أيام" : "7-day goal"}</span>
           <span>{Math.min(currentStreak, 7)}/7</span>
         </div>

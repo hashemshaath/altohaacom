@@ -44,7 +44,7 @@ export const SmartInstallBanner = memo(function SmartInstallBanner() {
             return (
               <div key={f.labelEn} className="flex items-center gap-1 rounded-full bg-muted/60 px-2.5 py-1 transition-all hover:bg-primary/10" style={{ animationDelay: `${i * 100}ms` }}>
                 <Icon className="h-3 w-3 text-primary" />
-                <span className="text-[10px] font-medium text-muted-foreground">{isAr ? f.labelAr : f.labelEn}</span>
+                <span className="text-[12px] font-medium text-muted-foreground">{isAr ? f.labelAr : f.labelEn}</span>
               </div>
             );
           })}

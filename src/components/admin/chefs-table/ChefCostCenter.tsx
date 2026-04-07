@@ -413,7 +413,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
               {isAr ? "التكلفة المقدرة الإجمالية" : "Estimated Total Cost"}
             </p>
             <p className="text-4xl font-black tabular-nums text-primary"><AnimatedCounter value={est} className="text-4xl font-black tabular-nums text-primary" /> <span className="text-base">SAR</span></p>
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="text-[12px] text-muted-foreground mt-1">
               {isAr ? `لمدة ${editing.estimated_days || 1} أيام` : `For ${editing.estimated_days || 1} day(s)`}
             </p>
           </div>
@@ -580,7 +580,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <s.icon className={`h-4 w-4 ${s.color}`} />
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{s.label}</span>
+                <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">{s.label}</span>
               </div>
               <p className="text-lg font-black tabular-nums">{typeof s.value === "number" ? <><AnimatedCounter value={s.value} />{(s as any).suffix || ""}</> : s.value}</p>
             </CardContent>
@@ -648,7 +648,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
                         </p>
                       </div>
                       {cp.visa_required && (
-                        <Badge variant="outline" className="text-[8px]">
+                        <Badge variant="outline" className="text-[12px]">
                           {isAr ? "تأشيرة مطلوبة" : "Visa Required"}
                         </Badge>
                       )}
@@ -657,38 +657,38 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
                     <div className="grid grid-cols-3 gap-2 text-center mb-3">
                       <div className="rounded bg-muted/50 p-2">
                         <AnimatedCounter value={Math.round(cp.flight_cost_estimate)} className="text-xs font-bold tabular-nums" />
-                        <p className="text-[8px] text-muted-foreground">{isAr ? "طيران" : "Flight"}</p>
+                        <p className="text-[12px] text-muted-foreground">{isAr ? "طيران" : "Flight"}</p>
                       </div>
                       <div className="rounded bg-muted/50 p-2">
                         <p className="text-xs font-bold tabular-nums"><AnimatedCounter value={Math.round(cp.hotel_cost_per_night)} />/n</p>
-                        <p className="text-[8px] text-muted-foreground">{isAr ? "فندق" : "Hotel"}</p>
+                        <p className="text-[12px] text-muted-foreground">{isAr ? "فندق" : "Hotel"}</p>
                       </div>
                       <div className="rounded bg-muted/50 p-2">
                         <AnimatedCounter value={Math.round(cp.evaluation_fee)} className="text-xs font-bold tabular-nums" />
-                        <p className="text-[8px] text-muted-foreground">{isAr ? "أتعاب" : "Fee"}</p>
+                        <p className="text-[12px] text-muted-foreground">{isAr ? "أتعاب" : "Fee"}</p>
                       </div>
                     </div>
 
                     {cp.visa_valid_until && (
-                      <p className="text-[10px] text-muted-foreground mb-2 flex items-center gap-1">
+                      <p className="text-[12px] text-muted-foreground mb-2 flex items-center gap-1">
                         <CreditCard className="h-3 w-3" />
                         {isAr ? "التأشيرة صالحة حتى:" : "Visa valid until:"} {format(new Date(cp.visa_valid_until), "MMM d, yyyy")}
                       </p>
                     )}
 
                     <div className="rounded-xl border-2 border-primary/20 bg-primary/5 p-3 text-center mb-3">
-                      <p className="text-[9px] text-primary font-bold uppercase">{isAr ? "الإجمالي المقدر" : "Est. Total"} ({cp.estimated_days}d)</p>
+                      <p className="text-[12px] text-primary font-bold uppercase">{isAr ? "الإجمالي المقدر" : "Est. Total"} ({cp.estimated_days}d)</p>
                       <p className="text-xl font-black tabular-nums text-primary"><AnimatedCounter value={Math.round(cp.estimated_total_cost)} /> SAR</p>
                     </div>
 
                     <div className="flex gap-1.5 border-t border-border/30 pt-3">
-                      <Button size="sm" variant="outline" className="flex-1 gap-1 h-7 text-[10px]" onClick={() => setEditing(cp)}>
+                      <Button size="sm" variant="outline" className="flex-1 gap-1 h-7 text-[12px]" onClick={() => setEditing(cp)}>
                         <Edit2 className="h-3 w-3" />{isAr ? "تعديل" : "Edit"}
                       </Button>
-                      <Button size="sm" variant="outline" className="gap-1 h-7 text-[10px]" onClick={() => { setSelectedChefId(cp.chef_id); setActiveSubTab("travel"); }}>
+                      <Button size="sm" variant="outline" className="gap-1 h-7 text-[12px]" onClick={() => { setSelectedChefId(cp.chef_id); setActiveSubTab("travel"); }}>
                         <History className="h-3 w-3" />{isAr ? "السجلات" : "Records"}
                       </Button>
-                      <Button size="sm" variant="outline" className="h-7 text-[10px] text-destructive hover:text-destructive" onClick={() => deleteCostProfile.mutate(cp.id)}>
+                      <Button size="sm" variant="outline" className="h-7 text-[12px] text-destructive hover:text-destructive" onClick={() => deleteCostProfile.mutate(cp.id)}>
                         <Trash2 className="h-3 w-3" />
                       </Button>
                     </div>
@@ -730,12 +730,12 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/30">
-                    <TableHead className="font-bold text-[11px] uppercase">{isAr ? "الشيف" : "Chef"}</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase">{isAr ? "الوجهة" : "Destination"}</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase">{isAr ? "التاريخ" : "Date"}</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase">{isAr ? "الفندق" : "Hotel"}</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase">{isAr ? "التأشيرة" : "Visa"}</TableHead>
-                    <TableHead className="font-bold text-[11px] uppercase text-end">{isAr ? "الإجمالي" : "Total"}</TableHead>
+                    <TableHead className="font-bold text-[12px] uppercase">{isAr ? "الشيف" : "Chef"}</TableHead>
+                    <TableHead className="font-bold text-[12px] uppercase">{isAr ? "الوجهة" : "Destination"}</TableHead>
+                    <TableHead className="font-bold text-[12px] uppercase">{isAr ? "التاريخ" : "Date"}</TableHead>
+                    <TableHead className="font-bold text-[12px] uppercase">{isAr ? "الفندق" : "Hotel"}</TableHead>
+                    <TableHead className="font-bold text-[12px] uppercase">{isAr ? "التأشيرة" : "Visa"}</TableHead>
+                    <TableHead className="font-bold text-[12px] uppercase text-end">{isAr ? "الإجمالي" : "Total"}</TableHead>
                     <TableHead className="w-16" />
                   </TableRow>
                 </TableHeader>
@@ -758,7 +758,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
                       <TableCell className="text-sm">
                         {rec.visa_type || "—"}
                         {rec.visa_expiry_date && (
-                          <span className="block text-[10px] text-muted-foreground">
+                          <span className="block text-[12px] text-muted-foreground">
                             {isAr ? "ينتهي:" : "exp:"} {format(new Date(rec.visa_expiry_date), "MMM yyyy")}
                           </span>
                         )}

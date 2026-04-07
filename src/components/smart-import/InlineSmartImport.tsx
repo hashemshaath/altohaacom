@@ -238,7 +238,7 @@ export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onC
                             </span>
                           )}
                           {item.place_type && (
-                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4">
+                            <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-4">
                               {item.place_type}
                             </Badge>
                           )}
@@ -288,7 +288,7 @@ export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onC
                     if (!ch) return null;
                     const Icon = ch.icon;
                     return (
-                      <Badge key={key} variant="outline" className={`text-[10px] gap-0.5 px-1.5 py-0 h-5 ${ch.color}`}>
+                      <Badge key={key} variant="outline" className={`text-[12px] gap-0.5 px-1.5 py-0 h-5 ${ch.color}`}>
                         <Icon className="h-2.5 w-2.5" />
                         {isAr ? ch.label_ar : ch.label_en}
                       </Badge>
@@ -296,7 +296,7 @@ export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onC
                   })}
                 </div>
                 {/* Quality */}
-                <Badge variant="outline" className={`text-[10px] ${qualityColor}`}>
+                <Badge variant="outline" className={`text-[12px] ${qualityColor}`}>
                   {dataQuality}%
                 </Badge>
               </div>
@@ -384,12 +384,12 @@ export const InlineSmartImport = memo(function InlineSmartImport({ onImport, onC
                 {(detailData.services_en?.length || detailData.tags?.length) ? (
                   <div className="flex flex-wrap gap-1.5">
                     {detailData.tags?.map((t, i) => (
-                      <Badge key={`t${i}`} variant="secondary" className="text-[10px]">
+                      <Badge key={`t${i}`} variant="secondary" className="text-[12px]">
                         <Tag className="h-2.5 w-2.5 me-0.5" />{t}
                       </Badge>
                     ))}
                     {detailData.services_en?.map((s, i) => (
-                      <Badge key={`s${i}`} variant="outline" className="text-[10px]">{s}</Badge>
+                      <Badge key={`s${i}`} variant="outline" className="text-[12px]">{s}</Badge>
                     ))}
                   </div>
                 ) : null}
@@ -437,7 +437,7 @@ function DetailField({
   if (!value) return null;
   return (
     <div className="space-y-0.5">
-      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1">
+      <span className="text-[12px] font-medium text-muted-foreground uppercase tracking-wide flex items-center gap-1">
         {Icon && <Icon className="h-2.5 w-2.5" />}
         {label}
       </span>

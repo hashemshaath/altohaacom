@@ -140,7 +140,7 @@ export const ExhibitionCard = memo(
 
               {/* Top-left: Status + Featured */}
               <div className="absolute top-3 start-3 z-10 flex flex-col gap-1.5">
-                <Badge className={`${liveStatus.className} shadow-lg backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider py-1 px-2.5`}>
+                <Badge className={`${liveStatus.className} shadow-lg backdrop-blur-md border-0 text-[12px] font-black uppercase tracking-wider py-1 px-2.5`}>
                   {liveStatus.className.includes("chart-3") && (
                     <span className="relative me-1.5 flex h-1.5 w-1.5">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -150,7 +150,7 @@ export const ExhibitionCard = memo(
                   {isAr ? liveStatus.labelAr : liveStatus.label}
                 </Badge>
                 {exhibition.is_featured && (
-                  <Badge className="bg-primary text-primary-foreground shadow-lg shadow-primary/20 text-[9px] font-black uppercase tracking-wider py-1 px-2.5">
+                  <Badge className="bg-primary text-primary-foreground shadow-lg shadow-primary/20 text-[12px] font-black uppercase tracking-wider py-1 px-2.5">
                     ⭐ {isAr ? "مميز" : "Featured"}
                   </Badge>
                 )}
@@ -158,17 +158,17 @@ export const ExhibitionCard = memo(
 
               {/* Top-right: Type + countdown */}
               <div className="absolute top-3 end-3 z-10 flex flex-col items-end gap-1.5">
-                <Badge variant="secondary" className="text-[9px] font-black uppercase tracking-wider bg-background/80 backdrop-blur-md shadow-lg border-0 py-1 px-2.5">
+                <Badge variant="secondary" className="text-[12px] font-black uppercase tracking-wider bg-background/80 backdrop-blur-md shadow-lg border-0 py-1 px-2.5">
                   {isAr ? typeLabel.ar : typeLabel.en}
                 </Badge>
                 {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
-                  <Badge className="gap-1 text-[9px] font-black uppercase tracking-wider bg-chart-4/90 text-chart-4-foreground shadow-lg border-0 py-1 px-2.5">
+                  <Badge className="gap-1 text-[12px] font-black uppercase tracking-wider bg-chart-4/90 text-chart-4-foreground shadow-lg border-0 py-1 px-2.5">
                     <Clock className="h-2.5 w-2.5" />
                     {isAr ? `باقي ${daysLeft} يوم` : `${daysLeft}d left`}
                   </Badge>
                 )}
                 {regDeadlineDays !== null && regDeadlineDays <= 3 && regDeadlineDays >= 0 && (
-                  <Badge className="gap-1 text-[9px] font-black uppercase tracking-wider bg-destructive/90 text-destructive-foreground shadow-lg border-0 py-1 px-2.5 animate-pulse">
+                  <Badge className="gap-1 text-[12px] font-black uppercase tracking-wider bg-destructive/90 text-destructive-foreground shadow-lg border-0 py-1 px-2.5 animate-pulse">
                     <AlertTriangle className="h-2.5 w-2.5" />
                     {isAr ? "التسجيل يغلق قريباً" : "Reg. closing soon"}
                   </Badge>
@@ -178,12 +178,12 @@ export const ExhibitionCard = memo(
               {/* Bottom: Country + Date overlay */}
               <div className="absolute bottom-3 inset-x-3 z-10 flex items-end justify-between">
                 {exhibition.country && (
-                  <div className="flex items-center gap-1.5 rounded-full bg-background/70 px-2.5 py-1 text-[10px] font-medium backdrop-blur-md ring-1 ring-border/20">
+                  <div className="flex items-center gap-1.5 rounded-full bg-background/70 px-2.5 py-1 text-[12px] font-medium backdrop-blur-md ring-1 ring-border/20">
                     <span>{countryFlag(exhibition.country)}</span>
                     <span className="text-foreground/90">{exhibition.country}</span>
                   </div>
                 )}
-                <div className="flex items-center gap-1.5 rounded-full bg-background/70 px-2.5 py-1 text-[10px] font-medium backdrop-blur-md ring-1 ring-border/20">
+                <div className="flex items-center gap-1.5 rounded-full bg-background/70 px-2.5 py-1 text-[12px] font-medium backdrop-blur-md ring-1 ring-border/20">
                   <Calendar className="h-3 w-3 text-primary" />
                   <span className="text-foreground/90">
                     {toEnglishDigits(format(new Date(exhibition.start_date), "MMM d"))} – {toEnglishDigits(format(new Date(exhibition.end_date), "d, yyyy"))}
@@ -203,7 +203,7 @@ export const ExhibitionCard = memo(
                 </h3>
 
                 {organizer && (
-                  <p className="flex items-center gap-1.5 text-[11px] font-medium text-muted-foreground">
+                  <p className="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
                     <Building className="h-3 w-3 text-primary/40" />
                     <span className="text-foreground/70">{organizer}</span>
                   </p>
@@ -216,12 +216,12 @@ export const ExhibitionCard = memo(
                 )}
 
                 {exhibition.is_virtual ? (
-                  <div className="flex items-center gap-2 text-[11px]">
+                  <div className="flex items-center gap-2 text-[12px]">
                     <Globe className="h-3 w-3 text-chart-1" />
                     <span className="text-chart-1 font-medium">{isAr ? "حدث افتراضي" : "Virtual Event"}</span>
                   </div>
                 ) : venue && (
-                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                     <MapPin className="h-3 w-3 text-primary/50" />
                     <span className="line-clamp-1 font-medium">
                       {venue}{exhibition.city && `, ${exhibition.city}`}
@@ -236,7 +236,7 @@ export const ExhibitionCard = memo(
                   const logo = s.logo_url || s.companies?.logo_url;
                   const name = isAr ? (s.label_ar || s.companies?.name_ar || s.companies?.name) : (s.label || s.companies?.name);
                   return (
-                    <Badge key={s.id} variant="outline" className="gap-1 text-[9px] font-bold uppercase tracking-wider bg-chart-4/5 text-chart-4 border-chart-4/20 py-0.5 px-2">
+                    <Badge key={s.id} variant="outline" className="gap-1 text-[12px] font-bold uppercase tracking-wider bg-chart-4/5 text-chart-4 border-chart-4/20 py-0.5 px-2">
                       {logo ? (
                         <img src={logo} alt={name || ""} className="h-3 w-3 rounded-sm object-contain" loading="lazy" />
                       ) : (
@@ -247,40 +247,40 @@ export const ExhibitionCard = memo(
                   );
                 })}
                 {exhibition.is_free ? (
-                  <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-wider text-chart-3 border-chart-3/30 bg-chart-3/5 py-0.5 px-2">
+                  <Badge variant="outline" className="text-[12px] font-bold uppercase tracking-wider text-chart-3 border-chart-3/30 bg-chart-3/5 py-0.5 px-2">
                     {isAr ? "مجاني" : "Free"}
                   </Badge>
                 ) : exhibition.ticket_price && (
-                  <Badge variant="outline" className="text-[9px] font-bold border-primary/20 bg-primary/5 py-0.5 px-2">
+                  <Badge variant="outline" className="text-[12px] font-bold border-primary/20 bg-primary/5 py-0.5 px-2">
                     {isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price}
                   </Badge>
                 )}
                 {(exhibition.view_count ?? 0) >= 50 && (
-                  <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-wider text-chart-4 border-chart-4/20 bg-chart-4/5 py-0.5 px-2 gap-0.5">
+                  <Badge variant="outline" className="text-[12px] font-bold uppercase tracking-wider text-chart-4 border-chart-4/20 bg-chart-4/5 py-0.5 px-2 gap-0.5">
                     <Eye className="h-2 w-2" />
                     {exhibition.view_count}
                   </Badge>
                 )}
                 {exhibition.tags && exhibition.tags.slice(0, 2).map((tag) => (
-                  <Badge key={tag} variant="secondary" className="text-[9px] bg-muted/50 py-0.5 px-2">#{tag}</Badge>
+                  <Badge key={tag} variant="secondary" className="text-[12px] bg-muted/50 py-0.5 px-2">#{tag}</Badge>
                 ))}
               </div>
             </CardContent>
 
             {/* Footer */}
             <div className="flex items-center justify-between border-t border-border/30 bg-muted/15 px-4 sm:px-5 py-2.5 transition-all duration-300 group-hover:bg-primary/5 group-hover:border-primary/10">
-              <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+              <span className="flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-wider text-primary">
                 {isAr ? "عرض التفاصيل" : "View Details"}
                 <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1.5 rtl:group-hover:-translate-x-1.5 rtl:rotate-180" />
               </span>
               <div className="flex items-center gap-2.5">
                 {exhibition.max_attendees && exhibition.max_attendees > 0 && (
-                  <span className="text-[10px] text-muted-foreground tabular-nums">
+                  <span className="text-[12px] text-muted-foreground tabular-nums">
                     {exhibition.max_attendees.toLocaleString()} {isAr ? "مقعد" : "seats"}
                   </span>
                 )}
                 {(exhibition.view_count ?? 0) > 0 && (
-                  <span className="flex items-center gap-1 text-[10px] text-muted-foreground tabular-nums">
+                  <span className="flex items-center gap-1 text-[12px] text-muted-foreground tabular-nums">
                     <Eye className="h-3 w-3" />
                     <AnimatedCounter value={exhibition.view_count!} className="inline" />
                   </span>
@@ -289,7 +289,7 @@ export const ExhibitionCard = memo(
                 {(() => {
                   const days = differenceInDays(new Date(exhibition.end_date), new Date(exhibition.start_date));
                   return days > 0 ? (
-                    <Badge variant="outline" className="text-[9px] border-border/30 py-0 px-1.5">
+                    <Badge variant="outline" className="text-[12px] border-border/30 py-0 px-1.5">
                       {days} {isAr ? "يوم" : days === 1 ? "day" : "days"}
                     </Badge>
                   ) : null;

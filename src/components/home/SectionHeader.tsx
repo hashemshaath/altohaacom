@@ -29,7 +29,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
     <SectionReveal>
       <div ref={ref} className={cn("mb-4 sm:mb-5", className)}>
         <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-          <Badge variant="secondary" className="gap-1.5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider">
+          <Badge variant="secondary" className="gap-1.5 px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider">
             <Icon className="h-3 w-3" />
             {badge}
           </Badge>

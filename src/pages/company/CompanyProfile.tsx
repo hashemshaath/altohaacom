@@ -97,15 +97,15 @@ export default function CompanyProfile() {
             )}
 
             <div className="flex flex-wrap items-center gap-3">
-              <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-bold uppercase tracking-widest text-[10px] px-3 py-1.5">{company.type}</Badge>
+              <Badge variant="outline" className="bg-primary/5 border-primary/20 text-primary font-bold uppercase tracking-widest text-[12px] px-3 py-1.5">{company.type}</Badge>
               {company.company_number && (
-                <Badge variant="outline" className="bg-muted/50 font-mono text-[10px] px-3 py-1.5">
+                <Badge variant="outline" className="bg-muted/50 font-mono text-[12px] px-3 py-1.5">
                   <Hash className="me-1.5 h-3 w-3 text-muted-foreground" />
                   {company.company_number}
                 </Badge>
               )}
               {company.country_code && (
-                <Badge variant="outline" className="bg-muted/50 font-bold text-[10px] px-3 py-1.5">
+                <Badge variant="outline" className="bg-muted/50 font-bold text-[12px] px-3 py-1.5">
                   {countryFlag(company.country_code)} {getCountryName(company.country_code)}
                 </Badge>
               )}
@@ -113,12 +113,12 @@ export default function CompanyProfile() {
 
             {company.operating_countries && company.operating_countries.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-border/40">
-                <span className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
+                <span className="flex items-center gap-1.5 text-[12px] font-black uppercase tracking-widest text-muted-foreground">
                   <Earth className="h-3 w-3" />
                   {language === "ar" ? "مناطق العمل:" : "Regions:"}
                 </span>
                 {(company.operating_countries as string[]).map((cc) => (
-                  <Badge key={cc} variant="secondary" className="rounded-xl bg-muted/40 text-[10px] font-bold px-2 py-0.5">
+                  <Badge key={cc} variant="secondary" className="rounded-xl bg-muted/40 text-[12px] font-bold px-2 py-0.5">
                     {countryFlag(cc)} {getCountryName(cc)}
                   </Badge>
                 ))}

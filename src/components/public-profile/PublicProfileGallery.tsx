@@ -78,7 +78,7 @@ export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFi
             <ImageIcon className="h-4 w-4 text-primary" />
           </div>
           <h2 className="font-serif text-base font-bold">{isAr ? "الألبوم" : "Gallery"}</h2>
-          <Badge variant="secondary" className="text-[10px] h-5 rounded-xl">{mediaFiles.length}</Badge>
+          <Badge variant="secondary" className="text-[12px] h-5 rounded-xl">{mediaFiles.length}</Badge>
           <div className="flex-1 h-px bg-border/25" />
         </div>
         {hasGroups && (
@@ -107,7 +107,7 @@ export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFi
                 <h3 className="font-semibold text-sm capitalize mb-3 flex items-center gap-2">
                   <Layers className="h-3.5 w-3.5 text-primary" />
                   {group.name}
-                  <Badge variant="outline" className="text-[9px] h-4 rounded-md">{group.files.length}</Badge>
+                  <Badge variant="outline" className="text-[12px] h-4 rounded-md">{group.files.length}</Badge>
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
                   {group.files.map((file) => {
@@ -123,7 +123,7 @@ export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFi
               <h3 className="font-semibold text-sm mb-3 flex items-center gap-2 text-muted-foreground">
                 <ImageIcon className="h-3.5 w-3.5" />
                 {isAr ? "صور أخرى" : "Other Photos"}
-                <Badge variant="outline" className="text-[9px] h-4 rounded-md">{ungrouped.length}</Badge>
+                <Badge variant="outline" className="text-[12px] h-4 rounded-md">{ungrouped.length}</Badge>
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
                 {ungrouped.map((file) => {
@@ -165,7 +165,7 @@ export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFi
                   <p className="text-sm text-foreground/80 truncate max-w-[70%]">
                     {allFiles[lightboxIdx].name.replace(/[-_]/g, " ").replace(/\.[^.]+$/, "")}
                   </p>
-                  <Badge variant="secondary" className="text-[10px] rounded-xl">
+                  <Badge variant="secondary" className="text-[12px] rounded-xl">
                     {lightboxIdx + 1} / {allFiles.length}
                   </Badge>
                 </div>

@@ -82,10 +82,10 @@ export const ContentPerformanceWidget = memo(function ContentPerformanceWidget()
             <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
-                <span className="text-[9px] text-muted-foreground">{m.label}</span>
+                <span className="text-[12px] text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-base font-bold">{typeof m.value === "number" ? <AnimatedCounter value={m.value} /> : m.value}</p>
-              {m.sub && <p className="text-[8px] text-muted-foreground">{m.sub}</p>}
+              {m.sub && <p className="text-[12px] text-muted-foreground">{m.sub}</p>}
             </div>
           ))}
         </div>
@@ -95,25 +95,25 @@ export const ContentPerformanceWidget = memo(function ContentPerformanceWidget()
           <div className="flex items-center gap-1.5">
             <Eye className="h-3 w-3 text-chart-4" />
             <AnimatedCounter value={data.totalViews} className="text-xs font-semibold inline" />
-            <span className="text-[9px] text-muted-foreground">{isAr ? "مشاهدة" : "views"}</span>
+            <span className="text-[12px] text-muted-foreground">{isAr ? "مشاهدة" : "views"}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <TrendingUp className="h-3 w-3 text-chart-2" />
             <span className="text-xs font-semibold">{data.avgViews}</span>
-            <span className="text-[9px] text-muted-foreground">{isAr ? "متوسط" : "avg/article"}</span>
+            <span className="text-[12px] text-muted-foreground">{isAr ? "متوسط" : "avg/article"}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Star className="h-3 w-3 text-chart-4" />
             <span className="text-xs font-semibold">{data.featuredCount}</span>
-            <span className="text-[9px] text-muted-foreground">{isAr ? "مميز" : "featured"}</span>
+            <span className="text-[12px] text-muted-foreground">{isAr ? "مميز" : "featured"}</span>
           </div>
         </div>
 
         {/* Publish rate */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-muted-foreground">{isAr ? "معدل النشر" : "Publish Rate"}</span>
-            <span className="text-[10px] font-medium">{data.publishRate}%</span>
+            <span className="text-[12px] text-muted-foreground">{isAr ? "معدل النشر" : "Publish Rate"}</span>
+            <span className="text-[12px] font-medium">{data.publishRate}%</span>
           </div>
           <Progress value={data.publishRate} className="h-1.5" />
         </div>
@@ -121,7 +121,7 @@ export const ContentPerformanceWidget = memo(function ContentPerformanceWidget()
         {/* Type badges */}
         <div className="flex flex-wrap gap-1">
           {Object.entries(data.typeCounts).map(([type, count]) => (
-            <Badge key={type} variant="outline" className="text-[8px] gap-0.5">
+            <Badge key={type} variant="outline" className="text-[12px] gap-0.5">
               {type}: {count}
             </Badge>
           ))}

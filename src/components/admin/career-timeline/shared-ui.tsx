@@ -120,8 +120,8 @@ export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, la
     <div className="grid gap-2 sm:grid-cols-2">
       {/* Arabic field first */}
       <div className="space-y-1">
-        <Label className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
-          <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[8px] font-bold text-primary">ع</span>
+        <Label className="text-[12px] font-medium text-muted-foreground flex items-center gap-1">
+          <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[12px] font-bold text-primary">ع</span>
           {labelAr} {required && <span className="text-destructive">*</span>}
         </Label>
         <div className="flex gap-1">
@@ -131,8 +131,8 @@ export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, la
       </div>
       {/* English field second */}
       <div className="space-y-1">
-        <Label className="text-[11px] font-medium text-muted-foreground flex items-center gap-1">
-          <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[8px] font-bold text-muted-foreground">EN</span>
+        <Label className="text-[12px] font-medium text-muted-foreground flex items-center gap-1">
+          <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[12px] font-bold text-muted-foreground">EN</span>
           {labelEn}
         </Label>
         <div className="flex gap-1">
@@ -166,8 +166,8 @@ export const CompactRow = memo(function CompactRow({ icon: Icon, color, logoUrl,
       )}
       <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
         <p className="text-sm font-medium truncate">{mainContent}</p>
-        {isCurrent && <Badge variant="default" className="text-[10px] h-5 px-1.5 shrink-0 whitespace-nowrap">{isAr ? "مستمر" : "Ongoing"}</Badge>}
-        {badge && <Badge variant={badgeVariant || "secondary"} className="text-[10px] h-5 px-1.5 shrink-0 capitalize whitespace-nowrap">{badge}</Badge>}
+        {isCurrent && <Badge variant="default" className="text-[12px] h-5 px-1.5 shrink-0 whitespace-nowrap">{isAr ? "مستمر" : "Ongoing"}</Badge>}
+        {badge && <Badge variant={badgeVariant || "secondary"} className="text-[12px] h-5 px-1.5 shrink-0 capitalize whitespace-nowrap">{badge}</Badge>}
       </div>
       {(onEdit || onDelete || (moveSections && moveSections.length > 0)) && (
         <div className="flex items-center gap-1 shrink-0 ms-2">

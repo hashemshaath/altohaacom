@@ -188,7 +188,7 @@ const EstablishmentReviews = memo(function EstablishmentReviews({ establishmentI
                     <div className="flex gap-0.5">
                       {[1,2,3,4,5].map(s => <Star key={s} className={cn("h-3.5 w-3.5", s <= r.rating ? "fill-amber-400 text-amber-400" : "text-muted-foreground/30")} />)}
                     </div>
-                    {r.is_verified_visit && <Badge variant="outline" className="text-[10px]">{isAr ? "زيارة موثقة" : "Verified"}</Badge>}
+                    {r.is_verified_visit && <Badge variant="outline" className="text-[12px]">{isAr ? "زيارة موثقة" : "Verified"}</Badge>}
                   </div>
                   {r.title && <p className="font-medium text-sm mt-1">{r.title}</p>}
                   {r.content && <p className="text-sm text-muted-foreground mt-1">{r.content}</p>}
@@ -196,7 +196,7 @@ const EstablishmentReviews = memo(function EstablishmentReviews({ establishmentI
                     <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => voteHelpful.mutate(r.id)}>
                       <ThumbsUp className="h-3 w-3" /> {r.helpful_count || 0}
                     </Button>
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-[12px] text-muted-foreground">
                       {formatDistanceToNow(new Date(r.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
                     </span>
                   </div>

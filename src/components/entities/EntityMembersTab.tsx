@@ -120,7 +120,7 @@ export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Pro
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{displayName}</p>
-                      <Badge variant="secondary" className="mt-0.5 text-[10px]">{posTitle}</Badge>
+                      <Badge variant="secondary" className="mt-0.5 text-[12px]">{posTitle}</Badge>
                     </div>
                   </CardContent>
                 </Card>

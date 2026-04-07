@@ -163,14 +163,14 @@ export const ExhibitionMediaUploader = memo(function ExhibitionMediaUploader({ e
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>
-              <Badge className="absolute bottom-1 start-1 text-[8px] h-4 border-0 bg-background/80 text-foreground">
+              <Badge className="absolute bottom-1 start-1 text-[12px] h-4 border-0 bg-background/80 text-foreground">
                 {MEDIA_CATEGORIES.find(c => c.value === item.category)?.[isAr ? "ar" : "en"] || item.category}
               </Badge>
               {item.category === "cover" && (
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="absolute top-1 end-1 text-[8px] h-5 px-1.5"
+                  className="absolute top-1 end-1 text-[12px] h-5 px-1.5"
                   onClick={() => onCoverChange?.(item.file_url)}
                 >
                   {t("Set Cover", "غلاف")}

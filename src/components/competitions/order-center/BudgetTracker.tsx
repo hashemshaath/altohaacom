@@ -173,28 +173,28 @@ export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrga
           <CardContent className="p-3 text-center">
             <DollarSign className="mx-auto mb-1 h-5 w-5 text-primary" />
             <p className="text-xl font-bold">$<AnimatedCounter value={Math.round(totalEstimated)} className="inline" /></p>
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "إجمالي التقدير" : "Total Estimated"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "إجمالي التقدير" : "Total Estimated"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <TrendingUp className="mx-auto mb-1 h-5 w-5 text-chart-5" />
             <p className="text-xl font-bold">$<AnimatedCounter value={Math.round(sponsoredValue)} className="inline" /></p>
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "مغطى بالرعاية" : "Sponsored"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "مغطى بالرعاية" : "Sponsored"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <TrendingDown className="mx-auto mb-1 h-5 w-5 text-chart-4" />
             <p className="text-xl font-bold">$<AnimatedCounter value={Math.round(selfFunded)} className="inline" /></p>
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "تمويل ذاتي" : "Self-Funded"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "تمويل ذاتي" : "Self-Funded"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <PieChart className="mx-auto mb-1 h-5 w-5 text-chart-1" />
             <AnimatedCounter value={sponsorPercentage} className="text-xl" suffix="%" />
-            <p className="text-[10px] text-muted-foreground uppercase">{isAr ? "نسبة الرعاية" : "Sponsor Coverage"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "نسبة الرعاية" : "Sponsor Coverage"}</p>
           </CardContent>
         </Card>
       </div>
@@ -255,14 +255,14 @@ export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrga
                         <div className="flex items-center gap-2">
                           <div className={`h-3 w-3 rounded-full ${chartColors[i % chartColors.length]}`} />
                           <span className="text-sm font-medium">{isAr ? cat.labelAr : cat.label}</span>
-                          <Badge variant="outline" className="text-[10px]">{cat.itemCount} {isAr ? "عنصر" : "items"}</Badge>
+                          <Badge variant="outline" className="text-[12px]">{cat.itemCount} {isAr ? "عنصر" : "items"}</Badge>
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-semibold">$<AnimatedCounter value={Math.round(cat.estimatedCost)} className="inline" /></span>
-                          <span className="text-[10px] text-muted-foreground">({toEnglishDigits(pct.toFixed(1))}%)</span>
+                          <span className="text-[12px] text-muted-foreground">({toEnglishDigits(pct.toFixed(1))}%)</span>
                         </div>
                       </div>
-                      <div className="mt-1 ms-5 flex items-center gap-3 text-[10px] text-muted-foreground">
+                      <div className="mt-1 ms-5 flex items-center gap-3 text-[12px] text-muted-foreground">
                         {cat.deliveredCount > 0 && (
                           <span className="flex items-center gap-0.5">
                             <CheckCircle className="h-2.5 w-2.5 text-chart-5" />

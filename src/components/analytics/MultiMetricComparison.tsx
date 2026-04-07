@@ -115,7 +115,7 @@ export const MultiMetricComparison = memo(function MultiMetricComparison() {
         <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
             {isAr ? "المقارنة الشهرية (12 شهر)" : "Monthly Comparison (12 months)"}
-            <Badge variant="secondary" className="text-[10px]">{selected.length} {isAr ? "مقاييس" : "metrics"}</Badge>
+            <Badge variant="secondary" className="text-[12px]">{selected.length} {isAr ? "مقاييس" : "metrics"}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>

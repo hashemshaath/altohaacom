@@ -60,7 +60,7 @@ export const ContentQuickToolbar = memo(function ContentQuickToolbar() {
               <m.icon className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] text-muted-foreground truncate">{m.label}</p>
+              <p className="text-[12px] text-muted-foreground truncate">{m.label}</p>
               <AnimatedCounter value={typeof m.value === "number" ? m.value : parseInt(String(m.value).replace(/,/g, "")) || 0} className="text-lg" />
             </div>
           </CardContent>

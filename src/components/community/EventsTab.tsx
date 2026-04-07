@@ -322,7 +322,7 @@ export const EventsTab = memo(function EventsTab() {
                     <h3 className="text-sm font-bold leading-tight">{event.title}</h3>
                     <Badge
                       variant={event.status === "upcoming" ? "default" : "secondary"}
-                      className="shrink-0 text-[10px]"
+                      className="shrink-0 text-[12px]"
                     >
                       {event.status}
                     </Badge>
@@ -330,7 +330,7 @@ export const EventsTab = memo(function EventsTab() {
                   {event.description && (
                     <p className="mb-3 line-clamp-2 text-xs text-muted-foreground leading-relaxed">{event.description}</p>
                   )}
-                  <div className="mb-3 flex flex-wrap gap-2.5 text-[11px] text-muted-foreground">
+                  <div className="mb-3 flex flex-wrap gap-2.5 text-[12px] text-muted-foreground">
                     {event.event_date && (
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3 shrink-0" />
@@ -451,7 +451,7 @@ export const EventsTab = memo(function EventsTab() {
                       );
                     })}
                   </div>
-                  <p className="mt-2 text-[10px] text-muted-foreground">
+                  <p className="mt-2 text-[12px] text-muted-foreground">
                     {poll.total_votes} {isAr ? "صوت" : "votes"}
                   </p>
                 </CardContent>

@@ -39,7 +39,7 @@ export const BulkActionBar = memo(function BulkActionBar({
       )}
     >
       <div className="flex items-center gap-2">
-        <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary text-primary-foreground text-[11px] font-bold tabular-nums shadow-sm">
+        <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary text-primary-foreground text-[12px] font-bold tabular-nums shadow-sm">
           <AnimatedCounter value={count} className="inline" />
         </div>
         <span className="text-sm font-semibold text-primary">

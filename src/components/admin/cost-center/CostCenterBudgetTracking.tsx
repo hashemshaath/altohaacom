@@ -105,43 +105,43 @@ export const CostCenterBudgetTracking = memo(function CostCenterBudgetTracking({
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-1">
               <Target className="h-4 w-4 text-chart-5" />
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "الميزانية المعتمدة" : "Approved Budget"}
               </span>
             </div>
             <AnimatedCounter value={analytics.totalBudget} className="text-xl font-black tabular-nums text-chart-5" format />
-            <p className="text-[10px] text-muted-foreground">{analytics.approved.length} {isAr ? "تقدير" : "estimates"}</p>
+            <p className="text-[12px] text-muted-foreground">{analytics.approved.length} {isAr ? "تقدير" : "estimates"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-1">
               <Wallet className="h-4 w-4 text-primary" />
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "المفوتر" : "Invoiced"}
               </span>
             </div>
             <AnimatedCounter value={analytics.totalInvoiced} className="text-xl font-black tabular-nums text-primary" format />
-            <p className="text-[10px] text-muted-foreground">{analytics.invoiced.length} {isAr ? "فاتورة" : "invoices"}</p>
+            <p className="text-[12px] text-muted-foreground">{analytics.invoiced.length} {isAr ? "فاتورة" : "invoices"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-1">
               <AlertTriangle className="h-4 w-4 text-chart-4" />
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "قيد الانتظار" : "Pending Value"}
               </span>
             </div>
             <AnimatedCounter value={analytics.pendingValue} className="text-xl font-black tabular-nums text-chart-4" format />
-            <p className="text-[10px] text-muted-foreground">{analytics.pending.length} {isAr ? "تقدير" : "estimates"}</p>
+            <p className="text-[12px] text-muted-foreground">{analytics.pending.length} {isAr ? "تقدير" : "estimates"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/40">
           <CardContent className="p-4">
             <div className="flex items-center gap-2 mb-1">
               <TrendingUp className="h-4 w-4 text-primary" />
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "معدل الاستخدام" : "Utilization Rate"}
               </span>
             </div>
@@ -160,7 +160,7 @@ export const CostCenterBudgetTracking = memo(function CostCenterBudgetTracking({
           <CardContent className="p-0">
             <Table>
               <TableHeader>
-                <TableRow className="text-[10px]">
+                <TableRow className="text-[12px]">
                   <TableHead>{isAr ? "القسم" : "Module"}</TableHead>
                   <TableHead className="text-end">{isAr ? "التقديرات" : "Est."}</TableHead>
                   <TableHead className="text-end">{isAr ? "الإجمالي" : "Total"}</TableHead>

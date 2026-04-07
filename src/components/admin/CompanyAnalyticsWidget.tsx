@@ -76,7 +76,7 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
             <div key={s.label} className="text-center p-2 rounded-xl bg-muted/50">
               <s.icon className={`h-3.5 w-3.5 mx-auto ${s.color} mb-1`} />
               <p className="text-lg font-bold">{s.value}</p>
-              <p className="text-[10px] text-muted-foreground">{s.label}</p>
+              <p className="text-[12px] text-muted-foreground">{s.label}</p>
             </div>
           ))}
         </div>
@@ -98,7 +98,7 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
             {Object.entries(stats.byType).map(([type, count]) => {
               const label = typeLabels[type];
               return (
-                <Badge key={type} variant="outline" className={`text-[10px] ${label?.color || ""}`}>
+                <Badge key={type} variant="outline" className={`text-[12px] ${label?.color || ""}`}>
                   {isAr ? label?.ar || type : label?.en || type}: {count as number}
                 </Badge>
               );

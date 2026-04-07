@@ -199,7 +199,7 @@ export const InvitationManager = memo(function InvitationManager() {
     const variants: Record<string, "default" | "secondary" | "destructive"> = {
       accepted: "default", declined: "destructive", pending: "secondary", expired: "secondary",
     };
-    return <Badge variant={variants[s] || "secondary"} className="text-[10px] uppercase gap-1">{statusIcon(s)}{s}</Badge>;
+    return <Badge variant={variants[s] || "secondary"} className="text-[12px] uppercase gap-1">{statusIcon(s)}{s}</Badge>;
   };
   const stats = useMemo(() => ({
     total: invitations?.length || 0,
@@ -310,7 +310,7 @@ export const InvitationManager = memo(function InvitationManager() {
                           </div>
                           <div>
                             <p className="text-sm font-medium">{c.full_name || "—"}</p>
-                            <p className="text-[10px] text-muted-foreground font-mono">{c.account_number}</p>
+                            <p className="text-[12px] text-muted-foreground font-mono">{c.account_number}</p>
                           </div>
                         </div>
                       </TableCell>
@@ -319,7 +319,7 @@ export const InvitationManager = memo(function InvitationManager() {
                       </TableCell>
                       <TableCell>
                         {c.judge_level ? (
-                          <Badge variant={c.judge_level === "international" ? "default" : "secondary"} className="text-[9px]">
+                          <Badge variant={c.judge_level === "international" ? "default" : "secondary"} className="text-[12px]">
                             {c.judge_level}
                           </Badge>
                         ) : "—"}

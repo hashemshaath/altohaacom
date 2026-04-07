@@ -69,7 +69,7 @@ export const PipelineFunnelView = memo(function PipelineFunnelView() {
                   </span>
                 </div>
                 {convRate !== null && (
-                  <Badge variant="outline" className="text-[9px] shrink-0">
+                  <Badge variant="outline" className="text-[12px] shrink-0">
                     {convRate}%
                   </Badge>
                 )}

@@ -80,7 +80,7 @@ export const IntegrationsSecretsPanel = memo(function IntegrationsSecretsPanel()
           <ol className="space-y-2">
             {(isAr ? SETUP_STEPS_AR : SETUP_STEPS_EN).map((step, i) => (
               <li key={i} className="flex items-start gap-2.5 text-xs">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-[10px] shrink-0 mt-0.5">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-[12px] shrink-0 mt-0.5">
                   {i + 1}
                 </span>
                 <span className="text-muted-foreground">{step}</span>
@@ -118,7 +118,7 @@ export const IntegrationsSecretsPanel = memo(function IntegrationsSecretsPanel()
                 href={secret.docsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-[11px] text-primary hover:underline shrink-0 mt-0.5"
+                className="flex items-center gap-1 text-[12px] text-primary hover:underline shrink-0 mt-0.5"
               >
                 {isAr ? "احصل عليه" : "Get Key"}
                 <ExternalLink className="h-3 w-3" />

@@ -156,7 +156,7 @@ export default function Rewards() {
                       <div>
                         <p className="text-sm font-medium">{isAr ? rule.action_label_ar : rule.action_label}</p>
                         {rule.max_per_day && (
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {isAr ? <>{`الحد الأقصى: `}<AnimatedCounter value={rule.max_per_day} className="inline" />{`/يوم`}</> : `Max: ${rule.max_per_day}/day`}
                           </p>
                         )}
@@ -193,7 +193,7 @@ export default function Rewards() {
                         </div>
                         <div>
                           <p className="text-sm font-medium">{isAr ? entry.description_ar : entry.description}</p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {toEnglishDigits(new Date(entry.created_at).toLocaleDateString(isAr ? "ar" : "en"))} • {isAr ? "الرصيد:" : "Balance:"} <AnimatedCounter value={entry.balance_after} className="inline" />
                           </p>
                         </div>
@@ -230,7 +230,7 @@ export default function Rewards() {
                         </div>
                         <div>
                           <p className="text-sm font-medium">{isAr ? r.points_rewards?.name_ar : r.points_rewards?.name}</p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {toEnglishDigits(new Date(r.created_at).toLocaleDateString(isAr ? "ar" : "en"))}
                           </p>
                         </div>

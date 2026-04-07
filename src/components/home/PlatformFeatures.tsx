@@ -107,7 +107,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                       <role.icon className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
                     </div>
                     <h3 className="mb-0.5 text-[14px] sm:text-sm font-bold">{role.title}</h3>
-                    <p className="text-[11px] sm:text-[11px] text-muted-foreground leading-snug">{role.desc}</p>
+                    <p className="text-[12px] sm:text-[12px] text-muted-foreground leading-snug">{role.desc}</p>
                   </CardContent>
                 </Card>
               );

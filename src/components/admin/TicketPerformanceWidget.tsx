@@ -67,17 +67,17 @@ export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
           <div className="text-center p-2 rounded-xl bg-muted/50 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <Clock className="h-3.5 w-3.5 mx-auto text-chart-4 mb-1 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-lg font-bold">{stats.avgHours}<span className="text-xs">h</span></p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "متوسط الحل" : "Avg Resolve"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "متوسط الحل" : "Avg Resolve"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <CheckCircle2 className="h-3.5 w-3.5 mx-auto text-chart-2 mb-1 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-lg font-bold">{stats.resolutionRate}%</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "نسبة الحل" : "Resolve Rate"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "نسبة الحل" : "Resolve Rate"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <Timer className="h-3.5 w-3.5 mx-auto text-destructive mb-1 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-lg font-bold">{stats.slaBreach}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "تجاوز SLA" : "SLA Breach"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "تجاوز SLA" : "SLA Breach"}</p>
           </div>
         </div>
 
@@ -96,22 +96,22 @@ export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
           </p>
           <div className="flex flex-wrap gap-1.5">
             {stats.byPriority.urgent > 0 && (
-              <Badge variant="destructive" className="text-[10px]">
+              <Badge variant="destructive" className="text-[12px]">
                 🔴 {isAr ? "عاجل" : "Urgent"}: {stats.byPriority.urgent}
               </Badge>
             )}
             {stats.byPriority.high > 0 && (
-              <Badge className="bg-chart-4/15 text-chart-4 text-[10px]" variant="outline">
+              <Badge className="bg-chart-4/15 text-chart-4 text-[12px]" variant="outline">
                 🟠 {isAr ? "مرتفع" : "High"}: {stats.byPriority.high}
               </Badge>
             )}
             {stats.byPriority.normal > 0 && (
-              <Badge variant="secondary" className="text-[10px]">
+              <Badge variant="secondary" className="text-[12px]">
                 {isAr ? "عادي" : "Normal"}: {stats.byPriority.normal}
               </Badge>
             )}
             {stats.byPriority.low > 0 && (
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[12px]">
                 {isAr ? "منخفض" : "Low"}: {stats.byPriority.low}
               </Badge>
             )}

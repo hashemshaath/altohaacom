@@ -55,7 +55,7 @@ function FlipUnit({ value, label }: { value: number; label: string }) {
           {display}
         </p>
       </div>
-      <p className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{label}</p>
+      <p className="text-[12px] sm:text-[12px] font-bold text-muted-foreground uppercase tracking-widest">{label}</p>
     </div>
   );
 }

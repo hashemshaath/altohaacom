@@ -244,9 +244,9 @@ export default function Search() {
               <VoiceSearchButton onResult={(text) => handleSearch(text)} />
             </form>
             <div className="flex items-center justify-between mt-1.5 px-1">
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 {isAr ? "اضغط" : "Press"}{" "}
-                <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[9px] font-mono">⌘K</kbd>{" "}
+                <kbd className="rounded border border-border bg-muted px-1 py-0.5 text-[12px] font-mono">⌘K</kbd>{" "}
                 {isAr ? "للبحث السريع من أي مكان" : "for quick search anywhere"}
               </p>
             </div>
@@ -276,7 +276,7 @@ export default function Search() {
                     <tab.icon className="h-3.5 w-3.5" />
                     {tab.label}
                     {filters.query && (
-                      <span className="text-[10px] opacity-70">({tab.count})</span>
+                      <span className="text-[12px] opacity-70">({tab.count})</span>
                     )}
                   </TabsTrigger>
                 ))}
@@ -592,7 +592,7 @@ function CompetitionRow({
             <Trophy className="h-3 w-3" />
             <span>{isAr ? "مسابقة" : "Competition"}</span>
             <span className="mx-0.5">›</span>
-            <Badge variant="secondary" className="text-[10px] h-4 px-1.5 py-0 font-normal">
+            <Badge variant="secondary" className="text-[12px] h-4 px-1.5 py-0 font-normal">
               {getStatusLabel(data.status)}
             </Badge>
           </div>

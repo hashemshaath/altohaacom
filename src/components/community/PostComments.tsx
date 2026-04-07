@@ -123,7 +123,7 @@ export const PostComments = memo(function PostComments({ postId, onCommentCountC
       <div className="flex gap-2 py-2">
         <Avatar className="h-7 w-7">
           <AvatarImage src={comment.author_avatar || undefined} alt={comment.author_name || ""} />
-          <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-semibold">
+          <AvatarFallback className="bg-primary/10 text-primary text-[12px] font-semibold">
             {(comment.author_name || "U")[0].toUpperCase()}
           </AvatarFallback>
         </Avatar>

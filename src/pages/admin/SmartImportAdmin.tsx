@@ -1088,7 +1088,7 @@ export default function SmartImportAdmin() {
             <div>
               <h1 className="font-serif text-2xl font-bold tracking-tight flex items-center gap-2">
                 {isAr ? "الاستيراد الذكي" : "Smart Import"}
-                <Badge variant="secondary" className="text-[10px] font-normal rounded-lg">v4.0</Badge>
+                <Badge variant="secondary" className="text-[12px] font-normal rounded-lg">v4.0</Badge>
               </h1>
               <p className="text-muted-foreground text-sm mt-0.5">
                 {step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
@@ -1295,7 +1295,7 @@ export default function SmartImportAdmin() {
                     </span>
                     <div className="flex items-center gap-1.5">
                       {searchTime && (
-                        <Badge variant="outline" className="text-[10px] font-normal gap-1">
+                        <Badge variant="outline" className="text-[12px] font-normal gap-1">
                           <Zap className="h-2.5 w-2.5" />{(searchTime / 1000).toFixed(1)}s
                         </Badge>
                       )}
@@ -1346,12 +1346,12 @@ export default function SmartImportAdmin() {
                                         </span>
                                       )}
                                     </div>
-                                    {item.place_type && <p className="text-[11px] text-muted-foreground mt-0.5">{item.place_type}</p>}
+                                    {item.place_type && <p className="text-[12px] text-muted-foreground mt-0.5">{item.place_type}</p>}
                                     {item.description && <p className="text-xs text-muted-foreground/80 line-clamp-1 mt-0.5">{item.description}</p>}
                                     <div className="flex items-center gap-1.5 mt-1.5">
-                                      {item.google_maps_url && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5"><MapPin className="h-2 w-2" /> Maps</Badge>}
-                                      {item.latitude != null && <Badge variant="outline" className="text-[9px] h-[18px] px-1 bg-blue-500/10 text-blue-600 border-blue-500/20 gap-0.5">📍 {item.latitude.toFixed(2)}, {item.longitude?.toFixed(2)}</Badge>}
-                                      {item.total_reviews != null && <span className="text-[10px] text-muted-foreground">({item.total_reviews} {isAr ? "تقييم" : "reviews"})</span>}
+                                      {item.google_maps_url && <Badge variant="outline" className="text-[12px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5"><MapPin className="h-2 w-2" /> Maps</Badge>}
+                                      {item.latitude != null && <Badge variant="outline" className="text-[12px] h-[18px] px-1 bg-blue-500/10 text-blue-600 border-blue-500/20 gap-0.5">📍 {item.latitude.toFixed(2)}, {item.longitude?.toFixed(2)}</Badge>}
+                                      {item.total_reviews != null && <span className="text-[12px] text-muted-foreground">({item.total_reviews} {isAr ? "تقييم" : "reviews"})</span>}
                                     </div>
                                   </div>
                                   <ChevronRight className={`h-4 w-4 shrink-0 mt-2 transition-colors ${isSelected ? 'text-primary' : 'text-muted-foreground/30'}`} />
@@ -1518,7 +1518,7 @@ export default function SmartImportAdmin() {
                 </Button>
                 </div>
                 {(details as any)?.detected_entity_type && (
-                  <p className="text-[10px] text-muted-foreground ps-6">
+                  <p className="text-[12px] text-muted-foreground ps-6">
                     {isAr ? "سبب التصنيف:" : "Reason:"} {
                       (details as any).detected_entity_type === "organizer" ? (isAr ? "تم التعرف على هذا الكيان كشركة تنظيم (وليس فعالية)" : "Identified as an organizing company (not an event)") :
                       (details as any).detected_entity_type === "exhibition" ? (isAr ? "تم التعرف على هذا ككيان فعالية/معرض بتواريخ محددة" : "Identified as an event/exhibition with specific dates") :
@@ -1596,8 +1596,8 @@ export default function SmartImportAdmin() {
                                 <p className="text-xs text-muted-foreground">{record.name_ar}</p>
                               )}
                               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                <Badge variant="outline" className="text-[10px] h-4">{record.identifier}</Badge>
-                                <Badge variant="secondary" className="text-[10px] h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
+                                <Badge variant="outline" className="text-[12px] h-4">{record.identifier}</Badge>
+                                <Badge variant="secondary" className="text-[12px] h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
                                 <span>{typeLabel}</span>
                                 {record.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{record.city}</span>}
                               </div>
@@ -1605,22 +1605,22 @@ export default function SmartImportAdmin() {
                               {details && (
                                 <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                                   {record.website && details.website && record.website !== details.website && (
-                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
+                                    <Badge variant="outline" className="text-[12px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
                                       <Globe className="h-2.5 w-2.5" />{isAr ? "موقع مختلف" : "Different website"}
                                     </Badge>
                                   )}
                                   {record.email && details.email && record.email.toLowerCase() !== details.email.toLowerCase() && (
-                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
+                                    <Badge variant="outline" className="text-[12px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
                                       {isAr ? "بريد مختلف" : "Different email"}
                                     </Badge>
                                   )}
                                   {record.phone && details.phone && record.phone !== details.phone && (
-                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
+                                    <Badge variant="outline" className="text-[12px] h-3.5 gap-0.5 border-amber-400/50 text-amber-700">
                                       {isAr ? "هاتف مختلف" : "Different phone"}
                                     </Badge>
                                   )}
                                   {record.table !== suggestedTarget?.table && (
-                                    <Badge variant="outline" className="text-[9px] h-3.5 gap-0.5 border-blue-400/50 text-blue-700">
+                                    <Badge variant="outline" className="text-[12px] h-3.5 gap-0.5 border-blue-400/50 text-blue-700">
                                       {isAr ? "تصنيف مختلف" : "Different type"}
                                     </Badge>
                                   )}
@@ -1633,7 +1633,7 @@ export default function SmartImportAdmin() {
                             {updating && selectedExistingId === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                             {isAr ? "تحديث المعلومات" : "Update Information"}
                           </Button>
-                          <Button size="sm" variant="ghost" className="gap-1 text-[10px] text-muted-foreground h-6" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank')}>
+                          <Button size="sm" variant="ghost" className="gap-1 text-[12px] text-muted-foreground h-6" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank')}>
                             <ExternalLink className="h-2.5 w-2.5" />{isAr ? "فتح السجل" : "Open Record"}
                           </Button>
                           </div>

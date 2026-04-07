@@ -101,7 +101,7 @@ export const AdCampaignAnalyticsWidget = memo(function AdCampaignAnalyticsWidget
             <CardContent className="p-3 flex items-center gap-2">
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} /></div>
               <div className="min-w-0">
-                <p className="text-[9px] text-muted-foreground truncate">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground truncate">{kpi.label}</p>
                 <p className="text-base font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
               </div>
             </CardContent>
@@ -133,9 +133,9 @@ export const AdCampaignAnalyticsWidget = memo(function AdCampaignAnalyticsWidget
           {/* Budget Usage */}
           <Card>
             <CardContent className="p-3 space-y-2">
-              <p className="text-[10px] font-semibold text-muted-foreground">{isAr ? "استهلاك الميزانية" : "Budget Usage"}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground">{isAr ? "استهلاك الميزانية" : "Budget Usage"}</p>
               <Progress value={budgetUsage} className="h-2" />
-              <div className="flex justify-between text-[10px] text-muted-foreground">
+              <div className="flex justify-between text-[12px] text-muted-foreground">
                 <span>{isAr ? "مصروف" : "Spent"}: <AnimatedCounter value={Math.round(data.totalSpent)} className="inline" /></span>
                 <span>{isAr ? "ميزانية" : "Budget"}: <AnimatedCounter value={Math.round(data.totalBudget)} className="inline" /></span>
               </div>
@@ -145,14 +145,14 @@ export const AdCampaignAnalyticsWidget = memo(function AdCampaignAnalyticsWidget
           {/* Status Distribution */}
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2">{isAr ? "حالات الحملات" : "Campaign Status"}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "حالات الحملات" : "Campaign Status"}</p>
               <div className="flex items-center gap-3">
                 <PieChart width={60} height={60}>
                   <Pie data={data.statusDist} dataKey="value" cx={28} cy={28} innerRadius={16} outerRadius={28} strokeWidth={0}>
                     {data.statusDist.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                 </PieChart>
-                <div className="text-[10px] space-y-1">
+                <div className="text-[12px] space-y-1">
                   {data.statusDist.slice(0, 4).map((s, i) => (
                     <div key={s.name} className="flex items-center gap-1.5">
                       <span className="h-2 w-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
@@ -167,12 +167,12 @@ export const AdCampaignAnalyticsWidget = memo(function AdCampaignAnalyticsWidget
           {/* Billing Model */}
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2">{isAr ? "نموذج الفوترة" : "Billing Model"}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "نموذج الفوترة" : "Billing Model"}</p>
               <div className="space-y-1">
                 {data.billingDist.map(b => (
-                  <div key={b.name} className="flex items-center justify-between text-[10px]">
+                  <div key={b.name} className="flex items-center justify-between text-[12px]">
                     <span>{b.name}</span>
-                    <Badge variant="outline" className="text-[9px] h-4">{b.value}</Badge>
+                    <Badge variant="outline" className="text-[12px] h-4">{b.value}</Badge>
                   </div>
                 ))}
               </div>

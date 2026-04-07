@@ -289,7 +289,7 @@ export function HeroSection() {
             className="max-w-xl space-y-2.5 sm:space-y-3"
             style={isFirstRender ? undefined : { animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}
           >
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-primary)]/25 backdrop-blur-lg border border-[var(--color-primary)]/30 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-white shadow-md">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-primary)]/25 backdrop-blur-lg border border-[var(--color-primary)]/30 px-3 py-1.5 text-[12px] sm:text-[12px] font-bold uppercase tracking-[0.15em] text-white shadow-md">
               <Sparkles className="h-3 w-3 animate-pulse" />
               {isAr ? "مميّز" : "Featured"}
             </span>
@@ -320,7 +320,7 @@ export function HeroSection() {
 
         {/* Slide counter */}
         {slides.length > 1 && (
-          <div className="absolute top-3 end-3 sm:top-5 sm:end-5 flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-black/30 backdrop-blur-xl px-2 py-1 text-[10px] font-mono text-white/85">
+          <div className="absolute top-3 end-3 sm:top-5 sm:end-5 flex items-center gap-1.5 rounded-[var(--radius-sm)] bg-black/30 backdrop-blur-xl px-2 py-1 text-[12px] font-mono text-white/85">
             <span className="font-bold">{String(safeCurrent + 1).padStart(2, "0")}</span>
             <span className="text-white/50">/</span>
             <span className="text-white/70">{String(slides.length).padStart(2, "0")}</span>

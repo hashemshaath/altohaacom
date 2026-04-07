@@ -150,7 +150,7 @@ export const InvitationManager = memo(function InvitationManager({ competitionId
           <Card key={stat.label} className="p-2.5 text-center">
             <stat.icon className="mx-auto h-4 w-4 text-muted-foreground mb-1" />
             <AnimatedCounter value={stat.value} className="text-lg font-bold" />
-            <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+            <p className="text-[12px] text-muted-foreground">{stat.label}</p>
           </Card>
         ))}
       </div>
@@ -249,15 +249,15 @@ export const InvitationManager = memo(function InvitationManager({ competitionId
                       {isAr && inv.invitee_name_ar ? inv.invitee_name_ar : inv.invitee_name || inv.invitee_email || "—"}
                     </p>
                     <div className="flex flex-wrap gap-1.5 mt-0.5">
-                      <Badge variant="outline" className="text-[9px] h-4">{roleLabel(inv.invitee_role || "visitor")}</Badge>
-                      <Badge className={`text-[9px] h-4 ${STATUS_COLORS[inv.status] || ""}`}>{inv.status}</Badge>
+                      <Badge variant="outline" className="text-[12px] h-4">{roleLabel(inv.invitee_role || "visitor")}</Badge>
+                      <Badge className={`text-[12px] h-4 ${STATUS_COLORS[inv.status] || ""}`}>{inv.status}</Badge>
                       {inv.invitee_email && (
-                        <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
+                        <span className="text-[12px] text-muted-foreground flex items-center gap-0.5">
                           <Mail className="h-2.5 w-2.5" />{inv.invitee_email}
                         </span>
                       )}
                       {inv.invitee_phone && (
-                        <span className="text-[9px] text-muted-foreground flex items-center gap-0.5">
+                        <span className="text-[12px] text-muted-foreground flex items-center gap-0.5">
                           <Phone className="h-2.5 w-2.5" />{inv.invitee_phone}
                         </span>
                       )}

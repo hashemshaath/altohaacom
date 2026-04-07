@@ -200,13 +200,13 @@ export const SupplierReviews = memo(function SupplierReviews({ companyId }: Prop
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">{displayName}</span>
                     {r.is_verified_purchase && (
-                      <Badge variant="secondary" className="text-[9px]">
+                      <Badge variant="secondary" className="text-[12px]">
                         <ThumbsUp className="me-0.5 h-2.5 w-2.5" />
                         {isAr ? "مشتري موثق" : "Verified"}
                       </Badge>
                     )}
                   </div>
-                  <span className="text-[10px] text-muted-foreground">
+                  <span className="text-[12px] text-muted-foreground">
                     {new Date(r.created_at).toLocaleDateString()}
                   </span>
                 </div>

@@ -120,7 +120,7 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
           <Gauge className="h-4 w-4 text-primary" />
           {isAr ? "مقاييس الأداء (24 ساعة)" : "Web Vitals (24h)"}
           {data && (
-            <Badge variant="outline" className="ms-auto text-[10px]">
+            <Badge variant="outline" className="ms-auto text-[12px]">
               {data.total} {isAr ? "عينة" : "samples"}
             </Badge>
           )}
@@ -151,11 +151,11 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
                       score ? scoreColors[score] : "bg-muted/50"
                     )}
                   >
-                    <p className="text-[10px] font-medium opacity-70">{m.key.toUpperCase()}</p>
+                    <p className="text-[12px] font-medium opacity-70">{m.key.toUpperCase()}</p>
                     <p className="text-lg font-bold tabular-nums">
                       {m.value != null ? m.value : "—"}
                     </p>
-                    {m.unit && <p className="text-[9px] opacity-60">{m.unit}</p>}
+                    {m.unit && <p className="text-[12px] opacity-60">{m.unit}</p>}
                   </div>
                 );
               })}
@@ -177,15 +177,15 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
             {/* Slowest pages */}
             {data.slowestPages.length > 0 && (
               <div className="space-y-1">
-                <p className="text-[10px] font-medium text-muted-foreground">
+                <p className="text-[12px] font-medium text-muted-foreground">
                   {isAr ? "أبطأ الصفحات (LCP)" : "Slowest Pages (LCP)"}
                 </p>
                 {data.slowestPages.map((p) => {
                   const score = getScore("lcp", p.avgLcp);
                   return (
                     <div key={p.path} className="flex items-center justify-between text-xs">
-                      <span className="truncate max-w-[200px] font-mono text-[11px]">{p.path}</span>
-                      <Badge variant="outline" className={cn("text-[10px]", scoreColors[score])}>
+                      <span className="truncate max-w-[200px] font-mono text-[12px]">{p.path}</span>
+                      <Badge variant="outline" className={cn("text-[12px]", scoreColors[score])}>
                         {p.avgLcp}ms
                       </Badge>
                     </div>

@@ -555,7 +555,7 @@ export default function CompanyLogin() {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="companyPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-                      <button type="button" className="text-[10px] text-primary hover:underline" onClick={() => setForgotOpen(true)}>
+                      <button type="button" className="text-[12px] text-primary hover:underline" onClick={() => setForgotOpen(true)}>
                         {isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}
                       </button>
                     </div>

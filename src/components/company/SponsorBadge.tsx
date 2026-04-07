@@ -62,7 +62,7 @@ export const CompetitionSponsorBadges = memo(function CompetitionSponsorBadges({
           <Badge
             key={sponsor.id}
             variant="outline"
-            className={`${tier.color} gap-1 text-[9px] font-bold uppercase tracking-wider py-0.5 px-2 backdrop-blur-sm`}
+            className={`${tier.color} gap-1 text-[12px] font-bold uppercase tracking-wider py-0.5 px-2 backdrop-blur-sm`}
           >
             {showLogo && company?.logo_url ? (
               <img src={company.logo_url} alt={name} className="h-3 w-3 rounded-sm object-contain" />
@@ -74,7 +74,7 @@ export const CompetitionSponsorBadges = memo(function CompetitionSponsorBadges({
         );
       })}
       {!compact && sponsors.length > 3 && (
-        <Badge variant="secondary" className="text-[9px] py-0.5 px-1.5">
+        <Badge variant="secondary" className="text-[12px] py-0.5 px-1.5">
           +{sponsors.length - 3}
         </Badge>
       )}

@@ -38,7 +38,7 @@ export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isA
       <div className="flex items-center gap-2 mb-1">
         <Globe className="h-4 w-4 text-primary" />
         <h2 className="text-sm font-semibold">{isAr ? "حسب الدولة" : "By Country"}</h2>
-        <Badge variant="secondary" className="text-[9px]">{grouped.length} {isAr ? "دولة" : "countries"}</Badge>
+        <Badge variant="secondary" className="text-[12px]">{grouped.length} {isAr ? "دولة" : "countries"}</Badge>
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
@@ -56,7 +56,7 @@ export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isA
                 <span className="text-2xl">{flag}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold">{group.country}</p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[12px] text-muted-foreground">
                     {group.orgs.length} {isAr ? "منظم" : "organizers"} · {totalEvents} {isAr ? "فعالية" : "events"}
                   </p>
                 </div>
@@ -66,11 +66,11 @@ export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isA
                   {group.orgs.slice(0, 3).map(org => (
                     <Avatar key={org.id} className="h-7 w-7 rounded-lg border-2 border-background">
                       {org.logo_url && <AvatarImage src={org.logo_url} />}
-                      <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-[8px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-[12px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
                     </Avatar>
                   ))}
                   {group.orgs.length > 3 && (
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border-2 border-background bg-muted text-[9px] font-bold text-muted-foreground">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border-2 border-background bg-muted text-[12px] font-bold text-muted-foreground">
                       +{group.orgs.length - 3}
                     </div>
                   )}
@@ -91,16 +91,16 @@ export const OrganizerMapView = memo(function OrganizerMapView({ organizers, isA
                       >
                         <Avatar className="h-9 w-9 rounded-xl border border-border/30">
                           {org.logo_url && <AvatarImage src={org.logo_url} />}
-                          <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-[10px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                          <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-[12px] font-bold">{org.name?.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1">
                             <span className="text-xs font-medium truncate group-hover:text-primary transition-colors">{name}</span>
                             {org.is_verified && <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />}
                           </div>
-                          {org.city && <p className="text-[10px] text-muted-foreground">{org.city}</p>}
+                          {org.city && <p className="text-[12px] text-muted-foreground">{org.city}</p>}
                         </div>
-                        <div className="flex items-center gap-2 shrink-0 text-[10px] text-muted-foreground">
+                        <div className="flex items-center gap-2 shrink-0 text-[12px] text-muted-foreground">
                           {org.total_exhibitions > 0 && (
                             <span className="flex items-center gap-0.5"><Landmark className="h-3 w-3" />{org.total_exhibitions}</span>
                           )}

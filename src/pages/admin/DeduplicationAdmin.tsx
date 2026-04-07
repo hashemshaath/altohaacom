@@ -161,7 +161,7 @@ const DeduplicationAdmin = memo(function DeduplicationAdmin() {
               <s.icon className={`h-4 w-4 ${s.color}`} />
               <div>
                 <div className="text-lg font-bold">{s.value}</div>
-                <div className="text-[10px] text-muted-foreground">{s.label}</div>
+                <div className="text-[12px] text-muted-foreground">{s.label}</div>
               </div>
             </div>
           </Card>
@@ -245,7 +245,7 @@ const DeduplicationAdmin = memo(function DeduplicationAdmin() {
                   <CardTitle className="text-sm flex items-center gap-2">
                     <span>{tblInfo?.icon}</span>
                     {isAr ? tblInfo?.label_ar : tblInfo?.label_en}
-                    <Badge variant="destructive" className="text-[10px]">
+                    <Badge variant="destructive" className="text-[12px]">
                       {result.groups.length}
                     </Badge>
                   </CardTitle>
@@ -257,26 +257,26 @@ const DeduplicationAdmin = memo(function DeduplicationAdmin() {
                       <div className="flex items-center gap-2">
                         <Avatar className="h-7 w-7">
                           <AvatarImage src={group.primary.logo_url || ""} />
-                          <AvatarFallback className="text-[9px]">{group.primary.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
+                          <AvatarFallback className="text-[12px]">{group.primary.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <span className="text-sm font-semibold truncate block">{group.primary.name}</span>
-                          <span className="text-[10px] text-muted-foreground">{group.primary.identifier} • {group.primary.city || "—"}</span>
+                          <span className="text-[12px] text-muted-foreground">{group.primary.identifier} • {group.primary.city || "—"}</span>
                         </div>
-                        <Badge variant="secondary" className="text-[9px]">{isAr ? "الأساسي" : "Primary"}</Badge>
+                        <Badge variant="secondary" className="text-[12px]">{isAr ? "الأساسي" : "Primary"}</Badge>
                       </div>
                       {/* Matches */}
                       {group.matches.map((m, mi) => (
                         <div key={mi} className="flex items-center gap-2 ps-6 py-1 border-s-2 border-destructive/30">
                           <Avatar className="h-6 w-6">
                             <AvatarImage src={m.record.logo_url || ""} />
-                            <AvatarFallback className="text-[8px]">{m.record.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
+                            <AvatarFallback className="text-[12px]">{m.record.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0">
                             <span className="text-xs font-medium truncate block">{m.record.name}</span>
                             <div className="flex gap-1 flex-wrap">
                               {m.reasons.slice(0, 2).map((r, ri) => (
-                                <span key={ri} className="text-[8px] bg-muted px-1 py-0.5 rounded">{r}</span>
+                                <span key={ri} className="text-[12px] bg-muted px-1 py-0.5 rounded">{r}</span>
                               ))}
                             </div>
                           </div>
@@ -346,12 +346,12 @@ const DeduplicationAdmin = memo(function DeduplicationAdmin() {
                                   <span className="text-sm">{group.matches[0].record.name}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                  <Badge variant="outline" className="text-[9px]">{tblInfo?.icon} {isAr ? tblInfo?.label_ar : tblInfo?.label_en}</Badge>
+                                  <Badge variant="outline" className="text-[12px]">{tblInfo?.icon} {isAr ? tblInfo?.label_ar : tblInfo?.label_en}</Badge>
                                   <span className={`text-xs font-bold ${getScoreColor(group.matches[0].score)}`}>
                                     {Math.round(group.matches[0].score)}%
                                   </span>
                                   {group.matches[0].reasons.slice(0, 2).map((r, ri) => (
-                                    <span key={ri} className="text-[9px] bg-muted px-1.5 py-0.5 rounded">{r}</span>
+                                    <span key={ri} className="text-[12px] bg-muted px-1.5 py-0.5 rounded">{r}</span>
                                   ))}
                                 </div>
                               </div>
@@ -409,14 +409,14 @@ const DeduplicationAdmin = memo(function DeduplicationAdmin() {
                           <div className="flex-1 min-w-0 space-y-1">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-sm font-medium">{details?.primary_name || "—"}</span>
-                              <Badge variant="outline" className="text-[9px]">
+                              <Badge variant="outline" className="text-[12px]">
                                 {tblInfo?.icon} {isAr ? tblInfo?.label_ar : tblInfo?.label_en}
                               </Badge>
-                              <Badge variant="secondary" className="text-[9px]">
+                              <Badge variant="secondary" className="text-[12px]">
                                 +{details?.merged_count || 0} {isAr ? "مدمج" : "merged"}
                               </Badge>
                             </div>
-                            <div className="text-[10px] text-muted-foreground">
+                            <div className="text-[12px] text-muted-foreground">
                               {format(new Date(log.created_at), "yyyy-MM-dd HH:mm")}
                             </div>
                           </div>

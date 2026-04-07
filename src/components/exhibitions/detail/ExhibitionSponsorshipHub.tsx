@@ -111,7 +111,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
                 <Icon className="h-4 w-4" />
               </div>
               {tierLabel}
-              <Badge variant="outline" className="text-[9px]">{sponsorsByTier[tier].length}</Badge>
+              <Badge variant="outline" className="text-[12px]">{sponsorsByTier[tier].length}</Badge>
             </h3>
             <div className={`grid gap-3 ${tier === "patron" || tier === "platinum" ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"}`}>
               {sponsorsByTier[tier].map((sponsor) => (
@@ -129,7 +129,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
                         {isAr && sponsor.name_ar ? sponsor.name_ar : sponsor.name}
                       </p>
                       {sponsor.website_url && (
-                        <a href={sponsor.website_url} target="_blank" rel="noopener noreferrer" className="text-[10px] text-primary hover:underline flex items-center gap-0.5 mt-0.5">
+                        <a href={sponsor.website_url} target="_blank" rel="noopener noreferrer" className="text-[12px] text-primary hover:underline flex items-center gap-0.5 mt-0.5">
                           <ExternalLink className="h-2.5 w-2.5" /> {t("Visit", "زيارة")}
                         </a>
                       )}
@@ -173,7 +173,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
                       {benefits.length > 0 && (
                         <ul className="space-y-1">
                           {benefits.slice(0, 5).map((b: string, i: number) => (
-                            <li key={i} className="flex items-start gap-1.5 text-[11px]">
+                            <li key={i} className="flex items-start gap-1.5 text-[12px]">
                               <CheckCircle className="h-3 w-3 mt-0.5 text-chart-3 shrink-0" />
                               <span>{b}</span>
                             </li>

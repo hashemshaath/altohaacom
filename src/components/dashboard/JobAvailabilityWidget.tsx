@@ -66,7 +66,7 @@ export const JobAvailabilityWidget = memo(function JobAvailabilityWidget() {
             </div>
             <div>
               <p className="text-sm font-semibold">{isAr ? "متاح للعمل" : "Open to Work"}</p>
-              <div className="flex items-center gap-1 text-[10px] text-muted-foreground/60">
+              <div className="flex items-center gap-1 text-[12px] text-muted-foreground/60">
                 <Eye className="h-2.5 w-2.5" />
                 {visLabel}
               </div>

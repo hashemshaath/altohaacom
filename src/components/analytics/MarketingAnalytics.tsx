@@ -174,7 +174,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
                     {'suffix' in k && k.suffix ? <span className="text-xl font-bold">{k.suffix}</span> : null}
                   </>
                 )}
-                {"subValue" in k && (k as any).subValue > 0 && <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={Math.round((k as any).subValue)} className="inline" /> SAR {isAr ? "مفقود" : "lost"}</p>}
+                {"subValue" in k && (k as any).subValue > 0 && <p className="text-[12px] text-muted-foreground"><AnimatedCounter value={Math.round((k as any).subValue)} className="inline" /> SAR {isAr ? "مفقود" : "lost"}</p>}
               </div>
             </CardContent>
           </Card>
@@ -234,7 +234,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
                 <step.icon className="h-5 w-5 mx-auto text-primary" />
                 <AnimatedCounter value={typeof step.value === "number" ? step.value : 0} className="text-xl font-bold" />
                 <p className="text-xs text-muted-foreground">{step.label}</p>
-                <Badge variant="secondary" className="text-[10px]"><AnimatedCounter value={typeof step.pct === "number" ? step.pct : 0} className="inline" />%</Badge>
+                <Badge variant="secondary" className="text-[12px]"><AnimatedCounter value={typeof step.pct === "number" ? step.pct : 0} className="inline" />%</Badge>
               </div>
             ))}
           </div>
@@ -273,15 +273,15 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
                         <div key={c.id} className="rounded-xl border p-3 space-y-1.5">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-medium truncate max-w-[70%]">{c.name}</span>
-                            <Badge variant={c.status === "active" ? "default" : "secondary"} className="text-[10px]">{c.status}</Badge>
+                            <Badge variant={c.status === "active" ? "default" : "secondary"} className="text-[12px]">{c.status}</Badge>
                           </div>
-                          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                          <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                             <span><AnimatedCounter value={c.total_clicks || 0} className="inline" /> {isAr ? "نقرة" : "clicks"}</span>
                             <span>•</span>
                             <span><AnimatedCounter value={c.total_impressions || 0} className="inline" /> {isAr ? "ظهور" : "impressions"}</span>
                           </div>
                           <Progress value={spendPct} className="h-1" />
-                          <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={spendPct} className="inline" />% {isAr ? "من الميزانية" : "of budget spent"}</p>
+                          <p className="text-[12px] text-muted-foreground"><AnimatedCounter value={spendPct} className="inline" />% {isAr ? "من الميزانية" : "of budget spent"}</p>
                         </div>
                       );
                     })}
@@ -422,9 +422,9 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
                   <div key={cfg.id} className="rounded-xl border p-3 flex items-center justify-between">
                     <div>
                       <p className="text-xs font-medium">{isAr ? label.ar : label.en}</p>
-                      <p className="text-[10px] text-muted-foreground font-mono">{cfg.tracking_id}</p>
+                      <p className="text-[12px] text-muted-foreground font-mono">{cfg.tracking_id}</p>
                     </div>
-                    <Badge variant={cfg.is_active ? "default" : "secondary"} className="text-[10px]">
+                    <Badge variant={cfg.is_active ? "default" : "secondary"} className="text-[12px]">
                       {cfg.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Inactive")}
                     </Badge>
                   </div>

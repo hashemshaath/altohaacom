@@ -51,7 +51,7 @@ export const FormFieldFeedback = memo(function FormFieldFeedback({
       </div>
       {charCount && (
         <span className={cn(
-          "text-[10px] tabular-nums shrink-0",
+          "text-[12px] tabular-nums shrink-0",
           charCount.current > charCount.max
             ? "text-destructive font-medium"
             : hasCharWarning

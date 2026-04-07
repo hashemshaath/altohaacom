@@ -110,7 +110,7 @@ export const ArticleAISummary = memo(function ArticleAISummary({
         <div className="flex-1">
           <p className="text-xs font-semibold flex items-center gap-2">
             {isAr ? "ملخص AI" : "AI Summary"}
-            <span className="text-[9px] font-normal text-muted-foreground uppercase">{lang}</span>
+            <span className="text-[12px] font-normal text-muted-foreground uppercase">{lang}</span>
           </p>
         </div>
         {expanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
@@ -137,11 +137,11 @@ export const ArticleAISummary = memo(function ArticleAISummary({
           )}
           {summary && (
             <div className="flex items-center gap-2 mt-3 pt-2 border-t border-border/20">
-              <Button variant="ghost" size="sm" className="h-7 text-[10px] rounded-lg gap-1" onClick={toggleLang}>
+              <Button variant="ghost" size="sm" className="h-7 text-[12px] rounded-lg gap-1" onClick={toggleLang}>
                 <Languages className="h-3 w-3" />
                 {lang === "en" ? "بالعربية" : "In English"}
               </Button>
-              <Button variant="ghost" size="sm" className="h-7 text-[10px] rounded-lg gap-1" onClick={generateSummary}>
+              <Button variant="ghost" size="sm" className="h-7 text-[12px] rounded-lg gap-1" onClick={generateSummary}>
                 <Sparkles className="h-3 w-3" />
                 {isAr ? "إعادة إنشاء" : "Regenerate"}
               </Button>

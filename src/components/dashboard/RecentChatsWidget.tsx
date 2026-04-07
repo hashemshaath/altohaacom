@@ -68,7 +68,7 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
           <MessageSquare className="h-4 w-4 text-primary" />
           {isAr ? "المحادثات الأخيرة" : "Recent Chats"}
           {unreadCount > 0 && (
-            <Badge className="ms-auto text-[9px] h-4 px-1.5 bg-primary">{unreadCount}</Badge>
+            <Badge className="ms-auto text-[12px] h-4 px-1.5 bg-primary">{unreadCount}</Badge>
           )}
         </CardTitle>
       </CardHeader>
@@ -83,7 +83,7 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
                 <div className="relative">
                   <Avatar className="h-9 w-9 ring-1 ring-border/30">
                     <AvatarImage src={chat.partner?.avatar_url || undefined} />
-                    <AvatarFallback className="text-[10px] bg-muted">{initials}</AvatarFallback>
+                    <AvatarFallback className="text-[12px] bg-muted">{initials}</AvatarFallback>
                   </Avatar>
                   {chat.isUnread && (
                     <div className="absolute -top-0.5 -end-0.5 h-2.5 w-2.5 rounded-full bg-primary border-2 border-background">
@@ -94,11 +94,11 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-1">
                     <span className={`text-xs truncate ${chat.isUnread ? "font-bold text-foreground" : "font-medium"}`}>{name}</span>
-                    <span className={`text-[9px] shrink-0 ${chat.isUnread ? "text-primary font-semibold" : "text-muted-foreground"}`}>
+                    <span className={`text-[12px] shrink-0 ${chat.isUnread ? "text-primary font-semibold" : "text-muted-foreground"}`}>
                       {formatDistanceToNow(new Date(chat.created_at), { addSuffix: false })}
                     </span>
                   </div>
-                  <p className={`text-[10px] truncate ${chat.isUnread ? "text-foreground font-medium" : "text-muted-foreground"}`}>
+                  <p className={`text-[12px] truncate ${chat.isUnread ? "text-foreground font-medium" : "text-muted-foreground"}`}>
                     {chat.sender_id === user!.id && <span className="text-muted-foreground">{isAr ? "أنت: " : "You: "}</span>}
                     {chat.content || (isAr ? "مرفق 📎" : "Attachment 📎")}
                   </p>

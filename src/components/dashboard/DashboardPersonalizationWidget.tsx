@@ -90,7 +90,7 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
           </CardTitle>
           <div className="flex items-center gap-1.5">
             {hasOverrides && (
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+              <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
                 {isAr ? "مخصص" : "Custom"}
               </Badge>
             )}
@@ -109,7 +109,7 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
               <button
                 key={preset.id}
                 onClick={() => handleTheme(preset.id)}
-                className={`relative flex items-center gap-1.5 rounded-xl border px-2 py-1.5 text-[10px] font-medium transition-all ${
+                className={`relative flex items-center gap-1.5 rounded-xl border px-2 py-1.5 text-[12px] font-medium transition-all ${
                   selectedTheme === preset.id
                     ? "border-primary bg-primary/10 text-foreground"
                     : "border-border/40 hover:border-border text-muted-foreground hover:text-foreground"
@@ -144,7 +144,7 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
                   <button
                     key={f.id}
                     onClick={() => handleBodyFont(f.id)}
-                    className={`rounded-md border px-2 py-1.5 text-[11px] transition-all ${
+                    className={`rounded-md border px-2 py-1.5 text-[12px] transition-all ${
                       bodyFont === f.id
                         ? "border-primary bg-primary/10 font-semibold"
                         : "border-border/40 hover:border-border text-muted-foreground"
@@ -165,7 +165,7 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
                   <button
                     key={f.id}
                     onClick={() => handleHeadingFont(f.id)}
-                    className={`rounded-md border px-2 py-1.5 text-[11px] transition-all ${
+                    className={`rounded-md border px-2 py-1.5 text-[12px] transition-all ${
                       headingFont === f.id
                         ? "border-primary bg-primary/10 font-semibold"
                         : "border-border/40 hover:border-border text-muted-foreground"
@@ -184,7 +184,7 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-xs font-semibold">{isAr ? "حجم الخط" : "Font Size"}</Label>
-                <span className="text-[10px] text-muted-foreground font-mono">{fontSize}%</span>
+                <span className="text-[12px] text-muted-foreground font-mono">{fontSize}%</span>
               </div>
               <Slider value={[fontSize]} onValueChange={handleFontSize} min={80} max={120} step={5} className="w-full" />
             </div>

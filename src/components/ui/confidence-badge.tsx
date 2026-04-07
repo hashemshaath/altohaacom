@@ -28,7 +28,7 @@ export const ConfidenceBadge = memo(function ConfidenceBadge({ level, label, cla
   const Icon = c.icon;
 
   return (
-    <Badge variant="outline" className={cn("gap-1 text-[10px] px-2 py-0.5 font-semibold", c.colors, className)}>
+    <Badge variant="outline" className={cn("gap-1 text-[12px] px-2 py-0.5 font-semibold", c.colors, className)}>
       <Icon className="h-3 w-3" />
       {label || c.defaultLabel}
     </Badge>

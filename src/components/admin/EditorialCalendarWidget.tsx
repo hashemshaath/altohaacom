@@ -66,11 +66,11 @@ export const EditorialCalendarWidget = memo(function EditorialCalendarWidget() {
           <Calendar className="h-4 w-4 text-primary" />
           {isAr ? "التقويم التحريري" : "Editorial Calendar"}
           <div className="ms-auto flex gap-1.5">
-            <Badge variant="outline" className="text-[9px] gap-1 px-1.5">
+            <Badge variant="outline" className="text-[12px] gap-1 px-1.5">
               <Clock className="h-2 w-2" /> {drafts.length} {isAr ? "مسودة" : "drafts"}
             </Badge>
             {scheduled.length > 0 && (
-              <Badge variant="outline" className="text-[9px] gap-1 px-1.5 text-chart-4 border-chart-4/30">
+              <Badge variant="outline" className="text-[12px] gap-1 px-1.5 text-chart-4 border-chart-4/30">
                 <Calendar className="h-2 w-2" /> {scheduled.length} {isAr ? "مجدول" : "scheduled"}
               </Badge>
             )}
@@ -91,7 +91,7 @@ export const EditorialCalendarWidget = memo(function EditorialCalendarWidget() {
                   today ? "border-primary/40 bg-primary/5" : "border-border/30 bg-card"
                 )}
               >
-                <p className={cn("text-[10px] font-medium mb-1", today ? "text-primary" : "text-muted-foreground")}>
+                <p className={cn("text-[12px] font-medium mb-1", today ? "text-primary" : "text-muted-foreground")}>
                   {format(day, "EEE", { locale: isAr ? ar : enUS })}
                 </p>
                 <p className={cn("text-sm font-bold mb-1.5", today && "text-primary")}>
@@ -101,14 +101,14 @@ export const EditorialCalendarWidget = memo(function EditorialCalendarWidget() {
                   {dayArticles.slice(0, 2).map((a) => (
                     <div
                       key={a.id}
-                      className={cn("rounded px-1 py-0.5 text-[8px] font-medium truncate border", statusColor[a.status] || statusColor.draft)}
+                      className={cn("rounded px-1 py-0.5 text-[12px] font-medium truncate border", statusColor[a.status] || statusColor.draft)}
                       title={isAr ? a.title_ar || a.title : a.title}
                     >
                       {(isAr ? a.title_ar || a.title : a.title).slice(0, 12)}
                     </div>
                   ))}
                   {dayArticles.length > 2 && (
-                    <p className="text-[8px] text-muted-foreground">+{dayArticles.length - 2}</p>
+                    <p className="text-[12px] text-muted-foreground">+{dayArticles.length - 2}</p>
                   )}
                 </div>
               </div>

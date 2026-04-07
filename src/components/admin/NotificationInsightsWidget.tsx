@@ -141,9 +141,9 @@ export const NotificationInsightsWidget = memo(function NotificationInsightsWidg
             {data.channelData.map((ch, i) => {
               const Icon = channelIcons[ch.name] || Bell;
               return (
-                <div key={ch.name} className="flex items-center justify-between text-[10px]">
+                <div key={ch.name} className="flex items-center justify-between text-[12px]">
                   <span className="flex items-center gap-1"><Icon className="h-3 w-3" />{ch.name}</span>
-                  <Badge variant="secondary" className="text-[9px]">{ch.value}</Badge>
+                  <Badge variant="secondary" className="text-[12px]">{ch.value}</Badge>
                 </div>
               );
             })}
@@ -173,7 +173,7 @@ export const NotificationInsightsWidget = memo(function NotificationInsightsWidg
             ))}
           </div>
           <div className="pt-2 border-t border-border/40">
-            <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+            <div className="flex justify-between text-[12px] text-muted-foreground mb-1">
               <span>{isAr ? "القواعد النشطة" : "Active Rules"}</span>
               <span>{data.activeRules}/{data.totalRules}</span>
             </div>

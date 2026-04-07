@@ -80,7 +80,7 @@ export const CompetitionActivityFeed = React.forwardRef<HTMLDivElement, Competit
             </div>
             {isAr ? "آخر التحديثات" : "Updates"}
             {updates.length > 0 && (
-              <Badge variant="secondary" className="ms-1 text-[10px]">{updates.length}</Badge>
+              <Badge variant="secondary" className="ms-1 text-[12px]">{updates.length}</Badge>
             )}
           </h3>
           {isOrganizer && (
@@ -143,11 +143,11 @@ export const CompetitionActivityFeed = React.forwardRef<HTMLDivElement, Competit
                         {update.is_pinned && <Pin className="h-3 w-3 text-chart-4 shrink-0" />}
                       </div>
                       {(update.content || update.content_ar) && (
-                        <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
+                        <p className="text-[12px] text-muted-foreground mt-0.5 line-clamp-2">
                           {isAr && update.content_ar ? update.content_ar : update.content}
                         </p>
                       )}
-                      <p className="text-[10px] text-muted-foreground mt-1">
+                      <p className="text-[12px] text-muted-foreground mt-1">
                         {formatDistanceToNow(new Date(update.created_at), { addSuffix: true })}
                       </p>
                     </div>

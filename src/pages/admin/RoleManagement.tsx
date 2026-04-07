@@ -118,7 +118,7 @@ export default function RoleManagement() {
           <TabsTrigger value="overrides" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <AlertTriangle className="h-3.5 w-3.5" />
             {t("Overrides", "الاستثناءات")}
-            {overridesCount > 0 && <Badge variant="destructive" className="text-[10px] h-4 px-1 ms-1">{overridesCount}</Badge>}
+            {overridesCount > 0 && <Badge variant="destructive" className="text-[12px] h-4 px-1 ms-1">{overridesCount}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="activity" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm">
             <Activity className="h-3.5 w-3.5" />

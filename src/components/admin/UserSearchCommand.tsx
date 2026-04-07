@@ -124,7 +124,7 @@ export const UserSearchCommand = memo(function UserSearchCommand({ open, onOpenC
                       {user.account_number && <span>{user.account_number}</span>}
                     </div>
                   </div>
-                  <Badge variant={user.account_status === "active" ? "default" : user.account_status === "suspended" ? "destructive" : "secondary"} className="text-[10px]">
+                  <Badge variant={user.account_status === "active" ? "default" : user.account_status === "suspended" ? "destructive" : "secondary"} className="text-[12px]">
                     {user.account_status || "pending"}
                   </Badge>
                 </button>
@@ -132,9 +132,9 @@ export const UserSearchCommand = memo(function UserSearchCommand({ open, onOpenC
             </div>
           )}
         </ScrollArea>
-        <div className="border-t px-3 py-2 flex items-center justify-between text-[10px] text-muted-foreground">
+        <div className="border-t px-3 py-2 flex items-center justify-between text-[12px] text-muted-foreground">
           <span>↑↓ {isAr ? "تنقل" : "Navigate"} · ↵ {isAr ? "اختيار" : "Select"} · Esc {isAr ? "إغلاق" : "Close"}</span>
-          <kbd className="px-1.5 py-0.5 rounded bg-muted text-[10px] font-mono">⌘U</kbd>
+          <kbd className="px-1.5 py-0.5 rounded bg-muted text-[12px] font-mono">⌘U</kbd>
         </div>
       </DialogContent>
     </Dialog>

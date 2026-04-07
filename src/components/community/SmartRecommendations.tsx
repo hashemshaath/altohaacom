@@ -50,7 +50,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
             {isAr ? "مقترح لك بالذكاء الاصطناعي" : "AI Recommendations"}
           </CardTitle>
           <Link to="/for-you">
-            <Button variant="ghost" size="sm" className="text-[10px] h-6 gap-1">
+            <Button variant="ghost" size="sm" className="text-[12px] h-6 gap-1">
               {isAr ? "عرض الكل" : "View All"}
               <ArrowRight className="h-2.5 w-2.5 rtl:rotate-180" />
             </Button>
@@ -71,19 +71,19 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
         ) : (
           <Tabs defaultValue="competitions" className="w-full">
             <TabsList className="w-full h-8 p-0.5 grid grid-cols-5">
-              <TabsTrigger value="competitions" className="text-[10px] gap-1 px-1">
+              <TabsTrigger value="competitions" className="text-[12px] gap-1 px-1">
                 <Trophy className="h-3 w-3" />
               </TabsTrigger>
-              <TabsTrigger value="exhibitions" className="text-[10px] gap-1 px-1">
+              <TabsTrigger value="exhibitions" className="text-[12px] gap-1 px-1">
                 <Landmark className="h-3 w-3" />
               </TabsTrigger>
-              <TabsTrigger value="recipes" className="text-[10px] gap-1 px-1">
+              <TabsTrigger value="recipes" className="text-[12px] gap-1 px-1">
                 <ChefHat className="h-3 w-3" />
               </TabsTrigger>
-              <TabsTrigger value="articles" className="text-[10px] gap-1 px-1">
+              <TabsTrigger value="articles" className="text-[12px] gap-1 px-1">
                 <BookOpen className="h-3 w-3" />
               </TabsTrigger>
-              <TabsTrigger value="chefs" className="text-[10px] gap-1 px-1">
+              <TabsTrigger value="chefs" className="text-[12px] gap-1 px-1">
                 <Users className="h-3 w-3" />
               </TabsTrigger>
             </TabsList>
@@ -94,8 +94,8 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
                   {c.image_url && <img src={c.image_url} alt={isAr ? c.title_ar || c.title : c.title} className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" decoding="async" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? c.title_ar || c.title : c.title}</p>
-                    <p className="text-[10px] text-muted-foreground">{c.category} • {c.country_code}</p>
-                    {c._reason && <p className="text-[9px] text-primary/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{c._reason}</p>}
+                    <p className="text-[12px] text-muted-foreground">{c.category} • {c.country_code}</p>
+                    {c._reason && <p className="text-[12px] text-primary/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{c._reason}</p>}
                   </div>
                   <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
                 </Link>
@@ -108,10 +108,10 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
                   {e.image_url && <img src={e.image_url} alt={isAr ? e.title_ar || e.title : e.title} className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" decoding="async" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? e.title_ar || e.title : e.title}</p>
-                    <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                    <p className="text-[12px] text-muted-foreground flex items-center gap-1">
                       <MapPin className="h-2.5 w-2.5" />{e.city || e.country_code}
                     </p>
-                    {e._reason && <p className="text-[9px] text-chart-5/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{e._reason}</p>}
+                    {e._reason && <p className="text-[12px] text-chart-5/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{e._reason}</p>}
                   </div>
                   <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
                 </Link>
@@ -125,10 +125,10 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? r.title_ar || r.title : r.title}</p>
                     <div className="flex items-center gap-1.5">
-                      <Badge variant="outline" className="text-[9px] px-1 py-0 h-4">{r.difficulty || "easy"}</Badge>
-                      {r.cuisine_type && <span className="text-[10px] text-muted-foreground">{r.cuisine_type}</span>}
+                      <Badge variant="outline" className="text-[12px] px-1 py-0 h-4">{r.difficulty || "easy"}</Badge>
+                      {r.cuisine_type && <span className="text-[12px] text-muted-foreground">{r.cuisine_type}</span>}
                     </div>
-                    {r._reason && <p className="text-[9px] text-chart-4/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{r._reason}</p>}
+                    {r._reason && <p className="text-[12px] text-chart-4/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{r._reason}</p>}
                   </div>
                   <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
                 </Link>
@@ -141,8 +141,8 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
                   {a.featured_image_url && <img src={a.featured_image_url} alt={isAr ? a.title_ar || a.title : a.title} className="h-8 w-8 rounded object-cover shrink-0" loading="lazy" decoding="async" />}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? a.title_ar || a.title : a.title}</p>
-                    <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">{a.type}</Badge>
-                    {a._reason && <p className="text-[9px] text-chart-2/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{a._reason}</p>}
+                    <Badge variant="secondary" className="text-[12px] px-1 py-0 h-4">{a.type}</Badge>
+                    {a._reason && <p className="text-[12px] text-chart-2/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{a._reason}</p>}
                   </div>
                   <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0 rtl:rotate-180" />
                 </Link>
@@ -158,10 +158,10 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{isAr ? c.full_name_ar || c.full_name : c.full_name}</p>
-                    <p className="text-[10px] text-muted-foreground">{c.specialization || (isAr ? "طاهي" : "Chef")}</p>
-                    {c._reason && <p className="text-[9px] text-chart-3/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{c._reason}</p>}
+                    <p className="text-[12px] text-muted-foreground">{c.specialization || (isAr ? "طاهي" : "Chef")}</p>
+                    {c._reason && <p className="text-[12px] text-chart-3/70 flex items-center gap-0.5"><Sparkles className="h-2 w-2" />{c._reason}</p>}
                   </div>
-                  {c.is_verified && <Badge variant="secondary" className="text-[9px] px-1 py-0 h-4">✓</Badge>}
+                  {c.is_verified && <Badge variant="secondary" className="text-[12px] px-1 py-0 h-4">✓</Badge>}
                 </Link>
               )) : <p className="text-xs text-muted-foreground text-center py-3">{isAr ? "لا يوجد طهاة" : "No chefs"}</p>}
             </TabsContent>

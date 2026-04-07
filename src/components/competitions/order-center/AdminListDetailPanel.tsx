@@ -193,14 +193,14 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
               <div>
                 <h3 className="text-lg font-semibold">{isAr && list.title_ar ? list.title_ar : list.title}</h3>
                 <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                  {list.competitions && <Badge variant="outline" className="text-[9px]">{isAr && list.competitions.title_ar ? list.competitions.title_ar : list.competitions.title}</Badge>}
-                  <Badge variant="secondary" className="text-[9px]">{list.status || "draft"}</Badge>
-                  {list.category && <Badge variant="outline" className="text-[9px]">{list.category}</Badge>}
+                  {list.competitions && <Badge variant="outline" className="text-[12px]">{isAr && list.competitions.title_ar ? list.competitions.title_ar : list.competitions.title}</Badge>}
+                  <Badge variant="secondary" className="text-[12px]">{list.status || "draft"}</Badge>
+                  {list.category && <Badge variant="outline" className="text-[12px]">{list.category}</Badge>}
                 </div>
               </div>
               <div className="text-end">
                 <p className="text-2xl font-bold text-primary">{progress}%</p>
-                <p className="text-[10px] text-muted-foreground">{delivered}/{total} {isAr ? "تم تسليمه" : "delivered"}</p>
+                <p className="text-[12px] text-muted-foreground">{delivered}/{total} {isAr ? "تم تسليمه" : "delivered"}</p>
               </div>
             </div>
             <Progress value={progress} className="h-1.5 mt-3" />
@@ -213,22 +213,22 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
         <Card className="border-border/60"><CardContent className="p-2 text-center">
           <Package className="mx-auto mb-0.5 h-4 w-4 text-primary" />
           <p className="text-sm font-bold">{total}</p>
-          <p className="text-[9px] text-muted-foreground">{isAr ? "عناصر" : "Items"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "عناصر" : "Items"}</p>
         </CardContent></Card>
         <Card className="border-border/60"><CardContent className="p-2 text-center">
           <CheckCircle className="mx-auto mb-0.5 h-4 w-4 text-chart-5" />
           <p className="text-sm font-bold">{checked}</p>
-          <p className="text-[9px] text-muted-foreground">{isAr ? "تم التحقق" : "Checked"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "تم التحقق" : "Checked"}</p>
         </CardContent></Card>
         <Card className="border-border/60"><CardContent className="p-2 text-center">
           <Clock className="mx-auto mb-0.5 h-4 w-4 text-chart-4" />
           <p className="text-sm font-bold">{total - delivered}</p>
-          <p className="text-[9px] text-muted-foreground">{isAr ? "معلقة" : "Pending"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "معلقة" : "Pending"}</p>
         </CardContent></Card>
         <Card className="border-border/60"><CardContent className="p-2 text-center">
           <AlertTriangle className="mx-auto mb-0.5 h-4 w-4 text-destructive" />
           <p className="text-sm font-bold">{critical}</p>
-          <p className="text-[9px] text-muted-foreground">{isAr ? "حرج" : "Critical"}</p>
+          <p className="text-[12px] text-muted-foreground">{isAr ? "حرج" : "Critical"}</p>
         </CardContent></Card>
       </div>
 
@@ -255,7 +255,7 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
                 <div key={ci.id} className="flex items-center justify-between rounded border px-3 py-1.5 hover:bg-muted/30">
                   <div>
                     <p className="text-sm font-medium">{isAr && ci.name_ar ? ci.name_ar : ci.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{isAr && ci.description_ar ? ci.description_ar : ci.description} · {ci.default_quantity} {ci.unit}</p>
+                    <p className="text-[12px] text-muted-foreground">{isAr && ci.description_ar ? ci.description_ar : ci.description} · {ci.default_quantity} {ci.unit}</p>
                   </div>
                   <Button size="sm" variant="ghost" className="h-6 text-xs" onClick={() => addFromCatalog.mutate(ci)}>
                     <Plus className="h-3 w-3" />
@@ -277,40 +277,40 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
           <CardContent className="p-3 space-y-2">
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <Label className="text-[10px]">{isAr ? "الاسم" : "Name"} *</Label>
+                <Label className="text-[12px]">{isAr ? "الاسم" : "Name"} *</Label>
                 <Input value={form.custom_name} onChange={e => setForm({ ...form, custom_name: e.target.value })} className="h-7 text-sm" />
               </div>
               <div>
-                <Label className="text-[10px]">{isAr ? "الاسم (عربي)" : "Name (AR)"}</Label>
+                <Label className="text-[12px]">{isAr ? "الاسم (عربي)" : "Name (AR)"}</Label>
                 <Input value={form.custom_name_ar} onChange={e => setForm({ ...form, custom_name_ar: e.target.value })} className="h-7 text-sm" dir="rtl" />
               </div>
             </div>
             <div className="grid grid-cols-4 gap-2">
               <div>
-                <Label className="text-[10px]">{isAr ? "الكمية" : "Qty"}</Label>
+                <Label className="text-[12px]">{isAr ? "الكمية" : "Qty"}</Label>
                 <Input type="number" value={form.quantity} onChange={e => setForm({ ...form, quantity: Number(e.target.value) })} className="h-7 text-sm" />
               </div>
               <div>
-                <Label className="text-[10px]">{isAr ? "الوحدة" : "Unit"}</Label>
+                <Label className="text-[12px]">{isAr ? "الوحدة" : "Unit"}</Label>
                 <Select value={form.unit} onValueChange={v => setForm({ ...form, unit: v })}>
-                  <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
                   <SelectContent>{ITEM_UNITS.map(u => <SelectItem key={u.value} value={u.value} className="text-xs">{isAr ? u.labelAr : u.label}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div>
-                <Label className="text-[10px]">{isAr ? "التكلفة" : "Cost"}</Label>
+                <Label className="text-[12px]">{isAr ? "التكلفة" : "Cost"}</Label>
                 <Input type="number" value={form.estimated_cost} onChange={e => setForm({ ...form, estimated_cost: Number(e.target.value) })} className="h-7 text-sm" />
               </div>
               <div>
-                <Label className="text-[10px]">{isAr ? "الأهمية" : "Importance"}</Label>
+                <Label className="text-[12px]">{isAr ? "الأهمية" : "Importance"}</Label>
                 <Select value={form.importance} onValueChange={v => setForm({ ...form, importance: v })}>
-                  <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                  <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
                   <SelectContent>{IMPORTANCE_LEVELS.map(l => <SelectItem key={l.value} value={l.value} className="text-xs">{isAr ? l.labelAr : l.labelEn}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
             </div>
             <div>
-              <Label className="text-[10px]">{isAr ? "ملاحظات / توصيات" : "Notes / Recommendations"}</Label>
+              <Label className="text-[12px]">{isAr ? "ملاحظات / توصيات" : "Notes / Recommendations"}</Label>
               <Textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} className="text-sm min-h-[40px]" placeholder={isAr ? "نوع العنصر، توصيات، أهمية..." : "Type, recommendations, importance..."} />
             </div>
             <div className="flex gap-2">
@@ -358,25 +358,25 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
                       <div className="flex items-center gap-2">
                         <p className={`text-sm font-medium ${item.checked ? "line-through text-muted-foreground" : ""}`}>{name || `#${idx + 1}`}</p>
                         {imp && imp.value !== "normal" && (
-                          <Badge variant="outline" className={`text-[8px] ${imp.color}`}>
+                          <Badge variant="outline" className={`text-[12px] ${imp.color}`}>
                             <Star className="h-2 w-2 me-0.5" />{isAr ? imp.labelAr : imp.labelEn}
                           </Badge>
                         )}
                       </div>
-                      {desc && <p className="text-[10px] text-muted-foreground line-clamp-1">{desc}</p>}
+                      {desc && <p className="text-[12px] text-muted-foreground line-clamp-1">{desc}</p>}
 
                       <div className="flex items-center gap-2 mt-1 flex-wrap">
                         {/* Inline editable quantity */}
-                        <Input type="number" defaultValue={item.quantity} className="h-5 w-14 text-[10px] px-1" onBlur={e => {
+                        <Input type="number" defaultValue={item.quantity} className="h-5 w-14 text-[12px] px-1" onBlur={e => {
                           const v = Number(e.target.value);
                           if (v !== item.quantity) updateItem.mutate({ id: item.id, updates: { quantity: v } });
                         }} />
                         <Select defaultValue={item.unit || "piece"} onValueChange={v => updateItem.mutate({ id: item.id, updates: { unit: v } })}>
-                          <SelectTrigger className="h-5 w-16 text-[10px]"><SelectValue /></SelectTrigger>
+                          <SelectTrigger className="h-5 w-16 text-[12px]"><SelectValue /></SelectTrigger>
                           <SelectContent>{ITEM_UNITS.map(u => <SelectItem key={u.value} value={u.value} className="text-xs">{isAr ? u.labelAr : u.label}</SelectItem>)}</SelectContent>
                         </Select>
                         <Select defaultValue={item.status || "pending"} onValueChange={v => updateItem.mutate({ id: item.id, updates: { status: v } })}>
-                          <SelectTrigger className="h-5 w-20 text-[10px]"><SelectValue /></SelectTrigger>
+                          <SelectTrigger className="h-5 w-20 text-[12px]"><SelectValue /></SelectTrigger>
                           <SelectContent>
                             {["pending", "sourced", "sponsored", "purchased", "delivered"].map(s => (
                               <SelectItem key={s} value={s} className="text-xs">{getStatusLabel(ITEM_STATUS_LABELS, s, language)}</SelectItem>
@@ -384,18 +384,18 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
                           </SelectContent>
                         </Select>
                         <Select defaultValue={item.importance || "normal"} onValueChange={v => updateItem.mutate({ id: item.id, updates: { importance: v } })}>
-                          <SelectTrigger className="h-5 w-16 text-[10px]"><SelectValue /></SelectTrigger>
+                          <SelectTrigger className="h-5 w-16 text-[12px]"><SelectValue /></SelectTrigger>
                           <SelectContent>{IMPORTANCE_LEVELS.map(l => <SelectItem key={l.value} value={l.value} className="text-xs">{isAr ? l.labelAr : l.labelEn}</SelectItem>)}</SelectContent>
                         </Select>
                       </div>
 
                       {/* Notes */}
-                      <Input placeholder={isAr ? "ملاحظات..." : "Notes..."} defaultValue={item.notes || ""} className="h-5 text-[10px] mt-1.5 border-dashed" onBlur={e => {
+                      <Input placeholder={isAr ? "ملاحظات..." : "Notes..."} defaultValue={item.notes || ""} className="h-5 text-[12px] mt-1.5 border-dashed" onBlur={e => {
                         if (e.target.value !== (item.notes || "")) updateItem.mutate({ id: item.id, updates: { notes: e.target.value || null } });
                       }} />
 
                       {/* Attribution */}
-                      <div className="flex items-center gap-3 mt-1.5 text-[9px] text-muted-foreground">
+                      <div className="flex items-center gap-3 mt-1.5 text-[12px] text-muted-foreground">
                         {item.added_by && <span className="flex items-center gap-0.5"><User className="h-2.5 w-2.5" /> {isAr ? "أضافه:" : "Added:"} {getProfileName(item.added_by)}</span>}
                         {item.checked_by && <span className="flex items-center gap-0.5"><CheckCircle className="h-2.5 w-2.5 text-chart-5" /> {getProfileName(item.checked_by)}</span>}
                         {item.last_edited_by && <span className="flex items-center gap-0.5"><StickyNote className="h-2.5 w-2.5" /> {isAr ? "عدّله:" : "Edited:"} {getProfileName(item.last_edited_by)}{item.last_edited_at ? ` · ${format(new Date(item.last_edited_at), "MMM d HH:mm")}` : ""}</span>}

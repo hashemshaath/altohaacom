@@ -126,12 +126,12 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
     <div key={comment.id} className={`flex gap-2.5 ${isReply ? "ms-10 mt-2" : "py-3"}`}>
       <Avatar className="h-8 w-8 shrink-0">
         <AvatarImage src={comment.author?.avatar_url} />
-        <AvatarFallback className="text-[10px]">{(comment.author?.full_name || "?")[0]}</AvatarFallback>
+        <AvatarFallback className="text-[12px]">{(comment.author?.full_name || "?")[0]}</AvatarFallback>
       </Avatar>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold">{comment.author?.full_name || comment.author?.username || (isAr ? "مجهول" : "Anonymous")}</span>
-          <span className="text-[10px] text-muted-foreground">
+          <span className="text-[12px] text-muted-foreground">
             {formatDistanceToNow(new Date(comment.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
           </span>
         </div>
@@ -140,7 +140,7 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
           {user && (
             <>
               <button
-                className="flex items-center gap-1 text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                className="flex items-center gap-1 text-[12px] text-muted-foreground hover:text-primary transition-colors"
                 onClick={() => likeMutation.mutate({ commentId: comment.id, isLiked: comment.isLiked })}
               >
                 <Heart className={`h-3 w-3 ${comment.isLiked ? "fill-primary text-primary" : ""}`} />
@@ -148,7 +148,7 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
               </button>
               {!isReply && (
                 <button
-                  className="text-[10px] text-muted-foreground hover:text-primary transition-colors"
+                  className="text-[12px] text-muted-foreground hover:text-primary transition-colors"
                   onClick={() => setReplyTo(replyTo === comment.id ? null : comment.id)}
                 >
                   {isAr ? "رد" : "Reply"}
@@ -156,14 +156,14 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
               )}
               {comment.user_id === user.id ? (
                 <button
-                  className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+                  className="text-[12px] text-muted-foreground hover:text-destructive transition-colors"
                   onClick={() => deleteMutation.mutate(comment.id)}
                 >
                   <Trash2 className="h-3 w-3" />
                 </button>
               ) : (
                 <button
-                  className="text-[10px] text-muted-foreground hover:text-destructive transition-colors"
+                  className="text-[12px] text-muted-foreground hover:text-destructive transition-colors"
                   onClick={async (e) => {
                     e.stopPropagation();
                     const { error } = await supabase.from("event_comments").update({ is_flagged: true, flagged_by: user.id, flagged_at: new Date().toISOString() }).eq("id", comment.id);

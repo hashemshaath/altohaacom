@@ -84,7 +84,7 @@ export const NotificationDigest = memo(function NotificationDigest() {
             </div>
             <div>
               <h3 className="text-sm font-bold">{isAr ? "ملخص الإشعارات" : "Notification Digest"}</h3>
-              <p className="text-[10px] text-muted-foreground">{isAr ? "آخر ٢٤ ساعة" : "Last 24 hours"}</p>
+              <p className="text-[12px] text-muted-foreground">{isAr ? "آخر ٢٤ ساعة" : "Last 24 hours"}</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" className="text-xs gap-1 h-7" onClick={() => navigate("/notifications")}>
@@ -97,17 +97,17 @@ export const NotificationDigest = memo(function NotificationDigest() {
         <div className="grid grid-cols-3 gap-2 mb-3">
           <div className="rounded-xl bg-muted/30 p-2.5 text-center hover:bg-muted/50 transition-colors cursor-default">
             <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={digest.total24h} /></p>
-            <p className="text-[9px] text-muted-foreground">{isAr ? "إشعار" : "Notifications"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "إشعار" : "Notifications"}</p>
           </div>
           <div className="rounded-xl bg-primary/5 p-2.5 text-center hover:bg-primary/10 transition-colors cursor-default ring-1 ring-primary/10">
             <p className="text-lg font-bold text-primary tabular-nums"><AnimatedCounter value={unreadCount} /></p>
-            <p className="text-[9px] text-muted-foreground">{isAr ? "غير مقروء" : "Unread"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "غير مقروء" : "Unread"}</p>
           </div>
           <div className="rounded-xl bg-muted/30 p-2.5 text-center hover:bg-muted/50 transition-colors cursor-default">
             <div className="flex items-center justify-center gap-1">
               <TrendIcon className={`h-4 w-4 ${trendColor} transition-transform group-hover/digest:scale-110`} />
             </div>
-            <p className="text-[9px] text-muted-foreground">
+            <p className="text-[12px] text-muted-foreground">
               {digest.trend === "up" ? (isAr ? "أكثر نشاطاً" : "More active") :
                digest.trend === "down" ? (isAr ? "أقل نشاطاً" : "Less active") :
                (isAr ? "مستقر" : "Stable")}
@@ -132,7 +132,7 @@ export const NotificationDigest = memo(function NotificationDigest() {
           {digest.topCategories.map(([type, count]) => {
             const label = typeLabels[type] || { en: type, ar: type };
             return (
-              <Badge key={type} variant="secondary" className="text-[10px] gap-1">
+              <Badge key={type} variant="secondary" className="text-[12px] gap-1">
                 {isAr ? label.ar : label.en}
                 <span className="font-bold">{count}</span>
               </Badge>

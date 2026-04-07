@@ -123,9 +123,9 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
                     <img src={company.logo_url} alt={company?.name || "Sponsor"} className="h-6 w-auto rounded-lg mb-2" loading="lazy" />
                   )}
                   {title && <h3 className="text-sm sm:text-base font-bold text-foreground line-clamp-1">{title}</h3>}
-                  {bodyText && <p className="text-[10px] sm:text-xs text-muted-foreground line-clamp-2">{bodyText}</p>}
+                  {bodyText && <p className="text-[12px] sm:text-xs text-muted-foreground line-clamp-2">{bodyText}</p>}
                   {ctaText && (
-                    <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-semibold text-primary">
+                    <span className="inline-flex items-center gap-1 text-[12px] sm:text-xs font-semibold text-primary">
                       {ctaText} →
                     </span>
                   )}
@@ -135,7 +135,7 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
             {/* Sponsor label */}
             <Badge
               variant="secondary"
-              className="absolute top-2 end-2 text-[8px] opacity-70 backdrop-blur-sm"
+              className="absolute top-2 end-2 text-[12px] opacity-70 backdrop-blur-sm"
             >
               {isAr ? "إعلان" : "Sponsored"}
             </Badge>
@@ -161,8 +161,8 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-0.5">
-              {companyName && <span className="text-[10px] text-muted-foreground">{companyName}</span>}
-              <Badge variant="secondary" className="text-[8px] opacity-70">{isAr ? "إعلان" : "Ad"}</Badge>
+              {companyName && <span className="text-[12px] text-muted-foreground">{companyName}</span>}
+              <Badge variant="secondary" className="text-[12px] opacity-70">{isAr ? "إعلان" : "Ad"}</Badge>
             </div>
             {title && <h3 className="text-sm font-semibold text-foreground truncate">{title}</h3>}
             {bodyText && <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{bodyText}</p>}

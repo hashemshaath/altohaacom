@@ -116,7 +116,7 @@ export const UserModificationHistory = memo(function UserModificationHistory({ u
               </div>
               <div className="flex-1 min-w-0 space-y-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge variant={meta.variant} className="text-[10px]">
+                  <Badge variant={meta.variant} className="text-[12px]">
                     {isAr ? meta.labelAr : meta.labelEn}
                   </Badge>
                   <span className="text-xs text-muted-foreground">

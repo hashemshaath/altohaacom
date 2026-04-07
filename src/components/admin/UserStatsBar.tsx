@@ -59,7 +59,7 @@ export const UserStatsBar = memo(function UserStatsBar() {
               ) : (
                 <AnimatedCounter value={item.value || 0} className="text-lg font-black leading-none tracking-tight" />
               )}
-              <p className="text-[10px] text-muted-foreground truncate mt-0.5">{item.label}</p>
+              <p className="text-[12px] text-muted-foreground truncate mt-0.5">{item.label}</p>
             </div>
           </CardContent>
         </Card>

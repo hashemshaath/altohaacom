@@ -350,7 +350,7 @@ export default function KnowledgeAdmin() {
           <TabsTrigger value="resources" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <BookOpen className="h-4 w-4" />
             {language === "ar" ? "الموارد" : "Resources"}
-            {resources && <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5 rounded-md">{resources.length}</Badge>}
+            {resources && <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5 rounded-md">{resources.length}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="categories" className="gap-2 rounded-xl data-[state=active]:shadow-sm">
             <Folder className="h-4 w-4" />
@@ -548,14 +548,14 @@ export default function KnowledgeAdmin() {
                           {language === "ar" && resource.title_ar ? resource.title_ar : resource.title}
                         </p>
                         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                          <Badge variant="outline" className="text-[10px] rounded-md">{resource.resource_type}</Badge>
+                          <Badge variant="outline" className="text-[12px] rounded-md">{resource.resource_type}</Badge>
                           {resource.is_judge_resource && (
-                            <Badge variant="secondary" className="text-[10px] rounded-md">
+                            <Badge variant="secondary" className="text-[12px] rounded-md">
                               {language === "ar" ? "للحكام" : "Judge"}
                             </Badge>
                           )}
                           {(resource as any).category && (
-                            <Badge variant="outline" className="text-[10px] rounded-md bg-muted/50">
+                            <Badge variant="outline" className="text-[12px] rounded-md bg-muted/50">
                               {language === "ar" && (resource as any).category.name_ar
                                 ? (resource as any).category.name_ar
                                 : (resource as any).category.name}
@@ -735,7 +735,7 @@ export default function KnowledgeAdmin() {
                 <CardContent className="p-4">
                   <p className="font-medium">{language === "ar" && ref.title_ar ? ref.title_ar : ref.title}</p>
                   {ref.competition_category && (
-                    <Badge variant="outline" className="mt-1.5 text-[10px] rounded-md">{ref.competition_category}</Badge>
+                    <Badge variant="outline" className="mt-1.5 text-[12px] rounded-md">{ref.competition_category}</Badge>
                   )}
                   <p className="text-xs text-muted-foreground mt-1.5">
                     {isAr ? "نطاق النقاط" : "Score range"}: {ref.score_range_min} - {ref.score_range_max}
@@ -811,8 +811,8 @@ export default function KnowledgeAdmin() {
                   <div className="min-w-0 flex-1">
                     <p className="font-medium">{language === "ar" && rubric.name_ar ? rubric.name_ar : rubric.name}</p>
                     <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-                      {rubric.competition_type && <Badge variant="outline" className="text-[10px] rounded-md">{rubric.competition_type}</Badge>}
-                      {rubric.category_type && <Badge variant="secondary" className="text-[10px] rounded-md">{rubric.category_type}</Badge>}
+                      {rubric.competition_type && <Badge variant="outline" className="text-[12px] rounded-md">{rubric.competition_type}</Badge>}
+                      {rubric.category_type && <Badge variant="secondary" className="text-[12px] rounded-md">{rubric.category_type}</Badge>}
                     </div>
                   </div>
                 </CardContent>

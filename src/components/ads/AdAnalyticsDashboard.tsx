@@ -272,10 +272,10 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
                 <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50">
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-medium truncate">{p.page}</p>
-                    <p className="text-[10px] text-muted-foreground">{p.impressions} {isAr ? "مشاهدة" : "imp."}</p>
+                    <p className="text-[12px] text-muted-foreground">{p.impressions} {isAr ? "مشاهدة" : "imp."}</p>
                   </div>
                   <div className="text-end shrink-0 ms-3">
-                    <Badge variant="secondary" className="text-[10px]">{p.ctr}% CTR</Badge>
+                    <Badge variant="secondary" className="text-[12px]">{p.ctr}% CTR</Badge>
                   </div>
                 </div>
               ))}
@@ -301,11 +301,11 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
                 <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-muted/50">
                   <div>
                     <p className="text-xs font-medium">{c.name}</p>
-                    <p className="text-[10px] text-muted-foreground">{c.company}</p>
+                    <p className="text-[12px] text-muted-foreground">{c.company}</p>
                   </div>
                   <div className="text-end">
                     <p className="text-xs font-semibold">{c.ctr}% CTR</p>
-                    <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={c.impressions} className="inline" /> {isAr ? "مشاهدة" : "imp."} · <AnimatedCounter value={c.clicks} className="inline" /> {isAr ? "نقرة" : "clicks"}</p>
+                    <p className="text-[12px] text-muted-foreground"><AnimatedCounter value={c.impressions} className="inline" /> {isAr ? "مشاهدة" : "imp."} · <AnimatedCounter value={c.clicks} className="inline" /> {isAr ? "نقرة" : "clicks"}</p>
                   </div>
                 </div>
               ))}

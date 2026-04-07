@@ -165,10 +165,10 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{displayName}</p>
                     <div className="flex items-center gap-1.5 mt-0.5">
-                      <Badge className={`text-[10px] h-5 ${getPositionColor(pos.position_type)}`}>
+                      <Badge className={`text-[12px] h-5 ${getPositionColor(pos.position_type)}`}>
                         {pos.position_title ? (isAr && pos.position_title_ar ? pos.position_title_ar : pos.position_title) : getPositionLabel(pos.position_type)}
                       </Badge>
-                      {!pos.is_active && <Badge variant="outline" className="text-[10px] h-5">{isAr ? "غير نشط" : "Inactive"}</Badge>}
+                      {!pos.is_active && <Badge variant="outline" className="text-[12px] h-5">{isAr ? "غير نشط" : "Inactive"}</Badge>}
                     </div>
                   </div>
                   <div className="flex items-center gap-1">

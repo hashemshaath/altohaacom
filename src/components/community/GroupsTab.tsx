@@ -203,7 +203,7 @@ export const GroupsTab = memo(function GroupsTab() {
             <div className="flex items-center justify-between rounded-xl border p-3">
               <div>
                 <Label className="text-sm">{t("privateGroup")}</Label>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   {isAr ? "المجموعة الخاصة تتطلب دعوة للانضمام" : "Private groups require invitation to join"}
                 </p>
               </div>
@@ -232,7 +232,7 @@ export const GroupsTab = memo(function GroupsTab() {
                   </div>
                   <h3 className="font-semibold leading-tight">{getDisplayName(group)}</h3>
                 </div>
-                <Badge variant="outline" className="shrink-0 text-[10px]">
+                <Badge variant="outline" className="shrink-0 text-[12px]">
                   {group.is_private ? t("privateGroup") : t("publicGroup")}
                 </Badge>
               </div>

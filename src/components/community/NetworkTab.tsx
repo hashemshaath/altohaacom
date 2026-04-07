@@ -63,7 +63,7 @@ export const NetworkTab = memo(function NetworkTab() {
             <CardTitle className="text-base flex items-center gap-2">
               <Bell className="h-4 w-4 text-primary" />
               {isAr ? "طلبات المتابعة" : "Follow Requests"}
-              <Badge variant="destructive" className="text-[10px] h-5">{followRequests.length}</Badge>
+              <Badge variant="destructive" className="text-[12px] h-5">{followRequests.length}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -118,7 +118,7 @@ export const NetworkTab = memo(function NetworkTab() {
             <Sparkles className="h-4 w-4 text-chart-2" />
             {isAr ? "متابعون جدد" : "New Followers"}
             {newFollowers.length > 0 && (
-              <Badge variant="secondary" className="text-[10px] h-5">{newFollowers.length}</Badge>
+              <Badge variant="secondary" className="text-[12px] h-5">{newFollowers.length}</Badge>
             )}
           </CardTitle>
         </CardHeader>
@@ -148,12 +148,12 @@ export const NetworkTab = memo(function NetworkTab() {
                       {(() => {
                         const name = isAr ? (f.display_name_ar || f.full_name_ar || f.display_name || f.full_name) : (f.display_name || f.full_name);
                         return (
-                          <Link to={`/${f.username || f.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
+                          <Link to={`/${f.username || f.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(name || "U").length > 14 ? "text-[12px]" : "text-xs sm:text-sm"}`}>
                             {name}
                           </Link>
                         );
                       })()}
-                      <span className="text-[10px] text-muted-foreground flex items-center justify-center gap-1">
+                      <span className="text-[12px] text-muted-foreground flex items-center justify-center gap-1">
                         <Clock className="h-2.5 w-2.5 shrink-0" />
                         {toEnglishDigits(new Date(f.followed_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" }))}
                       </span>
@@ -200,19 +200,19 @@ export const NetworkTab = memo(function NetworkTab() {
                     {(() => {
                       const name = isAr ? (rec.display_name_ar || rec.full_name_ar || rec.display_name || rec.full_name) : (rec.display_name || rec.full_name);
                       return (
-                        <Link to={`/${rec.username || rec.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(name || "U").length > 14 ? "text-[11px]" : "text-xs sm:text-sm"}`}>
+                        <Link to={`/${rec.username || rec.user_id}`} className={`font-bold hover:text-primary block transition-colors leading-tight text-center break-words ${(name || "U").length > 14 ? "text-[12px]" : "text-xs sm:text-sm"}`}>
                           {name}
                         </Link>
                       );
                     })()}
                     {((isAr ? (rec as any).specialization_ar : null) || rec.specialization) ? (
-                      <p className="text-[11px] text-muted-foreground truncate flex items-center justify-center gap-1">
+                      <p className="text-[12px] text-muted-foreground truncate flex items-center justify-center gap-1">
                         <ChefHat className="h-3 w-3 shrink-0" />
                         {(isAr ? (rec as any).specialization_ar : null) || rec.specialization}
                       </p>
                     ) : null}
                     {rec.country_code && (
-                      <p className="text-[11px] text-muted-foreground flex items-center justify-center gap-1">
+                      <p className="text-[12px] text-muted-foreground flex items-center justify-center gap-1">
                         <MapPin className="h-3 w-3 shrink-0" />
                         {countryFlag(rec.country_code)}
                       </p>

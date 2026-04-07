@@ -58,9 +58,9 @@ export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ tit
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold">{isAr ? "مشاركة الحدث" : "Share Event"}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "شارك مع أصدقائك" : "Share with friends & colleagues"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "شارك مع أصدقائك" : "Share with friends & colleagues"}</p>
           </div>
-          <Badge variant="secondary" className="text-[9px] shrink-0">{isAr ? "مشاركة" : "Share"}</Badge>
+          <Badge variant="secondary" className="text-[12px] shrink-0">{isAr ? "مشاركة" : "Share"}</Badge>
         </button>
 
         {expanded && (
@@ -79,7 +79,7 @@ export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ tit
                     <div className={`flex h-8 w-8 items-center justify-center rounded-full bg-muted/60 ${link.color}`}>
                       <Icon className="h-4 w-4" />
                     </div>
-                    <span className="text-[9px] font-medium text-muted-foreground">{link.name}</span>
+                    <span className="text-[12px] font-medium text-muted-foreground">{link.name}</span>
                   </a>
                 );
               })}

@@ -224,7 +224,7 @@ export default function ContentModeration() {
                   : "Click on any report to view details and take action"}
               </CardDescription>
             </div>
-            <Badge variant="secondary" className="text-[10px]">{filteredReports.length}/{reports?.length || 0}</Badge>
+            <Badge variant="secondary" className="text-[12px]">{filteredReports.length}/{reports?.length || 0}</Badge>
           </div>
         </CardHeader>
         <CardContent>

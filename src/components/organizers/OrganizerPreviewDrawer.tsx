@@ -90,7 +90,7 @@ export const OrganizerPreviewDrawer = memo(function OrganizerPreviewDrawer({ org
               <div key={s.label} className="text-center rounded-xl border border-border/30 bg-muted/30 py-3">
                 <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
                 <p className="text-lg font-bold">{s.value}</p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
               </div>
             ))}
           </div>
@@ -113,7 +113,7 @@ export const OrganizerPreviewDrawer = memo(function OrganizerPreviewDrawer({ org
               </h3>
               <div className="flex flex-wrap gap-1.5">
                 {org.categories.map((c: string) => (
-                  <Badge key={c} variant="secondary" className="text-[10px] rounded-full">{c}</Badge>
+                  <Badge key={c} variant="secondary" className="text-[12px] rounded-full">{c}</Badge>
                 ))}
               </div>
             </div>
@@ -127,7 +127,7 @@ export const OrganizerPreviewDrawer = memo(function OrganizerPreviewDrawer({ org
               </h3>
               <div className="flex flex-wrap gap-1.5">
                 {services.map((s: string) => (
-                  <Badge key={s} variant="outline" className="text-[10px] rounded-full">{s}</Badge>
+                  <Badge key={s} variant="outline" className="text-[12px] rounded-full">{s}</Badge>
                 ))}
               </div>
             </div>

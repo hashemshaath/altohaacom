@@ -263,14 +263,14 @@ export const SupplierCatalogManager = memo(function SupplierCatalogManager() {
                 )}
               </div>
               <div className="flex flex-wrap gap-1">
-                {p.category && <Badge variant="outline" className="text-[9px]">{p.category}</Badge>}
-                {p.sku && <Badge variant="outline" className="text-[9px] font-mono">{p.sku}</Badge>}
+                {p.category && <Badge variant="outline" className="text-[12px]">{p.category}</Badge>}
+                {p.sku && <Badge variant="outline" className="text-[12px] font-mono">{p.sku}</Badge>}
                 {p.in_stock ? (
-                  <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[9px]">{isAr ? "متوفر" : "In Stock"}</Badge>
+                  <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[12px]">{isAr ? "متوفر" : "In Stock"}</Badge>
                 ) : (
-                  <Badge variant="destructive" className="text-[9px]">{isAr ? "نفد" : "Out"}</Badge>
+                  <Badge variant="destructive" className="text-[12px]">{isAr ? "نفد" : "Out"}</Badge>
                 )}
-                {!p.is_active && <Badge variant="secondary" className="text-[9px]">{isAr ? "غير نشط" : "Inactive"}</Badge>}
+                {!p.is_active && <Badge variant="secondary" className="text-[12px]">{isAr ? "غير نشط" : "Inactive"}</Badge>}
               </div>
               {canEdit && (
                 <div className="flex gap-1.5 pt-1">

@@ -96,12 +96,12 @@ export const NotificationDigestWidget = memo(function NotificationDigestWidget({
           </div>
           <div className="flex items-center gap-1.5">
             {urgentCount > 0 && (
-              <Badge variant="destructive" className="text-[10px] gap-0.5 animate-pulse">
+              <Badge variant="destructive" className="text-[12px] gap-0.5 animate-pulse">
                 <AlertTriangle className="h-2.5 w-2.5" />
                 {urgentCount} {isAr ? "عاجل" : "urgent"}
               </Badge>
             )}
-            <Badge variant="secondary" className="text-[10px]">
+            <Badge variant="secondary" className="text-[12px]">
               <AnimatedCounter value={unreadCount} className="inline" /> {isAr ? "جديد" : "new"}
             </Badge>
           </div>
@@ -122,10 +122,10 @@ export const NotificationDigestWidget = memo(function NotificationDigestWidget({
                 <Icon className={cn("h-4 w-4 shrink-0", cat.color)} />
                 <div className="min-w-0">
                   <p className="text-xs font-medium truncate">{isAr ? cat.labelAr : cat.label}</p>
-                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
                     <AnimatedCounter value={cat.count} className="inline font-semibold" />
                     {cat.unread > 0 && (
-                      <Badge className="h-3.5 text-[8px] px-1 bg-primary text-primary-foreground">
+                      <Badge className="h-3.5 text-[12px] px-1 bg-primary text-primary-foreground">
                         {cat.unread}
                       </Badge>
                     )}
@@ -138,7 +138,7 @@ export const NotificationDigestWidget = memo(function NotificationDigestWidget({
 
         {/* Recent activity indicator */}
         {notifications.length > 0 && (
-          <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-1 border-t border-border/30">
+          <div className="flex items-center justify-between text-[12px] text-muted-foreground pt-1 border-t border-border/30">
             <span>{isAr ? "آخر إشعار:" : "Latest:"} {getRelativeTime(notifications[0]?.created_at, isAr)}</span>
             <span className="text-primary font-medium">{isAr ? "عرض الكل ←" : "View all →"}</span>
           </div>

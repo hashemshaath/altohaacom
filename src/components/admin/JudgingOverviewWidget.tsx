@@ -82,17 +82,17 @@ export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <Users className="h-4 w-4 mx-auto text-primary mb-1" />
             <p className="text-lg font-bold">{data?.totalJudges || 0}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "محكمين نشطين" : "Active Judges"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "محكمين نشطين" : "Active Judges"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <Star className="h-4 w-4 mx-auto text-chart-4 mb-1" />
             <p className="text-lg font-bold">{data?.totalScores || 0}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "تقييمات" : "Scores Given"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "تقييمات" : "Scores Given"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <Trophy className="h-4 w-4 mx-auto text-chart-3 mb-1" />
             <p className="text-lg font-bold">{data?.activeCompetitions || 0}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "مسابقات نشطة" : "Active Comps"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "مسابقات نشطة" : "Active Comps"}</p>
           </div>
         </div>
 
@@ -104,11 +104,11 @@ export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium truncate max-w-[60%]">{comp.title}</span>
                   <div className="flex items-center gap-1.5">
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                    <Badge variant="outline" className="text-[12px] px-1.5 py-0">
                       {comp.judgeCount} {isAr ? "محكم" : "judges"}
                     </Badge>
                     {comp.activeRound && (
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 bg-chart-3/10 text-chart-3">
+                      <Badge variant="secondary" className="text-[12px] px-1.5 py-0 bg-chart-3/10 text-chart-3">
                         <Clock className="h-2.5 w-2.5 me-0.5" />
                         {isAr ? comp.activeRound.name_ar || comp.activeRound.name : comp.activeRound.name}
                       </Badge>
@@ -117,7 +117,7 @@ export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Progress value={comp.progress} className="h-1.5 flex-1" />
-                  <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                  <span className="text-[12px] text-muted-foreground whitespace-nowrap">
                     {comp.scoredCount}/{comp.maxParticipants}
                   </span>
                 </div>

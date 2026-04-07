@@ -107,7 +107,7 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
               <div className="relative shrink-0 mt-0.5">
                 <Avatar className="h-7 w-7">
                   <AvatarImage src={item.actor_avatar || undefined} />
-                  <AvatarFallback className="text-[9px] bg-muted">
+                  <AvatarFallback className="text-[12px] bg-muted">
                     {item.actor_name[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
@@ -116,13 +116,13 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
                 </div>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] leading-relaxed">
+                <p className="text-[12px] leading-relaxed">
                   <span className="font-semibold">{item.actor_name}</span>{" "}
                   <span className="text-muted-foreground">
                     {label ? (isAr ? label.ar : label.en) : ""}
                   </span>
                 </p>
-                <p className="text-[10px] text-muted-foreground/60">{formatTime(item.created_at)}</p>
+                <p className="text-[12px] text-muted-foreground/60">{formatTime(item.created_at)}</p>
               </div>
             </div>
           );

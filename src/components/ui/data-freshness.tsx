@@ -31,7 +31,7 @@ export const DataFreshness = memo(function DataFreshness({ lastUpdated, isRefetc
   const isStale = ageMs > 5 * 60 * 1000; // >5 min = stale
 
   return (
-    <span className={cn("inline-flex items-center gap-1.5 text-[10px] text-muted-foreground", className)}>
+    <span className={cn("inline-flex items-center gap-1.5 text-[12px] text-muted-foreground", className)}>
       <ActivityPulse status={isRefetching ? "recent" : isStale ? "idle" : "live"} />
       {isRefetching ? (
         <span className="flex items-center gap-1">

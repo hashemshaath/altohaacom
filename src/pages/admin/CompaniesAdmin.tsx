@@ -1417,20 +1417,20 @@ export default function CompaniesAdmin() {
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                              <Badge variant="outline" className="text-[10px]">
+                              <Badge variant="outline" className="text-[12px]">
                                 {msg.direction === "outgoing" ? (isAr ? "من الشركة" : "From Company") : (isAr ? "من الإدارة" : "From Admin")}
                               </Badge>
-                              {msg.priority === "urgent" && <Badge variant="destructive" className="text-[10px]">{isAr ? "عاجل" : "Urgent"}</Badge>}
-                              {msg.priority === "high" && <Badge className="bg-chart-4 text-[10px]">{isAr ? "مرتفع" : "High"}</Badge>}
+                              {msg.priority === "urgent" && <Badge variant="destructive" className="text-[12px]">{isAr ? "عاجل" : "Urgent"}</Badge>}
+                              {msg.priority === "high" && <Badge className="bg-chart-4 text-[12px]">{isAr ? "مرتفع" : "High"}</Badge>}
                               <span className="text-xs text-muted-foreground">{format(new Date(msg.created_at), "yyyy-MM-dd HH:mm")}</span>
                             </div>
                             <p className="font-medium text-sm">{msg.subject}</p>
                             <p className="text-sm text-muted-foreground mt-1">{msg.message}</p>
                             {/* Show thread replies */}
-                            {msg.parent_id && <Badge variant="secondary" className="mt-1 text-[10px]">{isAr ? "رد" : "Reply"}</Badge>}
+                            {msg.parent_id && <Badge variant="secondary" className="mt-1 text-[12px]">{isAr ? "رد" : "Reply"}</Badge>}
                           </div>
                           <div className="flex items-center gap-1">
-                            <Badge variant={msg.status === "unread" ? "default" : "secondary"} className="text-[10px]">
+                            <Badge variant={msg.status === "unread" ? "default" : "secondary"} className="text-[12px]">
                               {msg.status === "unread" ? (isAr ? "جديد" : "New") : (isAr ? "مقروءة" : "Read")}
                             </Badge>
                             <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => { setReplyTarget(msg.id); setReplyMessage(""); }}>
@@ -1507,7 +1507,7 @@ export default function CompaniesAdmin() {
                     <CardTitle className="text-sm flex items-center gap-2">
                       <CatIcon className="h-4 w-4 text-primary" />
                       {isAr ? cat.labelAr : cat.label}
-                      <Badge variant="secondary" className="text-[10px]">{catMedia.length}</Badge>
+                      <Badge variant="secondary" className="text-[12px]">{catMedia.length}</Badge>
                     </CardTitle>
                   </CardHeader>
                   {catMedia.length > 0 && (
@@ -1524,7 +1524,7 @@ export default function CompaniesAdmin() {
                             )}
                             <div className="p-2">
                               <p className="text-xs font-medium truncate">{item.title || item.filename}</p>
-                              {item.file_size && <p className="text-[10px] text-muted-foreground">{(item.file_size / 1024).toFixed(0)} KB</p>}
+                              {item.file_size && <p className="text-[12px] text-muted-foreground">{(item.file_size / 1024).toFixed(0)} KB</p>}
                             </div>
                             <Button variant="ghost" size="icon" className="absolute top-1 end-1 h-6 w-6 opacity-0 group-hover:opacity-100 bg-background/80" onClick={() => deleteMediaMutation.mutate(item.id)}>
                               <Trash2 className="h-3 w-3 text-destructive" />
@@ -1928,12 +1928,12 @@ export default function CompaniesAdmin() {
                             {(isAr ? company.name : company.name_ar) && <p className="text-sm text-muted-foreground" dir={isAr ? "ltr" : "rtl"}>{isAr ? company.name : company.name_ar}</p>}
                             <div className="flex items-center gap-1.5 mt-0.5">
                               {company.import_source === 'smart_import' && (
-                                <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 gap-0.5 bg-primary/5 text-primary border-primary/20">
+                                <Badge variant="outline" className="text-[12px] px-1 py-0 h-4 gap-0.5 bg-primary/5 text-primary border-primary/20">
                                   <Sparkles className="h-2.5 w-2.5" />{isAr ? "ذكي" : "Smart"}
                                 </Badge>
                               )}
                               {company.rating && (
-                                <Badge variant="outline" className="text-[9px] px-1 py-0 h-4 gap-0.5 bg-chart-4/5 text-chart-4 border-chart-4/20">
+                                <Badge variant="outline" className="text-[12px] px-1 py-0 h-4 gap-0.5 bg-chart-4/5 text-chart-4 border-chart-4/20">
                                   <Star className="h-2.5 w-2.5" />{Number(company.rating).toFixed(1)}
                                 </Badge>
                               )}

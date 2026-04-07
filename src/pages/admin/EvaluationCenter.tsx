@@ -39,7 +39,7 @@ function DomainStats() {
                   {isAr && d.description_ar ? d.description_ar : d.description}
                 </p>
               </div>
-              <Badge variant={d.is_active ? "default" : "secondary"} className="ms-auto text-[9px]">
+              <Badge variant={d.is_active ? "default" : "secondary"} className="ms-auto text-[12px]">
                 {d.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Inactive")}
               </Badge>
             </CardContent>

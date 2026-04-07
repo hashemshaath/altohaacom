@@ -82,7 +82,7 @@ function CompetitionSection({
       <h3 className="flex items-center gap-2 mb-3 font-semibold text-sm">
         {icon}
         {title}
-        <Badge variant="secondary" className="text-[9px]">
+        <Badge variant="secondary" className="text-[12px]">
           {competitions.length}
         </Badge>
       </h3>
@@ -119,7 +119,7 @@ function CompetitionClassifiedCard({ comp, isAr, now }: { comp: any; isAr: boole
         )}
         <div className="flex-1 p-5">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[10px]">
+            <Badge variant={compIsLive ? "default" : compIsPast ? "secondary" : "outline"} className="text-[12px]">
               {compIsLive
                 ? isAr ? "🔴 جارية" : "🔴 Live"
                 : compIsPast
@@ -127,7 +127,7 @@ function CompetitionClassifiedCard({ comp, isAr, now }: { comp: any; isAr: boole
                 : isAr ? "قادمة" : "Upcoming"}
             </Badge>
             {regOpen && (
-              <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 text-[10px]">
+              <Badge className="bg-chart-3/20 text-chart-3 border-chart-3/30 text-[12px]">
                 {isAr ? "التسجيل مفتوح" : "Registration Open"}
               </Badge>
             )}
@@ -154,12 +154,12 @@ function CompetitionClassifiedCard({ comp, isAr, now }: { comp: any; isAr: boole
           {categories.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {categories.slice(0, 5).map((cat) => (
-                <Badge key={cat.id} variant="secondary" className="text-[10px]">
+                <Badge key={cat.id} variant="secondary" className="text-[12px]">
                   {isAr && cat.name_ar ? cat.name_ar : cat.name}
                 </Badge>
               ))}
               {categories.length > 5 && (
-                <Badge variant="outline" className="text-[10px]">
+                <Badge variant="outline" className="text-[12px]">
                   +{categories.length - 5}
                 </Badge>
               )}

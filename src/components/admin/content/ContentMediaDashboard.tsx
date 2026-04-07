@@ -204,8 +204,8 @@ const ContentMediaDashboard = memo(function ContentMediaDashboard() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{a.title}</p>
                         <div className="flex gap-2 mt-1">
-                          {!hasExcerpt && <Badge variant="outline" className="text-[10px] text-amber-600">{isAr ? "بدون وصف" : "No excerpt"}</Badge>}
-                          {!hasImage && <Badge variant="outline" className="text-[10px] text-amber-600">{isAr ? "بدون صورة" : "No image"}</Badge>}
+                          {!hasExcerpt && <Badge variant="outline" className="text-[12px] text-amber-600">{isAr ? "بدون وصف" : "No excerpt"}</Badge>}
+                          {!hasImage && <Badge variant="outline" className="text-[12px] text-amber-600">{isAr ? "بدون صورة" : "No image"}</Badge>}
                         </div>
                       </div>
                     </div>
@@ -229,7 +229,7 @@ function MiniStat({ icon: Icon, label, value }: { icon: any; label: string; valu
         <Icon className="h-4 w-4 text-muted-foreground" />
         <div>
           <AnimatedCounter value={value} className="text-lg font-bold" />
-          <p className="text-[10px] text-muted-foreground">{label}</p>
+          <p className="text-[12px] text-muted-foreground">{label}</p>
         </div>
       </CardContent>
     </Card>

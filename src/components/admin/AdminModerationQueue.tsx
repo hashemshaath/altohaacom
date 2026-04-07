@@ -41,7 +41,7 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
           </div>
           {isAr ? "طابور المراجعة" : "Moderation Queue"}
           {totalItems > 0 && (
-            <Badge variant="destructive" className="text-[10px] h-5 px-1.5">{totalItems}</Badge>
+            <Badge variant="destructive" className="text-[12px] h-5 px-1.5">{totalItems}</Badge>
           )}
         </CardTitle>
         <Button variant="ghost" size="sm" asChild>
@@ -55,13 +55,13 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
         {totalItems > 0 && (
           <div className="flex items-center gap-2 mb-3 flex-wrap">
             {(data?.totalReports || 0) > 0 && (
-              <Badge variant="destructive" className="text-[10px]">
+              <Badge variant="destructive" className="text-[12px]">
                 <Flag className="me-1 h-3 w-3" />
                 {data.totalReports} {isAr ? "بلاغات" : "reports"}
               </Badge>
             )}
             {(data?.totalPending || 0) > 0 && (
-              <Badge className="text-[10px] bg-chart-4/10 text-chart-4 hover:bg-chart-4/20 border-0">
+              <Badge className="text-[12px] bg-chart-4/10 text-chart-4 hover:bg-chart-4/20 border-0">
                 <MessageSquare className="me-1 h-3 w-3" />
                 {data.totalPending} {isAr ? "منشورات معلقة" : "pending posts"}
               </Badge>
@@ -75,7 +75,7 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
             </div>
             <p className="text-sm font-bold text-chart-2">{isAr ? "كل شيء نظيف! ✨" : "All clear! ✨"}</p>
             <p className="text-xs text-muted-foreground mt-1">{isAr ? "لا توجد عناصر معلقة للمراجعة" : "No pending items to review"}</p>
-            <p className="text-[10px] text-muted-foreground/50 mt-0.5">{isAr ? "آخر فحص: الآن" : "Last checked: just now"}</p>
+            <p className="text-[12px] text-muted-foreground/50 mt-0.5">{isAr ? "آخر فحص: الآن" : "Last checked: just now"}</p>
           </div>
         ) : (
           <div className="space-y-2">
@@ -86,9 +86,9 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate">{r.reason || (isAr ? "بلاغ محتوى" : "Content report")}</p>
-                  <p className="text-[10px] text-muted-foreground">{format(new Date(r.created_at), "MMM d, HH:mm")}</p>
+                  <p className="text-[12px] text-muted-foreground">{format(new Date(r.created_at), "MMM d, HH:mm")}</p>
                 </div>
-                <Badge variant="outline" className="text-[9px] border-destructive/30 text-destructive">
+                <Badge variant="outline" className="text-[12px] border-destructive/30 text-destructive">
                   {isAr ? "بلاغ" : "report"}
                 </Badge>
               </div>
@@ -100,9 +100,9 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-medium truncate">{(p.content || "").slice(0, 60)}</p>
-                  <p className="text-[10px] text-muted-foreground">{format(new Date(p.created_at), "MMM d, HH:mm")}</p>
+                  <p className="text-[12px] text-muted-foreground">{format(new Date(p.created_at), "MMM d, HH:mm")}</p>
                 </div>
-                <Badge variant="outline" className="text-[9px] border-chart-4/30 text-chart-4">
+                <Badge variant="outline" className="text-[12px] border-chart-4/30 text-chart-4">
                   {isAr ? "معلق" : "pending"}
                 </Badge>
               </div>

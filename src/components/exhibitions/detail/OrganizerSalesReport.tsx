@@ -99,7 +99,7 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
               </div>
               <div>
                 <p className={`text-base font-bold ${s.color}`}>{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
-                <p className="text-[9px] text-muted-foreground">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -135,7 +135,7 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
                     <span className="font-mono font-medium truncate">{tk.ticket_number}</span>
                     <span className="text-muted-foreground truncate">{tk.attendee_name || tk.attendee_email || ""}</span>
                   </div>
-                  <Badge variant="secondary" className="text-[8px] shrink-0">
+                  <Badge variant="secondary" className="text-[12px] shrink-0">
                     {tk.checked_in_at ? t("In", "دخل") : tk.status}
                   </Badge>
                 </div>

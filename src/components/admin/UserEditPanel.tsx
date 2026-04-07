@@ -268,7 +268,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
               <CardTitle className="text-lg flex items-center gap-2">
                 {isAr ? ((editingUser as any).display_name_ar || (editingUser as any).full_name_ar || editingUser.full_name) : ((editingUser as any).display_name || editingUser.full_name || "Unknown")}
                 {statusBadge(editingUser.account_status)}
-                {editingUser.is_verified && <Badge variant="outline" className="text-[10px] border-primary/30 text-primary">✓ {isAr ? "موثق" : "Verified"}</Badge>}
+                {editingUser.is_verified && <Badge variant="outline" className="text-[12px] border-primary/30 text-primary">✓ {isAr ? "موثق" : "Verified"}</Badge>}
               </CardTitle>
               <p className="text-sm text-muted-foreground">
                 <span className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded-md" dir="ltr">{editingUser.account_number}</span>

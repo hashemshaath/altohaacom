@@ -117,7 +117,7 @@ export const PersonalDashboard = memo(function PersonalDashboard() {
               <CardContent className="p-3 text-center">
                 <Icon className={`h-5 w-5 mx-auto mb-1 ${s.color}`} />
                 <AnimatedCounter value={s.value} className="text-lg font-bold" />
-                <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground">{s.label}</p>
               </CardContent>
             </Card>
           );
@@ -193,7 +193,7 @@ export const PersonalDashboard = memo(function PersonalDashboard() {
               return (
                 <div key={i} className="flex-1 text-center">
                   <div className={`h-8 rounded-sm mx-auto w-full ${count > 2 ? "bg-primary" : count > 0 ? "bg-primary/40" : "bg-muted"}`} title={`${count} posts`} />
-                  <p className="text-[9px] text-muted-foreground mt-1">{date.toLocaleDateString(isAr ? "ar" : "en", { weekday: "narrow" })}</p>
+                  <p className="text-[12px] text-muted-foreground mt-1">{date.toLocaleDateString(isAr ? "ar" : "en", { weekday: "narrow" })}</p>
                 </div>
               );
             })}

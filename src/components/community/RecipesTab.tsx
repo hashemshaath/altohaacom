@@ -244,14 +244,14 @@ export const RecipesTab = memo(function RecipesTab() {
             <CardContent className="p-4">
               <div className="mb-2 flex items-start justify-between gap-2">
                 <h3 className="line-clamp-1 text-sm font-semibold">{recipe.title}</h3>
-                <Badge variant="outline" className={`shrink-0 text-[10px] ${difficultyColor(recipe.difficulty)}`}>
+                <Badge variant="outline" className={`shrink-0 text-[12px] ${difficultyColor(recipe.difficulty)}`}>
                   {recipe.difficulty}
                 </Badge>
               </div>
               {recipe.description && (
                 <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{recipe.description}</p>
               )}
-              <div className="mb-3 flex flex-wrap items-center gap-2.5 text-[10px] text-muted-foreground">
+              <div className="mb-3 flex flex-wrap items-center gap-2.5 text-[12px] text-muted-foreground">
                 {recipe.cuisine && (
                   <span className="flex items-center gap-1"><ChefHat className="h-3 w-3" />{recipe.cuisine}</span>
                 )}
@@ -269,14 +269,14 @@ export const RecipesTab = memo(function RecipesTab() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Avatar className="h-5 w-5">
-                    <AvatarFallback className="bg-primary/10 text-primary text-[8px]">
+                    <AvatarFallback className="bg-primary/10 text-primary text-[12px]">
                       {(recipe.author_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-[10px] text-muted-foreground">{recipe.author_name || "Chef"}</span>
+                  <span className="text-[12px] text-muted-foreground">{recipe.author_name || "Chef"}</span>
                 </div>
                 {recipe.ratings_count > 0 && (
-                  <span className="flex items-center gap-1 text-[10px]">
+                  <span className="flex items-center gap-1 text-[12px]">
                     <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
                     {recipe.avg_rating} ({recipe.ratings_count})
                   </span>

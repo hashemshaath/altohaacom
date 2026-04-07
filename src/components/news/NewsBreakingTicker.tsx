@@ -64,7 +64,7 @@ export const NewsBreakingTicker = memo(function NewsBreakingTicker({ isAr }: { i
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center gap-3">
           {/* Badge */}
-          <Badge className="shrink-0 rounded-lg bg-primary text-primary-foreground text-[10px] px-2 py-0.5 gap-1 uppercase tracking-wider font-bold animate-pulse">
+          <Badge className="shrink-0 rounded-lg bg-primary text-primary-foreground text-[12px] px-2 py-0.5 gap-1 uppercase tracking-wider font-bold animate-pulse">
             <Zap className="h-3 w-3" />
             {isAr ? "عاجل" : "Breaking"}
           </Badge>
@@ -78,7 +78,7 @@ export const NewsBreakingTicker = memo(function NewsBreakingTicker({ isAr }: { i
               >
                 <ChevronLeft className="h-3.5 w-3.5 rtl:rotate-180" />
               </button>
-              <span className="text-[9px] text-muted-foreground tabular-nums w-8 text-center">
+              <span className="text-[12px] text-muted-foreground tabular-nums w-8 text-center">
                 {currentIdx + 1}/{articles.length}
               </span>
               <button

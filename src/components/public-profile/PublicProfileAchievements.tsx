@@ -104,14 +104,14 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                   </div>
                   <div>
                     <p className="text-xs font-semibold">{isAr ? "التصنيف" : "Ranking"}</p>
-                    <p className="text-[10px] text-muted-foreground">{isAr ? "تصنيف عام" : "Overall"}</p>
+                    <p className="text-[12px] text-muted-foreground">{isAr ? "تصنيف عام" : "Overall"}</p>
                   </div>
                 </div>
                 {topRanking.rank && (
                   <div className="text-center">
                     <span className="text-2xl font-bold tabular-nums text-chart-4">#<AnimatedCounter value={topRanking.rank} className="inline" /></span>
                     {topRanking.rank_change !== null && topRanking.rank_change !== 0 && (
-                      <div className={`flex items-center justify-center gap-0.5 text-[10px] ${topRanking.rank_change > 0 ? "text-chart-2" : "text-destructive"}`}>
+                      <div className={`flex items-center justify-center gap-0.5 text-[12px] ${topRanking.rank_change > 0 ? "text-chart-2" : "text-destructive"}`}>
                         <TrendingUp className={`h-2.5 w-2.5 ${topRanking.rank_change < 0 ? "rotate-180" : ""}`} />
                         <AnimatedCounter value={Math.abs(topRanking.rank_change)} className="inline" />
                       </div>
@@ -121,7 +121,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
               </div>
               <div className="flex items-center justify-center gap-1">
                 <span className="text-xs font-bold tabular-nums"><AnimatedCounter value={topRanking.total_points} className="inline" /></span>
-                <span className="text-[10px] text-muted-foreground">{isAr ? "نقطة" : "pts"}</span>
+                <span className="text-[12px] text-muted-foreground">{isAr ? "نقطة" : "pts"}</span>
               </div>
             </CardContent>
           </Card>
@@ -138,7 +138,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                 </div>
                 <div>
                   <p className="text-xs font-semibold">{isAr ? "الميداليات" : "Medals"}</p>
-                  <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={totalMedals} className="inline" /> {isAr ? "إجمالي" : "total"}</p>
+                  <p className="text-[12px] text-muted-foreground"><AnimatedCounter value={totalMedals} className="inline" /> {isAr ? "إجمالي" : "total"}</p>
                 </div>
               </div>
               <div className="flex items-center justify-center gap-4">
@@ -149,7 +149,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                         <div className="h-8 w-8 rounded-full bg-[#FFD700]/15 flex items-center justify-center border border-[#FFD700]/30">
                           <span className="text-sm font-bold tabular-nums text-[#FFD700]"><AnimatedCounter value={totalGold} /></span>
                         </div>
-                        <span className="text-[9px] text-muted-foreground">{isAr ? "ذهب" : "Gold"}</span>
+                        <span className="text-[12px] text-muted-foreground">{isAr ? "ذهب" : "Gold"}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>{isAr ? "ميدالية ذهبية" : "Gold Medal"}</TooltipContent>
@@ -162,7 +162,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                         <div className="h-8 w-8 rounded-full bg-[#C0C0C0]/15 flex items-center justify-center border border-[#C0C0C0]/30">
                           <span className="text-sm font-bold tabular-nums text-[#C0C0C0]"><AnimatedCounter value={totalSilver} /></span>
                         </div>
-                        <span className="text-[9px] text-muted-foreground">{isAr ? "فضة" : "Silver"}</span>
+                        <span className="text-[12px] text-muted-foreground">{isAr ? "فضة" : "Silver"}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>{isAr ? "ميدالية فضية" : "Silver Medal"}</TooltipContent>
@@ -175,7 +175,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                         <div className="h-8 w-8 rounded-full bg-[#CD7F32]/15 flex items-center justify-center border border-[#CD7F32]/30">
                           <span className="text-sm font-bold tabular-nums text-[#CD7F32]"><AnimatedCounter value={totalBronze} /></span>
                         </div>
-                        <span className="text-[9px] text-muted-foreground">{isAr ? "برونز" : "Bronze"}</span>
+                        <span className="text-[12px] text-muted-foreground">{isAr ? "برونز" : "Bronze"}</span>
                       </div>
                     </TooltipTrigger>
                     <TooltipContent>{isAr ? "ميدالية برونزية" : "Bronze Medal"}</TooltipContent>
@@ -197,7 +197,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                 </div>
                 <div>
                   <p className="text-xs font-semibold">{isAr ? "الجوائز والتقديرات" : "Awards & Recognition"}</p>
-                  <p className="text-[10px] text-muted-foreground"><AnimatedCounter value={awards.length} className="inline" /> {isAr ? "جائزة" : "awards"}</p>
+                  <p className="text-[12px] text-muted-foreground"><AnimatedCounter value={awards.length} className="inline" /> {isAr ? "جائزة" : "awards"}</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -235,7 +235,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                       <Trophy className="h-5 w-5 text-chart-4" />
                     </div>
                     <span className="text-lg font-bold tabular-nums"><AnimatedCounter value={compStats.competitions} /></span>
-                    <span className="text-[10px] text-muted-foreground">{isAr ? "مسابقة" : "Competitions"}</span>
+                    <span className="text-[12px] text-muted-foreground">{isAr ? "مسابقة" : "Competitions"}</span>
                   </div>
                 )}
                 {compStats.certificates > 0 && (
@@ -244,7 +244,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                       <Award className="h-5 w-5 text-chart-2" />
                     </div>
                     <span className="text-lg font-bold tabular-nums"><AnimatedCounter value={compStats.certificates} /></span>
-                    <span className="text-[10px] text-muted-foreground">{isAr ? "شهادة" : "Certificates"}</span>
+                    <span className="text-[12px] text-muted-foreground">{isAr ? "شهادة" : "Certificates"}</span>
                   </div>
                 )}
               </div>

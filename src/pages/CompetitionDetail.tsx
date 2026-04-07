@@ -414,7 +414,7 @@ export default function CompetitionDetail() {
 
                 {/* Badges row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-[10px] shadow-sm`}>
+                  <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-[12px] shadow-sm`}>
                     {statusConfig[competition.status as CompetitionStatus].dot.includes("chart-3") ? (
                       <span className="relative me-2 flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -426,10 +426,10 @@ export default function CompetitionDetail() {
                     {isAr ? statusConfig[competition.status as CompetitionStatus].labelAr : statusConfig[competition.status as CompetitionStatus].label}
                   </Badge>
                   {competition.edition_year && (
-                    <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-[10px] px-3 py-1">{competition.edition_year}</Badge>
+                    <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-[12px] px-3 py-1">{competition.edition_year}</Badge>
                   )}
                   {competition.competition_number && (
-                    <Badge variant="outline" className="font-mono text-[10px] font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
+                    <Badge variant="outline" className="font-mono text-[12px] font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
                   )}
                 </div>
 
@@ -472,7 +472,7 @@ export default function CompetitionDetail() {
                 ].map((stat, i) => (
                   <div key={i} className="text-center">
                     <p className="text-lg font-bold tabular-nums text-foreground">{stat.value}</p>
-                    <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
+                    <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -555,7 +555,7 @@ export default function CompetitionDetail() {
                   key={item.id}
                   onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(item.id); }}
                   className={`
-                    snap-start inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
+                    snap-start inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[12px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
                     ${activeSection === item.id
                       ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                       : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
@@ -630,7 +630,7 @@ export default function CompetitionDetail() {
 
                   {/* Competition specialty */}
                   {competitionTypes && competitionTypes.length > 0 && (
-                    <Section icon={<Flame className="h-4 w-4" />} title={isAr ? "تخصص المسابقة" : "Competition Specialty"} badge={<Badge variant="secondary" className="text-[10px]">{competitionTypes.length}</Badge>}>
+                    <Section icon={<Flame className="h-4 w-4" />} title={isAr ? "تخصص المسابقة" : "Competition Specialty"} badge={<Badge variant="secondary" className="text-[12px]">{competitionTypes.length}</Badge>}>
                       <div className="grid gap-3 sm:grid-cols-2">
                         {competitionTypes.map((type) => (
                           <div key={type.id} className="group relative overflow-hidden rounded-2xl border border-border/40 bg-muted/20 hover:bg-muted/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
@@ -640,7 +640,7 @@ export default function CompetitionDetail() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
                                 <div className="absolute bottom-0 inset-x-0 p-4">
                                   <p className="text-sm font-bold text-foreground">{isAr && type.name_ar ? type.name_ar : type.name}</p>
-                                  <p className="text-[11px] text-muted-foreground mt-0.5">{isAr ? "تخصص" : "Specialty"}</p>
+                                  <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "تخصص" : "Specialty"}</p>
                                 </div>
                               </div>
                             ) : (
@@ -650,7 +650,7 @@ export default function CompetitionDetail() {
                                 </div>
                                 <div>
                                   <p className="text-sm font-bold">{isAr && type.name_ar ? type.name_ar : type.name}</p>
-                                  <p className="text-[11px] text-muted-foreground mt-0.5">{isAr ? "تخصص" : "Specialty"}</p>
+                                  <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "تخصص" : "Specialty"}</p>
                                 </div>
                               </div>
                             )}
@@ -662,7 +662,7 @@ export default function CompetitionDetail() {
 
                   {/* Supervising Bodies */}
                   {supervisors.length > 0 && (
-                    <Section icon={<Shield className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[10px]">{supervisors.length}</Badge>}>
+                    <Section icon={<Shield className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[12px]">{supervisors.length}</Badge>}>
                       <div className="grid gap-3 sm:grid-cols-2">
                         {supervisors.map((entity) => (
                           <div key={entity.id} className="flex items-center gap-4 rounded-2xl border border-border/40 bg-muted/20 p-4 transition-all hover:bg-muted/40 hover:shadow-sm">
@@ -678,7 +678,7 @@ export default function CompetitionDetail() {
                                 {isAr && entity.name_ar ? entity.name_ar : entity.name}
                                 {entity.abbreviation && <span className="text-muted-foreground font-normal"> ({entity.abbreviation})</span>}
                               </p>
-                              <p className="text-[11px] text-muted-foreground mt-0.5">{isAr ? "جهة مشرفة" : "Supervising Body"}</p>
+                              <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "جهة مشرفة" : "Supervising Body"}</p>
                             </div>
                           </div>
                         ))}
@@ -688,7 +688,7 @@ export default function CompetitionDetail() {
 
                   {/* Accrediting Bodies */}
                   {accreditors.length > 0 && (
-                    <Section icon={<Award className="h-4 w-4" />} title={isAr ? "جهات الاعتماد" : "Accrediting Bodies"} badge={<Badge variant="secondary" className="text-[10px]">{accreditors.length}</Badge>} accent>
+                    <Section icon={<Award className="h-4 w-4" />} title={isAr ? "جهات الاعتماد" : "Accrediting Bodies"} badge={<Badge variant="secondary" className="text-[12px]">{accreditors.length}</Badge>} accent>
                       <div className="grid gap-3 sm:grid-cols-2">
                         {accreditors.map((entity) => (
                           <div key={entity.id} className="flex items-center gap-4 rounded-2xl border border-primary/15 bg-primary/[0.03] p-4 transition-all hover:bg-primary/[0.06] hover:shadow-sm">
@@ -704,7 +704,7 @@ export default function CompetitionDetail() {
                                 {isAr && entity.name_ar ? entity.name_ar : entity.name}
                                 {entity.abbreviation && <span className="text-muted-foreground font-normal"> ({entity.abbreviation})</span>}
                               </p>
-                              <p className="text-[11px] text-muted-foreground mt-0.5">{isAr ? "جهة اعتماد" : "Accrediting Body"}</p>
+                              <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "جهة اعتماد" : "Accrediting Body"}</p>
                             </div>
                           </div>
                         ))}
@@ -796,7 +796,7 @@ export default function CompetitionDetail() {
                                 <p className="text-sm font-semibold">{isAr && crit.name_ar ? crit.name_ar : crit.name}</p>
                                 <p className="text-[12px] text-muted-foreground truncate mt-0.5">{isAr && crit.description_ar ? crit.description_ar : crit.description}</p>
                               </div>
-                              <Badge variant="outline" className="shrink-0 text-[10px] rounded-xl">{isAr ? "الأقصى" : "Max"}: {crit.max_score}</Badge>
+                              <Badge variant="outline" className="shrink-0 text-[12px] rounded-xl">{isAr ? "الأقصى" : "Max"}: {crit.max_score}</Badge>
                             </div>
                           ))}
                         </div>
@@ -809,7 +809,7 @@ export default function CompetitionDetail() {
                     <Section
                       icon={<Target className="h-4 w-4" />}
                       title={isAr ? "الفئات" : "Categories"}
-                      badge={<Badge variant="secondary" className="text-[10px]">{categories.length}</Badge>}
+                      badge={<Badge variant="secondary" className="text-[12px]">{categories.length}</Badge>}
                     >
                       <div className="grid gap-3 sm:grid-cols-2">
                         {categories.slice(0, 6).map((cat) => (
@@ -824,9 +824,9 @@ export default function CompetitionDetail() {
                                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
                                 <div className="absolute bottom-0 inset-x-0 p-3.5">
                                   <p className="text-sm font-bold text-foreground">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
-                                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-0.5">
                                     {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                    <Badge variant="outline" className="text-[9px] h-4 px-1.5 bg-background/60 rounded-md">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                                    <Badge variant="outline" className="text-[12px] h-4 px-1.5 bg-background/60 rounded-md">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                                   </div>
                                 </div>
                               </div>
@@ -840,9 +840,9 @@ export default function CompetitionDetail() {
                                   {cat.description && (
                                     <p className="text-[12px] text-muted-foreground truncate mt-0.5">{isAr && cat.description_ar ? cat.description_ar : cat.description}</p>
                                   )}
-                                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-1">
+                                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-1">
                                     {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                    <Badge variant="outline" className="text-[9px] h-4 px-1.5 rounded-md">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                                    <Badge variant="outline" className="text-[12px] h-4 px-1.5 rounded-md">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                                   </div>
                                 </div>
                               </div>
@@ -986,7 +986,7 @@ export default function CompetitionDetail() {
                     <p className="text-xs text-muted-foreground text-center py-2">{isAr ? "التسجيل مغلق حالياً" : "Registration is currently closed."}</p>
                   )}
                   {competition.registration_end && (
-                    <p className="text-[11px] text-center text-muted-foreground">
+                    <p className="text-[12px] text-center text-muted-foreground">
                       {isAr ? "ينتهي التسجيل:" : "Deadline:"}{" "}
                       <span className="font-semibold text-foreground">{format(new Date(competition.registration_end), "MMM d, yyyy")}</span>
                     </p>
@@ -1016,7 +1016,7 @@ export default function CompetitionDetail() {
                     <div key={i} className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">{item.label}</span>
                       {item.badge ? (
-                        <Badge variant="outline" className="text-[10px] rounded-xl">{item.value}</Badge>
+                        <Badge variant="outline" className="text-[12px] rounded-xl">{item.value}</Badge>
                       ) : (
                         <span className="font-semibold">{item.value}</span>
                       )}

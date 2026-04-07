@@ -216,7 +216,7 @@ export default function CompanyNotifications() {
                   {cat.key !== "all" && (() => {
                     const count = notifications.filter(n => !n.is_read && getCategory(n.type) === cat.key).length;
                     return count > 0 ? (
-                      <Badge variant="destructive" className="ms-1.5 h-4 min-w-4 px-1 text-[10px]">{count}</Badge>
+                      <Badge variant="destructive" className="ms-1.5 h-4 min-w-4 px-1 text-[12px]">{count}</Badge>
                     ) : null;
                   })()}
                 </TabsTrigger>
@@ -297,11 +297,11 @@ export default function CompanyNotifications() {
                         </div>
                         <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{body}</p>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                          <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
                             <Clock className="h-3 w-3" />
                             {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
                           </span>
-                          <Badge variant="outline" className="text-[9px] px-1.5 py-0">
+                          <Badge variant="outline" className="text-[12px] px-1.5 py-0">
                             {isAr ? CATEGORIES.find(c => c.key === getCategory(n.type))?.labelAr : CATEGORIES.find(c => c.key === getCategory(n.type))?.labelEn}
                           </Badge>
                         </div>

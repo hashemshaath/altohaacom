@@ -70,7 +70,7 @@ export default function Referrals() {
           <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-chart-2/20 to-transparent" />
           <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <Badge variant="outline" className="mb-3 border-primary/20 bg-primary/5 text-primary text-[10px] uppercase tracking-widest px-3 py-1">
+              <Badge variant="outline" className="mb-3 border-primary/20 bg-primary/5 text-primary text-[12px] uppercase tracking-widest px-3 py-1">
                 <Zap className="h-3 w-3 me-1" />
                 {isAr ? "برنامج النمو" : "Growth Program"}
               </Badge>
@@ -113,7 +113,7 @@ export default function Referrals() {
                 </div>
                 <div>
                   <p className="text-2xl sm:text-3xl font-bold tabular-nums">{s.value}</p>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
+                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
                 </div>
               </CardContent>
             </Card>
@@ -275,7 +275,7 @@ export default function Referrals() {
                         <div className="relative">
                           <Progress value={progressToNext} className="h-4 rounded-full" />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-[10px] font-bold text-primary-foreground drop-shadow-sm">
+                            <span className="text-[12px] font-bold text-primary-foreground drop-shadow-sm">
                               {Math.round(progressToNext)}%
                             </span>
                           </div>
@@ -325,23 +325,23 @@ export default function Referrals() {
                           {milestone.badge_icon}
                         </div>
                         <div className="flex flex-col items-end gap-1">
-                          <span className="text-[9px] uppercase tracking-widest text-muted-foreground font-medium">
+                          <span className="text-[12px] uppercase tracking-widest text-muted-foreground font-medium">
                             {isAr ? `المستوى ${idx + 1}` : `Level ${idx + 1}`}
                           </span>
                           {achieved ? (
-                            <Badge className="bg-chart-2/20 text-chart-2 text-[9px] shadow-sm">
+                            <Badge className="bg-chart-2/20 text-chart-2 text-[12px] shadow-sm">
                               <CheckCircle2 className="h-2.5 w-2.5 me-0.5" />
                               {isAr ? "مُنجز" : "Achieved"}
                             </Badge>
                           ) : isNext ? (
-                            <Badge className="bg-primary/20 text-primary text-[9px] animate-pulse">
+                            <Badge className="bg-primary/20 text-primary text-[12px] animate-pulse">
                               {isAr ? "التالي" : "Next"}
                             </Badge>
                           ) : null}
                         </div>
                       </div>
                       <h3 className="font-semibold text-sm mb-0.5">{isAr ? milestone.name_ar : milestone.name}</h3>
-                      <p className="text-[10px] text-muted-foreground leading-relaxed line-clamp-2 mb-2">
+                      <p className="text-[12px] text-muted-foreground leading-relaxed line-clamp-2 mb-2">
                         {isAr ? milestone.description_ar : milestone.description}
                       </p>
                       
@@ -349,10 +349,10 @@ export default function Referrals() {
                       <Progress value={levelProgress} className="h-1 mb-2" />
                       
                       <div className="flex items-center justify-between">
-                        <span className="text-[9px] text-muted-foreground">
+                        <span className="text-[12px] text-muted-foreground">
                           {milestone.required_referrals} {isAr ? "إحالة" : "referrals"}
                         </span>
-                        <span className="text-[9px] text-primary font-medium flex items-center gap-0.5">
+                        <span className="text-[12px] text-primary font-medium flex items-center gap-0.5">
                           <Gift className="h-2.5 w-2.5" />
                           {isAr ? milestone.reward_description_ar : milestone.reward_description}
                         </span>
@@ -385,7 +385,7 @@ export default function Referrals() {
                   </div>
                   {isAr ? "سجل الدعوات" : "Invitation History"}
                   {invitations?.length ? (
-                    <Badge variant="outline" className="ms-auto text-[10px]">
+                    <Badge variant="outline" className="ms-auto text-[12px]">
                       {invitations.length} {isAr ? "دعوة" : "total"}
                     </Badge>
                   ) : null}
@@ -425,10 +425,10 @@ export default function Referrals() {
                         (isAr ? "رابط" : "Link");
 
                       const statusBadge = isConverted
-                        ? <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30 text-[10px] shadow-sm"><CheckCircle2 className="h-2.5 w-2.5 me-0.5" />{isAr ? "مكتمل" : "Converted"}</Badge>
+                        ? <Badge className="bg-chart-2/20 text-chart-2 border-chart-2/30 text-[12px] shadow-sm"><CheckCircle2 className="h-2.5 w-2.5 me-0.5" />{isAr ? "مكتمل" : "Converted"}</Badge>
                         : isClicked
-                        ? <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30 text-[10px]"><MousePointerClick className="h-2.5 w-2.5 me-0.5" />{isAr ? "تم النقر" : "Clicked"}</Badge>
-                        : <Badge variant="outline" className="text-[10px]"><Clock className="h-2.5 w-2.5 me-0.5" />{isAr ? "في الانتظار" : "Pending"}</Badge>;
+                        ? <Badge className="bg-chart-4/20 text-chart-4 border-chart-4/30 text-[12px]"><MousePointerClick className="h-2.5 w-2.5 me-0.5" />{isAr ? "تم النقر" : "Clicked"}</Badge>
+                        : <Badge variant="outline" className="text-[12px]"><Clock className="h-2.5 w-2.5 me-0.5" />{isAr ? "في الانتظار" : "Pending"}</Badge>;
 
                       return (
                         <div
@@ -455,7 +455,7 @@ export default function Referrals() {
                                 </p>
                                 {statusBadge}
                               </div>
-                              <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                              <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                                 <span className="flex items-center gap-0.5">
                                   {channelIcon && <span className="opacity-70">{channelLabel}</span>}
                                 </span>
@@ -495,7 +495,7 @@ export default function Referrals() {
 
                           {/* Personalized message for converted */}
                           {isConverted && (
-                            <div className="mt-2 ms-13 rounded-xl bg-chart-2/5 border border-chart-2/10 px-3 py-2 text-[11px] text-chart-2">
+                            <div className="mt-2 ms-13 rounded-xl bg-chart-2/5 border border-chart-2/10 px-3 py-2 text-[12px] text-chart-2">
                               <CheckCircle2 className="inline h-3 w-3 me-1" />
                               {isAr
                                 ? "🎉 انضم بنجاح! حصلت على نقاط مكافأة"
@@ -505,7 +505,7 @@ export default function Referrals() {
 
                           {/* Pending reminder suggestion */}
                           {isPending && daysSince >= 7 && (
-                            <div className="mt-2 ms-13 rounded-xl bg-chart-4/5 border border-chart-4/10 px-3 py-2 text-[11px] text-muted-foreground">
+                            <div className="mt-2 ms-13 rounded-xl bg-chart-4/5 border border-chart-4/10 px-3 py-2 text-[12px] text-muted-foreground">
                               <Clock className="inline h-3 w-3 me-1 text-chart-4" />
                               {isAr
                                 ? "لم يسجل بعد. أرسل تذكيراً ودياً!"

@@ -39,7 +39,7 @@ export const AnalyticsKPICards = memo(function AnalyticsKPICards({ data, isLoadi
               <p className="text-xl font-bold leading-none tabular-nums">
                 {isLoading ? "..." : <AnimatedCounter value={card.value || 0} />}
               </p>
-              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mt-1.5 truncate">{card.label}</p>
+              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mt-1.5 truncate">{card.label}</p>
             </div>
           </CardContent>
         </Card>

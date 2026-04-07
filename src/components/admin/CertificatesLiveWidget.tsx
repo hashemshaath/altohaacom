@@ -97,7 +97,7 @@ export const CertificatesLiveWidget = memo(function CertificatesLiveWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></div>
-              <div className="text-[10px] text-muted-foreground">{s.label}</div>
+              <div className="text-[12px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -145,17 +145,17 @@ export const CertificatesLiveWidget = memo(function CertificatesLiveWidget() {
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <LayoutTemplate className="h-3 w-3 mx-auto mb-1 text-chart-2" />
             <div className="text-sm font-bold">{data.activeTemplates}/{data.totalTemplates}</div>
-            <div className="text-[9px] text-muted-foreground">{isAr ? "قوالب نشطة" : "Active Templates"}</div>
+            <div className="text-[12px] text-muted-foreground">{isAr ? "قوالب نشطة" : "Active Templates"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-3" />
             <div className="text-sm font-bold">{data.issuanceRate}%</div>
-            <div className="text-[9px] text-muted-foreground">{isAr ? "معدل الإصدار" : "Issuance Rate"}</div>
+            <div className="text-[12px] text-muted-foreground">{isAr ? "معدل الإصدار" : "Issuance Rate"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Users className="h-3 w-3 mx-auto mb-1 text-chart-4" />
             <div className="text-sm font-bold">{data.downloaded}</div>
-            <div className="text-[9px] text-muted-foreground">{isAr ? "التحميلات" : "Downloads"}</div>
+            <div className="text-[12px] text-muted-foreground">{isAr ? "التحميلات" : "Downloads"}</div>
           </div>
         </div>
 

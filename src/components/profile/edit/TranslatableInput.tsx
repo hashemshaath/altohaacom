@@ -82,7 +82,7 @@ export const TranslatableInput = memo(function TranslatableInput({
           <div className="flex gap-0.5">
             <Button
               type="button" variant="ghost" size="sm"
-              className="h-6 px-1.5 text-[10px] text-primary gap-1"
+              className="h-6 px-1.5 text-[12px] text-primary gap-1"
               onClick={handleOptimize}
               disabled={optimizing}
               title={lang === "ar" ? "تحسين SEO" : "Optimize SEO"}
@@ -92,7 +92,7 @@ export const TranslatableInput = memo(function TranslatableInput({
             </Button>
             <Button
               type="button" variant="ghost" size="sm"
-              className="h-6 px-1.5 text-[10px] text-primary gap-1"
+              className="h-6 px-1.5 text-[12px] text-primary gap-1"
               onClick={handleTranslate}
               disabled={translating}
               title={lang === "en" ? "ترجمة إلى العربية" : "Translate to English"}

@@ -53,7 +53,7 @@ export const PasswordStrengthMeter = memo(function PasswordStrengthMeter({ passw
           />
         ))}
       </div>
-      <p className={cn("text-[10px] font-medium", colors[strength].replace("bg-", "text-").replace("/70", "").replace("/50", ""))}>
+      <p className={cn("text-[12px] font-medium", colors[strength].replace("bg-", "text-").replace("/70", "").replace("/50", ""))}>
         {labels[strength]}
       </p>
     </div>

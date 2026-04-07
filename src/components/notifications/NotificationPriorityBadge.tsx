@@ -52,7 +52,7 @@ export const NotificationPriorityBadge = memo(function NotificationPriorityBadge
       className={cn(
         "gap-0.5 font-medium border",
         config.className,
-        size === "xs" ? "text-[8px] px-1 py-0 h-3.5" : "text-[10px] px-1.5 py-0.5 h-5"
+        size === "xs" ? "text-[12px] px-1 py-0 h-3.5" : "text-[12px] px-1.5 py-0.5 h-5"
       )}
     >
       <Icon className={size === "xs" ? "h-2 w-2" : "h-2.5 w-2.5"} />

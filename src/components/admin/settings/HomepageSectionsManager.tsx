@@ -179,12 +179,12 @@ export const HomepageSectionsManager = memo(function HomepageSectionsManager() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={isAr ? "بحث..." : "Search..."}
-            className="h-7 text-[10px] ps-7"
+            className="h-7 text-[12px] ps-7"
           />
         </div>
 
         <Select value={visibilityFilter} onValueChange={(v) => setVisibilityFilter(v as any)}>
-          <SelectTrigger className="h-7 w-auto min-w-[80px] text-[10px] gap-1">
+          <SelectTrigger className="h-7 w-auto min-w-[80px] text-[12px] gap-1">
             <Filter className="h-2.5 w-2.5" />
             <SelectValue />
           </SelectTrigger>
@@ -197,20 +197,20 @@ export const HomepageSectionsManager = memo(function HomepageSectionsManager() {
 
         <div className="h-4 w-px bg-border/40" />
 
-        <Button size="sm" variant={allSelected ? "default" : "ghost"} className="h-7 text-[9px] gap-1 px-2" onClick={toggleSelectAll}>
+        <Button size="sm" variant={allSelected ? "default" : "ghost"} className="h-7 text-[12px] gap-1 px-2" onClick={toggleSelectAll}>
           {allSelected ? <CheckSquare className="h-3 w-3" /> : <Square className="h-3 w-3" />}
           {hasSelection && <span>{selectedIds.size}</span>}
         </Button>
 
-        <Button size="sm" variant="ghost" className="h-7 text-[9px] gap-1 px-2" onClick={() => bulkToggleVisibility(true)}>
+        <Button size="sm" variant="ghost" className="h-7 text-[12px] gap-1 px-2" onClick={() => bulkToggleVisibility(true)}>
           <Eye className="h-3 w-3" />
         </Button>
-        <Button size="sm" variant="ghost" className="h-7 text-[9px] gap-1 px-2" onClick={() => bulkToggleVisibility(false)}>
+        <Button size="sm" variant="ghost" className="h-7 text-[12px] gap-1 px-2" onClick={() => bulkToggleVisibility(false)}>
           <EyeOff className="h-3 w-3" />
         </Button>
 
         <div className="ms-auto flex items-center gap-1">
-          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-5 font-mono">
+          <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-5 font-mono">
             {visibleCount}/{displaySections.length}
           </Badge>
         </div>
@@ -220,12 +220,12 @@ export const HomepageSectionsManager = memo(function HomepageSectionsManager() {
       {hasReorder && (
         <div className="flex items-center gap-2 rounded-xl bg-primary/5 border border-primary/20 px-3 py-1.5">
           <ArrowUpDown className="h-3.5 w-3.5 text-primary animate-pulse" />
-          <span className="text-[10px] font-medium flex-1">{isAr ? "احفظ الترتيب الجديد" : "Save new order"}</span>
-          <Button size="sm" className="h-6 text-[10px] gap-1 px-2" onClick={saveOrder} disabled={bulkUpdate.isPending}>
+          <span className="text-[12px] font-medium flex-1">{isAr ? "احفظ الترتيب الجديد" : "Save new order"}</span>
+          <Button size="sm" className="h-6 text-[12px] gap-1 px-2" onClick={saveOrder} disabled={bulkUpdate.isPending}>
             {bulkUpdate.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
             {isAr ? "حفظ" : "Save"}
           </Button>
-          <Button size="sm" variant="ghost" className="h-6 text-[10px] px-2" onClick={() => setOrderedSections(null)}>
+          <Button size="sm" variant="ghost" className="h-6 text-[12px] px-2" onClick={() => setOrderedSections(null)}>
             <RotateCcw className="h-3 w-3" />
           </Button>
         </div>

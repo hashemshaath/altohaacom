@@ -70,12 +70,12 @@ export const ConversationList = memo(function ConversationList({
             </div>
             {isAr ? "الرسائل" : "Messages"}
             {counts.unread > 0 && (
-              <Badge className="h-5 min-w-5 text-[9px] font-black px-1.5 rounded-xl animate-pulse">{counts.unread}</Badge>
+              <Badge className="h-5 min-w-5 text-[12px] font-black px-1.5 rounded-xl animate-pulse">{counts.unread}</Badge>
             )}
           </h2>
           <div className="flex items-center gap-1">
             {onlineCount > 0 && (
-              <Badge variant="outline" className="text-[9px] gap-1 h-6 border-primary/20 text-primary rounded-xl">
+              <Badge variant="outline" className="text-[12px] gap-1 h-6 border-primary/20 text-primary rounded-xl">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
                 {onlineCount}
               </Badge>
@@ -133,7 +133,7 @@ export const ConversationList = memo(function ConversationList({
           <div className="p-2 space-y-0.5">
             {chatGroups.length > 0 && (
               <>
-                <p className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="px-3 pt-2 pb-1 text-[12px] font-bold uppercase tracking-wider text-muted-foreground">
                   {isAr ? "المجموعات" : "Groups"}
                 </p>
                 {chatGroups.map((g) => (
@@ -156,7 +156,7 @@ export const ConversationList = memo(function ConversationList({
                   </button>
                 ))}
                 <Separator className="my-1.5" />
-                <p className="px-3 pt-1 pb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                <p className="px-3 pt-1 pb-1 text-[12px] font-bold uppercase tracking-wider text-muted-foreground">
                   {isAr ? "المحادثات" : "Direct"}
                 </p>
               </>
@@ -185,7 +185,7 @@ export const ConversationList = memo(function ConversationList({
                     <p className={`text-sm truncate ${conv.unread_count > 0 ? "font-bold" : "font-medium"}`}>
                       {getDisplayName(conv, isAr, "Unknown")}
                     </p>
-                    <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">
+                    <span className="text-[12px] text-muted-foreground shrink-0 tabular-nums">
                       {formatConvTime(conv.last_message_at, isAr)}
                     </span>
                   </div>
@@ -199,7 +199,7 @@ export const ConversationList = memo(function ConversationList({
                     <div className="flex items-center gap-1.5 shrink-0">
                       {conv.is_starred && <Star className="h-3 w-3 text-chart-4 fill-chart-4" />}
                       {conv.unread_count > 0 && (
-                        <Badge className="h-5 min-w-5 justify-center text-[10px] px-1.5 rounded-full font-bold">{conv.unread_count}</Badge>
+                        <Badge className="h-5 min-w-5 justify-center text-[12px] px-1.5 rounded-full font-bold">{conv.unread_count}</Badge>
                       )}
                     </div>
                   </div>

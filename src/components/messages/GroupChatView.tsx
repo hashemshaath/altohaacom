@@ -173,7 +173,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold truncate">{group?.name || "Group"}</p>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-[12px] text-muted-foreground">
             {members.length} {isAr ? "عضو" : "members"}
           </p>
         </div>
@@ -207,9 +207,9 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
           <div key={m.user_id} className="flex flex-col items-center gap-0.5 px-1.5">
             <Avatar className="h-7 w-7">
               <AvatarImage src={m.profile?.avatar_url || undefined} />
-              <AvatarFallback className="text-[10px]">{(m.profile?.display_name || m.profile?.full_name || "U")[0].toUpperCase()}</AvatarFallback>
+              <AvatarFallback className="text-[12px]">{(m.profile?.display_name || m.profile?.full_name || "U")[0].toUpperCase()}</AvatarFallback>
             </Avatar>
-            <span className="text-[9px] text-muted-foreground truncate max-w-[50px]">
+            <span className="text-[12px] text-muted-foreground truncate max-w-[50px]">
               {m.user_id === user?.id ? (isAr ? "أنت" : "You") : ((m.profile?.display_name || m.profile?.full_name)?.split(" ")[0] || "")}
             </span>
           </div>
@@ -233,9 +233,9 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
                       <div className="flex items-center gap-1.5 mb-1">
                         <Avatar className="h-5 w-5">
                           <AvatarImage src={getSenderAvatar(msg.sender_id) || undefined} />
-                          <AvatarFallback className="text-[8px]">{getSenderName(msg.sender_id)[0]}</AvatarFallback>
+                          <AvatarFallback className="text-[12px]">{getSenderName(msg.sender_id)[0]}</AvatarFallback>
                         </Avatar>
-                        <span className="text-[11px] font-medium text-muted-foreground">{getSenderName(msg.sender_id)}</span>
+                        <span className="text-[12px] font-medium text-muted-foreground">{getSenderName(msg.sender_id)}</span>
                       </div>
                     )}
                     <div className={`rounded-2xl px-3.5 py-2 ${isMine ? "bg-primary text-primary-foreground rounded-ee-md" : "bg-muted rounded-es-md"}`}>
@@ -247,7 +247,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
                       {msg.attachment_urls && msg.attachment_urls.length > 0 && msg.message_type !== "audio" && (
                         <MessageAttachments urls={msg.attachment_urls} names={msg.attachment_names || []} messageType={msg.message_type} />
                       )}
-                      <p className={`text-[10px] mt-1 ${isMine ? "text-primary-foreground/60 text-end" : "text-muted-foreground"}`}>
+                      <p className={`text-[12px] mt-1 ${isMine ? "text-primary-foreground/60 text-end" : "text-muted-foreground"}`}>
                         {formatTime(msg.created_at)}
                       </p>
                     </div>

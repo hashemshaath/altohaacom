@@ -61,17 +61,17 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
 
         {/* Top badges */}
         <div className="absolute inset-x-0 top-0 flex items-center justify-between p-4">
-          <Badge variant="outline" className={`text-[10px] ${levelColors[mc.level] || ""}`}>
+          <Badge variant="outline" className={`text-[12px] ${levelColors[mc.level] || ""}`}>
             {isAr ? levelLabels[mc.level]?.ar : levelLabels[mc.level]?.en}
           </Badge>
           <div className="flex gap-1.5">
             {mc.is_free && (
-              <Badge className="bg-chart-2/20 text-chart-2 backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider shadow-lg">
+              <Badge className="bg-chart-2/20 text-chart-2 backdrop-blur-md border-0 text-[12px] font-black uppercase tracking-wider shadow-lg">
                 {isAr ? "مجاني" : "Free"}
               </Badge>
             )}
             {isEnrolled && (
-              <Badge className="bg-primary/20 text-primary backdrop-blur-md border-0 text-[9px] font-black uppercase tracking-wider shadow-lg animate-pulse">
+              <Badge className="bg-primary/20 text-primary backdrop-blur-md border-0 text-[12px] font-black uppercase tracking-wider shadow-lg animate-pulse">
                 {isAr ? "مسجل" : "Enrolled"}
               </Badge>
             )}
@@ -94,7 +94,7 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
           {title}
         </h3>
         {mc.instructor_name && (
-          <p className="mb-1 text-[11px] font-medium text-muted-foreground">
+          <p className="mb-1 text-[12px] font-medium text-muted-foreground">
             {isAr ? "المدرب:" : "By"} <span className="text-foreground/80 hover:text-primary transition-colors cursor-pointer">{mc.instructor_name}</span>
           </p>
         )}
@@ -104,7 +104,7 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
         {/* Progress bar for enrolled users */}
         {isEnrolled && (
           <div className="mb-4">
-            <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1">
+            <div className="flex items-center justify-between text-[12px] text-muted-foreground mb-1">
               <span>{isAr ? "التقدم" : "Progress"}</span>
               <span className="font-semibold text-primary">{isAr ? "مسجل" : "Enrolled"}</span>
             </div>
@@ -113,7 +113,7 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
             </div>
           </div>
         )}
-        <div className="flex flex-wrap items-center gap-4 text-[11px] font-bold text-muted-foreground border-t border-border/40 pt-4">
+        <div className="flex flex-wrap items-center gap-4 text-[12px] font-bold text-muted-foreground border-t border-border/40 pt-4">
           <span className="flex items-center gap-1.5">
             <div className="flex h-6 w-6 items-center justify-center rounded-xl bg-primary/10">
               <BookOpen className="h-3 w-3 text-primary" />

@@ -555,7 +555,7 @@ function KPICard({ icon: Icon, label, value, sub, accent, isLoading }: {
             ) : (
               <>
                 <p className="mt-1 text-lg font-bold truncate">{value}</p>
-                {sub && <p className="mt-0.5 text-[11px] text-muted-foreground truncate">{sub}</p>}
+                {sub && <p className="mt-0.5 text-[12px] text-muted-foreground truncate">{sub}</p>}
               </>
             )}
           </div>

@@ -197,10 +197,10 @@ export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard()
                         <span className="text-sm font-medium">{r.segment}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className={`text-[10px] ${riskBadgeClass[r.risk_level]}`}>
+                        <Badge variant="outline" className={`text-[12px] ${riskBadgeClass[r.risk_level]}`}>
                           {r.risk_level}
                         </Badge>
-                        <Badge variant="secondary" className="text-[10px]">
+                        <Badge variant="secondary" className="text-[12px]">
                           ~<AnimatedCounter value={r.affected_users_estimate} className="inline" /> {isAr ? "مستخدم" : "users"}
                         </Badge>
                       </div>

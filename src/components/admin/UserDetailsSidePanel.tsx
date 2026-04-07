@@ -186,21 +186,21 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-semibold text-sm truncate">{isAr ? (profile.full_name_ar || profile.full_name) : profile.full_name || "—"}</h3>
                     {profile.is_verified && (
-                      <Badge variant="outline" className="text-[9px] border-primary/30 text-primary gap-0.5">
+                      <Badge variant="outline" className="text-[12px] border-primary/30 text-primary gap-0.5">
                         <CheckCircle2 className="h-2.5 w-2.5" />{isAr ? "موثق" : "Verified"}
                       </Badge>
                     )}
                   </div>
                   <p className="text-xs text-muted-foreground mt-0.5" dir="ltr">@{profile.username || "—"}</p>
                   <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
-                    <Badge variant="outline" className={cn("text-[9px] gap-1", currentStatus.cls)}>
+                    <Badge variant="outline" className={cn("text-[12px] gap-1", currentStatus.cls)}>
                       <currentStatus.icon className="h-2.5 w-2.5" />
                       {currentStatus.label}
                     </Badge>
                     {data.roles.slice(0, 3).map((role) => (
-                      <Badge key={role} variant="outline" className="text-[9px]">{t(role as any)}</Badge>
+                      <Badge key={role} variant="outline" className="text-[12px]">{t(role as any)}</Badge>
                     ))}
-                    {data.roles.length > 3 && <Badge variant="outline" className="text-[9px]">+{data.roles.length - 3}</Badge>}
+                    {data.roles.length > 3 && <Badge variant="outline" className="text-[12px]">+{data.roles.length - 3}</Badge>}
                   </div>
                 </div>
               </div>
@@ -208,12 +208,12 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
               {/* ── Profile Completeness ── */}
               <div className="rounded-xl border border-border/40 bg-muted/10 p-3 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium flex items-center gap-1.5">
+                  <span className="text-[12px] font-medium flex items-center gap-1.5">
                     <Activity className="h-3 w-3 text-primary" />
                     {isAr ? "اكتمال الملف الشخصي" : "Profile Completeness"}
                   </span>
                   <span className={cn(
-                    "text-[11px] font-bold tabular-nums",
+                    "text-[12px] font-bold tabular-nums",
                     completeness.score >= 80 ? "text-chart-3" : completeness.score >= 50 ? "text-chart-4" : "text-destructive"
                   )}>
                     {completeness.score}%
@@ -221,7 +221,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                 </div>
                 <Progress value={completeness.score} className="h-1.5" />
                 {completeness.missing.length > 0 && completeness.score < 100 && (
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[12px] text-muted-foreground">
                     {isAr ? "ينقص:" : "Missing:"} {completeness.missing.slice(0, 3).join(", ")}
                     {completeness.missing.length > 3 && ` +${completeness.missing.length - 3}`}
                   </p>
@@ -266,13 +266,13 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
               {/* ── Tabs ── */}
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="w-full rounded-xl bg-muted/40 p-1 h-auto">
-                  <TabsTrigger value="overview" className="text-[11px] flex-1 rounded-lg gap-1">
+                  <TabsTrigger value="overview" className="text-[12px] flex-1 rounded-lg gap-1">
                     <BarChart3 className="h-3 w-3" />{isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
-                  <TabsTrigger value="roles" className="text-[11px] flex-1 rounded-lg gap-1">
+                  <TabsTrigger value="roles" className="text-[12px] flex-1 rounded-lg gap-1">
                     <Shield className="h-3 w-3" />{isAr ? "الأدوار" : "Roles"}
                   </TabsTrigger>
-                  <TabsTrigger value="activity" className="text-[11px] flex-1 rounded-lg gap-1">
+                  <TabsTrigger value="activity" className="text-[12px] flex-1 rounded-lg gap-1">
                     <Clock className="h-3 w-3" />{isAr ? "السجل" : "Activity"}
                   </TabsTrigger>
                 </TabsList>
@@ -325,7 +325,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                         <Button
                           variant={hasRole ? "outline" : "default"}
                           size="sm"
-                          className={cn("h-6 text-[10px] px-2 rounded-lg", hasRole && "text-destructive border-destructive/30 hover:bg-destructive/10")}
+                          className={cn("h-6 text-[12px] px-2 rounded-lg", hasRole && "text-destructive border-destructive/30 hover:bg-destructive/10")}
                           disabled={roleMutation.isPending}
                           onClick={() => roleMutation.mutate({ role, action: hasRole ? "remove" : "add" })}
                         >
@@ -350,7 +350,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                           </div>
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium">{action.action_type.replace(/_/g, " ")}</p>
-                            <p className="text-[10px] text-muted-foreground tabular-nums mt-0.5" dir="ltr">
+                            <p className="text-[12px] text-muted-foreground tabular-nums mt-0.5" dir="ltr">
                               {format(new Date(action.created_at), "yyyy-MM-dd HH:mm")}
                             </p>
                           </div>
@@ -372,7 +372,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
 
 function SectionLabel({ icon: Icon, text }: { icon: typeof Mail; text: string }) {
   return (
-    <p className="text-[11px] font-semibold text-foreground/80 flex items-center gap-1.5">
+    <p className="text-[12px] font-semibold text-foreground/80 flex items-center gap-1.5">
       <Icon className="h-3.5 w-3.5 text-primary/70" />
       {text}
     </p>
@@ -384,7 +384,7 @@ function InfoRow({ icon: Icon, label, value, dir, onCopy, isAr }: { icon: typeof
     <div className="flex items-center justify-between gap-2 py-1.5 px-1 rounded-lg hover:bg-muted/30 transition-colors">
       <div className="flex items-center gap-2 text-muted-foreground min-w-0 shrink-0">
         <Icon className="h-3.5 w-3.5 shrink-0" />
-        <span className="text-[11px] whitespace-nowrap">{label}</span>
+        <span className="text-[12px] whitespace-nowrap">{label}</span>
       </div>
       <div className="flex items-center gap-1 min-w-0">
         <span className="text-xs font-medium truncate max-w-[160px]" dir={dir}>{value || "—"}</span>
@@ -404,7 +404,7 @@ const MiniStatCard = forwardRef<HTMLDivElement, { icon: typeof Award; label: str
       <div ref={ref} className="rounded-xl border border-border/40 bg-muted/20 p-3">
         <div className="flex items-center gap-1.5 mb-1">
           <Icon className={cn("h-3 w-3", color)} />
-          <span className="text-[10px] text-muted-foreground">{label}</span>
+          <span className="text-[12px] text-muted-foreground">{label}</span>
         </div>
         <p className="text-sm font-semibold tabular-nums">{value}</p>
       </div>

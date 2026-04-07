@@ -78,7 +78,7 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
             <CardContent className="p-3 flex items-center gap-2">
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} /></div>
               <div className="min-w-0">
-                <p className="text-[9px] text-muted-foreground truncate">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground truncate">{kpi.label}</p>
                 <p className="text-base font-bold">{kpi.value}</p>
               </div>
             </CardContent>
@@ -90,14 +90,14 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
         {/* Status Distribution */}
         <Card>
           <CardContent className="p-3">
-            <p className="text-[10px] font-semibold text-muted-foreground mb-2">{isAr ? "حسب الحالة" : "By Status"}</p>
+            <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "حسب الحالة" : "By Status"}</p>
             <div className="flex items-center gap-4">
               <PieChart width={80} height={80}>
                 <Pie data={data.statusDist} dataKey="value" cx={38} cy={38} innerRadius={22} outerRadius={36} strokeWidth={0}>
                   {data.statusDist.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                 </Pie>
               </PieChart>
-              <div className="text-[10px] space-y-1">
+              <div className="text-[12px] space-y-1">
                 {data.statusDist.map((s, i) => (
                   <div key={s.name} className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
@@ -112,11 +112,11 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
         {/* Type Distribution */}
         <Card>
           <CardContent className="p-3">
-            <p className="text-[10px] font-semibold text-muted-foreground mb-2">{isAr ? "حسب النوع" : "By Type"}</p>
+            <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "حسب النوع" : "By Type"}</p>
             <div className="space-y-1.5">
               {data.typeDist.map(t => (
                 <div key={t.name} className="space-y-0.5">
-                  <div className="flex justify-between text-[10px]">
+                  <div className="flex justify-between text-[12px]">
                     <span className="capitalize">{t.name}</span>
                     <span className="text-muted-foreground">{t.value}</span>
                   </div>

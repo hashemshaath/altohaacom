@@ -427,27 +427,27 @@ export default function AudienceSegments() {
 
                   <div className="flex flex-wrap gap-1">
                     {filters.roles?.map((r: string) => (
-                      <Badge key={r} variant="secondary" className="text-[10px]">
+                      <Badge key={r} variant="secondary" className="text-[12px]">
                         <Shield className="me-0.5 h-2.5 w-2.5" />{r}
                       </Badge>
                     ))}
                     {filters.countries?.map((c: string) => (
-                      <Badge key={c} variant="secondary" className="text-[10px]">
+                      <Badge key={c} variant="secondary" className="text-[12px]">
                         <Globe className="me-0.5 h-2.5 w-2.5" />{c}
                       </Badge>
                     ))}
                     {filters.is_verified && (
-                      <Badge variant="secondary" className="text-[10px]">✓ {isAr ? "موثق" : "Verified"}</Badge>
+                      <Badge variant="secondary" className="text-[12px]">✓ {isAr ? "موثق" : "Verified"}</Badge>
                     )}
                     {filters.has_competed && (
-                      <Badge variant="secondary" className="text-[10px]">{isAr ? "مشارك" : "Competed"}</Badge>
+                      <Badge variant="secondary" className="text-[12px]">{isAr ? "مشارك" : "Competed"}</Badge>
                     )}
                   </div>
 
                   <Separator className="my-3" />
 
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-[12px] text-muted-foreground">
                       {format(new Date(segment.created_at), "MMM d, yyyy")}
                     </span>
                     <Button variant="outline" size="sm" className="gap-1 h-7 text-xs" onClick={() => setBroadcastSegment(segment)}>

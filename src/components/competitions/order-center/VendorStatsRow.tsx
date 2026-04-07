@@ -31,7 +31,7 @@ export const VendorStatsRow = memo(function VendorStatsRow({ totalItems, assigne
               <CardContent className="p-3 text-center">
                 <Icon className={`mx-auto mb-1 h-5 w-5 ${s.color}`} />
                 <p className="text-xl font-bold"><AnimatedCounter value={s.value} /></p>
-                <p className="text-[10px] text-muted-foreground uppercase">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground uppercase">{s.label}</p>
               </CardContent>
             </Card>
           );

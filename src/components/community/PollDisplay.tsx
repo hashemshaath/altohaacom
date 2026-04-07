@@ -154,7 +154,7 @@ export const PollDisplay = memo(function PollDisplay({ postId }: PollDisplayProp
           );
         })}
       </div>
-      <p className="text-[10px] text-muted-foreground">
+      <p className="text-[12px] text-muted-foreground">
         <AnimatedCounter value={totalVotes} className="inline" /> {isAr ? "صوت" : totalVotes === 1 ? "vote" : "votes"}
         {isExpired && (isAr ? " · انتهى" : " · Ended")}
       </p>

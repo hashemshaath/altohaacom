@@ -106,7 +106,7 @@ const SummaryCards = memo(function SummaryCards({ exhibitions, isAr }: { exhibit
               <p className={cn("text-lg font-bold tabular-nums", stat.color)}>
                 <AnimatedCounter value={stat.value} />
               </p>
-              <p className="text-[10px] text-muted-foreground leading-tight">{stat.label}</p>
+              <p className="text-[12px] text-muted-foreground leading-tight">{stat.label}</p>
             </div>
           </CardContent>
         </Card>
@@ -430,7 +430,7 @@ export default function ExhibitionsAdmin() {
       {/* Status Legend (compact) */}
       <div className="flex flex-wrap gap-1.5">
         {EXHIBITION_STATUS_LEGEND.map(s => (
-          <span key={s.status} className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium", s.color)}>
+          <span key={s.status} className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium", s.color)}>
             <span className={cn("h-1.5 w-1.5 rounded-full", s.dot)} />
             {isAr ? s.labelAr : s.label}
           </span>
@@ -525,15 +525,15 @@ export default function ExhibitionsAdmin() {
                           </p>
                           <div className="flex items-center gap-1.5 mt-0.5">
                             {(ex as any).edition_year && (
-                              <Badge variant="outline" className="text-[9px] h-4 px-1.5 font-mono">{(ex as any).edition_year}</Badge>
+                              <Badge variant="outline" className="text-[12px] h-4 px-1.5 font-mono">{(ex as any).edition_year}</Badge>
                             )}
                             {(ex as any).exhibition_number && (
-                              <Badge variant="secondary" className="text-[9px] h-4 px-1.5">
+                              <Badge variant="secondary" className="text-[12px] h-4 px-1.5">
                                 #{(ex as any).exhibition_number}
                               </Badge>
                             )}
                             {ex.is_featured && (
-                              <Badge className="text-[9px] h-4 px-1.5 bg-chart-4/10 text-chart-4 border-0">★</Badge>
+                              <Badge className="text-[12px] h-4 px-1.5 bg-chart-4/10 text-chart-4 border-0">★</Badge>
                             )}
                           </div>
                         </div>
@@ -558,14 +558,14 @@ export default function ExhibitionsAdmin() {
 
                     {/* Type */}
                     <TableCell>
-                      <Badge variant="secondary" className="text-[10px] font-normal">{getTypeName(ex.type)}</Badge>
+                      <Badge variant="secondary" className="text-[12px] font-normal">{getTypeName(ex.type)}</Badge>
                     </TableCell>
 
                     {/* Status */}
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className={cn("inline-flex items-center gap-1.5 rounded-full border-0 px-2 py-0.5 text-[10px] font-medium cursor-pointer hover:ring-2 hover:ring-ring/20 transition-all", derived.color)}>
+                          <button className={cn("inline-flex items-center gap-1.5 rounded-full border-0 px-2 py-0.5 text-[12px] font-medium cursor-pointer hover:ring-2 hover:ring-ring/20 transition-all", derived.color)}>
                             {derived.status === "started" ? (
                               <span className="relative flex h-1.5 w-1.5">
                                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -579,7 +579,7 @@ export default function ExhibitionsAdmin() {
                           </button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start" className="min-w-[180px]">
-                          <p className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground">{t("Change Status", "تغيير الحالة")}</p>
+                          <p className="px-2 py-1.5 text-[12px] font-semibold text-muted-foreground">{t("Change Status", "تغيير الحالة")}</p>
                           {statusOptions.map(opt => (
                             <DropdownMenuItem
                               key={opt.value}

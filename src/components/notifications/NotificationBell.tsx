@@ -184,7 +184,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
           <div className="flex items-center gap-2">
             <h3 className="font-bold text-base">{isAr ? "الإشعارات" : "Notifications"}</h3>
             {unreadCount > 0 && (
-              <Badge variant="secondary" className="text-[10px] h-5">{unreadCount} {isAr ? "جديد" : "new"}</Badge>
+              <Badge variant="secondary" className="text-[12px] h-5">{unreadCount} {isAr ? "جديد" : "new"}</Badge>
             )}
           </div>
           <div className="flex items-center gap-1">
@@ -224,7 +224,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                 key={cat}
                 variant={category === cat ? "default" : "secondary"}
                 size="sm"
-                className={cn("h-7 text-[10px] gap-1 px-2.5 rounded-full", category === cat && "shadow-sm")}
+                className={cn("h-7 text-[12px] gap-1 px-2.5 rounded-full", category === cat && "shadow-sm")}
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setCategory(cat); }}
               >
                 {label.icon}
@@ -279,7 +279,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                       <div className={cn("flex h-9 w-9 items-center justify-center rounded-full", getNotificationIconColor(first.type))}>
                         {getNotificationIcon(first.type)}
                       </div>
-                      <Badge className="absolute -bottom-1 -end-1 h-4 min-w-4 text-[9px] px-1 justify-center">
+                      <Badge className="absolute -bottom-1 -end-1 h-4 min-w-4 text-[12px] px-1 justify-center">
                         {count}
                       </Badge>
                     </div>
@@ -290,7 +290,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
                         {getTitle(first)} {isAr ? "و أخرى" : "and more"}
                       </p>
-                      <p className="text-[10px] text-muted-foreground/70 mt-1">
+                      <p className="text-[12px] text-muted-foreground/70 mt-1">
                         {formatRelativeTime(first.created_at, isAr)}
                       </p>
                     </div>
@@ -347,7 +347,7 @@ export const NotificationBell = React.forwardRef<HTMLButtonElement, Record<strin
                       </p>
                     )}
                     <NotificationActionButtons notification={notification} onMarkRead={markAsRead} />
-                    <p className="text-[10px] text-muted-foreground/70 mt-1">
+                    <p className="text-[12px] text-muted-foreground/70 mt-1">
                       {formatRelativeTime(notification.created_at, isAr)}
                     </p>
                   </div>

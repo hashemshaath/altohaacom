@@ -63,7 +63,7 @@ export const ChatSearchBar = memo(function ChatSearchBar({ messages, onHighlight
       />
       {matchIds.length > 0 && (
         <>
-          <Badge variant="secondary" className="text-[10px] shrink-0 font-mono">
+          <Badge variant="secondary" className="text-[12px] shrink-0 font-mono">
             {currentIdx + 1}/{matchIds.length}
           </Badge>
           <div className="flex shrink-0">
@@ -77,7 +77,7 @@ export const ChatSearchBar = memo(function ChatSearchBar({ messages, onHighlight
         </>
       )}
       {query && matchIds.length === 0 && (
-        <span className="text-[10px] text-destructive/70 shrink-0 flex items-center gap-0.5">
+        <span className="text-[12px] text-destructive/70 shrink-0 flex items-center gap-0.5">
           <X className="h-2.5 w-2.5" />
           {isAr ? "لا نتائج" : "No matches"}
         </span>

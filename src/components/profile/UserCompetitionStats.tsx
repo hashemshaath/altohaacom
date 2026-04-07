@@ -113,7 +113,7 @@ export const UserCompetitionStats = memo(function UserCompetitionStats({ userId 
               </div>
               <div>
                 <AnimatedCounter value={typeof s.value === "number" ? s.value : parseInt(String(s.value)) || 0} className="text-2xl" />
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground uppercase tracking-wider">{s.label}</p>
               </div>
             </CardContent>
           </Card>

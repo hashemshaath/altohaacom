@@ -235,7 +235,7 @@ export default function LiveChatAdmin() {
                 <Icon className={cn("h-4.5 w-4.5", `text-${color}`, pulse && "animate-pulse")} />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs text-muted-foreground font-medium truncate">{label}</p>
+                <p className="text-[12px] sm:text-xs text-muted-foreground font-medium truncate">{label}</p>
                 <p className="text-lg sm:text-2xl font-bold leading-tight tabular-nums">{value}</p>
               </div>
             </CardContent>
@@ -329,7 +329,7 @@ export default function LiveChatAdmin() {
                           <Badge
                             variant="outline"
                             className={cn(
-                              "text-[9px] shrink-0 px-1.5 rounded-md",
+                              "text-[12px] shrink-0 px-1.5 rounded-md",
                               session.status === "waiting"
                                 ? "bg-chart-4/10 text-chart-4 border-chart-4/30"
                                 : session.status === "active"
@@ -344,15 +344,15 @@ export default function LiveChatAdmin() {
                               : isAr ? "مغلق" : "Closed"}
                           </Badge>
                         </div>
-                        <p className="text-[11px] text-muted-foreground truncate mt-0.5">{session.subject}</p>
+                        <p className="text-[12px] text-muted-foreground truncate mt-0.5">{session.subject}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           {waitMins !== null && waitMins > 5 && (
-                            <span className="text-[9px] text-chart-4 font-semibold tabular-nums">{waitMins}m</span>
+                            <span className="text-[12px] text-chart-4 font-semibold tabular-nums">{waitMins}m</span>
                           )}
                           {session.rating && (
                             <div className="flex items-center gap-0.5">
                               <Star className="h-2.5 w-2.5 text-chart-5 fill-chart-5" />
-                              <span className="text-[9px] text-chart-5 font-medium">{session.rating}</span>
+                              <span className="text-[12px] text-chart-5 font-medium">{session.rating}</span>
                             </div>
                           )}
                         </div>
@@ -393,7 +393,7 @@ export default function LiveChatAdmin() {
                     <p className="text-sm font-semibold truncate">
                       {profileMap.get(selectedSession.user_id)?.full_name || "Unknown"}
                     </p>
-                    <p className="text-[11px] text-muted-foreground truncate">
+                    <p className="text-[12px] text-muted-foreground truncate">
                       {selectedSession.subject}
                     </p>
                   </div>
@@ -436,7 +436,7 @@ export default function LiveChatAdmin() {
                         >
                           <p className="text-xs sm:text-sm break-words leading-relaxed">{msg.message}</p>
                           <span className={cn(
-                            "block text-[9px] mt-1 tabular-nums",
+                            "block text-[12px] mt-1 tabular-nums",
                             isAgent ? "text-primary-foreground/50 text-end" : "text-muted-foreground"
                           )}>
                             {formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}

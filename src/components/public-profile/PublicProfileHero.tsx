@@ -135,7 +135,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                   <h1 className="font-serif text-base sm:text-xl md:text-2xl lg:text-3xl font-bold tracking-tight leading-tight">{displayName}</h1>
                   {profile.is_verified && <BadgeCheck className="h-4 w-4 sm:h-5 sm:w-5 text-primary shrink-0" />}
                   {profile.account_type === "fan" && (
-                    <Badge variant="secondary" className="text-[10px] gap-1 h-5">
+                    <Badge variant="secondary" className="text-[12px] gap-1 h-5">
                       <Heart className="h-3 w-3" />
                       {isAr ? "مستخدم عادي" : "Regular User"}
                     </Badge>
@@ -187,7 +187,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                     <Briefcase className="h-3.5 w-3.5 text-primary shrink-0" />
                     <span className="text-xs font-semibold">{isAr ? (currentWork.title_ar || currentWork.title) : currentWork.title}</span>
                     {currentWork.entity_name && (
-                      <span className="text-[11px] text-muted-foreground">{isAr ? "في" : "at"} {currentWork.entity_name}</span>
+                      <span className="text-[12px] text-muted-foreground">{isAr ? "في" : "at"} {currentWork.entity_name}</span>
                     )}
                   </div>
                 )}
@@ -206,7 +206,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                   <div className="flex flex-wrap gap-1.5 justify-center md:justify-start pt-1">
                     {hashtags.map((tag, i) => (
                       <Link key={i} to={`/community?search=${encodeURIComponent(tag)}`}>
-                        <Badge variant="outline" className="text-[10px] sm:text-[11px] h-5 sm:h-6 rounded-xl border-primary/20 text-primary/80 bg-primary/5 hover:bg-primary/10 transition-colors gap-0.5 px-2 cursor-pointer">
+                        <Badge variant="outline" className="text-[12px] sm:text-[12px] h-5 sm:h-6 rounded-xl border-primary/20 text-primary/80 bg-primary/5 hover:bg-primary/10 transition-colors gap-0.5 px-2 cursor-pointer">
                           <Hash className="h-2.5 w-2.5" />
                           {tag}
                         </Badge>

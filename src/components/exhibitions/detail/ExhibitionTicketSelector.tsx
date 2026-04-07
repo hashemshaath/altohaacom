@@ -67,7 +67,7 @@ export const ExhibitionTicketSelector = memo(function ExhibitionTicketSelector({
                       {isSelected && <Check className="h-4 w-4 text-primary" />}
                     </div>
                     {(tt.description || tt.description_ar) && (
-                      <p className="text-[11px] text-muted-foreground line-clamp-2 mb-2">
+                      <p className="text-[12px] text-muted-foreground line-clamp-2 mb-2">
                         {isAr && tt.description_ar ? tt.description_ar : tt.description}
                       </p>
                     )}
@@ -84,13 +84,13 @@ export const ExhibitionTicketSelector = memo(function ExhibitionTicketSelector({
                 {/* Status badges */}
                 <div className="flex items-center gap-2 mt-2">
                   {isSoldOut ? (
-                    <Badge variant="destructive" className="text-[9px]">{t("Sold Out", "نفذت")}</Badge>
+                    <Badge variant="destructive" className="text-[12px]">{t("Sold Out", "نفذت")}</Badge>
                   ) : remaining !== null ? (
-                    <Badge variant="outline" className="text-[9px]">
+                    <Badge variant="outline" className="text-[12px]">
                       <Users className="me-0.5 h-2.5 w-2.5" />{remaining} {t("left", "متبقي")}
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-[9px] border-chart-3/30 text-chart-3">
+                    <Badge variant="outline" className="text-[12px] border-chart-3/30 text-chart-3">
                       <Sparkles className="me-0.5 h-2.5 w-2.5" />{t("Available", "متاح")}
                     </Badge>
                   )}

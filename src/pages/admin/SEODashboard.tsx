@@ -568,15 +568,15 @@ export default function SEODashboard() {
                 <div className="flex items-end gap-2">
                   <p className="text-2xl font-bold tabular-nums"><AnimatedCounter value={kpi.value} />{kpi.suffix && <span className="text-sm font-normal text-muted-foreground ms-0.5">{kpi.suffix}</span>}</p>
                   {kpi.prev > 0 && diff !== 0 && (
-                    <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium mb-1 ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
+                    <span className={`inline-flex items-center gap-0.5 text-[12px] font-medium mb-1 ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
                       {isPositive ? <ArrowUp className="h-2.5 w-2.5" /> : <ArrowDown className="h-2.5 w-2.5" />}
                       {Math.abs(pctChange)}%
                     </span>
                   )}
                 </div>
-                {kpi.sub && <p className="text-[10px] text-muted-foreground mt-0.5">{kpi.sub}</p>}
+                {kpi.sub && <p className="text-[12px] text-muted-foreground mt-0.5">{kpi.sub}</p>}
                 {kpi.badge && (
-                  <Badge variant={kpi.badge as any} className="text-[9px] mt-1">{kpi.badgeText}</Badge>
+                  <Badge variant={kpi.badge as any} className="text-[12px] mt-1">{kpi.badgeText}</Badge>
                 )}
               </CardContent>
             </Card>
@@ -606,11 +606,11 @@ export default function SEODashboard() {
               <Card key={metric} className="relative overflow-hidden border-border/40">
                 {status && <div className={`absolute top-0 inset-x-0 h-0.5 ${status === "good" ? "bg-chart-2" : status === "needs-improvement" ? "bg-chart-4" : "bg-destructive"}`} />}
                 <CardContent className="p-3 pt-4 text-center">
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{t.label}</p>
+                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{t.label}</p>
                   {val != null ? (
                     <p className={`text-xl font-bold tabular-nums mt-1 ${status === "good" ? "text-chart-2" : status === "needs-improvement" ? "text-chart-4" : "text-destructive"}`}>
                       {metric === "cls" ? val.toFixed(3) : Math.round(val)}
-                      <span className="text-[10px] font-normal text-muted-foreground ms-0.5">{t.unit}</span>
+                      <span className="text-[12px] font-normal text-muted-foreground ms-0.5">{t.unit}</span>
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground mt-1">{isAr ? "لا بيانات" : "No data"}</p>
@@ -712,17 +712,17 @@ export default function SEODashboard() {
               <Card key={metric} className="relative overflow-hidden">
                 {status && <div className={`absolute top-0 inset-x-0 h-1 ${status === "good" ? "bg-chart-2" : status === "needs-improvement" ? "bg-chart-4" : "bg-destructive"}`} />}
                 <CardContent className="p-4 pt-5">
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">{t.label}</p>
+                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold mb-1">{t.label}</p>
                   {val != null ? (
                     <>
                       <p className={`text-2xl font-bold tabular-nums ${status === "good" ? "text-chart-2" : status === "needs-improvement" ? "text-chart-4" : "text-destructive"}`}>
                         {metric === "cls" ? val.toFixed(3) : Math.round(val)}
                         <span className="text-xs font-normal text-muted-foreground ms-0.5">{t.unit}</span>
                       </p>
-                      <Badge variant={status === "good" ? "default" : status === "needs-improvement" ? "secondary" : "destructive"} className="text-[9px] mt-1">
+                      <Badge variant={status === "good" ? "default" : status === "needs-improvement" ? "secondary" : "destructive"} className="text-[12px] mt-1">
                         {status === "good" ? "✓ Good" : status === "needs-improvement" ? "⚠ Needs Work" : "✗ Poor"}
                       </Badge>
-                      <p className="text-[9px] text-muted-foreground mt-1">P75 · ≤{metric === "cls" ? t.good : t.good + t.unit}</p>
+                      <p className="text-[12px] text-muted-foreground mt-1">P75 · ≤{metric === "cls" ? t.good : t.good + t.unit}</p>
                     </>
                   ) : (
                     <p className="text-sm text-muted-foreground">{isAr ? "لا بيانات — اضغط جمع الآن" : "No data — click Collect Now"}</p>
@@ -752,7 +752,7 @@ export default function SEODashboard() {
                   <CardTitle className="text-base flex items-center gap-2">
                     <AlertTriangle className="h-4 w-4 text-destructive" />
                     {isAr ? "تنبيهات الصفحات البطيئة" : "Slow Page Alerts"}
-                    <Badge variant="destructive" className="text-[9px] ms-auto">{slowPages.length}</Badge>
+                    <Badge variant="destructive" className="text-[12px] ms-auto">{slowPages.length}</Badge>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -762,7 +762,7 @@ export default function SEODashboard() {
                         <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-mono truncate">{alert.path}</p>
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {[
                               alert.lcp != null && getVitalStatus("lcp", alert.lcp) !== "good" ? `LCP ${Math.round(alert.lcp)}ms` : null,
                               alert.cls != null && getVitalStatus("cls", alert.cls) !== "good" ? `CLS ${alert.cls.toFixed(3)}` : null,
@@ -976,7 +976,7 @@ export default function SEODashboard() {
                 <table className="w-full text-sm">
                   <thead><tr className="border-b border-border/40 text-xs text-muted-foreground"><th className="text-start py-2 pe-3 font-medium">{isAr ? "الزاحف" : "Crawler"}</th><th className="text-start py-2 px-3 font-medium">{isAr ? "النوع" : "Type"}</th><th className="text-start py-2 px-3 font-medium">{isAr ? "الصفحة" : "Page"}</th><th className="text-end py-2 ps-3 font-medium">{isAr ? "الوقت" : "Time"}</th></tr></thead>
                   <tbody>{crawlerVisits.slice(0, 20).map((v, i) => (
-                    <tr key={i} className="border-b border-border/20 last:border-0"><td className="py-2 pe-3 font-medium">{v.crawler_name}</td><td className="py-2 px-3"><Badge variant="outline" className="text-[9px]">{v.crawler_type}</Badge></td><td className="py-2 px-3 font-mono text-xs truncate max-w-[200px]">{v.path}</td><td className="py-2 ps-3 text-end text-xs text-muted-foreground">{format(new Date(v.created_at), "dd MMM HH:mm")}</td></tr>
+                    <tr key={i} className="border-b border-border/20 last:border-0"><td className="py-2 pe-3 font-medium">{v.crawler_name}</td><td className="py-2 px-3"><Badge variant="outline" className="text-[12px]">{v.crawler_type}</Badge></td><td className="py-2 px-3 font-mono text-xs truncate max-w-[200px]">{v.path}</td><td className="py-2 ps-3 text-end text-xs text-muted-foreground">{format(new Date(v.created_at), "dd MMM HH:mm")}</td></tr>
                   ))}</tbody>
                 </table>
               </div>
@@ -1011,12 +1011,12 @@ export default function SEODashboard() {
                     const change = kw.previous_position && kw.current_position ? kw.previous_position - kw.current_position : null;
                     return (
                       <tr key={kw.id} className="border-b border-border/20 last:border-0">
-                        <td className="py-2 pe-3"><p className="font-medium">{kw.keyword}</p>{kw.keyword_ar && <p className="text-[10px] text-muted-foreground">{kw.keyword_ar}</p>}</td>
+                        <td className="py-2 pe-3"><p className="font-medium">{kw.keyword}</p>{kw.keyword_ar && <p className="text-[12px] text-muted-foreground">{kw.keyword_ar}</p>}</td>
                         <td className="py-2 px-2 font-mono text-xs text-muted-foreground truncate max-w-[120px]">{kw.target_page || "—"}</td>
                         <td className="py-2 px-2 text-end font-bold tabular-nums">{kw.current_position ? `#${kw.current_position}` : "—"}</td>
                         <td className="py-2 px-2 text-end tabular-nums">{change != null ? <span className={`inline-flex items-center gap-0.5 ${change > 0 ? "text-chart-2" : change < 0 ? "text-destructive" : "text-muted-foreground"}`}>{change > 0 ? <ArrowUp className="h-3 w-3" /> : change < 0 ? <ArrowDown className="h-3 w-3" /> : <Minus className="h-3 w-3" />}{Math.abs(change)}</span> : "—"}</td>
                         <td className="py-2 px-2 text-end text-xs text-muted-foreground tabular-nums">{kw.best_position ? `#${kw.best_position}` : "—"}</td>
-                        <td className="py-2 px-2 text-end text-[10px] text-muted-foreground">{kw.last_checked_at ? format(new Date(kw.last_checked_at), "dd MMM") : "—"}</td>
+                        <td className="py-2 px-2 text-end text-[12px] text-muted-foreground">{kw.last_checked_at ? format(new Date(kw.last_checked_at), "dd MMM") : "—"}</td>
                         <td className="py-2 ps-2 text-end"><button onClick={() => handleDeleteKeyword(kw.id)} className="text-muted-foreground hover:text-destructive transition-colors"><Trash2 className="h-3.5 w-3.5" /></button></td>
                       </tr>
                     );
@@ -1028,7 +1028,7 @@ export default function SEODashboard() {
         </Card>
         <div className="flex items-center gap-2 px-1">
           <Button onClick={handleGSCSyncPerformance} disabled={gscSyncing === "performance"} size="sm" variant="outline" className="gap-1.5 text-xs"><RefreshCw className={`h-3 w-3 ${gscSyncing === "performance" ? "animate-spin" : ""}`} />{isAr ? "مزامنة من GSC" : "Sync from GSC"}</Button>
-          <span className="text-[10px] text-muted-foreground">{isAr ? "يتطلب إعداد مفتاح حساب الخدمة" : "Requires Service Account key setup"}</span>
+          <span className="text-[12px] text-muted-foreground">{isAr ? "يتطلب إعداد مفتاح حساب الخدمة" : "Requires Service Account key setup"}</span>
         </div>
       </div>
     );
@@ -1049,7 +1049,7 @@ export default function SEODashboard() {
               { label: isAr ? "مرسلة" : "Submitted", count: indexingStatus.filter((s) => s.status === "submitted").length, color: "text-chart-1" },
               { label: isAr ? "غير معروفة" : "Unknown", count: indexingStatus.filter((s) => s.status === "unknown").length, color: "text-muted-foreground" },
               { label: isAr ? "خطأ" : "Error", count: indexingStatus.filter((s) => s.status === "error").length, color: "text-destructive" },
-            ].map(s => <Card key={s.label}><CardContent className="p-3 text-center"><p className={`text-xl font-bold ${s.color}`}><AnimatedCounter value={s.count} /></p><p className="text-[10px] text-muted-foreground">{s.label}</p></CardContent></Card>)}
+            ].map(s => <Card key={s.label}><CardContent className="p-3 text-center"><p className={`text-xl font-bold ${s.color}`}><AnimatedCounter value={s.count} /></p><p className="text-[12px] text-muted-foreground">{s.label}</p></CardContent></Card>)}
           </div>
         )}
         <Card>
@@ -1063,9 +1063,9 @@ export default function SEODashboard() {
                   <tbody>{indexingStatus.map((page) => (
                     <tr key={page.id} className="border-b border-border/20 last:border-0">
                       <td className="py-2 pe-3 font-mono text-xs truncate max-w-[200px]">{page.path}</td>
-                      <td className="py-2 px-2"><Badge variant={page.status === "indexed" ? "default" : page.status === "error" ? "destructive" : "secondary"} className="text-[9px]">{page.status === "indexed" ? "✓ Indexed" : page.status === "submitted" ? "⏳ Submitted" : page.status === "error" ? "✗ Error" : "? Unknown"}</Badge></td>
+                      <td className="py-2 px-2"><Badge variant={page.status === "indexed" ? "default" : page.status === "error" ? "destructive" : "secondary"} className="text-[12px]">{page.status === "indexed" ? "✓ Indexed" : page.status === "submitted" ? "⏳ Submitted" : page.status === "error" ? "✗ Error" : "? Unknown"}</Badge></td>
                       <td className="py-2 px-2 text-xs text-muted-foreground">{page.submitted_to?.length ? page.submitted_to.join(", ") : "—"}</td>
-                      <td className="py-2 ps-2 text-end text-[10px] text-muted-foreground">{format(new Date(page.updated_at), "dd MMM")}</td>
+                      <td className="py-2 ps-2 text-end text-[12px] text-muted-foreground">{format(new Date(page.updated_at), "dd MMM")}</td>
                     </tr>
                   ))}</tbody>
                 </table>
@@ -1076,7 +1076,7 @@ export default function SEODashboard() {
         <div className="flex items-center gap-2 px-1 flex-wrap">
           <Button onClick={handleGSCInspectUrls} disabled={gscSyncing === "inspect"} size="sm" variant="outline" className="gap-1.5 text-xs"><Search className={`h-3 w-3 ${gscSyncing === "inspect" ? "animate-spin" : ""}`} />{isAr ? "فحص الصفحات" : "Inspect URLs"}</Button>
           <Button onClick={() => handleGSCSubmitUrls()} disabled={gscSyncing === "submit"} size="sm" variant="outline" className="gap-1.5 text-xs"><Send className={`h-3 w-3 ${gscSyncing === "submit" ? "animate-spin" : ""}`} />{isAr ? "إرسال للفهرسة" : "Submit for Indexing"}</Button>
-          <span className="text-[10px] text-muted-foreground">{isAr ? "يتطلب إعداد مفتاح حساب الخدمة" : "Requires Service Account key setup"}</span>
+          <span className="text-[12px] text-muted-foreground">{isAr ? "يتطلب إعداد مفتاح حساب الخدمة" : "Requires Service Account key setup"}</span>
         </div>
       </div>
     );
@@ -1111,7 +1111,7 @@ export default function SEODashboard() {
           { icon: Tablet, label: isAr ? "لوحي" : "Tablet", count: devices.tablet, color: "text-chart-2" },
           { icon: Monitor, label: isAr ? "حاسوب" : "Desktop", count: devices.desktop, color: "text-chart-3" },
         ].map(d => (
-          <Card key={d.label}><CardContent className="p-4 text-center"><d.icon className={`h-8 w-8 mx-auto mb-2 ${d.color}`} /><p className="text-xl font-bold"><AnimatedCounter value={d.count} /></p><p className="text-xs text-muted-foreground">{d.label}</p><p className="text-[10px] text-muted-foreground mt-1">{totalViews > 0 ? Math.round((d.count / totalViews) * 100) : 0}%</p></CardContent></Card>
+          <Card key={d.label}><CardContent className="p-4 text-center"><d.icon className={`h-8 w-8 mx-auto mb-2 ${d.color}`} /><p className="text-xl font-bold"><AnimatedCounter value={d.count} /></p><p className="text-xs text-muted-foreground">{d.label}</p><p className="text-[12px] text-muted-foreground mt-1">{totalViews > 0 ? Math.round((d.count / totalViews) * 100) : 0}%</p></CardContent></Card>
         ))}
       </div>
     );
@@ -1143,8 +1143,8 @@ export default function SEODashboard() {
             {checks.map(check => (
               <div key={check.label} className="flex items-center gap-3 py-2 border-b border-border/20 last:border-0">
                 {check.status === "ok" ? <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" /> : <AlertTriangle className="h-4 w-4 text-chart-4 shrink-0" />}
-                <div className="flex-1 min-w-0"><p className="text-sm font-medium">{check.label}</p><p className="text-[11px] text-muted-foreground">{check.detail}</p></div>
-                <Badge variant={check.status === "ok" ? "default" : "secondary"} className="text-[9px]">{check.status === "ok" ? "✓ Pass" : "⚠ Action"}</Badge>
+                <div className="flex-1 min-w-0"><p className="text-sm font-medium">{check.label}</p><p className="text-[12px] text-muted-foreground">{check.detail}</p></div>
+                <Badge variant={check.status === "ok" ? "default" : "secondary"} className="text-[12px]">{check.status === "ok" ? "✓ Pass" : "⚠ Action"}</Badge>
               </div>
             ))}
           </div>
@@ -1152,7 +1152,7 @@ export default function SEODashboard() {
             <h4 className="text-sm font-semibold mb-3">{isAr ? "تغطية الصفحات العامة" : "Public Routes Coverage"}</h4>
             <div className="flex flex-wrap gap-1.5">{PUBLIC_ROUTES.map(route => {
               const hasViews = pageCounts[route.path] > 0;
-              return <Badge key={route.path} variant={hasViews ? "default" : "outline"} className="text-[10px] gap-1">{hasViews && <CheckCircle2 className="h-2.5 w-2.5" />}{route.label}{hasViews && <span className="opacity-60">{pageCounts[route.path]}</span>}</Badge>;
+              return <Badge key={route.path} variant={hasViews ? "default" : "outline"} className="text-[12px] gap-1">{hasViews && <CheckCircle2 className="h-2.5 w-2.5" />}{route.label}{hasViews && <span className="opacity-60">{pageCounts[route.path]}</span>}</Badge>;
             })}</div>
           </div>
         </CardContent>
@@ -1170,8 +1170,8 @@ export default function SEODashboard() {
             <div className="space-y-2">{crawlLog.map((log) => (
               <div key={log.id} className="flex items-center gap-3 py-2 border-b border-border/20 last:border-0">
                 {log.status === "success" ? <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" /> : <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />}
-                <div className="flex-1 min-w-0"><p className="text-sm font-medium capitalize">{log.search_engine} — {log.action?.replace(/_/g, " ")}</p><p className="text-[10px] text-muted-foreground">{format(new Date(log.created_at), "dd MMM yyyy HH:mm")}{log.response_code && ` · HTTP ${log.response_code}`}</p></div>
-                <Badge variant={log.status === "success" ? "default" : "destructive"} className="text-[9px]">{log.status}</Badge>
+                <div className="flex-1 min-w-0"><p className="text-sm font-medium capitalize">{log.search_engine} — {log.action?.replace(/_/g, " ")}</p><p className="text-[12px] text-muted-foreground">{format(new Date(log.created_at), "dd MMM yyyy HH:mm")}{log.response_code && ` · HTTP ${log.response_code}`}</p></div>
+                <Badge variant={log.status === "success" ? "default" : "destructive"} className="text-[12px]">{log.status}</Badge>
               </div>
             ))}</div>
           )}
@@ -1261,12 +1261,12 @@ export default function SEODashboard() {
                     <td className="py-2.5 pe-3 font-mono text-xs text-muted-foreground">{r.old}</td>
                     <td className="py-2.5 px-3 font-mono text-xs font-medium">{r.new_url}</td>
                     <td className="py-2.5 px-3">
-                      <Badge variant={r.type === "Redirect" ? "secondary" : "outline"} className="text-[9px]">
+                      <Badge variant={r.type === "Redirect" ? "secondary" : "outline"} className="text-[12px]">
                         {r.type === "Redirect" ? "301 Redirect" : "Route Update"}
                       </Badge>
                     </td>
                     <td className="py-2.5 ps-3">
-                      <Badge variant="default" className="text-[9px] gap-1">
+                      <Badge variant="default" className="text-[12px] gap-1">
                         <CheckCircle2 className="h-2.5 w-2.5" /> {r.status}
                       </Badge>
                     </td>
@@ -1275,7 +1275,7 @@ export default function SEODashboard() {
               </tbody>
             </table>
           </div>
-          <p className="text-[10px] text-muted-foreground mt-3">
+          <p className="text-[12px] text-muted-foreground mt-3">
             {isAr
               ? "عمليات إعادة التوجيه النشطة في publicRoutes.tsx — تُعيد توجيه الروابط القديمة تلقائياً مع الحفاظ على ترتيب محركات البحث."
               : "Active redirects in publicRoutes.tsx — old URLs are automatically redirected preserving SEO equity."}
@@ -1442,7 +1442,7 @@ export default function SEODashboard() {
           <div className="sticky top-4 space-y-1">
             {NAV_GROUPS.map(group => (
               <div key={group.label} className="mb-3">
-                <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold px-3 mb-1.5 flex items-center gap-1.5">
+                <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold px-3 mb-1.5 flex items-center gap-1.5">
                   <group.icon className="h-3 w-3" />
                   {isAr ? group.labelAr : group.label}
                 </p>

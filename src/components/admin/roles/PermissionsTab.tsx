@@ -191,7 +191,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
                             className="flex items-center gap-2 w-full px-2.5 py-1.5 text-xs rounded-lg hover:bg-muted transition-colors text-start">
                             <Icon className="h-3.5 w-3.5 shrink-0" />
                             <span className="flex-1">{isAr ? rm.labelAr : rm.labelEn}</span>
-                            <span className="text-[10px] text-muted-foreground">{count}</span>
+                            <span className="text-[12px] text-muted-foreground">{count}</span>
                           </button>
                         );
                       })}
@@ -222,18 +222,18 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
                     <div className="flex items-center gap-2">
                       <Lock className="h-3.5 w-3.5 text-muted-foreground" />
                       <h3 className="text-sm font-semibold capitalize">{category}</h3>
-                      <Badge variant={catSelected > 0 ? "default" : "outline"} className="text-[10px] h-5">{catSelected}/{perms.length}</Badge>
+                      <Badge variant={catSelected > 0 ? "default" : "outline"} className="text-[12px] h-5">{catSelected}/{perms.length}</Badge>
                     </div>
                     {isExpanded ? <ChevronUp className="h-4 w-4 text-muted-foreground" /> : <ChevronDown className="h-4 w-4 text-muted-foreground" />}
                   </button>
                   {isExpanded && (
                     <div className="border-t px-3 pb-3 pt-2 space-y-2 bg-muted/5">
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm" className="h-6 text-[10px] rounded-lg"
+                        <Button variant="ghost" size="sm" className="h-6 text-[12px] rounded-lg"
                           onClick={() => selectAllInCategory(perms)} disabled={allSelected}>
                           {t("Select All", "تحديد الكل")}
                         </Button>
-                        <Button variant="ghost" size="sm" className="h-6 text-[10px] rounded-lg"
+                        <Button variant="ghost" size="sm" className="h-6 text-[12px] rounded-lg"
                           onClick={() => deselectAllInCategory(perms)} disabled={catSelected === 0}>
                           {t("Deselect All", "إلغاء الكل")}
                         </Button>
@@ -247,7 +247,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
                             <Checkbox checked={selectedPerms.has(perm.id)} onCheckedChange={() => togglePerm(perm.id)} />
                             <div className="min-w-0 flex-1">
                               <p className="text-xs font-medium leading-tight">{isAr ? perm.name_ar || perm.name : perm.name}</p>
-                              <p className="text-[10px] text-muted-foreground font-mono" dir="ltr">{perm.code}</p>
+                              <p className="text-[12px] text-muted-foreground font-mono" dir="ltr">{perm.code}</p>
                             </div>
                           </label>
                         ))}
@@ -264,12 +264,12 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
             <div className="flex items-center gap-2">
               {hasChanges && (
                 <>
-                  {added > 0 && <Badge variant="default" className="text-[10px] gap-1"><CheckCircle2 className="h-3 w-3" /> +{added} {t("added", "مضاف")}</Badge>}
-                  {removed > 0 && <Badge variant="destructive" className="text-[10px] gap-1">-{removed} {t("removed", "محذوف")}</Badge>}
+                  {added > 0 && <Badge variant="default" className="text-[12px] gap-1"><CheckCircle2 className="h-3 w-3" /> +{added} {t("added", "مضاف")}</Badge>}
+                  {removed > 0 && <Badge variant="destructive" className="text-[12px] gap-1">-{removed} {t("removed", "محذوف")}</Badge>}
                 </>
               )}
               {!hasChanges && !rolePermsLoading && (
-                <p className="text-[10px] text-muted-foreground">{t("No unsaved changes", "لا توجد تغييرات غير محفوظة")}</p>
+                <p className="text-[12px] text-muted-foreground">{t("No unsaved changes", "لا توجد تغييرات غير محفوظة")}</p>
               )}
             </div>
             <Button onClick={handleSave} disabled={saving || !hasChanges} className="gap-1.5 rounded-xl active:scale-[0.98] touch-manipulation">

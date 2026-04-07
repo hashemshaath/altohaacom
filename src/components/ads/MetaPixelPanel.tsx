@@ -156,7 +156,7 @@ export const MetaPixelPanel = memo(function MetaPixelPanel() {
                     <div>
                       <CardTitle className="text-sm">{isAr ? integration.nameAr : integration.nameEn}</CardTitle>
                       {isSaved && isActive && (
-                        <Badge variant="secondary" className="text-[9px] mt-0.5 gap-0.5">
+                        <Badge variant="secondary" className="text-[12px] mt-0.5 gap-0.5">
                           <CheckCircle className="h-2.5 w-2.5" />
                           {isAr ? "مفعل" : "Active"}
                         </Badge>

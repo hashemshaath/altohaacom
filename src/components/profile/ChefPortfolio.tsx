@@ -108,7 +108,7 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
               <p className="text-sm text-muted-foreground">{profile.specialization || (isAr ? "طاهٍ" : "Chef")}</p>
               <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted-foreground">
                 {profile.country_code && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{profile.country_code}</span>}
-                {profile.specialization && <Badge variant="outline" className="text-[10px]">{profile.specialization}</Badge>}
+                {profile.specialization && <Badge variant="outline" className="text-[12px]">{profile.specialization}</Badge>}
                 {profile.years_of_experience && <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{profile.years_of_experience} {isAr ? "سنة" : "yrs"}</span>}
               </div>
             </div>
@@ -120,7 +120,7 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
               <div key={i} className="text-center">
                 <s.icon className="h-4 w-4 mx-auto text-muted-foreground mb-1" />
                 <p className="text-lg font-bold">{s.value}</p>
-                <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground">{s.label}</p>
               </div>
             ))}
           </div>
@@ -155,7 +155,7 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm">{isAr && c.role_title_ar ? c.role_title_ar : c.role_title || c.association_type}</p>
                   <p className="text-xs text-muted-foreground">{isAr && (c.establishments as any)?.name_ar ? (c.establishments as any).name_ar : (c.establishments as any)?.name}</p>
-                  <p className="text-[10px] text-muted-foreground mt-1">
+                  <p className="text-[12px] text-muted-foreground mt-1">
                     {c.start_date} — {c.is_current ? (isAr ? "حالي" : "Present") : c.end_date || "—"}
                   </p>
                   {c.description && <p className="text-xs mt-2 text-muted-foreground line-clamp-2">{c.description}</p>}
@@ -182,8 +182,8 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
                   <CardContent className="p-2.5">
                     <p className="text-sm font-medium line-clamp-1">{isAr && r.title_ar ? r.title_ar : r.title}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      {r.cuisine && <Badge variant="outline" className="text-[9px]">{r.cuisine}</Badge>}
-                      <span className="text-[10px] text-muted-foreground flex items-center gap-0.5"><Heart className="h-3 w-3" />0</span>
+                      {r.cuisine && <Badge variant="outline" className="text-[12px]">{r.cuisine}</Badge>}
+                      <span className="text-[12px] text-muted-foreground flex items-center gap-0.5"><Heart className="h-3 w-3" />0</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -204,8 +204,8 @@ const ChefPortfolio = memo(function ChefPortfolio({ userId }: Props) {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{isAr && c.competitions?.title_ar ? c.competitions.title_ar : c.competitions?.title || "—"}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <Badge variant={c.status === "approved" ? "default" : "secondary"} className="text-[10px]">{c.status}</Badge>
-                    {c.competitions?.country_code && <span className="text-[10px] text-muted-foreground">{c.competitions.country_code}</span>}
+                    <Badge variant={c.status === "approved" ? "default" : "secondary"} className="text-[12px]">{c.status}</Badge>
+                    {c.competitions?.country_code && <span className="text-[12px] text-muted-foreground">{c.competitions.country_code}</span>}
                   </div>
                 </div>
               </CardContent>

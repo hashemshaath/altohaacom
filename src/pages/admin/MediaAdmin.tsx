@@ -210,7 +210,7 @@ export default function MediaAdmin() {
                 <s.icon className={`h-4 w-4 ${s.color}`} />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground">{s.label}</p>
                 <p className="text-lg font-bold">{s.value}</p>
               </div>
             </CardContent>

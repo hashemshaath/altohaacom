@@ -169,7 +169,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
 
           {/* Company search */}
           <div>
-            <Label className="text-[11px] text-muted-foreground">{t("Link to existing company (optional)", "ربط بشركة موجودة (اختياري)")}</Label>
+            <Label className="text-[12px] text-muted-foreground">{t("Link to existing company (optional)", "ربط بشركة موجودة (اختياري)")}</Label>
             <div className="relative mt-1">
               <Search className="absolute start-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
               <Input className="h-8 ps-8 text-xs" value={companySearch} onChange={e => setCompanySearch(e.target.value)} placeholder={t("Search companies...", "ابحث عن شركة...")} />
@@ -187,16 +187,16 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <div><Label className="text-[11px]">{t("Name (EN)", "الاسم (EN)")} *</Label><Input className="h-8 text-xs" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
-            <div><Label className="text-[11px]">{t("Name (AR)", "الاسم (AR)")}</Label><Input className="h-8 text-xs" value={form.name_ar} onChange={e => setForm(f => ({ ...f, name_ar: e.target.value }))} dir="rtl" /></div>
+            <div><Label className="text-[12px]">{t("Name (EN)", "الاسم (EN)")} *</Label><Input className="h-8 text-xs" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
+            <div><Label className="text-[12px]">{t("Name (AR)", "الاسم (AR)")}</Label><Input className="h-8 text-xs" value={form.name_ar} onChange={e => setForm(f => ({ ...f, name_ar: e.target.value }))} dir="rtl" /></div>
             <div>
-              <Label className="text-[11px]">{t("Tier", "الفئة")}</Label>
+              <Label className="text-[12px]">{t("Tier", "الفئة")}</Label>
               <Select value={form.tier} onValueChange={v => setForm(f => ({ ...f, tier: v }))}>
                 <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                 <SelectContent>{TIER_OPTIONS.map(o => <SelectItem key={o.value} value={o.value}>{isAr ? o.ar : o.en}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <div><Label className="text-[11px]">{t("Logo URL", "رابط الشعار")}</Label><Input className="h-8 text-xs" value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} /></div>
+            <div><Label className="text-[12px]">{t("Logo URL", "رابط الشعار")}</Label><Input className="h-8 text-xs" value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} /></div>
           </div>
 
           <div className="flex gap-2 pt-1">
@@ -229,12 +229,12 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{isAr && s.name_ar ? s.name_ar : s.name}</p>
-                  <Badge className={cn("text-[9px] h-4 border mt-0.5", tier.color)}>{isAr ? tier.ar : tier.en}</Badge>
+                  <Badge className={cn("text-[12px] h-4 border mt-0.5", tier.color)}>{isAr ? tier.ar : tier.en}</Badge>
                 </div>
 
                 {isDeleting ? (
                   <div className="flex items-center gap-1.5 animate-in fade-in-0 duration-200">
-                    <span className="text-[10px] text-destructive font-medium flex items-center gap-1">
+                    <span className="text-[12px] text-destructive font-medium flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" />
                       {t("Delete?", "حذف؟")}
                     </span>

@@ -125,7 +125,7 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
             <div className="min-w-0 flex-1">
               <p className="text-sm font-bold truncate">{displayName}</p>
               {profile.username && (
-                <p className="text-[11px] text-muted-foreground">@{profile.username}</p>
+                <p className="text-[12px] text-muted-foreground">@{profile.username}</p>
               )}
             </div>
           </div>
@@ -169,7 +169,7 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
             ].map((stat, i) => (
               <div key={i} className="rounded-xl bg-muted/30 p-2 text-center">
                 <AnimatedCounter value={stat.value} className={cn("text-sm font-bold tabular-nums", stat.color)} />
-                <p className="text-[10px] text-muted-foreground mt-0.5">{stat.label}</p>
+                <p className="text-[12px] text-muted-foreground mt-0.5">{stat.label}</p>
               </div>
             ))}
           </div>

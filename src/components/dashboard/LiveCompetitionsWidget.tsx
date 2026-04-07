@@ -84,7 +84,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
     };
     const s = map[status] || { label: status, labelAr: status, variant: "secondary" as const };
     return (
-      <Badge variant={s.variant} className="text-[9px] px-1.5 py-0">
+      <Badge variant={s.variant} className="text-[12px] px-1.5 py-0">
         {status === "active" && <Flame className="h-2.5 w-2.5 me-0.5" />}
         {isAr ? s.labelAr : s.label}
       </Badge>
@@ -99,7 +99,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
         <CardTitle className="text-sm flex items-center gap-2">
           <Activity className="h-4 w-4 text-primary" />
           {isAr ? "المسابقات النشطة" : "Live Competitions"}
-          <Badge variant="secondary" className="text-[9px] px-1.5 ms-auto">
+          <Badge variant="secondary" className="text-[12px] px-1.5 ms-auto">
             {competitions.length}
           </Badge>
         </CardTitle>
@@ -120,7 +120,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-semibold truncate">{title}</p>
                   {timeStr && (
-                    <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                    <p className="text-[12px] text-muted-foreground flex items-center gap-1 mt-0.5">
                       <Clock className="h-2.5 w-2.5" />
                       {timeStr}
                     </p>
@@ -128,7 +128,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   {comp.user_registered && (
-                    <Badge variant="outline" className="text-[8px] px-1 py-0 border-primary/30 text-primary">
+                    <Badge variant="outline" className="text-[12px] px-1 py-0 border-primary/30 text-primary">
                       {isAr ? "مسجل" : "Joined"}
                     </Badge>
                   )}
@@ -138,7 +138,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
 
               {comp.max_participants && comp.max_participants > 0 && (
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                  <div className="flex items-center justify-between text-[12px] text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Users className="h-2.5 w-2.5" />
                       {comp.registration_count}/{comp.max_participants}
@@ -149,7 +149,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
                 </div>
               )}
 
-              <Button variant="ghost" size="sm" className="w-full mt-2 h-7 text-[10px] gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity" asChild>
+              <Button variant="ghost" size="sm" className="w-full mt-2 h-7 text-[12px] gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity" asChild>
                 <Link to={`/competitions/${comp.id}`}>
                   {isAr ? "عرض التفاصيل" : "View Details"}
                   <ArrowRight className="h-3 w-3" />

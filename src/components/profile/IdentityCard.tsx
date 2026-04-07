@@ -114,10 +114,10 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
           <div className="flex items-center justify-between mb-6">
             <img src="/altoha-logo.png" alt="Altoha" className="h-10 sm:h-12 object-contain" />
             <div className="text-end">
-              <p className="text-[10px] font-semibold tracking-[0.25em] uppercase text-primary">
+              <p className="text-[12px] font-semibold tracking-[0.25em] uppercase text-primary">
                 {isAr ? "بطاقة التحقق الرقمية" : "Digital Verification"}
               </p>
-              <p className="text-[9px] text-muted-foreground tracking-wider mt-0.5">
+              <p className="text-[12px] text-muted-foreground tracking-wider mt-0.5">
                 {isAr ? "بطاقة هوية المنصة" : "Platform Identity Card"}
               </p>
             </div>
@@ -153,14 +153,14 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
                 <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>
               )}
               {profile?.account_number && (
-                <p className="font-mono text-[11px] text-primary/70 mt-2 tracking-[0.15em]" dir="ltr">
+                <p className="font-mono text-[12px] text-primary/70 mt-2 tracking-[0.15em]" dir="ltr">
                   {profile.account_number}
                 </p>
               )}
 
               {/* 4-digit code */}
               <div className="flex items-center gap-1.5 mt-3 justify-center sm:justify-start">
-                <span className="text-[9px] text-muted-foreground me-1.5 uppercase tracking-wider">
+                <span className="text-[12px] text-muted-foreground me-1.5 uppercase tracking-wider">
                   {isAr ? "كود" : "Code"}
                 </span>
                 {digits.split("").map((d, i) => (
@@ -193,7 +193,7 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
                   bgColor="transparent"
                 />
               </div>
-              <span className="text-[8px] text-muted-foreground tracking-widest uppercase">
+              <span className="text-[12px] text-muted-foreground tracking-widest uppercase">
                 {isAr ? "امسح للتحقق" : "Scan to verify"}
               </span>
             </div>
@@ -212,7 +212,7 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
                   bar ? <rect key={i} x={i} y={0} width={0.7} height={44} className="fill-primary/70" /> : null
                 )}
               </svg>
-              <span className="font-mono text-[9px] tracking-[0.35em] text-muted-foreground" dir="ltr">
+              <span className="font-mono text-[12px] tracking-[0.35em] text-muted-foreground" dir="ltr">
                 {barcodeValue}
               </span>
             </div>
@@ -225,7 +225,7 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
             <Button
               variant="outline"
               size="sm"
-              className="gap-1.5 text-[11px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
+              className="gap-1.5 text-[12px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
               onClick={handleCopyCode}
             >
               <Copy className="h-3 w-3" />
@@ -234,7 +234,7 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
             <Button
               variant="outline"
               size="sm"
-              className="gap-1.5 text-[11px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
+              className="gap-1.5 text-[12px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
               onClick={handleDownloadQR}
             >
               <Download className="h-3 w-3" />
@@ -243,7 +243,7 @@ export const IdentityCard = memo(function IdentityCard({ profile, userId }: Iden
             <Button
               variant="outline"
               size="sm"
-              className="gap-1.5 text-[11px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
+              className="gap-1.5 text-[12px] h-8 border-primary/20 hover:bg-primary/5 hover:border-primary/30"
               onClick={handleSaveContact}
             >
               <UserPlus className="h-3 w-3" />

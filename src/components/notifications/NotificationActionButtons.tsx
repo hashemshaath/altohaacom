@@ -55,7 +55,7 @@ export const NotificationActionButtons = memo(function NotificationActionButtons
             key={i}
             variant={action.variant}
             size="sm"
-            className={compact ? "h-6 text-[10px] px-2 gap-1" : "h-7 text-xs px-3 gap-1.5"}
+            className={compact ? "h-6 text-[12px] px-2 gap-1" : "h-7 text-xs px-3 gap-1.5"}
             onClick={(e) => {
               e.stopPropagation();
               onMarkRead(notification.id);

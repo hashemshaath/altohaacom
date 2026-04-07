@@ -97,31 +97,31 @@ export const SEOContentAnalysis = memo(function SEOContentAnalysis({ isAr }: { i
         <Card>
           <CardContent className="p-4 text-center">
             <p className={cn("text-2xl font-bold", avgScore >= 70 ? "text-emerald-500" : avgScore >= 50 ? "text-amber-500" : "text-destructive")}>{avgScore}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "متوسط الجودة" : "Avg Quality"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "متوسط الجودة" : "Avg Quality"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-emerald-500">{excellent}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "ممتاز (80+)" : "Excellent (80+)"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "ممتاز (80+)" : "Excellent (80+)"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-amber-500">{good}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "جيد (50-79)" : "Good (50-79)"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "جيد (50-79)" : "Good (50-79)"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-destructive">{poor}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "ضعيف (<50)" : "Poor (<50)"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "ضعيف (<50)" : "Poor (<50)"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold">{metrics.length}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي المقالات" : "Total Articles"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي المقالات" : "Total Articles"}</p>
           </CardContent>
         </Card>
       </div>
@@ -143,7 +143,7 @@ export const SEOContentAnalysis = memo(function SEOContentAnalysis({ isAr }: { i
                 <item.icon className={cn("h-4 w-4 shrink-0", item.count > 0 ? item.color : "text-emerald-500")} />
                 <div>
                   <p className="text-sm font-bold tabular-nums">{item.count}</p>
-                  <p className="text-[10px] text-muted-foreground">{item.label}</p>
+                  <p className="text-[12px] text-muted-foreground">{item.label}</p>
                 </div>
               </div>
             ))}
@@ -177,7 +177,7 @@ export const SEOContentAnalysis = memo(function SEOContentAnalysis({ isAr }: { i
                   <tr key={m.id} className="border-b border-border/20 last:border-0">
                     <td className="py-2 pe-3 max-w-[200px]">
                       <p className="text-xs font-medium truncate">{m.title}</p>
-                      <p className="text-[10px] text-muted-foreground font-mono truncate">/news/{m.slug}</p>
+                      <p className="text-[12px] text-muted-foreground font-mono truncate">/news/{m.slug}</p>
                     </td>
                     <td className="py-2 px-2 text-center">
                       <div className="flex items-center gap-1.5 justify-center">

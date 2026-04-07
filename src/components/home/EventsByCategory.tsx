@@ -87,7 +87,7 @@ export const EventsByCategory = memo(function EventsByCategory() {
     const s = map[status] || map.upcoming;
     const Icon = s.icon;
     return (
-      <Badge className={cn("text-[10px] shadow-sm gap-1", s.cls)}>
+      <Badge className={cn("text-[12px] shadow-sm gap-1", s.cls)}>
         {Icon && <Icon className="h-2.5 w-2.5" />}
         {isAr ? s.labelAr : s.label}
       </Badge>
@@ -218,7 +218,7 @@ function renderFeaturedCompetition(item: any, isAr: boolean, statusBadge: (s: st
           </div>
           <ShareButton title={title} url={`/competitions/${item.id}`} isAr={isAr} className="absolute start-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity" />
           <div className="absolute bottom-0 inset-x-0 p-4 sm:p-5">
-            <Badge variant="outline" className="mb-2 bg-background/60 backdrop-blur-sm text-[10px]">
+            <Badge variant="outline" className="mb-2 bg-background/60 backdrop-blur-sm text-[12px]">
               <Trophy className="me-1 h-2.5 w-2.5" />
               {isAr ? "مميز" : "Featured"}
             </Badge>
@@ -273,7 +273,7 @@ function renderCompetitionCard(item: any, isAr: boolean, statusBadge: (s: string
         </div>
         <CardContent className="p-3">
           <h3 className="mb-1.5 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
-          <div className="space-y-1 text-[11px] text-muted-foreground">
+          <div className="space-y-1 text-[12px] text-muted-foreground">
             {item.competition_start && (
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
@@ -323,7 +323,7 @@ function renderExhibitionCard(item: any, isAr: boolean, statusBadge: (s: string)
         <CardContent className="p-3">
           <h3 className="mb-1 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
           {organizerName && (
-            <div className="mb-1.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+            <div className="mb-1.5 flex items-center gap-1.5 text-[12px] text-muted-foreground">
               {item.logo_url ? (
                 <img loading="lazy" src={item.logo_url} alt={organizerName} className="h-4 w-4 rounded object-contain shrink-0" />
               ) : (
@@ -332,7 +332,7 @@ function renderExhibitionCard(item: any, isAr: boolean, statusBadge: (s: string)
               <span className="truncate">{organizerName}</span>
             </div>
           )}
-          <div className="space-y-1 text-[11px] text-muted-foreground">
+          <div className="space-y-1 text-[12px] text-muted-foreground">
             {item.start_date && (
               <div className="flex items-center gap-1.5">
                 <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
@@ -362,9 +362,9 @@ function renderChefsTableCard(item: any, isAr: boolean) {
             <Coffee className="h-5 w-5 text-primary" />
           </div>
           <h3 className="mb-1.5 line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors">{title}</h3>
-          <div className="space-y-1.5 text-[11px] text-muted-foreground">
+          <div className="space-y-1.5 text-[12px] text-muted-foreground">
             {item.product_category && (
-              <Badge variant="secondary" className="text-[10px]">{item.product_category}</Badge>
+              <Badge variant="secondary" className="text-[12px]">{item.product_category}</Badge>
             )}
             {item.session_date && (
               <div className="flex items-center gap-1.5">

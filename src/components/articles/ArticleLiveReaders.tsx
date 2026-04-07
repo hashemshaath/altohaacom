@@ -54,7 +54,7 @@ export const ArticleLiveReaders = memo(function ArticleLiveReaders({ articleId, 
         <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
       </span>
       <Users className="h-3 w-3 text-muted-foreground" />
-      <span className="text-[11px] font-medium text-muted-foreground">
+      <span className="text-[12px] font-medium text-muted-foreground">
         {count} {isAr ? "يقرأون الآن" : "reading now"}
       </span>
     </div>

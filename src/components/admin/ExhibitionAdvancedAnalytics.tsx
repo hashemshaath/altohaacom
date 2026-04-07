@@ -187,7 +187,7 @@ export const ExhibitionAdvancedAnalytics = memo(function ExhibitionAdvancedAnaly
                 <span className="text-xs text-muted-foreground">{kpi.label}</span>
               </div>
               <p className="text-2xl font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">{kpi.sub}</p>
+              <p className="text-[12px] text-muted-foreground mt-0.5">{kpi.sub}</p>
             </CardContent>
           </Card>
         ))}
@@ -287,7 +287,7 @@ export const ExhibitionAdvancedAnalytics = memo(function ExhibitionAdvancedAnaly
                 <div key={c.city}>
                   <div className="flex items-center justify-between text-xs mb-1">
                     <span>{c.city}</span>
-                    <Badge variant="outline" className="text-[9px] h-4">{c.count}</Badge>
+                    <Badge variant="outline" className="text-[12px] h-4">{c.count}</Badge>
                   </div>
                   <Progress value={(c.count / (data.cityData[0]?.count || 1)) * 100} className="h-1.5" />
                 </div>

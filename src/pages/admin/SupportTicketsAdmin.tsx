@@ -99,7 +99,7 @@ function getSlaIndicator(priority: string, createdAt: string, status: string, is
 
   if (hours >= thresholds.breach) {
     return (
-      <Badge variant="destructive" className="gap-1 text-[9px] animate-pulse">
+      <Badge variant="destructive" className="gap-1 text-[12px] animate-pulse">
         <Timer className="h-3 w-3" />
         {isAr ? "تجاوز SLA" : "SLA Breached"}
       </Badge>
@@ -107,7 +107,7 @@ function getSlaIndicator(priority: string, createdAt: string, status: string, is
   }
   if (hours >= thresholds.warning) {
     return (
-      <Badge className="gap-1 text-[9px] bg-chart-4/10 text-chart-4 border-chart-4/30" variant="outline">
+      <Badge className="gap-1 text-[12px] bg-chart-4/10 text-chart-4 border-chart-4/30" variant="outline">
         <Timer className="h-3 w-3" />
         {isAr ? "تحذير SLA" : "SLA Warning"}
       </Badge>
@@ -117,7 +117,7 @@ function getSlaIndicator(priority: string, createdAt: string, status: string, is
   const remHours = Math.floor(remaining / 60);
   const remMins = remaining % 60;
   return (
-    <span className="text-[9px] text-muted-foreground flex items-center gap-1">
+    <span className="text-[12px] text-muted-foreground flex items-center gap-1">
       <Clock className="h-3 w-3" />
       {remHours}h {remMins}m
     </span>
@@ -351,7 +351,7 @@ export default function SupportTicketsAdmin() {
                 <s.icon className={cn("h-3.5 w-3.5 sm:h-4 sm:w-4", `text-${s.color}`)} />
               </div>
               <div className="min-w-0">
-                <p className="text-[10px] sm:text-xs text-muted-foreground truncate font-medium">{s.label}</p>
+                <p className="text-[12px] sm:text-xs text-muted-foreground truncate font-medium">{s.label}</p>
                 <p className="text-base sm:text-xl font-bold tabular-nums"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></p>
               </div>
             </CardContent>
@@ -373,11 +373,11 @@ export default function SupportTicketsAdmin() {
                 <div className="min-w-0">
                   <CardTitle className="text-sm sm:text-base">{selectedTicket.subject}</CardTitle>
                   <div className="mt-2 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                    <Badge variant="outline" className="text-[10px]">{selectedTicket.ticket_number}</Badge>
+                    <Badge variant="outline" className="text-[12px]">{selectedTicket.ticket_number}</Badge>
                     {getStatusBadge(selectedTicket.status)}
                     {getPriorityBadge(selectedTicket.priority)}
                     {getSlaIndicator(selectedTicket.priority, selectedTicket.created_at, selectedTicket.status, isAr)}
-                    <Badge variant="outline" className="text-[10px]">
+                    <Badge variant="outline" className="text-[12px]">
                       <Users className="me-1 h-3 w-3" />
                       {profileMap.get(selectedTicket.user_id)?.full_name || "Unknown"}
                     </Badge>
@@ -412,7 +412,7 @@ export default function SupportTicketsAdmin() {
             <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
               <div className="rounded-xl bg-muted/40 border border-border/30 p-3 sm:p-4 mb-3 sm:mb-4">
                 <p className="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed">{selectedTicket.description}</p>
-                <span className="text-[10px] text-muted-foreground block mt-2">
+                <span className="text-[12px] text-muted-foreground block mt-2">
                   {format(new Date(selectedTicket.created_at), "yyyy-MM-dd HH:mm")}
                 </span>
               </div>
@@ -442,16 +442,16 @@ export default function SupportTicketsAdmin() {
                         )}>
                         <div className="flex items-center justify-between mb-1">
                           <div className="flex items-center gap-1.5">
-                            <Badge variant="outline" className="text-[10px]">
+                            <Badge variant="outline" className="text-[12px]">
                               {isUser ? (isAr ? "المستخدم" : "User") : (isAr ? "الدعم" : "Support")}
                             </Badge>
                             {msg.is_internal_note && (
-                              <Badge variant="secondary" className="text-[9px]">
+                              <Badge variant="secondary" className="text-[12px]">
                                 {isAr ? "داخلية" : "Internal"}
                               </Badge>
                             )}
                           </div>
-                          <span className="text-[10px] text-muted-foreground">
+                          <span className="text-[12px] text-muted-foreground">
                             {formatDistanceToNow(new Date(msg.created_at), {
                               addSuffix: true,
                               locale: isAr ? ar : enUS,
@@ -468,7 +468,7 @@ export default function SupportTicketsAdmin() {
               {selectedTicket.status !== "closed" && (
                 <div className="mt-3 sm:mt-4 space-y-2">
                   <div className="flex items-center justify-between gap-2">
-                    <label className="flex items-center gap-1.5 text-[11px] sm:text-sm cursor-pointer">
+                    <label className="flex items-center gap-1.5 text-[12px] sm:text-sm cursor-pointer">
                       <input
                         type="checkbox"
                         checked={isInternalNote}
@@ -479,7 +479,7 @@ export default function SupportTicketsAdmin() {
                     </label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-1 h-7 text-[11px] rounded-xl">
+                        <Button variant="outline" size="sm" className="gap-1 h-7 text-[12px] rounded-xl">
                           <Zap className="h-3 w-3" />
                           <span className="hidden sm:inline">{isAr ? "ردود سريعة" : "Quick Replies"}</span>
                           <span className="sm:hidden">{isAr ? "سريع" : "Quick"}</span>
@@ -493,7 +493,7 @@ export default function SupportTicketsAdmin() {
                             className="flex-col items-start gap-1 py-2"
                           >
                             <span className="text-xs font-medium capitalize">{r.key}</span>
-                            <span className="text-[11px] text-muted-foreground line-clamp-2">
+                            <span className="text-[12px] text-muted-foreground line-clamp-2">
                               {isAr ? r.ar : r.en}
                             </span>
                           </DropdownMenuItem>
@@ -584,18 +584,18 @@ export default function SupportTicketsAdmin() {
                           className="flex items-start gap-2.5 px-3 py-3 active:bg-accent/50 cursor-pointer transition-all duration-200 hover:bg-accent/30"
                           onClick={() => setSelectedTicketId(ticket.id)}
                         >
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted text-[10px] font-semibold mt-0.5">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted text-[12px] font-semibold mt-0.5">
                             {(profile?.full_name || "U")[0].toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-xs font-medium truncate">{ticket.subject}</p>
                             <div className="flex items-center gap-1.5 mt-1 flex-wrap">
-                              <span className="text-[10px] font-mono text-muted-foreground">{ticket.ticket_number}</span>
+                              <span className="text-[12px] font-mono text-muted-foreground">{ticket.ticket_number}</span>
                               {getStatusBadge(ticket.status)}
                               {getPriorityBadge(ticket.priority)}
                               {getSlaIndicator(ticket.priority, ticket.created_at, ticket.status, isAr)}
                             </div>
-                            <p className="text-[10px] text-muted-foreground mt-0.5">
+                            <p className="text-[12px] text-muted-foreground mt-0.5">
                               {profile?.full_name || "Unknown"} · {formatDistanceToNow(new Date(ticket.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
                             </p>
                           </div>
@@ -642,7 +642,7 @@ export default function SupportTicketsAdmin() {
                               </TableCell>
                               <TableCell>
                                 <div className="flex items-center gap-2">
-                                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-muted text-[10px] font-semibold">
+                                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-xl bg-muted text-[12px] font-semibold">
                                     {(profile?.full_name || "U")[0].toUpperCase()}
                                   </div>
                                   <span className="text-sm truncate">{profile?.full_name || "Unknown"}</span>

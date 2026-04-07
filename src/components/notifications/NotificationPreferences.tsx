@@ -187,7 +187,7 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
               <Icon className="h-3.5 w-3.5" />
               {isAr ? ch.labelAr : ch.label}
               {channels[ch.key].enabled && (
-                <Badge variant="secondary" className="h-4 text-[9px] px-1 ms-0.5">
+                <Badge variant="secondary" className="h-4 text-[12px] px-1 ms-0.5">
                   {isAr ? "مفعل" : "ON"}
                 </Badge>
               )}
@@ -217,7 +217,7 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
               <Label className="text-xs text-muted-foreground mb-2 block">{isAr ? "ساعات الهدوء" : "Quiet Hours"}</Label>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">{isAr ? "من" : "From"}</Label>
+                  <Label className="text-[12px] text-muted-foreground">{isAr ? "من" : "From"}</Label>
                   <Select
                     value={activePrefs.quiet_hours_start || "none"}
                     onValueChange={v => updateChannel(activeChannel, "quiet_hours_start", v === "none" ? null : v)}
@@ -232,7 +232,7 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
                   </Select>
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[10px] text-muted-foreground">{isAr ? "إلى" : "To"}</Label>
+                  <Label className="text-[12px] text-muted-foreground">{isAr ? "إلى" : "To"}</Label>
                   <Select
                     value={activePrefs.quiet_hours_end || "none"}
                     onValueChange={v => updateChannel(activeChannel, "quiet_hours_end", v === "none" ? null : v)}
