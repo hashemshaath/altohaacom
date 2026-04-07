@@ -26,24 +26,28 @@ const ALL_TRACKING_TYPES = [
 ];
 
 export function useGoogleTracking() {
-  const injected = useRef(false);
+  const injectedTypes = useRef<Set<string>>(new Set());
 
   const { data: configs } = useQuery({
     queryKey: ["integration-settings-tracking-active"],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("integration_settings")
         .select("integration_type, config, is_active")
         .eq("is_active", true)
         .in("integration_type", ALL_TRACKING_TYPES);
+      if (error) {
+        console.error("[Tracking] Failed to load integration settings:", error.message);
+        return [];
+      }
       return data || [];
     },
     staleTime: 5 * 60 * 1000,
+    retry: 2,
   });
 
   useEffect(() => {
-    if (!configs || configs.length === 0 || injected.current) return;
-    injected.current = true;
+    if (!configs || configs.length === 0) return;
 
     // Ensure dataLayer exists once before any script needs it
     (window as any).dataLayer = (window as any).dataLayer || [];
