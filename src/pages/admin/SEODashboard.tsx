@@ -214,7 +214,22 @@ export default function SEODashboard() {
     },
   });
 
-  const { data: vitalsData, isLoading: loadingVitals, error: vitalsDataError } = useQuery({
+  // Previous period page views for comparison
+  const { data: prevPageViews } = useQuery({
+    queryKey: ["seo-page-views-prev", range],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("seo_page_views")
+        .select("path, device_type, is_bounce, duration_seconds, session_id")
+        .gte("created_at", prevFromDate)
+        .lt("created_at", fromDate)
+        .limit(1000);
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+
     queryKey: ["seo-web-vitals", range],
     queryFn: async () => {
       const { data, error } = await supabase
