@@ -75,7 +75,7 @@ export const HomeTestimonials = function HomeTestimonials() {
             className="text-center"
           />
 
-          <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y rounded-2xl bg-gradient-to-br from-card to-card/80" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+          <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y rounded-2xl <Card className="border-border/40 shadow-lg relative overflow-hidden touch-pan-y rounded-2xl bg-card" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>" onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
             <div className="absolute top-4 start-4 opacity-[0.04]">
               <Quote className="h-24 w-24" />
             </div>
