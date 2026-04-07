@@ -2,29 +2,40 @@ import { forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Users, Trophy, Building2, Globe, Landmark } from "lucide-react";
+import { Users, Trophy, Globe, Landmark } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 
-const StatItem = forwardRef<HTMLDivElement, { value: number; label: string; icon: any; isVisible: boolean; delay: number }>(
-  function StatItem({ value, label, icon: Icon, isVisible, delay }, ref) {
+const COLORS = [
+  { bg: "bg-blue-50 dark:bg-blue-950/30", text: "text-blue-600 dark:text-blue-400", icon: "bg-blue-100 dark:bg-blue-900/50" },
+  { bg: "bg-emerald-50 dark:bg-emerald-950/30", text: "text-emerald-600 dark:text-emerald-400", icon: "bg-emerald-100 dark:bg-emerald-900/50" },
+  { bg: "bg-amber-50 dark:bg-amber-950/30", text: "text-amber-600 dark:text-amber-400", icon: "bg-amber-100 dark:bg-amber-900/50" },
+  { bg: "bg-purple-50 dark:bg-purple-950/30", text: "text-purple-600 dark:text-purple-400", icon: "bg-purple-100 dark:bg-purple-900/50" },
+];
+
+const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon: any; isVisible: boolean; delay: number; colorIdx: number }>(
+  function StatCard({ value, label, icon: Icon, isVisible, delay, colorIdx }, ref) {
     const count = useCountUp(value, isVisible);
+    const color = COLORS[colorIdx % COLORS.length];
 
     return (
       <div
         ref={ref}
         className={cn(
-          "flex flex-col items-center gap-1 bg-[var(--bg-purple-wash)] p-6 text-center transition-[transform,opacity] duration-700",
+          "flex flex-col items-center gap-3 rounded-2xl p-5 sm:p-6 transition-all duration-700",
+          color.bg,
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
         )}
         style={{ transitionDelay: `${delay}ms` }}
       >
-        <p className="text-[clamp(32px,5vw,52px)] font-extrabold tracking-tight tabular-nums text-[var(--color-primary)]" dir="ltr">
-          <AnimatedCounter value={count} className="inline" />+
+        <div className={cn("flex items-center justify-center h-11 w-11 rounded-xl", color.icon)}>
+          <Icon className={cn("h-5 w-5", color.text)} />
+        </div>
+        <p className={cn("text-3xl sm:text-4xl font-extrabold tabular-nums tracking-tight", color.text)} dir="ltr">
+          {count.toLocaleString()}+
         </p>
-        <p className="text-[14px] text-[var(--color-muted)] mt-1">{label}</p>
+        <p className="text-sm font-medium text-muted-foreground">{label}</p>
       </div>
     );
   }
@@ -45,20 +56,11 @@ export default function StatsBar() {
         supabase.from("exhibitions").select("id", { count: "exact", head: true }),
         supabase.from("organizers").select("id", { count: "exact", head: true }),
       ]);
-      const getCount = (r: PromiseSettledResult<any>) =>
-        r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
-      return {
-        members: getCount(results[0]),
-        competitions: getCount(results[1]),
-        entities: getCount(results[2]),
-        exhibitions: getCount(results[3]),
-        organizers: getCount(results[4]),
-      };
+      const getCount = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
+      return { members: getCount(results[0]), competitions: getCount(results[1]), entities: getCount(results[2]), exhibitions: getCount(results[3]), organizers: getCount(results[4]) };
     },
     staleTime: 1000 * 60 * 10,
   });
-
-  const isLoading = !stats;
 
   const items = [
     { value: stats?.members ?? 0, label: isAr ? "عضو" : "Members", icon: Users },
@@ -68,39 +70,22 @@ export default function StatsBar() {
   ];
 
   return (
-    <section
-      ref={ref}
-      dir={isAr ? "rtl" : "ltr"}
-      className="section-purple"
-      style={{ padding: "56px 0" }}
-      aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}
-    >
-      <div className="mx-auto max-w-[var(--container-max)] px-[var(--container-px-mobile)] lg:px-[var(--container-px)]">
-        {/* Grid with 1px gap acting as dividers */}
-        <div
-          className="grid grid-cols-2 lg:grid-cols-4 bg-[var(--color-border)]"
-          style={{ gap: "1px" }}
-          role="list"
-        >
-          {isLoading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} role="listitem" className="bg-[var(--bg-purple-wash)] p-6 animate-pulse">
-                <div className="flex flex-col items-center gap-2">
-                  <div className="h-10 w-20 bg-[var(--color-primary-light)] rounded" />
-                  <div className="h-4 w-16 bg-[var(--color-primary-light)] rounded" />
+    <section ref={ref} dir={isAr ? "rtl" : "ltr"} className="py-10 sm:py-14" aria-label={isAr ? "إحصائيات المنصة" : "Platform statistics"}>
+      <div className="container">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          {!stats
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className={cn("rounded-2xl p-6 animate-pulse", COLORS[i].bg)}>
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-muted/50" />
+                    <div className="h-8 w-20 bg-muted/50 rounded-lg" />
+                    <div className="h-4 w-16 bg-muted/50 rounded" />
+                  </div>
                 </div>
-              </div>
-            ))
-          ) : items.map((item, idx) => (
-            <StatItem
-              key={item.label}
-              value={item.value}
-              label={item.label}
-              icon={item.icon}
-              isVisible={isVisible}
-              delay={idx * 100}
-            />
-          ))}
+              ))
+            : items.map((item, idx) => (
+                <StatCard key={item.label} value={item.value} label={item.label} icon={item.icon} isVisible={isVisible} delay={idx * 100} colorIdx={idx} />
+              ))}
         </div>
       </div>
     </section>
