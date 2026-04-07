@@ -796,6 +796,52 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE — prefers-color-scheme fallback (for system auto)
+   ═══════════════════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) {
+    color-scheme: dark;
+  }
+  /* Logo inversion in dark mode */
+  html:not(.light) img[src*="logo"] { filter: brightness(0) invert(1); }
+}
+
+/* Manual dark-mode logo inversion */
+html.dark img[src*="logo"] { filter: brightness(0) invert(1); }
+.logo-dark-invert { filter: brightness(0) invert(1); }
+html:not(.dark) .logo-dark-invert { filter: none; }
+
+/* Dark mode card-surface */
+.dark .card-surface {
+  background: var(--bg-dark-mid);
+  border-color: var(--color-border);
+}
+.dark .card-surface:hover {
+  background: var(--bg-white);
+  border-color: var(--color-border);
+}
+
+/* Dark mode section overrides */
+.dark .section-white { background: var(--bg-white); }
+.dark .section-surface { background: var(--bg-surface); }
+.dark .section-purple { background: var(--bg-purple-wash); }
+.dark .section-dark { background: var(--bg-dark); }
+
+/* Dark mode input overrides */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="color"]),
+.dark textarea,
+.dark select {
+  background: var(--bg-dark-mid);
+  border-color: var(--color-border);
+  color: var(--color-body);
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--color-subtle);
+}
+
 @keyframes heroFadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
