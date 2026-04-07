@@ -643,7 +643,7 @@ export default function ArticleDetail() {
                           <img loading="lazy" src={url}
                             alt={`${title} - ${i + 1}`}
                             className="w-full h-full object-cover"
-                            loading="lazy"
+                           
                             decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">

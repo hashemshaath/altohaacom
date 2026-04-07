@@ -293,7 +293,7 @@ export default function EntityDetail() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           {entity.cover_image_url ? (
-            <img src={entity.cover_image_url} alt={name} loading="lazy" className="h-full w-full object-cover" loading="lazy" />
+            <img src={entity.cover_image_url} alt={name} loading="lazy" className="h-full w-full object-cover" />
           ) : (
             <img src={entitiesHero} alt="" loading="lazy" className="h-full w-full object-cover" />
           )}
@@ -314,7 +314,7 @@ export default function EntityDetail() {
 
           <div className="flex items-start gap-5">
             {entity.logo_url ? (
-              <img src={entity.logo_url} alt={name} loading="lazy" className="h-20 w-20 rounded-2xl border-2 border-background/50 object-cover shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24" loading="lazy" />
+              <img src={entity.logo_url} alt={name} loading="lazy" className="h-20 w-20 rounded-2xl border-2 border-background/50 object-cover shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24" />
             ) : (
               <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-background/50 bg-background/80 shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24">
                 {isEducational ? <GraduationCap className="h-10 w-10 text-primary" /> : <Building2 className="h-10 w-10 text-primary" />}

@@ -492,7 +492,7 @@ export default function ChefsTableDetail() {
                   {media.map(m => (
                     <div key={m.id} className="aspect-square overflow-hidden rounded-xl border border-border/40">
                       {m.media_type === "image" ? (
-                        <img src={m.media_url} alt={m.title || "Product image"} loading="lazy" className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                        <img src={m.media_url} alt={m.title || "Product image"} loading="lazy" className="h-full w-full object-cover" decoding="async" />
                       ) : (
                         <video src={m.media_url} className="h-full w-full object-cover" controls preload="metadata" />
                       )}

@@ -382,7 +382,7 @@ export default function CompetitionDetail() {
               <img loading="lazy" src={competition.cover_image_url}
                 alt={title}
                 className="h-full w-full object-cover"
-                loading="eager"
+               
                 decoding="async"
                 fetchPriority="high"
               />

@@ -291,7 +291,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
           <img loading="lazy" src={event.cover_image_url}
             alt={title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            loading="lazy"
+           
             decoding="async"
           />
         ) : event.logo_url ? (
@@ -299,7 +299,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
             <img loading="lazy" src={event.logo_url}
               alt={title}
               className="max-h-20 max-w-[80%] object-contain"
-              loading="lazy"
+             
             />
           </div>
         ) : (

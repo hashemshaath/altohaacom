@@ -113,7 +113,7 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
             <img loading="lazy" src={creative.image_url}
               alt={title || "Advertisement"}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-              loading="lazy"
+             
             />
             {/* Overlay with text */}
             {(title || bodyText) && (

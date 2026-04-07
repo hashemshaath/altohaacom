@@ -110,7 +110,7 @@ export default function Jobs() {
           <img loading="lazy" src={heroImage}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
-            loading="eager"
+           
             fetchPriority="high"
           />
           {/* Triple gradient overlay */}
@@ -583,7 +583,7 @@ export default function Jobs() {
 
         {/* ═══════ FINAL CTA ═══════ */}
         <section className="relative py-20 overflow-hidden">
-          <img src={heroImage} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <img src={heroImage} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
           <div className="relative z-10 max-w-3xl mx-auto px-4 text-center space-y-6">
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight" style={{ color: "white" }}>

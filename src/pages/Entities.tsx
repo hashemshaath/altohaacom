@@ -300,7 +300,7 @@ export default function Entities() {
                       {/* Cover / Logo Header */}
                       <div className="relative h-36 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5">
                         {entity.cover_image_url ? (
-                          <img src={entity.cover_image_url} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                          <img src={entity.cover_image_url} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <Building2 className="h-12 w-12 text-primary/15" />
@@ -311,7 +311,7 @@ export default function Entities() {
                         {/* Logo positioned at bottom-start */}
                         <div className="absolute -bottom-6 start-4">
                           {entity.logo_url ? (
-                            <img src={entity.logo_url} alt={name} loading="lazy" className="h-14 w-14 rounded-xl border-2 border-background bg-background object-cover shadow-lg ring-1 ring-border/10" loading="lazy" />
+                            <img src={entity.logo_url} alt={name} loading="lazy" className="h-14 w-14 rounded-xl border-2 border-background bg-background object-cover shadow-lg ring-1 ring-border/10" />
                           ) : (
                             <div className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-background bg-background shadow-lg ring-1 ring-border/10">
                               <Building2 className="h-7 w-7 text-primary" />

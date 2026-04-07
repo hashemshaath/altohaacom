@@ -86,7 +86,7 @@ export const PartnersLogos = memo(function PartnersLogos() {
                   className={cn(
                     "h-full w-full object-contain grayscale opacity-60 transition-all duration-300 group-hover:grayscale-0 group-hover:opacity-100"
                   )}
-                  loading="lazy"
+                 
                 />
               </div>
               <div className="flex items-center gap-1">
