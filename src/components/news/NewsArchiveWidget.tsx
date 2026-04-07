@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { forwardRef, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, ChevronRight } from "lucide-react";
@@ -13,7 +13,7 @@ interface Props {
   onMonthClick?: (from: string, to: string) => void;
 }
 
-export const NewsArchiveWidget = memo(function NewsArchiveWidget({ articles, isAr, onMonthClick }: Props) {
+export const NewsArchiveWidget = forwardRef<HTMLDivElement, Props>(function NewsArchiveWidget({ articles, isAr, onMonthClick }, ref) {
   const archiveMonths = useMemo(() => {
     const monthMap = new Map<string, { count: number; label: string; from: string; to: string }>();
 
