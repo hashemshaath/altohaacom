@@ -54,6 +54,22 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "semantic-info": {
+          DEFAULT: "var(--color-info)",
+          bg: "var(--color-info-bg)",
+        },
+        "semantic-success": {
+          DEFAULT: "var(--color-success)",
+          bg: "var(--color-success-bg)",
+        },
+        "semantic-warning": {
+          DEFAULT: "var(--color-warning)",
+          bg: "var(--color-warning-bg)",
+        },
+        "semantic-error": {
+          DEFAULT: "var(--color-error)",
+          bg: "var(--color-error-bg)",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

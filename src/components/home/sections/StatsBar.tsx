@@ -8,10 +8,10 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 
 const COLORS = [
-  { bg: "bg-blue-50 dark:bg-blue-950/30", text: "text-blue-600 dark:text-blue-400", icon: "bg-blue-100 dark:bg-blue-900/50" },
-  { bg: "bg-emerald-50 dark:bg-emerald-950/30", text: "text-emerald-600 dark:text-emerald-400", icon: "bg-emerald-100 dark:bg-emerald-900/50" },
-  { bg: "bg-amber-50 dark:bg-amber-950/30", text: "text-amber-600 dark:text-amber-400", icon: "bg-amber-100 dark:bg-amber-900/50" },
-  { bg: "bg-purple-50 dark:bg-purple-950/30", text: "text-purple-600 dark:text-purple-400", icon: "bg-purple-100 dark:bg-purple-900/50" },
+  { bg: "bg-white dark:bg-card", text: "text-semantic-info dark:text-blue-400", icon: "bg-semantic-info-bg dark:bg-blue-900/50", ring: "ring-semantic-info/10" },
+  { bg: "bg-white dark:bg-card", text: "text-semantic-success dark:text-emerald-400", icon: "bg-semantic-success-bg dark:bg-emerald-900/50", ring: "ring-semantic-success/10" },
+  { bg: "bg-white dark:bg-card", text: "text-semantic-warning dark:text-amber-400", icon: "bg-semantic-warning-bg dark:bg-amber-900/50", ring: "ring-semantic-warning/10" },
+  { bg: "bg-white dark:bg-card", text: "text-[var(--color-primary)] dark:text-purple-400", icon: "bg-[var(--color-primary-light)] dark:bg-purple-900/50", ring: "ring-[var(--color-primary)]/10" },
 ];
 
 const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon: any; isVisible: boolean; delay: number; colorIdx: number }>(
@@ -23,8 +23,8 @@ const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon
       <div
         ref={ref}
         className={cn(
-          "flex flex-col items-center gap-3 rounded-2xl p-5 sm:p-6 transition-all duration-700",
-          color.bg,
+          "flex flex-col items-center gap-3 rounded-2xl p-5 sm:p-6 transition-all duration-700 shadow-sm ring-1",
+          color.bg, color.ring,
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
         )}
         style={{ transitionDelay: `${delay}ms` }}
@@ -75,7 +75,7 @@ export default function StatsBar() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {!stats
             ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className={cn("rounded-2xl p-6 animate-pulse", COLORS[i].bg)}>
+                <div key={i} className={cn("rounded-2xl p-6 animate-pulse bg-white dark:bg-card shadow-sm ring-1", COLORS[i].ring)}>
                   <div className="flex flex-col items-center gap-3">
                     <div className="h-11 w-11 rounded-xl bg-muted/50" />
                     <div className="h-8 w-20 bg-muted/50 rounded-lg" />
