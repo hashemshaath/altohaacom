@@ -103,7 +103,7 @@ function getVitalStatus(metric: keyof typeof CWV_THRESHOLDS, value: number): "go
 type SectionKey = "overview" | "vitals" | "keywords" | "indexing" | "crawlers" | "pages" | "devices"
   | "keyword-gaps" | "competitors" | "backlinks" | "content" | "meta" | "schema" | "technical"
   | "audit" | "crawl" | "crawl-analytics" | "internal-links" | "page-speed" | "health" | "recommendations"
-  | "url-health" | "sitemap-config" | "robots-txt" | "gsc-performance";
+  | "url-health" | "sitemap-config" | "robots-txt" | "gsc-performance" | "content-gaps";
 
 interface NavGroup {
   label: string;
