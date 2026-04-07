@@ -70,6 +70,6 @@ const PremiumCTASection = memo(forwardRef<HTMLElement>(function PremiumCTASectio
       </div>
     </section>
   );
-});
+}));
 
 export default PremiumCTASection;

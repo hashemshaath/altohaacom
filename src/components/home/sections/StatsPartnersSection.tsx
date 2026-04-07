@@ -75,6 +75,6 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
       </div>
     </section>
   );
-});
+}));
 
 export default StatsPartnersSection;

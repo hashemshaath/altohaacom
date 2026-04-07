@@ -174,6 +174,6 @@ export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAd
       </a>
     </div>
   );
-});
+}));
 
 export default HomepageAdBanner;
