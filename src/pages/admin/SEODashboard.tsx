@@ -198,6 +198,8 @@ export default function SEODashboard() {
   }, [sectionFromQuery, activeSection]);
 
   // ── Data Queries ──
+  const prevFromDate = startOfDay(subDays(new Date(), range * 2)).toISOString();
+
   const { data: pageViews, isLoading: loadingViews, error: pageViewsError } = useQuery({
     queryKey: ["seo-page-views", range],
     queryFn: async () => {
