@@ -119,16 +119,18 @@ export const SEOHead = memo(function SEOHead({
     }
     link.setAttribute("href", canonical || window.location.href);
 
-    // Alternate language link
-    let altLink = document.querySelector('link[rel="alternate"][hreflang]') as HTMLLinkElement | null;
-    if (!altLink) {
-      altLink = document.createElement("link");
-      altLink.setAttribute("rel", "alternate");
-      document.head.appendChild(altLink);
-    }
-    const altHreflang = lang === "ar" ? "en" : "ar";
-    altLink.setAttribute("hreflang", altHreflang);
-    altLink.setAttribute("href", canonical || window.location.href);
+    // Hreflang alternate links (ar, en, x-default)
+    const hreflangMap = { ar: "ar", en: "en", "x-default": "ar" };
+    Object.entries(hreflangMap).forEach(([hreflang, _]) => {
+      let hl = document.querySelector(`link[rel="alternate"][hreflang="${hreflang}"]`) as HTMLLinkElement | null;
+      if (!hl) {
+        hl = document.createElement("link");
+        hl.setAttribute("rel", "alternate");
+        hl.setAttribute("hreflang", hreflang);
+        document.head.appendChild(hl);
+      }
+      hl.setAttribute("href", canonical || window.location.href);
+    });
 
     // JSON-LD — only inject if useEnhancedSEO hasn't already set one
     const enhancedLd = document.getElementById("enhanced-seo-jsonld");
