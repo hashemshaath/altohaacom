@@ -1,7 +1,11 @@
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { initErrorTracking } from "./utils/errorTracking";
+import { validateEnv } from "./utils/validateEnv";
 import "./index.css";
+
+// Validate environment before anything else
+validateEnv();
 
 // Initialize global error tracking
 initErrorTracking();
