@@ -8,10 +8,10 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 
 const COLORS = [
-  { bg: "bg-white dark:bg-card", text: "text-semantic-info dark:text-blue-400", icon: "bg-semantic-info-bg dark:bg-blue-900/50", ring: "ring-semantic-info/10" },
-  { bg: "bg-white dark:bg-card", text: "text-semantic-success dark:text-emerald-400", icon: "bg-semantic-success-bg dark:bg-emerald-900/50", ring: "ring-semantic-success/10" },
-  { bg: "bg-white dark:bg-card", text: "text-semantic-warning dark:text-amber-400", icon: "bg-semantic-warning-bg dark:bg-amber-900/50", ring: "ring-semantic-warning/10" },
-  { bg: "bg-white dark:bg-card", text: "text-[var(--color-primary)] dark:text-purple-400", icon: "bg-[var(--color-primary-light)] dark:bg-purple-900/50", ring: "ring-[var(--color-primary)]/10" },
+  { bg: "bg-card", text: "text-primary", icon: "bg-primary/10", ring: "ring-border/50" },
+  { bg: "bg-card", text: "text-primary", icon: "bg-primary/10", ring: "ring-border/50" },
+  { bg: "bg-card", text: "text-primary", icon: "bg-primary/10", ring: "ring-border/50" },
+  { bg: "bg-card", text: "text-primary", icon: "bg-primary/10", ring: "ring-border/50" },
 ];
 
 const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon: any; isVisible: boolean; delay: number; colorIdx: number }>(
@@ -75,7 +75,7 @@ const StatsBar = forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {!stats
             ? Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className={cn("rounded-2xl p-6 animate-pulse bg-white dark:bg-card shadow-sm ring-1", COLORS[i].ring)}>
+                <div key={i} className={cn("rounded-2xl p-6 animate-pulse bg-card shadow-sm ring-1", COLORS[i].ring)}>
                   <div className="flex flex-col items-center gap-3">
                     <div className="h-11 w-11 rounded-xl bg-muted/50" />
                     <div className="h-8 w-20 bg-muted/50 rounded-lg" />
