@@ -147,7 +147,7 @@ export default function ChefsTableDetail() {
           <Card className="mb-6 overflow-hidden border-border/40">
             {session.cover_image_url && (
               <div className="aspect-[3/1] overflow-hidden">
-                <img src={session.cover_image_url} alt={session.title} className="h-full w-full object-cover" />
+                <img src={session.cover_image_url} alt={session.title} loading="lazy" className="h-full w-full object-cover" />
               </div>
             )}
             <CardContent className="p-6 md:p-8">
@@ -492,7 +492,7 @@ export default function ChefsTableDetail() {
                   {media.map(m => (
                     <div key={m.id} className="aspect-square overflow-hidden rounded-xl border border-border/40">
                       {m.media_type === "image" ? (
-                        <img src={m.media_url} alt={m.title || "Product image"} className="h-full w-full object-cover" loading="lazy" decoding="async" />
+                        <img src={m.media_url} alt={m.title || "Product image"} loading="lazy" className="h-full w-full object-cover" loading="lazy" decoding="async" />
                       ) : (
                         <video src={m.media_url} className="h-full w-full object-cover" controls preload="metadata" />
                       )}

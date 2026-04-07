@@ -306,7 +306,7 @@ export default function MasterclassDetail() {
                   <div className="flex items-center gap-3 mt-4 pt-4 border-t border-border/50">
                     <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
                       {instructor.avatar_url ? (
-                        <img src={instructor.avatar_url} alt="" className="h-full w-full object-cover" />
+                        <img src={instructor.avatar_url} alt="" loading="lazy" className="h-full w-full object-cover" />
                       ) : (
                         <Users className="h-5 w-5 text-primary" />
                       )}
@@ -323,7 +323,7 @@ export default function MasterclassDetail() {
               <Card className="h-fit">
                 <CardContent className="p-6 space-y-4">
                   {masterclass.cover_image_url && (
-                    <img src={masterclass.cover_image_url} alt="" className="rounded-xl w-full aspect-video object-cover" />
+                    <img src={masterclass.cover_image_url} alt="" loading="lazy" className="rounded-xl w-full aspect-video object-cover" />
                   )}
                   {enrollment ? (
                     <>

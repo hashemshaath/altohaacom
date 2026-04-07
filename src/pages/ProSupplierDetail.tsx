@@ -214,7 +214,7 @@ export default function ProSupplierDetail() {
         {/* Hero */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
           {company.cover_image_url && (
-            <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-15" alt="" />
+            <img src={company.cover_image_url} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-15" alt="" />
           )}
           <div className="container relative py-10 md:py-16">
             <div className="flex items-center justify-between mb-6">

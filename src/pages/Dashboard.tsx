@@ -308,7 +308,7 @@ const HeroWelcome = memo(function HeroWelcome({
               "bg-gradient-to-br from-muted-foreground/30 to-muted-foreground/10"
             }`}>
               {avatarUrl ? (
-                <img src={avatarUrl} alt="" className="h-full w-full rounded-[13px] object-cover bg-card" />
+                <img src={avatarUrl} alt="" loading="lazy" className="h-full w-full rounded-[13px] object-cover bg-card" />
               ) : (
                 <div className="h-full w-full rounded-[13px] bg-card flex items-center justify-center">
                   <span className="text-xl font-bold text-primary">{firstName?.charAt(0) || "U"}</span>

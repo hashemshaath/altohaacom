@@ -360,7 +360,7 @@ export default function Jobs() {
               {/* Employer Card */}
               <Card className="rounded-2xl border-border/15 overflow-hidden group hover:shadow-2xl transition-all duration-500">
                 <div className="relative h-48 overflow-hidden">
-                  <img src={employerImage} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={employerImage} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent" />
                   <div className="absolute bottom-4 start-5">
                     <div className="flex items-center gap-2.5">
@@ -391,7 +391,7 @@ export default function Jobs() {
               {/* Job Seeker Card */}
               <Card className="rounded-2xl border-border/15 overflow-hidden group hover:shadow-2xl transition-all duration-500">
                 <div className="relative h-48 overflow-hidden">
-                  <img src={chefImage} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={chefImage} alt="" loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent" />
                   <div className="absolute bottom-4 start-5">
                     <div className="flex items-center gap-2.5">
@@ -584,7 +584,7 @@ export default function Jobs() {
 
         {/* ═══════ FINAL CTA ═══════ */}
         <section className="relative py-20 overflow-hidden">
-          <img src={heroImage} alt="" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+          <img src={heroImage} alt="" loading="lazy" className="absolute inset-0 w-full h-full object-cover" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70" />
           <div className="relative z-10 max-w-3xl mx-auto px-4 text-center space-y-6">
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight" style={{ color: "white" }}>

@@ -156,7 +156,7 @@ export default function OfflinePage() {
               <Card key={c.id} className="overflow-hidden">
                 <CardContent className="p-3 flex items-center gap-3">
                   {c.cover_image_url && (
-                    <img src={c.cover_image_url} alt="" className="h-12 w-12 rounded-lg object-cover shrink-0" />
+                    <img src={c.cover_image_url} alt="" loading="lazy" className="h-12 w-12 rounded-lg object-cover shrink-0" />
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold truncate">{isAr ? (c.title_ar || c.title) : c.title}</p>
@@ -172,7 +172,7 @@ export default function OfflinePage() {
               <Card key={a.id} className="overflow-hidden">
                 <CardContent className="p-3 flex items-center gap-3">
                   {a.featured_image_url && (
-                    <img src={a.featured_image_url} alt="" className="h-12 w-12 rounded-lg object-cover shrink-0" />
+                    <img src={a.featured_image_url} alt="" loading="lazy" className="h-12 w-12 rounded-lg object-cover shrink-0" />
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold truncate">{isAr ? (a.title_ar || a.title) : a.title}</p>
@@ -189,7 +189,7 @@ export default function OfflinePage() {
               <Card key={r.id} className="overflow-hidden">
                 <CardContent className="p-3 flex items-center gap-3">
                   {r.image_url && (
-                    <img src={r.image_url} alt="" className="h-12 w-12 rounded-lg object-cover shrink-0" />
+                    <img src={r.image_url} alt="" loading="lazy" className="h-12 w-12 rounded-lg object-cover shrink-0" />
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-semibold truncate">{isAr ? (r.title_ar || r.title) : r.title}</p>

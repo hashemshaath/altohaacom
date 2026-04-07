@@ -316,7 +316,7 @@ export default function CompetitionResults() {
                       <span className="w-8 text-center text-sm font-bold text-muted-foreground">{winner.rank}</span>
                       <div className="h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-muted">
                         {winner.dish_image_url ? (
-                          <img src={winner.dish_image_url} alt={winner.dish_name || "Dish"} className="h-full w-full object-cover" />
+                          <img src={winner.dish_image_url} alt={winner.dish_name || "Dish"} loading="lazy" className="h-full w-full object-cover" />
                         ) : (
                           <div className="flex h-full items-center justify-center"><ChefHat className="h-4 w-4 text-muted-foreground/50" /></div>
                         )}

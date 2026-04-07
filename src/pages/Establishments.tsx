@@ -201,7 +201,7 @@ export default function Establishments() {
                     <CardContent className="p-5">
                       <div className="flex items-start gap-3">
                         {est.logo_url ? (
-                          <img src={est.logo_url} alt={name} className="h-12 w-12 rounded-xl object-cover ring-2 ring-border/30 transition-transform duration-300 group-hover:scale-110" />
+                          <img src={est.logo_url} alt={name} loading="lazy" className="h-12 w-12 rounded-xl object-cover ring-2 ring-border/30 transition-transform duration-300 group-hover:scale-110" />
                         ) : (
                           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-2 ring-primary/5 transition-transform duration-300 group-hover:scale-110">
                             <Building2 className="h-6 w-6 text-primary" />

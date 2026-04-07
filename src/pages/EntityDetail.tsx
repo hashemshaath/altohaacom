@@ -293,9 +293,9 @@ export default function EntityDetail() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           {entity.cover_image_url ? (
-            <img src={entity.cover_image_url} alt={name} className="h-full w-full object-cover" loading="lazy" />
+            <img src={entity.cover_image_url} alt={name} loading="lazy" className="h-full w-full object-cover" loading="lazy" />
           ) : (
-            <img src={entitiesHero} alt="" className="h-full w-full object-cover" />
+            <img src={entitiesHero} alt="" loading="lazy" className="h-full w-full object-cover" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/50 to-transparent" />
@@ -314,7 +314,7 @@ export default function EntityDetail() {
 
           <div className="flex items-start gap-5">
             {entity.logo_url ? (
-              <img src={entity.logo_url} alt={name} className="h-20 w-20 rounded-2xl border-2 border-background/50 object-cover shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24" loading="lazy" />
+              <img src={entity.logo_url} alt={name} loading="lazy" className="h-20 w-20 rounded-2xl border-2 border-background/50 object-cover shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24" loading="lazy" />
             ) : (
               <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border-2 border-background/50 bg-background/80 shadow-xl ring-1 ring-border/10 backdrop-blur-sm md:h-24 md:w-24">
                 {isEducational ? <GraduationCap className="h-10 w-10 text-primary" /> : <Building2 className="h-10 w-10 text-primary" />}
@@ -455,7 +455,7 @@ export default function EntityDetail() {
                 <h2 className="mb-3 text-xl font-semibold">{isAr ? "معرض الصور" : "Gallery"}</h2>
                 <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
                   {entity.gallery_urls.map((url, i) => (
-                    <img key={i} src={url} alt={`${name} ${i + 1}`} className="rounded-xl object-cover aspect-video shadow-sm hover:shadow-md transition-shadow" />
+                    <img key={i} src={url} alt={`${name} ${i + 1}`} loading="lazy" className="rounded-xl object-cover aspect-video shadow-sm hover:shadow-md transition-shadow" />
                   ))}
                 </div>
               </section>
