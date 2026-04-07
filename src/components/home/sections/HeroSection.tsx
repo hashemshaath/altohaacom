@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const SLIDE_DURATION = 6000;
 const SWIPE_THRESHOLD = 50;
 
-const SUPABASE_STORAGE = "https://pbjhffdnzlekprmxfbnt.supabase.co/storage/v1";
+const SUPABASE_STORAGE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1`;
 
 /** Build an optimised Supabase Storage image URL with transforms */
 function heroImgUrl(path: string, width: number, quality = 80): string {
