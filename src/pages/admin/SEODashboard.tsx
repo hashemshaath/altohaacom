@@ -476,6 +476,7 @@ export default function SEODashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case "overview": return renderOverview();
+      case "gsc-performance": return <Suspense fallback={<SectionSkeleton />}><SEOGSCPerformance isAr={isAr} /></Suspense>;
       case "vitals": return renderVitals();
       case "keywords": return renderKeywords();
       case "indexing": return renderIndexing();
