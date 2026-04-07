@@ -49,8 +49,8 @@ export function useGoogleTracking() {
   useEffect(() => {
     if (!configs || configs.length === 0) return;
 
-    // Ensure dataLayer exists once before any script needs it
-    (window as any).dataLayer = (window as any).dataLayer || [];
+    console.info(`[Tracking] Injecting ${configs.length} tracking script(s):`, configs.map(c => c.integration_type).join(", "));
+
 
     configs.forEach((row) => {
       // Skip if this type was already injected
