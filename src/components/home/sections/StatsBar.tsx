@@ -8,10 +8,10 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
 
 const COLORS = [
-  { bg: "bg-blue-50 dark:bg-blue-950/30", text: "text-blue-600 dark:text-blue-400", icon: "bg-blue-100 dark:bg-blue-900/50" },
-  { bg: "bg-emerald-50 dark:bg-emerald-950/30", text: "text-emerald-600 dark:text-emerald-400", icon: "bg-emerald-100 dark:bg-emerald-900/50" },
-  { bg: "bg-amber-50 dark:bg-amber-950/30", text: "text-amber-600 dark:text-amber-400", icon: "bg-amber-100 dark:bg-amber-900/50" },
-  { bg: "bg-purple-50 dark:bg-purple-950/30", text: "text-purple-600 dark:text-purple-400", icon: "bg-purple-100 dark:bg-purple-900/50" },
+  { bg: "bg-white dark:bg-card", text: "text-semantic-info dark:text-blue-400", icon: "bg-semantic-info-bg dark:bg-blue-900/50", ring: "ring-semantic-info/10" },
+  { bg: "bg-white dark:bg-card", text: "text-semantic-success dark:text-emerald-400", icon: "bg-semantic-success-bg dark:bg-emerald-900/50", ring: "ring-semantic-success/10" },
+  { bg: "bg-white dark:bg-card", text: "text-semantic-warning dark:text-amber-400", icon: "bg-semantic-warning-bg dark:bg-amber-900/50", ring: "ring-semantic-warning/10" },
+  { bg: "bg-white dark:bg-card", text: "text-[var(--color-primary)] dark:text-purple-400", icon: "bg-[var(--color-primary-light)] dark:bg-purple-900/50", ring: "ring-[var(--color-primary)]/10" },
 ];
 
 const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon: any; isVisible: boolean; delay: number; colorIdx: number }>(
