@@ -42,6 +42,7 @@ const statusConfig: Record<string, { icon: typeof CheckCircle; color: string; la
 export const VerificationRequestForm = memo(function VerificationRequestForm() {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const { toast } = useToast();
   const isAr = language === "ar";
   const submitMutation = useSubmitVerification();
   const { data: myRequests, isLoading: loadingRequests } = useMyVerificationRequests();
