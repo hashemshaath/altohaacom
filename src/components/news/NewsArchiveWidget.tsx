@@ -39,7 +39,7 @@ export const NewsArchiveWidget = forwardRef<HTMLDivElement, Props>(function News
   if (archiveMonths.length === 0) return null;
 
   return (
-    <Card className="rounded-2xl border-border/40">
+    <Card ref={ref} className="rounded-2xl border-border/40">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-sm font-bold">
           <div className="flex items-center justify-center h-7 w-7 rounded-lg bg-primary/10">
