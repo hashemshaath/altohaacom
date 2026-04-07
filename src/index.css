@@ -842,7 +842,85 @@ html:not(.dark) .logo-dark-invert { filter: none; }
   color: var(--color-subtle);
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   MICRO-ANIMATIONS — purposeful motion
+   ═══════════════════════════════════════════════════════════════ */
+
 @keyframes heroFadeUp {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Page transition classes */
+.page-exit-active {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+/* ── Scroll-triggered reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 400ms ease, transform 400ms ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* Staggered children */
+.reveal-stagger > :nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger > :nth-child(2) { transition-delay: 60ms; }
+.reveal-stagger > :nth-child(3) { transition-delay: 120ms; }
+.reveal-stagger > :nth-child(4) { transition-delay: 180ms; }
+.reveal-stagger > :nth-child(5) { transition-delay: 240ms; }
+.reveal-stagger > :nth-child(6) { transition-delay: 300ms; }
+.reveal-stagger > :nth-child(7) { transition-delay: 360ms; }
+.reveal-stagger > :nth-child(8) { transition-delay: 420ms; }
+.reveal-stagger > :nth-child(9) { transition-delay: 480ms; }
+
+/* ── Shimmer skeleton loader ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border-light) 25%,
+    var(--bg-surface) 50%,
+    var(--color-border-light) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Image lazy-load fade-in ── */
+.img-load {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.img-load.loaded {
+  opacity: 1;
+}
+
+/* ── Reduced motion — respect user preferences ── */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .page-enter-active,
+  .page-exit-active,
+  .img-load {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .skeleton {
+    animation: none;
+    background: var(--color-border-light);
+  }
 }
