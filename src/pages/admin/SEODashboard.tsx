@@ -56,6 +56,7 @@ const SEOTechnicalChecklist = lazy(() => import("@/components/admin/seo/SEOTechn
 const SEOCrawlAnalytics = lazy(() => import("@/components/admin/seo/SEOCrawlAnalytics").then(m => ({ default: m.SEOCrawlAnalytics })));
 const SEOInternalLinkAnalyzer = lazy(() => import("@/components/admin/seo/SEOInternalLinkAnalyzer").then(m => ({ default: m.SEOInternalLinkAnalyzer })));
 const SEOPageSpeedMonitor = lazy(() => import("@/components/admin/seo/SEOPageSpeedMonitor").then(m => ({ default: m.SEOPageSpeedMonitor })));
+const SEOGSCPerformance = lazy(() => import("@/components/admin/seo/SEOGSCPerformance").then(m => ({ default: m.SEOGSCPerformance })));
 
 // SEO route registry
 const PUBLIC_ROUTES = [
@@ -101,7 +102,7 @@ function getVitalStatus(metric: keyof typeof CWV_THRESHOLDS, value: number): "go
 type SectionKey = "overview" | "vitals" | "keywords" | "indexing" | "crawlers" | "pages" | "devices"
   | "keyword-gaps" | "competitors" | "backlinks" | "content" | "meta" | "schema" | "technical"
   | "audit" | "crawl" | "crawl-analytics" | "internal-links" | "page-speed" | "health" | "recommendations"
-  | "url-health" | "sitemap-config" | "robots-txt";
+  | "url-health" | "sitemap-config" | "robots-txt" | "gsc-performance";
 
 interface NavGroup {
   label: string;
@@ -115,6 +116,7 @@ const NAV_GROUPS: NavGroup[] = [
     label: "Analytics", labelAr: "التحليلات", icon: BarChart3,
     items: [
       { key: "overview", label: "Overview", labelAr: "نظرة عامة", icon: LayoutDashboard },
+      { key: "gsc-performance", label: "GSC Performance", labelAr: "أداء البحث", icon: TrendingUp },
       { key: "vitals", label: "Web Vitals", labelAr: "Web Vitals", icon: Gauge },
       { key: "page-speed", label: "Page Speed", labelAr: "سرعة الصفحات", icon: Zap },
       { key: "pages", label: "Top Pages", labelAr: "الصفحات", icon: BarChart3 },
