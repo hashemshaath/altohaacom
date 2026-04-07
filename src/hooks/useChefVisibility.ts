@@ -40,11 +40,10 @@ export function useVisibleChefs(options?: { limit?: number; enabled?: boolean })
     queryKey: ["visibleChefs", options?.limit],
     queryFn: async () => {
       let query = supabase
-        .from("profiles")
-        .select("user_id, full_name, full_name_ar, username, avatar_url, specialization, specialization_ar, job_title, job_title_ar, country_code, city, years_of_experience, experience_level, is_verified, membership_tier")
+        .from("profiles_public")
+        .select("user_id, full_name, full_name_ar, username, avatar_url, specialization, specialization_ar, job_title, job_title_ar, country_code, city, years_of_experience, is_verified, membership_tier")
         .eq("is_chef_visible", true)
-        .eq("account_status", "active")
-        .order("updated_at", { ascending: false });
+        .order("created_at", { ascending: false });
 
       if (options?.limit) query = query.limit(options.limit);
 
