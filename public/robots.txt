@@ -50,6 +50,9 @@ Disallow: /referrals
 Disallow: /rewards
 Disallow: /settings
 Disallow: /membership-checkout
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+Disallow: /*?*page=
 
 User-agent: GPTBot
 Disallow: /
