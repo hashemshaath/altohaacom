@@ -96,7 +96,7 @@ export const UsersTable = memo(function UsersTable({
       banned: { cls: "bg-destructive/15 text-destructive border-destructive/20", label: isAr ? "محظور" : "Banned" },
     };
     const c = map[status || "pending"];
-    return <Badge variant="outline" className={cn("text-[10px] font-medium", c.cls)}>{c.label}</Badge>;
+    return <Badge variant="outline" className={cn("text-[12px] font-medium", c.cls)}>{c.label}</Badge>;
   };
 
   const membershipBadge = (tier: MembershipTier | null) => {
@@ -106,7 +106,7 @@ export const UsersTable = memo(function UsersTable({
       enterprise: { cls: "bg-chart-2/15 text-chart-2 border-chart-2/20", label: isAr ? "مؤسسي" : "Enterprise" },
     };
     const c = map[tier || "basic"];
-    return <Badge variant="outline" className={cn("text-[10px]", c.cls)}>{c.label}</Badge>;
+    return <Badge variant="outline" className={cn("text-[12px]", c.cls)}>{c.label}</Badge>;
   };
 
   const columnHeaders: { key: ColumnKey; sortKey?: string; label: string; width?: string }[] = [
@@ -128,7 +128,7 @@ export const UsersTable = memo(function UsersTable({
       <CardHeader className="flex flex-row items-center justify-between pb-3 pt-4 px-5">
         <CardTitle className="text-sm font-semibold flex items-center gap-2">
           {isAr ? "المستخدمون" : "Users"}
-          <Badge variant="outline" className="text-[10px] font-normal rounded-xl tabular-nums">
+          <Badge variant="outline" className="text-[12px] font-normal rounded-xl tabular-nums">
             <AnimatedCounter value={users.length} className="inline" /> {isAr ? "نتيجة" : "results"}
           </Badge>
         </CardTitle>
@@ -211,7 +211,7 @@ export const UsersTable = memo(function UsersTable({
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
                               <p className="font-medium text-sm truncate">{(profile as any).display_name || profile.full_name || "—"}</p>
-                              {profile.is_verified && <span className="text-primary text-[10px]">✓</span>}
+                              {profile.is_verified && <span className="text-primary text-[12px]">✓</span>}
                             </div>
                             <p className="text-xs text-muted-foreground truncate">
                               {profile.username && `@${profile.username}`}
@@ -224,7 +224,7 @@ export const UsersTable = memo(function UsersTable({
                       {visibleColumns.account_number && <TableCell className="font-mono text-xs text-muted-foreground">{profile.account_number || "—"}</TableCell>}
                       {visibleColumns.type && (
                         <TableCell>
-                          <Badge variant={profile.account_type === "fan" ? "secondary" : "outline"} className="text-[10px]">
+                          <Badge variant={profile.account_type === "fan" ? "secondary" : "outline"} className="text-[12px]">
                             {profile.account_type === "fan" ? (isAr ? "مستخدم عادي" : "Regular") : (isAr ? "محترف" : "Pro")}
                           </Badge>
                         </TableCell>
@@ -232,8 +232,8 @@ export const UsersTable = memo(function UsersTable({
                       {visibleColumns.roles && (
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
-                            {profile.roles?.slice(0, 3).map((r) => <Badge key={r.role} variant="outline" className="text-[10px]">{t(r.role as any)}</Badge>)}
-                            {(profile.roles?.length || 0) > 3 && <Badge variant="outline" className="text-[10px]">+{(profile.roles?.length || 0) - 3}</Badge>}
+                            {profile.roles?.slice(0, 3).map((r) => <Badge key={r.role} variant="outline" className="text-[12px]">{t(r.role as any)}</Badge>)}
+                            {(profile.roles?.length || 0) > 3 && <Badge variant="outline" className="text-[12px]">+{(profile.roles?.length || 0) - 3}</Badge>}
                             {(!profile.roles || profile.roles.length === 0) && <span className="text-xs text-muted-foreground">—</span>}
                           </div>
                         </TableCell>

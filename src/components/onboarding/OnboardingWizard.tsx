@@ -194,7 +194,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
                   onChange={(e) => setForm({ ...form, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, "") })}
                   placeholder={isAr ? "اختر اسم مستخدم" : "Choose a username"}
                 />
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   {isAr ? "أحرف إنجليزية وأرقام وشرطة سفلية فقط" : "Letters, numbers and underscores only"}
                 </p>
               </div>

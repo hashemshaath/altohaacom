@@ -311,17 +311,17 @@ export default function ProSuppliers() {
 
                       <div className="mt-3 flex flex-wrap items-center gap-1.5">
                         {company.supplier_category && (
-                          <Badge variant="secondary" className="text-[9px]">
+                          <Badge variant="secondary" className="text-[12px]">
                             {SUPPLIER_CATEGORIES.find(c => c.value === company.supplier_category)?.[isAr ? "ar" : "en"] || company.supplier_category}
                           </Badge>
                         )}
                         {company.country_code && (
-                          <Badge variant="outline" className="text-[9px]">
+                          <Badge variant="outline" className="text-[12px]">
                             {countryFlag(company.country_code)} {company.city || company.country_code}
                           </Badge>
                         )}
                         {productCount > 0 && (
-                          <Badge variant="outline" className="text-[9px]">
+                          <Badge variant="outline" className="text-[12px]">
                             <Package className="me-0.5 h-2.5 w-2.5" />
                             {productCount} {isAr ? "منتج" : "products"}
                           </Badge>
@@ -337,7 +337,7 @@ export default function ProSuppliers() {
                       <div className="mt-4 flex items-center justify-between">
                         <div className="flex flex-wrap gap-1">
                           {(company.specializations || []).slice(0, 3).map((s: string) => (
-                            <span key={s} className="rounded-md bg-muted px-2 py-0.5 text-[9px] text-muted-foreground">{s}</span>
+                            <span key={s} className="rounded-md bg-muted px-2 py-0.5 text-[12px] text-muted-foreground">{s}</span>
                           ))}
                         </div>
                         <ArrowRight className="h-4 w-4 text-muted-foreground rtl:rotate-180" />

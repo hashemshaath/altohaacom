@@ -85,7 +85,7 @@ export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ e
           </div>
           <div>
             <h3 className="text-sm font-bold">{isAr ? "تسجيل دخول الحضور" : "Attendee Check-in"}</h3>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "ابحث برقم التذكرة أو رمز QR" : "Search by ticket number or QR code"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "ابحث برقم التذكرة أو رمز QR" : "Search by ticket number or QR code"}</p>
           </div>
         </div>
 
@@ -131,7 +131,7 @@ export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ e
             <div className="text-xs space-y-1">
               <p className="font-semibold"><User className="inline h-3 w-3 me-1" />{result.attendee_name || (isAr ? "بدون اسم" : "No name")}</p>
               <p className="text-muted-foreground"><Ticket className="inline h-3 w-3 me-1" />{result.ticket_number}</p>
-              <Badge variant="outline" className="text-[10px]">{result.status}</Badge>
+              <Badge variant="outline" className="text-[12px]">{result.status}</Badge>
             </div>
             <Button onClick={() => checkIn.mutate(result.id)} disabled={checkIn.isPending} className="w-full rounded-xl">
               {checkIn.isPending ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <CheckCircle2 className="me-2 h-4 w-4" />}

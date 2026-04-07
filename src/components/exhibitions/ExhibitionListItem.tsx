@@ -49,13 +49,13 @@ export const ExhibitionListItem = memo(({ exhibition, language, sponsors = [] }:
                 {title}
               </h3>
               <div className="flex items-center gap-1.5 shrink-0">
-                <Badge className={`${liveStatus.className} text-[8px] font-black uppercase tracking-wider py-0.5 px-2 border-0`}>
+                <Badge className={`${liveStatus.className} text-[12px] font-black uppercase tracking-wider py-0.5 px-2 border-0`}>
                   {isAr ? liveStatus.labelAr : liveStatus.label}
                 </Badge>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground mb-1.5">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted-foreground mb-1.5">
               <span className="flex items-center gap-1">
                 <Calendar className="h-3 w-3 text-primary/50" />
                 {toEnglishDigits(format(new Date(exhibition.start_date), "MMM d"))} – {toEnglishDigits(format(new Date(exhibition.end_date), "d, yyyy"))}
@@ -80,39 +80,39 @@ export const ExhibitionListItem = memo(({ exhibition, language, sponsors = [] }:
             </div>
 
             {description && (
-              <p className="text-[11px] text-muted-foreground/70 line-clamp-1 leading-relaxed">{description}</p>
+              <p className="text-[12px] text-muted-foreground/70 line-clamp-1 leading-relaxed">{description}</p>
             )}
           </div>
 
           {/* Bottom row */}
           <div className="flex items-center gap-2 mt-2">
-            <Badge variant="secondary" className="text-[8px] font-bold uppercase tracking-wider py-0.5 px-2">
+            <Badge variant="secondary" className="text-[12px] font-bold uppercase tracking-wider py-0.5 px-2">
               {isAr ? typeLabel.ar : typeLabel.en}
             </Badge>
             {exhibition.is_free && (
-              <Badge variant="outline" className="text-[8px] text-chart-3 border-chart-3/30 bg-chart-3/5 py-0.5 px-2">
+              <Badge variant="outline" className="text-[12px] text-chart-3 border-chart-3/30 bg-chart-3/5 py-0.5 px-2">
                 {isAr ? "مجاني" : "Free"}
               </Badge>
             )}
             {daysLeft !== null && daysLeft > 0 && daysLeft <= 30 && (
-              <Badge className="gap-0.5 text-[8px] bg-chart-4/90 text-chart-4-foreground border-0 py-0.5 px-2">
+              <Badge className="gap-0.5 text-[12px] bg-chart-4/90 text-chart-4-foreground border-0 py-0.5 px-2">
                 <Clock className="h-2.5 w-2.5" />
                 {isAr ? `${daysLeft} يوم` : `${daysLeft}d`}
               </Badge>
             )}
             {sponsors.slice(0, 2).map((s) => (
-              <Badge key={s.id} variant="outline" className="text-[8px] bg-chart-4/5 text-chart-4 border-chart-4/20 py-0.5 px-2">
+              <Badge key={s.id} variant="outline" className="text-[12px] bg-chart-4/5 text-chart-4 border-chart-4/20 py-0.5 px-2">
                 {isAr ? (s.label_ar || s.companies?.name_ar || s.companies?.name) : (s.label || s.companies?.name) || (isAr ? "راعي" : "Sponsor")}
               </Badge>
             ))}
             <div className="flex-1" />
             {(exhibition.view_count ?? 0) > 0 && (
-              <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+              <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
                 <Eye className="h-3 w-3" />
                 <AnimatedCounter value={exhibition.view_count!} className="inline" />
               </span>
             )}
-            <span className="flex items-center gap-1 text-[10px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="flex items-center gap-1 text-[12px] font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
               {isAr ? "التفاصيل" : "Details"}
               <ArrowRight className="h-3 w-3 rtl:rotate-180" />
             </span>

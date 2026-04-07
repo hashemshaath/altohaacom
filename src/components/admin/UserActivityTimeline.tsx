@@ -61,7 +61,7 @@ export const UserActivityTimeline = memo(function UserActivityTimeline() {
         <CardTitle className="text-base flex items-center gap-2">
           <Activity className="h-4 w-4 text-primary" />
           {isAr ? "سجل نشاط الإدارة" : "Admin Activity Timeline"}
-          <Badge variant="secondary" className="ms-auto text-[10px]">
+          <Badge variant="secondary" className="ms-auto text-[12px]">
             {actions.length} {isAr ? "إجراء" : "actions"}
           </Badge>
         </CardTitle>
@@ -101,7 +101,7 @@ export const UserActivityTimeline = memo(function UserActivityTimeline() {
                         </>
                       )}
                     </p>
-                    <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                    <p className="text-[12px] text-muted-foreground flex items-center gap-1 mt-0.5">
                       <Clock className="h-2.5 w-2.5" />
                       {timeAgo}
                     </p>

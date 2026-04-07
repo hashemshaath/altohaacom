@@ -317,7 +317,7 @@ export default function UserManagement() {
         <CardContent className="p-3 flex flex-wrap items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5 rounded-xl">
             <Search className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "بحث سريع" : "Quick Search"}</span>
-            <kbd className="text-[9px] bg-muted px-1.5 py-0.5 rounded-md font-mono hidden sm:inline">⌘U</kbd>
+            <kbd className="text-[12px] bg-muted px-1.5 py-0.5 rounded-md font-mono hidden sm:inline">⌘U</kbd>
           </Button>
           <Button size="sm" className="rounded-xl gap-1.5" onClick={() => setCreateOpen(!createOpen)}>
             <UserPlus className="h-3.5 w-3.5" />{isAr ? "إنشاء حساب" : "Create User"}
@@ -410,8 +410,8 @@ export default function UserManagement() {
           </div>
           <div className="rounded-xl border border-border/50 p-4 space-y-3">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "رسالة الدعوة" : "Invitation Message"}</h4>
-            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">ع</Badge> {isAr ? "الرسالة بالعربية" : "Message in Arabic"}</Label><Textarea value={inviteMessageAr} onChange={(e) => setInviteMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="نتشرف بدعوتكم للانضمام إلى منصتنا..." /></div>
-            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">EN</Badge> {isAr ? "الرسالة بالإنجليزية" : "Message in English"}</Label><Textarea value={inviteMessageEn} onChange={(e) => setInviteMessageEn(e.target.value)} rows={3} dir="ltr" placeholder="We are honored to invite you to join our platform..." /></div>
+            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">ع</Badge> {isAr ? "الرسالة بالعربية" : "Message in Arabic"}</Label><Textarea value={inviteMessageAr} onChange={(e) => setInviteMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="نتشرف بدعوتكم للانضمام إلى منصتنا..." /></div>
+            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">EN</Badge> {isAr ? "الرسالة بالإنجليزية" : "Message in English"}</Label><Textarea value={inviteMessageEn} onChange={(e) => setInviteMessageEn(e.target.value)} rows={3} dir="ltr" placeholder="We are honored to invite you to join our platform..." /></div>
           </div>
         </div>
       </InlinePanel>
@@ -439,11 +439,11 @@ export default function UserManagement() {
       >
         <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
           <div className="space-y-1.5">
-            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">ع</Badge> {isAr ? "نص الرسالة بالعربية" : "Message in Arabic"}</Label>
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">ع</Badge> {isAr ? "نص الرسالة بالعربية" : "Message in Arabic"}</Label>
             <Textarea value={notifyMessageAr} onChange={(e) => setNotifyMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="اكتب رسالتك بالعربية هنا..." />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[9px] px-1">EN</Badge> {isAr ? "نص الرسالة بالإنجليزية" : "Message in English"}</Label>
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">EN</Badge> {isAr ? "نص الرسالة بالإنجليزية" : "Message in English"}</Label>
             <Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={3} dir="ltr" placeholder="Type your message in English here..." />
           </div>
         </div>

@@ -316,7 +316,7 @@ export const FinancialForecasting = memo(function FinancialForecasting() {
             <CardTitle className="text-sm flex items-center gap-2">
               <TrendingUp className="h-4 w-4 text-chart-4" />
               {isAr ? "ملخص التنبؤ" : "Forecast Summary"}
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[12px]">
                 {isAr ? `${forecastMonths} أشهر` : `${forecastMonths} months`}
               </Badge>
             </CardTitle>

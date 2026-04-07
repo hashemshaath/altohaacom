@@ -60,7 +60,7 @@ export const ExhibitionTicketSummary = memo(function ExhibitionTicketSummary({ e
             <Ticket className="h-3.5 w-3.5 text-primary" />
             {t("Ticket Overview", "نظرة عامة على التذاكر")}
           </h4>
-          <Badge variant="outline" className="text-[9px]">
+          <Badge variant="outline" className="text-[12px]">
             {data.total} {t("total", "إجمالي")}
           </Badge>
         </div>
@@ -71,14 +71,14 @@ export const ExhibitionTicketSummary = memo(function ExhibitionTicketSummary({ e
             <div key={s.label} className="text-center">
               <s.icon className={`h-3.5 w-3.5 mx-auto mb-0.5 ${s.color}`} />
               <p className="text-sm font-bold">{s.value}</p>
-              <p className="text-[9px] text-muted-foreground">{s.label}</p>
+              <p className="text-[12px] text-muted-foreground">{s.label}</p>
             </div>
           ))}
         </div>
 
         {/* Check-in rate */}
         <div>
-          <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+          <div className="flex justify-between text-[12px] text-muted-foreground mb-1">
             <span>{t("Check-in Rate", "معدل الحضور")}</span>
             <span className="font-semibold">{data.checkInRate}%</span>
           </div>
@@ -88,7 +88,7 @@ export const ExhibitionTicketSummary = memo(function ExhibitionTicketSummary({ e
         {/* Occupancy */}
         {data.occupancy !== null && (
           <div>
-            <div className="flex justify-between text-[10px] text-muted-foreground mb-1">
+            <div className="flex justify-between text-[12px] text-muted-foreground mb-1">
               <span>{t("Capacity", "السعة")}</span>
               <span className="font-semibold">{data.confirmed}/{maxAttendees}</span>
             </div>

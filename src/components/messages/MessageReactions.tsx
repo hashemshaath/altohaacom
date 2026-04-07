@@ -51,7 +51,7 @@ export const MessageReactions = memo(function MessageReactions({ reactions, curr
           >
             <span className={cn("transition-transform duration-200", iReacted && "scale-110")}>{emoji}</span>
             {userIds.length > 1 && (
-              <span className="text-[10px] text-muted-foreground font-medium tabular-nums">{userIds.length}</span>
+              <span className="text-[12px] text-muted-foreground font-medium tabular-nums">{userIds.length}</span>
             )}
           </button>
         );
@@ -103,7 +103,7 @@ export const MessageReactions = memo(function MessageReactions({ reactions, curr
           )}
           <button
             onClick={() => setShowExtended(!showExtended)}
-            className="w-full mt-1 text-[10px] text-muted-foreground hover:text-foreground text-center py-1 rounded-md hover:bg-accent transition-colors"
+            className="w-full mt-1 text-[12px] text-muted-foreground hover:text-foreground text-center py-1 rounded-md hover:bg-accent transition-colors"
           >
             {showExtended ? "▲" : "▼ more"}
           </button>

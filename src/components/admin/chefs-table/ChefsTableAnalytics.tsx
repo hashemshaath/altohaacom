@@ -80,7 +80,7 @@ export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests,
         <Card className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "معدل الموافقة" : "Approval Rate"}
               </span>
               <TrendingUp className="h-3.5 w-3.5 text-chart-5 transition-transform duration-300 group-hover:scale-110" />
@@ -95,7 +95,7 @@ export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests,
         <Card className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "معدل الإنجاز" : "Completion Rate"}
               </span>
               <Target className="h-3.5 w-3.5 text-primary transition-transform duration-300 group-hover:scale-110" />
@@ -110,26 +110,26 @@ export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests,
         <Card className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "متوسط الميزانية" : "Avg Budget"}
               </span>
               <Activity className="h-3.5 w-3.5 text-chart-4 transition-transform duration-300 group-hover:scale-110" />
             </div>
             <AnimatedCounter value={avgBudget} className="text-3xl font-black tabular-nums" />
-            <p className="text-[10px] text-muted-foreground mt-1">{isAr ? "لكل طلب" : "per request"}</p>
+            <p className="text-[12px] text-muted-foreground mt-1">{isAr ? "لكل طلب" : "per request"}</p>
           </CardContent>
         </Card>
 
         <Card className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
           <CardContent className="p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 {isAr ? "إجمالي الطهاة" : "Total Chefs"}
               </span>
               <TrendingUp className="h-3.5 w-3.5 text-chart-2 transition-transform duration-300 group-hover:scale-110" />
             </div>
             <AnimatedCounter value={sessions.reduce((sum, s) => sum + (s.max_chefs || 0), 0)} className="text-3xl font-black tabular-nums" />
-            <p className="text-[10px] text-muted-foreground mt-1">{isAr ? "عبر جميع الجلسات" : "across all sessions"}</p>
+            <p className="text-[12px] text-muted-foreground mt-1">{isAr ? "عبر جميع الجلسات" : "across all sessions"}</p>
           </CardContent>
         </Card>
       </div>
@@ -147,8 +147,8 @@ export const ChefsTableAnalytics = memo(function ChefsTableAnalytics({ requests,
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={monthlyData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border/30" />
-                  <XAxis dataKey="month" className="text-[10px]" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                  <YAxis className="text-[10px]" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                  <XAxis dataKey="month" className="text-[12px]" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
+                  <YAxis className="text-[12px]" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
                   <Tooltip
                     contentStyle={{
                       background: 'hsl(var(--popover))',

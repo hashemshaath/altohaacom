@@ -219,7 +219,7 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
                           <div>
                             {isAr ? (inv.title_ar || inv.title || "—") : (inv.title || "—")}
                             {hasDiscount && (
-                              <Badge variant="secondary" className="ms-1.5 text-[9px] px-1.5 py-0">
+                              <Badge variant="secondary" className="ms-1.5 text-[12px] px-1.5 py-0">
                                 {isAr ? "خصم" : "Discount"}
                               </Badge>
                             )}
@@ -237,7 +237,7 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
                               <AnimatedCounter value={Math.round(Number(inv.amount))} className="inline" /> {inv.currency}
                             </span>
                             {Number(inv.tax_amount || 0) > 0 && (
-                              <span className="text-[10px] text-muted-foreground">
+                              <span className="text-[12px] text-muted-foreground">
                                 {isAr ? "شامل الضريبة" : "incl. tax"} {Number(inv.tax_amount).toFixed(2)}
                               </span>
                             )}

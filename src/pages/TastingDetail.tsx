@@ -465,12 +465,12 @@ export default function TastingDetail() {
                                 <div className="flex-1 min-w-0">
                                   <div className="flex items-center gap-2">
                                     <p className="text-sm font-medium truncate">{isAr && e.dish_name_ar ? e.dish_name_ar : e.dish_name}</p>
-                                    {e.category && <Badge variant="outline" className="text-[10px] shrink-0">{e.category}</Badge>}
+                                    {e.category && <Badge variant="outline" className="text-[12px] shrink-0">{e.category}</Badge>}
                                   </div>
                                   <div className="flex items-center gap-2 mt-0.5">
                                     {e.chef_name && <p className="text-xs text-muted-foreground">{isAr && e.chef_name_ar ? e.chef_name_ar : e.chef_name}</p>}
                                     {entryScores.length > 0 && (
-                                      <Badge variant="secondary" className="text-[10px] h-4">{entryScores.length} {isAr ? "تقييم" : "scores"}</Badge>
+                                      <Badge variant="secondary" className="text-[12px] h-4">{entryScores.length} {isAr ? "تقييم" : "scores"}</Badge>
                                     )}
                                   </div>
                                 </div>

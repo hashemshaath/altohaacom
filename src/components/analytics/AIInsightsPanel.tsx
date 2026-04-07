@@ -238,7 +238,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
                   : isAr ? "توليد التحليل" : "Generate Insights"}
             </Button>
           </div>
-          <Badge variant="outline" className="text-[10px] gap-1">
+          <Badge variant="outline" className="text-[12px] gap-1">
             <Calendar className="h-3 w-3" />
             {isAr ? "اختر النوع: أسبوعي، شهري، أو ربع سنوي" : "Choose: Weekly, Monthly, or Quarterly report"}
           </Badge>
@@ -255,7 +255,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
             <History className="h-3.5 w-3.5" />
             {isAr ? "التقارير السابقة" : "Report History"}
             {savedReports && savedReports.length > 0 && (
-              <Badge variant="secondary" className="ms-1 text-[10px] px-1.5 py-0">
+              <Badge variant="secondary" className="ms-1 text-[12px] px-1.5 py-0">
                 {savedReports.length}
               </Badge>
             )}
@@ -302,11 +302,11 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
                       <Brain className="h-3.5 w-3.5 text-primary" />
                     </div>
                     {isAr ? "نتائج التحليل" : "Analysis Results"}
-                    <Badge variant="secondary" className="text-[10px]">
+                    <Badge variant="secondary" className="text-[12px]">
                       {reportTypeLabel(reportType)}
                     </Badge>
                     {isLoading && (
-                      <Badge variant="secondary" className="text-[10px] animate-pulse">
+                      <Badge variant="secondary" className="text-[12px] animate-pulse">
                         {isAr ? "جاري التوليد..." : "Streaming..."}
                       </Badge>
                     )}
@@ -378,10 +378,10 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
                   <Button variant="ghost" size="sm" onClick={() => setSelectedReport(null)}>
                     ← {isAr ? "العودة" : "Back"}
                   </Button>
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-[12px]">
                     {reportTypeLabel(viewingReport.report_type)}
                   </Badge>
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-[12px]">
                     {format(new Date(viewingReport.generated_at), "PPP p")}
                   </Badge>
                 </div>
@@ -432,11 +432,11 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-[10px]">
+                      <Badge variant="secondary" className="text-[12px]">
                         {report.language === "ar" ? "عربي" : "English"}
                       </Badge>
                       {report.data_snapshot && (
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-[12px]">
                           {(report.data_snapshot as any)?.totalUsers || 0} {isAr ? "مستخدم" : "users"}
                         </Badge>
                       )}

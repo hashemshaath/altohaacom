@@ -111,8 +111,8 @@ export const DataQualityDashboardWidget = memo(function DataQualityDashboardWidg
               <div key={e.label} className="flex items-center gap-2 p-2 rounded-lg bg-muted/30">
                 <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 <span className="text-xs flex-1 truncate">{isAr ? e.labelAr : e.label}</span>
-                <span className={`text-[10px] font-bold ${eColor}`}>{e.score}%</span>
-                <Badge variant="secondary" className="text-[9px]">{e.complete}/{e.total}</Badge>
+                <span className={`text-[12px] font-bold ${eColor}`}>{e.score}%</span>
+                <Badge variant="secondary" className="text-[12px]">{e.complete}/{e.total}</Badge>
               </div>
             );
           })}

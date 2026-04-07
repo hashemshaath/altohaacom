@@ -105,9 +105,9 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-bold truncate">{name}</p>
-                {abbr && <p className="text-[11px] text-muted-foreground mt-0.5">{abbr}</p>}
+                {abbr && <p className="text-[12px] text-muted-foreground mt-0.5">{abbr}</p>}
                 {entityOrganizer?.type && (
-                  <p className="text-[11px] text-muted-foreground capitalize">{entityOrganizer.type.replace("_", " ")}</p>
+                  <p className="text-[12px] text-muted-foreground capitalize">{entityOrganizer.type.replace("_", " ")}</p>
                 )}
               </div>
             </div>
@@ -149,14 +149,14 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
               <div className="flex items-center gap-1.5">
                 <p className="text-sm font-bold truncate">{profileOrganizer.full_name || (isAr ? "منظم" : "Organizer")}</p>
                 {profileOrganizer.is_verified && (
-                  <Badge variant="secondary" className="text-[9px] h-4 px-1 shrink-0">✓</Badge>
+                  <Badge variant="secondary" className="text-[12px] h-4 px-1 shrink-0">✓</Badge>
                 )}
               </div>
               {profileOrganizer.specialization && (
                 <p className="text-[12px] text-muted-foreground truncate mt-0.5">{profileOrganizer.specialization}</p>
               )}
               {profileOrganizer.username && (
-                <p className="text-[11px] text-muted-foreground">@{profileOrganizer.username}</p>
+                <p className="text-[12px] text-muted-foreground">@{profileOrganizer.username}</p>
               )}
             </div>
           </div>

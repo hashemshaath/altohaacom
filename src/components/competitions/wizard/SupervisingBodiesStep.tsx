@@ -156,7 +156,7 @@ export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
                         <span className="text-muted-foreground"> ({isAr && entity.abbreviation_ar ? entity.abbreviation_ar : entity.abbreviation})</span>
                       )}
                     </p>
-                    <div className="flex gap-2 text-[10px] text-muted-foreground">
+                    <div className="flex gap-2 text-[12px] text-muted-foreground">
                       <span>{isAr ? entityTypeLabels[entity.type]?.ar : entityTypeLabels[entity.type]?.en}</span>
                       {entity.country && <span>· {entity.country}</span>}
                       <span>· {entity.scope}</span>
@@ -229,7 +229,7 @@ export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
                     <p className="text-sm font-medium truncate">
                       {judge.full_name_ar || judge.judge_category || "—"}
                     </p>
-                    <div className="flex gap-2 text-[10px] text-muted-foreground">
+                    <div className="flex gap-2 text-[12px] text-muted-foreground">
                       <span>{specialties}</span>
                       <span>· {judge.years_of_experience || 0} {isAr ? "سنوات" : "yrs"}</span>
                       <span>· {judge.judge_level || "national"}</span>

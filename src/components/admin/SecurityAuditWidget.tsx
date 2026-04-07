@@ -84,7 +84,7 @@ export const SecurityAuditWidget = memo(function SecurityAuditWidget() {
             <CardContent className="flex items-center gap-3 p-3">
               <div className={`rounded-full p-2 ${kpi.bg}`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
               <div>
-                <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
                 <p className="text-lg font-bold"><AnimatedCounter value={kpi.value} /></p>
               </div>
             </CardContent>
@@ -118,7 +118,7 @@ export const SecurityAuditWidget = memo(function SecurityAuditWidget() {
           {/* Severity Breakdown */}
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
                 <ShieldCheck className="h-3 w-3" /> {isAr ? "مستوى الخطورة" : "Severity"}
               </p>
               <div className="space-y-1.5">
@@ -127,7 +127,7 @@ export const SecurityAuditWidget = memo(function SecurityAuditWidget() {
                   const pct = data.totalEvents > 0 ? Math.round((count / data.totalEvents) * 100) : 0;
                   return (
                     <div key={level} className="space-y-0.5">
-                      <div className="flex justify-between text-[10px]">
+                      <div className="flex justify-between text-[12px]">
                         <span className="capitalize">{level}</span>
                         <span className="text-muted-foreground">{count}</span>
                       </div>
@@ -142,12 +142,12 @@ export const SecurityAuditWidget = memo(function SecurityAuditWidget() {
           {/* Top Event Types */}
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2">{isAr ? "أنواع الأحداث" : "Event Types"}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "أنواع الأحداث" : "Event Types"}</p>
               <div className="space-y-1">
                 {data.topEventTypes.map(([type, count]) => (
-                  <div key={type} className="flex items-center justify-between text-[10px]">
+                  <div key={type} className="flex items-center justify-between text-[12px]">
                     <span className="capitalize truncate max-w-[120px]">{type.replace(/_/g, " ")}</span>
-                    <Badge variant="outline" className="text-[9px] h-4">{count}</Badge>
+                    <Badge variant="outline" className="text-[12px] h-4">{count}</Badge>
                   </div>
                 ))}
               </div>

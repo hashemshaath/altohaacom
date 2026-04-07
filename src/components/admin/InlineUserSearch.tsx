@@ -128,7 +128,7 @@ export const InlineUserSearch = memo(function InlineUserSearch({ onSelectUser, o
                       )}
                     </div>
                   </div>
-                  <Badge variant="outline" className={cn("text-[10px] shrink-0", statusColor(user.account_status))}>
+                  <Badge variant="outline" className={cn("text-[12px] shrink-0", statusColor(user.account_status))}>
                     {user.account_status === "active" ? (isAr ? "نشط" : "Active")
                       : user.account_status === "suspended" ? (isAr ? "موقوف" : "Suspended")
                       : user.account_status === "banned" ? (isAr ? "محظور" : "Banned")
@@ -141,7 +141,7 @@ export const InlineUserSearch = memo(function InlineUserSearch({ onSelectUser, o
         )}
 
         {/* Footer hints */}
-        <div className="border-t px-4 py-2 flex items-center justify-between text-[10px] text-muted-foreground">
+        <div className="border-t px-4 py-2 flex items-center justify-between text-[12px] text-muted-foreground">
           <span>↑↓ {isAr ? "تنقل" : "Navigate"} · ↵ {isAr ? "اختيار" : "Select"} · Esc {isAr ? "إغلاق" : "Close"}</span>
           {results.length > 0 && <span>{results.length} {isAr ? "نتيجة" : "results"}</span>}
         </div>

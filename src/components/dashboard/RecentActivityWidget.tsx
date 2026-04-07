@@ -123,7 +123,7 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
       approved: isAr ? "موافق" : "Approved", pending: isAr ? "معلق" : "Pending",
       rejected: isAr ? "مرفوض" : "Rejected", withdrawn: isAr ? "منسحب" : "Withdrawn",
     };
-    return <Badge variant={variants[status] || "secondary"} className="text-[10px]">{labels[status] || status}</Badge>;
+    return <Badge variant={variants[status] || "secondary"} className="text-[12px]">{labels[status] || status}</Badge>;
   };
 
   if (!user) {
@@ -177,7 +177,7 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
           </div>
           {isAr ? "النشاط المباشر" : "Live Activity"}
           {realtimeItems.length > 0 && (
-            <Badge variant="outline" className="text-[9px] border-chart-5/30 text-chart-5">
+            <Badge variant="outline" className="text-[12px] border-chart-5/30 text-chart-5">
               {isAr ? "مباشر" : "LIVE"}
             </Badge>
           )}
@@ -201,7 +201,7 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
                     <p className="text-xs font-medium line-clamp-2 leading-snug">{item.title}</p>
                     <div className="mt-1 flex items-center gap-2">
                       {getStatusBadge(item.status)}
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-[12px] text-muted-foreground">
                         {formatDistanceToNow(new Date(item.timestamp), { addSuffix: true })}
                       </span>
                     </div>

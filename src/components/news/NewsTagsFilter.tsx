@@ -30,7 +30,7 @@ export const NewsTagsFilter = memo(function NewsTagsFilter({ tags, selectedTags,
             key={tag.id}
             variant={isSelected ? "default" : "outline"}
             className={cn(
-              "cursor-pointer rounded-lg text-[10px] transition-all",
+              "cursor-pointer rounded-lg text-[12px] transition-all",
               isSelected
                 ? "bg-primary text-primary-foreground shadow-sm"
                 : "border-border/40 hover:bg-primary/5 hover:border-primary/20"
@@ -44,7 +44,7 @@ export const NewsTagsFilter = memo(function NewsTagsFilter({ tags, selectedTags,
       {selectedTags.length > 0 && (
         <button
           onClick={() => selectedTags.forEach(onToggleTag)}
-          className="text-[10px] text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+          className="text-[12px] text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
         >
           {isAr ? "مسح" : "Clear"}
         </button>

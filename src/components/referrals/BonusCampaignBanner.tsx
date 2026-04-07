@@ -34,7 +34,7 @@ export const BonusCampaignBanner = memo(function BonusCampaignBanner() {
               <h3 className="font-semibold text-sm">
                 {isAr ? campaign.name_ar || campaign.name : campaign.name}
               </h3>
-              <Badge className="bg-chart-4/20 text-chart-4 text-[10px] animate-pulse">
+              <Badge className="bg-chart-4/20 text-chart-4 text-[12px] animate-pulse">
                 {isAr ? campaign.badge_text_ar || "مكافأة" : campaign.badge_text || "BONUS"}
               </Badge>
             </div>

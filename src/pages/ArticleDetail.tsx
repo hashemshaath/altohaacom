@@ -86,7 +86,7 @@ const ReactionButton = memo(function ReactionButton({
     >
       <Icon className={cn("h-4 w-4", active && "fill-primary")} />
       <span>{label}</span>
-      {count > 0 && <span className="text-[10px] opacity-60 tabular-nums">{count}</span>}
+      {count > 0 && <span className="text-[12px] opacity-60 tabular-nums">{count}</span>}
     </button>
   );
 });
@@ -348,17 +348,17 @@ export default function ArticleDetail() {
                       </Link>
                     </Button>
                     <span className="text-white/25 text-sm">/</span>
-                    <Badge className={cn("capitalize rounded-xl text-[10px] px-2.5 py-0.5 border backdrop-blur-sm", typeMeta.color)}>
+                    <Badge className={cn("capitalize rounded-xl text-[12px] px-2.5 py-0.5 border backdrop-blur-sm", typeMeta.color)}>
                       {isAr ? typeMeta.ar : typeMeta.en}
                     </Badge>
                     {article.is_featured && (
-                      <Badge className="rounded-xl text-[10px] px-2.5 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30 gap-1 backdrop-blur-sm">
+                      <Badge className="rounded-xl text-[12px] px-2.5 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30 gap-1 backdrop-blur-sm">
                         <Sparkles className="h-2.5 w-2.5" />
                         {isAr ? "مميز" : "Featured"}
                       </Badge>
                     )}
                     {(article.view_count || 0) >= 100 && (
-                      <Badge className="rounded-xl text-[10px] px-2.5 py-0.5 bg-orange-500/20 text-orange-300 border-orange-500/30 gap-1 backdrop-blur-sm">
+                      <Badge className="rounded-xl text-[12px] px-2.5 py-0.5 bg-orange-500/20 text-orange-300 border-orange-500/30 gap-1 backdrop-blur-sm">
                         🔥 {isAr ? "رائج" : "Trending"}
                       </Badge>
                     )}
@@ -413,11 +413,11 @@ export default function ArticleDetail() {
                     </Link>
                   </Button>
                   <span className="text-muted-foreground/30 text-sm">/</span>
-                  <Badge className={cn("capitalize rounded-xl text-[10px] px-2.5 py-0.5 border", typeMeta.color)}>
+                  <Badge className={cn("capitalize rounded-xl text-[12px] px-2.5 py-0.5 border", typeMeta.color)}>
                     {isAr ? typeMeta.ar : typeMeta.en}
                   </Badge>
                   {article.is_featured && (
-                    <Badge className="rounded-xl text-[10px] px-2.5 py-0.5 bg-chart-4/10 text-chart-4 border-chart-4/20 gap-1">
+                    <Badge className="rounded-xl text-[12px] px-2.5 py-0.5 bg-chart-4/10 text-chart-4 border-chart-4/20 gap-1">
                       <Sparkles className="h-2.5 w-2.5" />
                       {isAr ? "مميز" : "Featured"}
                     </Badge>
@@ -526,7 +526,7 @@ export default function ArticleDetail() {
                     key={label}
                     onClick={() => setFontSizeIdx(idx)}
                     className={cn(
-                      "h-8 w-8 flex items-center justify-center text-[11px] font-medium transition-colors",
+                      "h-8 w-8 flex items-center justify-center text-[12px] font-medium transition-colors",
                       idx === fontSizeIdx
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground hover:bg-muted/60"
@@ -631,7 +631,7 @@ export default function ArticleDetail() {
                     <h3 className="font-semibold mb-5 flex items-center gap-2 not-prose text-sm">
                       <Sparkles className="h-4 w-4 text-primary" />
                       {isAr ? "معرض الصور" : "Photo Gallery"}
-                      <span className="text-[10px] text-muted-foreground ms-1">({article.gallery_urls.length})</span>
+                      <span className="text-[12px] text-muted-foreground ms-1">({article.gallery_urls.length})</span>
                     </h3>
                     <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 not-prose">
                       {article.gallery_urls.map((url, i) => (
@@ -665,7 +665,7 @@ export default function ArticleDetail() {
                       <Badge
                         key={tag.id}
                         variant="secondary"
-                        className="rounded-xl text-[11px] px-3 py-1.5 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
+                        className="rounded-xl text-[12px] px-3 py-1.5 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
                       >
                         {isAr && tag.name_ar ? tag.name_ar : tag.name}
                       </Badge>
@@ -804,13 +804,13 @@ export default function ArticleDetail() {
                         )}
                         <CardContent className="p-4 sm:p-5 flex-1 flex flex-col justify-between min-w-0">
                           <div>
-                            <Badge className={cn("text-[9px] rounded-lg px-2 py-0.5 mb-2.5 capitalize border", TYPE_LABELS[r.type]?.color || typeMeta.color)}>
+                            <Badge className={cn("text-[12px] rounded-lg px-2 py-0.5 mb-2.5 capitalize border", TYPE_LABELS[r.type]?.color || typeMeta.color)}>
                               {isAr ? (TYPE_LABELS[r.type]?.ar || r.type) : (TYPE_LABELS[r.type]?.en || r.type)}
                             </Badge>
                             <h3 className="font-semibold line-clamp-2 mb-1.5 group-hover:text-primary transition-colors text-sm">{rTitle}</h3>
                             {rExcerpt && <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{rExcerpt}</p>}
                           </div>
-                          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border/20 text-[10px] text-muted-foreground">
+                          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border/20 text-[12px] text-muted-foreground">
                             {r.published_at && (
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-2.5 w-2.5" />

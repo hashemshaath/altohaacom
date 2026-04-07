@@ -88,7 +88,7 @@ export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCou
         <Bookmark className={`h-4 w-4 ${isSaved ? "fill-current" : ""}`} />
         {isSaved ? (isAr ? "محفوظ" : "Saved") : (isAr ? "حفظ" : "Save")}
         {saveCount > 0 && (
-          <Badge variant="secondary" className="text-[9px] h-4 px-1 ms-0.5">{saveCount}</Badge>
+          <Badge variant="secondary" className="text-[12px] h-4 px-1 ms-0.5">{saveCount}</Badge>
         )}
       </Button>
 
@@ -121,7 +121,7 @@ export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCou
         <Share2 className="h-4 w-4" />
         {isAr ? "مشاركة" : "Share"}
         {shareCount > 0 && (
-          <Badge variant="secondary" className="text-[9px] h-4 px-1 ms-0.5">{shareCount}</Badge>
+          <Badge variant="secondary" className="text-[12px] h-4 px-1 ms-0.5">{shareCount}</Badge>
         )}
       </Button>
     </div>

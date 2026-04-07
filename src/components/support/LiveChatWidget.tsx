@@ -173,7 +173,7 @@ export const LiveChatWidget = forwardRef<HTMLDivElement, Record<string, never>>(
                 </div>
                 <div>
                   <p className="text-sm font-bold">{isAr ? "الدعم المباشر" : "Live Support"}</p>
-                  <p className="text-[10px] text-muted-foreground flex items-center gap-1.5">
+                  <p className="text-[12px] text-muted-foreground flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-chart-5 inline-block animate-pulse" />
                     {isAr ? "متاح الآن" : "Available now"}
                   </p>
@@ -218,7 +218,7 @@ export const LiveChatWidget = forwardRef<HTMLDivElement, Record<string, never>>(
                     return (
                       <div key={msg.id} className={cn("flex gap-2", isMine ? "justify-end" : "justify-start")}>
                         {isSystem ? (
-                          <Badge variant="outline" className="text-[10px] text-muted-foreground mx-auto rounded-xl px-3 py-1 border-border/20">{msg.message}</Badge>
+                          <Badge variant="outline" className="text-[12px] text-muted-foreground mx-auto rounded-xl px-3 py-1 border-border/20">{msg.message}</Badge>
                         ) : (
                           <>
                             {!isMine && (
@@ -238,7 +238,7 @@ export const LiveChatWidget = forwardRef<HTMLDivElement, Record<string, never>>(
                             )}>
                               <p className="whitespace-pre-wrap break-words leading-relaxed">{msg.message}</p>
                               {relativeTime && (
-                                <p className={cn("text-[9px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
+                                <p className={cn("text-[12px] mt-1 tabular-nums", isMine ? "text-primary-foreground/50 text-end" : "text-muted-foreground")}>
                                   {relativeTime}
                                 </p>
                               )}

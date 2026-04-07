@@ -185,7 +185,7 @@ function EditorialTemplate({ slide }: { slide: HeroSlide }) {
       <div className="absolute inset-x-0 bottom-0 z-10 pb-10 sm:pb-14">
         <div className="container text-center">
           {slide.badge_text && (
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-primary">{slide.badge_text}</p>
+            <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.25em] text-primary">{slide.badge_text}</p>
           )}
           <div className="mx-auto mb-3 h-px w-16 bg-white/30" />
           <h1 className="font-serif text-3xl font-bold text-white drop-shadow-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-none tracking-tight">
@@ -225,7 +225,7 @@ function MinimalTemplate({ slide }: { slide: HeroSlide }) {
         <div className="container flex items-center justify-between gap-4">
           <div className="min-w-0">
             {slide.badge_text && (
-              <Badge variant="secondary" className="mb-1.5 text-[10px]">{slide.badge_text}</Badge>
+              <Badge variant="secondary" className="mb-1.5 text-[12px]">{slide.badge_text}</Badge>
             )}
             <h1 className="font-semibold text-foreground text-base sm:text-xl md:text-2xl truncate">{slide.title}</h1>
             {slide.subtitle && (

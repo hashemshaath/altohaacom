@@ -542,7 +542,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
                       {approvedCount}{cat.max_participants ? `/${cat.max_participants}` : ""}
                       {pendingCount > 0 && <span className="text-primary">(+{pendingCount})</span>}
                     </span>
-                    <Badge variant="outline" className="text-[10px] h-5">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                    <Badge variant="outline" className="text-[12px] h-5">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                   </div>
                   {cat.max_participants && (
                     <Progress value={fill} className="h-1.5" />

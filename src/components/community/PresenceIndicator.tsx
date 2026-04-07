@@ -83,7 +83,7 @@ export const OnlineCountBadge = memo(function OnlineCountBadge({ className }: On
   if (onlineCount <= 1) return null;
 
   return (
-    <div className={cn("flex items-center gap-1.5 text-[10px] text-muted-foreground", className)}>
+    <div className={cn("flex items-center gap-1.5 text-[12px] text-muted-foreground", className)}>
       <span className="h-2 w-2 rounded-full bg-chart-3 animate-pulse" />
       <span>{onlineCount} online</span>
     </div>

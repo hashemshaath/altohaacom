@@ -265,7 +265,7 @@ export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isA
                           </div>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-2" align="start" onClick={e => e.stopPropagation()}>
-                          <p className="text-[10px] font-semibold text-muted-foreground px-1 pb-1.5">{isAr ? "اختر أيقونة" : "Pick icon"}</p>
+                          <p className="text-[12px] font-semibold text-muted-foreground px-1 pb-1.5">{isAr ? "اختر أيقونة" : "Pick icon"}</p>
                           <div className="grid grid-cols-3 gap-1">
                             {AVAILABLE_ICONS.map(ic => (
                               <button key={ic.key} onClick={() => changeSectionIcon(section.key, ic.key)}

@@ -148,7 +148,7 @@ export default function OrganizerPortal() {
                 </div>
                 <div>
                   <p className={`text-lg font-bold ${s.color}`}>{typeof s.value === 'number' ? <AnimatedCounter value={s.value} /> : s.value}</p>
-                  <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                  <p className="text-[12px] text-muted-foreground">{s.label}</p>
                 </div>
               </CardContent>
             </Card>
@@ -193,12 +193,12 @@ export default function OrganizerPortal() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="text-sm font-bold truncate group-hover:text-primary transition-colors">{title}</h3>
-                              <Badge className={`${derived.color} text-[8px] shrink-0 py-0.5 px-2`}>
+                              <Badge className={`${derived.color} text-[12px] shrink-0 py-0.5 px-2`}>
                                 <span className={`h-1.5 w-1.5 rounded-full ${derived.dot} me-1`} />
                                 {isAr ? derived.labelAr : derived.label}
                               </Badge>
                             </div>
-                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
                                 {format(new Date(ex.start_date), "MMM d, yyyy")}

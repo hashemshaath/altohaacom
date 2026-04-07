@@ -119,8 +119,8 @@ const FieldGroup = memo(({ label, required, error, hint, children, className }: 
       {label}{required && <span className="text-destructive ms-0.5">*</span>}
     </Label>
     {children}
-    {error && <p className="text-[11px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{error}</p>}
-    {hint && !error && <p className="text-[10px] text-muted-foreground">{hint}</p>}
+    {error && <p className="text-[12px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{error}</p>}
+    {hint && !error && <p className="text-[12px] text-muted-foreground">{hint}</p>}
   </div>
 ));
 FieldGroup.displayName = "FieldGroup";
@@ -160,7 +160,7 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelAr}</Label>
           {valueAr?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[12px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
               {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} AR → EN
             </Button>
           )}
@@ -171,7 +171,7 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelEn}</Label>
           {valueEn?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[10px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[12px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
               {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} EN → AR
             </Button>
           )}
@@ -194,7 +194,7 @@ function ProgressRing({ pct }: { pct: number }) {
             <circle cx="21" cy="21" r={r} fill="none" strokeWidth="3" className="stroke-muted/30" />
             <circle cx="21" cy="21" r={r} fill="none" strokeWidth="3" className={cn(color, "transition-all duration-500")}
               strokeDasharray={c} strokeDashoffset={c - (c * pct / 100)} strokeLinecap="round" />
-            <text x="21" y="21" textAnchor="middle" dominantBaseline="central" className="fill-foreground text-[10px] font-bold rotate-90 origin-center">{pct}%</text>
+            <text x="21" y="21" textAnchor="middle" dominantBaseline="central" className="fill-foreground text-[12px] font-bold rotate-90 origin-center">{pct}%</text>
           </svg>
         </TooltipTrigger>
         <TooltipContent side="bottom"><p className="text-xs">{pct}% complete</p></TooltipContent>
@@ -636,15 +636,15 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
               <h2 className="text-sm font-bold truncate">
                 {isAr ? (form.name_ar || form.name || "منظم جديد") : (form.name || form.name_ar || "New Organizer")}
               </h2>
-              <div className="flex items-center gap-2 text-[10px] text-muted-foreground flex-wrap">
+              <div className="flex items-center gap-2 text-[12px] text-muted-foreground flex-wrap">
                 {organizerId && orgData?.organizer_number && (
-                  <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5">{orgData.organizer_number}</Badge>
+                  <Badge variant="outline" className="text-[12px] h-4 font-mono px-1.5">{orgData.organizer_number}</Badge>
                 )}
-                <Badge variant={form.status === "active" ? "default" : form.status === "pending" ? "outline" : "secondary"} className="text-[9px] h-4 capitalize">{form.status}</Badge>
-                {form.is_verified && <Badge variant="outline" className="text-[9px] h-4 px-1.5 gap-0.5 border-primary/30"><CheckCircle2 className="h-2.5 w-2.5 text-primary" />{isAr ? "موثق" : "Verified"}</Badge>}
-                {form.is_featured && <Badge variant="outline" className="text-[9px] h-4 px-1.5 gap-0.5 border-amber-500/30"><Star className="h-2.5 w-2.5 text-amber-500" />{isAr ? "مميز" : "Featured"}</Badge>}
+                <Badge variant={form.status === "active" ? "default" : form.status === "pending" ? "outline" : "secondary"} className="text-[12px] h-4 capitalize">{form.status}</Badge>
+                {form.is_verified && <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-primary/30"><CheckCircle2 className="h-2.5 w-2.5 text-primary" />{isAr ? "موثق" : "Verified"}</Badge>}
+                {form.is_featured && <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-amber-500/30"><Star className="h-2.5 w-2.5 text-amber-500" />{isAr ? "مميز" : "Featured"}</Badge>}
                 {hasUnsavedChanges && (
-                  <Badge variant="outline" className="text-[9px] h-4 px-1.5 border-amber-500/50 text-amber-600 animate-pulse">
+                  <Badge variant="outline" className="text-[12px] h-4 px-1.5 border-amber-500/50 text-amber-600 animate-pulse">
                     {isAr ? "غير محفوظ" : "Unsaved"}
                   </Badge>
                 )}
@@ -654,7 +654,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
           <div className="flex items-center gap-1.5">
             {lastSaved && (
-              <span className="text-[10px] text-muted-foreground hidden lg:flex items-center gap-1">
+              <span className="text-[12px] text-muted-foreground hidden lg:flex items-center gap-1">
                 <Clock className="h-3 w-3" />{lastSaved.toLocaleTimeString()}
               </span>
             )}
@@ -696,7 +696,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         )}>
           {showSideNav && (
             <nav className="sticky top-20 space-y-0.5">
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">{isAr ? "الأقسام" : "Sections"}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">{isAr ? "الأقسام" : "Sections"}</p>
               {TABS.map(tab => (
                 <QuickNavItem
                   key={tab.id}
@@ -709,12 +709,12 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
               ))}
               <Separator className="my-3" />
               <div className="px-3 space-y-2">
-                <div className="flex items-center justify-between text-[10px]">
+                <div className="flex items-center justify-between text-[12px]">
                   <span className="text-muted-foreground">{isAr ? "الاكتمال" : "Complete"}</span>
                   <span className={cn("font-bold", completePct >= 80 ? "text-chart-2" : completePct >= 50 ? "text-amber-600" : "text-primary")}>{completePct}%</span>
                 </div>
                 <Progress value={completePct} className="h-1.5" />
-                <div className="flex items-center gap-3 text-[9px] text-muted-foreground mt-1">
+                <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-1">
                   <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-chart-2" />{TABS.filter(t => getTabStatus(t.id) === "complete").length}</span>
                   <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-amber-500" />{TABS.filter(t => getTabStatus(t.id) === "partial").length}</span>
                   <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />{TABS.filter(t => getTabStatus(t.id) === "empty").length}</span>
@@ -766,9 +766,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         <div className="flex-1 min-w-0">
                           <p className="font-bold text-base truncate">{isAr ? (form.name_ar || form.name) : (form.name || form.name_ar)}</p>
                           <div className="flex items-center gap-2 mt-1 flex-wrap">
-                            {orgData.organizer_number && <span className="text-[10px] text-muted-foreground font-mono"><Hash className="h-3 w-3 inline" /> {orgData.organizer_number}</span>}
-                            {form.city && <span className="text-[10px] text-muted-foreground"><MapPin className="h-3 w-3 inline" /> {isAr ? (form.city_ar || form.city) : form.city}</span>}
-                            {form.founded_year && <span className="text-[10px] text-muted-foreground"><Calendar className="h-3 w-3 inline" /> {form.founded_year}</span>}
+                            {orgData.organizer_number && <span className="text-[12px] text-muted-foreground font-mono"><Hash className="h-3 w-3 inline" /> {orgData.organizer_number}</span>}
+                            {form.city && <span className="text-[12px] text-muted-foreground"><MapPin className="h-3 w-3 inline" /> {isAr ? (form.city_ar || form.city) : form.city}</span>}
+                            {form.founded_year && <span className="text-[12px] text-muted-foreground"><Calendar className="h-3 w-3 inline" /> {form.founded_year}</span>}
                           </div>
                         </div>
                         <div className="hidden sm:flex gap-2">
@@ -779,7 +779,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                           ].map(s => (
                             <div key={s.l} className="text-center px-3">
                               <p className="text-sm font-bold">{s.v}</p>
-                              <p className="text-[9px] text-muted-foreground">{s.l}</p>
+                              <p className="text-[12px] text-muted-foreground">{s.l}</p>
                             </div>
                           ))}
                         </div>
@@ -796,7 +796,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   translateField={translateField} context={translateCtx}
                   placeholder_ar="اسم المنظم بالعربية" placeholder_en="Organizer name in English"
                 />
-                {formErrors.name && <p className="text-[11px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
+                {formErrors.name && <p className="text-[12px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
 
                 <FieldGroup label="Slug" hint={form.slug ? `${window.location.origin}/organizers/${form.slug}` : undefined}>
                   <div className="flex gap-2">
@@ -820,7 +820,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 />
 
                 {/* Character counts */}
-                <div className="flex justify-between text-[9px] text-muted-foreground">
+                <div className="flex justify-between text-[12px] text-muted-foreground">
                   <span>{form.description_ar.length} {isAr ? "حرف (عربي)" : "chars (AR)"}</span>
                   <span>{form.description.length} {isAr ? "حرف (إنجليزي)" : "chars (EN)"}</span>
                 </div>
@@ -838,14 +838,14 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         <Label className="text-xs font-medium flex items-center gap-1.5">
                           <Sparkles className="h-3.5 w-3.5 text-primary" />{isAr ? "الشعار" : "Logo"}
                         </Label>
-                        {form.logo_url && <Badge variant="outline" className="text-[9px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
+                        {form.logo_url && <Badge variant="outline" className="text-[12px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
                       </div>
                       <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "logo"); }} />
                       {form.logo_url ? (
                         <div className="flex items-center gap-4">
                           <img src={form.logo_url} alt="Logo" className="h-20 w-20 rounded-2xl object-cover shrink-0 border shadow-sm" loading="lazy" />
                           <div className="flex-1 min-w-0 space-y-2">
-                            <p className="text-[10px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
+                            <p className="text-[12px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
                             <div className="flex gap-2">
                               <Button type="button" variant="outline" size="sm" className="h-7 text-xs rounded-lg" onClick={() => logoRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
                               <Button type="button" variant="ghost" size="sm" className="h-7 text-xs text-destructive rounded-lg" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}><X className="h-3.5 w-3.5" /></Button>
@@ -870,7 +870,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         <Label className="text-xs font-medium flex items-center gap-1.5">
                           <ImageIcon className="h-3.5 w-3.5 text-primary" />{isAr ? "صورة الغلاف" : "Cover Image"}
                         </Label>
-                        {form.cover_image_url && <Badge variant="outline" className="text-[9px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
+                        {form.cover_image_url && <Badge variant="outline" className="text-[12px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
                       </div>
                       <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "cover"); }} />
                       {form.cover_image_url ? (
@@ -897,7 +897,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 <Card className="rounded-2xl">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <Label className="text-xs font-medium">{isAr ? "معرض الصور" : "Photo Gallery"} <Badge variant="outline" className="text-[9px] h-4 ms-1">{form.gallery_urls.length}</Badge></Label>
+                      <Label className="text-xs font-medium">{isAr ? "معرض الصور" : "Photo Gallery"} <Badge variant="outline" className="text-[12px] h-4 ms-1">{form.gallery_urls.length}</Badge></Label>
                       <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "gallery"); }} />
                       <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => galleryRef.current?.click()} disabled={uploadingGallery}>
                         {uploadingGallery ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
@@ -919,7 +919,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     ) : (
                       <div className="rounded-xl border-2 border-dashed border-border/40 p-6 text-center text-muted-foreground/60">
                         <ImageIcon className="h-6 w-6 mx-auto mb-1" />
-                        <p className="text-[10px]">{isAr ? "لا توجد صور في المعرض" : "No gallery photos yet"}</p>
+                        <p className="text-[12px]">{isAr ? "لا توجد صور في المعرض" : "No gallery photos yet"}</p>
                       </div>
                     )}
                   </CardContent>
@@ -948,7 +948,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 {(form.email || form.phone || form.website) && (
                   <Card className="rounded-2xl bg-muted/30">
                     <CardContent className="p-4">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معاينة سريعة" : "Quick Preview"}</p>
+                      <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معاينة سريعة" : "Quick Preview"}</p>
                       <div className="flex flex-wrap gap-3">
                         {form.email && (
                           <a href={`mailto:${form.email}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline">
@@ -1123,7 +1123,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                                 <Users className="h-3.5 w-3.5 text-primary" />
                               </div>
                               <span className="text-xs font-medium">{c.name || c.name_ar || `${isAr ? "جهة اتصال" : "Contact"} ${i + 1}`}</span>
-                              {c.role && <Badge variant="outline" className="text-[9px] h-4">{c.role}</Badge>}
+                              {c.role && <Badge variant="outline" className="text-[12px] h-4">{c.role}</Badge>}
                             </div>
                             <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive rounded-lg" onClick={() => removeContact(i)}>
                               <Trash2 className="h-3.5 w-3.5" />
@@ -1182,7 +1182,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                       </FieldGroup>
                     </div>
                     {form.founded_year && (
-                      <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                      <p className="text-[12px] text-muted-foreground flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {isAr ? `تأسست منذ ${new Date().getFullYear() - parseInt(form.founded_year)} سنة` : `Established ${new Date().getFullYear() - parseInt(form.founded_year)} years ago`}
                       </p>
@@ -1207,13 +1207,13 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     </div>
                     {(form.services || form.targeted_sectors) && (
                       <div className="pt-2">
-                        <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-2">{isAr ? "العلامات" : "Tags Preview"}</p>
+                        <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-2">{isAr ? "العلامات" : "Tags Preview"}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {form.services.split(",").filter(Boolean).map((s, i) => (
-                            <Badge key={`s-${i}`} variant="secondary" className="text-[10px]">{s.trim()}</Badge>
+                            <Badge key={`s-${i}`} variant="secondary" className="text-[12px]">{s.trim()}</Badge>
                           ))}
                           {form.targeted_sectors.split(",").filter(Boolean).map((s, i) => (
-                            <Badge key={`t-${i}`} variant="outline" className="text-[10px]">{s.trim()}</Badge>
+                            <Badge key={`t-${i}`} variant="outline" className="text-[12px]">{s.trim()}</Badge>
                           ))}
                         </div>
                       </div>
@@ -1244,7 +1244,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                             <s.icon className={cn("h-4 w-4", val ? "text-primary" : "text-muted-foreground")} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <Label className="text-[10px] font-medium text-muted-foreground">{s.label}</Label>
+                            <Label className="text-[12px] font-medium text-muted-foreground">{s.label}</Label>
                             <Input
                               value={val}
                               onChange={e => setForm(f => ({ ...f, [s.key]: e.target.value }))}
@@ -1257,7 +1257,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     );
                   })}
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                   <Progress value={(socialProfiles / 8) * 100} className="h-1.5 w-20" />
                   {socialProfiles}/8 {isAr ? "حسابات مرتبطة" : "profiles linked"}
                 </div>
@@ -1275,7 +1275,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         </div>
                         <div>
                           <p className="text-xs font-medium">{isAr ? "الحالة" : "Status"}</p>
-                          <p className="text-[10px] text-muted-foreground">{isAr ? "حالة حساب المنظم" : "Account status"}</p>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "حالة حساب المنظم" : "Account status"}</p>
                         </div>
                       </div>
                       <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
@@ -1296,7 +1296,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         </div>
                         <div>
                           <p className="text-xs font-medium">{isAr ? "التوثيق" : "Verified"}</p>
-                          <p className="text-[10px] text-muted-foreground">{isAr ? "إظهار شارة التوثيق" : "Show verified badge"}</p>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "إظهار شارة التوثيق" : "Show verified badge"}</p>
                         </div>
                       </div>
                       <Switch checked={form.is_verified} onCheckedChange={v => setForm(f => ({ ...f, is_verified: v }))} />
@@ -1310,7 +1310,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         </div>
                         <div>
                           <p className="text-xs font-medium">{isAr ? "مميز" : "Featured"}</p>
-                          <p className="text-[10px] text-muted-foreground">{isAr ? "إبراز في الصفحة الرئيسية" : "Highlight on homepage"}</p>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "إبراز في الصفحة الرئيسية" : "Highlight on homepage"}</p>
                         </div>
                       </div>
                       <Switch checked={form.is_featured} onCheckedChange={v => setForm(f => ({ ...f, is_featured: v }))} />
@@ -1357,7 +1357,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                               </div>
                               <div>
                                 <p className="text-sm font-bold">{s.value}</p>
-                                <p className="text-[9px] text-muted-foreground">{s.label}</p>
+                                <p className="text-[12px] text-muted-foreground">{s.label}</p>
                               </div>
                             </CardContent>
                           </Card>
@@ -1388,11 +1388,11 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                                   <div className="min-w-0 flex-1">
                                     <p className="text-sm font-semibold truncate">{isAr ? group.baseNameAr : group.baseName}</p>
                                     <div className="flex items-center gap-1.5 mt-0.5">
-                                      <Badge variant="outline" className="text-[9px] h-4">
+                                      <Badge variant="outline" className="text-[12px] h-4">
                                         {group.editions.length} {isAr ? "نسخة" : group.editions.length === 1 ? "edition" : "editions"}
                                       </Badge>
                                       {group.editions[0]?.edition_year && (
-                                        <span className="text-[9px] text-muted-foreground">
+                                        <span className="text-[12px] text-muted-foreground">
                                           {group.editions[group.editions.length - 1]?.edition_year} — {group.editions[0]?.edition_year}
                                         </span>
                                       )}
@@ -1405,7 +1405,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                                 {isExpanded && (
                                   <div className="border-t border-border/40 bg-muted/10">
                                     <div className="p-3 space-y-2">
-                                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                                      <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                                         {isAr ? "النسخ المسجلة" : "Registered Editions"}
                                       </p>
                                       {group.editions.map(ed => (
@@ -1422,15 +1422,15 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                                               <div className="flex items-center gap-2">
                                                 <span className="text-xs font-bold text-primary">{ed.edition_year || "—"}</span>
                                                 {ed.edition_number && (
-                                                  <span className="text-[9px] text-muted-foreground">
+                                                  <span className="text-[12px] text-muted-foreground">
                                                     {isAr ? `النسخة ${ed.edition_number}` : `Edition #${ed.edition_number}`}
                                                   </span>
                                                 )}
                                               </div>
                                               <div className="flex items-center gap-1.5 mt-0.5">
-                                                <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-[8px] h-3.5 capitalize">{ed.status}</Badge>
-                                                {ed.start_date && <span className="text-[9px] text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
-                                                {ed.view_count ? <span className="text-[9px] text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
+                                                <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-[12px] h-3.5 capitalize">{ed.status}</Badge>
+                                                {ed.start_date && <span className="text-[12px] text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
+                                                {ed.view_count ? <span className="text-[12px] text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
                                               </div>
                                             </div>
                                             <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover/ed:opacity-100 transition-opacity shrink-0" />
@@ -1492,7 +1492,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                               <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center shrink-0", s.bg)}>
                                 <s.icon className={cn("h-4 w-4", s.color)} />
                               </div>
-                              <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                              <p className="text-[12px] text-muted-foreground">{s.label}</p>
                             </div>
                             <p className="text-2xl font-bold">{s.value}</p>
                           </CardContent>
@@ -1514,7 +1514,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                             { label: isAr ? "حسابات التواصل" : "Social Profiles", value: socialProfiles },
                           ].map(m => (
                             <div key={m.label} className="rounded-xl bg-muted/40 p-3">
-                              <p className="text-[10px] text-muted-foreground mb-1">{m.label}</p>
+                              <p className="text-[12px] text-muted-foreground mb-1">{m.label}</p>
                               <p className="text-lg font-bold">{m.value}</p>
                             </div>
                           ))}
@@ -1585,7 +1585,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 {organizerId && orgData && (
                   <Card className="rounded-2xl">
                     <CardContent className="p-4">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معلومات السجل" : "Record Info"}</p>
+                      <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معلومات السجل" : "Record Info"}</p>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {[
                           { label: "ID", value: organizerId.slice(0, 8) + "...", copyable: organizerId },
@@ -1594,7 +1594,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                           { label: isAr ? "آخر حفظ" : "Last Saved", value: lastSaved ? lastSaved.toLocaleTimeString(isAr ? "ar-SA" : "en-US") : "—" },
                         ].map(m => (
                           <div key={m.label} className="rounded-xl bg-muted/40 p-3 group">
-                            <p className="text-[10px] text-muted-foreground">{m.label}</p>
+                            <p className="text-[12px] text-muted-foreground">{m.label}</p>
                             <div className="flex items-center gap-1 mt-0.5">
                               <p className="text-xs font-medium font-mono truncate">{m.value}</p>
                               {"copyable" in m && m.copyable && (
@@ -1618,7 +1618,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   <ChevronLeft className="h-3.5 w-3.5" />
                   <span className="text-xs">{currentTabIdx > 0 ? (isAr ? TABS[currentTabIdx - 1].ar : TABS[currentTabIdx - 1].en) : (isAr ? "السابق" : "Previous")}</span>
                 </Button>
-                <span className="text-[10px] text-muted-foreground">{currentTabIdx + 1} / {TABS.length}</span>
+                <span className="text-[12px] text-muted-foreground">{currentTabIdx + 1} / {TABS.length}</span>
                 <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={goNextTab} disabled={currentTabIdx === TABS.length - 1}>
                   <span className="text-xs">{currentTabIdx < TABS.length - 1 ? (isAr ? TABS[currentTabIdx + 1].ar : TABS[currentTabIdx + 1].en) : (isAr ? "التالي" : "Next")}</span>
                   <ChevronRight className="h-3.5 w-3.5" />

@@ -223,7 +223,7 @@ const EngagementMetrics = memo(function EngagementMetrics() {
               {!isLoading && card.trend !== undefined && (
                 <div className="mt-2">
                   <TrendIndicator trend={card.trend} />
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                  <p className="text-[12px] text-muted-foreground mt-0.5">
                     {isAr ? "مقارنة بالفترة السابقة" : "vs previous 30 days"}
                   </p>
                 </div>

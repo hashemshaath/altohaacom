@@ -263,7 +263,7 @@ const SectionLabel = memo(function SectionLabel({ icon: Icon, label }: { icon: a
       <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
         <Icon className="h-3 w-3 text-primary" />
       </div>
-      <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+      <h2 className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground">
         {label}
       </h2>
       <div className="flex-1 h-px bg-gradient-to-r from-border/60 to-transparent hidden lg:block" />
@@ -331,18 +331,18 @@ const HeroWelcome = memo(function HeroWelcome({
                 {/* Quick stats chips */}
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
                   {membershipTier && membershipTier !== "free" && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-primary/10 text-primary border border-primary/15">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-bold bg-primary/10 text-primary border border-primary/15">
                       <Zap className="h-3 w-3" />
                       {membershipTier === "enterprise" ? (isAr ? "مؤسسي" : "Enterprise") : (isAr ? "احترافي" : "Professional")}
                     </span>
                   )}
                   {(loyaltyPoints ?? 0) > 0 && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-chart-4/10 text-chart-4 border border-chart-4/15">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-bold bg-chart-4/10 text-chart-4 border border-chart-4/15">
                       <Star className="h-3 w-3" />
                       <AnimatedCounter value={loyaltyPoints || 0} /> {isAr ? "نقطة" : "pts"}
                     </span>
                   )}
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-medium bg-muted/60 text-muted-foreground border border-border/30">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium bg-muted/60 text-muted-foreground border border-border/30">
                     <Calendar className="h-3 w-3" />
                     {new Date().toLocaleDateString(isAr ? "ar-SA" : "en-US", { weekday: "short", month: "short", day: "numeric" })}
                   </span>
@@ -401,7 +401,7 @@ const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sect
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
             <Sparkles className="h-3 w-3 text-primary" />
           </div>
-          <h2 className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+          <h2 className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground">
             {isAr ? "الوصول السريع" : "Quick Access"}
           </h2>
         </div>
@@ -415,7 +415,7 @@ const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sect
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                   <s.icon className={`h-4.5 w-4.5 ${s.color}`} />
                 </div>
-                <span className="text-[9px] sm:text-[10px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
+                <span className="text-[12px] sm:text-[12px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
               </div>
             </Link>
           ))}
@@ -463,7 +463,7 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
             </div>
             <div>
               <AnimatedCounter value={item.value} className="text-2xl font-black tabular-nums" />
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground leading-tight font-medium">{item.label}</p>
+              <p className="text-[12px] uppercase tracking-wider text-muted-foreground leading-tight font-medium">{item.label}</p>
             </div>
           </CardContent>
         </Card>

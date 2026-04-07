@@ -150,7 +150,7 @@ export const KitchenStationsPanel = memo(function KitchenStationsPanel({ competi
                         <p className="text-sm font-medium truncate">
                           {isAr && station.station_name_ar ? station.station_name_ar : station.station_name || `${isAr ? "محطة" : "Station"} ${station.station_number}`}
                         </p>
-                        <Badge className={`text-[9px] ${statusStyle.color}`}>
+                        <Badge className={`text-[12px] ${statusStyle.color}`}>
                           {isAr ? statusStyle.ar : statusStyle.en}
                         </Badge>
                       </div>

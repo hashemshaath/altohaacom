@@ -39,7 +39,7 @@ export const CountdownTimer = memo(function CountdownTimer({ targetDate, isAr, c
                 {String(u.value).padStart(2, "0")}
               </span>
             </div>
-            <span className="mt-1.5 text-[8px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80">
+            <span className="mt-1.5 text-[12px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80">
               {u.label}
             </span>
           </div>
@@ -58,7 +58,7 @@ export const CountdownTimer = memo(function CountdownTimer({ targetDate, isAr, c
             </span>
             <div className="absolute inset-x-0 top-1/2 h-px bg-primary/10" />
           </div>
-          <span className="mt-2 text-[9px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 sm:mt-3 sm:text-[10px] sm:tracking-[0.2em]">
+          <span className="mt-2 text-[12px] font-bold uppercase tracking-[0.15em] text-muted-foreground/80 sm:mt-3 sm:text-[12px] sm:tracking-[0.2em]">
             {u.label}
           </span>
         </div>

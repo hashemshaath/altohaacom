@@ -291,7 +291,7 @@ export const StoriesBar = memo(function StoriesBar() {
               >
                 <Plus className="h-5 w-5 text-primary" />
               </button>
-              <span className="text-[10px] text-muted-foreground font-medium">
+              <span className="text-[12px] text-muted-foreground font-medium">
                 {isAr ? "قصتك" : "Your story"}
               </span>
               <input
@@ -324,7 +324,7 @@ export const StoriesBar = memo(function StoriesBar() {
                   </AvatarFallback>
                 </Avatar>
               </div>
-              <span className="text-[10px] text-muted-foreground font-medium max-w-[60px] truncate">
+              <span className="text-[12px] text-muted-foreground font-medium max-w-[60px] truncate">
                 {user?.id === group.user_id
                   ? (isAr ? "قصتك" : "Your story")
                   : (group.user_name?.split(" ")[0] || "Chef")}
@@ -360,7 +360,7 @@ export const StoriesBar = memo(function StoriesBar() {
                 }
                 {!pendingFile.type.startsWith("video/") && (
                   <div className="absolute bottom-2 inset-x-0 flex justify-center">
-                    <div className="flex items-center gap-1.5 rounded-full bg-background/70 backdrop-blur-sm px-3 py-1 text-[10px] text-muted-foreground font-medium">
+                    <div className="flex items-center gap-1.5 rounded-full bg-background/70 backdrop-blur-sm px-3 py-1 text-[12px] text-muted-foreground font-medium">
                       <Move className="h-3 w-3" />
                       {isAr ? "اسحب لضبط الصورة" : "Drag to adjust"}
                     </div>
@@ -413,7 +413,7 @@ export const StoriesBar = memo(function StoriesBar() {
               <div className="absolute top-4 inset-x-0 z-10 flex items-center gap-2 px-4">
                 <Avatar className="h-8 w-8 ring-2 ring-background">
                   <AvatarImage src={viewing.user_avatar || undefined} />
-                  <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-bold">
+                  <AvatarFallback className="bg-primary/10 text-primary text-[12px] font-bold">
                     {(viewing.user_name || "C")[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>

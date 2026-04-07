@@ -160,7 +160,7 @@ export const SEOBacklinkMonitor = memo(function SEOBacklinkMonitor({ isAr }: { i
                 <m.icon className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground">{m.label}</p>
+                <p className="text-[12px] text-muted-foreground">{m.label}</p>
                 <AnimatedCounter value={m.value} className="text-lg font-bold" />
               </div>
             </CardContent>
@@ -276,19 +276,19 @@ export const SEOBacklinkMonitor = memo(function SEOBacklinkMonitor({ isAr }: { i
                             <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                             <div className="min-w-0">
                               <p className="font-medium text-xs truncate max-w-[200px]">{bl.source_domain}</p>
-                              <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">{bl.source_url}</p>
+                              <p className="text-[12px] text-muted-foreground truncate max-w-[200px]">{bl.source_url}</p>
                             </div>
                           </div>
                         </td>
                         <td className="p-3 text-center font-bold">{bl.domain_authority || "–"}</td>
                         <td className="p-3 text-xs text-muted-foreground truncate max-w-[120px]">{bl.anchor_text || "–"}</td>
                         <td className="p-3 text-center">
-                          <Badge variant={bl.is_dofollow ? "default" : "secondary"} className="text-[8px]">
+                          <Badge variant={bl.is_dofollow ? "default" : "secondary"} className="text-[12px]">
                             {bl.is_dofollow ? "dofollow" : "nofollow"}
                           </Badge>
                         </td>
                         <td className="p-3 text-center">
-                          <Badge variant={quality === "high" ? "default" : quality === "medium" ? "secondary" : "destructive"} className="text-[8px]">
+                          <Badge variant={quality === "high" ? "default" : quality === "medium" ? "secondary" : "destructive"} className="text-[12px]">
                             {quality === "high" ? "★" : quality === "medium" ? "●" : "○"} {quality}
                           </Badge>
                         </td>

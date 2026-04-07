@@ -183,7 +183,7 @@ export const CompetitionSchedulePanel = memo(function CompetitionSchedulePanel({
               <Badge variant="outline" className="text-xs font-bold px-3 py-1">
                 {format(new Date(dateKey), "EEEE, MMM d")}
               </Badge>
-              <span className="text-[10px] text-muted-foreground">{daySlots!.length} {isAr ? "فترة" : "slots"}</span>
+              <span className="text-[12px] text-muted-foreground">{daySlots!.length} {isAr ? "فترة" : "slots"}</span>
             </div>
             <div className="space-y-1.5 relative">
               <div className="absolute start-[18px] top-0 bottom-0 w-px bg-border/60" />
@@ -198,9 +198,9 @@ export const CompetitionSchedulePanel = memo(function CompetitionSchedulePanel({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">{isAr && slot.title_ar ? slot.title_ar : slot.title}</span>
-                        <Badge variant="outline" className="text-[9px]">{slotType ? (isAr ? slotType.ar : slotType.en) : slot.slot_type}</Badge>
+                        <Badge variant="outline" className="text-[12px]">{slotType ? (isAr ? slotType.ar : slotType.en) : slot.slot_type}</Badge>
                       </div>
-                      <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-0.5">
+                      <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-0.5">
                         <span className="flex items-center gap-1">
                           <Clock className="h-2.5 w-2.5" />
                           {format(new Date(slot.start_time), "h:mm a")} – {format(new Date(slot.end_time), "h:mm a")}

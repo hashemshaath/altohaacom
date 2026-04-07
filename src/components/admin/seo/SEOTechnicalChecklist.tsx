@@ -300,7 +300,7 @@ export const SEOTechnicalChecklist = memo(function SEOTechnicalChecklist({ isAr 
                 <p className={`text-3xl font-bold ${stats.score >= 80 ? "text-green-500" : stats.score >= 50 ? "text-amber-500" : "text-destructive"}`}>
                   {stats.score}%
                 </p>
-                <p className="text-[9px] text-muted-foreground uppercase tracking-wider">{isAr ? "النتيجة" : "Score"}</p>
+                <p className="text-[12px] text-muted-foreground uppercase tracking-wider">{isAr ? "النتيجة" : "Score"}</p>
               </div>
               <Button onClick={runAllChecks} disabled={running} variant="outline" size="sm" className="gap-1.5">
                 {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
@@ -325,7 +325,7 @@ export const SEOTechnicalChecklist = memo(function SEOTechnicalChecklist({ isAr 
               <CardTitle className="text-sm flex items-center gap-2">
                 <CatIcon className="h-4 w-4 text-primary" />
                 {isAr ? cat.ar : cat.en}
-                <Badge variant={catPass === catChecks.length ? "default" : "secondary"} className="text-[8px] ms-auto">
+                <Badge variant={catPass === catChecks.length ? "default" : "secondary"} className="text-[12px] ms-auto">
                   {catPass}/{catChecks.length}
                 </Badge>
               </CardTitle>
@@ -336,11 +336,11 @@ export const SEOTechnicalChecklist = memo(function SEOTechnicalChecklist({ isAr 
                   <div className="mt-0.5 shrink-0">{statusIcon(check.status)}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium">{isAr ? check.labelAr : check.label}</p>
-                    <p className="text-[11px] text-muted-foreground">{isAr ? check.descriptionAr : check.description}</p>
+                    <p className="text-[12px] text-muted-foreground">{isAr ? check.descriptionAr : check.description}</p>
                   </div>
                   <Badge
                     variant={check.status === "pass" ? "default" : check.status === "fail" ? "destructive" : check.status === "warning" ? "secondary" : "outline"}
-                    className="text-[8px] shrink-0"
+                    className="text-[12px] shrink-0"
                   >
                     {check.status === "pass" ? (isAr ? "ناجح" : "Pass") : check.status === "fail" ? (isAr ? "فشل" : "Fail") : check.status === "warning" ? (isAr ? "تحذير" : "Warn") : (isAr ? "انتظار" : "Pending")}
                   </Badge>

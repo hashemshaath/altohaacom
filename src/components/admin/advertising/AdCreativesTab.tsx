@@ -78,7 +78,7 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
               </div>
               <div>
                 <p className="text-lg font-bold leading-none">{s.value}</p>
-                <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground mt-0.5">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -125,12 +125,12 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <h3 className="font-semibold text-sm truncate">{cr.title || (isAr ? "بدون عنوان" : "Untitled")}</h3>
-                    <p className="text-[10px] text-muted-foreground">{isAr ? cr.ad_placements?.name_ar : cr.ad_placements?.name}</p>
+                    <p className="text-[12px] text-muted-foreground">{isAr ? cr.ad_placements?.name_ar : cr.ad_placements?.name}</p>
                   </div>
                   {!cr.image_url && <Badge className={statusColors[cr.status] || ""}>{cr.status}</Badge>}
                 </div>
 
-                <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                   <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> {(cr.impressions || 0).toLocaleString()}</span>
                   <span className="flex items-center gap-1"><MousePointerClick className="h-3 w-3" /> {(cr.clicks || 0).toLocaleString()}</span>
                   {cr.destination_url && (
@@ -143,7 +143,7 @@ export const AdCreativesTab = memo(function AdCreativesTab({ creatives, onApprov
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Switch checked={cr.is_active} onCheckedChange={(checked) => onToggleActive(cr.id, checked)} />
-                    <Label className="text-[10px]">{isAr ? "مفعل" : "Active"}</Label>
+                    <Label className="text-[12px]">{isAr ? "مفعل" : "Active"}</Label>
                   </div>
                 </div>
 

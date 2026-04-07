@@ -124,7 +124,7 @@ export const OrderCenterHub = memo(function OrderCenterHub({ competitionId, isOr
             {TAB_GROUPS.map((group) => (
               <div key={group.labelEn} className="flex flex-col">
                 <div className="px-3 py-1 bg-muted/40 border-b border-border/40">
-                  <span className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
                     {isAr ? group.labelAr : group.labelEn}
                   </span>
                 </div>
@@ -137,7 +137,7 @@ export const OrderCenterHub = memo(function OrderCenterHub({ competitionId, isOr
                         key={tab.id}
                         onClick={() => handleTabChange(tab.id)}
                         className={`
-                          flex items-center gap-1 rounded-xl px-2 py-1.5 text-[11px] sm:text-xs font-medium transition-all active:scale-95
+                          flex items-center gap-1 rounded-xl px-2 py-1.5 text-[12px] sm:text-xs font-medium transition-all active:scale-95
                           ${isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"

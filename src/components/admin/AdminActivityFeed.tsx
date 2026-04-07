@@ -127,7 +127,7 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium truncate">{item.title}</p>
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-[12px] text-muted-foreground">
                         {formatDistanceToNow(new Date(item.time), { addSuffix: true, ...(isAr ? { locale: ar } : {}) })}
                       </p>
                     </div>
@@ -138,7 +138,7 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
                           <span className="relative inline-flex h-2 w-2 rounded-full bg-chart-3" />
                         </span>
                       )}
-                      <Badge variant="outline" className="text-[9px] transition-colors group-hover/item:border-primary/30">
+                      <Badge variant="outline" className="text-[12px] transition-colors group-hover/item:border-primary/30">
                         {item.type}
                       </Badge>
                     </div>

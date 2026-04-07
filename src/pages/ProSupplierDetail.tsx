@@ -253,12 +253,12 @@ export default function ProSupplierDetail() {
                     sponsorshipCount={sponsorships.length}
                   />
                   {company.company_number && (
-                    <Badge variant="outline" className="bg-muted/50 font-mono text-[10px]">
+                    <Badge variant="outline" className="bg-muted/50 font-mono text-[12px]">
                       <Hash className="me-1 h-3 w-3" />{company.company_number}
                     </Badge>
                   )}
                   {company.country_code && (
-                    <Badge variant="outline" className="bg-muted/50 text-[10px]">
+                    <Badge variant="outline" className="bg-muted/50 text-[12px]">
                       {countryFlag(company.country_code)} {getCountryName(company.country_code)}
                     </Badge>
                   )}
@@ -376,7 +376,7 @@ export default function ProSupplierDetail() {
                     <CardContent>
                       <div className="flex flex-wrap gap-1.5">
                         {(company as any).specializations.map((s: string) => (
-                          <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>
+                          <Badge key={s} variant="secondary" className="text-[12px]">{s}</Badge>
                         ))}
                       </div>
                     </CardContent>
@@ -394,7 +394,7 @@ export default function ProSupplierDetail() {
                     <CardContent>
                       <div className="flex flex-wrap gap-1.5">
                         {company.classifications.map((c) => (
-                          <Badge key={c} variant="secondary" className="text-[10px]">{c}</Badge>
+                          <Badge key={c} variant="secondary" className="text-[12px]">{c}</Badge>
                         ))}
                       </div>
                     </CardContent>
@@ -468,7 +468,7 @@ export default function ProSupplierDetail() {
                         <CardContent className="p-3">
                           <p className="font-medium text-sm truncate">{isAr && p.name_ar ? p.name_ar : p.name}</p>
                           <div className="flex items-center justify-between mt-1">
-                            <Badge variant="outline" className="text-[9px]">{p.category}</Badge>
+                            <Badge variant="outline" className="text-[12px]">{p.category}</Badge>
                             {p.unit_price > 0 && (
                               <span className="text-xs font-semibold text-primary">
                                 {p.unit_price} {p.currency || "SAR"}
@@ -497,7 +497,7 @@ export default function ProSupplierDetail() {
                       <h3 className="mb-3 text-base font-semibold capitalize flex items-center gap-2">
                         <ChefHat className="h-4 w-4 text-primary" />
                         {cat}
-                        <Badge variant="secondary" className="text-[9px]">{items.length}</Badge>
+                        <Badge variant="secondary" className="text-[12px]">{items.length}</Badge>
                       </h3>
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {items.map((p) => (
@@ -520,16 +520,16 @@ export default function ProSupplierDetail() {
                               )}
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-1.5">
-                                  {p.sku && <Badge variant="outline" className="text-[9px] font-mono">{p.sku}</Badge>}
+                                  {p.sku && <Badge variant="outline" className="text-[12px] font-mono">{p.sku}</Badge>}
                                   {p.in_stock ? (
-                                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[9px]">{isAr ? "متوفر" : "In Stock"}</Badge>
+                                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[12px]">{isAr ? "متوفر" : "In Stock"}</Badge>
                                   ) : (
-                                    <Badge variant="destructive" className="text-[9px]">{isAr ? "نفد" : "Out of Stock"}</Badge>
+                                    <Badge variant="destructive" className="text-[12px]">{isAr ? "نفد" : "Out of Stock"}</Badge>
                                   )}
                                 </div>
                                 {p.unit_price > 0 && (
                                   <span className="text-sm font-bold text-primary">
-                                    {p.unit_price} <span className="text-[10px] font-normal">{p.currency || "SAR"}</span>
+                                    {p.unit_price} <span className="text-[12px] font-normal">{p.currency || "SAR"}</span>
                                   </span>
                                 )}
                               </div>
@@ -563,7 +563,7 @@ export default function ProSupplierDetail() {
                           </div>
                           <div className="min-w-0">
                             <p className="truncate text-sm font-medium">{title}</p>
-                            <Badge variant="outline" className="mt-1 text-[9px] uppercase tracking-wider">{s.tier}</Badge>
+                            <Badge variant="outline" className="mt-1 text-[12px] uppercase tracking-wider">{s.tier}</Badge>
                           </div>
                         </CardContent>
                       </Card>
@@ -585,7 +585,7 @@ export default function ProSupplierDetail() {
                         <CardContent className="p-4">
                           <p className="font-medium text-sm">{isAr && c.name_ar ? c.name_ar : c.name}</p>
                           <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                            <Badge variant="secondary" className="text-[9px]">{c.status}</Badge>
+                            <Badge variant="secondary" className="text-[12px]">{c.status}</Badge>
                             {c.start_date && <span>{new Date(c.start_date).toLocaleDateString()}</span>}
                           </div>
                         </CardContent>

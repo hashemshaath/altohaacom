@@ -108,18 +108,18 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
             <div className="flex items-center gap-2 mb-2">
               <Avatar className="h-6 w-6">
                 <AvatarImage src={post.author_avatar || undefined} />
-                <AvatarFallback className="text-[8px] bg-primary/10 text-primary">
+                <AvatarFallback className="text-[12px] bg-primary/10 text-primary">
                   {(post.author_name || "C")[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-[11px] font-semibold truncate group-hover:text-primary transition-colors">
+              <span className="text-[12px] font-semibold truncate group-hover:text-primary transition-colors">
                 {post.author_name || "Chef"}
               </span>
             </div>
             <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-2">
               {post.content.slice(0, 100)}
             </p>
-            <div className="flex gap-3 text-[10px] text-muted-foreground">
+            <div className="flex gap-3 text-[12px] text-muted-foreground">
               <span>❤️ {post.likes_count}</span>
               <span>💬 {post.comments_count}</span>
             </div>

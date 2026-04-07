@@ -157,7 +157,7 @@ export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
           {isAr ? "تقويم الفعاليات" : "Events Calendar"}
         </h3>
         {events.filter((e) => e.urgent).length > 0 && (
-          <Badge className="bg-chart-4/10 text-chart-4 text-[10px]">
+          <Badge className="bg-chart-4/10 text-chart-4 text-[12px]">
             {events.filter((e) => e.urgent).length} {isAr ? "عاجل" : "urgent"}
           </Badge>
         )}
@@ -212,12 +212,12 @@ export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
                       </p>
                       <div className="flex items-center gap-2 mt-1">
                         {event.isRegistered && (
-                          <Badge variant="outline" className="text-[9px] px-1 py-0">
+                          <Badge variant="outline" className="text-[12px] px-1 py-0">
                             {isAr ? "مسجل" : "Registered"}
                           </Badge>
                         )}
                         {event.urgent && (
-                          <Badge className="bg-chart-4/10 text-chart-4 text-[9px] px-1 py-0">
+                          <Badge className="bg-chart-4/10 text-chart-4 text-[12px] px-1 py-0">
                             {isAr ? "عاجل" : "Urgent"}
                           </Badge>
                         )}
@@ -238,7 +238,7 @@ export const EventsCalendarWidget = memo(function EventsCalendarWidget() {
         {/* Upcoming deadlines summary */}
         {events.filter((e) => e.urgent).length > 0 && (
           <div className="mt-3 rounded-xl border border-chart-4/20 bg-chart-4/5 p-2.5">
-            <p className="text-[10px] font-semibold text-chart-4 uppercase tracking-wider mb-1.5">
+            <p className="text-[12px] font-semibold text-chart-4 uppercase tracking-wider mb-1.5">
               {isAr ? "مواعيد نهائية قريبة" : "Upcoming Deadlines"}
             </p>
             {events

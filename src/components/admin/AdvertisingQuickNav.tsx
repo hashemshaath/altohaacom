@@ -61,7 +61,7 @@ export const AdvertisingQuickNav = memo(function AdvertisingQuickNav() {
             <Icon className="h-3.5 w-3.5 shrink-0" />
             <span>{isAr ? item.labelAr : item.labelEn}</span>
             {count > 0 && (
-              <Badge variant="destructive" className="text-[9px] px-1.5 py-0 h-4 min-w-[18px] justify-center">
+              <Badge variant="destructive" className="text-[12px] px-1.5 py-0 h-4 min-w-[18px] justify-center">
                 {count}
               </Badge>
             )}

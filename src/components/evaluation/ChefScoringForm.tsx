@@ -219,7 +219,7 @@ export const ChefScoringForm = memo(function ChefScoringForm({
               <span className={`text-3xl font-black ${getScoreColor(overallScore, 10)}`}>
                 {overallScore.toFixed(1)}
               </span>
-              <p className="text-[10px] text-muted-foreground">/10</p>
+              <p className="text-[12px] text-muted-foreground">/10</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -482,9 +482,9 @@ function CriterionScoreInput({
           <div className="flex items-center gap-2">
             <p className="text-sm font-bold">{isAr && criterion.name_ar ? criterion.name_ar : criterion.name}</p>
             {criterion.is_required && (
-              <Badge variant="destructive" className="text-[9px] h-4 px-1">{isAr ? "مطلوب" : "Required"}</Badge>
+              <Badge variant="destructive" className="text-[12px] h-4 px-1">{isAr ? "مطلوب" : "Required"}</Badge>
             )}
-            <Badge variant="outline" className="text-[9px] h-4 px-1">{criterion.weight}%</Badge>
+            <Badge variant="outline" className="text-[12px] h-4 px-1">{criterion.weight}%</Badge>
           </div>
           {criterion.description && (
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -496,7 +496,7 @@ function CriterionScoreInput({
           <span className={`text-2xl font-black tabular-nums ${score !== undefined ? getScoreColor(score, criterion.max_score) : "text-muted-foreground/30"}`}>
             {score !== undefined ? score : "—"}
           </span>
-          <p className="text-[10px] text-muted-foreground">/{criterion.max_score}</p>
+          <p className="text-[12px] text-muted-foreground">/{criterion.max_score}</p>
         </div>
       </div>
 

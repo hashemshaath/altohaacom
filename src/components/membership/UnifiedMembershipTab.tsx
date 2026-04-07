@@ -577,7 +577,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       ALTOHA
                     </p>
                     <p
-                      className={`text-[9px] sm:text-[10px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
+                      className={`text-[12px] sm:text-[12px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
                       style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.6)" : "hsl(var(--muted-foreground) / 0.7)" }}
                     >
                       {isAr ? "بطاقة العضوية" : "MEMBERSHIP CARD"}
@@ -592,7 +592,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                   }
                 >
                   <TierIcon className="h-4 w-4" style={{ color: cardTheme === "classic" ? "#d4af5a" : "hsl(var(--primary))" }} />
-                  <span className={`text-[11px] sm:text-xs font-bold ${isAr ? "tracking-normal leading-none" : "tracking-wide uppercase"}`} style={{ color: cardTheme === "classic" ? "#d4af5a" : "hsl(var(--primary))" }}>
+                  <span className={`text-[12px] sm:text-xs font-bold ${isAr ? "tracking-normal leading-none" : "tracking-wide uppercase"}`} style={{ color: cardTheme === "classic" ? "#d4af5a" : "hsl(var(--primary))" }}>
                     {tierName}
                   </span>
                 </div>
@@ -643,7 +643,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                   )}
                   <div className="mt-3">
                     <p
-                      className={`text-[9px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.18em]"}`}
+                      className={`text-[12px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.18em]"}`}
                       style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.6)" : "hsl(var(--muted-foreground) / 0.65)" }}
                     >
                       {isAr ? "رقم العضوية" : "MEMBERSHIP NO."}
@@ -653,25 +653,25 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                   <div className={`flex ${isVertical ? "justify-center" : ""} gap-5 sm:gap-7 mt-2`}>
                     <div>
                       <p
-                        className={`text-[9px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
+                        className={`text-[12px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
                         style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground) / 0.55)" }}
                       >
                         {isAr ? "الانضمام" : "ISSUED"}
                       </p>
-                      <p className="text-[11px] sm:text-xs font-semibold" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.85)" : "hsl(var(--foreground) / 0.75)" }}>{format(new Date(card.issued_at), "MM/yy")}</p>
+                      <p className="text-[12px] sm:text-xs font-semibold" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.85)" : "hsl(var(--foreground) / 0.75)" }}>{format(new Date(card.issued_at), "MM/yy")}</p>
                     </div>
                     <div>
                       <p
-                        className={`text-[9px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
+                        className={`text-[12px] font-medium ${isAr ? "tracking-normal" : "uppercase tracking-[0.12em]"}`}
                         style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.4)" : "hsl(var(--muted-foreground) / 0.55)" }}
                       >
                         {isAr ? "الانتهاء" : "EXPIRES"}
                       </p>
-                      <p className="text-[11px] sm:text-xs font-semibold" style={{ color: isCardExpired ? "#f87171" : showExpiryWarning ? "#fbbf24" : cardTheme === "classic" ? "rgba(255,255,255,0.85)" : "hsl(var(--foreground) / 0.75)" }}>
+                      <p className="text-[12px] sm:text-xs font-semibold" style={{ color: isCardExpired ? "#f87171" : showExpiryWarning ? "#fbbf24" : cardTheme === "classic" ? "rgba(255,255,255,0.85)" : "hsl(var(--foreground) / 0.75)" }}>
                         {cardExpiresDate ? format(cardExpiresDate, "dd/MM/yyyy") : "—"}
                       </p>
                       {cardDaysLeft !== null && cardDaysLeft <= 30 && !isCardExpired && (
-                        <p className="text-[8px] font-bold mt-0.5" style={{ color: cardDaysLeft <= 14 ? "#f87171" : "#fbbf24" }}>
+                        <p className="text-[12px] font-bold mt-0.5" style={{ color: cardDaysLeft <= 14 ? "#f87171" : "#fbbf24" }}>
                           {cardDaysLeft} {isAr ? "يوم متبقي" : "days left"}
                         </p>
                       )}
@@ -687,7 +687,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                   <div className="flex-1 min-w-0 space-y-2">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`text-[9px] font-medium me-1 ${isAr ? "tracking-normal" : "uppercase tracking-[0.15em]"}`}
+                        className={`text-[12px] font-medium me-1 ${isAr ? "tracking-normal" : "uppercase tracking-[0.15em]"}`}
                         style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.55)" : "hsl(var(--primary) / 0.55)" }}
                       >
                         {isAr ? "رمز التحقق" : "VERIFY CODE"}
@@ -709,9 +709,9 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       </button>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[10px] tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.45)" : "hsl(var(--muted-foreground) / 0.55)" }}>{profile?.account_number || card.membership_number}</span>
+                      <span className="font-mono text-[12px] tracking-[0.15em]" style={{ color: cardTheme === "classic" ? "rgba(255,255,255,0.45)" : "hsl(var(--muted-foreground) / 0.55)" }}>{profile?.account_number || card.membership_number}</span>
                       <span
-                        className={`ms-auto text-[9px] font-bold rounded-full px-3 py-1 whitespace-nowrap ${isAr ? "tracking-normal" : "uppercase tracking-wider"}`}
+                        className={`ms-auto text-[12px] font-bold rounded-full px-3 py-1 whitespace-nowrap ${isAr ? "tracking-normal" : "uppercase tracking-wider"}`}
                         style={isCardExpired
                           ? { color: "#f87171", background: "rgba(248,113,113,0.15)" }
                           : card.card_status === "suspended"
@@ -742,7 +742,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       />
                     </div>
                     <span
-                      className={`text-[9px] font-medium mt-1.5 ${isAr ? "tracking-normal" : "tracking-widest uppercase"}`}
+                      className={`text-[12px] font-medium mt-1.5 ${isAr ? "tracking-normal" : "tracking-widest uppercase"}`}
                       style={{ color: cardTheme === "classic" ? "rgba(201,168,76,0.55)" : "hsl(var(--primary) / 0.55)" }}
                     >
                       {isAr ? "امسح للتحقق" : "SCAN TO VERIFY"}
@@ -877,7 +877,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                     <b.icon className={`h-3.5 w-3.5 ${tierColor}`} />
                   </div>
                   <span className="text-xs font-medium">{b.label}</span>
-                  <Badge variant="secondary" className="ms-auto text-[9px] px-1.5 py-0">{isAr ? "مفعّل" : "Active"}</Badge>
+                  <Badge variant="secondary" className="ms-auto text-[12px] px-1.5 py-0">{isAr ? "مفعّل" : "Active"}</Badge>
                 </div>
               ))}
             </div>
@@ -909,7 +909,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                   {tier.yearlyPrice && (
                     <div className="mt-1">
                       <p className="text-xs text-muted-foreground">{tier.yearlyPrice}</p>
-                      <Badge variant="secondary" className="mt-1 text-[10px] bg-chart-3/15 text-chart-3 border-chart-3/20">
+                      <Badge variant="secondary" className="mt-1 text-[12px] bg-chart-3/15 text-chart-3 border-chart-3/20">
                         {tier.savings}
                       </Badge>
                     </div>

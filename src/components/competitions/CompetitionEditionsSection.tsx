@@ -84,11 +84,11 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
           <h2 className="text-sm font-bold tracking-tight">
             {isAr ? "سلاسل المسابقات والإصدارات السابقة" : "Competition Series & Past Editions"}
           </h2>
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-[12px] text-muted-foreground">
             {isAr ? "تصفح الإصدارات السابقة ونتائجها" : "Browse previous editions and their results"}
           </p>
         </div>
-        <Badge variant="secondary" className="ms-auto text-[9px] font-bold rounded-lg">
+        <Badge variant="secondary" className="ms-auto text-[12px] font-bold rounded-lg">
           {seriesGroups.length} {isAr ? "سلسلة" : "series"}
         </Badge>
       </div>
@@ -131,18 +131,18 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
                   <div className="flex-1 min-w-0">
                     <h3 className="font-bold text-sm truncate">{group.baseName}</h3>
                     <div className="mt-1 flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className="text-[9px] gap-1 rounded-lg h-5">
+                      <Badge variant="outline" className="text-[12px] gap-1 rounded-lg h-5">
                         <Calendar className="h-2.5 w-2.5" />
                         {group.totalEditions} {isAr ? "إصدارات" : "editions"}
                       </Badge>
                       {group.totalRegistrations > 0 && (
-                        <Badge variant="outline" className="text-[9px] gap-1 rounded-lg h-5">
+                        <Badge variant="outline" className="text-[12px] gap-1 rounded-lg h-5">
                           <Users className="h-2.5 w-2.5" />
                           <AnimatedCounter value={group.totalRegistrations} className="inline" />
                         </Badge>
                       )}
                       {group.years.length > 0 && (
-                        <span className="text-[9px] text-muted-foreground font-medium">
+                        <span className="text-[12px] text-muted-foreground font-medium">
                           {group.years[group.years.length - 1]} – {group.years[0]}
                         </span>
                       )}
@@ -200,18 +200,18 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
                                   {edition.edition_year && (
                                     <Badge
                                       variant={isFirst ? "default" : "secondary"}
-                                      className="text-[9px] font-black rounded-lg h-5 px-2"
+                                      className="text-[12px] font-black rounded-lg h-5 px-2"
                                     >
                                       {edition.edition_year}
                                     </Badge>
                                   )}
                                   <Badge
-                                    className={`text-[8px] h-4 px-1.5 rounded-md border-0 ${derived.color}`}
+                                    className={`text-[12px] h-4 px-1.5 rounded-md border-0 ${derived.color}`}
                                   >
                                     {isAr ? derived.labelAr : derived.label}
                                   </Badge>
                                   {isFirst && (
-                                    <Badge className="text-[8px] h-4 px-1.5 rounded-md border-0 bg-chart-3/10 text-chart-3">
+                                    <Badge className="text-[12px] h-4 px-1.5 rounded-md border-0 bg-chart-3/10 text-chart-3">
                                       {isAr ? "أحدث" : "Latest"}
                                     </Badge>
                                   )}
@@ -219,7 +219,7 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
                                 <h4 className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
                                   {title}
                                 </h4>
-                                <div className="mt-1 flex items-center gap-3 text-[10px] text-muted-foreground">
+                                <div className="mt-1 flex items-center gap-3 text-[12px] text-muted-foreground">
                                   <span className="flex items-center gap-1">
                                     <Calendar className="h-2.5 w-2.5" />
                                     {format(new Date(edition.competition_start), "MMM d, yyyy", {
@@ -254,7 +254,7 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
                   {/* Series Stats Footer */}
                   {group.totalEditions >= 2 && (
                     <div className="border-t border-border/10 px-4 py-3 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                      <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
                         <TrendingUp className="h-3 w-3 text-chart-3" />
                         <span className="font-medium">
                           {isAr
@@ -262,7 +262,7 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
                             : `${group.totalEditions} editions since ${group.years[group.years.length - 1]}`}
                         </span>
                       </div>
-                      <Button variant="ghost" size="sm" className="h-7 text-[10px] rounded-lg" asChild>
+                      <Button variant="ghost" size="sm" className="h-7 text-[12px] rounded-lg" asChild>
                         <Link to={`/competitions/${group.latestEdition.id}`}>
                           {isAr ? "أحدث إصدار" : "Latest Edition"}
                           <ArrowRight className="ms-1 h-3 w-3 rtl:rotate-180" />

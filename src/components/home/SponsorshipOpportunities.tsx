@@ -129,13 +129,13 @@ export function SponsorshipOpportunities() {
                     <div className="absolute inset-x-0 bottom-0 p-3">
                       <h3 className="line-clamp-2 text-sm font-bold text-foreground drop-shadow-sm group-hover:text-primary transition-colors">{title}</h3>
                     </div>
-                    <Badge className="absolute end-2 top-2 text-[10px] bg-primary/90 shadow-sm gap-1">
+                    <Badge className="absolute end-2 top-2 text-[12px] bg-primary/90 shadow-sm gap-1">
                       <Crown className="h-2.5 w-2.5" />
                       {isAr ? "رعاية" : "Sponsor"}
                     </Badge>
                   </div>
                   <CardContent className="p-3 space-y-1.5">
-                    <div className="space-y-1 text-[11px] text-muted-foreground">
+                    <div className="space-y-1 text-[12px] text-muted-foreground">
                       {comp.competition_start && (
                         <div className="flex items-center gap-1.5">
                           <Calendar className="h-3 w-3 shrink-0 text-primary/50" />
@@ -155,11 +155,11 @@ export function SponsorshipOpportunities() {
                       ) : null}
                     </div>
                     <div className="flex items-center justify-between pt-1 border-t border-border/40">
-                      <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                      <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
                         <Users className="h-3 w-3" />
                         <span>{comp.currentSponsors} {isAr ? "راعٍ" : "sponsors"}</span>
                       </div>
-                      <span className="text-[11px] font-medium text-primary">
+                      <span className="text-[12px] font-medium text-primary">
                         {isAr ? "تقدّم" : "Apply"} →
                       </span>
                     </div>

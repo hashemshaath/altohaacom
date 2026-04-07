@@ -168,15 +168,15 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
   };
 
   const getTypeBadge = (type: string) => {
-    if (type === "membership_upgrade") return <Badge className="text-[9px] h-4 bg-primary/20 text-primary">{isAr ? "ترقية" : "Upgrade"}</Badge>;
-    if (type === "membership_expired") return <Badge variant="destructive" className="text-[9px] h-4">{isAr ? "منتهي" : "Expired"}</Badge>;
-    if (type === "membership_trial") return <Badge className="text-[9px] h-4 bg-chart-4/20 text-chart-4">{isAr ? "تجريبي" : "Trial"}</Badge>;
-    if (type?.includes("email_expiry")) return <Badge variant="destructive" className="text-[9px] h-4">{isAr ? "تحذير" : "Warning"}</Badge>;
-    if (type?.includes("email_expired")) return <Badge variant="destructive" className="text-[9px] h-4">{isAr ? "منتهي" : "Expired"}</Badge>;
-    if (type?.includes("email_upgraded")) return <Badge className="text-[9px] h-4 bg-primary/20 text-primary">{isAr ? "ترقية" : "Upgrade"}</Badge>;
-    if (type?.includes("email_renewed")) return <Badge className="text-[9px] h-4 bg-chart-2/20 text-chart-2">{isAr ? "تجديد" : "Renewed"}</Badge>;
-    if (type?.includes("email_downgraded")) return <Badge variant="secondary" className="text-[9px] h-4">{isAr ? "تخفيض" : "Downgrade"}</Badge>;
-    if (type?.includes("email_trial")) return <Badge className="text-[9px] h-4 bg-chart-4/20 text-chart-4">{isAr ? "تجريبي" : "Trial"}</Badge>;
+    if (type === "membership_upgrade") return <Badge className="text-[12px] h-4 bg-primary/20 text-primary">{isAr ? "ترقية" : "Upgrade"}</Badge>;
+    if (type === "membership_expired") return <Badge variant="destructive" className="text-[12px] h-4">{isAr ? "منتهي" : "Expired"}</Badge>;
+    if (type === "membership_trial") return <Badge className="text-[12px] h-4 bg-chart-4/20 text-chart-4">{isAr ? "تجريبي" : "Trial"}</Badge>;
+    if (type?.includes("email_expiry")) return <Badge variant="destructive" className="text-[12px] h-4">{isAr ? "تحذير" : "Warning"}</Badge>;
+    if (type?.includes("email_expired")) return <Badge variant="destructive" className="text-[12px] h-4">{isAr ? "منتهي" : "Expired"}</Badge>;
+    if (type?.includes("email_upgraded")) return <Badge className="text-[12px] h-4 bg-primary/20 text-primary">{isAr ? "ترقية" : "Upgrade"}</Badge>;
+    if (type?.includes("email_renewed")) return <Badge className="text-[12px] h-4 bg-chart-2/20 text-chart-2">{isAr ? "تجديد" : "Renewed"}</Badge>;
+    if (type?.includes("email_downgraded")) return <Badge variant="secondary" className="text-[12px] h-4">{isAr ? "تخفيض" : "Downgrade"}</Badge>;
+    if (type?.includes("email_trial")) return <Badge className="text-[12px] h-4 bg-chart-4/20 text-chart-4">{isAr ? "تجريبي" : "Trial"}</Badge>;
     return null;
   };
 
@@ -295,7 +295,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
                         {isAr ? (notif.title_ar || notif.title) : notif.title}
                       </p>
                       {!notif.is_read && (
-                        <Badge variant="default" className="text-[10px] h-4">{isAr ? "جديد" : "New"}</Badge>
+                        <Badge variant="default" className="text-[12px] h-4">{isAr ? "جديد" : "New"}</Badge>
                       )}
                       {getTypeBadge(notif.type)}
                     </div>

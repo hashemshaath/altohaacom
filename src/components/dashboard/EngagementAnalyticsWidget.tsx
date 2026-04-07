@@ -164,7 +164,7 @@ export const EngagementAnalyticsWidget = memo(function EngagementAnalyticsWidget
           </div>
         </div>
 
-        <div className="text-center text-[11px] text-muted-foreground border-t border-border/40 pt-2">
+        <div className="text-center text-[12px] text-muted-foreground border-t border-border/40 pt-2">
           {isAr
             ? `${data.total} إشعار خلال 30 يوم`
             : `${data.total} notifications in 30 days`}

@@ -87,12 +87,12 @@ export const ThemePresetsPanel = memo(function ThemePresetsPanel({ settings, onS
                   <p className="text-sm font-semibold">
                     {isAr ? preset.nameAr : preset.nameEn}
                   </p>
-                  <p className="text-[11px] text-muted-foreground leading-relaxed mt-0.5">
+                  <p className="text-[12px] text-muted-foreground leading-relaxed mt-0.5">
                     {isAr ? preset.descAr : preset.descEn}
                   </p>
                 </div>
                 {isActive && (
-                  <Badge variant="secondary" className="text-[9px] w-fit">
+                  <Badge variant="secondary" className="text-[12px] w-fit">
                     {isAr ? "نشط" : "Active"}
                   </Badge>
                 )}

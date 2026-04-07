@@ -227,7 +227,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
               </div>
               {isAr ? "الإشعارات" : "Notifications"}
               {unreadCount > 0 && (
-                <Badge variant="destructive" className="text-[10px] px-1.5 py-0 min-w-[20px] justify-center animate-scale-in">
+                <Badge variant="destructive" className="text-[12px] px-1.5 py-0 min-w-[20px] justify-center animate-scale-in">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </Badge>
               )}
@@ -250,7 +250,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
           </div>
           {/* Quick stats bar */}
           {notifications.length > 0 && (
-            <div className="flex items-center gap-3 mt-2 text-[10px] text-muted-foreground">
+            <div className="flex items-center gap-3 mt-2 text-[12px] text-muted-foreground">
               <span>{notifications.length} {isAr ? "إجمالي" : "total"}</span>
               <span className="text-border">|</span>
               <span className="text-primary font-medium">{unreadCount} {isAr ? "جديد" : "new"}</span>
@@ -321,7 +321,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                 <div key={date} className="animate-in fade-in-50 slide-in-from-bottom-1 duration-200" style={{ animationDelay: `${gIdx * 60}ms`, animationFillMode: 'both' }}>
                   <p className="text-xs font-medium text-muted-foreground mb-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-1.5 flex items-center gap-2">
                     {date}
-                    <Badge variant="outline" className="text-[9px] px-1.5 py-0 rounded-lg font-normal tabular-nums">
+                    <Badge variant="outline" className="text-[12px] px-1.5 py-0 rounded-lg font-normal tabular-nums">
                       {(items as any[]).length}
                     </Badge>
                   </p>
@@ -358,7 +358,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                               )}
                               <NotificationActionButtons notification={n} onMarkRead={markRead} />
                               <div className="flex items-center gap-1 mt-1">
-                                <p className="text-[10px] text-muted-foreground flex-1">
+                                <p className="text-[12px] text-muted-foreground flex-1">
                                   <Clock className="h-3 w-3 inline me-0.5" />
                                   {formatDistanceToNow(new Date(n.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
                                 </p>
@@ -387,7 +387,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                                 )}
                                 {tab === "snoozed" && (
                                   <Button
-                                    variant="ghost" size="sm" className="h-5 text-[10px] px-1.5"
+                                    variant="ghost" size="sm" className="h-5 text-[12px] px-1.5"
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       const snoozed = getSnoozed();

@@ -742,7 +742,7 @@ export default function SocialLinksEditor() {
               </div>
               <div className="flex gap-2 flex-wrap items-center">
                 {hasUnsavedChanges && (
-                  <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-600 dark:text-amber-400 animate-in fade-in duration-200 gap-1">
+                  <Badge variant="outline" className="text-[12px] border-amber-500/30 text-amber-600 dark:text-amber-400 animate-in fade-in duration-200 gap-1">
                     {page ? <><Loader2 className="h-2.5 w-2.5 animate-spin" />{isAr ? "حفظ تلقائي..." : "Auto-saving..."}</> : (isAr ? "تغييرات غير محفوظة" : "Unsaved changes")}
                   </Badge>
                 )}
@@ -791,7 +791,7 @@ export default function SocialLinksEditor() {
                             <Switch checked={extra.qr_show_username} onCheckedChange={v => updateExtra({ qr_show_username: v })} />
                           </div>
                           <div>
-                            <Label className="text-[11px] mb-1 block">{isAr ? "شعار مخصص (URL)" : "Custom Logo (URL)"}</Label>
+                            <Label className="text-[12px] mb-1 block">{isAr ? "شعار مخصص (URL)" : "Custom Logo (URL)"}</Label>
                             <Input value={extra.qr_logo_url} onChange={e => updateExtra({ qr_logo_url: e.target.value })} placeholder="https://..." dir="ltr" className="text-xs h-8" />
                           </div>
                         </div>
@@ -900,8 +900,8 @@ export default function SocialLinksEditor() {
                                 <p className={`font-bold ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`} style={{ color: pt.text }}>
                                   {form.page_title || displayName || "Your Name"}
                                 </p>
-                                <p className="text-[10px] mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
-                                {extra.show_bio && form.bio && <p className="text-[10px] mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
+                                <p className="text-[12px] mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
+                                {extra.show_bio && form.bio && <p className="text-[12px] mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
                               </div>
                               {form.show_social_icons && activeSocials.length > 0 && (
                                 <div className={`flex gap-2 mt-1 flex-wrap ${justifyClass}`}>
@@ -920,7 +920,7 @@ export default function SocialLinksEditor() {
                                     <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 ${btnRadius} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`} style={customColor}>
                                       {item.thumbnail_url && <img loading="lazy" src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-xl object-cover shrink-0" />}
                                       {item.icon && !item.thumbnail_url && <span className="text-sm">{item.icon}</span>}
-                                      <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass}`} style={{ color: (customColor as any).color || pt.text }}>{item.title}</span>
+                                      <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[12px] font-medium ${alignClass}`} style={{ color: (customColor as any).color || pt.text }}>{item.title}</span>
                                     </div>
                                   );
                                 })}
@@ -954,7 +954,7 @@ export default function SocialLinksEditor() {
                     </div>
                     <div>
                       <p className="text-xl font-bold tabular-nums">{stat.value}</p>
-                      <p className="text-[10px] text-muted-foreground font-medium">{stat.label}</p>
+                      <p className="text-[12px] text-muted-foreground font-medium">{stat.label}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -975,7 +975,7 @@ export default function SocialLinksEditor() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={form.is_published ? "default" : "secondary"} className="text-[10px]">
+                    <Badge variant={form.is_published ? "default" : "secondary"} className="text-[12px]">
                       {form.is_published ? (isAr ? "✓ منشور" : "✓ Published") : (isAr ? "مسودة" : "Draft")}
                     </Badge>
                   </div>
@@ -1005,7 +1005,7 @@ export default function SocialLinksEditor() {
                         {activeSocials.map(p => {
                           const Icon = p.icon;
                           return (
-                            <Badge key={p.key} variant="secondary" className="gap-1 py-0.5 px-2 text-[10px]">
+                            <Badge key={p.key} variant="secondary" className="gap-1 py-0.5 px-2 text-[12px]">
                               <Icon className="h-2.5 w-2.5" />
                               {isAr ? p.labelAr : p.label}
                               <Check className="h-2.5 w-2.5 text-chart-1" />
@@ -1015,7 +1015,7 @@ export default function SocialLinksEditor() {
                         {activeContacts.map(c => {
                           const Icon = c.icon;
                           return (
-                            <Badge key={c.key} variant="secondary" className="gap-1 py-0.5 px-2 text-[10px]">
+                            <Badge key={c.key} variant="secondary" className="gap-1 py-0.5 px-2 text-[12px]">
                               <Icon className="h-2.5 w-2.5" />
                               {isAr ? c.labelAr : c.label}
                               <Check className="h-2.5 w-2.5 text-chart-1" />
@@ -1034,7 +1034,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "حسابات التواصل الاجتماعي" : "Social Media Accounts"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links auto-complete on blur"}
                         </p>
                       </CardHeader>
@@ -1056,7 +1056,7 @@ export default function SocialLinksEditor() {
                                     <Label className="text-xs font-semibold mb-1 block">{isAr ? platform.labelAr : platform.label}</Label>
                                     {platform.prefix ? (
                                       <div className="flex items-center gap-0">
-                                        <span className="text-[10px] text-muted-foreground/60 font-mono bg-muted/40 px-1.5 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none" dir="ltr">
+                                        <span className="text-[12px] text-muted-foreground/60 font-mono bg-muted/40 px-1.5 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none" dir="ltr">
                                           {platform.prefix.replace("https://", "")}
                                         </span>
                                         <Input
@@ -1089,7 +1089,7 @@ export default function SocialLinksEditor() {
                                       />
                                     )}
                                     {isActive && platform.prefix && rawValue.startsWith("http") && (
-                                      <p className="text-[9px] text-muted-foreground/50 mt-0.5 font-mono truncate" dir="ltr">{rawValue}</p>
+                                      <p className="text-[12px] text-muted-foreground/50 mt-0.5 font-mono truncate" dir="ltr">{rawValue}</p>
                                     )}
                                   </div>
                                   {isActive && (
@@ -1114,7 +1114,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "أرقام الاتصال" : "Contact Numbers"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "واتساب + رقمين هاتف — اختر رمز الدولة ثم أدخل الرقم" : "WhatsApp + up to 2 phone numbers — select country code then enter number"}
                         </p>
                       </CardHeader>
@@ -1140,7 +1140,7 @@ export default function SocialLinksEditor() {
                                       <select
                                         value={cc}
                                         onChange={e => setContactCountryCodes(prev => ({ ...prev, [field.key]: e.target.value }))}
-                                        className="h-8 text-[11px] font-mono rounded-s-lg border border-e-0 border-border/30 bg-muted/30 px-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30 appearance-none cursor-pointer min-w-[90px] text-muted-foreground"
+                                        className="h-8 text-[12px] font-mono rounded-s-lg border border-e-0 border-border/30 bg-muted/30 px-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30 appearance-none cursor-pointer min-w-[90px] text-muted-foreground"
                                         dir="ltr"
                                       >
                                         {(countries || []).map(c => (
@@ -1188,7 +1188,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "المعلومات الأساسية" : "Basic Info"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "يتم تعبئة الاسم والنبذة تلقائياً من بروفايلك" : "Name & bio are auto-filled from your profile"}
                         </p>
                       </CardHeader>
@@ -1242,9 +1242,9 @@ export default function SocialLinksEditor() {
                             <LayoutGrid className="h-3.5 w-3.5 text-chart-3" />
                           </div>
                           {isAr ? "الصفحات الفرعية" : "Sub-Pages"}
-                          {extra.pages.length > 0 && <Badge variant="secondary" className="text-[10px] ms-auto">{extra.pages.length}</Badge>}
+                          {extra.pages.length > 0 && <Badge variant="secondary" className="text-[12px] ms-auto">{extra.pages.length}</Badge>}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "أنشئ صفحات فرعية مثل Portfolio, Menu, Services" : "Create sub-pages like Portfolio, Menu, Services"}
                         </p>
                       </CardHeader>
@@ -1266,7 +1266,7 @@ export default function SocialLinksEditor() {
                                       setHasUnsavedChanges(true);
                                     }}
                                     placeholder="Label (EN)"
-                                    className="h-7 text-[10px]"
+                                    className="h-7 text-[12px]"
                                     dir="ltr"
                                   />
                                   <Input
@@ -1278,7 +1278,7 @@ export default function SocialLinksEditor() {
                                       setHasUnsavedChanges(true);
                                     }}
                                     placeholder="التسمية (AR)"
-                                    className="h-7 text-[10px]"
+                                    className="h-7 text-[12px]"
                                     dir="rtl"
                                   />
                                 </div>
@@ -1335,7 +1335,7 @@ export default function SocialLinksEditor() {
                           </Button>
                           <input type="file" accept=".json,.csv" className="hidden" onChange={e => { if (e.target.files?.[0]) handleImportLinks(e.target.files[0]); e.target.value = ""; }} />
                         </label>
-                        <Badge variant="secondary" className="text-[10px] ms-auto">{items.length} {isAr ? "رابط" : "links"}</Badge>
+                        <Badge variant="secondary" className="text-[12px] ms-auto">{items.length} {isAr ? "رابط" : "links"}</Badge>
                       </div>
                     )}
                     <Card className="overflow-hidden border-border/40">
@@ -1423,9 +1423,9 @@ export default function SocialLinksEditor() {
                             <LinkIcon className="h-3.5 w-3.5 text-primary" />
                           </div>
                           {isAr ? "الروابط" : "Links"}
-                          {items.length > 0 && <Badge variant="secondary" className="text-[10px] ms-1">{items.length}</Badge>}
+                          {items.length > 0 && <Badge variant="secondary" className="text-[12px] ms-1">{items.length}</Badge>}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "اسحب وأفلت لإعادة الترتيب" : "Drag and drop to reorder"}
                         </p>
                       </CardHeader>
@@ -1485,7 +1485,7 @@ export default function SocialLinksEditor() {
                                       <div className="flex gap-2 items-center">
                                         <Input value={editForm.icon} onChange={e => setEditForm(f => ({ ...f, icon: e.target.value }))} placeholder="🔗 Emoji" className="h-8 text-xs w-24" />
                                         <Label htmlFor={`thumb-${item.id}`} className="cursor-pointer shrink-0">
-                                          <div className="h-8 px-2.5 rounded-md border border-border/40 bg-muted/30 hover:bg-muted/50 flex items-center gap-1 text-[10px] font-medium text-muted-foreground transition-colors">
+                                          <div className="h-8 px-2.5 rounded-md border border-border/40 bg-muted/30 hover:bg-muted/50 flex items-center gap-1 text-[12px] font-medium text-muted-foreground transition-colors">
                                             <Palette className="h-3 w-3" />
                                             {isAr ? "صورة" : "Thumb"}
                                           </div>
@@ -1501,20 +1501,20 @@ export default function SocialLinksEditor() {
                                       {/* Schedule fields in edit mode */}
                                       <div className="grid grid-cols-2 gap-2">
                                         <div>
-                                          <Label className="text-[9px] text-muted-foreground flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{isAr ? "يبدأ" : "Start"}</Label>
+                                          <Label className="text-[12px] text-muted-foreground flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{isAr ? "يبدأ" : "Start"}</Label>
                                           <Input type="datetime-local" value={editForm.scheduled_start} onChange={e => setEditForm(f => ({ ...f, scheduled_start: e.target.value }))} className="text-xs h-7" dir="ltr" />
                                         </div>
                                         <div>
-                                          <Label className="text-[9px] text-muted-foreground flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{isAr ? "ينتهي" : "End"}</Label>
+                                          <Label className="text-[12px] text-muted-foreground flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{isAr ? "ينتهي" : "End"}</Label>
                                           <Input type="datetime-local" value={editForm.scheduled_end} onChange={e => setEditForm(f => ({ ...f, scheduled_end: e.target.value }))} className="text-xs h-7" dir="ltr" />
                                         </div>
                                       </div>
                                       {/* Page Tab in edit mode */}
                                       {extra.pages.length > 0 && (
                                         <div>
-                                          <Label className="text-[9px] text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-2.5 w-2.5" />{isAr ? "الصفحة" : "Page"}</Label>
+                                          <Label className="text-[12px] text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-2.5 w-2.5" />{isAr ? "الصفحة" : "Page"}</Label>
                                           <Select value={editForm.page_tab} onValueChange={v => setEditForm(f => ({ ...f, page_tab: v }))}>
-                                            <SelectTrigger className="h-7 text-[10px]"><SelectValue /></SelectTrigger>
+                                            <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
                                             <SelectContent>
                                               <SelectItem value="main">{isAr ? "الرئيسية" : "Main"}</SelectItem>
                                               {extra.pages.map(pg => (
@@ -1527,7 +1527,7 @@ export default function SocialLinksEditor() {
                                       {item.thumbnail_url && (
                                         <div className="flex items-center gap-2">
                                           <img loading="lazy" src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-md object-cover" />
-                                          <Button size="sm" variant="ghost" className="h-6 text-[10px] text-destructive" onClick={() => updateItem.mutate({ id: item.id, thumbnail_url: null })}>
+                                          <Button size="sm" variant="ghost" className="h-6 text-[12px] text-destructive" onClick={() => updateItem.mutate({ id: item.id, thumbnail_url: null })}>
                                             {isAr ? "إزالة الصورة" : "Remove thumbnail"}
                                           </Button>
                                         </div>
@@ -1536,7 +1536,7 @@ export default function SocialLinksEditor() {
                                       <Separator className="my-2" />
                                       <div className="space-y-2">
                                         <div className="flex items-center justify-between">
-                                          <Label className="text-[10px] flex items-center gap-1 font-semibold">
+                                          <Label className="text-[12px] flex items-center gap-1 font-semibold">
                                             <Sparkles className="h-3 w-3 text-chart-2" />
                                             {isAr ? "اختبار A/B" : "A/B Test"}
                                           </Label>
@@ -1547,20 +1547,20 @@ export default function SocialLinksEditor() {
                                         </div>
                                         {(item as any).ab_enabled && (
                                           <div className="space-y-1.5 p-2 rounded-xl bg-muted/30 border border-border/30">
-                                            <p className="text-[9px] text-muted-foreground">{isAr ? "النسخة البديلة (B)" : "Variant B"}</p>
+                                            <p className="text-[12px] text-muted-foreground">{isAr ? "النسخة البديلة (B)" : "Variant B"}</p>
                                             <div className="grid grid-cols-2 gap-1.5">
                                               <Input
                                                 value={(item as any).ab_variant_title || ""}
                                                 onChange={e => updateItem.mutate({ id: item.id, ab_variant_title: e.target.value } as any)}
                                                 placeholder={isAr ? "عنوان B (EN)" : "Title B (EN)"}
-                                                className="h-7 text-[10px]"
+                                                className="h-7 text-[12px]"
                                                 dir="ltr"
                                               />
                                               <Input
                                                 value={(item as any).ab_variant_title_ar || ""}
                                                 onChange={e => updateItem.mutate({ id: item.id, ab_variant_title_ar: e.target.value } as any)}
                                                 placeholder={isAr ? "عنوان B (AR)" : "Title B (AR)"}
-                                                className="h-7 text-[10px]"
+                                                className="h-7 text-[12px]"
                                                 dir="rtl"
                                               />
                                             </div>
@@ -1568,12 +1568,12 @@ export default function SocialLinksEditor() {
                                               value={(item as any).ab_variant_icon || ""}
                                               onChange={e => updateItem.mutate({ id: item.id, ab_variant_icon: e.target.value } as any)}
                                               placeholder={isAr ? "أيقونة B (إيموجي)" : "Icon B (emoji)"}
-                                              className="h-7 text-[10px] w-28"
+                                              className="h-7 text-[12px] w-28"
                                             />
                                             {((item.click_count || 0) + ((item as any).ab_variant_click_count || 0)) > 0 && (
                                               <div className="flex items-center gap-3 pt-1">
                                                 <div className="flex-1">
-                                                  <div className="flex justify-between text-[9px] mb-0.5">
+                                                  <div className="flex justify-between text-[12px] mb-0.5">
                                                     <span className="font-medium">A</span>
                                                     <span className="tabular-nums">{item.click_count || 0}</span>
                                                   </div>
@@ -1582,7 +1582,7 @@ export default function SocialLinksEditor() {
                                                   </div>
                                                 </div>
                                                 <div className="flex-1">
-                                                  <div className="flex justify-between text-[9px] mb-0.5">
+                                                  <div className="flex justify-between text-[12px] mb-0.5">
                                                     <span className="font-medium">B</span>
                                                     <span className="tabular-nums">{(item as any).ab_variant_click_count || 0}</span>
                                                   </div>
@@ -1599,11 +1599,11 @@ export default function SocialLinksEditor() {
                                   ) : (
                                     <div className="flex-1 min-w-0">
                                       <p className="text-sm font-medium truncate">{item.title}</p>
-                                      {item.title_ar && <p className="text-[10px] text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
-                                      <p className="text-[11px] text-muted-foreground truncate">{item.url}</p>
+                                      {item.title_ar && <p className="text-[12px] text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
+                                      <p className="text-[12px] text-muted-foreground truncate">{item.url}</p>
                                       {/* Page tab badge */}
                                       {extra.pages.length > 0 && (item as any).page_tab && (item as any).page_tab !== "main" && (
-                                        <Badge variant="outline" className="text-[8px] h-4 px-1.5 mt-1 border-chart-3/30 text-chart-3">
+                                        <Badge variant="outline" className="text-[12px] h-4 px-1.5 mt-1 border-chart-3/30 text-chart-3">
                                           <LayoutGrid className="h-2 w-2 me-0.5" />
                                           {extra.pages.find(p => p.id === (item as any).page_tab)?.label || (item as any).page_tab}
                                         </Badge>
@@ -1611,7 +1611,7 @@ export default function SocialLinksEditor() {
                                       {((item as any).scheduled_start || (item as any).scheduled_end) && (
                                         <div className="flex items-center gap-1 mt-1">
                                           <Clock className="h-2.5 w-2.5 text-chart-2" />
-                                          <span className="text-[9px] text-chart-2 font-medium">
+                                          <span className="text-[12px] text-chart-2 font-medium">
                                             {(item as any).scheduled_start ? new Date((item as any).scheduled_start).toLocaleDateString() : "∞"}
                                             {" → "}
                                             {(item as any).scheduled_end ? new Date((item as any).scheduled_end).toLocaleDateString() : "∞"}
@@ -1621,10 +1621,10 @@ export default function SocialLinksEditor() {
                                       {/* A/B Test indicator */}
                                       {(item as any).ab_enabled && (item as any).ab_variant_title && (
                                         <div className="flex items-center gap-1.5 mt-1">
-                                          <Badge variant="outline" className="text-[8px] h-4 px-1.5 gap-0.5 border-chart-2/30 text-chart-2">
+                                          <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-chart-2/30 text-chart-2">
                                             <Sparkles className="h-2 w-2" /> A/B
                                           </Badge>
-                                          <span className="text-[9px] text-muted-foreground">
+                                          <span className="text-[12px] text-muted-foreground">
                                             A: {item.click_count || 0} • B: {(item as any).ab_variant_click_count || 0}
                                           </span>
                                           {(() => {
@@ -1632,7 +1632,7 @@ export default function SocialLinksEditor() {
                                             const b = (item as any).ab_variant_click_count || 0;
                                             if (a + b >= 10) {
                                               const winner = a > b ? "A" : b > a ? "B" : "—";
-                                              return <Badge variant="secondary" className="text-[8px] h-4 px-1.5">🏆 {winner}</Badge>;
+                                              return <Badge variant="secondary" className="text-[12px] h-4 px-1.5">🏆 {winner}</Badge>;
                                             }
                                             return null;
                                           })()}
@@ -1644,7 +1644,7 @@ export default function SocialLinksEditor() {
                                           <div className="h-1 flex-1 max-w-[80px] rounded-full bg-muted overflow-hidden">
                                             <div className="h-full rounded-full bg-primary/60 transition-all duration-500" style={{ width: `${Math.min(100, ((item.click_count || 0) / totalClicks) * 100)}%` }} />
                                           </div>
-                                          <span className="text-[9px] text-muted-foreground tabular-nums">{Math.round(((item.click_count || 0) / totalClicks) * 100)}%</span>
+                                          <span className="text-[12px] text-muted-foreground tabular-nums">{Math.round(((item.click_count || 0) / totalClicks) * 100)}%</span>
                                         </div>
                                       )}
                                     </div>
@@ -1652,7 +1652,7 @@ export default function SocialLinksEditor() {
 
                                   {editingItem !== item.id && (
                                     <div className="flex items-center gap-1">
-                                      <Badge variant="outline" className="text-[9px] tabular-nums gap-0.5 h-5 px-1.5">
+                                      <Badge variant="outline" className="text-[12px] tabular-nums gap-0.5 h-5 px-1.5">
                                         <MousePointerClick className="h-2.5 w-2.5" />{item.click_count || 0}
                                       </Badge>
                                       <Switch checked={item.is_active !== false} onCheckedChange={v => updateItem.mutate({ id: item.id, is_active: v })} />
@@ -1693,7 +1693,7 @@ export default function SocialLinksEditor() {
                               className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all duration-200 ${form.theme === t.id ? "border-primary ring-2 ring-primary/15 shadow-sm" : "border-transparent hover:border-border"}`}
                             >
                               <div className={`w-full h-10 rounded-xl ${t.preview} shadow-inner`} />
-                              <span className="text-[10px] font-medium">{isAr ? t.labelAr : t.label}</span>
+                              <span className="text-[12px] font-medium">{isAr ? t.labelAr : t.label}</span>
                             </button>
                           ))}
                         </div>
@@ -1709,10 +1709,10 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "جدولة مظهر الصفحة" : "Scheduled Themes"}
                           {(extra.scheduled_themes?.length || 0) > 0 && (
-                            <Badge variant="secondary" className="text-[9px] ms-auto">{extra.scheduled_themes.length}</Badge>
+                            <Badge variant="secondary" className="text-[12px] ms-auto">{extra.scheduled_themes.length}</Badge>
                           )}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">{isAr ? "تغيير الثيم تلقائياً حسب التاريخ أو المناسبة" : "Auto-switch theme based on date or occasion"}</p>
+                        <p className="text-[12px] text-muted-foreground">{isAr ? "تغيير الثيم تلقائياً حسب التاريخ أو المناسبة" : "Auto-switch theme based on date or occasion"}</p>
                       </CardHeader>
                       <CardContent className="space-y-3 pt-3">
                         {(extra.scheduled_themes || []).map((sched, idx) => {
@@ -1721,7 +1721,7 @@ export default function SocialLinksEditor() {
                           const isPast = new Date(sched.end_date) < now;
                           return (
                             <div key={sched.id} className={`relative rounded-xl border p-3 space-y-2 transition-all ${isActive ? "border-primary/40 bg-primary/5" : isPast ? "border-border/30 opacity-60" : "border-border/50"}`}>
-                              {isActive && <Badge className="absolute -top-2 end-2 text-[9px] px-1.5 py-0">{isAr ? "نشط الآن" : "Active"}</Badge>}
+                              {isActive && <Badge className="absolute -top-2 end-2 text-[12px] px-1.5 py-0">{isAr ? "نشط الآن" : "Active"}</Badge>}
                               <div className="flex items-center gap-2">
                                 <div className={`w-5 h-5 rounded-md shadow-inner ${THEMES.find(t => t.id === sched.theme_id)?.preview || "bg-muted"}`} />
                                 <Input
@@ -1761,7 +1761,7 @@ export default function SocialLinksEditor() {
                               </Select>
                               <div className="grid grid-cols-2 gap-2">
                                 <div>
-                                  <Label className="text-[10px] mb-0.5 block">{isAr ? "من" : "Start"}</Label>
+                                  <Label className="text-[12px] mb-0.5 block">{isAr ? "من" : "Start"}</Label>
                                   <Input type="date" value={sched.start_date} onChange={e => {
                                     const updated = [...extra.scheduled_themes];
                                     updated[idx] = { ...updated[idx], start_date: e.target.value };
@@ -1769,7 +1769,7 @@ export default function SocialLinksEditor() {
                                   }} className="h-7 text-xs" dir="ltr" />
                                 </div>
                                 <div>
-                                  <Label className="text-[10px] mb-0.5 block">{isAr ? "إلى" : "End"}</Label>
+                                  <Label className="text-[12px] mb-0.5 block">{isAr ? "إلى" : "End"}</Label>
                                   <Input type="date" value={sched.end_date} onChange={e => {
                                     const updated = [...extra.scheduled_themes];
                                     updated[idx] = { ...updated[idx], end_date: e.target.value };
@@ -1808,7 +1808,7 @@ export default function SocialLinksEditor() {
                       </CardHeader>
                       <CardContent className="space-y-4 pt-3">
                         <div>
-                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "نوع الخط" : "Font Family"}</Label>
+                          <Label className="text-[12px] mb-2 block font-medium">{isAr ? "نوع الخط" : "Font Family"}</Label>
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                             {FONT_FAMILIES.map(f => (
                               <button
@@ -1824,7 +1824,7 @@ export default function SocialLinksEditor() {
                         </div>
                         <Separator />
                         <div>
-                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "حجم الخط" : "Font Size"}</Label>
+                          <Label className="text-[12px] mb-2 block font-medium">{isAr ? "حجم الخط" : "Font Size"}</Label>
                           <div className="grid grid-cols-4 gap-1.5">
                             {FONT_SIZES.map(s => (
                               <button
@@ -1853,7 +1853,7 @@ export default function SocialLinksEditor() {
                       <CardContent className="space-y-4 pt-3">
                         {/* Text Alignment */}
                         <div>
-                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "محاذاة النص" : "Text Alignment"}</Label>
+                          <Label className="text-[12px] mb-2 block font-medium">{isAr ? "محاذاة النص" : "Text Alignment"}</Label>
                           <div className="grid grid-cols-3 gap-1.5">
                             {([
                               { id: "start" as const, label: isAr ? "بداية" : "Start", icon: AlignLeft },
@@ -1876,7 +1876,7 @@ export default function SocialLinksEditor() {
 
                         {/* Text Direction */}
                         <div>
-                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "اتجاه النص" : "Text Direction"}</Label>
+                          <Label className="text-[12px] mb-2 block font-medium">{isAr ? "اتجاه النص" : "Text Direction"}</Label>
                           <div className="grid grid-cols-3 gap-1.5">
                             {([
                               { id: "auto" as const, label: isAr ? "تلقائي" : "Auto", icon: ArrowLeftRight },
@@ -1899,7 +1899,7 @@ export default function SocialLinksEditor() {
 
                         {/* Link Layout */}
                         <div>
-                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "تخطيط الروابط" : "Link Layout"}</Label>
+                          <Label className="text-[12px] mb-2 block font-medium">{isAr ? "تخطيط الروابط" : "Link Layout"}</Label>
                           <div className="grid grid-cols-2 gap-1.5">
                             {([
                               { id: "list" as const, label: isAr ? "قائمة" : "List", icon: LayoutList },
@@ -1942,7 +1942,7 @@ export default function SocialLinksEditor() {
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div>
-                            <Label className="text-[11px] mb-1.5 block font-medium">{isAr ? "لون الأزرار" : "Button Color"}</Label>
+                            <Label className="text-[12px] mb-1.5 block font-medium">{isAr ? "لون الأزرار" : "Button Color"}</Label>
                             <div className="flex gap-2 items-center">
                               <div className="relative">
                                 <input type="color" value={form.button_color} onChange={e => updateForm({ button_color: e.target.value })} className="h-9 w-12 rounded-xl cursor-pointer border border-border/30" />
@@ -1951,7 +1951,7 @@ export default function SocialLinksEditor() {
                             </div>
                           </div>
                           <div>
-                            <Label className="text-[11px] mb-1.5 block font-medium">{isAr ? "لون النص" : "Text Color"}</Label>
+                            <Label className="text-[12px] mb-1.5 block font-medium">{isAr ? "لون النص" : "Text Color"}</Label>
                             <div className="flex gap-2 items-center">
                               <input type="color" value={form.text_color} onChange={e => updateForm({ text_color: e.target.value })} className="h-9 w-12 rounded-xl cursor-pointer border border-border/30" />
                               <Input value={form.text_color} onChange={e => updateForm({ text_color: e.target.value })} className="text-xs font-mono h-9" dir="ltr" />
@@ -2009,7 +2009,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "التحكم بالأقسام" : "Section Visibility"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "تحكم بما يظهر في صفحة الروابط العامة" : "Control what appears on your public links page"}
                         </p>
                       </CardHeader>
@@ -2059,7 +2059,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "صورة الغلاف" : "Cover Image"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "تظهر في أعلى صفحة الروابط العامة" : "Displayed at the top of your public page"}
                         </p>
                       </CardHeader>
@@ -2078,7 +2078,7 @@ export default function SocialLinksEditor() {
                           <Label htmlFor="cover-upload" className="cursor-pointer">
                             <div className="border-2 border-dashed border-border/40 rounded-xl p-4 text-center hover:border-primary/30 transition-all duration-200 hover:bg-muted/20">
                               <Image className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
-                              <p className="text-[11px] text-muted-foreground">{isAr ? "اضغط لرفع صورة غلاف" : "Click to upload cover image"}</p>
+                              <p className="text-[12px] text-muted-foreground">{isAr ? "اضغط لرفع صورة غلاف" : "Click to upload cover image"}</p>
                             </div>
                           </Label>
                           <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={async (e) => {
@@ -2119,11 +2119,11 @@ export default function SocialLinksEditor() {
                         {extra.show_footer && (
                           <div className="grid sm:grid-cols-2 gap-3">
                             <div>
-                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نص التذييل (EN)" : "Footer Text (EN)"}</Label>
+                              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "نص التذييل (EN)" : "Footer Text (EN)"}</Label>
                               <Input value={extra.footer_text} onChange={e => updateExtra({ footer_text: e.target.value })} placeholder="© 2024 My Brand" dir="ltr" className="text-xs rounded-xl" />
                             </div>
                             <div>
-                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "نص التذييل (AR)" : "Footer Text (AR)"}</Label>
+                              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "نص التذييل (AR)" : "Footer Text (AR)"}</Label>
                               <Input value={extra.footer_text_ar} onChange={e => updateExtra({ footer_text_ar: e.target.value })} placeholder="© 2024 علامتي" dir="rtl" className="text-xs rounded-xl" />
                             </div>
                           </div>
@@ -2140,7 +2140,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "معاينة الفيديو" : "Video Embeds"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "عرض معاينة مضمنة لروابط YouTube و TikTok و Instagram" : "Show inline preview for YouTube, TikTok & Instagram links"}
                         </p>
                       </CardHeader>
@@ -2161,7 +2161,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "نموذج التواصل" : "Contact Form"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "نموذج اتصال مباشر في صفحة Bio" : "Direct contact form on your Bio page"}
                         </p>
                       </CardHeader>
@@ -2173,11 +2173,11 @@ export default function SocialLinksEditor() {
                         {extra.show_contact_form && (
                           <div className="grid sm:grid-cols-2 gap-3">
                             <div>
-                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان النموذج (EN)" : "Form Title (EN)"}</Label>
+                              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "عنوان النموذج (EN)" : "Form Title (EN)"}</Label>
                               <Input value={extra.contact_form_title} onChange={e => updateExtra({ contact_form_title: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                             </div>
                             <div>
-                              <Label className="text-[11px] mb-1 block font-medium">{isAr ? "عنوان النموذج (AR)" : "Form Title (AR)"}</Label>
+                              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "عنوان النموذج (AR)" : "Form Title (AR)"}</Label>
                               <Input value={extra.contact_form_title_ar} onChange={e => updateExtra({ contact_form_title_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                             </div>
                           </div>
@@ -2194,7 +2194,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "حماية بكلمة مرور" : "Password Protection"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "أضف كلمة مرور لحماية صفحتك من الوصول غير المصرح" : "Add a password to restrict access to your bio page"}
                         </p>
                       </CardHeader>
@@ -2205,7 +2205,7 @@ export default function SocialLinksEditor() {
                         </div>
                         {extra.enable_password && (
                           <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "كلمة المرور" : "Password"}</Label>
+                            <Label className="text-[12px] mb-1 block font-medium">{isAr ? "كلمة المرور" : "Password"}</Label>
                             <Input
                               type="text"
                               value={extra.page_password}
@@ -2228,7 +2228,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "جمع الإيميلات" : "Email Collection"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "اجمع إيميلات الزوار عبر نموذج اشتراك مدمج" : "Collect visitor emails with an embedded subscribe form"}
                         </p>
                       </CardHeader>
@@ -2241,21 +2241,21 @@ export default function SocialLinksEditor() {
                           <div className="space-y-3">
                             <div className="grid sm:grid-cols-2 gap-3">
                               <div>
-                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
+                                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
                                 <Input value={extra.email_collection_title} onChange={e => updateExtra({ email_collection_title: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                               </div>
                               <div>
-                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
+                                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
                                 <Input value={extra.email_collection_title_ar} onChange={e => updateExtra({ email_collection_title_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                               </div>
                             </div>
                             <div className="grid sm:grid-cols-2 gap-3">
                               <div>
-                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
                                 <Input value={extra.email_collection_description} onChange={e => updateExtra({ email_collection_description: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                               </div>
                               <div>
-                                <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+                                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
                                 <Input value={extra.email_collection_description_ar} onChange={e => updateExtra({ email_collection_description_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                               </div>
                             </div>
@@ -2273,39 +2273,39 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "تحسين محركات البحث (SEO)" : "SEO & Open Graph"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "تحكم بعنوان ووصف وصورة الصفحة عند مشاركتها" : "Customize how your page appears in search & social shares"}
                         </p>
                       </CardHeader>
                       <CardContent className="pt-3 space-y-3">
                         <div className="grid sm:grid-cols-2 gap-3">
                           <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Page Title (EN)"}</Label>
+                            <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Page Title (EN)"}</Label>
                             <Input value={extra.seo_title} onChange={e => updateExtra({ seo_title: e.target.value })} placeholder={isAr ? "اتركه فارغاً للافتراضي" : "Leave empty for default"} className="text-xs" dir="ltr" maxLength={60} />
-                            <span className="text-[9px] text-muted-foreground">{extra.seo_title.length}/60</span>
+                            <span className="text-[12px] text-muted-foreground">{extra.seo_title.length}/60</span>
                           </div>
                           <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Page Title (AR)"}</Label>
+                            <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Page Title (AR)"}</Label>
                             <Input value={extra.seo_title_ar} onChange={e => updateExtra({ seo_title_ar: e.target.value })} placeholder={isAr ? "اتركه فارغاً للافتراضي" : "Leave empty for default"} className="text-xs" dir="rtl" maxLength={60} />
-                            <span className="text-[9px] text-muted-foreground">{extra.seo_title_ar.length}/60</span>
+                            <span className="text-[12px] text-muted-foreground">{extra.seo_title_ar.length}/60</span>
                           </div>
                         </div>
                         <div className="grid sm:grid-cols-2 gap-3">
                           <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                            <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
                             <Textarea value={extra.seo_description} onChange={e => updateExtra({ seo_description: e.target.value })} placeholder={isAr ? "وصف قصير للصفحة" : "Short page description"} className="text-xs min-h-[60px]" dir="ltr" maxLength={160} />
-                            <span className="text-[9px] text-muted-foreground">{extra.seo_description.length}/160</span>
+                            <span className="text-[12px] text-muted-foreground">{extra.seo_description.length}/160</span>
                           </div>
                           <div>
-                            <Label className="text-[11px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+                            <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
                             <Textarea value={extra.seo_description_ar} onChange={e => updateExtra({ seo_description_ar: e.target.value })} placeholder={isAr ? "وصف قصير بالعربية" : "Short description in Arabic"} className="text-xs min-h-[60px]" dir="rtl" maxLength={160} />
-                            <span className="text-[9px] text-muted-foreground">{extra.seo_description_ar.length}/160</span>
+                            <span className="text-[12px] text-muted-foreground">{extra.seo_description_ar.length}/160</span>
                           </div>
                         </div>
                         <div>
-                          <Label className="text-[11px] mb-1 block font-medium">{isAr ? "صورة المشاركة (OG Image URL)" : "Share Image (OG Image URL)"}</Label>
+                          <Label className="text-[12px] mb-1 block font-medium">{isAr ? "صورة المشاركة (OG Image URL)" : "Share Image (OG Image URL)"}</Label>
                           <Input value={extra.og_image_url} onChange={e => updateExtra({ og_image_url: e.target.value })} placeholder="https://..." className="text-xs" dir="ltr" />
-                          <p className="text-[9px] text-muted-foreground mt-1">{isAr ? "الحجم المثالي: 1200×630 بكسل" : "Recommended: 1200×630px"}</p>
+                          <p className="text-[12px] text-muted-foreground mt-1">{isAr ? "الحجم المثالي: 1200×630 بكسل" : "Recommended: 1200×630px"}</p>
                           {extra.og_image_url && (
                             <div className="mt-2 rounded-xl overflow-hidden border border-border/50">
                               <img loading="lazy" src={extra.og_image_url} alt="OG Preview" className="w-full h-auto max-h-32 object-cover" onError={e => (e.currentTarget.style.display = "none")} />
@@ -2315,11 +2315,11 @@ export default function SocialLinksEditor() {
 
                         {/* Smart OG Preview */}
                         <div className="pt-2">
-                          <Label className="text-[11px] mb-2 block font-medium">{isAr ? "معاينة المشاركة" : "Share Preview"}</Label>
+                          <Label className="text-[12px] mb-2 block font-medium">{isAr ? "معاينة المشاركة" : "Share Preview"}</Label>
                           <div className="space-y-3">
                             {/* Twitter/X Card Preview */}
                             <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
-                              <div className="text-[9px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
+                              <div className="text-[12px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
                                 <Twitter className="h-2.5 w-2.5" /> X / Twitter
                               </div>
                               {(extra.og_image_url || profile?.avatar_url) && (
@@ -2332,19 +2332,19 @@ export default function SocialLinksEditor() {
                                 </div>
                               )}
                               <div className="p-2.5 space-y-0.5">
-                                <p className="text-[11px] font-semibold text-foreground truncate">
+                                <p className="text-[12px] font-semibold text-foreground truncate">
                                   {(isAr ? extra.seo_title_ar : extra.seo_title) || profile?.display_name || profile?.full_name || "Bio Page"}
                                 </p>
-                                <p className="text-[10px] text-muted-foreground line-clamp-2">
+                                <p className="text-[12px] text-muted-foreground line-clamp-2">
                                   {(isAr ? extra.seo_description_ar : extra.seo_description) || (isAr ? "صفحة Bio الشخصية" : "Personal bio page")}
                                 </p>
-                                <p className="text-[9px] text-muted-foreground/70 truncate">{window.location.host}/bio/{profile?.username}</p>
+                                <p className="text-[12px] text-muted-foreground/70 truncate">{window.location.host}/bio/{profile?.username}</p>
                               </div>
                             </div>
 
                             {/* WhatsApp Preview */}
                             <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
-                              <div className="text-[9px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
+                              <div className="text-[12px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
                                 <MessageCircle className="h-2.5 w-2.5" /> WhatsApp
                               </div>
                               <div className="flex gap-2 p-2">
@@ -2358,13 +2358,13 @@ export default function SocialLinksEditor() {
                                   </div>
                                 )}
                                 <div className="min-w-0 flex-1 space-y-0.5">
-                                  <p className="text-[10px] font-semibold text-foreground truncate">
+                                  <p className="text-[12px] font-semibold text-foreground truncate">
                                     {(isAr ? extra.seo_title_ar : extra.seo_title) || profile?.display_name || profile?.full_name || "Bio Page"}
                                   </p>
-                                  <p className="text-[9px] text-muted-foreground line-clamp-2">
+                                  <p className="text-[12px] text-muted-foreground line-clamp-2">
                                     {(isAr ? extra.seo_description_ar : extra.seo_description) || (isAr ? "صفحة Bio الشخصية" : "Personal bio page")}
                                   </p>
-                                  <p className="text-[8px] text-muted-foreground/60 truncate">{window.location.host}</p>
+                                  <p className="text-[12px] text-muted-foreground/60 truncate">{window.location.host}</p>
                                 </div>
                               </div>
                             </div>
@@ -2381,7 +2381,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "تأثيرات حركية" : "Motion Effects"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "تأثيرات Typing و Particles للصفحة" : "Typing animation & Particle effects"}
                         </p>
                       </CardHeader>
@@ -2412,7 +2412,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "تخصيص CSS متقدم" : "Advanced CSS Customization"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "أضف أنماط CSS مخصصة لصفحتك العامة — للمستخدمين المتقدمين" : "Add custom CSS styles to your public page — for advanced users"}
                         </p>
                       </CardHeader>
@@ -2424,7 +2424,7 @@ export default function SocialLinksEditor() {
                           className="min-h-[120px] text-xs font-mono"
                           dir="ltr"
                         />
-                        <p className="text-[10px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "⚠️ CSS غير صالح قد يؤثر على مظهر الصفحة" : "⚠️ Invalid CSS may affect page appearance"}
                         </p>
                       </CardContent>
@@ -2439,7 +2439,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "صفحات متعددة" : "Multi-Page Profiles"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "أنشئ تبويبات مختلفة (شخصي، مهني، إبداعي)" : "Create different tabs (Personal, Professional, Creative)"}
                         </p>
                       </CardHeader>
@@ -2494,7 +2494,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "استيراد / تصدير" : "Import / Export"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "نسخ احتياطي أو نقل إعدادات الصفحة" : "Backup or transfer your page settings"}
                         </p>
                       </CardHeader>
@@ -2560,7 +2560,7 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "أداء الروابط" : "Link Performance"}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "تحليل النقرات على كل رابط" : "Click analysis for each link"}
                         </p>
                       </CardHeader>
@@ -2595,15 +2595,15 @@ export default function SocialLinksEditor() {
                             <div className="grid grid-cols-3 gap-3 text-center">
                               <div>
                                 <p className="text-lg font-bold tabular-nums">{totalClicks}</p>
-                                <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي النقرات" : "Total Clicks"}</p>
+                                <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي النقرات" : "Total Clicks"}</p>
                               </div>
                               <div>
                                 <p className="text-lg font-bold tabular-nums">{items.length > 0 ? Math.round(totalClicks / items.length) : 0}</p>
-                                <p className="text-[10px] text-muted-foreground">{isAr ? "متوسط/رابط" : "Avg per Link"}</p>
+                                <p className="text-[12px] text-muted-foreground">{isAr ? "متوسط/رابط" : "Avg per Link"}</p>
                               </div>
                               <div>
                                 <p className="text-lg font-bold tabular-nums">{items.filter(i => (i.click_count || 0) > 0).length}/{items.length}</p>
-                                <p className="text-[10px] text-muted-foreground">{isAr ? "روابط نشطة" : "Active Links"}</p>
+                                <p className="text-[12px] text-muted-foreground">{isAr ? "روابط نشطة" : "Active Links"}</p>
                               </div>
                             </div>
                           </div>
@@ -2635,7 +2635,7 @@ export default function SocialLinksEditor() {
                                   </div>
                                   <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium truncate">{item.icon && <span className="me-1">{item.icon}</span>}{item.title}</p>
-                                    <p className="text-[10px] text-muted-foreground">{totalClicks > 0 ? Math.round(((item.click_count || 0) / totalClicks) * 100) : 0}% {isAr ? "من النقرات" : "of clicks"}</p>
+                                    <p className="text-[12px] text-muted-foreground">{totalClicks > 0 ? Math.round(((item.click_count || 0) / totalClicks) * 100) : 0}% {isAr ? "من النقرات" : "of clicks"}</p>
                                   </div>
                                   <span className="text-sm font-bold tabular-nums">{item.click_count || 0}</span>
                                 </div>
@@ -2654,9 +2654,9 @@ export default function SocialLinksEditor() {
                               <BarChart3 className="h-3.5 w-3.5 text-destructive" />
                             </div>
                             {isAr ? "خريطة حرارية للنقرات" : "Click Heatmap"}
-                            {visitorStats && <Badge variant="secondary" className="text-[9px] ms-auto">CTR: {visitorStats.total > 0 ? ((totalClicks / visitorStats.total) * 100).toFixed(1) : "0"}%</Badge>}
+                            {visitorStats && <Badge variant="secondary" className="text-[12px] ms-auto">CTR: {visitorStats.total > 0 ? ((totalClicks / visitorStats.total) * 100).toFixed(1) : "0"}%</Badge>}
                           </CardTitle>
-                          <p className="text-[11px] text-muted-foreground">{isAr ? "كثافة النقرات لكل رابط مقارنة بالمجموع" : "Click intensity per link relative to total"}</p>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "كثافة النقرات لكل رابط مقارنة بالمجموع" : "Click intensity per link relative to total"}</p>
                         </CardHeader>
                         <CardContent className="pt-3">
                           <div className="space-y-1.5">
@@ -2673,8 +2673,8 @@ export default function SocialLinksEditor() {
                                     <span className="text-xs w-5 shrink-0">{item.icon || "🔗"}</span>
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center justify-between mb-0.5">
-                                        <span className="text-[11px] font-medium truncate max-w-[60%]">{item.title}</span>
-                                        <span className="text-[10px] text-muted-foreground tabular-nums">{clicks} <span className="text-[9px]">({sharePct}%)</span></span>
+                                        <span className="text-[12px] font-medium truncate max-w-[60%]">{item.title}</span>
+                                        <span className="text-[12px] text-muted-foreground tabular-nums">{clicks} <span className="text-[12px]">({sharePct}%)</span></span>
                                       </div>
                                       <div className="h-2 rounded-full bg-muted/40 overflow-hidden">
                                         <div className={`h-full rounded-full transition-all duration-500 ${heat}`} style={{ width: `${Math.max(pct, 2)}%` }} />
@@ -2686,7 +2686,7 @@ export default function SocialLinksEditor() {
                             })}
                           </div>
                           {visitorStats && visitorStats.total > 0 && (
-                            <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between text-[10px] text-muted-foreground">
+                            <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between text-[12px] text-muted-foreground">
                               <span>{isAr ? "إجمالي الزيارات" : "Total Visits"}: <strong className="text-foreground">{visitorStats.total}</strong></span>
                               <span>{isAr ? "إجمالي النقرات" : "Total Clicks"}: <strong className="text-foreground">{totalClicks}</strong></span>
                               <span>CTR: <strong className="text-foreground">{((totalClicks / visitorStats.total) * 100).toFixed(1)}%</strong></span>
@@ -2705,9 +2705,9 @@ export default function SocialLinksEditor() {
                               <Clock className="h-3.5 w-3.5 text-chart-2" />
                             </div>
                             {isAr ? "أفضل أوقات النقر" : "Best Click Times"}
-                            <Badge variant="secondary" className="text-[9px] ms-auto">{clickAnalytics.total} {isAr ? "نقرة" : "clicks"}</Badge>
+                            <Badge variant="secondary" className="text-[12px] ms-auto">{clickAnalytics.total} {isAr ? "نقرة" : "clicks"}</Badge>
                           </CardTitle>
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {isAr
                               ? `أفضل وقت: ${["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][clickAnalytics.bestDay]} الساعة ${clickAnalytics.bestHour}:00`
                               : `Peak: ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][clickAnalytics.bestDay]} at ${clickAnalytics.bestHour}:00`}
@@ -2716,7 +2716,7 @@ export default function SocialLinksEditor() {
                         <CardContent className="pt-3 space-y-4">
                           {/* Hourly Bar Chart */}
                           <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات حسب الساعة" : "Clicks by Hour"}</p>
+                            <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات حسب الساعة" : "Clicks by Hour"}</p>
                             <div className="h-32 w-full">
                               <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={clickAnalytics.hourlyAgg.map((v: number, h: number) => ({ hour: `${h}`, clicks: v }))} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -2735,7 +2735,7 @@ export default function SocialLinksEditor() {
 
                           {/* Weekly Heatmap Grid */}
                           <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "خريطة الحرارة الأسبوعية" : "Weekly Heatmap"}</p>
+                            <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "خريطة الحرارة الأسبوعية" : "Weekly Heatmap"}</p>
                             <div className="overflow-x-auto">
                               <div className="grid grid-cols-[auto_repeat(24,1fr)] gap-[2px] min-w-[400px]">
                                 {/* Header row */}
@@ -2746,7 +2746,7 @@ export default function SocialLinksEditor() {
                                 {/* Day rows */}
                                 {(isAr ? ["أحد","إثن","ثلا","أرب","خمي","جمع","سبت"] : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]).map((day, d) => (
                                   <>
-                                    <div key={`l-${d}`} className="text-[8px] text-muted-foreground pe-1 flex items-center">{day}</div>
+                                    <div key={`l-${d}`} className="text-[12px] text-muted-foreground pe-1 flex items-center">{day}</div>
                                     {clickAnalytics.heatmap[d].map((val: number, h: number) => {
                                       const maxH = Math.max(...clickAnalytics.heatmap.flat(), 1);
                                       const intensity = val / maxH;
@@ -2767,7 +2767,7 @@ export default function SocialLinksEditor() {
 
                           {/* Daily Clicks Chart */}
                           <div>
-                            <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات اليومية (14 يوم)" : "Daily Clicks (14 days)"}</p>
+                            <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات اليومية (14 يوم)" : "Daily Clicks (14 days)"}</p>
                             <div className="h-32 w-full">
                               <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={clickAnalytics.dailyClicks} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -2799,7 +2799,7 @@ export default function SocialLinksEditor() {
                             </div>
                             {isAr ? "مقارنة أداء الروابط" : "Link Performance Comparison"}
                           </CardTitle>
-                          <p className="text-[11px] text-muted-foreground">{isAr ? "النقرات اليومية لكل رابط" : "Daily clicks per link"}</p>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "النقرات اليومية لكل رابط" : "Daily clicks per link"}</p>
                         </CardHeader>
                         <CardContent className="pt-3">
                           <div className="space-y-3">
@@ -2820,7 +2820,7 @@ export default function SocialLinksEditor() {
                                   <div key={item.id} className="flex items-center gap-3">
                                     <span className="text-xs w-5 shrink-0">{item.icon || "🔗"}</span>
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-[11px] font-medium truncate">{item.title}</p>
+                                      <p className="text-[12px] font-medium truncate">{item.title}</p>
                                     </div>
                                     {/* Mini sparkline */}
                                     <div className="flex items-end gap-[2px] h-4 shrink-0">
@@ -2836,7 +2836,7 @@ export default function SocialLinksEditor() {
                                         />
                                       ))}
                                     </div>
-                                    <span className="text-[10px] font-bold tabular-nums w-8 text-end">{item.click_count || 0}</span>
+                                    <span className="text-[12px] font-bold tabular-nums w-8 text-end">{item.click_count || 0}</span>
                                   </div>
                                 );
                               })}
@@ -2852,9 +2852,9 @@ export default function SocialLinksEditor() {
                               <Eye className="h-3.5 w-3.5 text-chart-3" />
                             </div>
                             {isAr ? "إحصائيات الزوار" : "Visitor Analytics"}
-                            <Badge variant="secondary" className="text-[10px] ms-auto">{visitorStats.total} {isAr ? "زيارة" : "visits"}</Badge>
+                            <Badge variant="secondary" className="text-[12px] ms-auto">{visitorStats.total} {isAr ? "زيارة" : "visits"}</Badge>
                           </CardTitle>
-                          <p className="text-[11px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {isAr ? `${visitorStats.recent7d} زيارة في آخر 7 أيام` : `${visitorStats.recent7d} visits in the last 7 days`}
                           </p>
                         </CardHeader>
@@ -2862,7 +2862,7 @@ export default function SocialLinksEditor() {
                           {/* Daily Visits Chart */}
                           {visitorStats.dailyVisits && visitorStats.dailyVisits.length > 0 && (
                             <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الزيارات اليومية (14 يوم)" : "Daily Visits (14 days)"}</p>
+                              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الزيارات اليومية (14 يوم)" : "Daily Visits (14 days)"}</p>
                               <div className="h-40 w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                   <AreaChart data={visitorStats.dailyVisits} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -2884,10 +2884,10 @@ export default function SocialLinksEditor() {
                           {/* Devices */}
                           {Object.keys(visitorStats.devices).length > 0 && (
                             <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
+                              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
                               <div className="flex flex-wrap gap-1.5">
                                 {Object.entries(visitorStats.devices).sort((a, b) => b[1] - a[1]).map(([device, count]) => (
-                                  <Badge key={device} variant="outline" className="text-[10px] gap-1">
+                                  <Badge key={device} variant="outline" className="text-[12px] gap-1">
                                     <Smartphone className="h-2.5 w-2.5" />
                                     {device} <span className="font-bold">{count}</span>
                                   </Badge>
@@ -2898,7 +2898,7 @@ export default function SocialLinksEditor() {
                           {/* Top Countries */}
                           {Object.keys(visitorStats.countries).length > 0 && (
                             <div>
-                              <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الدول" : "Countries"}</p>
+                              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الدول" : "Countries"}</p>
                               <div className="space-y-1">
                                 {Object.entries(visitorStats.countries).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([country, count]) => {
                                   const pct = Math.round((count / visitorStats.total) * 100);
@@ -2908,7 +2908,7 @@ export default function SocialLinksEditor() {
                                       <div className="flex-1 h-1.5 rounded-full bg-muted/50 overflow-hidden">
                                         <div className="h-full rounded-full bg-chart-1/60" style={{ width: `${pct}%` }} />
                                       </div>
-                                      <span className="text-[10px] font-bold tabular-nums w-6 text-end">{count}</span>
+                                      <span className="text-[12px] font-bold tabular-nums w-6 text-end">{count}</span>
                                     </div>
                                   );
                                 })}
@@ -2942,7 +2942,7 @@ export default function SocialLinksEditor() {
                             const maxCat = sorted[0]?.[1].count || 1;
                             return (
                               <div>
-                                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "مصادر الزيارات" : "Traffic Sources"}</p>
+                                <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "مصادر الزيارات" : "Traffic Sources"}</p>
                                 <div className="space-y-2">
                                   {sorted.map(([cat, { count, sources }]) => {
                                     const info = catLabels[cat] || catLabels.other;
@@ -2952,8 +2952,8 @@ export default function SocialLinksEditor() {
                                       <div key={cat}>
                                         <div className="flex items-center gap-2 mb-0.5">
                                           <span className="text-xs">{info.emoji}</span>
-                                          <span className="text-[11px] font-medium flex-1">{isAr ? info.ar : info.en}</span>
-                                          <span className="text-[10px] font-bold tabular-nums">{count} <span className="text-muted-foreground font-normal">({pct}%)</span></span>
+                                          <span className="text-[12px] font-medium flex-1">{isAr ? info.ar : info.en}</span>
+                                          <span className="text-[12px] font-bold tabular-nums">{count} <span className="text-muted-foreground font-normal">({pct}%)</span></span>
                                         </div>
                                         <div className="h-2 rounded-full bg-muted/40 overflow-hidden mb-1">
                                           <div className={`h-full rounded-full transition-all duration-500 ${info.color}`} style={{ width: `${Math.max(barW, 3)}%` }} />
@@ -2961,7 +2961,7 @@ export default function SocialLinksEditor() {
                                         {Object.keys(sources).length > 1 && (
                                           <div className="ps-5 space-y-0.5">
                                             {Object.entries(sources).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([src, cnt]) => (
-                                              <div key={src} className="flex items-center justify-between text-[10px] text-muted-foreground">
+                                              <div key={src} className="flex items-center justify-between text-[12px] text-muted-foreground">
                                                 <span className="truncate max-w-[70%]">{src}</span>
                                                 <span className="tabular-nums font-medium">{cnt}</span>
                                               </div>
@@ -3038,12 +3038,12 @@ export default function SocialLinksEditor() {
                           </div>
                           {isAr ? "الإشعارات" : "Notifications"}
                           {bioNotifications && bioNotifications.filter((n) => !n.is_read).length > 0 && (
-                            <Badge variant="destructive" className="text-[10px] h-4 px-1.5 ms-auto">
+                            <Badge variant="destructive" className="text-[12px] h-4 px-1.5 ms-auto">
                               {bioNotifications.filter((n) => !n.is_read).length}
                             </Badge>
                           )}
                         </CardTitle>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-[12px] text-muted-foreground">
                           {isAr ? "مشتركون جدد وإنجازات" : "New subscribers & milestones"}
                         </p>
                       </CardHeader>
@@ -3075,9 +3075,9 @@ export default function SocialLinksEditor() {
                                   <span className="text-base mt-0.5 shrink-0">{icon}</span>
                                   <div className="flex-1 min-w-0">
                                     <p className="text-xs font-medium leading-snug">{isAr ? n.title_ar : n.title}</p>
-                                    <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{isAr ? n.body_ar : n.body}</p>
+                                    <p className="text-[12px] text-muted-foreground mt-0.5 truncate">{isAr ? n.body_ar : n.body}</p>
                                   </div>
-                                  <span className="text-[10px] text-muted-foreground shrink-0 tabular-nums">{timeAgo}</span>
+                                  <span className="text-[12px] text-muted-foreground shrink-0 tabular-nums">{timeAgo}</span>
                                 </div>
                               );
                             })}
@@ -3108,7 +3108,7 @@ export default function SocialLinksEditor() {
                 <Card className="overflow-hidden border-border/20 shadow-lg">
                   <CardHeader className="py-2 px-3 bg-muted/40 border-b border-border/20">
                     <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "معاينة مباشرة" : "Live Preview"}</p>
+                      <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "معاينة مباشرة" : "Live Preview"}</p>
                       <div className="flex gap-1">
                         <div className="h-2 w-2 rounded-full bg-destructive/60" />
                         <div className="h-2 w-2 rounded-full bg-chart-2/60" />
@@ -3146,8 +3146,8 @@ export default function SocialLinksEditor() {
                               <p className={`font-bold ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`} style={{ color: pt.text }}>
                                 {form.page_title || displayName || "Your Name"}
                               </p>
-                              <p className="text-[10px] mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
-                              {extra.show_bio && form.bio && <p className="text-[10px] mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
+                              <p className="text-[12px] mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
+                              {extra.show_bio && form.bio && <p className="text-[12px] mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
                             </div>
 
                             {form.show_social_icons && activeSocials.length > 0 && (
@@ -3179,14 +3179,14 @@ export default function SocialLinksEditor() {
                                     style={customColor}
                                   >
                                     {item.icon && <span className="text-sm">{item.icon}</span>}
-                                    <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[11px] font-medium ${alignClass}`} style={{ color: customColor.color || pt.text }}>{item.title}</span>
+                                    <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[12px] font-medium ${alignClass}`} style={{ color: customColor.color || pt.text }}>{item.title}</span>
                                   </div>
                                 );
                               })}
                               {items.length === 0 && (
                                 <div className={`text-center py-6 opacity-40 ${extra.link_layout === "grid" ? "col-span-2" : ""}`} style={{ color: pt.text }}>
                                   <Globe className="h-8 w-8 mx-auto mb-2" />
-                                  <p className="text-[10px]">{isAr ? "أضف روابط" : "Add links"}</p>
+                                  <p className="text-[12px]">{isAr ? "أضف روابط" : "Add links"}</p>
                                 </div>
                               )}
                             </div>
@@ -3194,7 +3194,7 @@ export default function SocialLinksEditor() {
                             {/* Footer preview */}
                             {extra.show_footer && extra.footer_text && (
                               <div className="mt-4 pt-3 w-full text-center" style={{ borderTop: `1px solid ${pt.border}` }}>
-                                <p className="text-[9px]" style={{ color: `${pt.text}55` }}>{extra.footer_text}</p>
+                                <p className="text-[12px]" style={{ color: `${pt.text}55` }}>{extra.footer_text}</p>
                               </div>
                             )}
                           </div>

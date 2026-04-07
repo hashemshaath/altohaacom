@@ -88,7 +88,7 @@ export const HomepageTemplateSwitcher = memo(function HomepageTemplateSwitcher()
                   </div>
                   <div>
                     <p className="text-sm font-semibold">{isAr ? t.nameAr : t.nameEn}</p>
-                    {isActive && <Badge variant="secondary" className="text-[9px] mt-0.5">{isAr ? "نشط" : "Active"}</Badge>}
+                    {isActive && <Badge variant="secondary" className="text-[12px] mt-0.5">{isAr ? "نشط" : "Active"}</Badge>}
                   </div>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed">

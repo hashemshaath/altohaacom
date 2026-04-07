@@ -66,11 +66,11 @@ export const TierProgressCard = memo(function TierProgressCard() {
                   <p className="text-sm font-medium">
                     {isAr ? tier.label_ar || tier.label : tier.label}
                   </p>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[12px] text-muted-foreground">
                     {rangeLabel} {isAr ? "إحالة" : "referrals"}
                   </p>
                 </div>
-                <Badge variant={isActive ? "default" : "outline"} className="text-[10px]">
+                <Badge variant={isActive ? "default" : "outline"} className="text-[12px]">
                   +{tier.bonus_points} {isAr ? "نقطة إضافية" : "bonus pts"}
                 </Badge>
               </div>

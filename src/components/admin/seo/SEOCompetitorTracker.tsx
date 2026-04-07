@@ -152,7 +152,7 @@ export const SEOCompetitorTracker = memo(function SEOCompetitorTracker({ isAr }:
           <CardTitle className="text-base flex items-center gap-2">
             <Globe className="h-4 w-4 text-primary" />
             {isAr ? "تتبع المنافسين" : "Competitor Tracker"}
-            <Badge variant="secondary" className="text-[9px] ms-auto">{competitors.length} {isAr ? "منافس" : "tracked"}</Badge>
+            <Badge variant="secondary" className="text-[12px] ms-auto">{competitors.length} {isAr ? "منافس" : "tracked"}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -206,12 +206,12 @@ export const SEOCompetitorTracker = memo(function SEOCompetitorTracker({ isAr }:
                   <tr className="border-b border-border bg-primary/5">
                     <td className="p-3">
                       <div className="flex items-center gap-2">
-                        <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">A</div>
+                        <div className="h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center text-[12px] font-bold text-primary">A</div>
                         <div>
                           <p className="font-medium text-sm">Altoha</p>
-                          <p className="text-[10px] text-muted-foreground">{ourSite.domain}</p>
+                          <p className="text-[12px] text-muted-foreground">{ourSite.domain}</p>
                         </div>
-                        <Badge className="text-[8px]">{isAr ? "أنت" : "You"}</Badge>
+                        <Badge className="text-[12px]">{isAr ? "أنت" : "You"}</Badge>
                       </div>
                     </td>
                     <td className="p-3 text-center font-bold text-primary">{ourSite.da_score}</td>
@@ -226,17 +226,17 @@ export const SEOCompetitorTracker = memo(function SEOCompetitorTracker({ isAr }:
                       <tr key={comp.id} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                         <td className="p-3">
                           <div className="flex items-center gap-2">
-                            <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-[10px] font-bold">{comp.name[0]}</div>
+                            <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-[12px] font-bold">{comp.name[0]}</div>
                             <div>
                               <p className="font-medium text-sm">{comp.name}</p>
-                              <p className="text-[10px] text-muted-foreground">{comp.domain}</p>
+                              <p className="text-[12px] text-muted-foreground">{comp.domain}</p>
                             </div>
                           </div>
                         </td>
                         <td className="p-3 text-center">
                           <span className="font-bold">{comp.da_score || "–"}</span>
                           {daDiff !== 0 && (
-                            <span className={`text-[9px] ms-1 ${daDiff > 0 ? "text-destructive" : "text-green-500"}`}>
+                            <span className={`text-[12px] ms-1 ${daDiff > 0 ? "text-destructive" : "text-green-500"}`}>
                               {daDiff > 0 ? `+${daDiff}` : daDiff}
                             </span>
                           )}

@@ -222,7 +222,7 @@ export const ChatArea = memo(function ChatArea({
               </div>
               <div>
                 <p className="text-xs font-semibold">{isAr ? "رسائل فورية" : "Instant Messages"}</p>
-                <p className="text-[11px] text-muted-foreground">{isAr ? "تواصل مع زملائك مباشرة" : "Connect with peers directly"}</p>
+                <p className="text-[12px] text-muted-foreground">{isAr ? "تواصل مع زملائك مباشرة" : "Connect with peers directly"}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 rounded-2xl border border-border/30 bg-card/50 p-4 text-start transition-all hover:bg-card/80 hover:shadow-sm">
@@ -231,7 +231,7 @@ export const ChatArea = memo(function ChatArea({
               </div>
               <div>
                 <p className="text-xs font-semibold">{isAr ? "ملفات ووسائط" : "Files & Media"}</p>
-                <p className="text-[11px] text-muted-foreground">{isAr ? "شارك الصور والملفات والمقاطع" : "Share images, files & recordings"}</p>
+                <p className="text-[12px] text-muted-foreground">{isAr ? "شارك الصور والملفات والمقاطع" : "Share images, files & recordings"}</p>
               </div>
             </div>
           </div>
@@ -260,7 +260,7 @@ export const ChatArea = memo(function ChatArea({
           <p className="text-sm font-bold truncate">
             {getDisplayName(selectedPartner, isAr, "Unknown")}
           </p>
-          <p className="text-[11px] text-muted-foreground">
+          <p className="text-[12px] text-muted-foreground">
             <LastSeenLabel
               userId={selectedPartner.user_id}
               isOnline={isOnline(selectedPartner.user_id)}
@@ -349,7 +349,7 @@ export const ChatArea = memo(function ChatArea({
                   {showDate && (
                     <div className="flex items-center gap-3 py-4">
                       <div className="flex-1 h-px bg-border/30" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/70 bg-background px-3 py-1 rounded-full border border-border/20">
+                      <span className="text-[12px] font-bold uppercase tracking-wider text-muted-foreground/70 bg-background px-3 py-1 rounded-full border border-border/20">
                         {getDateLabel(msg.created_at, isAr)}
                       </span>
                       <div className="flex-1 h-px bg-border/30" />
@@ -382,7 +382,7 @@ export const ChatArea = memo(function ChatArea({
                         isMine ? "bg-primary text-primary-foreground rounded-ee-md shadow-sm shadow-primary/10" : "bg-card border border-border/30 rounded-es-md shadow-sm"
                       }`}>
                         {(msg as any).is_pinned && (
-                          <div className={`flex items-center gap-1 mb-1 text-[10px] ${isMine ? "text-primary-foreground/50" : "text-chart-4"}`}>
+                          <div className={`flex items-center gap-1 mb-1 text-[12px] ${isMine ? "text-primary-foreground/50" : "text-chart-4"}`}>
                             <Pin className="h-2.5 w-2.5" /> {isAr ? "مثبتة" : "Pinned"}
                           </div>
                         )}
@@ -406,7 +406,7 @@ export const ChatArea = memo(function ChatArea({
                           </div>
                         )}
 
-                        <div className={`flex items-center gap-1 mt-1.5 text-[10px] ${isMine ? "text-primary-foreground/60 justify-end" : "text-muted-foreground"}`}>
+                        <div className={`flex items-center gap-1 mt-1.5 text-[12px] ${isMine ? "text-primary-foreground/60 justify-end" : "text-muted-foreground"}`}>
                           {msg.message_type !== "text" && msg.message_type !== "link" && getMessageTypeIcon(msg.message_type)}
                           <span className="tabular-nums">{formatMessageDate(msg.created_at, isAr)}</span>
                           <MessageStatus isMine={isMine} isRead={msg.is_read} readAt={msg.read_at} createdAt={msg.created_at} />
@@ -453,7 +453,7 @@ export const ChatArea = memo(function ChatArea({
         <div className="border-t border-border/30 bg-muted/5 px-4 py-3">
           <div className="flex items-center gap-1.5 mb-2">
             <Paperclip className="h-3 w-3 text-muted-foreground" />
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
               {isAr ? `${pendingFiles.length} ملفات مرفقة` : `${pendingFiles.length} file${pendingFiles.length > 1 ? "s" : ""} attached`}
             </span>
           </div>

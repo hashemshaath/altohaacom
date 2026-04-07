@@ -51,7 +51,7 @@ export const ProfilePortfolioGallery = memo(function ProfilePortfolioGallery({ u
             <ImageIcon className="h-3.5 w-3.5 text-chart-1" />
           </div>
           <h3 className="text-sm font-bold">{isAr ? "معرض الأعمال" : "Portfolio"}</h3>
-          <Badge variant="outline" className="text-[10px] h-5 rounded-full">{mediaFiles.length}</Badge>
+          <Badge variant="outline" className="text-[12px] h-5 rounded-full">{mediaFiles.length}</Badge>
         </div>
       </div>
 

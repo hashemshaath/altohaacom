@@ -280,8 +280,8 @@ export default function OrganizersAdmin() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-lg font-bold leading-tight">{s.value}</p>
-                    <p className="text-[10px] text-muted-foreground truncate">{s.label}</p>
-                    {s.sub && <p className="text-[9px] text-chart-2 font-medium">{s.sub}</p>}
+                    <p className="text-[12px] text-muted-foreground truncate">{s.label}</p>
+                    {s.sub && <p className="text-[12px] text-chart-2 font-medium">{s.sub}</p>}
                   </div>
                 </CardContent>
               </Card>
@@ -389,7 +389,7 @@ export default function OrganizersAdmin() {
                           <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
                         )}
                         <div className="absolute top-2 end-2 flex gap-1">
-                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[9px] h-5 capitalize shadow-sm">{org.status}</Badge>
+                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[12px] h-5 capitalize shadow-sm">{org.status}</Badge>
                         </div>
                         {/* Logo */}
                         <div className="absolute -bottom-5 start-4">
@@ -409,8 +409,8 @@ export default function OrganizersAdmin() {
                               {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
                               {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
                             </div>
-                            {org.name_ar && !isAr && <p className="text-[10px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</p>}
-                            {org.organizer_number && <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5 mt-1">{org.organizer_number}</Badge>}
+                            {org.name_ar && !isAr && <p className="text-[12px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</p>}
+                            {org.organizer_number && <Badge variant="outline" className="text-[12px] h-4 font-mono px-1.5 mt-1">{org.organizer_number}</Badge>}
                           </div>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -431,7 +431,7 @@ export default function OrganizersAdmin() {
 
                         {/* Location */}
                         {(org.city || org.country) && (
-                          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
                             <MapPin className="h-3 w-3 shrink-0" />
                             <span className="truncate">{isAr ? `${org.city_ar || org.city || ""}${org.country_ar ? `, ${org.country_ar}` : org.country ? `, ${org.country}` : ""}` : `${org.city || ""}${org.country ? `, ${org.country}` : ""}`}</span>
                           </div>
@@ -446,14 +446,14 @@ export default function OrganizersAdmin() {
                           ].map(s => (
                             <div key={s.l} className="rounded-xl bg-muted/40 p-2 text-center">
                               <p className="text-xs font-bold">{s.v}</p>
-                              <p className="text-[9px] text-muted-foreground">{s.l}</p>
+                              <p className="text-[12px] text-muted-foreground">{s.l}</p>
                             </div>
                           ))}
                         </div>
 
                         {/* Profile Completeness */}
                         <div className="space-y-1">
-                          <div className="flex items-center justify-between text-[10px]">
+                          <div className="flex items-center justify-between text-[12px]">
                             <span className="text-muted-foreground">{isAr ? "اكتمال الملف" : "Profile"}</span>
                             <span className={cn("font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-amber-600" : "text-destructive")}>{pct}%</span>
                           </div>
@@ -507,7 +507,7 @@ export default function OrganizersAdmin() {
                           )}
                           <div className="flex-1" />
                           {org.founded_year && (
-                            <span className="text-[9px] text-muted-foreground flex items-center gap-1">
+                            <span className="text-[12px] text-muted-foreground flex items-center gap-1">
                               <Clock className="h-3 w-3" />{isAr ? `تأسس ${org.founded_year}` : `Est. ${org.founded_year}`}
                             </span>
                           )}
@@ -567,8 +567,8 @@ export default function OrganizersAdmin() {
                                 {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
                               </div>
                               <div className="flex items-center gap-1.5">
-                                {org.organizer_number && <Badge variant="outline" className="text-[9px] h-4 font-mono px-1.5">{org.organizer_number}</Badge>}
-                                {org.name_ar && !isAr && <span className="text-[10px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</span>}
+                                {org.organizer_number && <Badge variant="outline" className="text-[12px] h-4 font-mono px-1.5">{org.organizer_number}</Badge>}
+                                {org.name_ar && !isAr && <span className="text-[12px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</span>}
                               </div>
                             </div>
                           </div>
@@ -587,7 +587,7 @@ export default function OrganizersAdmin() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[10px] capitalize">{org.status}</Badge>
+                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[12px] capitalize">{org.status}</Badge>
                         </TableCell>
                         <TableCell className="text-center text-sm font-medium">{org.total_exhibitions || 0}</TableCell>
                         <TableCell className="text-center text-sm text-muted-foreground">{(org.total_views || 0).toLocaleString()}</TableCell>
@@ -597,7 +597,7 @@ export default function OrganizersAdmin() {
                               <TooltipTrigger asChild>
                                 <div className="inline-flex items-center gap-1.5">
                                   <Progress value={pct} className="h-1.5 w-12" />
-                                  <span className={cn("text-[10px] font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-amber-600" : "text-muted-foreground")}>{pct}%</span>
+                                  <span className={cn("text-[12px] font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-amber-600" : "text-muted-foreground")}>{pct}%</span>
                                 </div>
                               </TooltipTrigger>
                               <TooltipContent><p className="text-xs">{isAr ? "اكتمال الملف الشخصي" : "Profile completeness"}</p></TooltipContent>

@@ -141,7 +141,7 @@ export const SectionPresets = memo(function SectionPresets({ onApply, isAr, isPe
                   <div className={cn("h-6 w-6 rounded-md flex items-center justify-center", preset.color)}>
                     <preset.icon className="h-3 w-3 text-primary" />
                   </div>
-                  <span className="text-[10px] font-semibold flex-1">{isAr ? preset.nameAr : preset.nameEn}</span>
+                  <span className="text-[12px] font-semibold flex-1">{isAr ? preset.nameAr : preset.nameEn}</span>
                 </div>
 
                 {/* Mini grid visualization */}
@@ -153,7 +153,7 @@ export const SectionPresets = memo(function SectionPresets({ onApply, isAr, isPe
                   </div>
                 </div>
 
-                <p className="text-[8px] text-muted-foreground leading-relaxed">
+                <p className="text-[12px] text-muted-foreground leading-relaxed">
                   {isAr ? preset.descAr : preset.descEn}
                 </p>
 

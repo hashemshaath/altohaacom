@@ -270,12 +270,12 @@ export default function CompanyTeam() {
           <TabsTrigger value="members" className="gap-1.5">
             <Users className="h-4 w-4" />
             {isAr ? "الأعضاء" : "Members"}
-            {contacts?.length ? <Badge variant="secondary" className="text-[10px] ms-1">{contacts.length}</Badge> : null}
+            {contacts?.length ? <Badge variant="secondary" className="text-[12px] ms-1">{contacts.length}</Badge> : null}
           </TabsTrigger>
           <TabsTrigger value="invitations" className="gap-1.5">
             <Mail className="h-4 w-4" />
             {isAr ? "الدعوات" : "Invitations"}
-            {pendingInvites.length > 0 && <Badge className="text-[10px] ms-1">{pendingInvites.length}</Badge>}
+            {pendingInvites.length > 0 && <Badge className="text-[12px] ms-1">{pendingInvites.length}</Badge>}
           </TabsTrigger>
         </TabsList>
 
@@ -311,7 +311,7 @@ export default function CompanyTeam() {
                           <div className="flex items-center gap-2">
                             <h3 className="font-semibold truncate">{contact.name}</h3>
                             {contact.is_primary && (
-                              <Badge className="shrink-0 bg-primary/10 text-primary border-primary/20 text-[10px] px-1.5">
+                              <Badge className="shrink-0 bg-primary/10 text-primary border-primary/20 text-[12px] px-1.5">
                                 {isAr ? "رئيسي" : "Primary"}
                               </Badge>
                             )}
@@ -320,12 +320,12 @@ export default function CompanyTeam() {
                             <p className="text-sm text-muted-foreground truncate">{contact.title}</p>
                           )}
                           <div className="mt-1.5 flex items-center gap-2">
-                            <Badge variant="outline" className={`text-[10px] gap-1 ${rc.color}`}>
+                            <Badge variant="outline" className={`text-[12px] gap-1 ${rc.color}`}>
                               <RoleIcon className="h-2.5 w-2.5" />
                               {isAr ? rc.labelAr : rc.labelEn}
                             </Badge>
                             {contact.department && (
-                              <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                              <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
                                 <Building className="h-2.5 w-2.5" />
                                 {contact.department}
                               </span>
@@ -415,15 +415,15 @@ export default function CompanyTeam() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{inv.email}</p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <Badge variant="outline" className={`text-[10px] gap-1 ${rc.color}`}>
+                          <Badge variant="outline" className={`text-[12px] gap-1 ${rc.color}`}>
                             <RoleIcon className="h-2.5 w-2.5" />
                             {isAr ? rc.labelAr : rc.labelEn}
                           </Badge>
                           {(inv as any).department && (
-                            <span className="text-[10px] text-muted-foreground">{(inv as any).department}</span>
+                            <span className="text-[12px] text-muted-foreground">{(inv as any).department}</span>
                           )}
                           {expired && (
-                            <Badge variant="destructive" className="text-[10px]">
+                            <Badge variant="destructive" className="text-[12px]">
                               {isAr ? "منتهية" : "Expired"}
                             </Badge>
                           )}
@@ -475,7 +475,7 @@ export default function CompanyTeam() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{inv.email}</p>
-                        <Badge variant="outline" className="text-[10px] mt-0.5">
+                        <Badge variant="outline" className="text-[12px] mt-0.5">
                           {isAccepted ? (isAr ? "مقبولة" : "Accepted") : isCancelled ? (isAr ? "ملغية" : "Cancelled") : inv.status}
                         </Badge>
                       </div>

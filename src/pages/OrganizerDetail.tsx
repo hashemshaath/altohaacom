@@ -384,7 +384,7 @@ export default function OrganizerDetail() {
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <span>
-                                <Badge variant="secondary" className="gap-1 text-[10px]">
+                                <Badge variant="secondary" className="gap-1 text-[12px]">
                                   <Check className="h-3 w-3 text-primary" />{isAr ? "موثق" : "Verified"}
                                 </Badge>
                               </span>
@@ -394,7 +394,7 @@ export default function OrganizerDetail() {
                         </TooltipProvider>
                       )}
                       {orgRecord?.organizer_number && (
-                        <Badge variant="outline" className="text-[10px] font-mono h-5">{orgRecord.organizer_number}</Badge>
+                        <Badge variant="outline" className="text-[12px] font-mono h-5">{orgRecord.organizer_number}</Badge>
                       )}
                     </div>
                     {/* Secondary language name */}
@@ -540,7 +540,7 @@ export default function OrganizerDetail() {
                     <s.icon className="h-5 w-5" />
                   </div>
                   <p className="text-xl font-bold"><AnimatedCounter value={s.value} /></p>
-                  <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                  <p className="text-[12px] text-muted-foreground">{s.label}</p>
                 </CardContent>
               </Card>
             ))}
@@ -554,7 +554,7 @@ export default function OrganizerDetail() {
                   <CardContent className="p-3 text-center">
                     <Users className="h-5 w-5 mx-auto text-primary mb-1" />
                     <p className="text-lg font-bold">{editionStats.visitors.toLocaleString()}</p>
-                    <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي الزوار" : "Total Visitors"}</p>
+                    <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي الزوار" : "Total Visitors"}</p>
                   </CardContent>
                 </Card>
               )}
@@ -563,7 +563,7 @@ export default function OrganizerDetail() {
                   <CardContent className="p-3 text-center">
                     <Target className="h-5 w-5 mx-auto text-primary mb-1" />
                     <p className="text-lg font-bold">{editionStats.exhibitors.toLocaleString()}</p>
-                    <p className="text-[10px] text-muted-foreground">{isAr ? "إجمالي العارضين" : "Total Exhibitors"}</p>
+                    <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي العارضين" : "Total Exhibitors"}</p>
                   </CardContent>
                 </Card>
               )}
@@ -572,7 +572,7 @@ export default function OrganizerDetail() {
                   <CardContent className="p-3 text-center">
                     <Sparkles className="h-5 w-5 mx-auto text-primary mb-1" />
                     <p className="text-lg font-bold">{editionStats.area.toLocaleString()}</p>
-                    <p className="text-[10px] text-muted-foreground">{isAr ? "م² مساحة المعرض" : "m² Exhibition Area"}</p>
+                    <p className="text-[12px] text-muted-foreground">{isAr ? "م² مساحة المعرض" : "m² Exhibition Area"}</p>
                   </CardContent>
                 </Card>
               )}
@@ -588,13 +588,13 @@ export default function OrganizerDetail() {
                     <CalendarDays className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-semibold text-primary uppercase tracking-wider">
+                    <p className="text-[12px] font-semibold text-primary uppercase tracking-wider">
                       {isAr ? "الفعالية القادمة" : "Next Upcoming Event"}
                     </p>
                     <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                       {isAr && nextEvent.title_ar ? nextEvent.title_ar : nextEvent.title}
                     </h3>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-[12px] text-muted-foreground">
                       {format(new Date(nextEvent.start_date), "dd MMM yyyy")}
                       {nextEvent.city && ` • ${nextEvent.city}`}
                       {" • "}
@@ -618,19 +618,19 @@ export default function OrganizerDetail() {
               <TabsTrigger value="exhibitions" className="gap-1.5">
                 <Landmark className="h-3.5 w-3.5" />
                 {isAr ? "المعارض" : "Events"}
-                <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{totalExhibitions}</Badge>
+                <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{totalExhibitions}</Badge>
               </TabsTrigger>
               {upcoming.length > 0 && (
                 <TabsTrigger value="upcoming" className="gap-1.5">
                   <CalendarDays className="h-3.5 w-3.5" />
                   {isAr ? "القادمة" : "Upcoming"}
-                  <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{upcoming.length}</Badge>
+                  <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{upcoming.length}</Badge>
                 </TabsTrigger>
               )}
               <TabsTrigger value="gallery" className="gap-1.5">
                 <ImageIcon className="h-3.5 w-3.5" />
                 {isAr ? "المعرض" : "Gallery"}
-                {uniqueGallery.length > 0 && <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{uniqueGallery.length}</Badge>}
+                {uniqueGallery.length > 0 && <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{uniqueGallery.length}</Badge>}
               </TabsTrigger>
               <TabsTrigger value="profile" className="gap-1.5">
                 <Building2 className="h-3.5 w-3.5" />
@@ -650,14 +650,14 @@ export default function OrganizerDetail() {
                 <TabsTrigger value="partners" className="gap-1.5">
                   <Award className="h-3.5 w-3.5" />
                   {isAr ? "الشركاء" : "Partners"}
-                  <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{allSponsors.length}</Badge>
+                  <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{allSponsors.length}</Badge>
                 </TabsTrigger>
               )}
               {articles.length > 0 && (
                 <TabsTrigger value="news" className="gap-1.5">
                   <Newspaper className="h-3.5 w-3.5" />
                   {isAr ? "الأخبار" : "News"}
-                  <Badge variant="secondary" className="ms-1 text-[9px] h-4 px-1.5">{articles.length}</Badge>
+                  <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{articles.length}</Badge>
                 </TabsTrigger>
               )}
             </TabsList>
@@ -668,21 +668,21 @@ export default function OrganizerDetail() {
             <TabsContent value="exhibitions" className="space-y-6 mt-4">
               <div className="flex items-center justify-between">
                 <div className="flex gap-2 text-xs">
-                  <Badge variant={upcoming.length ? "default" : "outline"} className="text-[10px]">
+                  <Badge variant={upcoming.length ? "default" : "outline"} className="text-[12px]">
                     {upcoming.length} {isAr ? "قادمة" : "Upcoming"}
                   </Badge>
-                  <Badge variant={active.length ? "default" : "outline"} className="text-[10px]">
+                  <Badge variant={active.length ? "default" : "outline"} className="text-[12px]">
                     {active.length} {isAr ? "جارية" : "Active"}
                   </Badge>
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-[12px]">
                     {past.length} {isAr ? "سابقة" : "Past"}
                   </Badge>
                 </div>
                 <div className="flex gap-1">
-                  <Button variant={viewMode === "grid" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-[10px]" onClick={() => setViewMode("grid")}>
+                  <Button variant={viewMode === "grid" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-[12px]" onClick={() => setViewMode("grid")}>
                     {isAr ? "شبكة" : "Grid"}
                   </Button>
-                  <Button variant={viewMode === "timeline" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-[10px]" onClick={() => setViewMode("timeline")}>
+                  <Button variant={viewMode === "timeline" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-[12px]" onClick={() => setViewMode("timeline")}>
                     {isAr ? "جدول زمني" : "Timeline"}
                   </Button>
                 </div>
@@ -713,13 +713,13 @@ export default function OrganizerDetail() {
                                     <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                                       {isAr && ex.title_ar ? ex.title_ar : ex.title}
                                     </h4>
-                                    <p className="text-[11px] text-muted-foreground">
+                                    <p className="text-[12px] text-muted-foreground">
                                       {format(new Date(ex.start_date), "dd MMM")}
                                       {ex.end_date && ` – ${format(new Date(ex.end_date), "dd MMM")}`}
                                       {ex.city && ` • ${ex.city}`}
                                     </p>
                                     <div className="flex gap-1 mt-1">
-                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium ${derived.color}`}>
+                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium ${derived.color}`}>
                                         <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />
                                         {isAr ? derived.labelAr : derived.label}
                                       </span>
@@ -740,7 +740,7 @@ export default function OrganizerDetail() {
                   <div key={year}>
                     <div className="flex items-center gap-2 mb-3">
                       <h3 className="text-lg font-bold">{year}</h3>
-                      <Badge variant="outline" className="text-[10px]">{byYear[year].length} {isAr ? "فعالية" : "events"}</Badge>
+                      <Badge variant="outline" className="text-[12px]">{byYear[year].length} {isAr ? "فعالية" : "events"}</Badge>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {byYear[year].map((ex: ExhibitionRow) => {
@@ -754,7 +754,7 @@ export default function OrganizerDetail() {
                                   <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" decoding="async" />
                                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                                   <div className="absolute bottom-2 start-2 end-2 flex items-center justify-between">
-                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium backdrop-blur-sm ${derived.color}`}>
+                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium backdrop-blur-sm ${derived.color}`}>
                                       <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />
                                       {isAr ? derived.labelAr : derived.label}
                                     </span>
@@ -765,12 +765,12 @@ export default function OrganizerDetail() {
                                 <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">
                                   {isAr && ex.title_ar ? ex.title_ar : ex.title}
                                 </h4>
-                                <p className="text-[11px] text-muted-foreground">
+                                <p className="text-[12px] text-muted-foreground">
                                   {format(new Date(ex.start_date), "dd MMM yyyy")}
                                   {ex.end_date && ` → ${format(new Date(ex.end_date), "dd MMM yyyy")}`}
                                 </p>
 
-                                <div className="flex flex-wrap gap-2 text-[10px] text-muted-foreground">
+                                <div className="flex flex-wrap gap-2 text-[12px] text-muted-foreground">
                                   {ex.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{ex.city}</span>}
                                   {(ex.view_count || 0) > 0 && <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ex.view_count}</span>}
                                   {ex.max_attendees && <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{ex.max_attendees}</span>}
@@ -780,29 +780,29 @@ export default function OrganizerDetail() {
                                   <div className="grid grid-cols-3 gap-1 pt-1 border-t border-border/40">
                                     {edStats.visitors && (
                                       <div className="text-center">
-                                        <p className="text-[10px] font-semibold">{Number(edStats.visitors).toLocaleString()}</p>
-                                        <p className="text-[8px] text-muted-foreground">{isAr ? "زائر" : "Visitors"}</p>
+                                        <p className="text-[12px] font-semibold">{Number(edStats.visitors).toLocaleString()}</p>
+                                        <p className="text-[12px] text-muted-foreground">{isAr ? "زائر" : "Visitors"}</p>
                                       </div>
                                     )}
                                     {edStats.exhibitors && (
                                       <div className="text-center">
-                                        <p className="text-[10px] font-semibold">{Number(edStats.exhibitors).toLocaleString()}</p>
-                                        <p className="text-[8px] text-muted-foreground">{isAr ? "عارض" : "Exhibitors"}</p>
+                                        <p className="text-[12px] font-semibold">{Number(edStats.exhibitors).toLocaleString()}</p>
+                                        <p className="text-[12px] text-muted-foreground">{isAr ? "عارض" : "Exhibitors"}</p>
                                       </div>
                                     )}
                                     {edStats.area && (
                                       <div className="text-center">
-                                        <p className="text-[10px] font-semibold">{Number(edStats.area).toLocaleString()}</p>
-                                        <p className="text-[8px] text-muted-foreground">m²</p>
+                                        <p className="text-[12px] font-semibold">{Number(edStats.area).toLocaleString()}</p>
+                                        <p className="text-[12px] text-muted-foreground">m²</p>
                                       </div>
                                     )}
                                   </div>
                                 )}
 
                                 <div className="flex flex-wrap gap-1 pt-1">
-                                  <Badge variant="secondary" className="text-[9px] capitalize">{ex.type.replace(/_/g, " ")}</Badge>
-                                  {ex.is_free && <Badge variant="outline" className="text-[9px]">{isAr ? "مجاني" : "Free"}</Badge>}
-                                  {ex.is_virtual && <Badge variant="outline" className="text-[9px]">{isAr ? "افتراضي" : "Virtual"}</Badge>}
+                                  <Badge variant="secondary" className="text-[12px] capitalize">{ex.type.replace(/_/g, " ")}</Badge>
+                                  {ex.is_free && <Badge variant="outline" className="text-[12px]">{isAr ? "مجاني" : "Free"}</Badge>}
+                                  {ex.is_virtual && <Badge variant="outline" className="text-[12px]">{isAr ? "افتراضي" : "Virtual"}</Badge>}
                                 </div>
                               </CardContent>
                             </Card>
@@ -835,7 +835,7 @@ export default function OrganizerDetail() {
                               <div className="flex flex-col items-center justify-center bg-primary/5 px-5 py-4 min-w-[80px] border-e border-border/20">
                                 <span className="text-2xl font-bold text-primary">{format(new Date(ex.start_date), "dd")}</span>
                                 <span className="text-xs font-medium text-muted-foreground uppercase">{format(new Date(ex.start_date), "MMM")}</span>
-                                <span className="text-[10px] text-muted-foreground">{format(new Date(ex.start_date), "yyyy")}</span>
+                                <span className="text-[12px] text-muted-foreground">{format(new Date(ex.start_date), "yyyy")}</span>
                               </div>
                               <div className="flex-1 p-4 min-w-0">
                                 <div className="flex items-start justify-between gap-3">
@@ -843,23 +843,23 @@ export default function OrganizerDetail() {
                                     <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">
                                       {isAr && ex.title_ar ? ex.title_ar : ex.title}
                                     </h4>
-                                    <div className="flex items-center gap-3 mt-1 text-[11px] text-muted-foreground">
+                                    <div className="flex items-center gap-3 mt-1 text-[12px] text-muted-foreground">
                                       {ex.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{ex.city}</span>}
                                       {ex.venue && <span className="flex items-center gap-1"><Building2 className="h-3 w-3" />{isAr && ex.venue_ar ? ex.venue_ar : ex.venue}</span>}
                                     </div>
                                     <div className="flex items-center gap-2 mt-2">
-                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-medium ${derived.color}`}>
+                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium ${derived.color}`}>
                                         <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />
                                         {isAr ? derived.labelAr : derived.label}
                                       </span>
-                                      <Badge variant="outline" className="text-[9px]">
+                                      <Badge variant="outline" className="text-[12px]">
                                         <Clock className="h-2.5 w-2.5 me-0.5" />
                                         {daysUntil === 0 ? (isAr ? "اليوم" : "Today") :
                                          daysUntil === 1 ? (isAr ? "غداً" : "Tomorrow") :
                                          `${daysUntil} ${isAr ? "يوم" : "days"}`}
                                       </Badge>
                                       {ex.registration_url && (
-                                        <Badge variant="secondary" className="text-[9px] gap-0.5 text-primary">
+                                        <Badge variant="secondary" className="text-[12px] gap-0.5 text-primary">
                                           <Ticket className="h-2.5 w-2.5" />
                                           {isAr ? "التسجيل مفتوح" : "Register"}
                                         </Badge>
@@ -886,7 +886,7 @@ export default function OrganizerDetail() {
                   <h3 className="text-sm font-semibold flex items-center gap-2">
                     <ImageIcon className="h-4 w-4 text-primary" />
                     {isAr ? "معرض الصور" : "Photo Gallery"}
-                    <Badge variant="outline" className="text-[9px]">{uniqueGallery.length} {isAr ? "صورة" : "photos"}</Badge>
+                    <Badge variant="outline" className="text-[12px]">{uniqueGallery.length} {isAr ? "صورة" : "photos"}</Badge>
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     {uniqueGallery.map((url: string, i: number) => (
@@ -963,7 +963,7 @@ export default function OrganizerDetail() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <p className="text-[10px] font-medium text-muted-foreground mb-1.5">{isAr ? "الدول" : "Countries"}</p>
+                      <p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "الدول" : "Countries"}</p>
                       <div className="flex flex-wrap gap-1.5">
                         {countries.map(c => <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>)}
                       </div>
@@ -972,7 +972,7 @@ export default function OrganizerDetail() {
                       <>
                         <Separator />
                         <div>
-                          <p className="text-[10px] font-medium text-muted-foreground mb-1.5">{isAr ? "المدن" : "Cities"}</p>
+                          <p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "المدن" : "Cities"}</p>
                           <div className="flex flex-wrap gap-1.5">
                             {cities.map(c => <Badge key={c} variant="outline" className="text-xs">{c}</Badge>)}
                           </div>
@@ -983,7 +983,7 @@ export default function OrganizerDetail() {
                       <>
                         <Separator />
                         <div>
-                          <p className="text-[10px] font-medium text-muted-foreground mb-1.5">{isAr ? "الأماكن" : "Venues"}</p>
+                          <p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "الأماكن" : "Venues"}</p>
                           <div className="space-y-1.5">
                             {venues.map(v => (
                               <div key={v} className="flex items-center gap-2 text-sm">
@@ -1014,7 +1014,7 @@ export default function OrganizerDetail() {
                           <div key={t}>
                             <div className="flex items-center justify-between text-sm mb-1">
                               <span className="capitalize text-xs">{t.replace(/_/g, " ")}</span>
-                              <span className="text-[10px] text-muted-foreground">{count} ({pct}%)</span>
+                              <span className="text-[12px] text-muted-foreground">{count} ({pct}%)</span>
                             </div>
                             <Progress value={pct} className="h-1.5" />
                           </div>
@@ -1024,13 +1024,13 @@ export default function OrganizerDetail() {
                     <Separator />
                     <div className="flex flex-wrap gap-1.5">
                       {services.competitions && (
-                        <Badge variant="secondary" className="text-[10px] gap-1"><Swords className="h-3 w-3" />{isAr ? "مسابقات" : "Competitions"}</Badge>
+                        <Badge variant="secondary" className="text-[12px] gap-1"><Swords className="h-3 w-3" />{isAr ? "مسابقات" : "Competitions"}</Badge>
                       )}
                       {services.training && (
-                        <Badge variant="secondary" className="text-[10px] gap-1"><GraduationCap className="h-3 w-3" />{isAr ? "تدريب" : "Training"}</Badge>
+                        <Badge variant="secondary" className="text-[12px] gap-1"><GraduationCap className="h-3 w-3" />{isAr ? "تدريب" : "Training"}</Badge>
                       )}
                       {services.seminars && (
-                        <Badge variant="secondary" className="text-[10px] gap-1"><Mic2 className="h-3 w-3" />{isAr ? "ندوات" : "Seminars"}</Badge>
+                        <Badge variant="secondary" className="text-[12px] gap-1"><Mic2 className="h-3 w-3" />{isAr ? "ندوات" : "Seminars"}</Badge>
                       )}
                     </div>
                   </CardContent>
@@ -1047,9 +1047,9 @@ export default function OrganizerDetail() {
                     <CardContent className="space-y-3">
                       {allSectors.size > 0 && (
                         <div>
-                          <p className="text-[10px] font-medium text-muted-foreground mb-1.5">{isAr ? "القطاعات" : "Sectors"}</p>
+                          <p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "القطاعات" : "Sectors"}</p>
                           <div className="flex flex-wrap gap-1.5">
-                            {[...allSectors].map(s => <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>)}
+                            {[...allSectors].map(s => <Badge key={s} variant="secondary" className="text-[12px]">{s}</Badge>)}
                           </div>
                         </div>
                       )}
@@ -1057,9 +1057,9 @@ export default function OrganizerDetail() {
                         <>
                           <Separator />
                           <div>
-                            <p className="text-[10px] font-medium text-muted-foreground mb-1.5">{isAr ? "التصنيفات" : "Categories"}</p>
+                            <p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "التصنيفات" : "Categories"}</p>
                             <div className="flex flex-wrap gap-1.5">
-                              {[...allCategories].map(c => <Badge key={c} variant="outline" className="text-[10px]">{c}</Badge>)}
+                              {[...allCategories].map(c => <Badge key={c} variant="outline" className="text-[12px]">{c}</Badge>)}
                             </div>
                           </div>
                         </>
@@ -1068,10 +1068,10 @@ export default function OrganizerDetail() {
                         <>
                           <Separator />
                           <div>
-                            <p className="text-[10px] font-medium text-muted-foreground mb-1.5">{isAr ? "العلامات" : "Tags"}</p>
+                            <p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "العلامات" : "Tags"}</p>
                             <div className="flex flex-wrap gap-1.5">
-                              {[...allTags].slice(0, 15).map(t => <Badge key={t} variant="outline" className="text-[9px]">{t}</Badge>)}
-                              {allTags.size > 15 && <Badge variant="outline" className="text-[9px]">+{allTags.size - 15}</Badge>}
+                              {[...allTags].slice(0, 15).map(t => <Badge key={t} variant="outline" className="text-[12px]">{t}</Badge>)}
+                              {allTags.size > 15 && <Badge variant="outline" className="text-[12px]">+{allTags.size - 15}</Badge>}
                             </div>
                           </div>
                         </>
@@ -1121,9 +1121,9 @@ export default function OrganizerDetail() {
                             </Avatar>
                             <div className="min-w-0 flex-1">
                               <p className="font-semibold text-sm">{c.name}</p>
-                              {c.name_ar && <p className="text-[11px] text-muted-foreground" dir="rtl">{c.name_ar}</p>}
-                              {c.title && <p className="text-[11px] text-primary font-medium mt-0.5">{c.title}</p>}
-                              {c.department && <p className="text-[10px] text-muted-foreground">{c.department}</p>}
+                              {c.name_ar && <p className="text-[12px] text-muted-foreground" dir="rtl">{c.name_ar}</p>}
+                              {c.title && <p className="text-[12px] text-primary font-medium mt-0.5">{c.title}</p>}
+                              {c.department && <p className="text-[12px] text-muted-foreground">{c.department}</p>}
                             </div>
                           </div>
                           {(c.email || c.phone) && (
@@ -1155,7 +1155,7 @@ export default function OrganizerDetail() {
                       </div>
                       <div className="flex-1">
                         <p className="font-semibold text-sm">{isAr ? "تواصل مع المنظم" : "Contact this Organizer"}</p>
-                        <p className="text-[11px] text-muted-foreground mt-0.5">
+                        <p className="text-[12px] text-muted-foreground mt-0.5">
                           {isAr ? "للاستفسارات والشراكات والمشاركة في المعارض" : "For inquiries, partnerships, and exhibition participation"}
                         </p>
                       </div>
@@ -1189,7 +1189,7 @@ export default function OrganizerDetail() {
                         )}
                         <div className="min-w-0">
                           <p className="text-sm font-medium truncate">{sponsor.name}</p>
-                          {sponsor.tier && <Badge variant="outline" className="text-[9px] mt-0.5 capitalize">{sponsor.tier}</Badge>}
+                          {sponsor.tier && <Badge variant="outline" className="text-[12px] mt-0.5 capitalize">{sponsor.tier}</Badge>}
                         </div>
                       </CardContent>
                     </Card>
@@ -1213,14 +1213,14 @@ export default function OrganizerDetail() {
                             {isAr && article.title_ar ? article.title_ar : article.title}
                           </h4>
                           {(article.excerpt || article.excerpt_ar) && (
-                            <p className="text-[11px] text-muted-foreground mt-1.5 line-clamp-2">
+                            <p className="text-[12px] text-muted-foreground mt-1.5 line-clamp-2">
                               {isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt}
                             </p>
                           )}
                           <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="outline" className="text-[9px] capitalize">{article.type}</Badge>
+                            <Badge variant="outline" className="text-[12px] capitalize">{article.type}</Badge>
                             {article.published_at && (
-                              <span className="text-[10px] text-muted-foreground">
+                              <span className="text-[12px] text-muted-foreground">
                                 {format(new Date(article.published_at), "dd MMM yyyy")}
                               </span>
                             )}

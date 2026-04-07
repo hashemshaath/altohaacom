@@ -215,21 +215,21 @@ export const NotificationHub = memo(function NotificationHub({ competitionId, la
           <CardContent className="pt-4 pb-3 text-center">
             <Users className="mx-auto h-5 w-5 text-primary mb-1" />
             <p className="text-lg font-bold">{participantCount}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "مشاركون" : "Participants"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "مشاركون" : "Participants"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4 pb-3 text-center">
             <MessageSquare className="mx-auto h-5 w-5 text-chart-4 mb-1" />
             <p className="text-lg font-bold">{judgeCount}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "حكام" : "Judges"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "حكام" : "Judges"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4 pb-3 text-center">
             <Bell className="mx-auto h-5 w-5 text-chart-3 mb-1" />
             <p className="text-lg font-bold">{sentNotifications.length}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "إشعارات" : "Sent"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "إشعارات" : "Sent"}</p>
           </CardContent>
         </Card>
       </div>
@@ -265,7 +265,7 @@ export const NotificationHub = memo(function NotificationHub({ competitionId, la
                     <p className="text-xs text-muted-foreground line-clamp-1">
                       {isAr && notif.body_ar ? notif.body_ar : notif.body}
                     </p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
+                    <p className="text-[12px] text-muted-foreground mt-1">
                       {notif.created_at ? new Date(notif.created_at).toLocaleDateString() : ""}
                     </p>
                   </div>

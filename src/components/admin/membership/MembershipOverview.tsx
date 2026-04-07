@@ -175,7 +175,7 @@ const MembershipOverview = memo(function MembershipOverview() {
                 <p className="text-xs text-muted-foreground">{c.label}</p>
               </div>
               {c.warn && c.value > 0 && (
-                <Badge variant="destructive" className="ms-auto text-[10px]">{isAr ? "إجراء" : "Action"}</Badge>
+                <Badge variant="destructive" className="ms-auto text-[12px]">{isAr ? "إجراء" : "Action"}</Badge>
               )}
             </CardContent>
           </Card>
@@ -200,7 +200,7 @@ const MembershipOverview = memo(function MembershipOverview() {
             ].map(f => (
               <div key={f.label} className="rounded-xl border p-3 text-center">
                 <AnimatedCounter value={f.value} className={`text-lg font-bold ${f.color}`} />
-                <p className="text-[11px] text-muted-foreground mt-0.5">{f.label}</p>
+                <p className="text-[12px] text-muted-foreground mt-0.5">{f.label}</p>
               </div>
             ))}
           </CardContent>
@@ -287,11 +287,11 @@ const MembershipOverview = memo(function MembershipOverview() {
             <div className="grid grid-cols-2 gap-2 pt-1">
               <div className="rounded-xl border p-2 text-center">
                 <AnimatedCounter value={stats?.recentUpgrades || 0} className="text-base text-primary font-bold" />
-                <p className="text-[10px] text-muted-foreground">{isAr ? "ترقيات" : "Upgrades"}</p>
+                <p className="text-[12px] text-muted-foreground">{isAr ? "ترقيات" : "Upgrades"}</p>
               </div>
               <div className="rounded-xl border p-2 text-center">
                 <AnimatedCounter value={stats?.recentDowngrades || 0} className="text-base text-destructive font-bold" />
-                <p className="text-[10px] text-muted-foreground">{isAr ? "تخفيضات" : "Downgrades"}</p>
+                <p className="text-[12px] text-muted-foreground">{isAr ? "تخفيضات" : "Downgrades"}</p>
               </div>
             </div>
           </CardContent>

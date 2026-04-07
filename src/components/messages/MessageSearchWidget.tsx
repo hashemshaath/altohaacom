@@ -113,14 +113,14 @@ export const MessageSearchWidget = memo(function MessageSearchWidget() {
                           <span className="text-xs font-medium truncate">
                             {profile?.name || (isAr ? "مستخدم" : "User")}
                           </span>
-                          <Badge variant="secondary" className="text-[8px] px-1 h-3.5">
+                          <Badge variant="secondary" className="text-[12px] px-1 h-3.5">
                             {isSent ? (isAr ? "مرسل" : "Sent") : (isAr ? "مستلم" : "Received")}
                           </Badge>
                         </div>
-                        <p className="text-[10px] text-muted-foreground line-clamp-1 mt-0.5">
+                        <p className="text-[12px] text-muted-foreground line-clamp-1 mt-0.5">
                           {msg.content}
                         </p>
-                        <span className="text-[9px] text-muted-foreground">
+                        <span className="text-[12px] text-muted-foreground">
                           {formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
                         </span>
                       </div>

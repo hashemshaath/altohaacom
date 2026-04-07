@@ -97,25 +97,25 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
             <CardContent className="p-3">
               <div className="flex items-center gap-2 mb-2">
                 <c.icon className={`h-4 w-4 ${c.color} transition-transform group-hover/card:scale-110`} />
-                <span className="text-[10px] text-muted-foreground truncate">{c.label}</span>
+                <span className="text-[12px] text-muted-foreground truncate">{c.label}</span>
               </div>
               <p className="text-base font-bold truncate"><AnimatedCounter value={c.value} />{c.suffix}</p>
-              <p className="text-[10px] text-muted-foreground">{c.sub}</p>
+              <p className="text-[12px] text-muted-foreground">{c.sub}</p>
             </CardContent>
           </Card>
         ))}
       </div>
       {/* Weekly net flow indicator */}
       <div className="flex items-center gap-2 rounded-xl border border-border/50 bg-muted/30 px-3 py-2">
-        <Badge variant="outline" className={`text-[10px] ${netFlowPositive ? "border-chart-2/40 text-chart-2" : "border-chart-4/40 text-chart-4"}`}>
+        <Badge variant="outline" className={`text-[12px] ${netFlowPositive ? "border-chart-2/40 text-chart-2" : "border-chart-4/40 text-chart-4"}`}>
           {netFlowPositive ? <ArrowUpRight className="me-0.5 h-3 w-3" /> : <ArrowDownRight className="me-0.5 h-3 w-3" />}
           {netFlowPositive ? "+" : ""}{Math.round(netFlow)} SAR
         </Badge>
-        <span className="text-[10px] text-muted-foreground">
+        <span className="text-[12px] text-muted-foreground">
           {isAr ? "صافي التدفق الأسبوعي" : "Weekly net flow"}
         </span>
         {walletStats && walletStats.totalWallets > 0 && (
-          <span className="text-[10px] text-muted-foreground ms-auto">
+          <span className="text-[12px] text-muted-foreground ms-auto">
             {Math.round((walletStats.activeWallets / walletStats.totalWallets) * 100)}% {isAr ? "نشاط" : "active"}
           </span>
         )}

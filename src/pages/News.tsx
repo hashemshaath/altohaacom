@@ -307,7 +307,7 @@ export default function News() {
               <div className="space-y-3 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 ring-1 ring-primary/20">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
+                  <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-primary">
                     {isAr ? "مركز الأخبار" : "News Center"}
                   </span>
                 </div>
@@ -332,7 +332,7 @@ export default function News() {
                       <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
                     </div>
                     <span className="text-base font-extrabold leading-none">{stat.value}</span>
-                    <span className="text-[9px] text-muted-foreground mt-0.5 font-medium">{stat.label}</span>
+                    <span className="text-[12px] text-muted-foreground mt-0.5 font-medium">{stat.label}</span>
                   </div>
                 ))}
               </div>
@@ -344,7 +344,7 @@ export default function News() {
                 { icon: Building2, en: "Companies", ar: "الشركات" },
                 { icon: Award, en: "Associations", ar: "الجمعيات" },
               ].map((topic) => (
-                <Badge key={topic.en} variant="outline" className="gap-1.5 px-2.5 py-1 text-[10px] rounded-lg border-border/30 bg-card/50 backdrop-blur-sm cursor-default hover:bg-primary/5 transition-colors">
+                <Badge key={topic.en} variant="outline" className="gap-1.5 px-2.5 py-1 text-[12px] rounded-lg border-border/30 bg-card/50 backdrop-blur-sm cursor-default hover:bg-primary/5 transition-colors">
                   <topic.icon className="h-2.5 w-2.5 text-primary/60" />
                   {isAr ? topic.ar : topic.en}
                 </Badge>
@@ -407,7 +407,7 @@ export default function News() {
                   <SlidersHorizontal className="h-3.5 w-3.5" />
                   {isAr ? "فلاتر" : "Filters"}
                   {activeFilterCount > 0 && (
-                    <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold">
+                    <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[12px] font-bold">
                       {activeFilterCount}
                     </span>
                   )}
@@ -493,7 +493,7 @@ export default function News() {
                   >
                     {isAr ? tab.ar : tab.en}
                     {typeCounts[tab.value] != null && (
-                      <span className="text-[9px] opacity-60 tabular-nums">({typeCounts[tab.value]})</span>
+                      <span className="text-[12px] opacity-60 tabular-nums">({typeCounts[tab.value]})</span>
                     )}
                   </TabsTrigger>
                 ))}
@@ -641,7 +641,7 @@ export default function News() {
                                   key={cat.id}
                                   variant={selectedCategory === cat.id ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-lg text-[10px] transition-colors",
+                                    "cursor-pointer rounded-lg text-[12px] transition-colors",
                                     selectedCategory === cat.id
                                       ? "bg-primary text-primary-foreground"
                                       : "border-border/40 hover:bg-primary/5"
@@ -670,7 +670,7 @@ export default function News() {
                                   key={tag.id}
                                   variant={selectedTags.includes(tag.id) ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-lg text-[10px] transition-colors",
+                                    "cursor-pointer rounded-lg text-[12px] transition-colors",
                                     selectedTags.includes(tag.id)
                                       ? "bg-primary text-primary-foreground"
                                       : "border-border/40 hover:bg-primary/5"

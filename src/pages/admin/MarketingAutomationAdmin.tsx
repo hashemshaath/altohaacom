@@ -255,12 +255,12 @@ export default function MarketingAutomationAdmin() {
                         {isAr ? campaign.descAr : campaign.descEn}
                       </p>
                       {lastRun && (
-                        <div className="flex items-center justify-between text-[10px] text-muted-foreground border-t pt-2 mt-2">
+                        <div className="flex items-center justify-between text-[12px] text-muted-foreground border-t pt-2 mt-2">
                           <span className="flex items-center gap-1">
                             <Clock className="h-3 w-3" />
                             {formatDistanceToNow(new Date(lastRun.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
                           </span>
-                          <Badge variant={lastRun.status === "completed" ? "default" : "destructive"} className="text-[10px]">
+                          <Badge variant={lastRun.status === "completed" ? "default" : "destructive"} className="text-[12px]">
                             {lastRun.status === "completed" ? (isAr ? "ناجح" : "Success") : (isAr ? "فشل" : "Failed")}
                           </Badge>
                         </div>
@@ -284,16 +284,16 @@ export default function MarketingAutomationAdmin() {
                     <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
                     <div>
                       <p className="text-xs font-medium">{isAr ? "جميع الحملات" : "All Campaigns"}</p>
-                      <p className="text-[10px] text-muted-foreground">{isAr ? "يومياً الساعة 8 صباحاً UTC" : "Daily at 8:00 AM UTC"}</p>
+                      <p className="text-[12px] text-muted-foreground">{isAr ? "يومياً الساعة 8 صباحاً UTC" : "Daily at 8:00 AM UTC"}</p>
                     </div>
-                    <Badge variant="default" className="text-[10px]">{isAr ? "نشط" : "Active"}</Badge>
+                    <Badge variant="default" className="text-[12px]">{isAr ? "نشط" : "Active"}</Badge>
                   </div>
                   <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
                     <div>
                       <p className="text-xs font-medium">{isAr ? "سلال مهجورة" : "Cart Abandonment"}</p>
-                      <p className="text-[10px] text-muted-foreground">{isAr ? "كل ساعتين" : "Every 2 hours"}</p>
+                      <p className="text-[12px] text-muted-foreground">{isAr ? "كل ساعتين" : "Every 2 hours"}</p>
                     </div>
-                    <Badge variant="default" className="text-[10px]">{isAr ? "نشط" : "Active"}</Badge>
+                    <Badge variant="default" className="text-[12px]">{isAr ? "نشط" : "Active"}</Badge>
                   </div>
                 </div>
               </CardContent>
@@ -331,8 +331,8 @@ export default function MarketingAutomationAdmin() {
                             <p className="text-xs font-medium">{isAr ? t.name_ar || t.name : t.name}</p>
                           </div>
                           <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="secondary" className="text-[10px]">{t.trigger_event}</Badge>
-                            <span className="text-[10px] text-muted-foreground">
+                            <Badge variant="secondary" className="text-[12px]">{t.trigger_event}</Badge>
+                            <span className="text-[12px] text-muted-foreground">
                               {t.channels?.join(", ")} · <AnimatedCounter value={t.delay_minutes || 0} className="inline" format={false} /> {isAr ? "دقيقة" : "min"}
                             </span>
                           </div>
@@ -379,25 +379,25 @@ export default function MarketingAutomationAdmin() {
                               <Clock className="h-3.5 w-3.5 text-chart-4 animate-pulse" />
                             )}
                             <p className="text-xs font-medium capitalize">{run.action}</p>
-                            <Badge variant="secondary" className="text-[10px]">{run.triggered_by}</Badge>
+                            <Badge variant="secondary" className="text-[12px]">{run.triggered_by}</Badge>
                           </div>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="text-[10px] text-muted-foreground">
+                            <span className="text-[12px] text-muted-foreground">
                               {formatDistanceToNow(new Date(run.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
                             </span>
                             {run.results && (
-                              <span className="text-[10px] text-muted-foreground">
+                              <span className="text-[12px] text-muted-foreground">
                                 · {Object.entries(run.results as Record<string, number>).map(([k, v]) => `${k}: ${v}`).join(", ")}
                               </span>
                             )}
                             {run.error_message && (
-                              <span className="text-[10px] text-destructive truncate max-w-[200px]">{run.error_message}</span>
+                              <span className="text-[12px] text-destructive truncate max-w-[200px]">{run.error_message}</span>
                             )}
                           </div>
                         </div>
                         <Badge
                           variant={run.status === "completed" ? "default" : run.status === "failed" ? "destructive" : "secondary"}
-                          className="text-[10px]"
+                          className="text-[12px]"
                         >
                           {run.status === "completed" ? (isAr ? "مكتمل" : "Done") : run.status === "failed" ? (isAr ? "فشل" : "Failed") : (isAr ? "يعمل" : "Running")}
                         </Badge>
@@ -477,9 +477,9 @@ function WorkflowBuilder({ isAr }: { isAr: boolean }) {
                         onChange={(e) => updateStepLabel(step.id, e.target.value)}
                         className="h-7 text-xs border-0 bg-transparent p-0 focus-visible:ring-0"
                       />
-                      <p className="text-[10px] text-muted-foreground capitalize">{step.type}{step.delay ? ` · ${step.delay}` : ""}</p>
+                      <p className="text-[12px] text-muted-foreground capitalize">{step.type}{step.delay ? ` · ${step.delay}` : ""}</p>
                     </div>
-                    <Badge variant="outline" className="text-[9px] shrink-0">
+                    <Badge variant="outline" className="text-[12px] shrink-0">
                       {isAr ? `خطوة ${index + 1}` : `Step ${index + 1}`}
                     </Badge>
                     <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => removeStep(step.id)}>
@@ -524,7 +524,7 @@ function WorkflowBuilder({ isAr }: { isAr: boolean }) {
             ].map(test => (
               <div key={test.variant} className={`rounded-xl border p-3 ${test.rate > 28 ? "border-chart-5/50 bg-chart-5/5" : ""}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant={test.rate > 28 ? "default" : "secondary"} className="text-[10px]">
+                  <Badge variant={test.rate > 28 ? "default" : "secondary"} className="text-[12px]">
                     {isAr ? "متغير" : "Variant"} {test.variant}
                     {test.rate > 28 && <span className="ms-1">🏆</span>}
                   </Badge>
@@ -534,7 +534,7 @@ function WorkflowBuilder({ isAr }: { isAr: boolean }) {
                 <div className="mt-2 h-2 rounded-full bg-muted overflow-hidden">
                   <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${test.rate * 3}%` }} />
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-1">{isAr ? "معدل الفتح" : "Open Rate"}</p>
+                <p className="text-[12px] text-muted-foreground mt-1">{isAr ? "معدل الفتح" : "Open Rate"}</p>
               </div>
             ))}
           </div>
@@ -562,7 +562,7 @@ function WorkflowBuilder({ isAr }: { isAr: boolean }) {
                       <campaign.icon className="h-3.5 w-3.5 text-primary" />
                       <span className="text-xs font-medium">{isAr ? campaign.labelAr : campaign.labelEn}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-[10px] text-muted-foreground">
+                    <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                       <span>{isAr ? "أرسلت" : "Sent"}: {metrics.sent}</span>
                       <span>{isAr ? "فتح" : "Open"}: {openRate}%</span>
                       <span>{isAr ? "نقر" : "Click"}: {clickRate}%</span>

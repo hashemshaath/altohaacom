@@ -77,10 +77,10 @@ export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }
                 </div>
                 <div>
                   <p className="text-sm font-bold">{isAr ? "إيصال العضوية" : "Membership Receipt"}</p>
-                  <p className="text-[10px] text-muted-foreground">#{receiptData.receiptNumber}</p>
+                  <p className="text-[12px] text-muted-foreground">#{receiptData.receiptNumber}</p>
                 </div>
               </div>
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[12px]">
                 {isAr ? "مدفوع" : "PAID"}
               </Badge>
             </div>
@@ -90,14 +90,14 @@ export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }
             {/* Member Info */}
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">
+                <p className="text-[12px] text-muted-foreground uppercase tracking-wider mb-0.5">
                   {isAr ? "العضو" : "Member"}
                 </p>
                 <p className="font-medium text-sm">{receiptData.userName}</p>
                 <p className="text-xs text-muted-foreground">{receiptData.userEmail}</p>
               </div>
               <div className="text-end">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-0.5">
+                <p className="text-[12px] text-muted-foreground uppercase tracking-wider mb-0.5">
                   {isAr ? "التاريخ" : "Date"}
                 </p>
                 <p className="font-medium text-sm">{format(receiptData.transactionDate, "MMM d, yyyy")}</p>
@@ -117,7 +117,7 @@ export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }
                     <p className="text-sm font-semibold">
                       {TIER_LABELS[receiptData.tier]?.[isAr ? "ar" : "en"]} {isAr ? "العضوية" : "Membership"}
                     </p>
-                    <p className="text-[10px] text-muted-foreground">
+                    <p className="text-[12px] text-muted-foreground">
                       {receiptData.billingCycle === "yearly"
                         ? (isAr ? "اشتراك سنوي" : "Yearly subscription")
                         : (isAr ? "اشتراك شهري" : "Monthly subscription")}
@@ -160,7 +160,7 @@ export const MembershipReceipt = memo(function MembershipReceipt({ receiptData }
             <Separator />
 
             {/* Footer */}
-            <div className="grid grid-cols-2 gap-4 text-[10px] text-muted-foreground">
+            <div className="grid grid-cols-2 gap-4 text-[12px] text-muted-foreground">
               <div>
                 <p className="uppercase tracking-wider mb-0.5">{isAr ? "صالح حتى" : "Valid Until"}</p>
                 <p className="text-xs text-foreground font-medium">{format(receiptData.expiresAt, "MMM d, yyyy")}</p>

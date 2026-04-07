@@ -101,7 +101,7 @@ export const ContentPipelineWidget = memo(function ContentPipelineWidget() {
           {/* Type breakdown */}
           <div className="flex flex-wrap gap-1.5 pt-1">
             {Object.entries(data.typeCount).map(([type, count]) => (
-              <Badge key={type} variant="outline" className="text-[9px]">
+              <Badge key={type} variant="outline" className="text-[12px]">
                 {type}: {count}
               </Badge>
             ))}
@@ -115,7 +115,7 @@ export const ContentPipelineWidget = memo(function ContentPipelineWidget() {
           <CardTitle className="text-sm flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-chart-2" />
             {isAr ? "سرعة النشر (14 يوم)" : "Publishing Velocity (14 days)"}
-            <Badge variant="secondary" className="text-[10px] ms-auto">
+            <Badge variant="secondary" className="text-[12px] ms-auto">
               <AnimatedCounter value={data.totalViews} className="inline" /> {isAr ? "مشاهدة إجمالية" : "total views"}
             </Badge>
           </CardTitle>

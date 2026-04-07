@@ -66,7 +66,7 @@ export const ExhibitionTicketStatsWidget = memo(function ExhibitionTicketStatsWi
             <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-sm font-bold"><AnimatedCounter value={m.value || 0} /></p>
-              <p className="text-[9px] text-muted-foreground">{m.label}</p>
+              <p className="text-[12px] text-muted-foreground">{m.label}</p>
             </div>
           ))}
         </div>
@@ -84,21 +84,21 @@ export const ExhibitionTicketStatsWidget = memo(function ExhibitionTicketStatsWi
 
         <div className="flex items-center justify-between text-xs px-2 py-1.5 rounded bg-muted/20">
           <span className="text-muted-foreground">{isAr ? "تذاكر هذا الأسبوع" : "This Week"}</span>
-          <Badge variant="secondary" className="text-[10px]">{data?.ticketsWeek}</Badge>
+          <Badge variant="secondary" className="text-[12px]">{data?.ticketsWeek}</Badge>
         </div>
 
         {data?.recentTickets && data.recentTickets.length > 0 && (
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">{isAr ? "آخر التذاكر" : "Recent Tickets"}</p>
             {data.recentTickets.map((t) => (
-              <div key={t.id} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/20">
+              <div key={t.id} className="flex items-center justify-between text-[12px] p-1.5 rounded bg-muted/20">
                 <div className="truncate flex-1">
                   <span className="font-mono font-medium">{t.ticket_number}</span>
                   {t.attendee_name && <span className="text-muted-foreground ms-2">• {t.attendee_name}</span>}
                 </div>
                 <Badge
                   variant={t.status === "confirmed" ? "default" : "secondary"}
-                  className="text-[9px] px-1.5 py-0 shrink-0 ms-2"
+                  className="text-[12px] px-1.5 py-0 shrink-0 ms-2"
                 >
                   {t.status === "confirmed" ? (isAr ? "مؤكد" : "OK") : (isAr ? "معلق" : "Pending")}
                 </Badge>

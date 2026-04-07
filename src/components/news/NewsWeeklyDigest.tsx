@@ -56,7 +56,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
           <Newspaper className="h-4 w-4 text-primary" />
           <h3 className="text-sm font-bold">{isAr ? "ملخص الأسبوع" : "Weekly Digest"}</h3>
         </div>
-        <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+        <p className="text-[12px] text-muted-foreground flex items-center gap-1">
           <Calendar className="h-2.5 w-2.5" />
           {weekLabel}
         </p>
@@ -67,15 +67,15 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
         <div className="grid grid-cols-3 gap-2">
           <div className="text-center rounded-lg bg-muted/30 py-2">
             <p className="text-sm font-bold tabular-nums">{digest.totalArticles}</p>
-            <p className="text-[8px] text-muted-foreground uppercase">{isAr ? "مقالات" : "Articles"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "مقالات" : "Articles"}</p>
           </div>
           <div className="text-center rounded-lg bg-muted/30 py-2">
             <p className="text-sm font-bold tabular-nums">{digest.totalViews.toLocaleString()}</p>
-            <p className="text-[8px] text-muted-foreground uppercase">{isAr ? "مشاهدات" : "Views"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "مشاهدات" : "Views"}</p>
           </div>
           <div className="text-center rounded-lg bg-muted/30 py-2">
             <p className="text-sm font-bold tabular-nums">{digest.typeCount}</p>
-            <p className="text-[8px] text-muted-foreground uppercase">{isAr ? "أنواع" : "Types"}</p>
+            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "أنواع" : "Types"}</p>
           </div>
         </div>
 
@@ -84,7 +84,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
           <div>
             <div className="flex items-center gap-1.5 mb-2">
               <Star className="h-3 w-3 text-chart-4" />
-              <span className="text-[10px] font-bold uppercase tracking-wider text-chart-4">
+              <span className="text-[12px] font-bold uppercase tracking-wider text-chart-4">
                 {isAr ? "اختيار المحرر" : "Editor's Pick"}
               </span>
             </div>
@@ -105,7 +105,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
                     <h4 className="text-xs font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                       {isAr && digest.editorPick.title_ar ? digest.editorPick.title_ar : digest.editorPick.title}
                     </h4>
-                    <div className="flex items-center gap-2 mt-1 text-[9px] text-muted-foreground">
+                    <div className="flex items-center gap-2 mt-1 text-[12px] text-muted-foreground">
                       <span className="flex items-center gap-0.5"><Eye className="h-2 w-2" />{digest.editorPick.view_count}</span>
                     </div>
                   </div>
@@ -118,7 +118,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
         {/* Top viewed */}
         {digest.topViewed.length > 1 && (
           <div>
-            <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               {isAr ? "الأكثر قراءة هذا الأسبوع" : "Most Read This Week"}
             </p>
             <div className="space-y-1.5">
@@ -131,15 +131,15 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
                     className="group flex items-center gap-2.5 rounded-lg p-1.5 hover:bg-muted/40 transition-colors"
                   >
                     <span className={cn(
-                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[10px] font-black",
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[12px] font-black",
                       i === 0 ? "bg-primary/10 text-primary" : "bg-muted/60 text-muted-foreground"
                     )}>
                       {i + 1}
                     </span>
-                    <span className="text-[11px] font-medium line-clamp-1 group-hover:text-primary transition-colors flex-1">
+                    <span className="text-[12px] font-medium line-clamp-1 group-hover:text-primary transition-colors flex-1">
                       {artTitle}
                     </span>
-                    <span className="text-[9px] text-muted-foreground tabular-nums shrink-0">
+                    <span className="text-[12px] text-muted-foreground tabular-nums shrink-0">
                       {(article.view_count || 0).toLocaleString()}
                     </span>
                   </Link>

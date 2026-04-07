@@ -177,7 +177,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
         <div className="flex items-center gap-2">
           <Store className="h-4 w-4 text-primary" />
           <h3 className="text-sm font-semibold">{isAr ? "السوبرماركت" : "Supermarket"}</h3>
-          <Badge variant="secondary" className="text-[10px]">{items.length}</Badge>
+          <Badge variant="secondary" className="text-[12px]">{items.length}</Badge>
         </div>
         <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => setShowDishPicker(true)}>
           <ChefHat className="h-3 w-3" />
@@ -206,7 +206,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
               <button
                 key={a.key}
                 onClick={() => setActiveAisle(a.key)}
-                className={`flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-medium transition-all border shrink-0
+                className={`flex items-center gap-1 px-2 py-1 rounded-full text-[12px] font-medium transition-all border shrink-0
                   ${activeAisle === a.key ? "bg-primary text-primary-foreground border-primary" : "bg-background border-border hover:bg-muted"}`}
               >
                 <Icon className="h-2.5 w-2.5" />
@@ -237,7 +237,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
                 >
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{isAr && item.name_ar ? item.name_ar : item.name}</p>
-                    <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                    <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
                       <span className="capitalize truncate">{(item.subcategory || item.category).replace(/_/g, " ")}</span>
                       <span>·</span>
                       <span>{item.default_quantity || 1} {item.unit || "pc"}</span>
@@ -285,7 +285,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
                     <DishIcon className="h-5 w-5 text-primary shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">{isAr ? dish.nameAr : dish.name}</p>
-                      <p className="text-[10px] text-muted-foreground">{dish.ingredients.length} {isAr ? "مكون" : "ingredients"}</p>
+                      <p className="text-[12px] text-muted-foreground">{dish.ingredients.length} {isAr ? "مكون" : "ingredients"}</p>
                     </div>
                     <Plus className="h-4 w-4 text-muted-foreground shrink-0" />
                   </button>

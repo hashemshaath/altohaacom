@@ -93,7 +93,7 @@ export const AuditLiveStatsWidget = memo(function AuditLiveStatsWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
               <div className="text-lg font-bold"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></div>
-              <div className="text-[10px] text-muted-foreground">{s.label}</div>
+              <div className="text-[12px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -143,14 +143,14 @@ export const AuditLiveStatsWidget = memo(function AuditLiveStatsWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-2 text-center">
               <Eye className="h-3 w-3 mx-auto mb-1 text-chart-3" />
               <div className="text-sm font-bold"><AnimatedCounter value={Number(count) || 0} /></div>
-              <div className="text-[9px] text-muted-foreground truncate">{action}</div>
+              <div className="text-[12px] text-muted-foreground truncate">{action}</div>
             </div>
           ))}
           {data.topActions.length === 0 && (
             <div className="col-span-3 bg-muted/50 rounded-xl p-2 text-center">
               <UserCheck className="h-3 w-3 mx-auto mb-1 text-chart-2" />
               <div className="text-sm font-bold"><AnimatedCounter value={data.totalActions} /></div>
-              <div className="text-[9px] text-muted-foreground">{isAr ? "إجراءات إدارية" : "Admin Actions"}</div>
+              <div className="text-[12px] text-muted-foreground">{isAr ? "إجراءات إدارية" : "Admin Actions"}</div>
             </div>
           )}
         </div>

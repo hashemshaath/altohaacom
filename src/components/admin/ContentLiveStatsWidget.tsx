@@ -74,7 +74,7 @@ export const ContentLiveStatsWidget = memo(function ContentLiveStatsWidget() {
         <CardTitle className="text-base flex items-center gap-2">
           <FileText className="h-4 w-4 text-primary" />
           {isAr ? "إحصائيات المحتوى المباشرة" : "Content Live Stats"}
-          <Badge variant="secondary" className="ms-auto text-[10px]">
+          <Badge variant="secondary" className="ms-auto text-[12px]">
           <Star className="h-2.5 w-2.5 me-1" />
             {data.publishedRecipes} {isAr ? "وصفة منشورة" : "published recipes"}
           </Badge>
@@ -86,7 +86,7 @@ export const ContentLiveStatsWidget = memo(function ContentLiveStatsWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold">{s.value}</div>
-              <div className="text-[10px] text-muted-foreground">{s.label}</div>
+              <div className="text-[12px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -136,12 +136,12 @@ export const ContentLiveStatsWidget = memo(function ContentLiveStatsWidget() {
           <div className="bg-muted/50 rounded-xl p-2.5 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-chart-5" />
             <div className="text-sm font-bold">{new Intl.NumberFormat().format(data.totalSaves)}</div>
-            <div className="text-[9px] text-muted-foreground">{isAr ? "حفظ" : "Saves"}</div>
+            <div className="text-[12px] text-muted-foreground">{isAr ? "حفظ" : "Saves"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2.5 text-center">
             <MessageSquare className="h-3 w-3 mx-auto mb-1 text-chart-3" />
             <div className="text-sm font-bold">{new Intl.NumberFormat().format(data.totalReplies)}</div>
-            <div className="text-[9px] text-muted-foreground">{isAr ? "ردود" : "Replies"}</div>
+            <div className="text-[12px] text-muted-foreground">{isAr ? "ردود" : "Replies"}</div>
           </div>
         </div>
       </CardContent>

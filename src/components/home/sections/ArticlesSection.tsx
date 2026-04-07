@@ -96,12 +96,12 @@ const ArticlesSection = memo(function ArticlesSection() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                     {/* Type badge */}
                     {typeInfo && (
-                      <Badge variant="outline" className={cn("absolute top-2.5 start-2.5 text-[9px] border backdrop-blur-sm", typeInfo.color)}>
+                      <Badge variant="outline" className={cn("absolute top-2.5 start-2.5 text-[12px] border backdrop-blur-sm", typeInfo.color)}>
                         {isAr ? typeInfo.ar : typeInfo.en}
                       </Badge>
                     )}
                     {/* Reading time pill */}
-                    <div className="absolute bottom-2.5 end-2.5 flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-0.5 text-[10px] text-muted-foreground">
+                    <div className="absolute bottom-2.5 end-2.5 flex items-center gap-1 rounded-lg bg-background/80 backdrop-blur-sm px-2 py-0.5 text-[12px] text-muted-foreground">
                       <BookOpen className="h-2.5 w-2.5" />
                       {readTime} {isAr ? "د" : "min"}
                     </div>
@@ -111,12 +111,12 @@ const ArticlesSection = memo(function ArticlesSection() {
                       {isAr ? article.title_ar || article.title : article.title}
                     </h3>
                     {(article.excerpt || article.excerpt_ar) && (
-                      <p className="mt-1.5 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                      <p className="mt-1.5 text-[12px] text-muted-foreground line-clamp-2 leading-relaxed">
                         {isAr ? article.excerpt_ar || article.excerpt : article.excerpt}
                       </p>
                     )}
                     {article.published_at && (
-                      <p className="mt-2 text-[10px] text-muted-foreground/60 flex items-center gap-1">
+                      <p className="mt-2 text-[12px] text-muted-foreground/60 flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {formatDistanceToNow(new Date(article.published_at), { addSuffix: true, locale: isAr ? ar : undefined })}
                       </p>

@@ -100,7 +100,7 @@ export const AdPopup = memo(function AdPopup() {
           {creative.body_text && <p className="text-sm text-muted-foreground mb-3">{isAr ? creative.body_text_ar || creative.body_text : creative.body_text}</p>}
           <Button className="w-full" onClick={handleClick}>{isAr ? creative.cta_text_ar : creative.cta_text}</Button>
         </div>
-        <span className="absolute bottom-2 end-3 text-[9px] text-muted-foreground">{isAr ? "إعلان ممول" : "Sponsored"}</span>
+        <span className="absolute bottom-2 end-3 text-[12px] text-muted-foreground">{isAr ? "إعلان ممول" : "Sponsored"}</span>
       </div>
     </div>
   );

@@ -196,7 +196,7 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
               {isAr ? "الإيرادات والتنبؤ" : "Revenue & Forecast"}
             </CardTitle>
             <div className="flex gap-2">
-              <Badge variant="outline" className="text-[10px] gap-1">
+              <Badge variant="outline" className="text-[12px] gap-1">
                 {data.revenueDirection === "up" ? <TrendingUp className="h-3 w-3 text-chart-2" /> : data.revenueDirection === "down" ? <TrendingDown className="h-3 w-3 text-destructive" /> : <Target className="h-3 w-3" />}
                 {isAr ? "ثقة" : "Confidence"}: {data.revConfidence}%
               </Badge>

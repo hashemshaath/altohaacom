@@ -197,7 +197,7 @@ export default function CreateTasting() {
               {competitions?.map(c => (
                 <SelectItem key={c.id} value={c.id}>
                   <span>{isAr && c.title_ar ? c.title_ar : c.title}</span>
-                  <Badge variant="outline" className="ms-2 text-[10px]">{c.status.replace("_", " ")}</Badge>
+                  <Badge variant="outline" className="ms-2 text-[12px]">{c.status.replace("_", " ")}</Badge>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -255,7 +255,7 @@ export default function CreateTasting() {
                 );
               })}
             </div>
-            <p className="text-[11px] text-muted-foreground text-center mt-2">
+            <p className="text-[12px] text-muted-foreground text-center mt-2">
               {isAr ? "يتم تقييم كل مرحلة بشكل مستقل مع دعم الصور والملاحظات" : "Each stage is evaluated independently with image evidence & notes support"}
             </p>
           </CardContent>
@@ -304,7 +304,7 @@ export default function CreateTasting() {
               >
                 <MIcon className={`h-5 w-5 ${active ? "text-primary" : "text-muted-foreground"}`} />
                 <span className="text-sm font-medium">{isAr ? m.ar : m.en}</span>
-                <span className="text-[10px] text-muted-foreground leading-tight">{isAr ? m.desc_ar : m.desc_en}</span>
+                <span className="text-[12px] text-muted-foreground leading-tight">{isAr ? m.desc_ar : m.desc_en}</span>
               </button>
             );
           })}
@@ -323,7 +323,7 @@ export default function CreateTasting() {
               {filteredPresets.map(p => (
                 <SelectItem key={p.id} value={p.id}>
                   {isAr && p.preset_name_ar ? p.preset_name_ar : p.preset_name}
-                  <Badge variant="outline" className="ms-2 text-[10px]">{p.category}</Badge>
+                  <Badge variant="outline" className="ms-2 text-[12px]">{p.category}</Badge>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -336,7 +336,7 @@ export default function CreateTasting() {
                 <p className="text-xs font-medium text-muted-foreground mb-2">{isAr ? "المعايير المضمنة" : "Included Criteria"}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {selectedPreset.criteria.map((c, i) => (
-                    <Badge key={i} variant="secondary" className="text-[10px] font-normal">
+                    <Badge key={i} variant="secondary" className="text-[12px] font-normal">
                       {isAr ? c.name_ar : c.name} ({c.weight}%)
                     </Badge>
                   ))}
@@ -354,14 +354,14 @@ export default function CreateTasting() {
         <div className="flex items-center justify-between rounded-xl border p-3">
           <div>
             <p className="text-sm font-medium">{isAr ? "تذوق أعمى" : "Blind Tasting"}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "إخفاء الأسماء عن الحكام" : "Hide contestant names from judges"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "إخفاء الأسماء عن الحكام" : "Hide contestant names from judges"}</p>
           </div>
           <Switch checked={form.is_blind_tasting} onCheckedChange={v => setForm(f => ({ ...f, is_blind_tasting: v }))} />
         </div>
         <div className="flex items-center justify-between rounded-xl border p-3">
           <div>
             <p className="text-sm font-medium">{isAr ? "الملاحظات" : "Judge Notes"}</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "ملاحظات نصية لكل تقييم" : "Free-text notes per evaluation"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "ملاحظات نصية لكل تقييم" : "Free-text notes per evaluation"}</p>
           </div>
           <Switch checked={form.allow_notes} onCheckedChange={v => setForm(f => ({ ...f, allow_notes: v }))} />
         </div>

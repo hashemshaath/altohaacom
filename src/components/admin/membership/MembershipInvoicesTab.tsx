@@ -365,7 +365,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                         >
                           <Avatar className="h-7 w-7">
                             <AvatarImage src={u.avatar_url || undefined} />
-                            <AvatarFallback className="text-[10px] bg-primary/10 text-primary">
+                            <AvatarFallback className="text-[12px] bg-primary/10 text-primary">
                               {(u.full_name || "U")[0]}
                             </AvatarFallback>
                           </Avatar>
@@ -373,7 +373,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                             <p className="text-sm font-medium truncate">{u.full_name || u.username || "Unknown"}</p>
                             <p className="text-xs text-muted-foreground">{u.account_number || u.username}</p>
                           </div>
-                          <Badge variant="outline" className="text-[10px] capitalize shrink-0">{u.membership_tier || "basic"}</Badge>
+                          <Badge variant="outline" className="text-[12px] capitalize shrink-0">{u.membership_tier || "basic"}</Badge>
                         </button>
                       ))}
                     </div>

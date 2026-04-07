@@ -110,9 +110,9 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
                   <p className="text-xs text-muted-foreground">@{profile.username || "—"}</p>
                   <div className="flex gap-1 mt-1 flex-wrap">
                     {user.roles.map((role: string) => (
-                      <Badge key={role} variant="outline" className="text-[9px]">{role}</Badge>
+                      <Badge key={role} variant="outline" className="text-[12px]">{role}</Badge>
                     ))}
-                    {profile.account_status === "suspended" && <Badge variant="destructive" className="text-[9px]">{isAr ? "محظور" : "Suspended"}</Badge>}
+                    {profile.account_status === "suspended" && <Badge variant="destructive" className="text-[12px]">{isAr ? "محظور" : "Suspended"}</Badge>}
                   </div>
                 </div>
               </div>
@@ -126,7 +126,7 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
                     <CardContent className="p-2.5">
                       <div className="flex items-center gap-1.5 mb-0.5">
                         <item.icon className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-[9px] text-muted-foreground">{item.label}</span>
+                        <span className="text-[12px] text-muted-foreground">{item.label}</span>
                       </div>
                       <p className="text-xs font-medium truncate">{String(item.value)}</p>
                     </CardContent>
@@ -151,7 +151,7 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
                         <Button
                           variant={hasRole ? "destructive" : "default"}
                           size="sm"
-                          className="h-6 text-[10px] px-2"
+                          className="h-6 text-[12px] px-2"
                           disabled={roleMutation.isPending}
                           onClick={() => roleMutation.mutate({ role, action: hasRole ? "remove" : "add" })}
                         >
@@ -172,7 +172,7 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
                   {isAr ? "سجل الإجراءات" : "Action History"}
                 </p>
                 {user.actions.length === 0 ? (
-                  <p className="text-[10px] text-muted-foreground text-center py-4">{isAr ? "لا يوجد سجل" : "No history"}</p>
+                  <p className="text-[12px] text-muted-foreground text-center py-4">{isAr ? "لا يوجد سجل" : "No history"}</p>
                 ) : (
                   <div className="space-y-1.5">
                     {user.actions.map((action: { action_type: string; created_at: string; details: unknown }, i: number) => (
@@ -182,7 +182,7 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="font-medium truncate">{action.action_type}</p>
-                          <p className="text-[9px] text-muted-foreground">
+                          <p className="text-[12px] text-muted-foreground">
                             {format(new Date(action.created_at), "yyyy-MM-dd HH:mm")}
                           </p>
                         </div>

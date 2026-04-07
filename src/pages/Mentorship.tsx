@@ -47,7 +47,7 @@ export default function Mentorship() {
             <div className="space-y-3 max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                 <HandHeart className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                <span className="text-[12px] font-bold uppercase tracking-widest text-primary">
                   {isAr ? "التمكين المهني" : "Professional Empowerment"}
                 </span>
               </div>
@@ -97,7 +97,7 @@ export default function Mentorship() {
                   <Target className="h-3.5 w-3.5" />
                   {isAr ? "إرشادي" : "My Mentorship"}
                   {myMatches.length > 0 && (
-                    <Badge variant="secondary" className="ms-1 text-[10px]">{myMatches.length}</Badge>
+                    <Badge variant="secondary" className="ms-1 text-[12px]">{myMatches.length}</Badge>
                   )}
                 </TabsTrigger>
               )}
@@ -145,7 +145,7 @@ export default function Mentorship() {
                           <h3 className="text-base font-bold leading-tight group-hover:text-primary transition-colors duration-300">
                             {isAr ? program.title_ar || program.title : program.title}
                           </h3>
-                          <Badge variant="outline" className={`shrink-0 text-[10px] font-bold ${statusColors[program.status] || "bg-muted text-muted-foreground"}`}>
+                          <Badge variant="outline" className={`shrink-0 text-[12px] font-bold ${statusColors[program.status] || "bg-muted text-muted-foreground"}`}>
                             {program.status}
                           </Badge>
                         </div>
@@ -153,7 +153,7 @@ export default function Mentorship() {
                           {isAr ? program.description_ar || program.description : program.description}
                         </p>
                         <div className="flex items-center justify-between border-t border-border/40 pt-4">
-                          <div className="flex items-center gap-4 text-[11px] font-bold text-muted-foreground">
+                          <div className="flex items-center gap-4 text-[12px] font-bold text-muted-foreground">
                             <span className="flex items-center gap-1.5">
                               <Clock className="h-3 w-3 text-primary" />
                               {program.duration_weeks} {isAr ? "أسابيع" : "weeks"}

@@ -420,7 +420,7 @@ export default function CountriesAdmin() {
             <CardContent className="pt-4 pb-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{s.label}</p>
+                  <p className="text-[12px] text-muted-foreground uppercase tracking-wide">{s.label}</p>
                   <p className={`text-xl font-bold ${s.color}`}><AnimatedCounter value={s.value} /></p>
                 </div>
                 <s.icon className={`h-5 w-5 ${s.color} opacity-60`} />
@@ -440,7 +440,7 @@ export default function CountriesAdmin() {
           <TabsTrigger value="countries">
             <Globe className="h-4 w-4 me-1.5" />
             {isAr ? "الدول" : "Countries"}
-            <Badge variant="secondary" className="ms-1.5 text-[10px]">{filtered.length}</Badge>
+            <Badge variant="secondary" className="ms-1.5 text-[12px]">{filtered.length}</Badge>
           </TabsTrigger>
           <TabsTrigger value="regions">
             <MapPin className="h-4 w-4 me-1.5" />
@@ -556,30 +556,30 @@ export default function CountriesAdmin() {
                         <TableCell>
                           <button className="text-start hover:text-primary transition-colors" onClick={() => setDetailCountry(detailCountry?.id === c.id ? null : c)}>
                             <p className="font-medium text-sm">{c.name}</p>
-                            {c.name_ar && <p className="text-[11px] text-muted-foreground" dir="rtl">{c.name_ar}</p>}
+                            {c.name_ar && <p className="text-[12px] text-muted-foreground" dir="rtl">{c.name_ar}</p>}
                           </button>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
-                            <Badge variant="outline" className="font-mono text-[10px]">{c.code.trim()}</Badge>
-                            {c.code_alpha3 && <Badge variant="secondary" className="font-mono text-[10px]">{c.code_alpha3.trim()}</Badge>}
+                            <Badge variant="outline" className="font-mono text-[12px]">{c.code.trim()}</Badge>
+                            {c.code_alpha3 && <Badge variant="secondary" className="font-mono text-[12px]">{c.code_alpha3.trim()}</Badge>}
                           </div>
                         </TableCell>
                         <TableCell>
                           <div>
                             <p className="text-xs">{c.region || "—"}</p>
-                            {c.continent && <p className="text-[10px] text-muted-foreground">{c.continent}</p>}
+                            {c.continent && <p className="text-[12px] text-muted-foreground">{c.continent}</p>}
                           </div>
                         </TableCell>
                         <TableCell className="text-xs">
                           <span className="font-medium">{c.currency_symbol}</span> {c.currency_code.trim()}
-                          {c.tax_rate ? <p className="text-[10px] text-muted-foreground">{c.tax_name} {c.tax_rate}%</p> : null}
+                          {c.tax_rate ? <p className="text-[12px] text-muted-foreground">{c.tax_name} {c.tax_rate}%</p> : null}
                         </TableCell>
                         <TableCell>
                           <TooltipProvider>
                             <Tooltip>
                               <TooltipTrigger>
-                                <Badge variant="secondary" className="text-[10px]">
+                                <Badge variant="secondary" className="text-[12px]">
                                   {enabledFeatureCount(c)}/{Object.keys(featureLabels).length}
                                 </Badge>
                               </TooltipTrigger>
@@ -760,8 +760,8 @@ export default function CountriesAdmin() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{c.name}</p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <Badge variant="outline" className="text-[10px] font-mono">{c.code.trim()}</Badge>
-                          <span className="text-[10px] text-muted-foreground">{c.currency_symbol} {c.currency_code.trim()}</span>
+                          <Badge variant="outline" className="text-[12px] font-mono">{c.code.trim()}</Badge>
+                          <span className="text-[12px] text-muted-foreground">{c.currency_symbol} {c.currency_code.trim()}</span>
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -937,7 +937,7 @@ export default function CountriesAdmin() {
                     onChange={e => setForm({ ...form, supported_languages: e.target.value.split(",").map(s => s.trim()).filter(Boolean) })}
                     placeholder="ar, en, fr"
                   />
-                  <p className="text-[10px] text-muted-foreground">{isAr ? "مفصولة بفاصلة" : "Comma-separated language codes"}</p>
+                  <p className="text-[12px] text-muted-foreground">{isAr ? "مفصولة بفاصلة" : "Comma-separated language codes"}</p>
                 </div>
                 <Separator />
                 <div className="grid grid-cols-3 gap-3">
@@ -1087,7 +1087,7 @@ function DetailItem({ icon: Icon, label, value }: { icon: typeof Globe; label: s
     <div className="flex items-start gap-2">
       <Icon className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
       <div>
-        <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{label}</p>
+        <p className="text-[12px] text-muted-foreground uppercase tracking-wide">{label}</p>
         <p className="text-sm font-medium">{value}</p>
       </div>
     </div>

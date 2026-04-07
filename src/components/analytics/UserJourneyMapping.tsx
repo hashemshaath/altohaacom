@@ -317,7 +317,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
                           opacity: 0.8,
                         }}
                       >
-                        <span className="text-[10px] font-bold text-primary-foreground">{edge.count}</span>
+                        <span className="text-[12px] font-bold text-primary-foreground">{edge.count}</span>
                       </div>
                     </div>
                   </div>
@@ -333,10 +333,10 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
             <Card key={i} className="overflow-hidden">
               <CardContent className="py-3 px-4">
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-[12px]">
                     #{i + 1} · {journey.count} {isAr ? "جلسة" : "sessions"}
                   </Badge>
-                  <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                  <span className="text-[12px] text-muted-foreground flex items-center gap-1">
                     <Clock className="h-3 w-3" />
                     {journey.avgDuration}s {isAr ? "متوسط" : "avg"}
                   </span>
@@ -346,7 +346,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
                     <span key={j} className="flex items-center gap-1">
                       <Badge
                         className={cn(
-                          "text-[10px] font-medium px-2 py-0.5",
+                          "text-[12px] font-medium px-2 py-0.5",
                           j === 0 ? "bg-primary text-primary-foreground" :
                           j === journey.steps.length - 1 ? "bg-chart-4 text-primary-foreground" :
                           "bg-muted text-foreground"
@@ -384,7 +384,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
                         <span className="text-muted-foreground">
                           {drop.exitCount}/{drop.totalVisits} {isAr ? "خروج" : "exits"}
                         </span>
-                        <Badge variant={drop.exitRate > 70 ? "destructive" : drop.exitRate > 50 ? "secondary" : "outline"} className="text-[10px]">
+                        <Badge variant={drop.exitRate > 70 ? "destructive" : drop.exitRate > 50 ? "secondary" : "outline"} className="text-[12px]">
                           {drop.exitRate}%
                         </Badge>
                       </div>

@@ -238,7 +238,7 @@ export default function MembershipGift() {
                   <Textarea id="message" className="mt-1" rows={3}
                     placeholder={isAr ? "أتمنى لك عضوية مميزة..." : "Wishing you an amazing membership..."}
                     value={message} onChange={(e) => setMessage(e.target.value)} maxLength={500} />
-                  <p className="text-[10px] text-muted-foreground mt-1 text-end">{message.length}/500</p>
+                  <p className="text-[12px] text-muted-foreground mt-1 text-end">{message.length}/500</p>
                 </div>
               </CardContent>
             </Card>

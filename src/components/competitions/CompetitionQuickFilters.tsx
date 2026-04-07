@@ -42,7 +42,7 @@ export const CompetitionQuickFilters = memo(function CompetitionQuickFilters({ a
             {isAr ? f.ar : f.en}
             {count != null && count > 0 && (
               <span className={cn(
-                "rounded-full px-1.5 py-0.5 text-[9px] font-black leading-none tabular-nums",
+                "rounded-full px-1.5 py-0.5 text-[12px] font-black leading-none tabular-nums",
                 isActive ? "bg-primary-foreground/20" : "bg-primary/10 text-primary"
               )}>
                 {count}

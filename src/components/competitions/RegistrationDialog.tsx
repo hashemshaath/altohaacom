@@ -405,7 +405,7 @@ export const RegistrationForm = memo(function RegistrationForm({
                         >
                           <Avatar className="h-6 w-6">
                             <AvatarImage src={r.avatar_url || ""} />
-                            <AvatarFallback className="text-[8px]">{(r.full_name || "U")[0]}</AvatarFallback>
+                            <AvatarFallback className="text-[12px]">{(r.full_name || "U")[0]}</AvatarFallback>
                           </Avatar>
                           <span className="font-medium">{r.full_name}</span>
                           {r.specialization && <span className="text-muted-foreground">· {r.specialization}</span>}
@@ -425,7 +425,7 @@ export const RegistrationForm = memo(function RegistrationForm({
                     <div key={idx} className="flex items-center gap-2 rounded border p-2 bg-background">
                       <Avatar className="h-7 w-7">
                         <AvatarImage src={member.avatar_url || ""} />
-                        <AvatarFallback className="text-[8px]">{(member.member_name || "?")[0]}</AvatarFallback>
+                        <AvatarFallback className="text-[12px]">{(member.member_name || "?")[0]}</AvatarFallback>
                       </Avatar>
                       <Input
                         value={member.member_name}
@@ -439,7 +439,7 @@ export const RegistrationForm = memo(function RegistrationForm({
                         placeholder={isAr ? "المسمى" : "Title"}
                         className="h-7 text-xs w-24"
                       />
-                      {member.is_captain && <Badge variant="secondary" className="text-[9px] shrink-0">{isAr ? "قائد" : "Captain"}</Badge>}
+                      {member.is_captain && <Badge variant="secondary" className="text-[12px] shrink-0">{isAr ? "قائد" : "Captain"}</Badge>}
                       <Button type="button" variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => removeMember(idx)}>
                         <Trash2 className="h-3 w-3 text-destructive" />
                       </Button>
@@ -537,7 +537,7 @@ export const RegistrationForm = memo(function RegistrationForm({
                   <Camera className="h-5 w-5 text-primary" />
                 </div>
                 <p className="text-sm font-medium text-muted-foreground">{isAr ? "انقر لإضافة صورة" : "Click to add a photo"}</p>
-                <p className="text-[11px] text-muted-foreground/60 mt-0.5">{isAr ? "الحد الأقصى 5 ميجابايت" : "Max 5MB • JPG, PNG, WebP"}</p>
+                <p className="text-[12px] text-muted-foreground/60 mt-0.5">{isAr ? "الحد الأقصى 5 ميجابايت" : "Max 5MB • JPG, PNG, WebP"}</p>
               </div>
             )}
           </div>
@@ -573,7 +573,7 @@ export const RegistrationForm = memo(function RegistrationForm({
                   <span className="text-primary tabular-nums">{(fee * (1 + taxRate / 100)).toFixed(2)} {currency}</span>
                 </div>
               </div>
-              <Badge variant="secondary" className="text-[10px] font-medium rounded-xl">
+              <Badge variant="secondary" className="text-[12px] font-medium rounded-xl">
                 {isAr ? "سيتم تحصيل الرسوم بعد الموافقة" : "Fee will be collected after approval"}
               </Badge>
             </div>

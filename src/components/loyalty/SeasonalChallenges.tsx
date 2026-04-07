@@ -83,7 +83,7 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
             <Flame className="h-3.5 w-3.5 text-chart-1" />
           </div>
           {isAr ? "التحديات النشطة" : "Active Challenges"}
-          <Badge variant="secondary" className="text-[10px]">{challenges.length}</Badge>
+          <Badge variant="secondary" className="text-[12px]">{challenges.length}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -108,7 +108,7 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
                       <p className="text-xs font-semibold truncate">{isAr ? c.title_ar || c.title : c.title}</p>
                       {completed && <Trophy className="h-3 w-3 text-chart-2 shrink-0" />}
                     </div>
-                    <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
+                    <p className="text-[12px] text-muted-foreground mt-0.5 line-clamp-1">
                       {isAr ? c.description_ar || c.description : c.description}
                     </p>
                   </div>
@@ -116,7 +116,7 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
 
                 <div className="mt-2.5 flex items-center gap-2">
                   <Progress value={pct} className="h-1.5 flex-1" />
-                  <span className="text-[10px] font-medium text-muted-foreground tabular-nums whitespace-nowrap">
+                  <span className="text-[12px] font-medium text-muted-foreground tabular-nums whitespace-nowrap">
                     {current}/{target}
                   </span>
                 </div>
@@ -124,18 +124,18 @@ export const SeasonalChallenges = memo(function SeasonalChallenges() {
                 <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     {c.difficulty && (
-                      <Badge variant="outline" className={`text-[9px] px-1 py-0 ${DIFFICULTY_COLORS[c.difficulty] || ""}`}>
+                      <Badge variant="outline" className={`text-[12px] px-1 py-0 ${DIFFICULTY_COLORS[c.difficulty] || ""}`}>
                         {c.difficulty}
                       </Badge>
                     )}
                     {c.reward_points && (
-                      <Badge variant="secondary" className="text-[9px] px-1 py-0 gap-0.5">
+                      <Badge variant="secondary" className="text-[12px] px-1 py-0 gap-0.5">
                         <Star className="h-2.5 w-2.5" />
                         {c.reward_points}
                       </Badge>
                     )}
                   </div>
-                  <span className="text-[10px] text-muted-foreground">{getTimeLeft(c.ends_at)}</span>
+                  <span className="text-[12px] text-muted-foreground">{getTimeLeft(c.ends_at)}</span>
                 </div>
               </div>
             );

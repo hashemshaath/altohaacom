@@ -72,7 +72,7 @@ const DeltaBadge = ({ delta }: { delta: ReturnType<typeof getDelta> }) => {
   const Icon = delta.direction === "up" ? ArrowUpRight : ArrowDownRight;
   const color = delta.direction === "up" ? "text-chart-2" : "text-destructive";
   return (
-    <span className={`flex items-center gap-0.5 text-[10px] font-medium ${color}`}>
+    <span className={`flex items-center gap-0.5 text-[12px] font-medium ${color}`}>
       <Icon className="h-3 w-3" />{delta.value}%
     </span>
   );
@@ -628,7 +628,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
           <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <Input placeholder={isAr ? "بحث في الأحداث..." : "Search events..."} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="ps-8 h-8 text-xs" />
         </div>
-        <Badge variant="outline" className="gap-1 text-[10px]">
+        <Badge variant="outline" className="gap-1 text-[12px]">
           <Activity className="h-3 w-3 text-chart-2 animate-pulse" />
           {isAr ? "مباشر" : "Live"}
         </Badge>
@@ -674,10 +674,10 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
               <kpi.icon className={`h-3.5 w-3.5 mx-auto mb-0.5 ${kpi.color} transition-transform duration-300 group-hover:scale-110`} />
               <div className="text-base font-bold leading-tight">
                 {kpi.isDecimal ? kpi.value : <AnimatedCounter value={kpi.value} />}
-                {kpi.suffix && <span className="text-[10px] text-muted-foreground ms-0.5">{kpi.suffix}</span>}
+                {kpi.suffix && <span className="text-[12px] text-muted-foreground ms-0.5">{kpi.suffix}</span>}
               </div>
               {kpi.delta && <DeltaBadge delta={kpi.invertDelta ? { ...kpi.delta, direction: kpi.delta.direction === "up" ? "down" : kpi.delta.direction === "down" ? "up" : "flat" } : kpi.delta} />}
-              <div className="text-[9px] text-muted-foreground leading-tight mt-0.5">{kpi.label}</div>
+              <div className="text-[12px] text-muted-foreground leading-tight mt-0.5">{kpi.label}</div>
             </CardContent>
           </Card>
         ))}
@@ -768,7 +768,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-[10px] text-muted-foreground font-medium mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
+                    <p className="text-[12px] text-muted-foreground font-medium mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
                     {deviceData.length > 0 ? (
                       <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
@@ -782,14 +782,14 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                     ) : <NoData />}
                   </div>
                   <div>
-                    <p className="text-[10px] text-muted-foreground font-medium mb-2">{isAr ? "المتصفحات" : "Browsers"}</p>
+                    <p className="text-[12px] text-muted-foreground font-medium mb-2">{isAr ? "المتصفحات" : "Browsers"}</p>
                     {browserData.length > 0 ? (
                       <div className="space-y-1.5">
                         {browserData.slice(0, 6).map((b, i) => {
                           const total = browserData.reduce((s, x) => s + x.value, 0);
                           const pct = total > 0 ? Math.round((b.value / total) * 100) : 0;
                           return (
-                            <div key={i} className="flex items-center gap-2 text-[10px]">
+                            <div key={i} className="flex items-center gap-2 text-[12px]">
                               <span className="w-16 truncate text-muted-foreground">{b.name}</span>
                               <Progress value={pct} className="h-1.5 flex-1" />
                               <span className="w-8 text-end font-medium">{pct}%</span>
@@ -837,7 +837,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <FileText className="h-4 w-4 text-primary" />
                 {isAr ? "أفضل الصفحات" : "Top Pages"}
-                <Badge variant="secondary" className="ms-auto text-[10px]">{topPages.length} {isAr ? "صفحة" : "pages"}</Badge>
+                <Badge variant="secondary" className="ms-auto text-[12px]">{topPages.length} {isAr ? "صفحة" : "pages"}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -857,8 +857,8 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                     <tbody>
                       {topPages.map((page, i) => (
                         <tr key={i} className="border-b border-border/50 hover:bg-muted/50 transition-colors">
-                          <td className="py-2 px-2 font-mono text-foreground max-w-[250px] truncate text-[10px]">{page.path}</td>
-                          <td className="py-2 px-2 text-center"><Badge variant="secondary" className="text-[10px]">{page.views}</Badge></td>
+                          <td className="py-2 px-2 font-mono text-foreground max-w-[250px] truncate text-[12px]">{page.path}</td>
+                          <td className="py-2 px-2 text-center"><Badge variant="secondary" className="text-[12px]">{page.views}</Badge></td>
                           <td className="py-2 px-2 text-center text-muted-foreground">{page.uniqueVisitors}</td>
                           <td className="py-2 px-2 text-center text-muted-foreground">{formatDuration(page.avgDuration)}</td>
                           <td className="py-2 px-2 text-center">
@@ -869,7 +869,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                           <td className="py-2 px-2 text-center">
                             <div className="flex items-center gap-1.5 justify-center">
                               <Progress value={page.engagementScore} className="h-1.5 w-12" />
-                              <span className="text-[10px] text-muted-foreground">{page.engagementScore}</span>
+                              <span className="text-[12px] text-muted-foreground">{page.engagementScore}</span>
                             </div>
                           </td>
                         </tr>
@@ -984,7 +984,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Route className="h-4 w-4 text-chart-3" />
                 {isAr ? "مستكشف الجلسات" : "Session Explorer"}
-                <Badge variant="secondary" className="ms-auto text-[10px]">{sessionData.length} {isAr ? "جلسة" : "sessions"}</Badge>
+                <Badge variant="secondary" className="ms-auto text-[12px]">{sessionData.length} {isAr ? "جلسة" : "sessions"}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -994,14 +994,14 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                     <div key={i} className="border border-border/50 rounded-lg p-3 hover:bg-muted/30 transition-colors">
                       <div className="flex items-center gap-2 mb-1.5">
                         <Fingerprint className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[120px]">{session.id.slice(0, 12)}...</span>
+                        <span className="text-[12px] font-mono text-muted-foreground truncate max-w-[120px]">{session.id.slice(0, 12)}...</span>
                         <Separator orientation="vertical" className="h-3" />
                         {deviceIcon(session.device)}
-                        {session.country && <Badge variant="outline" className="text-[9px] px-1 py-0">{session.country}</Badge>}
-                        <span className="text-[10px] text-muted-foreground ms-auto flex items-center gap-1">
+                        {session.country && <Badge variant="outline" className="text-[12px] px-1 py-0">{session.country}</Badge>}
+                        <span className="text-[12px] text-muted-foreground ms-auto flex items-center gap-1">
                           <Clock className="h-2.5 w-2.5" />{format(parseISO(session.startTime), "HH:mm")}
                         </span>
-                        <Badge variant={session.bounced ? "destructive" : "secondary"} className="text-[9px] px-1 py-0">
+                        <Badge variant={session.bounced ? "destructive" : "secondary"} className="text-[12px] px-1 py-0">
                           {session.bounced ? (isAr ? "ارتداد" : "Bounced") : `${formatDuration(session.duration)}`}
                         </Badge>
                       </div>
@@ -1009,7 +1009,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                         {session.pages.map((page, j) => (
                           <span key={j} className="flex items-center gap-0.5">
                             {j > 0 && <ArrowRight className="h-2.5 w-2.5 text-muted-foreground/50" />}
-                            <Badge variant="outline" className="text-[9px] px-1.5 py-0 font-mono">{page}</Badge>
+                            <Badge variant="outline" className="text-[12px] px-1.5 py-0 font-mono">{page}</Badge>
                           </span>
                         ))}
                       </div>
@@ -1100,13 +1100,13 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                   <div className="flex items-center gap-0">
                     <div className="w-14" />
                     {Array.from({ length: 24 }, (_, h) => (
-                      <div key={h} className="flex-1 text-center text-[8px] text-muted-foreground">{h}</div>
+                      <div key={h} className="flex-1 text-center text-[12px] text-muted-foreground">{h}</div>
                     ))}
                   </div>
                   {/* Grid */}
                   {hourlyHeatmap.grid.map((row, dayIdx) => (
                     <div key={dayIdx} className="flex items-center gap-0">
-                      <div className="w-14 text-[10px] text-muted-foreground text-end pe-2 shrink-0">{hourlyHeatmap.days[dayIdx]}</div>
+                      <div className="w-14 text-[12px] text-muted-foreground text-end pe-2 shrink-0">{hourlyHeatmap.days[dayIdx]}</div>
                       {row.map((val, hourIdx) => {
                         const intensity = hourlyHeatmap.maxVal > 0 ? val / hourlyHeatmap.maxVal : 0;
                         return (
@@ -1122,11 +1122,11 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                   ))}
                   {/* Legend */}
                   <div className="flex items-center justify-end gap-1 mt-2">
-                    <span className="text-[9px] text-muted-foreground">{isAr ? "أقل" : "Less"}</span>
+                    <span className="text-[12px] text-muted-foreground">{isAr ? "أقل" : "Less"}</span>
                     {[0.1, 0.3, 0.5, 0.7, 0.9].map((o, i) => (
                       <div key={i} className="w-3 h-3 rounded-sm" style={{ backgroundColor: `hsl(var(--primary) / ${o})` }} />
                     ))}
-                    <span className="text-[9px] text-muted-foreground">{isAr ? "أكثر" : "More"}</span>
+                    <span className="text-[12px] text-muted-foreground">{isAr ? "أكثر" : "More"}</span>
                   </div>
                 </div>
               </div>
@@ -1152,11 +1152,11 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                 <CardContent className="p-2.5 text-center">
                   <kpi.icon className={`h-3.5 w-3.5 mx-auto mb-0.5 ${kpi.color}`} />
                   <div className="text-sm font-bold leading-tight">
-                    {kpi.prefix && <span className="text-[9px] text-muted-foreground">{kpi.prefix}</span>}
+                    {kpi.prefix && <span className="text-[12px] text-muted-foreground">{kpi.prefix}</span>}
                     <AnimatedCounter value={kpi.value} />
-                    {kpi.suffix && <span className="text-[9px] text-muted-foreground ms-0.5">{kpi.suffix}</span>}
+                    {kpi.suffix && <span className="text-[12px] text-muted-foreground ms-0.5">{kpi.suffix}</span>}
                   </div>
-                  <div className="text-[8px] text-muted-foreground leading-tight mt-0.5">{kpi.label}</div>
+                  <div className="text-[12px] text-muted-foreground leading-tight mt-0.5">{kpi.label}</div>
                 </CardContent>
               </Card>
             ))}
@@ -1184,7 +1184,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                         <div key={i}>
                           <div className="flex items-center justify-between text-xs mb-1">
                             <span className="font-medium">{isAr ? stage.stageAr : stage.stage}</span>
-                            <span className="text-muted-foreground">{stage.value} <span className="text-[9px]">({pct}%)</span></span>
+                            <span className="text-muted-foreground">{stage.value} <span className="text-[12px]">({pct}%)</span></span>
                           </div>
                           <div className="relative h-7 bg-muted rounded-lg overflow-hidden">
                             <div
@@ -1197,7 +1197,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                             />
                           </div>
                           {i > 0 && dropOff > 0 && (
-                            <div className="flex items-center gap-1 mt-0.5 text-[9px] text-destructive/70">
+                            <div className="flex items-center gap-1 mt-0.5 text-[12px] text-destructive/70">
                               <ArrowDownRight className="h-2.5 w-2.5" />
                               {dropOff}% {isAr ? "انخفاض" : "drop-off"}
                             </div>
@@ -1206,7 +1206,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                       );
                     })}
                     <Separator />
-                    <div className="flex justify-between text-[10px] text-muted-foreground">
+                    <div className="flex justify-between text-[12px] text-muted-foreground">
                       <span>{isAr ? "معدل التحويل الإجمالي" : "Overall Conversion"}: <strong className="text-foreground">{ecomMetrics.overallConversion}%</strong></span>
                       <span>{isAr ? "سلة → دفع" : "Cart → Pay"}: <strong className="text-foreground">{ecomMetrics.checkoutToPayRate}%</strong></span>
                     </div>
@@ -1285,7 +1285,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                   { label: isAr ? "إجمالي التحويل" : "Overall", value: ecomMetrics.overallConversion },
                 ].map((r, i) => (
                   <div key={i}>
-                    <div className="flex justify-between text-[10px] mb-1">
+                    <div className="flex justify-between text-[12px] mb-1">
                       <span className="text-muted-foreground">{r.label}</span>
                       <span className="font-bold">{r.value}%</span>
                     </div>
@@ -1316,7 +1316,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                       <span>{item.icon}</span>
                       <span className="text-muted-foreground">{item.label}</span>
                     </span>
-                    <Badge variant="secondary" className="text-[10px] font-bold">{item.value}</Badge>
+                    <Badge variant="secondary" className="text-[12px] font-bold">{item.value}</Badge>
                   </div>
                 ))}
               </CardContent>
@@ -1331,7 +1331,7 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
               <CardTitle className="text-sm font-semibold flex items-center gap-2">
                 <Activity className="h-4 w-4 text-chart-2" />
                 {isAr ? "بث الأحداث المباشر" : "Live Event Stream"}
-                <Badge variant="outline" className="text-[10px] ms-auto">{eventFeed.length} {isAr ? "حدث" : "events"}</Badge>
+                <Badge variant="outline" className="text-[12px] ms-auto">{eventFeed.length} {isAr ? "حدث" : "events"}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -1339,18 +1339,18 @@ export const EventsMonitoring = memo(function EventsMonitoring() {
                 <div className="space-y-0.5 max-h-[600px] overflow-y-auto">
                   {eventFeed.map((ev, i) => (
                     <div key={i} className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-muted/50 transition-colors text-xs group">
-                      <span className="text-muted-foreground w-16 shrink-0 text-[10px] font-mono">
+                      <span className="text-muted-foreground w-16 shrink-0 text-[12px] font-mono">
                         {format(parseISO(ev.time), "HH:mm:ss")}
                       </span>
                       {deviceIcon(ev.device)}
-                      {ev.country && <span className="text-[9px] text-muted-foreground w-6">{ev.country}</span>}
+                      {ev.country && <span className="text-[12px] text-muted-foreground w-6">{ev.country}</span>}
                       <Badge
                         variant={ev.type === "page_view" ? "secondary" : ev.type === "ad_click" ? "destructive" : "outline"}
-                        className="text-[9px] px-1.5 py-0 min-w-[60px] text-center"
+                        className="text-[12px] px-1.5 py-0 min-w-[60px] text-center"
                       >
                         {ev.type}
                       </Badge>
-                      <span className="text-muted-foreground truncate max-w-[350px] font-mono text-[10px] group-hover:text-foreground transition-colors">{ev.label}</span>
+                      <span className="text-muted-foreground truncate max-w-[350px] font-mono text-[12px] group-hover:text-foreground transition-colors">{ev.label}</span>
                     </div>
                   ))}
                 </div>

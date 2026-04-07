@@ -70,7 +70,7 @@ export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWi
                 <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
               </div>
               <p className="text-lg font-bold tabular-nums"><AnimatedCounter value={s.value} /></p>
-              <p className="text-[10px] text-muted-foreground font-medium">{s.label}</p>
+              <p className="text-[12px] text-muted-foreground font-medium">{s.label}</p>
             </div>
           ))}
         </div>
@@ -90,7 +90,7 @@ export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWi
           </p>
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(stats.byType).slice(0, 6).map(([type, count]) => (
-              <Badge key={type} variant="outline" className="text-[10px] capitalize font-medium">
+              <Badge key={type} variant="outline" className="text-[12px] capitalize font-medium">
                 {type}: {count as number}
               </Badge>
             ))}

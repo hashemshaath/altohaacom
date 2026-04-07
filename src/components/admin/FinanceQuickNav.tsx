@@ -86,7 +86,7 @@ export const FinanceQuickNav = memo(function FinanceQuickNav() {
               <Badge
                 variant="secondary"
                 className={cn(
-                  "text-[9px] px-1.5 py-0 h-4 min-w-[18px] justify-center",
+                  "text-[12px] px-1.5 py-0 h-4 min-w-[18px] justify-center",
                   isActive ? "bg-primary/20 text-primary" : ""
                 )}
               >
@@ -94,7 +94,7 @@ export const FinanceQuickNav = memo(function FinanceQuickNav() {
               </Badge>
             )}
             {alert > 0 && (
-              <Badge variant="destructive" className="text-[9px] px-1 py-0 h-4 gap-0.5">
+              <Badge variant="destructive" className="text-[12px] px-1 py-0 h-4 gap-0.5">
                 <AlertTriangle className="h-2.5 w-2.5" />
                 {alert}
               </Badge>

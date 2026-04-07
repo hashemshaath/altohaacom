@@ -100,7 +100,7 @@ export const ReEngagementPrompt = memo(function ReEngagementPrompt() {
                   ? (isAr ? "سلسلتك مستمرة!" : "Your streak is alive!")
                   : (isAr ? "ابدأ سلسلة جديدة!" : "Start a new streak!")}
               </p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 {isAr
                   ? "سجّل دخولك يومياً للحصول على مضاعف النقاط"
                   : "Log in daily to earn point multipliers"}

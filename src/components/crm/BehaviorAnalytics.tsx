@@ -157,7 +157,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "سلال مهجورة" : "Abandoned Carts"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={cartStats?.abandoned ?? 0} /></p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 <AnimatedCounter value={cartStats?.totalValue ?? 0} /> SAR
               </p>
             </div>
@@ -172,7 +172,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "معدل الاسترداد" : "Recovery Rate"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={cartStats?.recoveryRate ?? 0} suffix="%" /></p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 <AnimatedCounter value={cartStats?.recovered ?? 0} className="inline" /> {isAr ? "مسترد" : "recovered"}
               </p>
             </div>
@@ -187,7 +187,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "مشاهدات الصفحات" : "Page Views"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={behaviorStats?.totalPageViews ?? 0} /></p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 <AnimatedCounter value={behaviorStats?.avgDuration ?? 0} className="inline" />s {isAr ? "متوسط" : "avg"}
               </p>
             </div>
@@ -202,7 +202,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "تحويلات" : "Conversions"}</p>
               <p className="text-2xl font-bold"><AnimatedCounter value={conversionStats?.total ?? 0} /></p>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 <AnimatedCounter value={conversionStats?.totalRevenue ?? 0} /> SAR
               </p>
             </div>
@@ -311,7 +311,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
                     <span className="text-sm">{isAr ? label.ar : label.en}</span>
                     <div className="flex items-center gap-2">
                       <Progress value={pct} className="h-2 w-24" />
-                      <Badge variant="secondary" className="text-[10px]"><AnimatedCounter value={pct} className="inline" />%</Badge>
+                      <Badge variant="secondary" className="text-[12px]"><AnimatedCounter value={pct} className="inline" />%</Badge>
                     </div>
                   </div>
                 );
@@ -372,11 +372,11 @@ function LifecycleTriggersList() {
             <div key={t.id} className="flex items-center justify-between rounded-xl border p-2.5">
               <div>
                 <p className="text-xs font-medium">{isAr ? t.name_ar || t.name : t.name}</p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   {t.channels?.join(", ")} · <AnimatedCounter value={t.delay_minutes || 0} className="inline" /> {isAr ? "دقيقة تأخير" : "min delay"}
                 </p>
               </div>
-              <Badge variant={t.is_active ? "default" : "secondary"} className="text-[10px]">
+              <Badge variant={t.is_active ? "default" : "secondary"} className="text-[12px]">
                 {t.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Inactive")}
               </Badge>
             </div>

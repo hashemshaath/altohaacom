@@ -148,7 +148,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
           <Award className="h-4 w-4 text-primary" />
         </div>
         <h2 className={`text-base font-bold ${language !== "ar" ? "font-serif" : ""}`}>{isAr ? "الشهادات" : "Certificates"}</h2>
-        <Badge variant="secondary" className="text-[10px] h-5 rounded-xl">{certificates.length}</Badge>
+        <Badge variant="secondary" className="text-[12px] h-5 rounded-xl">{certificates.length}</Badge>
         <div className="flex-1 h-px bg-border/25" />
       </div>
 
@@ -179,8 +179,8 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <Badge variant="outline" className="text-[10px] h-5 rounded-xl">{getTypeLabel(cert.type)}</Badge>
-                        <span className="text-[10px] font-mono text-muted-foreground/60">{cert.verification_code}</span>
+                        <Badge variant="outline" className="text-[12px] h-5 rounded-xl">{getTypeLabel(cert.type)}</Badge>
+                        <span className="text-[12px] font-mono text-muted-foreground/60">{cert.verification_code}</span>
                       </div>
                       {achievement && (
                         <p className="text-sm font-semibold mt-1 truncate">{achievement}</p>
@@ -188,7 +188,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
                       {eventName && (
                         <p className="text-xs text-muted-foreground mt-0.5 truncate">{eventName}</p>
                       )}
-                      <div className="flex items-center gap-3 mt-1.5 text-[10px] text-muted-foreground">
+                      <div className="flex items-center gap-3 mt-1.5 text-[12px] text-muted-foreground">
                         {cert.event_date && (
                           <span className="flex items-center gap-1">
                             <Calendar className="h-2.5 w-2.5" />{cert.event_date}
@@ -233,7 +233,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
                           value={cert.visibility || "public"}
                           onValueChange={(v) => visibilityMutation.mutate({ certId: cert.id, visibility: v })}
                         >
-                          <SelectTrigger className="w-auto h-7 text-[10px] gap-1 border-none bg-muted/30 rounded-xl">
+                          <SelectTrigger className="w-auto h-7 text-[12px] gap-1 border-none bg-muted/30 rounded-xl">
                             {visibilityIcon(cert.visibility || "public")}
                           </SelectTrigger>
                           <SelectContent>

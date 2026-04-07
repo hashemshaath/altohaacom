@@ -55,7 +55,7 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
               <div className="flex gap-3">
                 {/* Date badge */}
                 <div className="flex flex-col items-center justify-center shrink-0 w-11 h-11 rounded-xl bg-primary/10 text-primary">
-                  <span className="text-[10px] font-bold uppercase leading-none">
+                  <span className="text-[12px] font-bold uppercase leading-none">
                     {startDate.toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short" })}
                   </span>
                   <span className="text-lg font-bold leading-none mt-0.5">
@@ -67,12 +67,12 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
                     {title}
                   </p>
                   {event.city && (
-                    <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                    <p className="text-[12px] text-muted-foreground flex items-center gap-1 mt-0.5">
                       <MapPin className="h-2.5 w-2.5" />
                       {event.city}{event.country ? `, ${event.country}` : ""}
                     </p>
                   )}
-                  <Badge variant="outline" className="mt-1 text-[9px] h-4 gap-1">
+                  <Badge variant="outline" className="mt-1 text-[12px] h-4 gap-1">
                     <CalendarDays className="h-2.5 w-2.5" />
                     {isAr ? `بعد ${timeUntil}` : `in ${timeUntil}`}
                   </Badge>

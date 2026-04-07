@@ -267,7 +267,7 @@ export default function ShopProduct() {
             {product.tags && product.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {product.tags.map((tag: string) => (
-                  <Badge key={tag} variant="secondary" className="text-[10px]">{tag}</Badge>
+                  <Badge key={tag} variant="secondary" className="text-[12px]">{tag}</Badge>
                 ))}
               </div>
             )}

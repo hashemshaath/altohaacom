@@ -374,12 +374,12 @@ function VerificationResult({
               {isAr ? "تم التحقق بنجاح" : "Verified Successfully"}
             </CardTitle>
             <CardDescription className="flex items-center gap-2 mt-1">
-              <Badge variant="secondary" className="text-[10px]">
+              <Badge variant="secondary" className="text-[12px]">
                 <Icon className="h-3 w-3 me-1" />
                 {isAr ? typeInfo.ar : typeInfo.en}
               </Badge>
               {result.scan_count > 0 && (
-                <span className="text-[10px] text-muted-foreground">
+                <span className="text-[12px] text-muted-foreground">
                   {isAr ? `${result.scan_count} مسح` : `${result.scan_count} scans`}
                 </span>
               )}

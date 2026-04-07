@@ -18,7 +18,7 @@ export const OpenToWorkBadge = memo(function OpenToWorkBadge({ note, noteAr, isA
     <Badge
       variant="default"
       className={`bg-chart-2/15 text-chart-2 border-chart-2/20 hover:bg-chart-2/20 gap-1.5 font-semibold ${
-        size === "sm" ? "text-[10px] px-2 py-0.5" : "text-xs px-2.5 py-1"
+        size === "sm" ? "text-[12px] px-2 py-0.5" : "text-xs px-2.5 py-1"
       } ${className || ""}`}
     >
       <Briefcase className={size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5"} />

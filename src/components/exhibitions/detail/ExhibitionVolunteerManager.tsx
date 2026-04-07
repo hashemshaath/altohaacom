@@ -116,7 +116,7 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
       checked_in: { icon: <CheckCircle2 className="h-2.5 w-2.5" />, cls: "bg-primary/10 text-primary" },
     };
     const m = map[s] || map.pending;
-    return <Badge className={`${m.cls} text-[10px] gap-0.5`}>{m.icon}{s}</Badge>;
+    return <Badge className={`${m.cls} text-[12px] gap-0.5`}>{m.icon}{s}</Badge>;
   };
 
   return (
@@ -132,7 +132,7 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
           <Card key={s.l} className="border-border/40">
             <CardContent className="p-3 text-center">
               <AnimatedCounter value={s.v} className={`text-xl font-bold ${s.c}`} />
-              <p className="text-[10px] text-muted-foreground">{s.l}</p>
+              <p className="text-[12px] text-muted-foreground">{s.l}</p>
             </CardContent>
           </Card>
         ))}
@@ -177,27 +177,27 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
                       <TableCell className="text-xs">
                         <div className="flex flex-wrap gap-1">
                           {(v.skills || []).slice(0, 3).map((s: string) => (
-                            <Badge key={s} variant="outline" className="text-[9px]">{s}</Badge>
+                            <Badge key={s} variant="outline" className="text-[12px]">{s}</Badge>
                           ))}
                         </div>
                       </TableCell>
                       <TableCell>{statusBadge(v.status)}</TableCell>
-                      <TableCell className="text-[10px] text-muted-foreground">{format(new Date(v.created_at), "MMM d")}</TableCell>
+                      <TableCell className="text-[12px] text-muted-foreground">{format(new Date(v.created_at), "MMM d")}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">
                           {v.status === "pending" && (
                             <>
-                              <Button size="sm" variant="outline" className="h-7 text-[10px] text-chart-3" onClick={() => updateStatus.mutate({ id: v.id, status: "approved" })}>
+                              <Button size="sm" variant="outline" className="h-7 text-[12px] text-chart-3" onClick={() => updateStatus.mutate({ id: v.id, status: "approved" })}>
                                 <CheckCircle2 className="h-3 w-3 me-1" />{t("Approve", "قبول")}
                               </Button>
-                              <Button size="sm" variant="outline" className="h-7 text-[10px] text-destructive" onClick={() => updateStatus.mutate({ id: v.id, status: "rejected" })}>
+                              <Button size="sm" variant="outline" className="h-7 text-[12px] text-destructive" onClick={() => updateStatus.mutate({ id: v.id, status: "rejected" })}>
                                 <XCircle className="h-3 w-3 me-1" />{t("Reject", "رفض")}
                               </Button>
                             </>
                           )}
                           <Dialog open={taskDialog === v.id} onOpenChange={(o) => { if (!o) setTaskDialog(null); }}>
                             <DialogTrigger asChild>
-                              <Button size="sm" variant="ghost" className="h-7 text-[10px]" onClick={() => setTaskDialog(v.id)}>
+                              <Button size="sm" variant="ghost" className="h-7 text-[12px]" onClick={() => setTaskDialog(v.id)}>
                                 <ClipboardList className="h-3 w-3 me-1" />
                                 {taskCount > 0 && <span className="text-primary">{taskCount}</span>}
                               </Button>
@@ -228,9 +228,9 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
                                     <p className="text-xs font-medium text-muted-foreground">{t("Assigned Tasks", "المهام المعينة")}</p>
                                     {tasks.filter((tk) => tk.volunteer_id === v.id).map((tk) => (
                                       <div key={tk.id} className="flex items-center gap-2 text-xs p-2 rounded-md bg-muted/40">
-                                        <Badge variant="outline" className="text-[9px]">{tk.priority}</Badge>
+                                        <Badge variant="outline" className="text-[12px]">{tk.priority}</Badge>
                                         <span className="flex-1">{tk.title}</span>
-                                        <Badge variant="outline" className="text-[9px]">{tk.status}</Badge>
+                                        <Badge variant="outline" className="text-[12px]">{tk.status}</Badge>
                                       </div>
                                     ))}
                                   </div>

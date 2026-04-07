@@ -167,7 +167,7 @@ export default function MembershipReferral() {
             <CardContent className="pt-4 pb-3 text-center">
               <stat.icon className="h-5 w-5 mx-auto text-primary mb-1" />
               <p className="text-2xl font-bold">{stat.value}</p>
-              <p className="text-[11px] text-muted-foreground">{stat.label}</p>
+              <p className="text-[12px] text-muted-foreground">{stat.label}</p>
             </CardContent>
           </Card>
         ))}
@@ -217,7 +217,7 @@ export default function MembershipReferral() {
                       <Users className="h-4 w-4 text-primary" />
                     </div>
                     <div>
-                      <Badge variant={ref.status === "converted" ? "default" : "secondary"} className="text-[10px]">
+                      <Badge variant={ref.status === "converted" ? "default" : "secondary"} className="text-[12px]">
                         {ref.status === "converted" ? (isAr ? "مُحوّل" : "Converted") : (isAr ? "في الانتظار" : "Pending")}
                       </Badge>
                       <p className="text-xs text-muted-foreground mt-0.5">
@@ -226,7 +226,7 @@ export default function MembershipReferral() {
                     </div>
                   </div>
                   <div className="text-end">
-                    <Badge variant="outline" className="capitalize text-[10px]">{ref.tier}</Badge>
+                    <Badge variant="outline" className="capitalize text-[12px]">{ref.tier}</Badge>
                     {ref.referrer_bonus_points > 0 && (
                       <p className="text-xs text-primary font-medium mt-0.5">
                         +{ref.referrer_bonus_points} {isAr ? "نقطة" : "pts"}

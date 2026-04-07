@@ -256,14 +256,14 @@ function SurveyCard({ survey, responded, responseCount, isAr, isOrganizer, exhib
             <p className="text-sm font-semibold">{isAr ? (survey.title_ar || survey.title) : survey.title}</p>
             {isOrganizer && (
               <div className="flex items-center gap-2 mt-1">
-                <Badge variant="outline" className="text-[9px] gap-1">
+                <Badge variant="outline" className="text-[12px] gap-1">
                   <BarChart3 className="h-2.5 w-2.5" /> {responseCount} {t("responses", "إجابة")}
                 </Badge>
               </div>
             )}
           </div>
           {responded ? (
-            <Badge className="bg-chart-3/10 text-chart-3 text-[10px] gap-1 shrink-0">
+            <Badge className="bg-chart-3/10 text-chart-3 text-[12px] gap-1 shrink-0">
               <CheckCircle2 className="h-3 w-3" /> {t("Completed", "مكتمل")}
             </Badge>
           ) : user && !isOrganizer ? (

@@ -80,7 +80,7 @@ export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
             </div>
             {isAr ? "ملخص التقارير الأسبوعي" : "Weekly Reports Summary"}
           </CardTitle>
-          <Badge variant="outline" className="text-[9px] font-medium">{isAr ? "آخر 7 أيام" : "Last 7 days"}</Badge>
+          <Badge variant="outline" className="text-[12px] font-medium">{isAr ? "آخر 7 أيام" : "Last 7 days"}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-3">
@@ -91,12 +91,12 @@ export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
                 <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${m.bg} transition-transform duration-200 group-hover:scale-110`}>
                   <m.icon className={`h-3 w-3 ${m.color}`} />
                 </div>
-                <span className="text-[11px] text-muted-foreground font-medium">{m.label}</span>
+                <span className="text-[12px] text-muted-foreground font-medium">{m.label}</span>
               </div>
               <AnimatedCounter value={m.total} className="text-xl font-bold tabular-nums" />
               <div className="flex items-center gap-1 mt-1">
                 <TrendingUp className="h-2.5 w-2.5 text-chart-2" />
-                <span className="text-[10px] text-chart-2 font-semibold tabular-nums">
+                <span className="text-[12px] text-chart-2 font-semibold tabular-nums">
                   +<AnimatedCounter value={m.thisWeek} className="inline" /> {isAr ? "هذا الأسبوع" : "this week"}
                 </span>
               </div>

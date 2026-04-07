@@ -126,7 +126,7 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="text-sm font-medium">{event.event_type?.replace(/_/g, " ")}</p>
-                        <Badge variant="outline" className={`text-[10px] px-1.5 py-0 ${severity.color}`}>
+                        <Badge variant="outline" className={`text-[12px] px-1.5 py-0 ${severity.color}`}>
                           {event.severity}
                         </Badge>
                       </div>
@@ -135,7 +135,7 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
                           {typeof event.metadata === "string" ? event.metadata : JSON.stringify(event.metadata)}
                         </p>
                       )}
-                      <div className="flex items-center gap-2 mt-1 text-[10px] text-muted-foreground/70">
+                      <div className="flex items-center gap-2 mt-1 text-[12px] text-muted-foreground/70">
                         <span>{formatDistanceToNow(new Date(event.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}</span>
                         {event.ip_address && <span>· IP: {event.ip_address}</span>}
                       </div>

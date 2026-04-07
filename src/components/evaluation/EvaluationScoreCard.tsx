@@ -54,7 +54,7 @@ export const EvaluationScoreCard = memo(function EvaluationScoreCard({ overallSc
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-2xl font-black">{overallScore.toFixed(1)}</span>
-                <span className="text-[10px] text-muted-foreground">/{maxScore}</span>
+                <span className="text-[12px] text-muted-foreground">/{maxScore}</span>
               </div>
             </div>
             <div className="flex-1">

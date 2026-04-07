@@ -108,7 +108,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
               <button
                 onClick={() => toggleSection(idx)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wider transition-colors select-none",
+                  "flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-[12px] font-semibold uppercase tracking-wider transition-colors select-none",
                   hasActiveItem
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"

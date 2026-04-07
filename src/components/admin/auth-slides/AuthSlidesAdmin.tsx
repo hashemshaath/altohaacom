@@ -204,10 +204,10 @@ export function AuthSlidesAdmin() {
                   <p className="text-sm font-medium truncate">{isAr ? slide.title_ar || slide.title : slide.title || "—"}</p>
                   <p className="text-xs text-muted-foreground truncate">{isAr ? slide.subtitle_ar || slide.subtitle : slide.subtitle || "—"}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted font-mono">
+                    <span className="text-[12px] px-1.5 py-0.5 rounded bg-muted font-mono">
                       {slide.page_type === "both" ? (isAr ? "الكل" : "Both") : slide.page_type === "company" ? (isAr ? "شركات" : "Company") : (isAr ? "أفراد" : "Individual")}
                     </span>
-                    {!slide.is_active && <span className="text-[10px] text-muted-foreground">{isAr ? "معطل" : "Inactive"}</span>}
+                    {!slide.is_active && <span className="text-[12px] text-muted-foreground">{isAr ? "معطل" : "Inactive"}</span>}
                   </div>
                 </div>
                 <div className="flex gap-1 shrink-0">

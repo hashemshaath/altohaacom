@@ -255,7 +255,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
       custom: { en: "Custom", ar: "مخصص", color: "bg-muted text-muted-foreground" },
     };
     const l = labels[type];
-    return <Badge className={`text-[9px] h-4 border-0 ${l.color}`}>{isAr ? l.ar : l.en}</Badge>;
+    return <Badge className={`text-[12px] h-4 border-0 ${l.color}`}>{isAr ? l.ar : l.en}</Badge>;
   };
 
   const handleAddNew = async () => {
@@ -323,7 +323,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
               <p className="font-medium text-sm truncate">{isAr ? (value.nameAr || value.name) : value.name}</p>
               {sourceBadge(value.type)}
             </div>
-            <p className="text-[10px] text-muted-foreground truncate">
+            <p className="text-[12px] text-muted-foreground truncate">
               {[value.email, value.country].filter(Boolean).join(" • ")}
             </p>
           </div>
@@ -346,7 +346,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
                 type="button"
                 variant={category === cat.value ? "default" : "outline"}
                 size="sm"
-                className="h-7 text-[11px] px-2.5"
+                className="h-7 text-[12px] px-2.5"
                 onClick={() => setCategory(cat.value)}
               >
                 {isAr ? cat.ar : cat.en}
@@ -413,7 +413,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
                           <p className="font-medium text-xs truncate">{isAr ? (item.nameAr || item.name) : item.name}</p>
                           {sourceBadge(item.source)}
                         </div>
-                        <p className="text-[10px] text-muted-foreground truncate">{item.subtitle}</p>
+                        <p className="text-[12px] text-muted-foreground truncate">{item.subtitle}</p>
                       </div>
                     </button>
                   ))}
@@ -460,7 +460,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
                 </div>
                 <CountrySelector value={newCountry} onChange={setNewCountry} label={t("Country", "الدولة")} />
               </div>
-              <p className="text-[10px] text-muted-foreground">
+              <p className="text-[12px] text-muted-foreground">
                 {t("⚠️ Will be pending admin review", "⚠️ ستكون بحالة 'قيد المراجعة' حتى الاعتماد")}
               </p>
               <div className="flex gap-2">

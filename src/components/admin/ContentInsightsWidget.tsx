@@ -91,7 +91,7 @@ export const ContentInsightsWidget = memo(function ContentInsightsWidget() {
             <CardContent className="flex items-center gap-2 p-2">
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3 w-3 ${kpi.color}`} /></div>
               <div>
-                <p className="text-[9px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
                 <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : parseInt(String(kpi.value).replace(/,/g, "")) || 0} className="text-sm font-bold" />
               </div>
             </CardContent>
@@ -130,10 +130,10 @@ export const ContentInsightsWidget = memo(function ContentInsightsWidget() {
           </PieChart>
           <div className="ms-3 space-y-1">
             {data.typeDistribution.map((t, i) => (
-              <div key={t.name} className="flex items-center gap-1.5 text-[10px]">
+              <div key={t.name} className="flex items-center gap-1.5 text-[12px]">
                 <span className="h-2 w-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
                 <span className="capitalize">{t.name}</span>
-                <Badge variant="outline" className="text-[9px] h-4 ms-auto">{t.value}</Badge>
+                <Badge variant="outline" className="text-[12px] h-4 ms-auto">{t.value}</Badge>
               </div>
             ))}
           </div>
@@ -154,10 +154,10 @@ export const ContentInsightsWidget = memo(function ContentInsightsWidget() {
             const pct = Math.round(((a.view_count || 0) / maxViews) * 100);
             return (
               <div key={a.id} className="space-y-0.5">
-                <div className="flex items-center gap-2 text-[10px]">
+                <div className="flex items-center gap-2 text-[12px]">
                   <span className={`font-bold w-4 ${i === 0 ? "text-primary" : "text-muted-foreground"}`}>{i + 1}</span>
                   <span className="truncate flex-1">{a.title}</span>
-                  <Badge variant="outline" className="text-[9px] h-4 shrink-0"><AnimatedCounter value={a.view_count || 0} /></Badge>
+                  <Badge variant="outline" className="text-[12px] h-4 shrink-0"><AnimatedCounter value={a.view_count || 0} /></Badge>
                 </div>
                 <div className="ms-6 h-1 rounded-full bg-muted overflow-hidden">
                   <div className="h-full rounded-full bg-chart-3/60 transition-all duration-500" style={{ width: `${pct}%` }} />

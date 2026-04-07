@@ -95,7 +95,7 @@ export const ArticleAnnotations = memo(function ArticleAnnotations({
         <Highlighter className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">{isAr ? "تعليقات" : "Notes"}</span>
         {annotations.length > 0 && (
-          <Badge variant="secondary" className="text-[9px] h-4 px-1 min-w-[16px] justify-center">
+          <Badge variant="secondary" className="text-[12px] h-4 px-1 min-w-[16px] justify-center">
             {annotations.length}
           </Badge>
         )}
@@ -114,7 +114,7 @@ export const ArticleAnnotations = memo(function ArticleAnnotations({
               <Button
                 variant={mode === "capturing" ? "default" : "outline"}
                 size="sm"
-                className="h-7 text-[10px] rounded-lg gap-1"
+                className="h-7 text-[12px] rounded-lg gap-1"
                 onClick={handleCapture}
               >
                 <Plus className="h-3 w-3" />
@@ -167,9 +167,9 @@ export const ArticleAnnotations = memo(function ArticleAnnotations({
             ) : (
               annotations.map(a => (
                 <div key={a.id} className={cn("rounded-xl border p-2.5 group relative", a.color)}>
-                  <p className="text-[11px] font-medium line-clamp-2 mb-1">"{a.text}"</p>
+                  <p className="text-[12px] font-medium line-clamp-2 mb-1">"{a.text}"</p>
                   {a.note && (
-                    <p className="text-[10px] text-muted-foreground flex items-start gap-1 mt-1">
+                    <p className="text-[12px] text-muted-foreground flex items-start gap-1 mt-1">
                       <CornerDownRight className="h-2.5 w-2.5 mt-0.5 shrink-0" />
                       {a.note}
                     </p>

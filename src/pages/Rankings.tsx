@@ -168,14 +168,14 @@ export default function Rankings() {
                       <Link to={chef.profile?.username ? `/${chef.profile.username}` : "#"} className="text-center hover:text-primary transition-colors">
                         <p className="text-xs sm:text-sm font-bold truncate max-w-[100px]">{chef.profile?.full_name || "—"}</p>
                       </Link>
-                      <Badge variant="outline" className="text-[10px]">{chef.total_points} pts</Badge>
+                      <Badge variant="outline" className="text-[12px]">{chef.total_points} pts</Badge>
                       <div className={`${heights[actualRank as 1 | 2 | 3]} w-20 sm:w-28 rounded-t-xl ${actualRank === 1 ? "bg-gradient-to-t from-yellow-500/20 to-yellow-500/5" : "bg-muted/60"} flex flex-col items-center justify-center gap-1`}>
                         <div className="flex gap-0.5">
-                          {chef.gold_medals > 0 && <Badge variant="secondary" className="text-[9px] px-1">🥇{chef.gold_medals}</Badge>}
-                          {chef.silver_medals > 0 && <Badge variant="secondary" className="text-[9px] px-1">🥈{chef.silver_medals}</Badge>}
-                          {chef.bronze_medals > 0 && <Badge variant="secondary" className="text-[9px] px-1">🥉{chef.bronze_medals}</Badge>}
+                          {chef.gold_medals > 0 && <Badge variant="secondary" className="text-[12px] px-1">🥇{chef.gold_medals}</Badge>}
+                          {chef.silver_medals > 0 && <Badge variant="secondary" className="text-[12px] px-1">🥈{chef.silver_medals}</Badge>}
+                          {chef.bronze_medals > 0 && <Badge variant="secondary" className="text-[12px] px-1">🥉{chef.bronze_medals}</Badge>}
                         </div>
-                        <p className="text-[10px] text-muted-foreground">{chef.competitions_entered} {isAr ? "مسابقة" : "comp."}</p>
+                        <p className="text-[12px] text-muted-foreground">{chef.competitions_entered} {isAr ? "مسابقة" : "comp."}</p>
                       </div>
                     </div>
                   );
@@ -204,7 +204,7 @@ export default function Rankings() {
                           <Link to={chef.profile?.username ? `/${chef.profile.username}` : "#"} className="text-sm font-semibold hover:text-primary transition-colors truncate block">
                             {chef.profile?.full_name || "—"}
                           </Link>
-                          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
                             {chef.country_code && <span>{countryFlag(chef.country_code)}</span>}
                             {chef.specialty && <span>{chef.specialty}</span>}
                           </div>
@@ -217,7 +217,7 @@ export default function Rankings() {
                           {chef.bronze_medals > 0 && <span className="text-xs">🥉{chef.bronze_medals}</span>}
                         </div>
                         {chef.average_score > 0 && (
-                          <span className="text-[10px] text-muted-foreground tabular-nums hidden sm:inline">
+                          <span className="text-[12px] text-muted-foreground tabular-nums hidden sm:inline">
                             {isAr ? "المعدل:" : "Avg:"} {Number(chef.average_score).toFixed(1)}
                           </span>
                         )}
@@ -226,12 +226,12 @@ export default function Rankings() {
                           {chef.rank_change && chef.rank_change > 0 ? (
                             <div className="flex items-center gap-0.5">
                               <TrendingUp className="h-4 w-4 text-chart-5" />
-                              <span className="text-[9px] text-chart-5 font-bold">+{chef.rank_change}</span>
+                              <span className="text-[12px] text-chart-5 font-bold">+{chef.rank_change}</span>
                             </div>
                           ) : chef.rank_change && chef.rank_change < 0 ? (
                             <div className="flex items-center gap-0.5">
                               <TrendingDown className="h-4 w-4 text-destructive" />
-                              <span className="text-[9px] text-destructive font-bold">{chef.rank_change}</span>
+                              <span className="text-[12px] text-destructive font-bold">{chef.rank_change}</span>
                             </div>
                           ) : (
                             <Minus className="h-4 w-4 text-muted-foreground" />

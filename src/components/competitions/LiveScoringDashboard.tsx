@@ -155,7 +155,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
             <Radio className={`h-3 w-3 ${isLive ? "animate-pulse" : ""}`} />
             {isLive ? (isAr ? "بث مباشر" : "LIVE") : (isAr ? "متوقف" : "PAUSED")}
           </div>
-          <span className="text-[10px] text-muted-foreground font-medium">
+          <span className="text-[12px] text-muted-foreground font-medium">
             {isAr ? "آخر تحديث:" : "Updated:"} {lastUpdate.toLocaleTimeString()}
           </span>
         </div>
@@ -191,7 +191,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
           <div key={label} className={`rounded-xl ${bg} p-3 sm:p-4 text-center transition-all hover:scale-[1.02]`}>
             <Icon className={`mx-auto mb-1.5 h-4 w-4 ${color}`} />
             <p className="text-xl sm:text-2xl font-bold tabular-nums">{value}</p>
-            <p className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
+            <p className="text-[12px] sm:text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
           </div>
         ))}
       </div>
@@ -199,7 +199,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
       {/* Progress Bar */}
       <div className="space-y-1.5">
         <Progress value={progressPct} className="h-2.5 rounded-full" />
-        <p className="text-[10px] text-muted-foreground font-medium">
+        <p className="text-[12px] text-muted-foreground font-medium">
           {fullyScoredCount}/{totalParticipants} {isAr ? "مشارك تم تقييمه بالكامل" : "participants fully scored"}
         </p>
       </div>
@@ -237,7 +237,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
                 {/* Info */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold truncate">{entry.participantName}</p>
-                  <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-0.5">
+                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-0.5">
                     <span className="truncate">{entry.categoryName}</span>
                     <span className="shrink-0">·</span>
                     <span className="shrink-0">{entry.judgesScored}/{entry.totalJudges} {isAr ? "حكم" : "judges"}</span>
@@ -247,11 +247,11 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
                 {/* Score */}
                 <div className="text-end shrink-0">
                   <p className={`text-lg sm:text-xl font-bold tabular-nums ${isTopThree ? "text-primary" : ""}`}>{entry.totalScore}</p>
-                  <p className="text-[10px] text-muted-foreground font-medium">{scorePct}%</p>
+                  <p className="text-[12px] text-muted-foreground font-medium">{scorePct}%</p>
                 </div>
 
                 {entry.judgesScored >= entry.totalJudges && (
-                  <Badge variant="outline" className="text-[9px] h-5 border-chart-5/30 text-chart-5 shrink-0 rounded-xl hidden sm:flex">
+                  <Badge variant="outline" className="text-[12px] h-5 border-chart-5/30 text-chart-5 shrink-0 rounded-xl hidden sm:flex">
                     ✓ {isAr ? "مكتمل" : "Done"}
                   </Badge>
                 )}

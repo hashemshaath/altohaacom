@@ -123,11 +123,11 @@ export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-medium truncate">{isAr ? (off.full_name_ar || off.full_name) : off.full_name}</p>
-                  <Badge variant="secondary" className="text-[9px] h-4 shrink-0">
+                  <Badge variant="secondary" className="text-[12px] h-4 shrink-0">
                     {isAr ? (off.role_title_ar || off.role_title) : off.role_title}
                   </Badge>
                 </div>
-                <p className="text-[10px] text-muted-foreground truncate">
+                <p className="text-[12px] text-muted-foreground truncate">
                   {[off.email, off.phone].filter(Boolean).join(" • ")}
                 </p>
               </div>

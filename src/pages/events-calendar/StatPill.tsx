@@ -19,7 +19,7 @@ export function StatPill({ icon: Icon, value, label, color }: { icon: LucideIcon
       </div>
       <div>
         <p className={cn("text-lg font-bold tabular-nums leading-none", styles.text)}>{value}</p>
-        <p className="text-[10px] text-muted-foreground">{label}</p>
+        <p className="text-[12px] text-muted-foreground">{label}</p>
       </div>
     </div>
   );

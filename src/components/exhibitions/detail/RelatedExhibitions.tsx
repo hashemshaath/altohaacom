@@ -101,7 +101,7 @@ export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionI
                   )}
                   <Badge
                     className={cn(
-                      "absolute top-2 end-2 text-[10px]",
+                      "absolute top-2 end-2 text-[12px]",
                       status === "live" && "bg-chart-3 text-white",
                       status === "ended" && "bg-muted text-muted-foreground",
                       status === "upcoming" && "bg-primary text-primary-foreground"
@@ -112,7 +112,7 @@ export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionI
                 </div>
                 <CardContent className="p-3.5 space-y-1.5">
                   <h3 className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{title}</h3>
-                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                  <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {format(start, "MMM yyyy", { locale: isAr ? ar : undefined })}

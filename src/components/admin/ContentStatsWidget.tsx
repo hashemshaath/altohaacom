@@ -56,7 +56,7 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
             <div key={s.label} className="text-center p-2 rounded-xl bg-muted/50">
               <s.icon className={`h-3.5 w-3.5 mx-auto ${s.color} mb-1`} />
               <p className="text-lg font-bold">{s.value}</p>
-              <p className="text-[10px] text-muted-foreground">{s.label}</p>
+              <p className="text-[12px] text-muted-foreground">{s.label}</p>
             </div>
           ))}
         </div>
@@ -79,7 +79,7 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
               <div key={a.id} className="flex items-center justify-between text-xs py-1 border-b border-border/30 last:border-0">
                 <span className="truncate flex-1 me-2">{isAr ? a.title_ar || a.title : a.title}</span>
                 <div className="flex items-center gap-1.5 shrink-0">
-                  <Badge variant="outline" className="text-[9px] px-1 py-0">{a.type}</Badge>
+                  <Badge variant="outline" className="text-[12px] px-1 py-0">{a.type}</Badge>
                   <span className="text-muted-foreground"><AnimatedCounter value={a.view_count || 0} /></span>
                   <Eye className="h-3 w-3 text-muted-foreground" />
                 </div>

@@ -76,7 +76,7 @@ export const NewsRelatedTopics = memo(function NewsRelatedTopics({
           <Badge
             key={tag.id}
             variant="secondary"
-            className="rounded-xl text-[10px] px-2.5 py-1 gap-1 cursor-default"
+            className="rounded-xl text-[12px] px-2.5 py-1 gap-1 cursor-default"
           >
             <Hash className="h-2.5 w-2.5" />
             {isAr && tag.name_ar ? tag.name_ar : tag.name}
@@ -115,7 +115,7 @@ export const NewsRelatedTopics = memo(function NewsRelatedTopics({
                       {artTitle}
                     </h4>
                     <div className="flex items-center gap-2 mt-1.5">
-                      <Badge variant="outline" className="text-[8px] px-1.5 py-0 h-4 rounded-md border-primary/20 text-primary gap-0.5">
+                      <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-4 rounded-md border-primary/20 text-primary gap-0.5">
                         <Layers className="h-2 w-2" />
                         {score} {isAr ? "وسم مشترك" : score === 1 ? "shared tag" : "shared tags"}
                       </Badge>

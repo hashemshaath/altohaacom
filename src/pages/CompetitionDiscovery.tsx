@@ -110,7 +110,7 @@ export default function CompetitionDiscovery() {
           <div className="text-center space-y-2.5">
             <div className="inline-flex items-center gap-2 rounded-xl bg-primary/10 px-3.5 py-1.5 ring-1 ring-primary/15 mx-auto">
               <Trophy className="h-3 w-3 text-primary" />
-              <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+              <span className="text-[12px] font-bold uppercase tracking-widest text-primary">
                 {isAr ? "استكشاف" : "Discover"}
               </span>
             </div>

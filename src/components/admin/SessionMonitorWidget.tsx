@@ -71,7 +71,7 @@ export const SessionMonitorWidget = memo(function SessionMonitorWidget() {
         <CardTitle className="text-base flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" />
           {isAr ? "مراقبة الجلسات المباشرة" : "Live Session Monitor"}
-          <Badge variant="default" className="ms-auto animate-pulse text-[10px]">
+          <Badge variant="default" className="ms-auto animate-pulse text-[12px]">
             <Wifi className="h-2.5 w-2.5 me-1" />
             {isAr ? "مباشر" : "Live"}
           </Badge>
@@ -83,7 +83,7 @@ export const SessionMonitorWidget = memo(function SessionMonitorWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
               <div className="text-lg font-bold">{s.value}</div>
-              <div className="text-[10px] text-muted-foreground">{s.label}</div>
+              <div className="text-[12px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -102,7 +102,7 @@ export const SessionMonitorWidget = memo(function SessionMonitorWidget() {
                     <DevIcon className="h-3.5 w-3.5 text-muted-foreground" />
                     <div>
                       <div className="text-sm font-bold">{count}</div>
-                      <div className="text-[9px] text-muted-foreground capitalize">{device}</div>
+                      <div className="text-[12px] text-muted-foreground capitalize">{device}</div>
                     </div>
                   </div>
                 );
@@ -120,8 +120,8 @@ export const SessionMonitorWidget = memo(function SessionMonitorWidget() {
                 {data.suspicious.map(e => (
                   <div key={e.id} className="flex items-center gap-2 p-1.5 rounded-md hover:bg-destructive/5">
                     <div className="h-1.5 w-1.5 rounded-full bg-destructive flex-shrink-0" />
-                    <span className="text-[11px] truncate flex-1">{e.event_type}</span>
-                    <span className="text-[9px] text-muted-foreground">
+                    <span className="text-[12px] truncate flex-1">{e.event_type}</span>
+                    <span className="text-[12px] text-muted-foreground">
                       {formatDistanceToNow(new Date(e.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
                     </span>
                   </div>

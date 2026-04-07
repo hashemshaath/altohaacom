@@ -352,13 +352,13 @@ export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
                         {isAr && crit.name_ar ? crit.name_ar : crit.name}
                       </p>
                       {(crit.description || crit.description_ar) && (
-                        <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
+                        <p className="text-[12px] text-muted-foreground mt-0.5 line-clamp-2">
                           {isAr && crit.description_ar ? crit.description_ar : crit.description}
                         </p>
                       )}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <Badge variant="outline" className="text-[10px]">
+                      <Badge variant="outline" className="text-[12px]">
                         {isAr ? "الأقصى" : "Max"}: {crit.max_score}
                       </Badge>
                       {isOrganizer && (

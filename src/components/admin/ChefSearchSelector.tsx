@@ -109,8 +109,8 @@ export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valu
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{isAr && chef.full_name_ar ? chef.full_name_ar : chef.full_name}</p>
                   <div className="flex items-center gap-2">
-                    {chef.experience_level && <Badge variant="secondary" className="text-[10px] h-4">{chef.experience_level}</Badge>}
-                    {chef.specialization && <span className="text-[10px] text-muted-foreground truncate">{chef.specialization}</span>}
+                    {chef.experience_level && <Badge variant="secondary" className="text-[12px] h-4">{chef.experience_level}</Badge>}
+                    {chef.specialization && <span className="text-[12px] text-muted-foreground truncate">{chef.specialization}</span>}
                   </div>
                 </div>
               </button>

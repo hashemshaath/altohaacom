@@ -154,7 +154,7 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
                   </div>
                 )}
                 {p.compare_at_price && p.compare_at_price > p.price && (
-                  <Badge variant="destructive" className="absolute top-2 start-2 text-[10px]">
+                  <Badge variant="destructive" className="absolute top-2 start-2 text-[12px]">
                     -{Math.round((1 - p.price / p.compare_at_price) * 100)}%
                   </Badge>
                 )}
@@ -169,7 +169,7 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
               </div>
               <CardContent className={cn("p-3", view === "list" && "flex-1")}>
                 <p className="text-sm font-medium line-clamp-2 mb-1">{isAr ? p.title_ar || p.title : p.title}</p>
-                {p.category && <Badge variant="secondary" className="text-[10px] mb-2">{p.category}</Badge>}
+                {p.category && <Badge variant="secondary" className="text-[12px] mb-2">{p.category}</Badge>}
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-sm font-bold text-primary">{p.price?.toFixed(2)} {p.currency || "SAR"}</span>
                   {p.compare_at_price && p.compare_at_price > p.price && (
@@ -194,12 +194,12 @@ export const ProductCatalog = memo(function ProductCatalog({ onAddToCart }: Prop
                   </Button>
                 </div>
                 {p.stock_quantity !== null && p.stock_quantity <= 5 && p.stock_quantity > 0 && (
-                  <p className="text-[10px] text-destructive mt-1">
+                  <p className="text-[12px] text-destructive mt-1">
                     {isAr ? `باقي ${p.stock_quantity} فقط` : `Only ${p.stock_quantity} left`}
                   </p>
                 )}
                 {p.stock_quantity === 0 && (
-                  <Badge variant="outline" className="text-[10px] mt-1 text-destructive border-destructive/30">
+                  <Badge variant="outline" className="text-[12px] mt-1 text-destructive border-destructive/30">
                     {isAr ? "نفد المخزون" : "Out of stock"}
                   </Badge>
                 )}

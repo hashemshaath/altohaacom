@@ -126,7 +126,7 @@ export const SupplierProfileCompletion = memo(function SupplierProfileCompletion
       </CardHeader>
       <CardContent className="space-y-4">
         <Progress value={pct} className="h-2" />
-        <p className="text-[10px] text-muted-foreground text-center">
+        <p className="text-[12px] text-muted-foreground text-center">
           {completed.length}/{STEPS.length} {isAr ? "خطوات مكتملة" : "steps done"}
         </p>
 

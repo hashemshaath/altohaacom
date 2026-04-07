@@ -141,13 +141,13 @@ export const CustomerHealthScores = memo(function CustomerHealthScores() {
       <CardContent className="space-y-4">
         {/* Distribution */}
         <div className="flex items-center gap-3">
-          <Badge variant="outline" className="bg-chart-5/10 text-chart-5 text-[10px]">
+          <Badge variant="outline" className="bg-chart-5/10 text-chart-5 text-[12px]">
             {healthy} {isAr ? "ممتاز" : "Healthy"}
           </Badge>
-          <Badge variant="outline" className="bg-chart-3/10 text-chart-3 text-[10px]">
+          <Badge variant="outline" className="bg-chart-3/10 text-chart-3 text-[12px]">
             {atRisk} {isAr ? "متوسط" : "At Risk"}
           </Badge>
-          <Badge variant="outline" className="bg-destructive/10 text-destructive text-[10px]">
+          <Badge variant="outline" className="bg-destructive/10 text-destructive text-[12px]">
             {critical} {isAr ? "حرج" : "Critical"}
           </Badge>
         </div>
@@ -167,7 +167,7 @@ export const CustomerHealthScores = memo(function CustomerHealthScores() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{customer.name}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-[10px] text-muted-foreground">
+                    <span className="text-[12px] text-muted-foreground">
                       🎫{customer.ticketCount} 💬{customer.chatCount} 🛒{customer.orderCount}
                     </span>
                   </div>
@@ -176,7 +176,7 @@ export const CustomerHealthScores = memo(function CustomerHealthScores() {
                   <TrendIcon trend={customer.trend} />
                   <div className="text-end w-14">
                     <p className={`text-sm font-bold ${getScoreColor(customer.score)}`}>{customer.score}</p>
-                    <Badge variant="outline" className={`text-[8px] px-1 py-0 ${getScoreBg(customer.score)} ${getScoreColor(customer.score)}`}>
+                    <Badge variant="outline" className={`text-[12px] px-1 py-0 ${getScoreBg(customer.score)} ${getScoreColor(customer.score)}`}>
                       {getScoreLabel(customer.score)}
                     </Badge>
                   </div>

@@ -869,7 +869,7 @@ export default function NotificationsAdmin() {
                           <div key={i} className="flex flex-col items-center gap-1 flex-1">
                             <span className="text-xs font-medium">{count}</span>
                             <div className="w-full rounded-t-md bg-primary/80 transition-all" style={{ height: `${height}%` }} />
-                            <span className="text-[10px] text-muted-foreground">{day}</span>
+                            <span className="text-[12px] text-muted-foreground">{day}</span>
                           </div>
                         );
                       })}
@@ -903,12 +903,12 @@ export default function NotificationsAdmin() {
                       <CardContent className="p-4 space-y-2">
                         <div className="flex items-center justify-between">
                           <p className="font-medium text-sm">{isAr && t.name_ar ? t.name_ar : t.name}</p>
-                          <div className="flex items-center gap-1">{getChannelIcon(t.channel)}<span className="text-[10px] capitalize text-muted-foreground">{t.channel}</span></div>
+                          <div className="flex items-center gap-1">{getChannelIcon(t.channel)}<span className="text-[12px] capitalize text-muted-foreground">{t.channel}</span></div>
                         </div>
-                        <p className="text-[10px] font-mono text-muted-foreground">{t.slug}</p>
+                        <p className="text-[12px] font-mono text-muted-foreground">{t.slug}</p>
                         {t.variables && t.variables.length > 0 && (
                           <div className="flex flex-wrap gap-1">
-                            {t.variables.map((v: string) => <Badge key={v} variant="outline" className="text-[10px]">{`{{${v}}}`}</Badge>)}
+                            {t.variables.map((v: string) => <Badge key={v} variant="outline" className="text-[12px]">{`{{${v}}}`}</Badge>)}
                           </div>
                         )}
                       </CardContent>

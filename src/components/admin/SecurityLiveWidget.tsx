@@ -139,7 +139,7 @@ export const SecurityLiveWidget = memo(function SecurityLiveWidget() {
           {data.topTypes.map(([type, count]) => (
             <div key={type} className="flex items-center justify-between text-xs">
               <span className="truncate max-w-[120px]">{type.replace(/_/g, " ")}</span>
-              <Badge variant="secondary" className="text-[10px]">{count}</Badge>
+              <Badge variant="secondary" className="text-[12px]">{count}</Badge>
             </div>
           ))}
         </CardContent>

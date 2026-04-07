@@ -67,9 +67,9 @@ export const ExhibitionStats = memo(function ExhibitionStats({ exhibitionId, isA
               >
                 <Icon className={`mx-auto mb-1 h-4 w-4 text-${item.color}`} />
                 <p className="text-lg font-bold text-foreground">{item.value}</p>
-                <p className="text-[10px] font-medium text-muted-foreground">{item.label}</p>
+                <p className="text-[12px] font-medium text-muted-foreground">{item.label}</p>
                 {item.extra && (
-                  <Badge variant="secondary" className="mt-1 text-[9px] h-4 px-1.5">{item.extra}</Badge>
+                  <Badge variant="secondary" className="mt-1 text-[12px] h-4 px-1.5">{item.extra}</Badge>
                 )}
               </div>
             );

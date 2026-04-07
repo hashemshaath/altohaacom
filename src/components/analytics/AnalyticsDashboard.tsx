@@ -187,8 +187,8 @@ export const AnalyticsDashboard = memo(function AnalyticsDashboard() {
               <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={dailyData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="date" tickFormatter={d => format(new Date(d), "d/M")} className="text-[10px]" />
-                  <YAxis className="text-[10px]" />
+                  <XAxis dataKey="date" tickFormatter={d => format(new Date(d), "d/M")} className="text-[12px]" />
+                  <YAxis className="text-[12px]" />
                   <Tooltip labelFormatter={d => format(new Date(d as string), "MMM d, yyyy")} />
                   <Area type="monotone" dataKey="followers" stroke="hsl(var(--primary))" fill="hsl(var(--primary) / 0.2)" name={isAr ? "متابعون" : "Followers"} />
                   <Area type="monotone" dataKey="views" stroke="hsl(var(--chart-4))" fill="hsl(var(--chart-4) / 0.2)" name={isAr ? "مشاهدات" : "Views"} />
@@ -207,8 +207,8 @@ export const AnalyticsDashboard = memo(function AnalyticsDashboard() {
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={dailyData}>
                   <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="date" tickFormatter={d => format(new Date(d), "d/M")} className="text-[10px]" />
-                  <YAxis className="text-[10px]" />
+                  <XAxis dataKey="date" tickFormatter={d => format(new Date(d), "d/M")} className="text-[12px]" />
+                  <YAxis className="text-[12px]" />
                   <Tooltip labelFormatter={d => format(new Date(d as string), "MMM d, yyyy")} />
                   <Bar dataKey="likes" fill="hsl(var(--chart-2))" name={isAr ? "إعجابات" : "Likes"} radius={[2, 2, 0, 0]} />
                   <Bar dataKey="comments" fill="hsl(var(--chart-3))" name={isAr ? "تعليقات" : "Comments"} radius={[2, 2, 0, 0]} />

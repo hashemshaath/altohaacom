@@ -42,7 +42,7 @@ export const PublicProfileStats = memo(function PublicProfileStats({ profile, fo
                 <span className="text-sm sm:text-base md:text-lg font-bold tabular-nums leading-tight">
                   {typeof stat.value === 'number' ? <AnimatedCounter value={stat.value} /> : stat.value}
                 </span>
-                <span className="text-[9px] sm:text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5 whitespace-nowrap">
+                <span className="text-[12px] sm:text-[12px] text-muted-foreground flex items-center gap-1 mt-0.5 whitespace-nowrap">
                   {stat.label}
                 </span>
               </button>

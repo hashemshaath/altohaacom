@@ -67,7 +67,7 @@ export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, cop
 
   return (
     <div className="space-y-1 group">
-      <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
+      <span className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{label}</span>
       <div className="flex items-start gap-1.5">
         {editing ? (
           <div className="flex-1 flex items-start gap-1">

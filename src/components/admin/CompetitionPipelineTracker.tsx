@@ -102,17 +102,17 @@ export const CompetitionPipelineTracker = memo(function CompetitionPipelineTrack
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <Users className="h-3.5 w-3.5 mx-auto mb-0.5 text-primary" />
             <AnimatedCounter value={data?.pipeline.totalRegistrations || 0} className="text-sm font-bold" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "تسجيلات" : "Registrations"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "تسجيلات" : "Registrations"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <CheckCircle className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-2" />
             <AnimatedCounter value={data?.pipeline.approvedRegistrations || 0} className="text-sm font-bold" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "معتمدة" : "Approved"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "معتمدة" : "Approved"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50">
             <Gavel className="h-3.5 w-3.5 mx-auto mb-0.5 text-chart-5" />
             <AnimatedCounter value={data?.pipeline.totalScores || 0} className="text-sm font-bold" />
-            <p className="text-[10px] text-muted-foreground">{isAr ? "تقييمات" : "Scores"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "تقييمات" : "Scores"}</p>
           </div>
         </div>
 
@@ -132,7 +132,7 @@ export const CompetitionPipelineTracker = memo(function CompetitionPipelineTrack
                     value={comp.max_participants ? (comp.regCount / comp.max_participants) * 100 : 50}
                     className="w-16 h-1.5"
                   />
-                  <Badge variant="outline" className="text-[10px]">
+                  <Badge variant="outline" className="text-[12px]">
                     {comp.regCount}
                   </Badge>
                 </div>

@@ -118,7 +118,7 @@ export const DashboardLayoutControl = memo(function DashboardLayoutControl({ wid
       <PopoverContent className="w-72 p-0" align="end">
         <div className="flex items-center justify-between border-b px-3 py-2">
           <p className="text-xs font-semibold">{isAr ? "الويدجتات" : "Widgets"}</p>
-          <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1" onClick={resetLayout}>
+          <Button variant="ghost" size="sm" className="h-6 text-[12px] gap-1" onClick={resetLayout}>
             <RotateCcw className="h-3 w-3" />
             {isAr ? "إعادة تعيين" : "Reset"}
           </Button>

@@ -300,7 +300,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
           {/* Action Bar */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-[10px]">
+              <Badge variant="secondary" className="text-[12px]">
                 {selectedMetrics.length} {isAr ? "مقاييس" : "metrics"}
               </Badge>
             </div>

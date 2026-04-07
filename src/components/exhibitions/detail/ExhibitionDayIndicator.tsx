@@ -64,7 +64,7 @@ export const ExhibitionDayIndicator = memo(function ExhibitionDayIndicator({ sta
             return (
               <div
                 key={i}
-                className={`relative flex h-8 w-8 items-center justify-center rounded-xl text-[10px] font-bold transition-all ${
+                className={`relative flex h-8 w-8 items-center justify-center rounded-xl text-[12px] font-bold transition-all ${
                   isCurrent
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 ring-2 ring-primary/30 scale-110"
                     : isPassed
@@ -85,14 +85,14 @@ export const ExhibitionDayIndicator = memo(function ExhibitionDayIndicator({ sta
             );
           })}
           {totalDays > 14 && (
-            <div className="flex h-8 items-center px-1 text-[10px] text-muted-foreground">
+            <div className="flex h-8 items-center px-1 text-[12px] text-muted-foreground">
               +{totalDays - 14}
             </div>
           )}
         </div>
 
         {/* Dates */}
-        <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
+        <div className="flex items-center justify-between text-[12px] text-muted-foreground pt-1">
           <div className="flex items-center gap-1.5">
             <Clock className="h-3 w-3" />
             <span>{format(start, "MMM d, yyyy")}</span>

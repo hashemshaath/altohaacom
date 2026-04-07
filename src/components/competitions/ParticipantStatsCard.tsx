@@ -52,7 +52,7 @@ export const ParticipantStatsCard = memo(function ParticipantStatsCard({ competi
             </div>
             {isAr ? "إحصائيات المشاركين" : "Participant Stats"}
           </h3>
-          <Badge variant="secondary" className="text-[10px] font-bold tabular-nums">
+          <Badge variant="secondary" className="text-[12px] font-bold tabular-nums">
             {stats.total} {isAr ? "إجمالي" : "total"}
           </Badge>
         </div>
@@ -69,7 +69,7 @@ export const ParticipantStatsCard = memo(function ParticipantStatsCard({ competi
                 <Icon className={`h-4 w-4 ${color}`} />
               </div>
               <AnimatedCounter value={value} className="text-2xl font-black tabular-nums" />
-              <p className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">{label}</p>
+              <p className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground mt-0.5">{label}</p>
             </div>
           ))}
         </div>
@@ -82,7 +82,7 @@ export const ParticipantStatsCard = memo(function ParticipantStatsCard({ competi
             </div>
             <Progress value={Math.min(capacity, 100)} className="h-2.5 rounded-full" />
             {capacity >= 90 && (
-              <p className="flex items-center gap-1.5 text-[11px] text-destructive font-semibold">
+              <p className="flex items-center gap-1.5 text-[12px] text-destructive font-semibold">
                 <AlertTriangle className="h-3 w-3" />
                 {isAr ? "اقتربت السعة من الامتلاء!" : "Almost full!"}
               </p>

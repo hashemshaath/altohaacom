@@ -194,7 +194,7 @@ export default function CompanyPortalLayout() {
               end={item.end}
               className={({ isActive }) =>
                 cn(
-                  "flex flex-1 flex-col items-center gap-0.5 rounded-md py-1.5 text-[10px] transition-colors",
+                  "flex flex-1 flex-col items-center gap-0.5 rounded-md py-1.5 text-[12px] transition-colors",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground"
@@ -211,7 +211,7 @@ export default function CompanyPortalLayout() {
             <SheetTrigger asChild>
               <button
                 className={cn(
-                  "flex flex-1 flex-col items-center gap-0.5 rounded-md py-1.5 text-[10px] transition-colors",
+                  "flex flex-1 flex-col items-center gap-0.5 rounded-md py-1.5 text-[12px] transition-colors",
                   isMoreActive ? "text-primary" : "text-muted-foreground"
                 )}
               >

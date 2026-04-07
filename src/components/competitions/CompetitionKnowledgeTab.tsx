@@ -551,9 +551,9 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
                         {language === "ar" && r.title_ar ? r.title_ar : r.title}
                       </p>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">{r.resource_type}</Badge>
+                        <Badge variant="outline" className="text-[12px] px-1.5 py-0">{r.resource_type}</Badge>
                         {r.is_judge_resource && (
-                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                          <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
                             {language === "ar" ? "للحكام" : "Judge"}
                           </Badge>
                         )}

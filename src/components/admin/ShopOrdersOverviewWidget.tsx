@@ -68,7 +68,7 @@ export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget()
             {isAr ? "المتجر والطلبات" : "Shop & Orders"}
           </CardTitle>
           {data.outOfStock > 0 && (
-            <Badge variant="destructive" className="text-[9px] font-medium">
+            <Badge variant="destructive" className="text-[12px] font-medium">
               {data.outOfStock} {isAr ? "نفذ" : "out of stock"}
             </Badge>
           )}
@@ -82,23 +82,23 @@ export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget()
                 <div className={cn("flex h-6 w-6 items-center justify-center rounded-lg transition-transform duration-200 group-hover:scale-110", m.bg)}>
                   <m.icon className={cn("h-3 w-3", m.color)} />
                 </div>
-                <span className="text-[9px] text-muted-foreground font-medium">{m.label}</span>
+                <span className="text-[12px] text-muted-foreground font-medium">{m.label}</span>
               </div>
               <p className="text-sm font-bold tabular-nums"><AnimatedCounter value={m.value} /></p>
-              {m.sub && <p className="text-[9px] text-muted-foreground mt-0.5">{m.sub}</p>}
+              {m.sub && <p className="text-[12px] text-muted-foreground mt-0.5">{m.sub}</p>}
             </div>
           ))}
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] text-muted-foreground font-medium">{isAr ? "معدل التنفيذ" : "Fulfillment Rate"}</span>
-            <span className="text-[10px] font-semibold tabular-nums">{data.fulfillmentRate}%</span>
+            <span className="text-[12px] text-muted-foreground font-medium">{isAr ? "معدل التنفيذ" : "Fulfillment Rate"}</span>
+            <span className="text-[12px] font-semibold tabular-nums">{data.fulfillmentRate}%</span>
           </div>
           <Progress value={data.fulfillmentRate} className="h-1.5" />
         </div>
 
-        <div className="flex flex-wrap gap-2 text-[10px]">
+        <div className="flex flex-wrap gap-2 text-[12px]">
           <span className="flex items-center gap-1 text-chart-4 font-medium">
             <Clock className="h-3 w-3" /> {data.processingOrders} {isAr ? "قيد المعالجة" : "processing"}
           </span>
@@ -112,7 +112,7 @@ export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget()
         {Object.keys(data.categoryCounts).length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {Object.entries(data.categoryCounts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([cat, count]) => (
-              <Badge key={cat} variant="outline" className="text-[9px] gap-1 font-medium">
+              <Badge key={cat} variant="outline" className="text-[12px] gap-1 font-medium">
                 <Tag className="h-2.5 w-2.5" /> {cat}: {count}
               </Badge>
             ))}

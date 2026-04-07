@@ -319,7 +319,7 @@ export const CertificateDesigner = memo(function CertificateDesigner({
                 {/* ─── Lines (per-line controls) ─── */}
                 <TabsContent value="lines" className="p-4 space-y-4 mt-0">
                   <div className="rounded-xl border border-primary/20 bg-primary/5 p-2 mb-2">
-                    <p className="text-[10px] text-primary font-medium flex items-center gap-1">
+                    <p className="text-[12px] text-primary font-medium flex items-center gap-1">
                       <Globe className="h-3 w-3" />
                       {design.certificateLanguage === "ar"
                         ? "الشهادة باللغة العربية — كل سطر مستقل بالتنسيق"
@@ -362,14 +362,14 @@ export const CertificateDesigner = memo(function CertificateDesigner({
                     <Card key={sig.id}>
                       <CardContent className="p-3 space-y-2">
                         <div className="flex items-center justify-between">
-                          <Badge variant="outline" className="text-[10px]">{language === "ar" ? "توقيع" : "Signature"}</Badge>
+                          <Badge variant="outline" className="text-[12px]">{language === "ar" ? "توقيع" : "Signature"}</Badge>
                           <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive" onClick={() => removeSignature(sig.id)}><Trash2 className="h-3 w-3" /></Button>
                         </div>
                         <Input placeholder={language === "ar" ? "الاسم" : "Name"} value={sig.name} onChange={e => updateSignature(sig.id, { name: e.target.value })} className="text-xs h-7" dir={design.certificateLanguage === "ar" ? "rtl" : "ltr"} />
                         <Input placeholder={language === "ar" ? "المنصب" : "Title"} value={sig.title} onChange={e => updateSignature(sig.id, { title: e.target.value })} className="text-xs h-7" dir={design.certificateLanguage === "ar" ? "rtl" : "ltr"} />
                         <Input placeholder={language === "ar" ? "المؤسسة" : "Organization"} value={sig.organization} onChange={e => updateSignature(sig.id, { organization: e.target.value })} className="text-xs h-7" dir={design.certificateLanguage === "ar" ? "rtl" : "ltr"} />
                         <div className="space-y-1">
-                          <Label className="text-[10px]">{language === "ar" ? "صورة التوقيع (URL)" : "Signature Image (URL)"}</Label>
+                          <Label className="text-[12px]">{language === "ar" ? "صورة التوقيع (URL)" : "Signature Image (URL)"}</Label>
                           <Input placeholder="https://..." value={sig.signatureUrl || ""} onChange={e => updateSignature(sig.id, { signatureUrl: e.target.value })} className="text-xs h-7" />
                         </div>
                       </CardContent>
@@ -403,7 +403,7 @@ export const CertificateDesigner = memo(function CertificateDesigner({
               <CardTitle className="text-lg flex items-center gap-2">
                 <Eye className="h-5 w-5" />
                 {language === "ar" ? "معاينة الشهادة" : "Certificate Preview"}
-                <Badge variant="outline" className="text-[10px]">
+                <Badge variant="outline" className="text-[12px]">
                   {design.certificateLanguage === "ar" ? "عربي" : "English"}
                 </Badge>
               </CardTitle>

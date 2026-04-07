@@ -240,7 +240,7 @@ export default function CompanyCampaignDetail() {
             <p className="text-sm text-muted-foreground mt-1">{campaign.description}</p>
           )}
           <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-            <span>{isAr ? "نموذج الفوترة:" : "Billing:"} <Badge variant="outline" className="text-[10px]">{campaign.billing_model}</Badge></span>
+            <span>{isAr ? "نموذج الفوترة:" : "Billing:"} <Badge variant="outline" className="text-[12px]">{campaign.billing_model}</Badge></span>
             {campaign.start_date && <span>{isAr ? "من" : "From"} {new Date(campaign.start_date).toLocaleDateString()}</span>}
             {campaign.end_date && <span>{isAr ? "إلى" : "To"} {new Date(campaign.end_date).toLocaleDateString()}</span>}
           </div>
@@ -262,7 +262,7 @@ export default function CompanyCampaignDetail() {
                 <k.icon className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground">{k.label}</p>
+                <p className="text-[12px] text-muted-foreground">{k.label}</p>
                 {'numValue' in k ? <AnimatedCounter value={k.numValue as number} className="text-lg font-bold" format /> : <p className="text-lg font-bold">{k.strValue}</p>}
               </div>
             </CardContent>
@@ -273,7 +273,7 @@ export default function CompanyCampaignDetail() {
       <Tabs defaultValue="performance">
         <TabsList>
           <TabsTrigger value="performance" className="gap-1"><BarChart3 className="h-3.5 w-3.5" />{isAr ? "الأداء" : "Performance"}</TabsTrigger>
-          <TabsTrigger value="creatives" className="gap-1"><Image className="h-3.5 w-3.5" />{isAr ? "الإعلانات" : "Creatives"} <Badge variant="secondary" className="text-[10px] ms-1">{creatives.length}</Badge></TabsTrigger>
+          <TabsTrigger value="creatives" className="gap-1"><Image className="h-3.5 w-3.5" />{isAr ? "الإعلانات" : "Creatives"} <Badge variant="secondary" className="text-[12px] ms-1">{creatives.length}</Badge></TabsTrigger>
         </TabsList>
 
         {/* Performance Tab */}
@@ -448,7 +448,7 @@ export default function CompanyCampaignDetail() {
                       <div className="relative h-40 bg-muted overflow-hidden">
                         <img src={c.image_url} alt={c.title || "Creative"} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                        <Badge className={`absolute top-2 end-2 text-[10px] ${statusColors[c.status] || ""}`}>
+                        <Badge className={`absolute top-2 end-2 text-[12px] ${statusColors[c.status] || ""}`}>
                           <StatusIcon status={c.status} />
                           <span className="ms-1">{c.status}</span>
                         </Badge>
@@ -456,7 +456,7 @@ export default function CompanyCampaignDetail() {
                     ) : (
                       <div className="flex h-24 items-center justify-center bg-muted/50 relative">
                         {c.format === "video" ? <Video className="h-8 w-8 text-muted-foreground" /> : <Image className="h-8 w-8 text-muted-foreground" />}
-                        <Badge className={`absolute top-2 end-2 text-[10px] ${statusColors[c.status] || ""}`}>
+                        <Badge className={`absolute top-2 end-2 text-[12px] ${statusColors[c.status] || ""}`}>
                           <StatusIcon status={c.status} />
                           <span className="ms-1">{c.status}</span>
                         </Badge>
@@ -469,7 +469,7 @@ export default function CompanyCampaignDetail() {
                           {isAr ? c.title_ar || c.title || c.format : c.title || c.format}
                         </h3>
                         {placement && (
-                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                          <p className="text-[12px] text-muted-foreground mt-0.5">
                             {isAr ? placement.name_ar || placement.name : placement.name} • {placement.placement_type}
                           </p>
                         )}
@@ -478,21 +478,21 @@ export default function CompanyCampaignDetail() {
                       {/* Stats */}
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div className="rounded-xl bg-muted/50 p-2">
-                          <p className="text-[10px] text-muted-foreground">{isAr ? "مشاهدات" : "Imp."}</p>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "مشاهدات" : "Imp."}</p>
                           <AnimatedCounter value={c.impressions || 0} className="text-sm font-bold" format />
                         </div>
                         <div className="rounded-xl bg-muted/50 p-2">
-                          <p className="text-[10px] text-muted-foreground">{isAr ? "نقرات" : "Clicks"}</p>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "نقرات" : "Clicks"}</p>
                           <AnimatedCounter value={c.clicks || 0} className="text-sm font-bold" format />
                         </div>
                         <div className="rounded-xl bg-muted/50 p-2">
-                          <p className="text-[10px] text-muted-foreground">CTR</p>
+                          <p className="text-[12px] text-muted-foreground">CTR</p>
                           <p className="text-sm font-bold">{creativeCtr}%</p>
                         </div>
                       </div>
 
                       {c.rejection_reason && (
-                        <p className="text-[10px] text-destructive bg-destructive/5 rounded p-2">
+                        <p className="text-[12px] text-destructive bg-destructive/5 rounded p-2">
                           {isAr ? "سبب الرفض:" : "Rejection:"} {c.rejection_reason}
                         </p>
                       )}

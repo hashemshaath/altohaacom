@@ -242,7 +242,7 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
                   <div className="flex items-center gap-2">
                     <Trophy className="h-3.5 w-3.5" />
                     {language === "ar" && c.title_ar ? c.title_ar : c.title}
-                    <Badge variant="outline" className="text-[10px] ms-1">{c.status}</Badge>
+                    <Badge variant="outline" className="text-[12px] ms-1">{c.status}</Badge>
                   </div>
                 </SelectItem>
               ))}
@@ -276,17 +276,17 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
               <div className="rounded-xl border p-2 text-center">
                 <Trophy className="mx-auto mb-1 h-4 w-4 text-chart-4" />
                 <p className="text-sm font-bold">{candidates.filter(r => r.rank <= 3).length}</p>
-                <p className="text-[10px] text-muted-foreground">{language === "ar" ? "فائزين" : "Winners"}</p>
+                <p className="text-[12px] text-muted-foreground">{language === "ar" ? "فائزين" : "Winners"}</p>
               </div>
               <div className="rounded-xl border p-2 text-center">
                 <Users className="mx-auto mb-1 h-4 w-4 text-primary" />
                 <p className="text-sm font-bold">{candidates.length}</p>
-                <p className="text-[10px] text-muted-foreground">{language === "ar" ? "مشاركين" : "Participants"}</p>
+                <p className="text-[12px] text-muted-foreground">{language === "ar" ? "مشاركين" : "Participants"}</p>
               </div>
               <div className="rounded-xl border p-2 text-center">
                 <CheckCircle className="mx-auto mb-1 h-4 w-4 text-chart-5" />
                 <p className="text-sm font-bold">{selectedIds.size}</p>
-                <p className="text-[10px] text-muted-foreground">{language === "ar" ? "محددين" : "Selected"}</p>
+                <p className="text-[12px] text-muted-foreground">{language === "ar" ? "محددين" : "Selected"}</p>
               </div>
             </div>
           </CardHeader>
@@ -342,9 +342,9 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
                             <TableCell>{c.score.toFixed(1)}%</TableCell>
                             <TableCell>
                               <div className="flex gap-1">
-                                <Badge variant="outline" className="text-[10px]">{language === "ar" ? "مشاركة" : "Participation"}</Badge>
+                                <Badge variant="outline" className="text-[12px]">{language === "ar" ? "مشاركة" : "Participation"}</Badge>
                                 {c.rank <= 3 && (
-                                  <Badge className={`text-[10px] ${c.rank === 1 ? "bg-chart-4 text-chart-4-foreground" : c.rank === 2 ? "bg-muted-foreground text-background" : "bg-chart-3 text-chart-3-foreground"}`}>
+                                  <Badge className={`text-[12px] ${c.rank === 1 ? "bg-chart-4 text-chart-4-foreground" : c.rank === 2 ? "bg-muted-foreground text-background" : "bg-chart-3 text-chart-3-foreground"}`}>
                                     {c.rank === 1 ? (language === "ar" ? "ذهبي" : "Gold") : c.rank === 2 ? (language === "ar" ? "فضي" : "Silver") : (language === "ar" ? "برونزي" : "Bronze")}
                                   </Badge>
                                 )}
@@ -352,12 +352,12 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
                             </TableCell>
                             <TableCell>
                               {alreadyIssued ? (
-                                <Badge className="bg-chart-5/20 text-chart-5 text-[10px]">
+                                <Badge className="bg-chart-5/20 text-chart-5 text-[12px]">
                                   <CheckCircle className="h-3 w-3 me-1" />
                                   {language === "ar" ? "صادرة" : "Issued"}
                                 </Badge>
                               ) : (
-                                <Badge variant="outline" className="text-[10px]">{language === "ar" ? "جديدة" : "New"}</Badge>
+                                <Badge variant="outline" className="text-[12px]">{language === "ar" ? "جديدة" : "New"}</Badge>
                               )}
                             </TableCell>
                             <TableCell>

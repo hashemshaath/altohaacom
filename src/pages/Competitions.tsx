@@ -198,7 +198,7 @@ export default function Competitions() {
               <div className="space-y-2.5 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 ring-1 ring-primary/15">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-primary">
+                  <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-primary">
                     {isAr ? "مسابقات الطهي" : "Culinary Competitions"}
                   </span>
                 </div>
@@ -222,7 +222,7 @@ export default function Competitions() {
                       <span className={stat.color}>{stat.icon}</span>
                       {stat.live && <span className="h-1.5 w-1.5 rounded-full bg-chart-3 animate-pulse" />}
                       <AnimatedCounter value={stat.numValue} className="text-sm font-bold tabular-nums" />
-                      <span className="text-[10px] text-muted-foreground font-medium hidden sm:inline">{stat.label}</span>
+                      <span className="text-[12px] text-muted-foreground font-medium hidden sm:inline">{stat.label}</span>
                     </div>
                   ))}
                 </div>
@@ -323,14 +323,14 @@ export default function Competitions() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`relative inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all duration-200 touch-manipulation active:scale-95 ${
+                  className={`relative inline-flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[12px] font-bold uppercase tracking-wider transition-all duration-200 touch-manipulation active:scale-95 ${
                     activeTab === tab
                       ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                       : "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
                   }`}
                 >
                   <span>{isAr ? tabLabels[tab].ar : tabLabels[tab].en}</span>
-                  <span className={`ms-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[9px] font-black tabular-nums ${
+                  <span className={`ms-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[12px] font-black tabular-nums ${
                     activeTab === tab
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-muted text-muted-foreground"
@@ -408,12 +408,12 @@ export default function Competitions() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <h3 className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors">{title}</h3>
-                          <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-1">
+                          <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-1">
                             {comp.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{comp.city}</span>}
                             <span className="flex items-center gap-1"><Users className="h-3 w-3" />{regs}</span>
                           </div>
                         </div>
-                        <Badge variant={status.status === "in_progress" ? "default" : "outline"} className="shrink-0 text-[10px]">
+                        <Badge variant={status.status === "in_progress" ? "default" : "outline"} className="shrink-0 text-[12px]">
                           {status.label}
                         </Badge>
                       </CardContent>
@@ -458,7 +458,7 @@ export default function Competitions() {
                         <stat.icon className={`h-5 w-5 ${stat.color}`} />
                       </div>
                       <AnimatedCounter value={stat.value} className="text-xl font-extrabold text-foreground sm:text-2xl tabular-nums" />
-                      <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{stat.label}</p>
+                      <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{stat.label}</p>
                     </CardContent>
                   </Card>
                 ))}

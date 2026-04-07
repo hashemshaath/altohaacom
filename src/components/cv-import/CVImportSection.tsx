@@ -294,14 +294,14 @@ export const CVImportSection = memo(function CVImportSection() {
                                   <span className="text-xs text-muted-foreground truncate">({chef.full_name_ar})</span>
                                 )}
                               </div>
-                              <div className="flex items-center gap-3 text-[11px] text-muted-foreground mt-0.5">
+                              <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-0.5">
                                 {chef.account_number && <span className="font-mono">{chef.account_number}</span>}
                                 {chef.email && <span className="truncate">{chef.email}</span>}
                                 {chef.city && <span>{chef.country_code && getFlag(chef.country_code)} {chef.city}</span>}
                               </div>
                             </div>
                             <div className="shrink-0">
-                              <Badge variant="outline" className="text-[10px] gap-1">
+                              <Badge variant="outline" className="text-[12px] gap-1">
                                 <FileText className="h-3 w-3" />
                                 {isAr ? "استيراد CV" : "Import CV"}
                               </Badge>
@@ -373,12 +373,12 @@ export const CVImportSection = memo(function CVImportSection() {
                 </Avatar>
                 <div className="min-w-0">
                   <CardTitle className="text-sm truncate">{selectedChef.full_name}</CardTitle>
-                  <CardDescription className="text-[11px] truncate">
+                  <CardDescription className="text-[12px] truncate">
                     {selectedChef.email} {selectedChef.account_number && `• ${selectedChef.account_number}`}
                   </CardDescription>
                 </div>
               </div>
-              <Badge variant="outline" className="text-[10px] gap-1 shrink-0">
+              <Badge variant="outline" className="text-[12px] gap-1 shrink-0">
                 <FileText className="h-3 w-3" />
                 {isAr ? "استيراد CV" : "CV Import"}
               </Badge>
@@ -414,7 +414,7 @@ export const CVImportSection = memo(function CVImportSection() {
                   className="min-h-[300px] text-sm"
                   dir="auto"
                 />
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[12px] text-muted-foreground">
                   {cvText.length > 0 ? `${cvText.length} ${isAr ? "حرف" : "characters"}` : ""}
                 </p>
               </TabsContent>
@@ -429,7 +429,7 @@ export const CVImportSection = memo(function CVImportSection() {
                       <input type="file" className="hidden" accept=".pdf,.doc,.docx,.txt" onChange={handleFileUpload} disabled={fileUploading} />
                     </label>
                   </div>
-                  <p className="text-[10px] text-muted-foreground">
+                  <p className="text-[12px] text-muted-foreground">
                     {isAr ? "PDF, Word (.docx), TXT — الحد الأقصى 10MB" : "PDF, Word (.docx), TXT — Max 10MB"}
                   </p>
                   {fileUploading && (
@@ -444,7 +444,7 @@ export const CVImportSection = memo(function CVImportSection() {
                     <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />
                     <div className="flex-1 min-w-0">
                       {fileName && <p className="text-xs font-medium truncate">{fileName}</p>}
-                      <p className="text-[10px] text-muted-foreground">
+                      <p className="text-[12px] text-muted-foreground">
                         {isAr ? `تم استخراج ${cvText.length.toLocaleString()} حرف` : `Extracted ${cvText.length.toLocaleString()} characters`}
                       </p>
                     </div>
@@ -479,7 +479,7 @@ export const CVImportSection = memo(function CVImportSection() {
               </Avatar>
               <div className="min-w-0 flex-1">
                 <CardTitle className="text-sm truncate">{selectedChef.full_name}</CardTitle>
-                <CardDescription className="text-[11px]">{isAr ? "مراجعة البيانات المستخرجة" : "Review extracted data"}</CardDescription>
+                <CardDescription className="text-[12px]">{isAr ? "مراجعة البيانات المستخرجة" : "Review extracted data"}</CardDescription>
               </div>
             </div>
           </CardHeader>

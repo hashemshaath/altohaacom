@@ -131,7 +131,7 @@ const NotFound = () => {
 
         {/* Requested path */}
         <div className="mt-4 flex items-center gap-2 rounded-lg bg-muted/50 border border-border/50 px-3 py-1.5">
-          <span className="text-[10px] text-muted-foreground">{isAr ? "المسار:" : "Path:"}</span>
+          <span className="text-[12px] text-muted-foreground">{isAr ? "المسار:" : "Path:"}</span>
           <code className="text-xs font-mono text-destructive/80 truncate max-w-[300px]">{location.pathname}</code>
         </div>
 
@@ -170,7 +170,7 @@ const NotFound = () => {
                   </div>
                   <div className="text-start min-w-0">
                     <p className="text-xs font-medium text-foreground">{isAr ? item.titleAr : item.titleEn}</p>
-                    <p className="text-[11px] text-muted-foreground leading-relaxed">{isAr ? item.descAr : item.descEn}</p>
+                    <p className="text-[12px] text-muted-foreground leading-relaxed">{isAr ? item.descAr : item.descEn}</p>
                   </div>
                 </div>
               ))}
@@ -193,8 +193,8 @@ const NotFound = () => {
         </div>
 
         {/* Error code footer */}
-        <div className="mt-6 flex items-center gap-2 text-[10px] text-muted-foreground/50">
-          <Badge variant="outline" className="text-[9px] px-1.5 py-0 h-4 font-mono">HTTP 404</Badge>
+        <div className="mt-6 flex items-center gap-2 text-[12px] text-muted-foreground/50">
+          <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-4 font-mono">HTTP 404</Badge>
           <span>•</span>
           <span>{new Date().toLocaleString(isAr ? "ar" : "en", { dateStyle: "medium", timeStyle: "short" })}</span>
         </div>

@@ -35,7 +35,7 @@ export default function Messages() {
                 <h1 className="text-base font-bold tracking-tight md:text-xl">
                   {t("Messages", "الرسائل")}
                 </h1>
-                <p className="text-[10px] sm:text-xs text-muted-foreground hidden sm:block">
+                <p className="text-[12px] sm:text-xs text-muted-foreground hidden sm:block">
                   {t("Connect with your peers and community", "تواصل مع زملائك ومجتمعك")}
                 </p>
               </div>
@@ -43,18 +43,18 @@ export default function Messages() {
 
             <div className="flex items-center gap-1.5 sm:gap-2">
               {data.counts.unread > 0 && (
-                <Badge className="gap-1 text-[10px] sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl animate-pulse shadow-sm shadow-primary/15">
+                <Badge className="gap-1 text-[12px] sm:text-xs px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl animate-pulse shadow-sm shadow-primary/15">
                   <Bell className="h-3 w-3" />
                   {data.counts.unread}
                 </Badge>
               )}
               <div className="hidden sm:flex items-center gap-1 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm p-1">
-                <Badge variant="secondary" className="text-[10px] gap-1 cursor-default rounded-xl">
+                <Badge variant="secondary" className="text-[12px] gap-1 cursor-default rounded-xl">
                   <MessageSquare className="h-3 w-3" />
                   {data.counts.all}
                 </Badge>
                 {data.chatGroups.length > 0 && (
-                  <Badge variant="outline" className="text-[10px] gap-1 cursor-default rounded-xl">
+                  <Badge variant="outline" className="text-[12px] gap-1 cursor-default rounded-xl">
                     <Users className="h-3 w-3" />
                     {data.chatGroups.length}
                   </Badge>

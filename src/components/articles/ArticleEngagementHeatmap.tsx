@@ -112,7 +112,7 @@ export const ArticleEngagementHeatmap = memo(function ArticleEngagementHeatmap({
             <Flame className="h-3 w-3 text-orange-500" />
             {isAr ? "خريطة التفاعل" : "Engagement Map"}
           </p>
-          <Badge variant="outline" className="text-[9px] rounded-lg px-2 py-0 h-5 border-border/40">
+          <Badge variant="outline" className="text-[12px] rounded-lg px-2 py-0 h-5 border-border/40">
             <Clock className="h-2.5 w-2.5 me-1" />
             {Math.floor(totalTime / 60)}:{String(totalTime % 60).padStart(2, "0")}
           </Badge>
@@ -125,10 +125,10 @@ export const ArticleEngagementHeatmap = memo(function ArticleEngagementHeatmap({
             return (
               <div key={section.id} className="group">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-medium text-muted-foreground truncate flex-1">
+                  <span className="text-[12px] font-medium text-muted-foreground truncate flex-1">
                     {section.title}
                   </span>
-                  <span className="text-[9px] text-muted-foreground/60 tabular-nums shrink-0">
+                  <span className="text-[12px] text-muted-foreground/60 tabular-nums shrink-0">
                     {section.timeSpent}s
                   </span>
                 </div>
@@ -142,7 +142,7 @@ export const ArticleEngagementHeatmap = memo(function ArticleEngagementHeatmap({
                   />
                 </div>
                 {intensity >= 0.5 && (
-                  <span className="text-[8px] text-muted-foreground/50 mt-0.5 block">
+                  <span className="text-[12px] text-muted-foreground/50 mt-0.5 block">
                     {getHeatLabel(intensity, isAr)}
                   </span>
                 )}
@@ -153,11 +153,11 @@ export const ArticleEngagementHeatmap = memo(function ArticleEngagementHeatmap({
 
         {/* Legend */}
         <div className="flex items-center gap-1.5 mt-4 pt-3 border-t border-border/20">
-          <span className="text-[8px] text-muted-foreground/50">{isAr ? "أقل" : "Less"}</span>
+          <span className="text-[12px] text-muted-foreground/50">{isAr ? "أقل" : "Less"}</span>
           {["bg-emerald-500/30", "bg-yellow-500/50", "bg-amber-500/60", "bg-orange-500/70", "bg-red-500/80"].map((c, i) => (
             <div key={i} className={cn("h-2 w-4 rounded-sm", c)} />
           ))}
-          <span className="text-[8px] text-muted-foreground/50">{isAr ? "أكثر" : "More"}</span>
+          <span className="text-[12px] text-muted-foreground/50">{isAr ? "أكثر" : "More"}</span>
         </div>
       </CardContent>
     </Card>

@@ -77,14 +77,14 @@ export const ExhibitionActivityLog = memo(function ExhibitionActivityLog() {
               <div key={ticket.id} className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2">
                 <Ticket className="h-3 w-3 text-chart-2 shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-medium truncate">
+                  <p className="text-[12px] font-medium truncate">
                     {t("New ticket", "تذكرة جديدة")}: {ticket.ticket_number}
                   </p>
-                  <p className="text-[9px] text-muted-foreground">
+                  <p className="text-[12px] text-muted-foreground">
                     {ticket.attendee_name || t("Anonymous", "مجهول")} • {formatDistanceToNow(new Date(ticket.created_at), { addSuffix: true })}
                   </p>
                 </div>
-                <Badge variant="outline" className="text-[8px] shrink-0">{ticket.status}</Badge>
+                <Badge variant="outline" className="text-[12px] shrink-0">{ticket.status}</Badge>
               </div>
             ))}
 
@@ -93,8 +93,8 @@ export const ExhibitionActivityLog = memo(function ExhibitionActivityLog() {
               <div key={action.id} className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2">
                 {getActionIcon(action.action_type)}
                 <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-medium truncate">{getActionLabel(action.action_type)}</p>
-                  <p className="text-[9px] text-muted-foreground">
+                  <p className="text-[12px] font-medium truncate">{getActionLabel(action.action_type)}</p>
+                  <p className="text-[12px] text-muted-foreground">
                     {formatDistanceToNow(new Date(action.created_at), { addSuffix: true })}
                   </p>
                 </div>

@@ -138,7 +138,7 @@ export const SEOCrawlAnalytics = memo(function SEOCrawlAnalytics({ isAr, range =
               {isAr ? "كفاءة الزحف" : "Crawl Efficiency"}
             </div>
             <p className="text-2xl font-bold">{stats.efficiency}%</p>
-            <p className="text-[10px] text-muted-foreground">{isAr ? "صفحات فريدة / إجمالي" : "Unique pages / total"}</p>
+            <p className="text-[12px] text-muted-foreground">{isAr ? "صفحات فريدة / إجمالي" : "Unique pages / total"}</p>
           </CardContent>
         </Card>
       </div>
@@ -230,7 +230,7 @@ export const SEOCrawlAnalytics = memo(function SEOCrawlAnalytics({ isAr, range =
                 <div key={p.path} className="flex items-center gap-3 py-1.5 border-b border-border/20 last:border-0">
                   <span className="text-xs font-bold text-muted-foreground w-5 text-center">{i + 1}</span>
                   <code className="text-xs flex-1 truncate text-foreground">{p.path}</code>
-                  <Badge variant="secondary" className="text-[10px] tabular-nums">{p.count}</Badge>
+                  <Badge variant="secondary" className="text-[12px] tabular-nums">{p.count}</Badge>
                 </div>
               ))}
             </div>

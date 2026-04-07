@@ -37,7 +37,7 @@ export function YearView({ events, currentDate, onNavigate, isAr }: {
               <div className="flex items-center justify-between mb-2">
                 <h4 className={cn("text-xs font-bold", isCurrentMonth && "text-primary")}>{format(monthDate, "MMMM", isAr ? { locale: arLocale } : undefined)}</h4>
                 {monthEvents.length > 0 && (
-                  <Badge variant={isCurrentMonth ? "default" : "outline"} className="text-[9px] h-4 px-1.5 tabular-nums">{monthEvents.length}</Badge>
+                  <Badge variant={isCurrentMonth ? "default" : "outline"} className="text-[12px] h-4 px-1.5 tabular-nums">{monthEvents.length}</Badge>
                 )}
               </div>
               <MiniMonthGrid monthDate={monthDate} events={monthEvents} />
@@ -51,7 +51,7 @@ export function YearView({ events, currentDate, onNavigate, isAr }: {
                         <TooltipTrigger asChild>
                           <div className={cn("h-2 w-2 rounded-full cursor-default", colors.dot)} />
                         </TooltipTrigger>
-                        <TooltipContent side="bottom" className="text-[10px] py-1 px-2">
+                        <TooltipContent side="bottom" className="text-[12px] py-1 px-2">
                           {isAr ? label.ar : label.en}
                         </TooltipContent>
                       </Tooltip>
@@ -79,7 +79,7 @@ function MiniMonthGrid({ monthDate, events }: { monthDate: Date; events: GlobalE
         const isToday = isSameDay(day, new Date());
         return (
           <div key={i} className={cn(
-            "h-4 flex items-center justify-center text-[8px] rounded-sm transition-colors",
+            "h-4 flex items-center justify-center text-[12px] rounded-sm transition-colors",
             isToday && "bg-primary text-primary-foreground font-bold ring-1 ring-primary/30",
             dayEventCount > 0 && !isToday && "bg-primary/15 text-primary font-semibold",
             dayEventCount > 2 && !isToday && "bg-primary/25",

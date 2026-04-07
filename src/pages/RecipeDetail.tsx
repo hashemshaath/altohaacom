@@ -163,7 +163,7 @@ export default function RecipeDetail() {
               {/* Title & meta */}
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  {(recipe as any).recipe_number && <Badge variant="secondary" className="text-[9px] font-mono h-5">{(recipe as any).recipe_number}</Badge>}
+                  {(recipe as any).recipe_number && <Badge variant="secondary" className="text-[12px] font-mono h-5">{(recipe as any).recipe_number}</Badge>}
                   {recipe.cuisine && <Badge variant="secondary"><ChefHat className="h-3 w-3 me-1" />{recipe.cuisine}</Badge>}
                   {recipe.difficulty && <Badge variant="outline" className={difficultyColor(recipe.difficulty)}>{recipe.difficulty}</Badge>}
                   {recipe.category && <Badge variant="outline">{recipe.category.replace("_", " ")}</Badge>}
@@ -192,7 +192,7 @@ export default function RecipeDetail() {
                 {recipe.tags && recipe.tags.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {recipe.tags.map(tag => (
-                      <Badge key={tag} variant="outline" className="text-[10px]">#{tag}</Badge>
+                      <Badge key={tag} variant="outline" className="text-[12px]">#{tag}</Badge>
                     ))}
                   </div>
                 )}

@@ -31,10 +31,10 @@ const CHART_COLORS = [
 type Period = "7d" | "14d" | "30d";
 
 function TrendBadge({ value, isAr }: { value: number; isAr: boolean }) {
-  if (value === 0) return <Badge variant="secondary" className="text-[9px] gap-0.5"><Minus className="h-2.5 w-2.5" />0%</Badge>;
+  if (value === 0) return <Badge variant="secondary" className="text-[12px] gap-0.5"><Minus className="h-2.5 w-2.5" />0%</Badge>;
   const positive = value > 0;
   return (
-    <Badge variant={positive ? "default" : "destructive"} className="text-[9px] gap-0.5">
+    <Badge variant={positive ? "default" : "destructive"} className="text-[12px] gap-0.5">
       {positive ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
       {positive ? "+" : ""}{value}%
     </Badge>
@@ -45,7 +45,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-xl border border-border bg-card px-3 py-2 shadow-lg">
-      <p className="text-[10px] text-muted-foreground mb-1">{label}</p>
+      <p className="text-[12px] text-muted-foreground mb-1">{label}</p>
       {payload.map((entry, i) => (
         <p key={i} className="text-xs font-semibold" style={{ color: entry.color }}>
           {entry.name}: {entry.value}
@@ -357,9 +357,9 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
         </h2>
         <Tabs value={period} onValueChange={(v) => setPeriod(v as Period)}>
           <TabsList className="h-8">
-            <TabsTrigger value="7d" className="text-[10px] px-2.5 h-6">{isAr ? "7 أيام" : "7D"}</TabsTrigger>
-            <TabsTrigger value="14d" className="text-[10px] px-2.5 h-6">{isAr ? "14 يوم" : "14D"}</TabsTrigger>
-            <TabsTrigger value="30d" className="text-[10px] px-2.5 h-6">{isAr ? "30 يوم" : "30D"}</TabsTrigger>
+            <TabsTrigger value="7d" className="text-[12px] px-2.5 h-6">{isAr ? "7 أيام" : "7D"}</TabsTrigger>
+            <TabsTrigger value="14d" className="text-[12px] px-2.5 h-6">{isAr ? "14 يوم" : "14D"}</TabsTrigger>
+            <TabsTrigger value="30d" className="text-[12px] px-2.5 h-6">{isAr ? "30 يوم" : "30D"}</TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
@@ -378,7 +378,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                     <AnimatedCounter value={typeof stat.value === "number" ? Math.round(stat.value) : 0} />
                     {"suffix" in stat ? stat.suffix : ""}
                   </p>
-                  <p className="text-[10px] text-muted-foreground leading-tight truncate">{stat.label}</p>
+                  <p className="text-[12px] text-muted-foreground leading-tight truncate">{stat.label}</p>
                   {"trend" in stat && stat.trend !== undefined && <TrendBadge value={stat.trend as number} isAr={isAr} />}
                 </div>
               </div>
@@ -396,10 +396,10 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
             </div>
             <div>
               <p className="text-2xl font-bold">{subscriberCount}</p>
-              <p className="text-[10px] text-muted-foreground">{isAr ? "مشتركين نشطين" : "Active Subscribers"}</p>
+              <p className="text-[12px] text-muted-foreground">{isAr ? "مشتركين نشطين" : "Active Subscribers"}</p>
             </div>
             {visitorStats.total > 0 && (
-              <Badge variant="outline" className="ms-auto text-[10px]">
+              <Badge variant="outline" className="ms-auto text-[12px]">
                 {isAr ? "معدل الاشتراك" : "Sub Rate"}: {((subscriberCount / visitorStats.total) * 100).toFixed(1)}%
               </Badge>
             )}
@@ -426,8 +426,8 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                   <div key={step.stage} className="flex-1 flex flex-col items-center gap-1">
                     <span className="text-xs font-bold tabular-nums">{step.value}</span>
                     <div className="w-full rounded-t-lg transition-all duration-500" style={{ height: `${Math.max(pct, 8)}%`, backgroundColor: step.color, opacity: 0.7 }} />
-                    <span className="text-[10px] font-medium text-center">{step.stage}</span>
-                    {i > 0 && <span className="text-[9px] text-muted-foreground">{convRate}%</span>}
+                    <span className="text-[12px] font-medium text-center">{step.stage}</span>
+                    {i > 0 && <span className="text-[12px] text-muted-foreground">{convRate}%</span>}
                   </div>
                 );
               })}
@@ -475,7 +475,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                 <MousePointerClick className="h-4 w-4 text-primary" />
                 {isAr ? "أداء الروابط" : "Link Performance"}
               </CardTitle>
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[12px]">
                 {periodDays} {isAr ? "يوم" : "days"} · {periodTotalClicks} {isAr ? "نقرة" : "clicks"}
               </Badge>
             </div>
@@ -504,7 +504,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                     <TableRow key={item.id} className={item.clicks > 0 ? "" : "opacity-50"}>
                       <TableCell className="text-xs font-bold tabular-nums w-8">
                         {i < 3 && item.clicks > 0 ? (
-                          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-chart-2/15 text-chart-2 text-[10px] font-bold">{i + 1}</span>
+                          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-chart-2/15 text-chart-2 text-[12px] font-bold">{i + 1}</span>
                         ) : (
                           <span className="text-muted-foreground">{i + 1}</span>
                         )}
@@ -514,7 +514,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                           {item.icon && <span className="text-sm">{item.icon}</span>}
                           <div className="min-w-0">
                             <span className="truncate font-medium block">{item.title}</span>
-                            {item.url && <span className="text-[9px] text-muted-foreground truncate block max-w-[180px]">{item.url.replace(/^https?:\/\//, "")}</span>}
+                            {item.url && <span className="text-[12px] text-muted-foreground truncate block max-w-[180px]">{item.url.replace(/^https?:\/\//, "")}</span>}
                           </div>
                         </div>
                       </TableCell>
@@ -528,7 +528,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                           <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
                             <div className="h-full rounded-full bg-primary/60 transition-all" style={{ width: `${Math.max(item.share, 2)}%` }} />
                           </div>
-                          <span className="text-[10px] tabular-nums w-8">{item.share}%</span>
+                          <span className="text-[12px] tabular-nums w-8">{item.share}%</span>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -597,7 +597,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <p className="text-[10px] text-muted-foreground text-center mt-1">
+            <p className="text-[12px] text-muted-foreground text-center mt-1">
               {isAr ? "أفضل وقت" : "Peak"}: {visitorStats.hourlyBreakdown.indexOf(Math.max(...visitorStats.hourlyBreakdown))}:00
             </p>
           </CardContent>

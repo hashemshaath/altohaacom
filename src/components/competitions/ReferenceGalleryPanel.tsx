@@ -251,11 +251,11 @@ export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ compe
                         </div>
                       </div>
                       <div className="absolute top-2 start-2 flex gap-1.5">
-                        <Badge variant="secondary" className="text-[9px] h-5 backdrop-blur-sm">
+                        <Badge variant="secondary" className="text-[12px] h-5 backdrop-blur-sm">
                           {isAr ? ratingInfo.label_ar : ratingInfo.label}
                         </Badge>
                         {cat && (
-                          <Badge variant="outline" className="text-[9px] h-5 bg-background/80 backdrop-blur-sm">
+                          <Badge variant="outline" className="text-[12px] h-5 bg-background/80 backdrop-blur-sm">
                             {isAr ? cat.label_ar : cat.label}
                           </Badge>
                         )}
@@ -281,7 +281,7 @@ export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ compe
                         </p>
                       )}
                       <div className="flex items-center justify-between pt-1">
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-[12px]">
                           {isAr ? "النطاق:" : "Range:"} {ref.score_range_min}–{ref.score_range_max}
                         </Badge>
                       </div>

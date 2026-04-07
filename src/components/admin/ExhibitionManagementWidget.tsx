@@ -108,7 +108,7 @@ export const ExhibitionManagementWidget = memo(function ExhibitionManagementWidg
             <CardContent className="p-3 flex items-center gap-2">
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} /></div>
               <div className="min-w-0">
-                <p className="text-[9px] text-muted-foreground truncate">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground truncate">{kpi.label}</p>
                 <p className="text-base font-bold">{kpi.value}</p>
               </div>
             </CardContent>
@@ -136,9 +136,9 @@ export const ExhibitionManagementWidget = memo(function ExhibitionManagementWidg
         <div className="space-y-4">
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2">{isAr ? "إشغال الأجنحة" : "Booth Occupancy"}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "إشغال الأجنحة" : "Booth Occupancy"}</p>
               <Progress value={data.boothOccupancy} className="h-2 mb-1" />
-              <div className="flex justify-between text-[10px] text-muted-foreground">
+              <div className="flex justify-between text-[12px] text-muted-foreground">
                 <span>{isAr ? "مُعيّن" : "Assigned"}: {data.assignedBooths}</span>
                 <span>{data.boothOccupancy}%</span>
               </div>
@@ -147,14 +147,14 @@ export const ExhibitionManagementWidget = memo(function ExhibitionManagementWidg
 
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
                 <MapPin className="h-3 w-3" /> {isAr ? "أعلى المدن" : "Top Cities"}
               </p>
               <div className="space-y-1">
                 {data.topCities.map(([city, count]) => (
-                  <div key={city} className="flex items-center justify-between text-[10px]">
+                  <div key={city} className="flex items-center justify-between text-[12px]">
                     <span>{city}</span>
-                    <Badge variant="outline" className="text-[9px] h-4">{count}</Badge>
+                    <Badge variant="outline" className="text-[12px] h-4">{count}</Badge>
                   </div>
                 ))}
               </div>

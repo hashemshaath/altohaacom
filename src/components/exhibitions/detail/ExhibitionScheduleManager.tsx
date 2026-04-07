@@ -175,11 +175,11 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] text-muted-foreground mb-1 block">{t("Start Time *", "وقت البدء *")}</label>
+                    <label className="text-[12px] text-muted-foreground mb-1 block">{t("Start Time *", "وقت البدء *")}</label>
                     <Input type="datetime-local" value={form.start_time} onChange={e => setForm({ ...form, start_time: e.target.value })} className="text-xs" />
                   </div>
                   <div>
-                    <label className="text-[10px] text-muted-foreground mb-1 block">{t("End Time *", "وقت الانتهاء *")}</label>
+                    <label className="text-[12px] text-muted-foreground mb-1 block">{t("End Time *", "وقت الانتهاء *")}</label>
                     <Input type="datetime-local" value={form.end_time} onChange={e => setForm({ ...form, end_time: e.target.value })} className="text-xs" />
                   </div>
                 </div>
@@ -206,11 +206,11 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 mb-0.5">
-                    <Badge variant="secondary" className="text-[9px] h-4 capitalize">{catLabel(item.category)}</Badge>
+                    <Badge variant="secondary" className="text-[12px] h-4 capitalize">{catLabel(item.category)}</Badge>
                     {item.is_featured && <Star className="h-3 w-3 text-chart-4 fill-chart-4" />}
                   </div>
                   <p className="text-xs font-semibold truncate">{isAr && item.title_ar ? item.title_ar : item.title}</p>
-                  <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
+                  <div className="flex items-center gap-3 mt-1 text-[12px] text-muted-foreground">
                     <span className="flex items-center gap-0.5"><Clock className="h-2.5 w-2.5" />{format(new Date(item.start_time), "MMM d, HH:mm")} - {format(new Date(item.end_time), "HH:mm")}</span>
                     {item.location && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{isAr && item.location_ar ? item.location_ar : item.location}</span>}
                     {item.max_attendees && <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{item.max_attendees}</span>}

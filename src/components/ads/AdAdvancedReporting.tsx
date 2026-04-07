@@ -149,7 +149,7 @@ export const AdAdvancedReporting = memo(function AdAdvancedReporting() {
           { icon: DollarSign, label: isAr ? "الميزانية" : "Budget", numValue: Math.round(totals.totalBudget), prefix: "SAR " },
         ].map(k => (
           <div key={k.label} className="p-3 rounded-xl bg-muted/50 text-center">
-            <p className="text-[10px] text-muted-foreground">{k.label}</p>
+            <p className="text-[12px] text-muted-foreground">{k.label}</p>
             <p className="text-sm font-bold">{'numValue' in k ? <>{k.prefix}<AnimatedCounter value={k.numValue!} className="inline" /></> : k.strValue}</p>
           </div>
         ))}
@@ -184,14 +184,14 @@ export const AdAdvancedReporting = memo(function AdAdvancedReporting() {
                   <TableRow key={r.id}>
                     <TableCell className="font-medium text-xs">{r.name}</TableCell>
                     <TableCell className="text-xs">{r.company}</TableCell>
-                    <TableCell><Badge variant="outline" className="text-[10px]">{r.status}</Badge></TableCell>
+                    <TableCell><Badge variant="outline" className="text-[12px]">{r.status}</Badge></TableCell>
                     <TableCell className="text-xs"><AnimatedCounter value={r.impressions} /></TableCell>
                     <TableCell className="text-xs"><AnimatedCounter value={r.clicks} /></TableCell>
                     <TableCell className="text-xs font-medium">{r.ctr}%</TableCell>
                     <TableCell className="text-xs">{r.cpm}</TableCell>
                     <TableCell className="text-xs">{r.cpc}</TableCell>
                     <TableCell className="text-xs">
-                      <Badge variant={Number(r.roas) > 0 ? "default" : "destructive"} className="text-[10px]">{r.roas}%</Badge>
+                      <Badge variant={Number(r.roas) > 0 ? "default" : "destructive"} className="text-[12px]">{r.roas}%</Badge>
                     </TableCell>
                     <TableCell className="text-xs">{r.budgetUtilization}%</TableCell>
                   </TableRow>

@@ -26,7 +26,7 @@ export const PublicProfileSidebar = memo(function PublicProfileSidebar({ profile
       <Card className="rounded-2xl border-border/30 bg-card/90 overflow-hidden group hover:shadow-lg hover:shadow-primary/5 transition-all duration-500">
         <div className="h-1 bg-gradient-to-r from-primary/60 via-primary/30 to-chart-3/40" />
         <CardContent className="p-4 space-y-3">
-          <h3 className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+          <h3 className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
             <Mail className="h-3.5 w-3.5 text-primary" />
             {isAr ? "التواصل" : "Contact"}
           </h3>
@@ -56,21 +56,21 @@ export const PublicProfileSidebar = memo(function PublicProfileSidebar({ profile
             <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 rounded-xl px-3 py-2 border border-border/15">
               <Earth className="h-3.5 w-3.5 text-primary/60 shrink-0" />
               <span>{countryFlag(profile.nationality)} {getCountryName(profile.nationality)}</span>
-              <Badge variant="outline" className="text-[8px] h-4 ms-auto border-border/30">{isAr ? "الجنسية" : "Nationality"}</Badge>
+              <Badge variant="outline" className="text-[12px] h-4 ms-auto border-border/30">{isAr ? "الجنسية" : "Nationality"}</Badge>
             </div>
           )}
 
           <Separator className="bg-border/15" />
           
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
               <Calendar className="h-3 w-3 text-primary/50 shrink-0" />
               <span>{t("memberSince")}: {toEnglishDigits(new Date(profile.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "long" }))}</span>
             </div>
             {profile.account_number && (
               <div className="flex items-center gap-2">
                 <Shield className="h-3 w-3 text-muted-foreground/40 shrink-0" />
-                <Badge variant="outline" className="font-mono text-[9px] border-border/30 tabular-nums">{profile.account_number}</Badge>
+                <Badge variant="outline" className="font-mono text-[12px] border-border/30 tabular-nums">{profile.account_number}</Badge>
               </div>
             )}
           </div>
@@ -86,9 +86,9 @@ export const PublicProfileSidebar = memo(function PublicProfileSidebar({ profile
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold">{isAr ? "عضوية مميزة" : "Premium Member"}</p>
-              <p className="text-[10px] text-muted-foreground">{isAr ? "استمتع بمزايا حصرية" : "Enjoy exclusive benefits"}</p>
+              <p className="text-[12px] text-muted-foreground">{isAr ? "استمتع بمزايا حصرية" : "Enjoy exclusive benefits"}</p>
             </div>
-            <Badge className="bg-primary text-primary-foreground text-[10px] rounded-xl">
+            <Badge className="bg-primary text-primary-foreground text-[12px] rounded-xl">
               {profile.membership_tier === "professional" ? "Pro" : profile.membership_tier}
             </Badge>
           </CardContent>

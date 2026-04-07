@@ -63,7 +63,7 @@ export const BenefitsUsageTracker = memo(function BenefitsUsageTracker() {
       <CardContent className="space-y-5">
         {Array.from(categories.entries()).map(([category, items]) => (
           <div key={category} className="space-y-3">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
               {CATEGORY_LABELS[category]?.[isAr ? "ar" : "en"] || category}
             </p>
             <div className="space-y-3">
@@ -99,7 +99,7 @@ export const BenefitsUsageTracker = memo(function BenefitsUsageTracker() {
                           )}
                         </span>
                         {isUnlimited && (
-                          <Badge variant="secondary" className="text-[9px] px-1.5 py-0">
+                          <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
                             {isAr ? "غير محدود" : "Unlimited"}
                           </Badge>
                         )}

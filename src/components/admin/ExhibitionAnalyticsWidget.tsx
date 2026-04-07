@@ -75,7 +75,7 @@ export const ExhibitionAnalyticsWidget = memo(function ExhibitionAnalyticsWidget
             <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-sm font-bold"><AnimatedCounter value={m.value || 0} /></p>
-              <p className="text-[9px] text-muted-foreground">{m.label}</p>
+              <p className="text-[12px] text-muted-foreground">{m.label}</p>
             </div>
           ))}
         </div>
@@ -99,12 +99,12 @@ export const ExhibitionAnalyticsWidget = memo(function ExhibitionAnalyticsWidget
             {data.upcomingExh.map((exh) => {
               const daysLeft = differenceInDays(new Date(exh.start_date), new Date());
               return (
-                <div key={exh.id} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/20">
+                <div key={exh.id} className="flex items-center justify-between text-[12px] p-1.5 rounded bg-muted/20">
                   <div className="truncate flex-1">
                     <span className="font-medium">{isAr && exh.title_ar ? exh.title_ar : exh.title}</span>
                     {exh.city && <span className="text-muted-foreground ms-1">• {exh.city}</span>}
                   </div>
-                  <Badge variant={daysLeft <= 7 ? "destructive" : "secondary"} className="text-[9px] px-1.5 py-0 shrink-0 ms-2">
+                  <Badge variant={daysLeft <= 7 ? "destructive" : "secondary"} className="text-[12px] px-1.5 py-0 shrink-0 ms-2">
                     {daysLeft}d
                   </Badge>
                 </div>

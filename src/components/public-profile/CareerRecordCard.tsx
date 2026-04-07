@@ -34,7 +34,7 @@ export const CareerRecordCard = memo(function CareerRecordCard({
             <div className="flex items-center gap-2 flex-wrap">
               <h4 className="font-semibold text-sm">{title || "—"}</h4>
               {record.is_current && (
-                <Badge className="bg-chart-3/10 text-chart-3 text-[10px] h-5">
+                <Badge className="bg-chart-3/10 text-chart-3 text-[12px] h-5">
                   {isAr ? "مستمر" : "Ongoing"}
                 </Badge>
               )}
@@ -46,15 +46,15 @@ export const CareerRecordCard = memo(function CareerRecordCard({
                 </Link>
               ) : <p className="text-xs text-muted-foreground mt-0.5">{entity}</p>
             )}
-            <div className="flex flex-wrap gap-2 mt-1 text-[11px] text-muted-foreground">
+            <div className="flex flex-wrap gap-2 mt-1 text-[12px] text-muted-foreground">
               {period && (
                 <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{period}</span>
               )}
               {record.employment_type && (
-                <Badge variant="outline" className="text-[9px] h-4">{record.employment_type}</Badge>
+                <Badge variant="outline" className="text-[12px] h-4">{record.employment_type}</Badge>
               )}
               {record.education_level && (
-                <Badge variant="outline" className="text-[9px] h-4">{record.education_level}</Badge>
+                <Badge variant="outline" className="text-[12px] h-4">{record.education_level}</Badge>
               )}
               {pickText(record.field_of_study_ar, record.field_of_study) && (
                 <span>{pickText(record.field_of_study_ar, record.field_of_study)}</span>
@@ -63,11 +63,11 @@ export const CareerRecordCard = memo(function CareerRecordCard({
                 <span className="flex items-center gap-1"><MapPin className="h-2.5 w-2.5" />{record.location}</span>
               )}
               {extraBadges?.map((b, i) => (
-                <Badge key={i} variant="outline" className={`text-[9px] h-4 ${b.className || ""}`}>{b.label}</Badge>
+                <Badge key={i} variant="outline" className={`text-[12px] h-4 ${b.className || ""}`}>{b.label}</Badge>
               ))}
             </div>
             {desc && (
-              <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed" dir={isAr ? "rtl" : "ltr"}>
+              <p className="mt-1.5 text-[12px] text-muted-foreground leading-relaxed" dir={isAr ? "rtl" : "ltr"}>
                 {desc}
               </p>
             )}

@@ -56,7 +56,7 @@ export const LocationBubble = memo(function LocationBubble({ lat, lng, label, is
           className="w-full h-[120px] object-cover"
           loading="lazy"
         />
-        <div className={`flex items-center gap-1.5 px-2 py-1.5 text-[11px] ${isMine ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+        <div className={`flex items-center gap-1.5 px-2 py-1.5 text-[12px] ${isMine ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
           <MapPin className="h-3 w-3 shrink-0" />
           <span className="truncate">{label}</span>
         </div>

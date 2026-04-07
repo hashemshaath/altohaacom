@@ -280,7 +280,7 @@ export const SEOInternalLinkAnalyzer = memo(function SEOInternalLinkAnalyzer({ i
               </CardHeader>
               <CardContent>
                 <div className="space-y-1.5 max-h-[280px] overflow-y-auto">
-                  <div className="grid grid-cols-[1fr,60px,60px,60px] gap-2 text-[10px] font-semibold text-muted-foreground uppercase pb-1 border-b border-border">
+                  <div className="grid grid-cols-[1fr,60px,60px,60px] gap-2 text-[12px] font-semibold text-muted-foreground uppercase pb-1 border-b border-border">
                     <span>{isAr ? "الصفحة" : "Page"}</span>
                     <span className="text-center">{isAr ? "واردة" : "In"}</span>
                     <span className="text-center">{isAr ? "صادرة" : "Out"}</span>
@@ -295,7 +295,7 @@ export const SEOInternalLinkAnalyzer = memo(function SEOInternalLinkAnalyzer({ i
                       <span className="text-center tabular-nums font-medium">{p.inbound}</span>
                       <span className="text-center tabular-nums text-muted-foreground">{p.outbound}</span>
                       <div className="flex justify-center">
-                        <Badge variant={p.score >= 50 ? "default" : p.score >= 20 ? "secondary" : "destructive"} className="text-[9px] px-1.5">
+                        <Badge variant={p.score >= 50 ? "default" : p.score >= 20 ? "secondary" : "destructive"} className="text-[12px] px-1.5">
                           {p.score}
                         </Badge>
                       </div>

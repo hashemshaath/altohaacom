@@ -27,7 +27,7 @@ export function WeekView({ events, currentDate, isAr }: { events: GlobalEvent[];
                   "text-center py-3 border-b border-border/20 transition-colors",
                   isToday ? "bg-primary/8" : "bg-muted/20"
                 )}>
-                  <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">{format(day, "EEE", isAr ? { locale: arLocale } : undefined)}</p>
+                  <p className="text-[12px] text-muted-foreground uppercase font-semibold tracking-wider">{format(day, "EEE", isAr ? { locale: arLocale } : undefined)}</p>
                   <p className={cn(
                     "text-xl font-bold tabular-nums mt-0.5",
                     isToday ? "text-primary" : "text-foreground"
@@ -44,7 +44,7 @@ export function WeekView({ events, currentDate, isAr }: { events: GlobalEvent[];
                 <ScrollArea className="h-[320px]">
                   <div className="p-1.5 space-y-1">
                     {dayEvents.length === 0 && (
-                      <p className="text-[10px] text-muted-foreground/15 text-center pt-10">—</p>
+                      <p className="text-[12px] text-muted-foreground/15 text-center pt-10">—</p>
                     )}
                     {dayEvents.map(ev => (
                       <EventChip key={ev.id} event={ev} isAr={isAr} />

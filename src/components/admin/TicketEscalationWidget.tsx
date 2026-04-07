@@ -106,7 +106,7 @@ export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
           <CardContent className="flex items-center gap-3 p-3 group">
             <div className={`rounded-xl p-2 ${kpi.bg} transition-transform duration-300 group-hover:scale-110`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
             <div>
-              <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
+              <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
               <AnimatedCounter value={typeof kpi.value === "number" ? kpi.value : 0} className="text-lg font-bold" />
             </div>
           </CardContent>
@@ -142,7 +142,7 @@ export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
         <CardContent className="space-y-2">
           {data.categories.map((cat, i) => (
             <div key={cat.name} className="space-y-1">
-              <div className="flex justify-between text-[10px]">
+              <div className="flex justify-between text-[12px]">
                 <span className="capitalize">{cat.name}</span>
                 <span className="text-muted-foreground">{cat.count}</span>
               </div>

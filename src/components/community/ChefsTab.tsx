@@ -154,7 +154,7 @@ export const ChefsTab = memo(function ChefsTab() {
                       </AvatarFallback>
                     </Avatar>
                     {chef.is_verified && (
-                      <div className="absolute -bottom-0.5 -end-0.5 h-5 w-5 flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm text-[10px]">
+                      <div className="absolute -bottom-0.5 -end-0.5 h-5 w-5 flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm text-[12px]">
                         ✓
                       </div>
                     )}
@@ -164,7 +164,7 @@ export const ChefsTab = memo(function ChefsTab() {
                     <Link to={`/${chef.username || chef.user_id}`} className="block">
                       <h3
                         className={`font-bold group-hover:text-primary transition-colors leading-tight text-center break-words ${
-                          (displayName || "Chef").length > 16 ? "text-[11px] sm:text-xs" : "text-xs sm:text-sm"
+                          (displayName || "Chef").length > 16 ? "text-[12px] sm:text-xs" : "text-xs sm:text-sm"
                         }`}
                       >
                         {displayName || "Chef"}
@@ -173,20 +173,20 @@ export const ChefsTab = memo(function ChefsTab() {
                     </Link>
 
                     {chef.experience_level && (
-                      <Badge variant="secondary" className="capitalize text-[10px] px-2 h-4">
+                      <Badge variant="secondary" className="capitalize text-[12px] px-2 h-4">
                         {chef.experience_level}
                       </Badge>
                     )}
 
                     {displaySpec && (
-                      <p className="flex items-center justify-center gap-1 truncate text-[11px] text-muted-foreground">
+                      <p className="flex items-center justify-center gap-1 truncate text-[12px] text-muted-foreground">
                         <ChefHat className="h-3 w-3 shrink-0" />
                         {displaySpec}
                       </p>
                     )}
 
                     {chef.location && (
-                      <p className="flex items-center justify-center gap-1 text-[11px] text-muted-foreground">
+                      <p className="flex items-center justify-center gap-1 text-[12px] text-muted-foreground">
                         <MapPin className="h-3 w-3 shrink-0" />
                         {chef.country_code ? `${countryFlag(chef.country_code)} ` : ""}
                         {chef.location}

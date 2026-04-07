@@ -80,7 +80,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
             <BarChart3 className="h-4 w-4 text-primary" />
             {isAr ? "تقرير التقدم" : "Progress Report"}
           </CardTitle>
-          <Badge variant="outline" className="text-[9px]">
+          <Badge variant="outline" className="text-[12px]">
             {isAr ? "آخر 30 يوم" : "Last 30d"}
           </Badge>
         </div>
@@ -95,7 +95,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
             </div>
             <div className="flex items-center gap-1">
               <TrendingUp className={`h-3 w-3 ${ptsChange >= 0 ? "text-chart-5" : "text-destructive"}`} />
-              <span className={`text-[10px] font-bold ${ptsChange >= 0 ? "text-chart-5" : "text-destructive"}`}>
+              <span className={`text-[12px] font-bold ${ptsChange >= 0 ? "text-chart-5" : "text-destructive"}`}>
                 {ptsChange >= 0 ? "+" : ""}{ptsChange}%
               </span>
             </div>
@@ -113,7 +113,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
               </AreaChart>
             </ResponsiveContainer>
           </div>
-          <div className="flex justify-between text-[9px] text-muted-foreground mt-1">
+          <div className="flex justify-between text-[12px] text-muted-foreground mt-1">
             <span>{data.pointsData[0]?.day}</span>
             <span className="font-semibold text-foreground">{pointsBalance || 0} {isAr ? "إجمالي" : "total"}</span>
             <span>{data.pointsData[data.pointsData.length - 1]?.day}</span>
@@ -126,7 +126,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
             <div key={m.label} className="rounded-xl bg-muted/20 p-2.5 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <m.icon className={`h-4 w-4 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-lg font-bold tabular-nums">{m.value}</p>
-              <p className="text-[9px] text-muted-foreground uppercase">{m.label}</p>
+              <p className="text-[12px] text-muted-foreground uppercase">{m.label}</p>
             </div>
           ))}
         </div>
@@ -134,7 +134,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
         {/* Approval Rate */}
         {data.competitions > 0 && (
           <div className="space-y-1.5">
-            <div className="flex justify-between text-[11px]">
+            <div className="flex justify-between text-[12px]">
               <span className="text-muted-foreground">{isAr ? "معدل القبول" : "Approval Rate"}</span>
               <span className="font-semibold">{Math.round((data.competitionsApproved / data.competitions) * 100)}%</span>
             </div>

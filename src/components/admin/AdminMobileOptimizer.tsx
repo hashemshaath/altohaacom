@@ -41,7 +41,7 @@ export const AdminMobileNavGrid = memo(function AdminMobileNavGrid() {
               <div className={cn("h-8 w-8 rounded-xl bg-muted/60 flex items-center justify-center")}>
                 <action.icon className={cn("h-4 w-4", action.color)} />
               </div>
-              <span className="text-[9px] font-medium text-center leading-tight">
+              <span className="text-[12px] font-medium text-center leading-tight">
                 {isAr ? action.labelAr : action.labelEn}
               </span>
             </CardContent>

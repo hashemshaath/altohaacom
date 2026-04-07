@@ -246,7 +246,7 @@ const ContentReviewsSection = memo(function ContentReviewsSection({
                     </div>
                     <div className="flex items-center gap-2 mt-0.5">
                       <StarDisplay rating={review.rating} />
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-[12px] text-muted-foreground">
                         {new Date(review.created_at).toLocaleDateString(isAr ? "ar" : "en", {
                           year: "numeric",
                           month: "short",

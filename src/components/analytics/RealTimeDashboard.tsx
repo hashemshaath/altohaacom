@@ -123,7 +123,7 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
         </h3>
         <div className="flex items-center gap-2">
           <span className={`h-2 w-2 rounded-full ${isConnected ? "bg-chart-2 animate-pulse" : "bg-destructive"}`} />
-          <span className="text-[10px] text-muted-foreground">{timeSince()}</span>
+          <span className="text-[12px] text-muted-foreground">{timeSince()}</span>
         </div>
       </div>
 
@@ -154,12 +154,12 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
                 <div className="relative z-10">
                   <div className="flex items-center justify-between">
                     <metric.icon className={`h-4 w-4 text-${metric.color}`} />
-                    <Badge variant="outline" className="text-[9px] px-1 py-0">
+                    <Badge variant="outline" className="text-[12px] px-1 py-0">
                       {isAr ? "مباشر" : "LIVE"}
                     </Badge>
                   </div>
                   <p className="mt-2 text-2xl font-bold tabular-nums">{metric.value}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5">
+                  <p className="text-[12px] text-muted-foreground mt-0.5">
                     {isAr ? metric.labelAr : metric.label}
                   </p>
                 </div>

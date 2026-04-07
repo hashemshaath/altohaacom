@@ -22,7 +22,7 @@ export function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; 
           "flex h-16 w-16 flex-col items-center justify-center rounded-2xl shadow-sm shrink-0",
           isToday ? "bg-primary text-primary-foreground" : "bg-muted"
         )}>
-          <span className="text-[10px] font-bold uppercase leading-none tracking-wider">{format(currentDate, "EEE", isAr ? { locale: arLocale } : undefined)}</span>
+          <span className="text-[12px] font-bold uppercase leading-none tracking-wider">{format(currentDate, "EEE", isAr ? { locale: arLocale } : undefined)}</span>
           <span className="text-3xl font-bold leading-none tabular-nums mt-1">{currentDate.getDate()}</span>
         </div>
         <div className="flex-1 min-w-0">
@@ -36,7 +36,7 @@ export function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; 
               {dayEvents.map(ev => {
                 const evColors = GLOBAL_EVENT_COLORS[ev.type];
                 return (
-                  <Badge key={ev.id} variant="outline" className={cn("text-[10px] px-1.5 py-0 gap-1 border", evColors?.bg, evColors?.text, evColors?.border)}>
+                  <Badge key={ev.id} variant="outline" className={cn("text-[12px] px-1.5 py-0 gap-1 border", evColors?.bg, evColors?.text, evColors?.border)}>
                     {isAr && ev.title_ar ? ev.title_ar : ev.title}
                   </Badge>
                 );
@@ -85,12 +85,12 @@ export function DayEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolea
       )}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap mb-1">
-          <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
+          <Badge variant="outline" className={cn("text-[12px] px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
             <IconComp className="h-2.5 w-2.5" />
             {isAr ? label?.ar : label?.en}
           </Badge>
           {!countdown.past && (
-            <Badge variant={countdown.urgent ? "destructive" : "secondary"} className="text-[9px] px-1.5 py-0 gap-0.5">
+            <Badge variant={countdown.urgent ? "destructive" : "secondary"} className="text-[12px] px-1.5 py-0 gap-0.5">
               <Timer className="h-2.5 w-2.5" />{countdown.text}
             </Badge>
           )}

@@ -77,7 +77,7 @@ export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="truncate text-sm font-medium">{title || order.order_number}</p>
-                    <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                    <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Clock className="h-3 w-3" />
                         {order.created_at ? format(new Date(order.created_at), "MMM d") : ""}
@@ -91,7 +91,7 @@ export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget
                   </div>
                   <Badge
                     variant="outline"
-                    className={`shrink-0 text-[10px] font-bold uppercase tracking-wider ${statusStyles[order.status] || ""}`}
+                    className={`shrink-0 text-[12px] font-bold uppercase tracking-wider ${statusStyles[order.status] || ""}`}
                   >
                     {order.status}
                   </Badge>

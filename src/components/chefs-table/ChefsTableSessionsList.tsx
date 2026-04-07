@@ -110,17 +110,17 @@ export const ChefsTableSessionsList = memo(function ChefsTableSessionsList({ isA
               )}
               <CardContent className="p-6">
                 <div className="mb-3 flex items-center gap-2 flex-wrap">
-                  <Badge variant="outline" className={`${statusColors[session.status] || ""} font-bold text-[9px] uppercase tracking-wider px-2.5 py-0.5`}>
+                  <Badge variant="outline" className={`${statusColors[session.status] || ""} font-bold text-[12px] uppercase tracking-wider px-2.5 py-0.5`}>
                     {session.status === "scheduled" ? (isAr ? "مجدول" : "Scheduled") :
                      session.status === "in_progress" ? (isAr ? "قيد التنفيذ" : "In Progress") :
                      session.status === "completed" ? (isAr ? "مكتمل" : "Completed") :
                      isAr ? "ملغي" : "Cancelled"}
                   </Badge>
-                  <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-wider gap-1">
+                  <Badge variant="secondary" className="text-[12px] font-bold uppercase tracking-wider gap-1">
                     <Package className="h-3 w-3" />
                     {categoryLabels[session.product_category]?.[isAr ? "ar" : "en"] || session.product_category}
                   </Badge>
-                  <Badge variant="secondary" className="text-[9px] font-bold uppercase tracking-wider">
+                  <Badge variant="secondary" className="text-[12px] font-bold uppercase tracking-wider">
                     {experienceLabels[session.experience_type]?.[isAr ? "ar" : "en"] || session.experience_type}
                   </Badge>
                 </div>

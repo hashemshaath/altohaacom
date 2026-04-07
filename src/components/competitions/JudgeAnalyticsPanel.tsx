@@ -103,7 +103,7 @@ export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competiti
                 <stat.icon className={`h-4 w-4 ${stat.color}`} />
               </div>
               <div>
-                <p className="text-[9px] uppercase font-bold tracking-wider text-muted-foreground">{stat.label}</p>
+                <p className="text-[12px] uppercase font-bold tracking-wider text-muted-foreground">{stat.label}</p>
                 <p className="text-sm font-bold">{stat.value}</p>
               </div>
             </CardContent>
@@ -129,22 +129,22 @@ export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competiti
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{profile?.full_name || "—"}</p>
-                      <p className="text-[10px] text-muted-foreground">{j.scores_count || 0} {isAr ? "تقييم" : "scores"}</p>
+                      <p className="text-[12px] text-muted-foreground">{j.scores_count || 0} {isAr ? "تقييم" : "scores"}</p>
                     </div>
                   </div>
-                  <Badge variant={biasInfo.variant} className="text-[10px]">{biasInfo.label}</Badge>
+                  <Badge variant={biasInfo.variant} className="text-[12px]">{biasInfo.label}</Badge>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "المتوسط" : "Avg Score"}</p>
+                    <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "المتوسط" : "Avg Score"}</p>
                     <p className="text-sm font-bold">{(j.avg_score_given || 0).toFixed(1)}</p>
                   </div>
                   <div>
-                    <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "الاتساق" : "Consistency"}</p>
+                    <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "الاتساق" : "Consistency"}</p>
                     <Progress value={(j.consistency_score || 0) * 100} className="h-1.5 mt-1" />
                   </div>
                   <div>
-                    <p className="text-[9px] text-muted-foreground uppercase">{isAr ? "الانحراف" : "Std Dev"}</p>
+                    <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "الانحراف" : "Std Dev"}</p>
                     <p className="text-sm font-bold">{(j.score_std_deviation || 0).toFixed(1)}</p>
                   </div>
                 </div>

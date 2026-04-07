@@ -166,7 +166,7 @@ export default function Entities() {
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[2rem] bg-primary/10 ring-4 ring-primary/5 shadow-2xl backdrop-blur-md transition-transform hover:scale-110">
                 <Building2 className="h-8 w-8 text-primary" />
               </div>
-              <Badge variant="secondary" className="backdrop-blur-md bg-background/80 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest border-0 shadow-lg">
+              <Badge variant="secondary" className="backdrop-blur-md bg-background/80 px-4 py-1.5 text-[12px] font-black uppercase tracking-widest border-0 shadow-lg">
                 {isAr ? "الدليل المهني الرسمي" : "Official Professional Directory"}
               </Badge>
             </div>
@@ -321,9 +321,9 @@ export default function Entities() {
 
                         {/* Badges at top-end */}
                         <div className="absolute end-3 top-3 flex gap-1.5">
-                          <Badge variant="secondary" className="text-[10px] backdrop-blur-sm bg-secondary/80">{isAr ? tLabel.ar : tLabel.en}</Badge>
+                          <Badge variant="secondary" className="text-[12px] backdrop-blur-sm bg-secondary/80">{isAr ? tLabel.ar : tLabel.en}</Badge>
                           {entity.is_verified && (
-                            <Badge className="bg-chart-3/20 text-chart-3 backdrop-blur-sm text-[10px]">
+                            <Badge className="bg-chart-3/20 text-chart-3 backdrop-blur-sm text-[12px]">
                               <ShieldCheck className="me-1 h-3 w-3" />{isAr ? "موثق" : "Verified"}
                             </Badge>
                           )}
@@ -338,7 +338,7 @@ export default function Entities() {
                               <p className="text-xs text-muted-foreground mt-0.5">({entity.abbreviation})</p>
                             )}
                           </div>
-                          <Badge variant="outline" className="shrink-0 text-[10px]">{isAr ? sLabel.ar : sLabel.en}</Badge>
+                          <Badge variant="outline" className="shrink-0 text-[12px]">{isAr ? sLabel.ar : sLabel.en}</Badge>
                         </div>
                       </CardHeader>
 
@@ -369,7 +369,7 @@ export default function Entities() {
                         {entity.specializations && (entity.specializations as string[]).length > 0 && (
                           <div className="flex flex-wrap gap-1">
                             {(entity.specializations as string[]).slice(0, 3).map(s => (
-                              <Badge key={s} variant="secondary" className="text-[10px]">{s}</Badge>
+                              <Badge key={s} variant="secondary" className="text-[12px]">{s}</Badge>
                             ))}
                           </div>
                         )}
@@ -383,7 +383,7 @@ export default function Entities() {
                             )}
                           </div>
                           {entity.founded_year && (
-                            <span className="text-[10px] text-muted-foreground/70">{isAr ? "تأسست" : "Est."} {entity.founded_year}</span>
+                            <span className="text-[12px] text-muted-foreground/70">{isAr ? "تأسست" : "Est."} {entity.founded_year}</span>
                           )}
                         </div>
 
@@ -430,7 +430,7 @@ export default function Entities() {
               <Card key={stat.label} className={`border-s-[3px] ${stat.accent} transition-all hover:shadow-sm`}>
                 <CardContent className="p-4 text-center">
                   <p className="text-2xl font-bold sm:text-3xl">{stat.value}</p>
-                  <p className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
+                  <p className="mt-0.5 text-[12px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
                 </CardContent>
               </Card>
             ))}

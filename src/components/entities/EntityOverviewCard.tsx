@@ -105,7 +105,7 @@ export const EntityOverviewCard = memo(function EntityOverviewCard({ entity, fol
                   <Icon className={`h-4 w-4 ${m.color}`} />
                 </div>
                 <AnimatedCounter value={m.value} className="text-lg font-bold leading-none" />
-                <p className="text-[9px] leading-tight text-muted-foreground">{m.label}</p>
+                <p className="text-[12px] leading-tight text-muted-foreground">{m.label}</p>
               </div>
             );
           })}
@@ -120,7 +120,7 @@ export const EntityOverviewCard = memo(function EntityOverviewCard({ entity, fol
                 {isAr ? "جهة موثقة" : "Verified Organization"}
               </span>
               {entity.verification_level && (
-                <Badge variant="secondary" className="text-[9px] h-4">
+                <Badge variant="secondary" className="text-[12px] h-4">
                   {entity.verification_level}
                 </Badge>
               )}

@@ -141,7 +141,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
           </div>
           {isAr ? "تنبيهات ذكية" : "Smart Alerts"}
           {alerts.length > 0 && (
-            <Badge variant="secondary" className="text-[10px] h-5 px-1.5">
+            <Badge variant="secondary" className="text-[12px] h-5 px-1.5">
               {alerts.length}
             </Badge>
           )}
@@ -175,7 +175,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
                           <p className="text-xs font-medium">
                             {isAr ? alert.titleAr : alert.title}
                           </p>
-                          <p className="text-[10px] text-muted-foreground mt-0.5">
+                          <p className="text-[12px] text-muted-foreground mt-0.5">
                             {isAr ? alert.descriptionAr : alert.description}
                           </p>
                         </div>

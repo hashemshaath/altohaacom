@@ -633,7 +633,7 @@ export default function LeadManagement() {
                                 <Building2 className="h-3 w-3" /> {lead.company_name}
                               </p>
                             )}
-                            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+                            <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
                               {lead.email && <Mail className="h-3 w-3" />}
                               {lead.phone && <Phone className="h-3 w-3" />}
                               <span className="ms-auto">
@@ -647,7 +647,7 @@ export default function LeadManagement() {
                                   key={s}
                                   variant="ghost"
                                   size="sm"
-                                  className="h-6 px-2 text-[10px]"
+                                  className="h-6 px-2 text-[12px]"
                                   onClick={() => handleStatusChange(lead, s)}
                                 >
                                   {isAr ? stageLabels[s]?.ar : stageLabels[s]?.en}
@@ -694,7 +694,7 @@ export default function LeadManagement() {
               </TabsTrigger>
               <TabsTrigger value="activity" className="gap-1.5 text-xs">
                 <History className="h-3.5 w-3.5" />{isAr ? "السجل" : "Activity Log"}
-                {activityLog.length > 0 && <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[9px]">{activityLog.length}</Badge>}
+                {activityLog.length > 0 && <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[12px]">{activityLog.length}</Badge>}
               </TabsTrigger>
             </TabsList>
             <TabsContent value="details" className="space-y-4">
@@ -791,7 +791,7 @@ export default function LeadManagement() {
                                       ? (isAr ? "تحديث الملاحظات" : "Notes updated")
                                       : (isAr ? "تحديث" : "Updated")}
                             </p>
-                            <span className="text-[10px] text-muted-foreground">
+                            <span className="text-[12px] text-muted-foreground">
                               {formatDistanceToNow(new Date(entry.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}
                             </span>
                           </div>

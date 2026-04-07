@@ -138,10 +138,10 @@ export default function MyEvaluations() {
                     <h3 className="font-bold text-lg">
                       {isAr && inv.product_name_ar ? inv.product_name_ar : inv.product_name}
                     </h3>
-                    <Badge variant="secondary" className="text-[10px] mt-1">{inv.domain_slug}</Badge>
+                    <Badge variant="secondary" className="text-[12px] mt-1">{inv.domain_slug}</Badge>
                   </div>
                   {inv.response_deadline && (
-                    <Badge variant="outline" className="text-[10px] gap-1 shrink-0">
+                    <Badge variant="outline" className="text-[12px] gap-1 shrink-0">
                       <Timer className="h-3 w-3" />
                       {isAr ? "آخر موعد:" : "Deadline:"} {format(new Date(inv.response_deadline), "MMM d")}
                     </Badge>
@@ -258,7 +258,7 @@ export default function MyEvaluations() {
                     {inv.offered_amount ? ` · ${inv.offered_amount} ${inv.currency}` : ""}
                   </p>
                 </div>
-                <Badge variant={inv.status === "accepted" ? "default" : "destructive"} className="text-[10px] uppercase">
+                <Badge variant={inv.status === "accepted" ? "default" : "destructive"} className="text-[12px] uppercase">
                   {inv.status === "accepted" ? (isAr ? "مقبولة" : "Accepted") : (isAr ? "مرفوضة" : "Declined")}
                 </Badge>
               </CardContent>

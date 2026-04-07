@@ -27,12 +27,12 @@ export const AdIntegrationsTab = memo(function AdIntegrationsTab() {
             <Link2 className="h-4 w-4 text-chart-1" />
             <div className="flex-1">
               <p className="text-xs font-semibold">{isAr ? "تتبع الأداء عبر المنصات" : "Cross-Platform Tracking"}</p>
-              <p className="text-[10px] text-muted-foreground">{isAr ? "ربط بكسلات التتبع لتحليل أداء الحملات عبر المنصات المختلفة" : "Connect tracking pixels to analyze campaign performance across platforms"}</p>
+              <p className="text-[12px] text-muted-foreground">{isAr ? "ربط بكسلات التتبع لتحليل أداء الحملات عبر المنصات المختلفة" : "Connect tracking pixels to analyze campaign performance across platforms"}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-1.5 mt-2">
             {INTEGRATIONS.map(int => (
-              <Badge key={int.key} variant="outline" className="text-[10px] gap-1 rounded-xl">
+              <Badge key={int.key} variant="outline" className="text-[12px] gap-1 rounded-xl">
                 {isAr ? int.labelAr : int.label}
               </Badge>
             ))}

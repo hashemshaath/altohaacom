@@ -106,7 +106,7 @@ const EntityTableRow = memo(function EntityTableRow({ entity, typeLabel, scopeLa
                     style={{ width: `${completeness}%` }}
                   />
                 </div>
-                <span className="text-[9px] text-muted-foreground">{completeness}%</span>
+                <span className="text-[12px] text-muted-foreground">{completeness}%</span>
               </div>
             </div>
           </div>

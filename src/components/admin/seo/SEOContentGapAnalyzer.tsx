@@ -271,7 +271,7 @@ Keep it concise and actionable. Use bullet points.`;
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         <Card className={`border-2 ${analysis.score >= 80 ? "border-chart-2/30" : analysis.score >= 50 ? "border-chart-4/30" : "border-destructive/30"}`}>
           <CardContent className="p-4 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "نقاط المحتوى" : "Content Score"}</p>
+            <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "نقاط المحتوى" : "Content Score"}</p>
             <p className={`text-3xl font-bold tabular-nums mt-1 ${analysis.score >= 80 ? "text-chart-2" : analysis.score >= 50 ? "text-chart-4" : "text-destructive"}`}>
               <AnimatedCounter value={analysis.score} />
               <span className="text-sm font-normal text-muted-foreground">/100</span>
@@ -280,25 +280,25 @@ Keep it concise and actionable. Use bullet points.`;
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "إجمالي المقالات" : "Total Articles"}</p>
+            <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "إجمالي المقالات" : "Total Articles"}</p>
             <p className="text-2xl font-bold tabular-nums mt-1"><AnimatedCounter value={analysis.total} /></p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "مشاكل" : "Issues"}</p>
+            <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "مشاكل" : "Issues"}</p>
             <p className="text-2xl font-bold tabular-nums mt-1 text-destructive"><AnimatedCounter value={analysis.totalIssues} /></p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "كلمات مفتاحية" : "Keywords"}</p>
+            <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "كلمات مفتاحية" : "Keywords"}</p>
             <p className="text-2xl font-bold tabular-nums mt-1"><AnimatedCounter value={keywords?.length || 0} /></p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "بدون زيارات" : "Zero Views"}</p>
+            <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{isAr ? "بدون زيارات" : "Zero Views"}</p>
             <p className="text-2xl font-bold tabular-nums mt-1 text-chart-4"><AnimatedCounter value={analysis.zeroViews.length} /></p>
           </CardContent>
         </Card>
@@ -323,7 +323,7 @@ Keep it concise and actionable. Use bullet points.`;
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{issue.label}</p>
                   {issue.count > 0 && issue.items.length > 0 && (
-                    <p className="text-[10px] text-muted-foreground truncate">
+                    <p className="text-[12px] text-muted-foreground truncate">
                       {issue.items.slice(0, 3).map(a => a.title).join(", ")}
                       {issue.items.length > 3 && ` +${issue.items.length - 3}`}
                     </p>
@@ -331,7 +331,7 @@ Keep it concise and actionable. Use bullet points.`;
                 </div>
                 <Badge
                   variant={issue.count === 0 ? "default" : issue.severity === "high" ? "destructive" : "secondary"}
-                  className="text-[9px] tabular-nums"
+                  className="text-[12px] tabular-nums"
                 >
                   {issue.count}
                 </Badge>
@@ -393,7 +393,7 @@ Keep it concise and actionable. Use bullet points.`;
             <CardTitle className="text-sm flex items-center gap-2">
               <FileWarning className="h-4 w-4 text-destructive" />
               {isAr ? "محتوى رقيق يحتاج تحسين" : "Thin Content Needing Improvement"}
-              <Badge variant="destructive" className="text-[9px] ms-auto">{analysis.thinContent.length}</Badge>
+              <Badge variant="destructive" className="text-[12px] ms-auto">{analysis.thinContent.length}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -415,7 +415,7 @@ Keep it concise and actionable. Use bullet points.`;
                         {(a.content || "").split(/\s+/).filter(Boolean).length}
                       </td>
                       <td className="py-2 px-2 text-end tabular-nums text-muted-foreground">{a.view_count || 0}</td>
-                      <td className="py-2 ps-2"><Badge variant="outline" className="text-[9px]">{a.type}</Badge></td>
+                      <td className="py-2 ps-2"><Badge variant="outline" className="text-[12px]">{a.type}</Badge></td>
                     </tr>
                   ))}
                 </tbody>

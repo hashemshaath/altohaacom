@@ -50,8 +50,8 @@ const TIER_CONFIG: Record<string, {
 };
 
 const SIZE_CLASSES = {
-  sm: "text-[9px] h-4 px-1.5 gap-0.5",
-  md: "text-[10px] h-5 px-2 gap-1",
+  sm: "text-[12px] h-4 px-1.5 gap-0.5",
+  md: "text-[12px] h-5 px-2 gap-1",
   lg: "text-xs h-6 px-2.5 gap-1.5",
 };
 
@@ -91,7 +91,7 @@ export const MembershipBadge = memo(function MembershipBadge({ tier, isAr = fals
           </div>
           <ul className="space-y-0.5">
             {benefits.map((b, i) => (
-              <li key={i} className="flex items-start gap-1 text-[10px] text-muted-foreground">
+              <li key={i} className="flex items-start gap-1 text-[12px] text-muted-foreground">
                 <Sparkles className="h-2.5 w-2.5 mt-0.5 shrink-0 text-primary/60" />
                 {b}
               </li>

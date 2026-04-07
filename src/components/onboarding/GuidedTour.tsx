@@ -357,7 +357,7 @@ export function GuidedTour() {
 
         {/* Tour label */}
         <div className="flex items-center gap-1.5 mb-3">
-          <span className="text-[9px] font-bold uppercase tracking-wider text-primary/70 bg-primary/8 px-2 py-0.5 rounded-full">
+          <span className="text-[12px] font-bold uppercase tracking-wider text-primary/70 bg-primary/8 px-2 py-0.5 rounded-full">
             {isAr ? tour.labelAr : tour.label}
           </span>
         </div>
@@ -375,7 +375,7 @@ export function GuidedTour() {
         </div>
 
         <div className="flex items-center justify-between pt-2 border-t border-border/30">
-          <span className="text-[10px] text-muted-foreground tabular-nums">
+          <span className="text-[12px] text-muted-foreground tabular-nums">
             {step + 1} / {STEPS.length}
           </span>
           <div className="flex gap-1.5">

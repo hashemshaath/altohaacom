@@ -233,7 +233,7 @@ export const ExhibitionStep = memo(function ExhibitionStep({
                             <h4 className="font-semibold text-sm truncate">
                               {isAr && exh.title_ar ? exh.title_ar : exh.title}
                             </h4>
-                            <Badge variant="outline" className="shrink-0 text-[10px]">
+                            <Badge variant="outline" className="shrink-0 text-[12px]">
                               {exh.type?.replace("_", " ")}
                             </Badge>
                           </div>
@@ -301,7 +301,7 @@ export const ExhibitionStep = memo(function ExhibitionStep({
                           {isAr && ent.name_ar ? ent.name_ar : ent.name}
                           {ent.abbreviation && <span className="text-muted-foreground"> ({ent.abbreviation})</span>}
                         </p>
-                        <div className="flex gap-2 text-[10px] text-muted-foreground">
+                        <div className="flex gap-2 text-[12px] text-muted-foreground">
                           <span>{ent.type?.replace("_", " ")}</span>
                           {ent.country && <span>· {ent.country}</span>}
                           <span>· {ent.scope}</span>
@@ -352,7 +352,7 @@ export const ExhibitionStep = memo(function ExhibitionStep({
                         <p className="text-sm font-medium truncate">
                           {isAr && chef.full_name_ar ? chef.full_name_ar : chef.full_name}
                         </p>
-                        <div className="flex gap-2 text-[10px] text-muted-foreground">
+                        <div className="flex gap-2 text-[12px] text-muted-foreground">
                           {chef.specialization && <span>{chef.specialization}</span>}
                           {chef.city && <span>· {chef.city}</span>}
                           {chef.country_code && <span>· {chef.country_code}</span>}

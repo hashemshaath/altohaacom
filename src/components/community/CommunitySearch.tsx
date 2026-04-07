@@ -195,7 +195,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
                 key={f.id}
                 onClick={() => { setActiveFilter(f.id); if (query.length >= 2) search(query); }}
                 className={cn(
-                  "shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold transition-colors",
+                  "shrink-0 rounded-full px-2.5 py-1 text-[12px] font-semibold transition-colors",
                   activeFilter === f.id ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"
                 )}
               >
@@ -218,7 +218,7 @@ export const CommunitySearch = memo(function CommunitySearch() {
                 {(r.type === "user" || r.type === "recipe" || r.type === "group") && r.avatar ? (
                   <Avatar className="h-8 w-8">
                     <AvatarImage src={r.avatar} />
-                    <AvatarFallback className="text-[10px]">{r.title[0]}</AvatarFallback>
+                    <AvatarFallback className="text-[12px]">{r.title[0]}</AvatarFallback>
                   </Avatar>
                 ) : (
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
@@ -227,9 +227,9 @@ export const CommunitySearch = memo(function CommunitySearch() {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{r.title}</p>
-                  {r.subtitle && <p className="text-[10px] text-muted-foreground truncate">{r.subtitle}</p>}
+                  {r.subtitle && <p className="text-[12px] text-muted-foreground truncate">{r.subtitle}</p>}
                 </div>
-                <Badge variant="outline" className="text-[9px] shrink-0">
+                <Badge variant="outline" className="text-[12px] shrink-0">
                   {TYPE_LABELS[r.type]}
                 </Badge>
               </button>

@@ -57,7 +57,7 @@ export const MyActivitySummary = memo(function MyActivitySummary() {
                 </div>
                 <div>
                   <AnimatedCounter value={s.value} className="text-lg font-bold leading-none" />
-                  <p className="text-[10px] text-muted-foreground mt-0.5">{s.label}</p>
+                  <p className="text-[12px] text-muted-foreground mt-0.5">{s.label}</p>
                 </div>
               </div>
             );

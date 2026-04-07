@@ -109,12 +109,12 @@ const CompetitionsSection = memo(function CompetitionsSection() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <div className="absolute top-2 start-2 flex gap-1.5">
                     {event.status && STATUS_STYLES[event.status] && (
-                      <Badge variant="outline" className={cn("text-[9px] font-bold", STATUS_STYLES[event.status].class)}>
+                      <Badge variant="outline" className={cn("text-[12px] font-bold", STATUS_STYLES[event.status].class)}>
                         {event.status === "in_progress" && <Flame className="h-3 w-3 me-0.5" />}
                         {isAr ? STATUS_STYLES[event.status].ar : STATUS_STYLES[event.status].en}
                       </Badge>
                     )}
-                    <Badge variant="outline" className="text-[9px] bg-background/80 backdrop-blur-sm">
+                    <Badge variant="outline" className="text-[12px] bg-background/80 backdrop-blur-sm">
                       {event.type === "competition" ? (isAr ? "مسابقة" : "Competition") : (isAr ? "معرض" : "Exhibition")}
                     </Badge>
                   </div>
@@ -123,7 +123,7 @@ const CompetitionsSection = memo(function CompetitionsSection() {
                   <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                     {isAr ? event.title_ar || event.title : event.title}
                   </h3>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                  <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12px] text-muted-foreground">
                     {event.date && (
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />

@@ -92,7 +92,7 @@ export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
               <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
               <div>
                 <AnimatedCounter value={s.value} className="text-sm font-bold" />
-                <p className="text-[9px] text-muted-foreground">{s.label}</p>
+                <p className="text-[12px] text-muted-foreground">{s.label}</p>
               </div>
             </div>
           ))}
@@ -100,7 +100,7 @@ export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
 
         {/* Role distribution */}
         <div>
-          <p className="text-[10px] text-muted-foreground mb-1.5 font-medium">{isAr ? "توزيع الأدوار" : "Role Distribution"}</p>
+          <p className="text-[12px] text-muted-foreground mb-1.5 font-medium">{isAr ? "توزيع الأدوار" : "Role Distribution"}</p>
           <div className="space-y-1.5">
             {Object.entries(data.roleCounts)
               .sort((a, b) => b[1] - a[1])
@@ -108,9 +108,9 @@ export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
                 <div key={role} className="flex items-center gap-2">
                   <span className={`text-xs font-medium w-20 truncate ${roleColors[role] || "text-muted-foreground"}`}>{translateRole(role, isAr)}</span>
                   <Progress value={(count / maxRole) * 100} className="h-1.5 flex-1" />
-                  <span className="text-[10px] text-muted-foreground w-8 text-end">{count}</span>
+                  <span className="text-[12px] text-muted-foreground w-8 text-end">{count}</span>
                   {data.permPerRole[role] && (
-                    <Badge variant="outline" className="text-[8px] px-1">{data.permPerRole[role]} {isAr ? "صلاحية" : "perms"}</Badge>
+                    <Badge variant="outline" className="text-[12px] px-1">{data.permPerRole[role]} {isAr ? "صلاحية" : "perms"}</Badge>
                   )}
                 </div>
               ))}
@@ -119,7 +119,7 @@ export const RolePermissionsOverview = memo(function RolePermissionsOverview() {
 
         {/* Overrides summary */}
         {(data.grantedOverrides > 0 || data.revokedOverrides > 0) && (
-          <div className="flex items-center gap-3 text-[10px]">
+          <div className="flex items-center gap-3 text-[12px]">
             <span className="flex items-center gap-1 text-chart-2">
               <CheckCircle className="h-3 w-3" /> {data.grantedOverrides} {isAr ? "ممنوحة" : "granted"}
             </span>

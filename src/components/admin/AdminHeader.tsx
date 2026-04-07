@@ -34,7 +34,7 @@ export const AdminHeader = memo(function AdminHeader() {
               {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}
             </span>
           </Link>
-          <span className="hidden rounded bg-primary/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary sm:inline-block">
+          <span className="hidden rounded bg-primary/10 px-2 py-0.5 text-[12px] font-semibold uppercase tracking-wider text-primary sm:inline-block">
             {language === "ar" ? "الإدارة" : "Admin"}
           </span>
           <div className="hidden sm:block ms-1">

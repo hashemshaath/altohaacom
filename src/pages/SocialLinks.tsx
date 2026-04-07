@@ -360,7 +360,7 @@ export default function SocialLinks() {
           {extra.show_flags && showNationality && (nationalityCode || secondNationalityCode) && (
             <div className={`flex items-center ${justifyClass} flex-wrap gap-2 mt-2.5`}>
               {[nationalityCode, secondNationalityCode !== nationalityCode ? secondNationalityCode : null].filter(Boolean).map(code => (
-                <span key={code} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-medium" style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.textMuted }}>
+                <span key={code} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-medium" style={{ background: theme.card, border: `1px solid ${theme.border}`, color: theme.textMuted }}>
                   <span className="text-sm leading-none">{countryFlag(code!)}</span>{getCountryName(code)}
                 </span>
               ))}
@@ -368,7 +368,7 @@ export default function SocialLinks() {
           )}
           {extra.show_membership && membershipTier && membershipTier !== "free" && (
             <div className="mt-2.5">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[10px] font-semibold rounded-full capitalize tracking-wide"
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[12px] font-semibold rounded-full capitalize tracking-wide"
                 style={{ background: `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentLight}88)`, color: theme.accent, border: `1px solid ${theme.accentMedium}` }}>✦ {membershipTier}</span>
             </div>
           )}
@@ -378,9 +378,9 @@ export default function SocialLinks() {
         {(extra.show_followers || (extra.show_stats && hasStats)) && (
           <div className={`transition-all duration-700 delay-300 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <div className={`flex items-center ${justifyClass} gap-0 rounded-2xl overflow-hidden mb-5`} style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
-              {extra.show_followers && <div className="flex-1 text-center py-3.5 px-3"><p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}>{formatCompact(followersCount)}</p><p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{tl("followers", lang)}</p></div>}
-              {extra.show_stats && yearsExp && <><div className="w-px h-8" style={{ background: theme.border }} /><div className="flex-1 text-center py-3.5 px-3"><p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}><AnimatedNumber value={yearsExp} /><span style={{ color: theme.accent }}>+</span></p><p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{tl("yearsExp", lang)}</p></div></>}
-              {extra.show_stats && extra.show_views && viewCount > 0 && <><div className="w-px h-8" style={{ background: theme.border }} /><div className="flex-1 text-center py-3.5 px-3"><p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}><AnimatedNumber value={viewCount} /></p><p className="text-[9px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{tl("views", lang)}</p></div></>}
+              {extra.show_followers && <div className="flex-1 text-center py-3.5 px-3"><p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}>{formatCompact(followersCount)}</p><p className="text-[12px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{tl("followers", lang)}</p></div>}
+              {extra.show_stats && yearsExp && <><div className="w-px h-8" style={{ background: theme.border }} /><div className="flex-1 text-center py-3.5 px-3"><p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}><AnimatedNumber value={yearsExp} /><span style={{ color: theme.accent }}>+</span></p><p className="text-[12px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{tl("yearsExp", lang)}</p></div></>}
+              {extra.show_stats && extra.show_views && viewCount > 0 && <><div className="w-px h-8" style={{ background: theme.border }} /><div className="flex-1 text-center py-3.5 px-3"><p className="text-lg font-bold tabular-nums" style={{ color: theme.text }}><AnimatedNumber value={viewCount} /></p><p className="text-[12px] uppercase tracking-[0.15em] font-medium" style={{ color: theme.textMuted }}>{tl("views", lang)}</p></div></>}
             </div>
           </div>
         )}
@@ -411,13 +411,13 @@ export default function SocialLinks() {
         {/* Awards */}
         {extra.show_awards && globalAwards && Array.isArray(globalAwards) && globalAwards.length > 0 && (
           <div className={`mb-5 transition-all duration-700 delay-400 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-            <h3 className={`text-[9px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: theme.accent }}>{tl("awards", lang)}</h3>
+            <h3 className={`text-[12px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: theme.accent }}>{tl("awards", lang)}</h3>
             <div className="space-y-1.5">
               {globalAwards.map((award, i) => (
                 <div key={i} className="flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-200" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
                   <span className="text-base">{award.icon === "gold" ? "🏅" : award.icon === "tabakh" ? "👨‍🍳" : "🏆"}</span>
                   <span className="flex-1 text-xs font-medium" style={{ color: theme.textMuted }}>{isRtl ? (award.name_ar || award.name) : (award.name || award.name_ar)}</span>
-                  {award.year && <span className="text-[10px] font-medium tabular-nums" style={{ color: `${theme.textMuted}88` }}>{award.year}</span>}
+                  {award.year && <span className="text-[12px] font-medium tabular-nums" style={{ color: `${theme.textMuted}88` }}>{award.year}</span>}
                 </div>
               ))}
             </div>
@@ -520,7 +520,7 @@ export default function SocialLinks() {
         {extra.show_contact_form && profileUserId && !isOwner && (
           <div className={`mb-5 transition-all duration-700 delay-500 ${animated ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             <SectionDivider color={theme.border} />
-            <h3 className={`text-[9px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: theme.accent }}>
+            <h3 className={`text-[12px] font-semibold uppercase tracking-[0.2em] mb-3 ${textAlignClass}`} style={{ color: theme.accent }}>
               {isRtl ? (extra.contact_form_title_ar || extra.contact_form_title) : (extra.contact_form_title || tl("contactTitle", lang))}
             </h3>
             <ContactFormSection theme={theme} lang={lang} isRtl={isRtl} profileUserId={profileUserId} ownerName={displayName} />
@@ -578,9 +578,9 @@ export default function SocialLinks() {
             <div className="h-px w-12 mx-auto" style={{ background: `linear-gradient(90deg, transparent, ${theme.border}, transparent)` }} />
             <Link to="/" className="group inline-flex items-center gap-2 py-2 px-4 rounded-full transition-all duration-300 hover:scale-105" style={{ color: `${theme.textMuted}66` }}>
               <div className="h-5 w-5 rounded-md flex items-center justify-center transition-all duration-300 group-hover:shadow-lg" style={{ background: `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentMedium})`, boxShadow: `0 0 12px ${theme.accentLight}` }}>
-                <span className="text-[8px] font-extrabold" style={{ color: theme.accent }}>A</span>
+                <span className="text-[12px] font-extrabold" style={{ color: theme.accent }}>A</span>
               </div>
-              <span className="text-[9px] font-semibold uppercase tracking-[0.25em] transition-colors group-hover:text-current" style={{ opacity: 0.5 }}>Altoha</span>
+              <span className="text-[12px] font-semibold uppercase tracking-[0.25em] transition-colors group-hover:text-current" style={{ opacity: 0.5 }}>Altoha</span>
             </Link>
           </div>
         </div>

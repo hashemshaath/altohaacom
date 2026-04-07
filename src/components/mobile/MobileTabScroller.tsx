@@ -81,7 +81,7 @@ export const MobileTabScroller = memo(function MobileTabScroller({ tabs, value, 
               {tab.badge !== undefined && tab.badge > 0 && (
                 <span
                   className={cn(
-                    "inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[9px] font-bold",
+                    "inline-flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[12px] font-bold",
                     isActive
                       ? "bg-primary-foreground/20 text-primary-foreground"
                       : "bg-primary/15 text-primary"

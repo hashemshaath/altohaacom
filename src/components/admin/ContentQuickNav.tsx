@@ -58,7 +58,7 @@ export const ContentQuickNav = memo(function ContentQuickNav() {
               <Badge
                 variant="secondary"
                 className={cn(
-                  "text-[9px] px-1.5 py-0 h-4 min-w-[18px] justify-center",
+                  "text-[12px] px-1.5 py-0 h-4 min-w-[18px] justify-center",
                   isActive ? "bg-primary/20 text-primary" : ""
                 )}
               >

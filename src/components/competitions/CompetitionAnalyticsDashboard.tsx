@@ -304,7 +304,7 @@ export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsD
                       <div key={s.label} className="rounded-xl border p-3 text-center transition-all hover:shadow-sm">
                         <Icon className={`mx-auto h-4 w-4 mb-1 ${s.color}`} />
                         <p className="text-xl font-bold">{s.value}</p>
-                        <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                        <p className="text-[12px] text-muted-foreground">{s.label}</p>
                       </div>
                     );
                   })}
@@ -363,8 +363,8 @@ function KPICard({ icon: Icon, label, value, loading, accent, trend, subtitle }:
               {trend === "up" && <ArrowUp className="h-3.5 w-3.5 text-chart-3" />}
               {trend === "down" && <ArrowDown className="h-3.5 w-3.5 text-destructive" />}
             </div>
-            <p className="text-[11px] text-muted-foreground truncate">{label}</p>
-            {subtitle && <p className="text-[9px] text-muted-foreground/70">{subtitle}</p>}
+            <p className="text-[12px] text-muted-foreground truncate">{label}</p>
+            {subtitle && <p className="text-[12px] text-muted-foreground/70">{subtitle}</p>}
           </div>
         </div>
       </CardContent>

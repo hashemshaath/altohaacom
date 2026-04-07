@@ -93,7 +93,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBan
           <Button size="sm" variant="secondary" className="mt-2">{isAr ? creative.cta_text_ar : creative.cta_text}</Button>
         </div>
       )}
-      <span className="absolute top-1 end-1 text-[9px] bg-background/80 text-muted-foreground px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+      <span className="absolute top-1 end-1 text-[12px] bg-background/80 text-muted-foreground px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
         {isAr ? "إعلان" : "Ad"}
       </span>
     </div>

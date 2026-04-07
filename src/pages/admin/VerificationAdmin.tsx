@@ -275,14 +275,14 @@ export default function VerificationAdmin() {
                       {aiAnalysis.flags?.length > 0 && (
                         <div className="mt-2 flex flex-wrap gap-1">
                           {aiAnalysis.flags.map((flag: string, i: number) => (
-                            <Badge key={i} variant="outline" className="text-[10px] text-chart-4">
+                            <Badge key={i} variant="outline" className="text-[12px] text-chart-4">
                               <AlertTriangle className="me-1 h-2.5 w-2.5" />
                               {flag}
                             </Badge>
                           ))}
                         </div>
                       )}
-                      <div className="mt-2 flex items-center gap-3 text-[10px] text-muted-foreground">
+                      <div className="mt-2 flex items-center gap-3 text-[12px] text-muted-foreground">
                         <span>{isAr ? "توصية" : "Recommendation"}: <strong>{aiAnalysis.recommendation}</strong></span>
                         <span>{isAr ? "ثقة" : "Confidence"}: {((aiAnalysis.confidence || 0) * 100).toFixed(0)}%</span>
                       </div>
@@ -293,7 +293,7 @@ export default function VerificationAdmin() {
                   {docs.length > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1">
                       {docs.map((doc, i) => (
-                        <Badge key={i} variant="outline" className="text-[10px]">
+                        <Badge key={i} variant="outline" className="text-[12px]">
                           {doc.type} — {doc.name}
                         </Badge>
                       ))}

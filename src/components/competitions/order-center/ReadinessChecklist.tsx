@@ -217,7 +217,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
               <p className={`text-2xl font-bold ${readinessScore >= 80 ? "text-chart-5" : readinessScore >= 50 ? "text-chart-4" : "text-destructive"}`}>
                 <AnimatedCounter value={readinessScore} suffix="%" />
               </p>
-              <p className="text-[10px] text-muted-foreground">{completeCount}/{checklistItems.length} {isAr ? "مكتمل" : "complete"}</p>
+              <p className="text-[12px] text-muted-foreground">{completeCount}/{checklistItems.length} {isAr ? "مكتمل" : "complete"}</p>
             </div>
           </div>
           <Progress value={readinessScore} className="h-3" />
@@ -241,7 +241,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
                 {STATUS_ICON[item.status]}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{isAr ? item.labelAr : item.label}</p>
-                  <p className="text-[11px] text-muted-foreground">{isAr ? item.detailAr : item.detail}</p>
+                  <p className="text-[12px] text-muted-foreground">{isAr ? item.detailAr : item.detail}</p>
                 </div>
                 <IconComp className="h-4 w-4 text-muted-foreground/50 shrink-0" />
               </CardContent>

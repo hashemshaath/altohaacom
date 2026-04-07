@@ -190,13 +190,13 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
           <img src={coverImageUrl} alt="Cover" className="h-16 w-24 rounded-lg object-cover border" />
           <div>
             <p className="text-xs font-medium">{t("Current Cover", "الغلاف الحالي")}</p>
-            <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">{coverImageUrl}</p>
+            <p className="text-[12px] text-muted-foreground truncate max-w-[200px]">{coverImageUrl}</p>
           </div>
         </div>
       )}
 
       {/* Stats */}
-      <div className="flex gap-3 text-[10px] text-muted-foreground">
+      <div className="flex gap-3 text-[12px] text-muted-foreground">
         <span>{t(`${media.length} files total`, `${media.length} ملف إجمالاً`)}</span>
         {filterCategory !== "all" && <span>· {t(`${filtered.length} shown`, `${filtered.length} معروض`)}</span>}
         {selectedIds.size > 0 && (
@@ -236,13 +236,13 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                     {item.category === "cover" && onCoverChange && (
-                      <Button size="sm" variant="secondary" className="h-7 text-[10px] px-2" onClick={() => onCoverChange(item.file_url)}>
+                      <Button size="sm" variant="secondary" className="h-7 text-[12px] px-2" onClick={() => onCoverChange(item.file_url)}>
                         {t("Set Cover", "غلاف")}
                       </Button>
                     )}
                   </div>
                   {/* Category badge */}
-                  <Badge className="absolute bottom-1 start-1 text-[8px] h-4 border-0 bg-background/80 text-foreground">
+                  <Badge className="absolute bottom-1 start-1 text-[12px] h-4 border-0 bg-background/80 text-foreground">
                     {catInfo ? (isAr ? catInfo.ar : catInfo.en) : item.category}
                   </Badge>
                 </div>
@@ -268,7 +268,7 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
                   )}
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{item.title || t("Untitled", "بدون عنوان")}</p>
-                    <p className="text-[10px] text-muted-foreground">{catInfo ? (isAr ? catInfo.ar : catInfo.en) : item.category}</p>
+                    <p className="text-[12px] text-muted-foreground">{catInfo ? (isAr ? catInfo.ar : catInfo.en) : item.category}</p>
                   </div>
                   <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive shrink-0" onClick={() => deleteMutation.mutate([item.id])}>
                     <Trash2 className="h-3 w-3" />

@@ -66,7 +66,7 @@ export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
             <ShieldCheck className="h-4 w-4 text-primary" />
             {isAr ? "نظرة أمنية شاملة" : "Security Overview"}
           </CardTitle>
-          <Badge className={`${threatBg[data?.threatLevel || "low"]} ${threatColors[data?.threatLevel || "low"]} border-0 text-[10px]`}>
+          <Badge className={`${threatBg[data?.threatLevel || "low"]} ${threatColors[data?.threatLevel || "low"]} border-0 text-[12px]`}>
             {data?.threatLevel === "high" ? (isAr ? "تهديد عالي" : "High Threat")
               : data?.threatLevel === "medium" ? (isAr ? "تهديد متوسط" : "Medium")
               : (isAr ? "آمن" : "Secure")}
@@ -87,7 +87,7 @@ export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
             <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-sm font-bold">{m.value}</p>
-              <p className="text-[9px] text-muted-foreground">{m.label}</p>
+              <p className="text-[12px] text-muted-foreground">{m.label}</p>
             </div>
           ))}
         </div>
@@ -110,9 +110,9 @@ export const SecurityOverviewWidget = memo(function SecurityOverviewWidget() {
         <div className="space-y-1">
           <p className="text-xs font-medium text-muted-foreground">{isAr ? "آخر الأحداث" : "Recent Events"}</p>
           {data?.recentEvents.map((evt, i) => (
-            <div key={i} className="flex items-center justify-between text-[11px] p-1.5 rounded bg-muted/20">
+            <div key={i} className="flex items-center justify-between text-[12px] p-1.5 rounded bg-muted/20">
               <span className="truncate">{evt.event_type.replace(/_/g, " ")}</span>
-              <Badge variant={evt.severity === "critical" ? "destructive" : "secondary"} className="text-[9px] px-1 py-0">
+              <Badge variant={evt.severity === "critical" ? "destructive" : "secondary"} className="text-[12px] px-1 py-0">
                 {evt.severity}
               </Badge>
             </div>

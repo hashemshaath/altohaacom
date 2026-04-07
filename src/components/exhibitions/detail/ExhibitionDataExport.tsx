@@ -265,7 +265,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-semibold">{opt.label}</p>
-                <p className="text-[10px] text-muted-foreground">{opt.desc}</p>
+                <p className="text-[12px] text-muted-foreground">{opt.desc}</p>
               </div>
               <Download className="h-3.5 w-3.5 ms-auto text-muted-foreground shrink-0" />
             </Button>

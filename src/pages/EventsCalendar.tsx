@@ -140,7 +140,7 @@ export default function EventsCalendar() {
                 <div>
                   <div className="mb-1 sm:mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/5 px-2.5 py-0.5 sm:px-3 sm:py-1">
                     <Sparkles className="h-3 w-3 text-primary" />
-                    <span className="text-[10px] sm:text-[11px] font-semibold text-primary">
+                    <span className="text-[12px] sm:text-[12px] font-semibold text-primary">
                       {isAr ? "تقويم تفاعلي" : "Interactive Calendar"}
                     </span>
                   </div>
@@ -205,7 +205,7 @@ export default function EventsCalendar() {
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 {isAr ? "تصفية" : "Filters"}
                 {activeFiltersCount > 0 && (
-                  <Badge variant="secondary" className="h-5 w-5 p-0 justify-center text-[10px] rounded-full">
+                  <Badge variant="secondary" className="h-5 w-5 p-0 justify-center text-[12px] rounded-full">
                     {activeFiltersCount}
                   </Badge>
                 )}
@@ -218,7 +218,7 @@ export default function EventsCalendar() {
                 <Button
                   variant={selectedTypes.length === 0 ? "default" : "outline"}
                   size="sm"
-                  className="h-7 rounded-full text-[11px] px-3"
+                  className="h-7 rounded-full text-[12px] px-3"
                   onClick={() => setSelectedTypes([])}
                 >
                   {isAr ? "الكل" : "All"}
@@ -234,17 +234,17 @@ export default function EventsCalendar() {
                       key={type}
                       variant={active ? "default" : "outline"}
                       size="sm"
-                      className="h-7 rounded-full text-[11px] px-3 gap-1"
+                      className="h-7 rounded-full text-[12px] px-3 gap-1"
                       onClick={() => toggleType(type)}
                     >
                       <IconComp className="h-3 w-3" />
                       {isAr ? label.ar : label.en}
-                      <span className="opacity-50 text-[9px]">({count})</span>
+                      <span className="opacity-50 text-[12px]">({count})</span>
                     </Button>
                   );
                 })}
                 {selectedTypes.length > 0 && (
-                  <Button variant="ghost" size="sm" className="h-7 text-[11px] text-destructive hover:text-destructive" onClick={() => setSelectedTypes([])}>
+                  <Button variant="ghost" size="sm" className="h-7 text-[12px] text-destructive hover:text-destructive" onClick={() => setSelectedTypes([])}>
                     <X className="h-3 w-3 me-0.5" />{isAr ? "مسح" : "Clear"}
                   </Button>
                 )}
@@ -297,7 +297,7 @@ export default function EventsCalendar() {
                   <ChevronRight className="h-4 w-4" />
                 </Button>
                 {!isSameDay(currentDate, new Date()) && (
-                  <Button variant="outline" size="sm" className="h-7 text-[11px] ms-1 rounded-full px-3" onClick={goToday}>
+                  <Button variant="outline" size="sm" className="h-7 text-[12px] ms-1 rounded-full px-3" onClick={goToday}>
                     {isAr ? "اليوم" : "Today"}
                   </Button>
                 )}
@@ -334,7 +334,7 @@ export default function EventsCalendar() {
           {/* ─── Legend ─── */}
           {!isLoading && viewMode !== "list" && (
             <div className="flex flex-wrap gap-x-4 gap-y-1.5 pt-3 pb-4 border-t border-border/20">
-              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider me-2">
+              <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider me-2">
                 {isAr ? "دليل الألوان" : "Legend"}
               </span>
               {EVENT_TYPES.filter(t => (typeCounts[t] || 0) > 0).map(type => {
@@ -345,7 +345,7 @@ export default function EventsCalendar() {
                     key={type}
                     onClick={() => toggleType(type)}
                     className={cn(
-                      "flex items-center gap-1.5 text-[10px] transition-all rounded-full px-2 py-0.5 -mx-2",
+                      "flex items-center gap-1.5 text-[12px] transition-all rounded-full px-2 py-0.5 -mx-2",
                       selectedTypes.includes(type) ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -358,7 +358,7 @@ export default function EventsCalendar() {
           )}
 
           {/* Keyboard shortcuts hint */}
-          <div className="hidden lg:flex items-center justify-center gap-4 py-2 text-[10px] text-muted-foreground/50">
+          <div className="hidden lg:flex items-center justify-center gap-4 py-2 text-[12px] text-muted-foreground/50">
             <span>← → {isAr ? "للتنقل" : "Navigate"}</span>
             <span>T = {isAr ? "اليوم" : "Today"}</span>
           </div>

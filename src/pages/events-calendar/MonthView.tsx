@@ -23,7 +23,7 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
       <CardContent className="p-0">
         <div className="grid grid-cols-7 bg-muted/30">
           {dayNames.map(d => (
-            <div key={d} className="py-2.5 text-center text-[11px] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/30">{d}</div>
+            <div key={d} className="py-2.5 text-center text-[12px] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/30">{d}</div>
           ))}
         </div>
         <div className="grid grid-cols-7">
@@ -55,7 +55,7 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
                     {day.getDate()}
                   </span>
                   {hasEvents && isCurrentMonth && dayEvents.length > 2 && (
-                    <Badge variant="secondary" className="h-4 text-[8px] px-1 tabular-nums">{dayEvents.length}</Badge>
+                    <Badge variant="secondary" className="h-4 text-[12px] px-1 tabular-nums">{dayEvents.length}</Badge>
                   )}
                 </div>
                 {hasEvents && isCurrentMonth && (
@@ -64,7 +64,7 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
                       <EventChip key={`${ev.id}-${day.toISOString()}`} event={ev} isAr={isAr} compact />
                     ))}
                     {dayEvents.length > 3 && (
-                      <p className="text-[8px] text-center text-primary font-semibold mt-0.5">
+                      <p className="text-[12px] text-center text-primary font-semibold mt-0.5">
                         +{dayEvents.length - 3} {isAr ? "المزيد" : "more"}
                       </p>
                     )}

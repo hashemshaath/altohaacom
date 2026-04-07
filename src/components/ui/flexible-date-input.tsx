@@ -67,7 +67,7 @@ export const FlexibleDateInput = React.memo(function FlexibleDateInput({ value, 
             disabled={disabled}
             onClick={() => handlePrecisionChange(p)}
             className={cn(
-              "px-2.5 py-1 text-[10px] font-medium rounded-md border transition-all",
+              "px-2.5 py-1 text-[12px] font-medium rounded-md border transition-all",
               currentPrecision === p
                 ? "bg-primary text-primary-foreground border-primary"
                 : "bg-muted/30 text-muted-foreground border-border/50 hover:bg-muted/60"

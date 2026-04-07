@@ -118,7 +118,7 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
               <div className="text-lg font-bold tabular-nums">
                 {typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : <span>{s.value}</span>}
               </div>
-              <div className="text-[10px] text-muted-foreground">{s.label}</div>
+              <div className="text-[12px] text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>

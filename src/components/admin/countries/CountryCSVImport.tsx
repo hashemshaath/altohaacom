@@ -154,7 +154,7 @@ export const CountryCSVImport = memo(function CountryCSVImport() {
               <p className="text-xs text-muted-foreground mt-1">
                 {isAr ? "الأعمدة المطلوبة: code, name" : "Required columns: code, name"}
               </p>
-              <p className="text-[10px] text-muted-foreground mt-0.5">
+              <p className="text-[12px] text-muted-foreground mt-0.5">
                 {isAr ? "اختياري:" : "Optional:"} {OPTIONAL.join(", ")}
               </p>
               <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
@@ -205,7 +205,7 @@ export const CountryCSVImport = memo(function CountryCSVImport() {
                         {row.errors.length > 0 ? (
                           <div className="flex items-center gap-1 text-destructive">
                             <AlertTriangle className="h-3 w-3" />
-                            <span className="text-[10px]">{row.errors[0]}</span>
+                            <span className="text-[12px]">{row.errors[0]}</span>
                           </div>
                         ) : (
                           <CheckCircle className="h-4 w-4 text-chart-3" />

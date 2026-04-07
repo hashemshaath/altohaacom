@@ -367,7 +367,7 @@ export default function GlobalEventsAdmin() {
               </div>
               <div>
                 <p className="text-lg font-black tabular-nums leading-tight">{kpi.value}</p>
-                <p className="text-[10px] text-muted-foreground font-medium">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground font-medium">{kpi.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -404,7 +404,7 @@ export default function GlobalEventsAdmin() {
               const label = GLOBAL_EVENT_LABELS[type];
               const colors = GLOBAL_EVENT_COLORS[type];
               return (
-                <span key={type} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                <span key={type} className="flex items-center gap-1 text-[12px] text-muted-foreground">
                   <span className={cn("h-2 w-2 rounded-full", colors.dot)} />
                   {isAr ? label?.ar : label?.en} ({count})
                 </span>
@@ -490,7 +490,7 @@ export default function GlobalEventsAdmin() {
                       <Checkbox checked={bulk.isSelected(ev.id)} onCheckedChange={() => bulk.toggleOne(ev.id)} />
                     </TableCell>
                     <TableCell>
-                      <Badge className={cn("text-[9px] border gap-1", colors.bg, colors.text, colors.border)}>
+                      <Badge className={cn("text-[12px] border gap-1", colors.bg, colors.text, colors.border)}>
                         <IconComp className="h-3 w-3" />{isAr ? label?.ar : label?.en}
                       </Badge>
                     </TableCell>
@@ -505,14 +505,14 @@ export default function GlobalEventsAdmin() {
                       {ev.city}{ev.country_code && `, ${ev.country_code}`}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={ev.status === "active" ? "default" : ev.status === "cancelled" ? "destructive" : "outline"} className="text-[9px]">
+                      <Badge variant={ev.status === "active" ? "default" : ev.status === "cancelled" ? "destructive" : "outline"} className="text-[12px]">
                         {ev.status}
                       </Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        {ev.is_international && <Badge variant="outline" className="text-[8px] px-1">{isAr ? "دولي" : "Intl"}</Badge>}
-                        {ev.is_recurring && <Badge variant="outline" className="text-[8px] px-1">{isAr ? "متكرر" : "Recurring"}</Badge>}
+                        {ev.is_international && <Badge variant="outline" className="text-[12px] px-1">{isAr ? "دولي" : "Intl"}</Badge>}
+                        {ev.is_recurring && <Badge variant="outline" className="text-[12px] px-1">{isAr ? "متكرر" : "Recurring"}</Badge>}
                       </div>
                     </TableCell>
                     <TableCell>

@@ -138,17 +138,17 @@ export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget
                 <k.icon className={`h-4 w-4 ${k.color}`} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] text-muted-foreground">{k.label}</p>
+                <p className="text-[12px] text-muted-foreground">{k.label}</p>
                 <p className="text-sm font-bold">{k.value}</p>
               </div>
             </div>
           ))}
           <div className="border-t pt-2 space-y-1.5">
-            <p className="text-[10px] text-muted-foreground font-medium">{isAr ? "التذاكر المفتوحة حسب الأولوية" : "Open by Priority"}</p>
+            <p className="text-[12px] text-muted-foreground font-medium">{isAr ? "التذاكر المفتوحة حسب الأولوية" : "Open by Priority"}</p>
             {Object.entries(data.priorityCount).map(([p, count]) => (
               <div key={p} className="flex items-center justify-between text-xs">
                 <span className="capitalize">{p}</span>
-                <Badge variant={p === "urgent" ? "destructive" : "outline"} className="text-[9px]">{count}</Badge>
+                <Badge variant={p === "urgent" ? "destructive" : "outline"} className="text-[12px]">{count}</Badge>
               </div>
             ))}
           </div>
@@ -161,7 +161,7 @@ export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget
           <CardTitle className="text-sm flex items-center gap-2">
             <TrendingDown className="h-4 w-4 text-primary" />
             {isAr ? "حجم التذاكر (14 يوم)" : "Ticket Volume (14 days)"}
-            <Badge variant="secondary" className="text-[10px] ms-auto">
+            <Badge variant="secondary" className="text-[12px] ms-auto">
               {data.totalOpen} {isAr ? "مفتوحة" : "open"}
             </Badge>
           </CardTitle>

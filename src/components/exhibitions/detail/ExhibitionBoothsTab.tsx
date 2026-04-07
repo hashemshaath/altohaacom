@@ -107,7 +107,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
             onClick={() => setSelectedCategory(null)}
           >
             {isAr ? "الكل" : "All"}
-            <Badge variant="secondary" className="ms-1.5 h-4 min-w-4 rounded-full px-1 text-[9px]">{booths.length}</Badge>
+            <Badge variant="secondary" className="ms-1.5 h-4 min-w-4 rounded-full px-1 text-[12px]">{booths.length}</Badge>
           </Button>
           {categories.map((cat) => {
             const label = CATEGORY_LABELS[cat] || { en: cat, ar: cat };
@@ -121,7 +121,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
                 onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
               >
                 {isAr ? label.ar : label.en}
-                <span className="ms-1 text-[9px] opacity-60">({count})</span>
+                <span className="ms-1 text-[12px] opacity-60">({count})</span>
               </Button>
             );
           })}
@@ -193,12 +193,12 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
                 <div className="min-w-0 flex-1">
                   {/* Header with booth number + featured */}
                   <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="outline" className="font-mono text-[9px] shrink-0 rounded-md h-5 px-1.5 border-border/60">
+                    <Badge variant="outline" className="font-mono text-[12px] shrink-0 rounded-md h-5 px-1.5 border-border/60">
                       <Hash className="me-0.5 h-2.5 w-2.5 text-muted-foreground/50" />
                       {booth.booth_number}
                     </Badge>
                     {booth.is_featured && (
-                      <Badge variant="outline" className="text-[8px] h-4 px-1.5 border-chart-4/30 text-chart-4 gap-0.5">
+                      <Badge variant="outline" className="text-[12px] h-4 px-1.5 border-chart-4/30 text-chart-4 gap-0.5">
                         <Star className="h-2 w-2 fill-chart-4" />
                         {isAr ? "مميز" : "Featured"}
                       </Badge>
@@ -212,7 +212,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
 
                   {/* Description */}
                   {(booth.description || booth.description_ar) && (
-                    <p className="mt-0.5 text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="mt-0.5 text-[12px] text-muted-foreground line-clamp-2 leading-relaxed">
                       {isAr && booth.description_ar ? booth.description_ar : booth.description}
                     </p>
                   )}
@@ -220,7 +220,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
                   {/* Meta */}
                   <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                     {booth.hall && (
-                      <span className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                      <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
                         <MapPin className="h-3 w-3 text-chart-2/60" />
                         {isAr && booth.hall_ar ? booth.hall_ar : booth.hall}
                       </span>
@@ -230,7 +230,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
                         href={booth.website_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-1 text-[10px] text-primary font-medium hover:underline"
+                        className="flex items-center gap-1 text-[12px] text-primary font-medium hover:underline"
                       >
                         <Globe className="h-3 w-3" />
                         {isAr ? "الموقع" : "Website"}

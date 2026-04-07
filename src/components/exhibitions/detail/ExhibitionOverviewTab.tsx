@@ -59,7 +59,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
             <div key={item.label} className={`rounded-xl border border-${item.color}/15 bg-gradient-to-br from-${item.color}/10 via-${item.color}/5 to-transparent p-4 text-center transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]`}>
               <Icon className={`mx-auto mb-1.5 h-5 w-5 text-${item.color}`} />
               <p className="text-lg font-bold text-foreground">{typeof item.value === "number" ? <AnimatedCounter value={item.value} /> : item.value}</p>
-              <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{item.label}</p>
+              <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">{item.label}</p>
             </div>
           );
         })}
@@ -79,7 +79,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
               {statEntries.map(([key, value]) => (
                 <div key={key} className="rounded-xl border p-3 text-center">
                   <p className="text-lg font-bold text-primary">{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
-                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{key.replace(/_/g, " ")}</p>
+                  <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">{key.replace(/_/g, " ")}</p>
                 </div>
               ))}
             </div>
@@ -151,7 +151,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
           <CardContent className="p-4 space-y-3">
             {targetedSectors.length > 0 && (
               <div>
-                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "القطاعات" : "Sectors"}</p>
+                <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "القطاعات" : "Sectors"}</p>
                 <div className="flex flex-wrap gap-2">
                   {targetedSectors.map((s) => <Badge key={s} variant="secondary" className="py-1 capitalize">{s.replace(/_/g, " ")}</Badge>)}
                 </div>
@@ -159,7 +159,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
             )}
             {categories.length > 0 && (
               <div>
-                <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الفئات" : "Categories"}</p>
+                <p className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الفئات" : "Categories"}</p>
                 <div className="flex flex-wrap gap-2">
                   {categories.map((c) => <Badge key={c} variant="outline" className="py-1 capitalize">{c.replace(/_/g, " ")}</Badge>)}
                 </div>
@@ -221,14 +221,14 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{compTitle}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[10px] text-muted-foreground">{format(compStart, "MMM d, yyyy")}</span>
-                        {compIsLive && <Badge className="h-4 px-1.5 text-[8px] bg-destructive text-destructive-foreground border-none">{isAr ? "مباشر" : "LIVE"}</Badge>}
-                        {compIsUpcoming && <Badge variant="outline" className="h-4 px-1.5 text-[8px] border-primary/30 text-primary">{isAr ? "قادم" : "Soon"}</Badge>}
+                        <span className="text-[12px] text-muted-foreground">{format(compStart, "MMM d, yyyy")}</span>
+                        {compIsLive && <Badge className="h-4 px-1.5 text-[12px] bg-destructive text-destructive-foreground border-none">{isAr ? "مباشر" : "LIVE"}</Badge>}
+                        {compIsUpcoming && <Badge variant="outline" className="h-4 px-1.5 text-[12px] border-primary/30 text-primary">{isAr ? "قادم" : "Soon"}</Badge>}
                       </div>
                     </div>
                     <div className="text-end shrink-0">
                       <p className="text-xs font-bold text-primary">{regCount}</p>
-                      <p className="text-[9px] text-muted-foreground">{isAr ? "مسجل" : "entries"}</p>
+                      <p className="text-[12px] text-muted-foreground">{isAr ? "مسجل" : "entries"}</p>
                     </div>
                   </Link>
                 );

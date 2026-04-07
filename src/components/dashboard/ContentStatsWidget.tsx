@@ -114,7 +114,7 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
                 <div className="flex items-center gap-2">
                   <AnimatedCounter value={stat.value} className="text-lg font-bold tabular-nums" />
                   {change !== 0 && (
-                    <div className={cn("flex items-center gap-0.5 text-[10px] font-medium", trendColor)}>
+                    <div className={cn("flex items-center gap-0.5 text-[12px] font-medium", trendColor)}>
                       <TrendIcon className="h-3 w-3" />
                       <span>{Math.abs(change)}%</span>
                     </div>

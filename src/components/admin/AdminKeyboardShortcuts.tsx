@@ -89,8 +89,8 @@ export const AdminKeyboardShortcuts = memo(function AdminKeyboardShortcuts() {
                 <div className="flex items-center gap-1">
                   {s.keys.map((k, i) => (
                     <span key={i}>
-                      <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-muted rounded border border-border">{k}</kbd>
-                      {i < s.keys.length - 1 && <span className="text-[10px] text-muted-foreground mx-0.5">+</span>}
+                      <kbd className="px-1.5 py-0.5 text-[12px] font-mono bg-muted rounded border border-border">{k}</kbd>
+                      {i < s.keys.length - 1 && <span className="text-[12px] text-muted-foreground mx-0.5">+</span>}
                     </span>
                   ))}
                 </div>
@@ -117,12 +117,12 @@ export const ShortcutHintsCard = memo(function ShortcutHintsCard() {
             <Keyboard className="h-4 w-4 text-muted-foreground" />
             <div>
               <p className="text-xs font-medium">{isAr ? "اختصارات لوحة المفاتيح" : "Keyboard Shortcuts"}</p>
-              <p className="text-[10px] text-muted-foreground">{isAr ? "اضغط ? للمساعدة" : "Press ? for help"}</p>
+              <p className="text-[12px] text-muted-foreground">{isAr ? "اضغط ? للمساعدة" : "Press ? for help"}</p>
             </div>
           </div>
           <div className="flex gap-1">
             {["G+U", "G+C", "G+D"].map(k => (
-              <kbd key={k} className="px-1.5 py-0.5 text-[9px] font-mono bg-muted rounded border border-border">{k}</kbd>
+              <kbd key={k} className="px-1.5 py-0.5 text-[12px] font-mono bg-muted rounded border border-border">{k}</kbd>
             ))}
           </div>
         </div>

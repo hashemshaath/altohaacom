@@ -53,10 +53,10 @@ const CollapsibleBioSection = memo(function CollapsibleBioSection({ icon: Icon, 
       <button type="button" onClick={() => setOpen(v => !v)}
         className="flex items-center gap-2 w-full mb-2 cursor-pointer select-none group">
         <Icon className="h-3.5 w-3.5" style={{ color: theme.accent }} />
-        <span className="text-[9px] font-semibold uppercase tracking-[0.2em] group-hover:opacity-80 transition-opacity" style={{ color: theme.accent }}>
+        <span className="text-[12px] font-semibold uppercase tracking-[0.2em] group-hover:opacity-80 transition-opacity" style={{ color: theme.accent }}>
           {title}
         </span>
-        <span className="text-[9px] font-medium px-1.5 py-0.5 rounded-full" style={{ background: theme.card, color: theme.textMuted, border: `1px solid ${theme.border}` }}>
+        <span className="text-[12px] font-medium px-1.5 py-0.5 rounded-full" style={{ background: theme.card, color: theme.textMuted, border: `1px solid ${theme.border}` }}>
           {count}
         </span>
         <div className="flex-1 h-px" style={{ background: theme.border }} />
@@ -116,31 +116,31 @@ const RecordCard = memo(function RecordCard({ record, isAr, theme, icon: Icon, i
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold truncate" style={{ color: theme.text }}>{title || "—"}</p>
-        {entity && <p className="text-[10px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{entity}</p>}
+        {entity && <p className="text-[12px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{entity}</p>}
         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
           {(start || end) && <Calendar className="h-2.5 w-2.5" style={{ color: theme.textMuted }} />}
           {(start || end) && (
-            <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>
+            <span className="text-[12px]" style={{ color: `${theme.textMuted}99` }}>
               {start}{end && start ? " – " : ""}{end}
             </span>
           )}
           {record.location && (
-            <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>
+            <span className="text-[12px]" style={{ color: `${theme.textMuted}99` }}>
               {flag && `${flag} `}{record.location}
             </span>
           )}
-          {!record.location && flag && <span className="text-[10px]">{flag}</span>}
-          {host && <span className="text-[10px]" style={{ color: `${theme.textMuted}cc` }}>🎤 {host}</span>}
-          {guest && <span className="text-[10px]" style={{ color: `${theme.textMuted}cc` }}>👤 {guest}</span>}
-          {gpa && <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}10`, color: theme.accent }}>GPA: {gpa}</span>}
+          {!record.location && flag && <span className="text-[12px]">{flag}</span>}
+          {host && <span className="text-[12px]" style={{ color: `${theme.textMuted}cc` }}>🎤 {host}</span>}
+          {guest && <span className="text-[12px]" style={{ color: `${theme.textMuted}cc` }}>👤 {guest}</span>}
+          {gpa && <span className="text-[12px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}10`, color: theme.accent }}>GPA: {gpa}</span>}
           {badges.map((b, i) => (
-            <span key={i} className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: b.bg, color: theme.accent }}>
+            <span key={i} className="text-[12px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: b.bg, color: theme.accent }}>
               {b.label}
             </span>
           ))}
         </div>
         {desc && (
-          <p className="text-[10px] mt-1.5 leading-relaxed line-clamp-2" dir={isAr ? "rtl" : "ltr"} style={{ color: `${theme.textMuted}cc` }}>
+          <p className="text-[12px] mt-1.5 leading-relaxed line-clamp-2" dir={isAr ? "rtl" : "ltr"} style={{ color: `${theme.textMuted}cc` }}>
             {desc}
           </p>
         )}
@@ -168,18 +168,18 @@ const MembershipCard = memo(function MembershipCard({ membership, isAr, theme, i
       )}
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold truncate" style={{ color: theme.text }}>{name || "—"}</p>
-        {title && <p className="text-[10px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{title}</p>}
+        {title && <p className="text-[12px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{title}</p>}
         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
           {date && <Calendar className="h-2.5 w-2.5" style={{ color: theme.textMuted }} />}
-          {date && <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>{date}</span>}
-          {cityCountry && <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>{cityCountry}</span>}
+          {date && <span className="text-[12px]" style={{ color: `${theme.textMuted}99` }}>{date}</span>}
+          {cityCountry && <span className="text-[12px]" style={{ color: `${theme.textMuted}99` }}>{cityCountry}</span>}
           {typeLabel && (
-            <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}15`, color: theme.accent }}>
+            <span className="text-[12px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}15`, color: theme.accent }}>
               {typeLabel}
             </span>
           )}
           {membership.status === "active" && (
-            <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}20`, color: theme.accent }}>
+            <span className="text-[12px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}20`, color: theme.accent }}>
               {isAr ? "نشط" : "Active"}
             </span>
           )}
@@ -202,12 +202,12 @@ const AwardCard = memo(function AwardCard({ cert, isAr, theme, iconBg }: { cert:
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-xs font-semibold truncate" style={{ color: theme.text }}>{eventName || "—"}</p>
-        {achievement && <p className="text-[10px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{achievement}</p>}
+        {achievement && <p className="text-[12px] mt-0.5 truncate" style={{ color: theme.textMuted }}>{achievement}</p>}
         <div className="flex items-center gap-1.5 mt-1 flex-wrap">
           {date && <Calendar className="h-2.5 w-2.5" style={{ color: theme.textMuted }} />}
-          {date && <span className="text-[10px]" style={{ color: `${theme.textMuted}99` }}>{date}</span>}
+          {date && <span className="text-[12px]" style={{ color: `${theme.textMuted}99` }}>{date}</span>}
           {typeInfo && (
-            <span className="text-[8px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}15`, color: theme.accent }}>
+            <span className="text-[12px] font-semibold px-1.5 py-0.5 rounded-full" style={{ background: `${theme.accent}15`, color: theme.accent }}>
               {typeInfo.emoji} {isAr ? typeInfo.ar : typeInfo.en}
             </span>
           )}

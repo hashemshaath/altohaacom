@@ -89,7 +89,7 @@ export const ExhibitionMapEmbed = memo(function ExhibitionMapEmbed({ mapUrl, ven
                 {(city || country) && (
                   <p className="text-xs text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
                 )}
-                {address && <p className="text-[11px] text-muted-foreground/70 mt-0.5">{address}</p>}
+                {address && <p className="text-[12px] text-muted-foreground/70 mt-0.5">{address}</p>}
               </div>
             </div>
           )}

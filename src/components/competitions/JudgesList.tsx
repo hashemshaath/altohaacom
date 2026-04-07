@@ -244,7 +244,7 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
                   {/* Head Judge Crown Badge */}
                   {isHeadJudge && (
                     <div className="absolute -top-2 start-3 z-10">
-                      <Badge className="gap-1 bg-amber-500 text-amber-50 hover:bg-amber-600 shadow-md text-[10px] px-2 py-0.5">
+                      <Badge className="gap-1 bg-amber-500 text-amber-50 hover:bg-amber-600 shadow-md text-[12px] px-2 py-0.5">
                         <Crown className="h-3 w-3" />
                         {isAr ? "رئيس التحكيم" : "Head Judge"}
                       </Badge>
@@ -321,7 +321,7 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
                         )}
 
                         {(position || employer) && (
-                          <p className="text-[11px] text-muted-foreground truncate flex items-center gap-1">
+                          <p className="text-[12px] text-muted-foreground truncate flex items-center gap-1">
                             <Briefcase className="h-3 w-3 shrink-0" />
                             {position}{position && employer ? " · " : ""}{employer}
                           </p>
@@ -339,7 +339,7 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
                             </span>
                           )}
                           {residenceFlag && residenceFlag !== nationalityFlag && (
-                            <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                            <span className="flex items-center gap-0.5 text-[12px] text-muted-foreground">
                               <MapPin className="h-2.5 w-2.5" />
                               <span className="text-base leading-none">{residenceFlag}</span>
                             </span>
@@ -350,28 +350,28 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
 
                     {bio && (
                       <div className="px-4 pb-3">
-                        <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">{bio}</p>
+                        <p className="text-[12px] text-muted-foreground line-clamp-2 leading-relaxed">{bio}</p>
                       </div>
                     )}
 
                     <div className="border-t bg-muted/20 px-4 py-2 flex items-center gap-2 flex-wrap">
                       {isHeadJudge && (
-                        <Badge className="text-[9px] h-5 gap-0.5 bg-amber-500/10 text-amber-600 border-amber-300">
+                        <Badge className="text-[12px] h-5 gap-0.5 bg-amber-500/10 text-amber-600 border-amber-300">
                           <Crown className="h-2.5 w-2.5" />
                           {isAr ? "رئيس" : "Chairman"}
                         </Badge>
                       )}
                       {jp?.judge_level && (
-                        <Badge variant="outline" className="text-[9px] h-5 gap-0.5">
+                        <Badge variant="outline" className="text-[12px] h-5 gap-0.5">
                           <Scale className="h-2.5 w-2.5" />
                           {jp.judge_level}
                         </Badge>
                       )}
                       {jp?.judge_category && (
-                        <Badge variant="secondary" className="text-[9px] h-5">{jp.judge_category}</Badge>
+                        <Badge variant="secondary" className="text-[12px] h-5">{jp.judge_category}</Badge>
                       )}
                       {judge.scoresGiven > 0 && (
-                        <Badge variant="outline" className="text-[9px] h-5 gap-0.5 ms-auto">
+                        <Badge variant="outline" className="text-[12px] h-5 gap-0.5 ms-auto">
                           <ClipboardList className="h-2.5 w-2.5" />
                           {judge.scoresGiven} {isAr ? "تقييم" : "scores"}
                         </Badge>

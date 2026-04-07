@@ -50,7 +50,7 @@ export const CertificateWorkflowTracker = memo(function CertificateWorkflowTrack
         <CardTitle className="text-sm flex items-center gap-2">
           <Award className="h-4 w-4 text-primary" />
           {isAr ? "مسار الشهادات" : "Certificate Pipeline"}
-          <Badge variant="secondary" className="text-[10px]">{total}</Badge>
+          <Badge variant="secondary" className="text-[12px]">{total}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -63,9 +63,9 @@ export const CertificateWorkflowTracker = memo(function CertificateWorkflowTrack
               <div key={step.key} className="text-center space-y-1">
                 <step.icon className={`h-5 w-5 mx-auto ${step.color}`} />
                 <AnimatedCounter value={count} className="text-lg" />
-                <p className="text-[10px] text-muted-foreground">{step.label}</p>
+                <p className="text-[12px] text-muted-foreground">{step.label}</p>
                 <Progress value={pct} className="h-1" />
-                <p className="text-[9px] text-muted-foreground">{pct}%</p>
+                <p className="text-[12px] text-muted-foreground">{pct}%</p>
               </div>
             );
           })}
@@ -73,12 +73,12 @@ export const CertificateWorkflowTracker = memo(function CertificateWorkflowTrack
 
         {workflow?.types && Object.keys(workflow.types).length > 0 && (
           <div className="mt-4 pt-3 border-t">
-            <p className="text-[10px] text-muted-foreground mb-2">{isAr ? "حسب النوع" : "By Type"}</p>
+            <p className="text-[12px] text-muted-foreground mb-2">{isAr ? "حسب النوع" : "By Type"}</p>
             <div className="flex flex-wrap gap-1.5">
               {Object.entries(workflow.types)
                 .sort(([, a], [, b]) => (b as number) - (a as number))
                 .map(([type, count]) => (
-                  <Badge key={type} variant="outline" className="text-[10px] gap-1">
+                  <Badge key={type} variant="outline" className="text-[12px] gap-1">
                     {type} <span className="font-mono font-bold">{count as number}</span>
                   </Badge>
                 ))}

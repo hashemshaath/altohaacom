@@ -162,7 +162,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap() {
                 <div className="flex items-center mb-1">
                   <div className="w-12 shrink-0" />
                   {hours.map((h) => (
-                    <div key={h} className="flex-1 text-center text-[9px] text-muted-foreground">
+                    <div key={h} className="flex-1 text-center text-[12px] text-muted-foreground">
                       {h % 3 === 0 ? `${h.toString().padStart(2, "0")}` : ""}
                     </div>
                   ))}
@@ -171,7 +171,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap() {
                 {/* Grid rows */}
                 {days.map((day, dayIdx) => (
                   <div key={dayIdx} className="flex items-center gap-0.5 mb-0.5">
-                    <div className="w-12 shrink-0 text-[11px] text-muted-foreground text-end pe-2">
+                    <div className="w-12 shrink-0 text-[12px] text-muted-foreground text-end pe-2">
                       {day}
                     </div>
                     {hours.map((hour) => {
@@ -195,11 +195,11 @@ export const ActivityHeatmap = memo(function ActivityHeatmap() {
 
                 {/* Legend */}
                 <div className="flex items-center justify-end gap-1 mt-3">
-                  <span className="text-[10px] text-muted-foreground me-1">{isAr ? "أقل" : "Less"}</span>
+                  <span className="text-[12px] text-muted-foreground me-1">{isAr ? "أقل" : "Less"}</span>
                   {["bg-muted/30", "bg-primary/15", "bg-primary/40", "bg-primary/70", "bg-primary"].map((c, i) => (
                     <div key={i} className={`h-3 w-3 rounded-sm ${c}`} />
                   ))}
-                  <span className="text-[10px] text-muted-foreground ms-1">{isAr ? "أكثر" : "More"}</span>
+                  <span className="text-[12px] text-muted-foreground ms-1">{isAr ? "أكثر" : "More"}</span>
                 </div>
               </div>
             </div>

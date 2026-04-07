@@ -96,7 +96,7 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
             <CardContent className="flex items-center gap-3 p-3">
               <div className={`rounded-full p-2 ${kpi.bg}`}><kpi.icon className={`h-4 w-4 ${kpi.color}`} /></div>
               <div>
-                <p className="text-[10px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
                 <p className="text-lg font-bold">{typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value}</p>
               </div>
             </CardContent>
@@ -137,14 +137,14 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
           {/* Type Distribution */}
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2">{isAr ? "حسب النوع" : "By Type"}</p>
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "حسب النوع" : "By Type"}</p>
               <div className="flex items-center gap-3">
                 <PieChart width={60} height={60}>
                   <Pie data={data.typeDist} dataKey="value" cx={28} cy={28} innerRadius={16} outerRadius={28} strokeWidth={0}>
                     {data.typeDist.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                 </PieChart>
-                <div className="text-[10px] space-y-1">
+                <div className="text-[12px] space-y-1">
                   {data.typeDist.slice(0, 4).map((t, i) => (
                     <div key={t.name} className="flex items-center gap-1.5">
                       <span className="h-2 w-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
@@ -159,13 +159,13 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
           {/* Top Types by Read Rate */}
           <Card>
             <CardContent className="p-3">
-              <p className="text-[10px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
+              <p className="text-[12px] font-semibold text-muted-foreground mb-2 flex items-center gap-1">
                 <Zap className="h-3 w-3" /> {isAr ? "أعلى تفاعل" : "Top Engagement"}
               </p>
               <div className="space-y-1.5">
                 {data.topTypes.map(t => (
                   <div key={t.type} className="space-y-0.5">
-                    <div className="flex justify-between text-[10px]">
+                    <div className="flex justify-between text-[12px]">
                       <span className="capitalize truncate max-w-[100px]">{t.type}</span>
                       <span className="text-muted-foreground">{t.rate}%</span>
                     </div>
