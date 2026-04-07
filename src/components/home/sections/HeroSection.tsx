@@ -272,7 +272,7 @@ export function HeroSection() {
               className="h-full w-full object-cover"
               loading={idx === 0 ? "eager" : "lazy"}
               decoding="async"
-              fetchPriority={idx === 0 ? "high" : undefined}
+              {...(idx === 0 ? { fetchpriority: "high" } : {})}
             />
             <div
               className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/5"
