@@ -41,7 +41,7 @@ const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon
   }
 );
 
-export default function StatsBar() {
+const StatsBar = forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { ref, isVisible } = useScrollReveal({ threshold: 0.3 });
