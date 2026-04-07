@@ -21,9 +21,9 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
   const isSponsors = sectionKey === "sponsors";
   const itemCount = config?.item_count || 24;
 
-  const heading = isSponsors
-    ? (isAr ? "يثق بنا فرق مبتكرة" : "Trusted by innovative teams")
-    : (isAr ? "شركاؤنا" : "Trusted by innovative teams");
+  const heading = isAr
+    ? "يثق بنا طهاة من أبرز المؤسسات حول العالم"
+    : "Trusted by chefs from leading institutions worldwide";
 
   const { data: logos = [] } = useQuery({
     queryKey: ["section-logos", sectionKey, itemCount],
@@ -88,29 +88,34 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
 
   const allLogos = useMemo(() => {
     const combined = isSponsors ? logos : [...logos, ...entities].slice(0, itemCount);
-    // 4x duplicate for seamless loop
     return [...combined, ...combined, ...combined, ...combined];
   }, [logos, entities, isSponsors, itemCount]);
 
   if ((isSponsors ? logos : [...logos, ...entities]).length === 0) return null;
 
   return (
-    <section dir={isAr ? "rtl" : "ltr"} className="h-[160px] flex flex-col justify-center">
-      <p className="text-center text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground/60 mb-5">
+    <section
+      dir={isAr ? "rtl" : "ltr"}
+      className="section-surface border-t border-b border-[var(--color-border-light)]"
+      style={{ padding: "32px 0" }}
+    >
+      {/* Label */}
+      <p className="t-small text-center mb-5">
         {heading}
       </p>
 
+      {/* Marquee */}
       <div className="relative w-full overflow-hidden group/marquee">
         {/* Edge masks */}
-        <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-20 sm:w-32 bg-gradient-to-r from-[var(--marquee-bg,#F6F8FA)] to-transparent dark:from-[hsl(213_25%_10%)]" aria-hidden="true" />
-        <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-20 sm:w-32 bg-gradient-to-l from-[var(--marquee-bg,#F6F8FA)] to-transparent dark:from-[hsl(213_25%_10%)]" aria-hidden="true" />
+        <div className="pointer-events-none absolute inset-y-0 start-0 z-10 w-20 sm:w-32 bg-gradient-to-r from-[var(--bg-surface)] to-transparent" aria-hidden="true" />
+        <div className="pointer-events-none absolute inset-y-0 end-0 z-10 w-20 sm:w-32 bg-gradient-to-l from-[var(--bg-surface)] to-transparent" aria-hidden="true" />
 
         <div
           className={cn(
             "flex items-center w-max group-hover/marquee:[animation-play-state:paused]",
             isAr ? "animate-marquee-rtl" : "animate-marquee"
           )}
-          style={{ animationDuration: "60s", gap: "100px" }}
+          style={{ animationDuration: "60s", gap: "32px" }}
         >
           {allLogos.map((item, i) => {
             const Wrapper = item.website_url ? "a" : "div";
@@ -125,10 +130,11 @@ const StatsPartnersSection = memo(function StatsPartnersSection() {
                 className="shrink-0 flex items-center justify-center"
                 title={item.name}
               >
-                <img loading="lazy" src={item.logo_url}
+                <img
+                  loading="lazy"
+                  src={item.logo_url}
                   alt={item.name}
-                  className="h-12 w-auto max-w-[120px] object-contain grayscale opacity-[0.7] transition-all duration-500 hover:grayscale-0 hover:opacity-100"
-                 
+                  className="h-7 w-auto max-w-[120px] object-contain grayscale opacity-50 transition-all duration-200 hover:grayscale-0 hover:opacity-100"
                 />
               </Wrapper>
             );
