@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, forwardRef, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -7,7 +7,7 @@ import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
 interface LogoItem { id: string; name: string; logo_url: string; website_url: string | null; }
 
-const StatsPartnersSection = memo(function StatsPartnersSection() {
+const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartnersSection(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
