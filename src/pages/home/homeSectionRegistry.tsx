@@ -19,6 +19,7 @@ const PlatformFeatures = safeLazy(() => import("@/components/home/PlatformFeatur
 const NewsletterSignup = safeLazy(() => import("@/components/home/NewsletterSignup").then((m) => ({ default: m.NewsletterSignup as ComponentType<any> })));
 const HomeQuickActions = safeLazy(() => import("@/components/home/HomeQuickActions").then((m) => ({ default: m.HomeQuickActions as ComponentType<any> })));
 const HomepageAdBanner = safeLazy(() => import("@/components/home/sections/HomepageAdBanner"));
+const PremiumCTASection = safeLazy(() => import("@/components/home/sections/PremiumCTASection"));
 
 export type HomeSectionComponent = LazyExoticComponent<ComponentType<any>>;
 
@@ -45,18 +46,14 @@ export const HOME_SECTION_COMPONENTS: Record<string, HomeSectionComponent> = {
   ad_banner_top: HomepageAdBanner,
   ad_banner_mid: HomepageAdBanner,
   ad_banner_bottom: HomepageAdBanner,
+  premium_cta: PremiumCTASection,
 };
 
 export const DEFAULT_HOME_SECTION_KEYS = [
-  "search",
   "stats",
   "events_by_category",
   "featured_chefs",
-  "pro_suppliers",
-  "masterclasses",
   "articles",
   "sponsors",
-  "testimonials",
-  "features",
-  "newsletter",
+  "premium_cta",
 ];
