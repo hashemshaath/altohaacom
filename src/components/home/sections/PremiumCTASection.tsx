@@ -1,10 +1,10 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Crown, ArrowRight, Sparkles, Star } from "lucide-react";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
-const PremiumCTASection = memo(function PremiumCTASection() {
+const PremiumCTASection = memo(forwardRef<HTMLElement>(function PremiumCTASection(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
@@ -70,6 +70,6 @@ const PremiumCTASection = memo(function PremiumCTASection() {
       </div>
     </section>
   );
-});
+}));
 
 export default PremiumCTASection;

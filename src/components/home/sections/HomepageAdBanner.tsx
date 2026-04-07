@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
  * Homepage ad banner section — renders active creatives from ad_placements
  * linked to the homepage. Falls back gracefully if no ads are available.
  */
-export const HomepageAdBanner = memo(function HomepageAdBanner() {
+export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAdBanner(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
@@ -174,6 +174,6 @@ export const HomepageAdBanner = memo(function HomepageAdBanner() {
       </a>
     </div>
   );
-});
+}));
 
 export default HomepageAdBanner;

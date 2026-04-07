@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
+import { ImageWithFallback } from "@/components/home/ImageWithFallback";
 
 const TYPE_COLORS: Record<string, string> = {
   news: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
@@ -34,7 +35,7 @@ function estimateReadTime(excerpt: string | null): number {
   return Math.max(1, Math.ceil((excerpt.trim().split(/\s+/).length * 10) / 200));
 }
 
-const ArticlesSection = memo(function ArticlesSection() {
+const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const config = useSectionConfig();
@@ -91,20 +92,20 @@ const ArticlesSection = memo(function ArticlesSection() {
               >
                 <div className="overflow-hidden rounded-2xl border border-border/30 bg-card h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.98] shadow-sm">
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    {article.featured_image_url ? (
-                      <img src={article.featured_image_url} alt={isAr ? article.title_ar || article.title : article.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-                    ) : (
-                      <div className="h-full w-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
-                        <Newspaper className="h-10 w-10 text-muted-foreground/20" />
-                      </div>
-                    )}
+                    <ImageWithFallback
+                      src={article.featured_image_url}
+                      alt={isAr ? article.title_ar || article.title : article.title}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      fallbackIcon={<Newspaper className="h-10 w-10 text-muted-foreground/20" />}
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                     {typeLabel && typeColor && (
                       <Badge className={cn("absolute top-2.5 start-2.5 text-xs font-bold border-0", typeColor)}>
                         {isAr ? typeLabel.ar : typeLabel.en}
                       </Badge>
                     )}
-                    <div className="absolute bottom-2.5 end-2.5 flex items-center gap-1 rounded-lg bg-white/90 dark:bg-black/70 backdrop-blur-sm px-2 py-1 text-xs text-muted-foreground">
+                    <div className="absolute bottom-2.5 end-2.5 flex items-center gap-1 rounded-lg bg-card/90 backdrop-blur-sm px-2 py-1 text-xs text-muted-foreground">
                       <BookOpen className="h-3 w-3" />
                       {readTime} {isAr ? "د" : "min"}
                     </div>
@@ -133,6 +134,6 @@ const ArticlesSection = memo(function ArticlesSection() {
       </div>
     </section>
   );
-});
+}));
 
 export default ArticlesSection;
