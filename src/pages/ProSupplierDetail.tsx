@@ -839,7 +839,7 @@ export default function ProSupplierDetail() {
         </div>
       </main>
       <Footer />
-      <ProductQuickView product={quickViewProduct} open={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      
     </div>
   );
 }
