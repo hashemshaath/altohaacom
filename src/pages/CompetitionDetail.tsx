@@ -1274,10 +1274,10 @@ export default function CompetitionDetail() {
               )}
 
               {/* Registration Card */}
-              <div className="overflow-hidden rounded-2xl border border-border/40 bg-card">
-                <div className="border-b border-border/30 bg-gradient-to-r from-primary/[0.04] to-transparent px-5 py-3.5">
-                  <h3 className="flex items-center gap-2.5 font-bold text-sm">
-                    <Trophy className="h-4 w-4 text-primary" />
+              <div className="overflow-hidden rounded-2xl border border-border/30 bg-card shadow-sm">
+                <div className="border-b border-border/20 bg-gradient-to-r from-primary/[0.06] via-primary/[0.02] to-transparent px-5 py-4">
+                  <h3 className="flex items-center gap-2.5 font-bold text-[15px]">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15"><Trophy className="h-4 w-4 text-primary" /></div>
                     {isAr ? "التسجيل" : "Registration"}
                   </h3>
                 </div>
