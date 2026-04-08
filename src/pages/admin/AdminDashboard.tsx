@@ -518,6 +518,27 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+          {/* User Charts */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sparkData && sparkData.length > 0 && (
+              <GrowthAreaChart
+                title={isAr ? "نمو المستخدمين — آخر 7 أيام" : "User Growth — Last 7 Days"}
+                data={sparkData}
+                lines={[
+                  { key: "users", name: isAr ? "المستخدمين" : "Users", color: "hsl(var(--primary))" },
+                ]}
+              />
+            )}
+            <DonutChart
+              title={isAr ? "أنواع الحسابات" : "Account Types"}
+              data={[
+                { name: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, color: "hsl(var(--primary))" },
+                { name: isAr ? "مستخدم عادي" : "Regular", value: stats?.fanUsers || 0, color: "hsl(var(--chart-4))" },
+                { name: isAr ? "موقوف" : "Suspended", value: stats?.suspendedUsers || 0, color: "hsl(var(--destructive))" },
+              ]}
+            />
+          </div>
+
           {/* Recent Users */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
