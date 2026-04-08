@@ -95,21 +95,22 @@ const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: 
   cancelled: { bg: "bg-destructive/10 text-destructive", dot: "bg-destructive", label: "Cancelled", labelAr: "ملغاة" },
 };
 
-/* ─── Animated Counter ─── */
-function AnimatedCounter({ target, duration = 800 }: { target: number; duration?: number }) {
-  const [count, setCount] = useState(0);
+/* ─── Tab Content Transition Wrapper ─── */
+function TabTransition({ children, activeKey }: { children: React.ReactNode; activeKey: string }) {
+  const [visible, setVisible] = useState(true);
+  const prevKey = useRef(activeKey);
   useEffect(() => {
-    if (target === 0) return;
-    let start = 0;
-    const step = Math.max(1, Math.ceil(target / (duration / 16)));
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(start);
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration]);
-  return <span className="tabular-nums">{count}</span>;
+    if (prevKey.current !== activeKey) {
+      setVisible(false);
+      const t = setTimeout(() => { setVisible(true); prevKey.current = activeKey; }, 80);
+      return () => clearTimeout(t);
+    }
+  }, [activeKey]);
+  return (
+    <div className={`transition-all duration-300 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>
+      {children}
+    </div>
+  );
 }
 
 /* ─── Live Countdown Hook ─── */
