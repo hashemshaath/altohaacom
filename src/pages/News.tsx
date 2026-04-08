@@ -357,10 +357,10 @@ export default function News() {
 
         <div className="container py-5 md:py-6">
           {/* ─── Sticky Filters ─── */}
-          <div className="sticky top-12 z-40 -mx-4 mb-6 border-y border-border/30 bg-background/70 px-4 py-2.5 backdrop-blur-xl md:rounded-2xl md:border md:px-4 md:shadow-sm">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="sticky top-12 z-40 -mx-4 mb-5 border-b border-border/10 bg-background/90 px-4 py-2 backdrop-blur-xl md:rounded-xl md:border md:border-border/10 md:px-3.5 md:shadow-sm">
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-md">
-                <Search className="absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/40" />
                 <Input
                   placeholder={isAr ? "ابحث في الأخبار والمقالات..." : "Search news & articles..."}
                   value={searchQuery}
