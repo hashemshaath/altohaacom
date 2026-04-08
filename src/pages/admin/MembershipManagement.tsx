@@ -1,6 +1,5 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp,
@@ -8,8 +7,8 @@ import {
   Wallet, Receipt, Bell, Shield, UserCog, Zap, DollarSign,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
-// Lazy-load all tab components for performance
 const MembershipOverview = lazy(() => import("@/components/admin/membership/MembershipOverview"));
 const MembershipMembersTab = lazy(() => import("@/components/admin/membership/MembershipMembersTab"));
 const MembershipBenefitsTab = lazy(() => import("@/components/admin/membership/MembershipBenefitsTab"));
@@ -33,65 +32,104 @@ const MembershipRevenueTab = lazy(() => import("@/components/admin/membership/Me
 function TabFallback() {
   return (
     <div className="space-y-4">
-      <Skeleton className="h-10 w-full" />
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-24 rounded-xl" />
-        ))}
+      <Skeleton className="h-10 w-full rounded-lg" />
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-lg" />)}
       </div>
-      <Skeleton className="h-64 w-full rounded-xl" />
+      <Skeleton className="h-56 w-full rounded-lg" />
     </div>
   );
 }
 
+// Group tabs into categories for better navigation
+const tabGroups = (isAr: boolean) => [
+  {
+    label: isAr ? "الرئيسية" : "Core",
+    tabs: [
+      { value: "overview", icon: BarChart3, label: isAr ? "عامة" : "Overview" },
+      { value: "members", icon: Users, label: isAr ? "أعضاء" : "Members" },
+      { value: "revenue", icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue" },
+      { value: "benefits", icon: Star, label: isAr ? "مميزات" : "Benefits" },
+    ],
+  },
+  {
+    label: isAr ? "المالية" : "Finance",
+    tabs: [
+      { value: "wallet", icon: Wallet, label: isAr ? "المحفظة" : "Wallet" },
+      { value: "invoices", icon: Receipt, label: isAr ? "الفواتير" : "Invoices" },
+    ],
+  },
+  {
+    label: isAr ? "العمليات" : "Operations",
+    tabs: [
+      { value: "bulk", icon: Zap, label: isAr ? "جماعية" : "Bulk" },
+      { value: "features", icon: Shield, label: isAr ? "التحكم" : "Features" },
+      { value: "overrides", icon: UserCog, label: isAr ? "تجاوزات" : "Overrides" },
+      { value: "notifications", icon: Bell, label: isAr ? "إشعارات" : "Alerts" },
+    ],
+  },
+  {
+    label: isAr ? "التحليلات" : "Analytics",
+    tabs: [
+      { value: "analytics", icon: TrendingUp, label: isAr ? "تحليلات" : "Analytics" },
+      { value: "dashboard", icon: PieChart, label: isAr ? "لوحة" : "Dashboard" },
+      { value: "retention", icon: ShieldAlert, label: isAr ? "الاحتفاظ" : "Retention" },
+      { value: "referrals", icon: Share2, label: isAr ? "إحالات" : "Referrals" },
+    ],
+  },
+  {
+    label: isAr ? "السجلات" : "Records",
+    tabs: [
+      { value: "cancellations", icon: UserX, label: isAr ? "إلغاء" : "Cancel" },
+      { value: "history", icon: History, label: isAr ? "سجل" : "History" },
+      { value: "timeline", icon: GitBranch, label: isAr ? "الزمني" : "Timeline" },
+      { value: "digest", icon: FileText, label: isAr ? "ملخص" : "Digest" },
+      { value: "policy", icon: Settings2, label: isAr ? "سياسات" : "Policy" },
+    ],
+  },
+];
+
 export default function MembershipManagement() {
   const { language } = useLanguage();
   const isAr = language === "ar";
-
-  const tabs = [
-    { value: "overview", icon: BarChart3, label: isAr ? "عامة" : "Overview" },
-    { value: "members", icon: Users, label: isAr ? "أعضاء" : "Members" },
-    { value: "bulk", icon: Zap, label: isAr ? "عمليات جماعية" : "Bulk Ops" },
-    { value: "revenue", icon: DollarSign, label: isAr ? "الإيرادات" : "Revenue" },
-    { value: "benefits", icon: Star, label: isAr ? "مميزات" : "Benefits" },
-    { value: "features", icon: Shield, label: isAr ? "التحكم" : "Features" },
-    { value: "overrides", icon: UserCog, label: isAr ? "تجاوزات" : "Overrides" },
-    { value: "wallet", icon: Wallet, label: isAr ? "المحفظة" : "Wallet" },
-    { value: "invoices", icon: Receipt, label: isAr ? "الفواتير" : "Invoices" },
-    { value: "notifications", icon: Bell, label: isAr ? "إشعارات" : "Alerts" },
-    { value: "cancellations", icon: UserX, label: isAr ? "إلغاء" : "Cancel" },
-    { value: "history", icon: History, label: isAr ? "سجل" : "History" },
-    { value: "analytics", icon: TrendingUp, label: isAr ? "تحليلات" : "Analytics" },
-    { value: "dashboard", icon: PieChart, label: isAr ? "لوحة" : "Dashboard" },
-    { value: "referrals", icon: Share2, label: isAr ? "إحالات" : "Referrals" },
-    { value: "retention", icon: ShieldAlert, label: isAr ? "الاحتفاظ" : "Retention" },
-    { value: "digest", icon: FileText, label: isAr ? "ملخص" : "Digest" },
-    { value: "timeline", icon: GitBranch, label: isAr ? "الزمني" : "Timeline" },
-    { value: "policy", icon: Settings2, label: isAr ? "سياسات" : "Policy" },
-  ];
+  const [activeTab, setActiveTab] = useState("overview");
+  const groups = tabGroups(isAr);
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      <AdminPageHeader
-        icon={CreditCard}
-        title={isAr ? "إدارة العضويات" : "Memberships"}
-        description={isAr ? "إدارة مستويات العضوية والاشتراكات والفواتير والمحافظ" : "Tiers, subscriptions, billing, wallets & lifecycle"}
-      />
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight">{isAr ? "إدارة العضويات" : "Memberships"}</h1>
+        <p className="text-sm text-muted-foreground mt-0.5">
+          {isAr ? "مستويات العضوية والاشتراكات والفواتير والمحافظ" : "Tiers, subscriptions, billing, wallets & lifecycle"}
+        </p>
+      </div>
 
-      <Tabs defaultValue="overview" className="space-y-3 sm:space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        {/* Grouped Tab Navigation */}
         <div className="overflow-x-auto scrollbar-none -mx-1 px-1">
-          <TabsList className="h-8 sm:h-9 gap-0.5 sm:gap-1 w-max rounded-2xl border border-border/40 bg-muted/30 backdrop-blur p-1 sm:p-1.5">
-            {tabs.map(tab => (
-              <TabsTrigger
-                key={tab.value}
-                value={tab.value}
-                className="gap-1 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3 rounded-xl data-[state=active]:shadow-sm"
-              >
-                <tab.icon className="h-3 w-3 sm:h-4 sm:w-4" />
-                {tab.label}
-              </TabsTrigger>
+          <div className="flex items-center gap-1 w-max">
+            {groups.map((group, gi) => (
+              <div key={group.label} className="flex items-center">
+                {gi > 0 && <div className="h-5 w-px bg-border/50 mx-1.5 shrink-0" />}
+                {group.tabs.map(tab => (
+                  <button
+                    key={tab.value}
+                    onClick={() => setActiveTab(tab.value)}
+                    className={cn(
+                      "flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-md transition-all whitespace-nowrap",
+                      activeTab === tab.value
+                        ? "bg-foreground text-background font-medium shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    )}
+                  >
+                    <tab.icon className="h-3 w-3 shrink-0" />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             ))}
-          </TabsList>
+          </div>
         </div>
 
         <TabsContent value="overview"><Suspense fallback={<TabFallback />}><MembershipOverview /></Suspense></TabsContent>
