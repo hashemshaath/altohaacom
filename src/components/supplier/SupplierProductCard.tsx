@@ -30,11 +30,11 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
   const priceWithVat = Math.round(price * (1 + VAT_RATE));
   const isInStock = product.in_stock !== false;
   const qty = product.quantity_available;
+  const currencyLabel = isAr ? "ر.س" : "SAR";
 
-  // Simulated original price for display (20% markup for demo)
-  const originalPrice = Math.round(price * 1.2);
-  const hasDiscount = originalPrice > price && price > 0;
-  const discountPercent = hasDiscount ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+  const originalPriceVat = Math.round(price * 1.2 * (1 + VAT_RATE));
+  const hasDiscount = originalPriceVat > priceWithVat && price > 0;
+  const discountPercent = hasDiscount ? Math.round(((originalPriceVat - priceWithVat) / originalPriceVat) * 100) : 0;
 
   return (
     <Card
