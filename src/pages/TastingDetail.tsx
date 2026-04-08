@@ -326,6 +326,10 @@ export default function TastingDetail() {
                 <BarChart3 className="h-3.5 w-3.5" />
                 {isAr ? "النتائج" : "Results"}
               </TabsTrigger>
+              <TabsTrigger value="report" className="gap-1.5">
+                <FileText className="h-3.5 w-3.5" />
+                {isAr ? "التقرير" : "Report"}
+              </TabsTrigger>
               {session.competition_id && (
                 <>
                   <TabsTrigger value="analytics" className="gap-1.5">
