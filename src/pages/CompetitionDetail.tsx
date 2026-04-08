@@ -1,6 +1,7 @@
-import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
+import { AnimatedCounter as SharedAnimatedCounter } from "@/components/ui/animated-counter";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
