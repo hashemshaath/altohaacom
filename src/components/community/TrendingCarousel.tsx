@@ -7,7 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Flame, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 interface TrendingPost {
@@ -15,8 +15,9 @@ interface TrendingPost {
   content: string;
   author_name: string | null;
   author_avatar: string | null;
-  likes_count: number;
-  comments_count: number;
+  replies_count: number;
+  reposts_count: number;
+  score: number;
 }
 
 export const TrendingCarousel = memo(function TrendingCarousel() {
@@ -26,59 +27,62 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { data: trending = [], isLoading } = useQuery({
-    queryKey: ["trending-posts"],
+    queryKey: ["trending-posts-v2"],
     queryFn: async () => {
-      // Get posts from last 48 hours with most likes
-      const since = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+      const since = new Date(Date.now() - 48 * 3600000).toISOString();
+
+      // Single query: get posts with their built-in counters
       const { data: posts } = await supabase
         .from("posts")
-        .select("id, content, author_id, created_at")
+        .select("id, content, author_id, replies_count, reposts_count")
         .is("reply_to_post_id", null)
         .eq("moderation_status", "approved")
         .gte("created_at", since)
-        .order("created_at", { ascending: false })
-        .limit(50);
+        .order("replies_count", { ascending: false })
+        .limit(30);
 
       if (!posts?.length) return [];
 
-      const postIds = posts.map((p) => p.id);
-      const authorIds = [...new Set(posts.map((p) => p.author_id))];
+      // Score using built-in counters (no extra queries needed!)
+      const scored = posts
+        .map(p => ({
+          ...p,
+          score: (p.replies_count || 0) * 3 + (p.reposts_count || 0) * 2,
+        }))
+        .filter(p => p.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10);
 
-      const [likesRes, commentsRes, profilesRes] = await Promise.all([
-        supabase.from("post_likes").select("post_id").in("post_id", postIds),
-        supabase.from("post_comments").select("post_id").in("post_id", postIds),
-        supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, avatar_url").in("user_id", authorIds),
-      ]);
+      if (scored.length === 0) return [];
 
-      const likesMap = new Map<string, number>();
-      const commentsMap = new Map<string, number>();
-      const profileMap = new Map(profilesRes.data?.map((p) => [p.user_id, p]) || []);
+      // Single batch profile fetch
+      const authorIds = [...new Set(scored.map(p => p.author_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, display_name, avatar_url")
+        .in("user_id", authorIds);
 
-      likesRes.data?.forEach((l) => likesMap.set(l.post_id, (likesMap.get(l.post_id) || 0) + 1));
-      commentsRes.data?.forEach((c) => commentsMap.set(c.post_id, (commentsMap.get(c.post_id) || 0) + 1));
+      const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
 
-      const scored = posts.map((p) => ({
-        ...p,
-        score: (likesMap.get(p.id) || 0) * 2 + (commentsMap.get(p.id) || 0) * 3,
-        likes_count: likesMap.get(p.id) || 0,
-        comments_count: commentsMap.get(p.id) || 0,
+      return scored.map((p): TrendingPost => ({
+        id: p.id,
+        content: p.content,
         author_name: profileMap.get(p.author_id)?.display_name || profileMap.get(p.author_id)?.full_name || null,
         author_avatar: profileMap.get(p.author_id)?.avatar_url || null,
+        replies_count: p.replies_count,
+        reposts_count: p.reposts_count,
+        score: p.score,
       }));
-
-      return scored
-        .filter((p) => p.score > 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, 10) as TrendingPost[];
     },
     staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 20,
   });
 
-  const scroll = (dir: "left" | "right") => {
+  const scroll = useCallback((dir: "left" | "right") => {
     if (!scrollRef.current) return;
     const amount = dir === "left" ? -240 : 240;
     scrollRef.current.scrollBy({ left: isAr ? -amount : amount, behavior: "smooth" });
-  };
+  }, [isAr]);
 
   if (isLoading || trending.length === 0) return null;
 
@@ -124,8 +128,8 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
               {post.content.slice(0, 100)}
             </p>
             <div className="flex gap-3 text-[11px] text-muted-foreground font-medium">
-              <span className="flex items-center gap-0.5">❤️ {post.likes_count}</span>
-              <span className="flex items-center gap-0.5">💬 {post.comments_count}</span>
+              <span className="flex items-center gap-0.5">💬 {post.replies_count}</span>
+              <span className="flex items-center gap-0.5">🔄 {post.reposts_count}</span>
             </div>
           </button>
         ))}

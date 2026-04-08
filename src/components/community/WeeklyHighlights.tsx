@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Trophy, TrendingUp, Flame, Star } from "lucide-react";
+import { Trophy, Flame, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
     queryFn: async () => {
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
 
-      // Top posts this week (by engagement: replies + reposts)
+      // Single query: top posts by engagement (replies + reposts)
       const { data: topPosts } = await supabase
         .from("posts")
         .select("id, content, author_id, replies_count, reposts_count")
@@ -26,52 +26,46 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
         .eq("moderation_status", "approved")
         .gte("created_at", weekAgo)
         .order("replies_count", { ascending: false })
-        .limit(3);
+        .limit(5);
 
-      // Get author profiles for top posts
-      const authorIds = [...new Set((topPosts || []).map(p => p.author_id))];
+      if (!topPosts?.length) return { topPosts: [], topAuthors: [] };
+
+      // Collect unique author IDs for batch profile fetch
+      const authorIds = [...new Set(topPosts.map(p => p.author_id))];
+
+      // Count post frequency per author from the same result set
+      const authorCounts = new Map<string, number>();
+      topPosts.forEach(p => {
+        authorCounts.set(p.author_id, (authorCounts.get(p.author_id) || 0) + 1);
+      });
+
+      // Single batch profile query for all needed profiles
       const { data: profiles } = authorIds.length > 0
-        ? await supabase.from("profiles").select("user_id, full_name, display_name, avatar_url, username").in("user_id", authorIds)
+        ? await supabase
+            .from("profiles")
+            .select("user_id, full_name, display_name, avatar_url, username")
+            .in("user_id", authorIds)
         : { data: [] };
 
       const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
 
-      // Most active members this week
-      const { data: activePosts } = await supabase
-        .from("posts")
-        .select("author_id")
-        .gte("created_at", weekAgo)
-        .eq("moderation_status", "approved");
-
-      const authorCounts = new Map<string, number>();
-      (activePosts || []).forEach(p => {
-        authorCounts.set(p.author_id, (authorCounts.get(p.author_id) || 0) + 1);
-      });
-
-      const topAuthors = [...authorCounts.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5);
-
-      const activeAuthorIds = topAuthors.map(a => a[0]);
-      const { data: activeProfiles } = activeAuthorIds.length > 0
-        ? await supabase.from("profiles").select("user_id, full_name, display_name, avatar_url, username").in("user_id", activeAuthorIds)
-        : { data: [] };
-
-      const activeProfileMap = new Map((activeProfiles || []).map(p => [p.user_id, p]));
-
       return {
-        topPosts: (topPosts || []).map(p => ({
+        topPosts: topPosts.slice(0, 3).map(p => ({
           ...p,
           profile: profileMap.get(p.author_id),
         })),
-        topAuthors: topAuthors.map(([id, count]) => ({
-          userId: id,
-          postCount: count,
-          profile: activeProfileMap.get(id),
-        })),
+        topAuthors: [...authorCounts.entries()]
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([id, count]) => ({
+            userId: id,
+            postCount: count,
+            profile: profileMap.get(id),
+          })),
       };
     },
     staleTime: 1000 * 60 * 15,
+    gcTime: 1000 * 60 * 30,
   });
 
   if (isLoading) {
@@ -95,7 +89,6 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
         <h3 className="text-sm font-bold">{isAr ? "أبرز الأحداث الأسبوعية" : "Weekly Highlights"}</h3>
       </div>
 
-      {/* Top posts */}
       {data.topPosts.length > 0 && (
         <div className="px-4 pb-2">
           <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
@@ -140,7 +133,6 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
         </div>
       )}
 
-      {/* Most active members */}
       {data.topAuthors.length > 0 && (
         <div className="px-4 pb-3 pt-1 border-t border-border/20">
           <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5 pt-2">
