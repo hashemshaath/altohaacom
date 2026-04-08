@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Package, ShoppingCart, ArrowLeft, CheckCircle, XCircle,
   Minus, Plus, Truck, Shield, RotateCcw, Tag, Box, Ruler,
+  Star, Share2, Heart, ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +22,26 @@ interface SupplierProductDetailProps {
 
 const VAT_RATE = 0.15;
 
+/** Parse structured description into sections */
+function parseDescription(text: string) {
+  if (!text) return [];
+  const lines = text.split("\n").filter(Boolean);
+  const sections: { type: "heading" | "bullet" | "text"; content: string }[] = [];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    if (trimmed.startsWith("✅") || trimmed.startsWith("📦") || trimmed.startsWith("📐") || trimmed.startsWith("🍽️") || trimmed.startsWith("💡") || trimmed.startsWith("🏷️")) {
+      sections.push({ type: "heading", content: trimmed });
+    } else if (trimmed.startsWith("•") || trimmed.startsWith("-")) {
+      sections.push({ type: "bullet", content: trimmed.replace(/^[•\-]\s*/, "") });
+    } else {
+      sections.push({ type: "text", content: trimmed });
+    }
+  }
+  return sections;
+}
+
 export const SupplierProductDetail = memo(function SupplierProductDetail({
   product,
   relatedProducts = [],
@@ -32,18 +53,23 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [qty, setQty] = useState(1);
-  const [selectedImage, setSelectedImage] = useState(0);
+  const [isFav, setIsFav] = useState(false);
 
-  if (!product) return null;
-
-  const title = isAr && product.name_ar ? product.name_ar : product.name;
-  const desc = isAr && product.description_ar ? product.description_ar : product.description;
-  const price = product.unit_price || 0;
+  const title = product ? (isAr && product.name_ar ? product.name_ar : product.name) : "";
+  const desc = product ? (isAr && product.description_ar ? product.description_ar : product.description) : "";
+  const price = product?.unit_price || 0;
   const priceWithVat = Math.round(price * (1 + VAT_RATE));
   const totalPrice = price * qty;
   const totalWithVat = Math.round(totalPrice * (1 + VAT_RATE));
   const isInStock = product.in_stock !== false;
   const stockQty = product.quantity_available;
+
+  const descSections = useMemo(() => parseDescription(desc || ""), [desc]);
+
+  if (!product) return null;
+
+  // Extract subtitle (first text line) and rest
+  const subtitle = descSections.find(s => s.type === "text" && !s.content.startsWith("🏷️"))?.content || "";
 
   const specs = [
     product.category && { label: isAr ? "الفئة" : "Category", value: product.category, icon: Tag },
@@ -53,13 +79,32 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
     stockQty && { label: isAr ? "الكمية المتوفرة" : "Available Qty", value: stockQty.toString(), icon: Package },
   ].filter(Boolean) as { label: string; value: string; icon: any }[];
 
+  const handleShare = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.share({ title, url });
+    } catch {
+      await navigator.clipboard.writeText(url);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Breadcrumb/Back */}
-      <Button variant="ghost" size="sm" className="rounded-xl gap-2 text-muted-foreground hover:text-foreground" onClick={onBack}>
-        <ArrowLeft className="h-4 w-4" />
-        {isAr ? "العودة للمنتجات" : "Back to Products"}
-      </Button>
+      <div className="flex items-center justify-between">
+        <Button variant="ghost" size="sm" className="rounded-xl gap-2 text-muted-foreground hover:text-foreground" onClick={onBack}>
+          <ArrowLeft className="h-4 w-4" />
+          {isAr ? "العودة للمنتجات" : "Back to Products"}
+        </Button>
+        <div className="flex gap-1.5">
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={() => setIsFav(!isFav)}>
+            <Heart className={cn("h-4 w-4", isFav && "fill-destructive text-destructive")} />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={handleShare}>
+            <Share2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
 
       {/* Main product layout */}
       <div className="grid gap-6 lg:grid-cols-2">
@@ -67,18 +112,12 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
         <div className="space-y-3">
           <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted/20 border border-border/20">
             {product.image_url ? (
-              <img
-                src={product.image_url}
-                alt={title}
-                className="h-full w-full object-cover"
-              />
+              <img src={product.image_url} alt={title} className="h-full w-full object-contain p-4" />
             ) : (
               <div className="flex h-full items-center justify-center">
                 <Package className="h-20 w-20 text-muted-foreground/10" />
               </div>
             )}
-
-            {/* Stock overlay */}
             {!isInStock && (
               <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
                 <Badge variant="destructive" className="px-4 py-2 text-sm font-bold">
@@ -99,8 +138,12 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
               </Badge>
             )}
             <h1 className="text-xl sm:text-2xl font-bold leading-tight">{title}</h1>
+            {subtitle && <p className="text-sm text-muted-foreground mt-1.5 leading-relaxed">{subtitle}</p>}
             {companyName && (
-              <p className="text-sm text-muted-foreground mt-1">{isAr ? "بواسطة" : "by"} {companyName}</p>
+              <p className="text-xs text-muted-foreground/70 mt-1 flex items-center gap-1">
+                <ExternalLink className="h-3 w-3" />
+                {isAr ? "بواسطة" : "by"} <span className="font-medium text-foreground/80">{companyName}</span>
+              </p>
             )}
           </div>
 
@@ -110,15 +153,9 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
               {price > 0 ? (
                 <>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-black text-primary tracking-tight">
-                      {price.toFixed(0)}
-                    </span>
-                    <span className="text-base text-muted-foreground font-medium">
-                      {product.currency || "SAR"}
-                    </span>
-                    {product.unit && (
-                      <span className="text-sm text-muted-foreground">/ {product.unit}</span>
-                    )}
+                    <span className="text-3xl font-black text-primary tracking-tight">{price.toFixed(0)}</span>
+                    <span className="text-base text-muted-foreground font-medium">{product.currency || "SAR"}</span>
+                    {product.unit && <span className="text-sm text-muted-foreground">/ {product.unit}</span>}
                   </div>
                   <p className="text-sm text-muted-foreground">
                     {priceWithVat.toFixed(0)} {product.currency || "SAR"} {isAr ? "شامل ضريبة القيمة المضافة 15%" : "incl. 15% VAT"}
@@ -135,9 +172,7 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
                   )}
                 </>
               ) : (
-                <p className="text-base text-muted-foreground">
-                  {isAr ? "تواصل معنا للحصول على السعر" : "Contact us for pricing"}
-                </p>
+                <p className="text-base text-muted-foreground">{isAr ? "تواصل معنا للحصول على السعر" : "Contact us for pricing"}</p>
               )}
             </CardContent>
           </Card>
@@ -157,9 +192,7 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
               </Badge>
             )}
             {isInStock && stockQty && stockQty <= 5 && (
-              <span className="text-xs text-destructive font-bold">
-                {isAr ? `باقي ${stockQty} فقط!` : `Only ${stockQty} left!`}
-              </span>
+              <span className="text-xs text-destructive font-bold">{isAr ? `باقي ${stockQty} فقط!` : `Only ${stockQty} left!`}</span>
             )}
           </div>
 
@@ -167,32 +200,15 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
           {onAddToCart && price > 0 && (
             <div className="flex items-center gap-3">
               <div className="flex items-center border border-border/40 rounded-xl overflow-hidden">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-none"
-                  disabled={qty <= 1}
-                  onClick={() => setQty(Math.max(1, qty - 1))}
-                >
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-none" disabled={qty <= 1} onClick={() => setQty(Math.max(1, qty - 1))}>
                   <Minus className="h-4 w-4" />
                 </Button>
                 <span className="w-12 text-center text-sm font-bold tabular-nums">{qty}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-10 w-10 rounded-none"
-                  disabled={stockQty ? qty >= stockQty : false}
-                  onClick={() => setQty(qty + 1)}
-                >
+                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-none" disabled={stockQty ? qty >= stockQty : false} onClick={() => setQty(qty + 1)}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <Button
-                size="lg"
-                disabled={!isInStock}
-                onClick={() => onAddToCart(product, qty)}
-                className="flex-1 h-11 rounded-xl font-bold gap-2 shadow-md shadow-primary/15 active:scale-[0.98] transition-all"
-              >
+              <Button size="lg" disabled={!isInStock} onClick={() => onAddToCart(product, qty)} className="flex-1 h-11 rounded-xl font-bold gap-2 shadow-md shadow-primary/15 active:scale-[0.98] transition-all">
                 <ShoppingCart className="h-4 w-4" />
                 {isAr ? "أضف إلى السلة" : "Add to Cart"}
               </Button>
@@ -203,7 +219,7 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
           <div className="grid grid-cols-3 gap-2">
             {[
               { icon: Truck, en: "Fast Delivery", ar: "توصيل سريع" },
-              { icon: Shield, en: "Secure Order", ar: "طلب آمن" },
+              { icon: Shield, en: "Guaranteed", ar: "منتج مضمون" },
               { icon: RotateCcw, en: "Easy Returns", ar: "إرجاع سهل" },
             ].map(({ icon: Icon, en, ar }) => (
               <div key={en} className="flex flex-col items-center gap-1 rounded-xl bg-muted/30 p-2.5 text-center">
@@ -215,18 +231,37 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
         </div>
       </div>
 
-      {/* Description & Specs */}
+      {/* Description & Specs — Salla-style structured view */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Description */}
-        {desc && (
+        {/* Description with structured sections */}
+        {descSections.length > 0 && (
           <div className="lg:col-span-2">
             <h2 className="text-base font-bold mb-3 flex items-center gap-2">
               <Package className="h-4 w-4 text-primary" />
               {isAr ? "وصف المنتج" : "Product Description"}
             </h2>
             <Card className="rounded-2xl border-border/20">
-              <CardContent className="p-4 sm:p-5">
-                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{desc}</p>
+              <CardContent className="p-4 sm:p-5 space-y-3">
+                {descSections.map((section, idx) => {
+                  if (section.type === "heading") {
+                    return (
+                      <h3 key={idx} className="text-sm font-bold text-foreground pt-2 first:pt-0 flex items-center gap-1.5">
+                        {section.content}
+                      </h3>
+                    );
+                  }
+                  if (section.type === "bullet") {
+                    return (
+                      <div key={idx} className="flex items-start gap-2 text-sm text-muted-foreground ps-1">
+                        <span className="text-primary mt-0.5 shrink-0">•</span>
+                        <span className="leading-relaxed">{section.content}</span>
+                      </div>
+                    );
+                  }
+                  return (
+                    <p key={idx} className="text-sm text-muted-foreground leading-relaxed">{section.content}</p>
+                  );
+                })}
               </CardContent>
             </Card>
           </div>
@@ -234,7 +269,7 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
 
         {/* Specifications */}
         {specs.length > 0 && (
-          <div className={cn(!desc && "lg:col-span-3")}>
+          <div className={cn(!descSections.length && "lg:col-span-3")}>
             <h2 className="text-base font-bold mb-3 flex items-center gap-2">
               <Box className="h-4 w-4 text-primary" />
               {isAr ? "المواصفات" : "Specifications"}
@@ -269,13 +304,12 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
               return (
                 <Card
                   key={rp.id}
-                  interactive
-                  className="rounded-2xl overflow-hidden cursor-pointer"
+                  className="rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all"
                   onClick={() => onViewProduct?.(rp)}
                 >
                   <div className="aspect-square bg-muted/20 overflow-hidden">
                     {rp.image_url ? (
-                      <img loading="lazy" src={rp.image_url} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" alt={rpTitle} />
+                      <img loading="lazy" src={rp.image_url} className="h-full w-full object-contain p-2 transition-transform duration-500 hover:scale-105" alt={rpTitle} />
                     ) : (
                       <div className="h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/15" /></div>
                     )}
@@ -283,7 +317,13 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
                   <CardContent className="p-3">
                     <p className="font-medium text-sm truncate">{rpTitle}</p>
                     {rpPrice > 0 && (
-                      <p className="text-sm font-bold text-primary mt-1">{rpPrice.toFixed(0)} {rp.currency || "SAR"}</p>
+                      <div className="flex items-baseline gap-1 mt-1">
+                        <span className="text-sm font-bold text-primary">{rpPrice.toFixed(0)}</span>
+                        <span className="text-[10px] text-muted-foreground">{rp.currency || "SAR"}</span>
+                        <span className="text-[10px] text-muted-foreground/60 ms-1">
+                          ({Math.round(rpPrice * 1.15)} {isAr ? "شامل الضريبة" : "incl. VAT"})
+                        </span>
+                      </div>
                     )}
                   </CardContent>
                 </Card>
