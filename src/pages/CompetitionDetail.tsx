@@ -743,18 +743,18 @@ export default function CompetitionDetail() {
         </div>
 
         {/* ─── Grouped Navigation Pills ─── */}
-        <div className="sticky top-14 z-30 border-b border-border/30 bg-background/95 backdrop-blur-xl">
+        <div className="sticky top-14 z-30 border-b border-border/20 bg-background/90 backdrop-blur-2xl shadow-sm">
           <div className="container">
             <ScrollArea className="w-full">
-              <div className="flex items-stretch divide-x divide-border/30 rtl:divide-x-reverse min-w-max">
-                {NAV_GROUPS.map((group) => (
+              <div className="flex items-stretch gap-0.5 min-w-max py-1.5">
+                {NAV_GROUPS.map((group, gi) => (
                   <div key={group.labelEn} className="flex flex-col">
-                    <div className="px-2 pt-1.5 pb-0.5">
-                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+                    <div className={`px-2.5 pt-1 pb-0.5 ${gi > 0 ? "border-s border-border/20 ms-1 ps-3" : ""}`}>
+                      <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.18em] text-muted-foreground/40">
                         {isAr ? group.labelAr : group.labelEn}
                       </span>
                     </div>
-                    <div className="flex items-center gap-0.5 px-1 pb-1.5">
+                    <div className="flex items-center gap-1 px-1.5 pb-1.5">
                       {group.tabs.map((tab) => {
                         const Icon = tab.icon;
                         const isActive = activeSection === tab.id;
@@ -763,13 +763,13 @@ export default function CompetitionDetail() {
                             key={tab.id}
                             onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(tab.id); }}
                             className={`
-                              inline-flex shrink-0 items-center gap-1 rounded-full px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
+                              inline-flex shrink-0 items-center gap-1.5 rounded-xl px-2.5 sm:px-3.5 py-2 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
                               ${isActive
-                                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
-                                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
+                                ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
+                                : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
                             `}
                           >
-                            <Icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 ${isActive ? "" : "opacity-60"}`} />
+                            <Icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 ${isActive ? "" : "opacity-50"}`} />
                             <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
                           </button>
                         );
