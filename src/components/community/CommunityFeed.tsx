@@ -24,6 +24,7 @@ import { FeedScrollProgress } from "./FeedScrollProgress";
 import { FeedKeyboardShortcuts } from "./FeedKeyboardShortcuts";
 import { FeedStatsBar } from "./FeedStatsBar";
 import { CommunityInsights } from "./CommunityInsights";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 export interface CommunityPost {
   id: string;
