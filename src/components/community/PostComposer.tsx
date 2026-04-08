@@ -75,12 +75,25 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
     return () => clearTimeout(timeout);
   }, [content, DRAFT_KEY]);
 
+  // Reuse cached profile data from left sidebar query
+  const { data: cachedProfile } = useQuery({
+    queryKey: ["community-profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, full_name_ar, display_name, display_name_ar, avatar_url, username")
+        .eq("user_id", user.id)
+        .single();
+      return data;
+    },
+    enabled: !!user,
+    staleTime: 60000,
+  });
+
   useEffect(() => {
-    if (!user) return;
-    supabase.from("profiles").select("avatar_url").eq("user_id", user.id).single().then(({ data }) => {
-      if (data) setProfile(data);
-    });
-  }, [user?.id]);
+    if (cachedProfile?.avatar_url) setProfile({ avatar_url: cachedProfile.avatar_url });
+  }, [cachedProfile?.avatar_url]);
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);

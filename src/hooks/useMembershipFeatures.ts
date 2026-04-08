@@ -70,6 +70,25 @@ export function useAllMembershipFeatures() {
   });
 }
 
+/** Shared hook for user's membership tier — single query cached across all consumers */
+export function useUserMembershipTier(userId?: string) {
+  return useQuery({
+    queryKey: ["userMembershipTier", userId],
+    queryFn: async () => {
+      if (!userId) return "basic";
+      const { data } = await supabase
+        .from("profiles")
+        .select("membership_tier")
+        .eq("user_id", userId)
+        .single();
+      return data?.membership_tier || "basic";
+    },
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 15,
+  });
+}
+
 /**
  * Check if current user has access to a specific feature based on their membership tier.
  * Returns { hasFeature, isLoading }
@@ -81,22 +100,15 @@ export function useHasFeature(featureCode: string) {
 
 /**
  * Check if a specific user has access to a feature based on their membership tier.
- * Useful for public profiles where you need to check the profile owner's features.
+ * Uses shared tier cache to avoid duplicate DB queries.
  */
 export function useHasFeatureForUser(featureCode: string, userId?: string) {
-  const { data: hasFeature = true, isLoading } = useQuery({
-    queryKey: ["userFeatureAccess", userId, featureCode],
+  const { data: tier, isLoading: tierLoading } = useUserMembershipTier(userId);
+
+  const { data: hasFeature = true, isLoading: featureLoading } = useQuery({
+    queryKey: ["userFeatureAccess", userId, featureCode, tier],
     queryFn: async () => {
-      if (!userId) return false;
-
-      // Get user's membership tier
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("membership_tier")
-        .eq("user_id", userId)
-        .single();
-
-      const tier = profile?.membership_tier || "basic";
+      if (!userId || !tier) return false;
 
       // Check for user-specific override first
       const { data: override } = await supabase
@@ -118,11 +130,11 @@ export function useHasFeatureForUser(featureCode: string, userId?: string) {
 
       return mapping?.is_enabled ?? false;
     },
-    enabled: !!userId,
+    enabled: !!userId && !!tier,
     staleTime: 1000 * 60 * 5,
   });
 
-  return { hasFeature, isLoading };
+  return { hasFeature, isLoading: tierLoading || featureLoading };
 }
 
 /**
@@ -131,20 +143,12 @@ export function useHasFeatureForUser(featureCode: string, userId?: string) {
  */
 export function useUserFeatures() {
   const { user } = useAuth();
+  const { data: tier } = useUserMembershipTier(user?.id);
 
   return useQuery({
-    queryKey: ["userAllFeatures", user?.id],
+    queryKey: ["userAllFeatures", user?.id, tier],
     queryFn: async () => {
-      if (!user?.id) return new Set<string>();
-
-      // Get user's membership tier
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("membership_tier")
-        .eq("user_id", user.id)
-        .single();
-
-      const tier = profile?.membership_tier || "basic";
+      if (!user?.id || !tier) return new Set<string>();
 
       // Get all active features
       const { data: features } = await supabase
@@ -154,17 +158,11 @@ export function useUserFeatures() {
 
       if (!features) return new Set<string>();
 
-      // Get tier mappings
-      const { data: tierMappings } = await supabase
-        .from("membership_feature_tiers")
-        .select("feature_id, is_enabled")
-        .eq("tier", tier);
-
-      // Get user overrides
-      const { data: overrides } = await supabase
-        .from("membership_feature_overrides")
-        .select("feature_id, granted")
-        .eq("user_id", user.id);
+      // Get tier mappings & overrides in parallel
+      const [{ data: tierMappings }, { data: overrides }] = await Promise.all([
+        supabase.from("membership_feature_tiers").select("feature_id, is_enabled").eq("tier", tier),
+        supabase.from("membership_feature_overrides").select("feature_id, granted").eq("user_id", user.id),
+      ]);
 
       const enabledSet = new Set<string>();
       const tierMap = new Map(tierMappings?.map(m => [m.feature_id, m.is_enabled]) || []);
@@ -183,7 +181,7 @@ export function useUserFeatures() {
 
       return enabledSet;
     },
-    enabled: !!user?.id,
+    enabled: !!user?.id && !!tier,
     staleTime: 1000 * 60 * 5,
   });
 }
