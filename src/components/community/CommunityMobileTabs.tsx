@@ -42,9 +42,9 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
   }, [isAr, enabledFeatures]);
 
   return (
-    <div className="sticky top-12 z-40 border-b border-border/15 bg-background/95 backdrop-blur-xl lg:hidden safe-area-x">
+    <div className="sticky top-12 z-40 border-b border-border/10 bg-background/95 backdrop-blur-xl lg:hidden safe-area-x">
       <div
-        className="flex overflow-x-auto scrollbar-none touch-pan-x gap-0 px-1.5"
+        className="flex overflow-x-auto scrollbar-none touch-pan-x"
         role="tablist"
       >
         {tabs.filter(t => !t.requiresAuth || user).map((tab) => {
@@ -57,19 +57,19 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex-shrink-0 flex flex-col items-center gap-0.5 px-3.5 pt-2.5 pb-2 min-w-[58px] text-[11px] font-semibold transition-all duration-200 relative touch-manipulation active:scale-[0.96]",
+                "flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2.5 text-[12px] font-medium transition-all duration-150 relative touch-manipulation active:scale-[0.96] whitespace-nowrap",
                 isActive
                   ? "text-primary"
-                  : "text-muted-foreground/60 active:text-foreground"
+                  : "text-muted-foreground/50 active:text-foreground"
               )}
             >
               <Icon className={cn(
-                "h-5 w-5 transition-all duration-200",
-                isActive ? "text-primary scale-110" : "text-muted-foreground/40"
+                "h-4 w-4 transition-colors",
+                isActive ? "text-primary" : "text-muted-foreground/40"
               )} />
-              <span className="whitespace-nowrap leading-tight">{tab.label}</span>
+              <span>{tab.label}</span>
               {isActive && (
-                <span className="absolute bottom-0 inset-x-3 h-[2.5px] rounded-full bg-primary" />
+                <span className="absolute bottom-0 inset-x-2 h-[2px] rounded-full bg-primary" />
               )}
             </button>
           );

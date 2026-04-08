@@ -235,55 +235,54 @@ export const RecipesTab = memo(function RecipesTab() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {recipes.map((recipe) => (
-          <Card key={recipe.id} className="group overflow-hidden border-border/50 transition-all hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
+          <div key={recipe.id} className="group overflow-hidden rounded-xl border border-border/15 bg-card transition-all hover:shadow-md hover:border-primary/15">
             {recipe.image_url && (
-              <div className="aspect-video overflow-hidden bg-muted">
-                <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform group-hover:scale-105" loading="lazy" />
+              <div className="aspect-[16/10] overflow-hidden bg-muted">
+                <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
               </div>
             )}
-            <CardContent className="p-4">
-              <div className="mb-2 flex items-start justify-between gap-2">
-                <h3 className="line-clamp-1 text-sm font-semibold">{recipe.title}</h3>
-                <Badge variant="outline" className={`shrink-0 text-[12px] ${difficultyColor(recipe.difficulty)}`}>
+            <div className="p-3.5">
+              <div className="mb-1.5 flex items-start justify-between gap-2">
+                <h3 className="line-clamp-1 text-[13px] font-semibold">{recipe.title}</h3>
+                <Badge variant="outline" className={`shrink-0 text-[10px] px-1.5 py-0 ${difficultyColor(recipe.difficulty)}`}>
                   {recipe.difficulty}
                 </Badge>
               </div>
               {recipe.description && (
-                <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{recipe.description}</p>
+                <p className="mb-2 line-clamp-2 text-[11px] text-muted-foreground/70 leading-relaxed">{recipe.description}</p>
               )}
-              <div className="mb-3 flex flex-wrap items-center gap-2.5 text-[12px] text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground/60 mb-2">
                 {recipe.cuisine && (
-                  <span className="flex items-center gap-1"><ChefHat className="h-3 w-3" />{recipe.cuisine}</span>
+                  <span className="flex items-center gap-0.5"><ChefHat className="h-3 w-3" />{recipe.cuisine}</span>
                 )}
                 {(recipe.prep_time_minutes || recipe.cook_time_minutes) && (
-                  <span className="flex items-center gap-1">
+                  <span className="flex items-center gap-0.5">
                     <Clock className="h-3 w-3" />
                     {(recipe.prep_time_minutes || 0) + (recipe.cook_time_minutes || 0)}min
                   </span>
                 )}
                 {recipe.servings && (
-                  <span className="flex items-center gap-1"><UsersIcon className="h-3 w-3" />{recipe.servings}</span>
+                  <span className="flex items-center gap-0.5"><UsersIcon className="h-3 w-3" />{recipe.servings}</span>
                 )}
               </div>
-              <Separator className="mb-3" />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center justify-between pt-2 border-t border-border/10">
+                <div className="flex items-center gap-1.5">
                   <Avatar className="h-5 w-5">
-                    <AvatarFallback className="bg-primary/10 text-primary text-[12px]">
+                    <AvatarFallback className="bg-primary/8 text-primary text-[9px] font-semibold">
                       {(recipe.author_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-[12px] text-muted-foreground">{recipe.author_name || "Chef"}</span>
+                  <span className="text-[11px] text-muted-foreground/60">{recipe.author_name || "Chef"}</span>
                 </div>
                 {recipe.ratings_count > 0 && (
-                  <span className="flex items-center gap-1 text-[12px]">
+                  <span className="flex items-center gap-0.5 text-[11px]">
                     <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
-                    {recipe.avg_rating} ({recipe.ratings_count})
+                    {recipe.avg_rating}
                   </span>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 

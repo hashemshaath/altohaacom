@@ -221,43 +221,35 @@ export const GroupsTab = memo(function GroupsTab() {
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {groups.map((group) => (
-          <Card key={group.id} className="group/card relative overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
-            {/* Decorative accent */}
-            <div className={`absolute inset-x-0 top-0 h-1 transition-opacity ${group.is_private ? "bg-chart-5" : "bg-primary"} opacity-0 group-hover/card:opacity-100`} />
-            <CardContent className="p-4">
-              <div className="mb-2 flex items-start justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${group.is_private ? "bg-chart-5/10" : "bg-primary/10"}`}>
-                    {group.is_private ? <Lock className="h-3.5 w-3.5 text-chart-5" /> : <Globe className="h-3.5 w-3.5 text-primary" />}
-                  </div>
-                  <h3 className="font-semibold leading-tight">{getDisplayName(group)}</h3>
+          <div key={group.id} className="group/card rounded-xl border border-border/15 bg-card p-3.5 transition-all duration-200 hover:shadow-md hover:border-primary/15">
+            <div className="mb-2 flex items-start justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${group.is_private ? "bg-chart-5/8" : "bg-primary/8"}`}>
+                  {group.is_private ? <Lock className="h-3.5 w-3.5 text-chart-5" /> : <Globe className="h-3.5 w-3.5 text-primary" />}
                 </div>
-                <Badge variant="outline" className="shrink-0 text-[12px]">
-                  {group.is_private ? t("privateGroup") : t("publicGroup")}
-                </Badge>
+                <h3 className="font-semibold text-[13px] leading-tight truncate">{getDisplayName(group)}</h3>
               </div>
-              {getDisplayDesc(group) && (
-                <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">{getDisplayDesc(group)}</p>
+            </div>
+            {getDisplayDesc(group) && (
+              <p className="mb-2.5 line-clamp-2 text-[11px] text-muted-foreground/60 leading-relaxed">{getDisplayDesc(group)}</p>
+            )}
+            <div className="flex items-center justify-between pt-2 border-t border-border/10">
+              <span className="flex items-center gap-1 text-[11px] text-muted-foreground/50">
+                <Users className="h-3 w-3" />
+                {group.members_count} {isAr ? "عضو" : "members"}
+              </span>
+              {user && group.created_by !== user.id && (
+                <Button
+                  variant={group.is_member ? "ghost" : "default"}
+                  size="sm"
+                  className="h-7 text-[11px] rounded-lg px-3 active:scale-[0.96]"
+                  onClick={() => handleJoinLeave(group.id, group.is_member)}
+                >
+                  {group.is_member ? (isAr ? "مغادرة" : "Leave") : (isAr ? "انضمام" : "Join")}
+                </Button>
               )}
-              <Separator className="my-3" />
-              <div className="flex items-center justify-between">
-                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                  <Users className="h-3.5 w-3.5" />
-                  {group.members_count} {isAr ? "عضو" : t("members")}
-                </span>
-                {user && group.created_by !== user.id && (
-                  <Button
-                    variant={group.is_member ? "outline" : "default"}
-                    size="sm"
-                    className="text-xs transition-all active:scale-95"
-                    onClick={() => handleJoinLeave(group.id, group.is_member)}
-                  >
-                    {group.is_member ? t("leaveGroup") : t("joinGroup")}
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 

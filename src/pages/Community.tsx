@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { CommunityFeed } from "@/components/community/CommunityFeed";
+import { CommunityStories } from "@/components/community/CommunityStories";
 import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/CommunityLeftSidebar";
 import { CommunityRightSidebar } from "@/components/community/CommunityRightSidebar";
 import { CommunityMobileTabs } from "@/components/community/CommunityMobileTabs";
@@ -58,7 +59,12 @@ export default function Community() {
     switch (activeTab) {
       case "feed":
       case "bookmarks":
-        return <CommunityFeed />;
+        return (
+          <>
+            <CommunityStories />
+            <CommunityFeed />
+          </>
+        );
       case "chefs":
         return <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><ChefsTab /></div></Suspense>;
       case "recipes":
