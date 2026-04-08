@@ -24,9 +24,12 @@ import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons
 import { SupplierReviews } from "@/components/supplier/SupplierReviews";
 import { SupplierWishlistButton } from "@/components/supplier/SupplierWishlistButton";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
-import { ProductQuickView } from "@/components/supplier/ProductQuickView";
+import { SupplierProductCard } from "@/components/supplier/SupplierProductCard";
+import { SupplierProductDetail } from "@/components/supplier/SupplierProductDetail";
 import { useSupplierViewTracker } from "@/hooks/useSupplierViewTracker";
+import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 /* ─── Tab type ─── */
 type DetailTab = "overview" | "products" | "sponsorships" | "contact" | "reviews";
@@ -71,8 +74,9 @@ export default function ProSupplierDetail() {
   const isAr = language === "ar";
   const { data: countries = [] } = useAllCountries();
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
-  const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [descExpanded, setDescExpanded] = useState(false);
+  const { addItem } = useCart();
   useSupplierViewTracker(id);
 
   const { data: company, isLoading } = useQuery({
@@ -167,6 +171,21 @@ export default function ProSupplierDetail() {
     acc[cat].push(p);
     return acc;
   }, {});
+
+  const handleAddToCart = useCallback((product: any, qty = 1) => {
+    addItem({
+      product_id: product.id,
+      title: product.name,
+      title_ar: product.name_ar,
+      image_url: product.image_url,
+      price: product.unit_price || 0,
+      currency: product.currency || "SAR",
+      stock_quantity: product.quantity_available || 999,
+      tax_rate: 0.15,
+      tax_inclusive: false,
+    }, qty);
+    toast.success(isAr ? "تمت الإضافة إلى السلة" : "Added to cart");
+  }, [addItem, isAr]);
 
   const socialLinks = (company as any)?.social_links as Record<string, string> | null;
   const companyName = company ? (isAr && company.name_ar ? company.name_ar : company.name) : "";
@@ -574,19 +593,13 @@ export default function ProSupplierDetail() {
                     </div>
                     <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
                       {products.slice(0, 4).map((p: any) => (
-                        <Card key={p.id} interactive className="rounded-2xl overflow-hidden cursor-pointer" onClick={() => setQuickViewProduct(p)}>
-                          <div className="aspect-[4/3] bg-muted/30 overflow-hidden">
-                            {p.image_url ? (
-                              <img loading="lazy" src={p.image_url} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" alt={p.name} />
-                            ) : (
-                              <div className="h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/20" /></div>
-                            )}
-                          </div>
-                          <CardContent className="p-3">
-                            <p className="font-medium text-sm truncate">{isAr && p.name_ar ? p.name_ar : p.name}</p>
-                            {p.category && <Badge variant="outline" className="text-[11px] mt-1.5 rounded-lg">{p.category}</Badge>}
-                          </CardContent>
-                        </Card>
+                        <SupplierProductCard
+                          key={p.id}
+                          product={p}
+                          compact
+                          onViewDetails={(prod) => { setSelectedProduct(prod); setActiveTab("products"); }}
+                          onAddToCart={handleAddToCart}
+                        />
                       ))}
                     </div>
                   </div>
@@ -617,7 +630,16 @@ export default function ProSupplierDetail() {
             {/* PRODUCTS */}
             {activeTab === "products" && (
               <>
-                {Object.keys(productsByCategory).length === 0 ? (
+                {selectedProduct ? (
+                  <SupplierProductDetail
+                    product={selectedProduct}
+                    relatedProducts={products.filter((p: any) => p.id !== selectedProduct.id && p.category === selectedProduct.category)}
+                    onBack={() => setSelectedProduct(null)}
+                    onAddToCart={handleAddToCart}
+                    onViewProduct={(p) => setSelectedProduct(p)}
+                    companyName={companyName}
+                  />
+                ) : Object.keys(productsByCategory).length === 0 ? (
                   <div className="py-16 text-center">
                     <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/30 mb-4">
                       <Package className="h-10 w-10 text-muted-foreground/20" />
@@ -635,24 +657,12 @@ export default function ProSupplierDetail() {
                         </div>
                         <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                           {items.map((p) => (
-                            <Card key={p.id} interactive className="rounded-2xl overflow-hidden cursor-pointer group" onClick={() => setQuickViewProduct(p)}>
-                              <div className="aspect-[4/3] bg-muted/30 overflow-hidden">
-                                {p.image_url ? (
-                                  <img loading="lazy" src={p.image_url} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt={p.name} />
-                                ) : (
-                                  <div className="h-full flex items-center justify-center"><Package className="h-10 w-10 text-muted-foreground/20" /></div>
-                                )}
-                              </div>
-                              <CardContent className="p-3 space-y-2">
-                                <h4 className="font-medium text-sm truncate">{isAr && p.name_ar ? p.name_ar : p.name}</h4>
-                                {p.description && (
-                                  <p className="text-xs text-muted-foreground line-clamp-2">{isAr && p.description_ar ? p.description_ar : p.description}</p>
-                                )}
-                                <div className="flex items-center gap-1.5 flex-wrap">
-                                  {p.sku && <Badge variant="outline" className="text-[11px] font-mono rounded-lg">{p.sku}</Badge>}
-                                </div>
-                              </CardContent>
-                            </Card>
+                            <SupplierProductCard
+                              key={p.id}
+                              product={p}
+                              onViewDetails={(prod) => setSelectedProduct(prod)}
+                              onAddToCart={handleAddToCart}
+                            />
                           ))}
                         </div>
                       </div>
@@ -829,7 +839,7 @@ export default function ProSupplierDetail() {
         </div>
       </main>
       <Footer />
-      <ProductQuickView product={quickViewProduct} open={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      
     </div>
   );
 }
