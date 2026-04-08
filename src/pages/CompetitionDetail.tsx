@@ -317,16 +317,6 @@ export default function CompetitionDetail() {
     enabled: !!competitionId,
   });
 
-  const { data: scoresData } = useQuery({
-    queryKey: ["competition-scores-summary", competitionId],
-    queryFn: async () => {
-      const { data } = await supabase.from("scores").select("id, total_score").eq("competition_id", competitionId!);
-      return data || [];
-    },
-    enabled: !!competitionId,
-    staleTime: 1000 * 60 * 2,
-  });
-
   const { data: userRoles } = useQuery({
     queryKey: ["user-roles", user?.id],
     queryFn: async () => {
@@ -335,20 +325,6 @@ export default function CompetitionDetail() {
     },
     enabled: !!user,
   });
-
-  const supervisors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole === "supervisor") || [], [supervisingBodies]);
-  const accreditors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole !== "supervisor") || [], [supervisingBodies]);
-
-  const isOrganizer = user && competition?.organizer_id === user.id;
-  const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
-
-  // Derived data
-  const totalScore = useMemo(() => criteria?.reduce((sum, c) => sum + (c.max_score || 0), 0) || 0, [criteria]);
-  const avgScore = useMemo(() => {
-    if (!scoresData?.length) return 0;
-    const sum = scoresData.reduce((acc, s) => acc + (s.total_score || 0), 0);
-    return Math.round(sum / scoresData.length);
-  }, [scoresData]);
   const completionPercent = useMemo(() => {
     if (!competition) return 0;
     const start = new Date(competition.competition_start).getTime();
