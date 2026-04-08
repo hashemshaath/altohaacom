@@ -23,6 +23,7 @@ import { TrendingCarousel } from "./TrendingCarousel";
 import { FeedScrollProgress } from "./FeedScrollProgress";
 import { FeedKeyboardShortcuts } from "./FeedKeyboardShortcuts";
 import { FeedStatsBar } from "./FeedStatsBar";
+import { CommunityInsights } from "./CommunityInsights";
 
 export interface CommunityPost {
   id: string;
@@ -476,6 +477,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
       {/* Stats Bar */}
       {!tagFilter && feedFilter === "for_you" && <FeedStatsBar />}
+      {!tagFilter && feedFilter === "for_you" && <CommunityInsights />}
 
       {/* Trending Carousel */}
       {!tagFilter && feedFilter === "for_you" && <TrendingCarousel />}
