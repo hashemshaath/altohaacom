@@ -659,6 +659,39 @@ export default function AdminDashboard() {
             <MetricCard title={isAr ? "الرسائل" : "Messages"} value={stats?.totalMessages || 0} icon={MessageSquare} link="/admin/notifications" loading={isLoading} />
           </div>
 
+          {/* Report Charts */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sparkData && sparkData.length > 0 && (
+              <GrowthAreaChart
+                title={isAr ? "نشاط المحتوى — آخر 7 أيام" : "Content Activity — Last 7 Days"}
+                data={sparkData}
+                lines={[
+                  { key: "articles", name: isAr ? "المقالات" : "Articles", color: "hsl(var(--chart-1))" },
+                  { key: "users", name: isAr ? "المستخدمين" : "Users", color: "hsl(var(--primary))" },
+                ]}
+              />
+            )}
+            <ComparisonBarChart
+              title={isAr ? "مقارنة المحتوى" : "Content Comparison"}
+              data={[
+                { label: isAr ? "مقالات" : "Articles", [isAr ? "العدد" : "Count"]: stats?.totalArticles || 0 },
+                { label: isAr ? "طلبات" : "Orders", [isAr ? "العدد" : "Count"]: stats?.totalOrders || 0 },
+                { label: isAr ? "بلاغات" : "Reports", [isAr ? "العدد" : "Count"]: stats?.pendingReports || 0 },
+                { label: isAr ? "رسائل" : "Messages", [isAr ? "العدد" : "Count"]: stats?.totalMessages || 0 },
+              ]}
+              bars={[
+                { key: isAr ? "العدد" : "Count", name: isAr ? "العدد" : "Count", color: "hsl(var(--primary))" },
+              ]}
+            />
+          </div>
+
+          {heatmapData && heatmapData.length > 0 && (
+            <ActivityHeatmap
+              title={isAr ? "خريطة النشاط — آخر 4 أسابيع" : "Platform Activity Heatmap — Last 4 Weeks"}
+              data={heatmapData}
+            />
+          )}
+
           {/* Recent Actions */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
