@@ -151,7 +151,7 @@ export default function Organizers() {
               </div>
 
               <div className="space-y-2">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight" dir="rtl" style={{ letterSpacing: 'normal', fontFamily: '"Noto Sans Arabic", "Segoe UI", Tahoma, Arial, sans-serif', wordSpacing: 'normal' }}>
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight" dir="rtl" style={{ fontFamily: '"IBM Plex Arabic", "Segoe UI", Tahoma, sans-serif' }}>
                   منظمو الفعاليات والمعارض
                 </h1>
                 {!isAr && (
