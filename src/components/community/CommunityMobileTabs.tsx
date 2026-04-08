@@ -57,14 +57,14 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2.5 text-[12px] font-medium transition-all duration-150 relative touch-manipulation active:scale-[0.96] whitespace-nowrap",
+                "flex-shrink-0 flex items-center gap-1.5 px-4 py-3 text-xs font-semibold transition-all duration-150 relative touch-manipulation active:scale-[0.96] whitespace-nowrap",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground/50 active:text-foreground"
               )}
             >
               <Icon className={cn(
-                "h-4 w-4 transition-colors",
+                "h-4.5 w-4.5 transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground/40"
               )} />
               <span>{tab.label}</span>
