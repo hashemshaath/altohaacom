@@ -338,9 +338,19 @@ export const PostCard = memo(function PostCard({
                   variant="ghost"
                   size="sm"
                   className="h-8 rounded-xl px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10 transition-transform active:scale-90"
-                  onClick={() => {
-                    navigator.clipboard.writeText(window.location.origin + `/community/post/${post.id}`);
-                    toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
+                  onClick={async () => {
+                    const url = window.location.origin + `/community/post/${post.id}`;
+                    try {
+                      if (navigator.share) {
+                        await navigator.share({ title: post.content?.slice(0, 60), url });
+                      } else {
+                        await navigator.clipboard.writeText(url);
+                      }
+                      toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
+                    } catch {
+                      await navigator.clipboard.writeText(url);
+                      toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
+                    }
                   }}
                 >
                   <Share2 className="h-4 w-4" />
