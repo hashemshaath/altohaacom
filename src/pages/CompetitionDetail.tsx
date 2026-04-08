@@ -604,7 +604,7 @@ export default function CompetitionDetail() {
                 </h1>
 
                 {/* Meta info */}
-                <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-3 sm:gap-6 text-sm sm:text-base text-muted-foreground flex-wrap">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-primary" />
                     <span className="font-medium">{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
@@ -635,7 +635,7 @@ export default function CompetitionDetail() {
         {/* ─── KPI Stats Strip ─── */}
         <div className="border-y border-border/20 bg-gradient-to-r from-card/80 via-card to-card/80 backdrop-blur-md">
           <div className="container py-4 sm:py-5">
-            <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5">
+            <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-6">
               <div className="flex items-center gap-5 sm:gap-8">
                 {kpiStats.map((stat, i) => (
                   <button
@@ -643,13 +643,13 @@ export default function CompetitionDetail() {
                     onClick={stat.onClick}
                     className="text-center group cursor-pointer hover:scale-110 transition-all duration-300 active:scale-95 touch-manipulation relative"
                   >
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                      <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${stat.color.replace('text-', 'bg-')}/10`}>
-                        <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
+                    <div className="flex items-center justify-center gap-2 mb-1.5">
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${stat.color.replace('text-', 'bg-')}/10`}>
+                        <stat.icon className={`h-4 w-4 ${stat.color}`} />
                       </div>
-                      <p className="text-xl sm:text-2xl font-extrabold text-foreground tabular-nums"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
+                      <p className="text-2xl sm:text-3xl font-extrabold text-foreground tabular-nums"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
                     </div>
-                    <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</p>
+                    <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</p>
                   </button>
                 ))}
               </div>
