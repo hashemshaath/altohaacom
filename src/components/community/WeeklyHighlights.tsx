@@ -129,8 +129,8 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
                       {post.profile?.display_name || post.profile?.full_name || "Chef"}
                     </span>
                     <div className="flex items-center gap-1.5 ms-auto text-[10px] text-muted-foreground">
-                      <span>❤️ {post.likes_count}</span>
-                      <span>💬 {post.comments_count}</span>
+                      <span>💬 {post.replies_count}</span>
+                      <span>🔄 {post.reposts_count}</span>
                     </div>
                   </div>
                 </div>
