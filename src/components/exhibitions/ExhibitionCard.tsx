@@ -154,6 +154,11 @@ export const ExhibitionCard = memo(
                     ⭐ {isAr ? "مميز" : "Featured"}
                   </Badge>
                 )}
+                {exhibition.edition_year && (
+                  <Badge className="bg-background/80 text-foreground backdrop-blur-md shadow-lg border-0 text-[12px] font-black py-1 px-2.5">
+                    🏷️ {isAr ? `النسخة ${exhibition.edition_year}` : `Edition ${exhibition.edition_year}`}
+                  </Badge>
+                )}
               </div>
 
               {/* Top-right: Type + countdown */}
@@ -171,6 +176,12 @@ export const ExhibitionCard = memo(
                   <Badge className="gap-1 text-[12px] font-black uppercase tracking-wider bg-destructive/90 text-destructive-foreground shadow-lg border-0 py-1 px-2.5 animate-pulse">
                     <AlertTriangle className="h-2.5 w-2.5" />
                     {isAr ? "التسجيل يغلق قريباً" : "Reg. closing soon"}
+                  </Badge>
+                )}
+                {/* Past event indicator */}
+                {isPast(new Date(exhibition.end_date)) && (
+                  <Badge className="bg-muted/80 text-muted-foreground backdrop-blur-md border-0 text-[12px] font-bold py-1 px-2.5">
+                    {isAr ? "منتهي" : "Ended"}
                   </Badge>
                 )}
               </div>
