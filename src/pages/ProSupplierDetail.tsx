@@ -169,6 +169,28 @@ export default function ProSupplierDetail() {
     return c ? (isAr ? c.name_ar || c.name : c.name) : code;
   }, [countries, isAr]);
 
+  const categories = useMemo(() => {
+    const cats = new Set(products.map((p: any) => p.category || "other"));
+    return Array.from(cats);
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    let filtered = [...products];
+    if (selectedCategory !== "all") filtered = filtered.filter((p: any) => (p.category || "other") === selectedCategory);
+    if (productSearch.trim()) {
+      const q = productSearch.toLowerCase();
+      filtered = filtered.filter((p: any) =>
+        (p.name || "").toLowerCase().includes(q) ||
+        (p.name_ar || "").toLowerCase().includes(q) ||
+        (p.sku || "").toLowerCase().includes(q)
+      );
+    }
+    if (productSort === "price_asc") filtered.sort((a: any, b: any) => (a.unit_price || 0) - (b.unit_price || 0));
+    else if (productSort === "price_desc") filtered.sort((a: any, b: any) => (b.unit_price || 0) - (a.unit_price || 0));
+    else filtered.sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
+    return filtered;
+  }, [products, selectedCategory, productSearch, productSort]);
+
   const productsByCategory = products.reduce<Record<string, any[]>>((acc, p: any) => {
     const cat = p.category || "other";
     if (!acc[cat]) acc[cat] = [];
