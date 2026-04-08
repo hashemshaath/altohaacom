@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -455,7 +455,7 @@ export default function ProSuppliers() {
                         <AdBanner placementSlug="suppliers-inline" className="rounded-2xl overflow-hidden" />
                       </div>
                     )}
-                  </>
+                  </React.Fragment>
                 );
               })}
             </div>
