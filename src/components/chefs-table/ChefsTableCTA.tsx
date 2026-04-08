@@ -1,4 +1,4 @@
-import { memo } from "react";
+import React, { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Clock, Award } from "lucide-react";
 
@@ -14,9 +14,9 @@ const guarantees = [
   { icon: Award, en: "Professional Reports", ar: "تقارير مهنية" },
 ];
 
-export const ChefsTableCTA = memo(function ChefsTableCTA({ isAr, user, onRequestClick }: Props) {
+export const ChefsTableCTA = memo(React.forwardRef<HTMLElement, Props>(function ChefsTableCTA({ isAr, user, onRequestClick }, ref) {
   return (
-    <section className="bg-background">
+    <section ref={ref} className="bg-background">
       <div className="container py-16 md:py-24">
         <div className="relative mx-auto max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary to-primary/80 p-10 md:p-16 text-center">
           {/* Decorative */}
@@ -67,4 +67,4 @@ export const ChefsTableCTA = memo(function ChefsTableCTA({ isAr, user, onRequest
       </div>
     </section>
   );
-});
+}));
