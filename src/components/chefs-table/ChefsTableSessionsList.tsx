@@ -46,7 +46,7 @@ const categoryLabels: Record<string, { en: string; ar: string }> = {
 
 export const ChefsTableSessionsList = memo(forwardRef<HTMLElement, Props>(function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSearchChange, statusFilter, onStatusFilterChange, onSessionClick }: Props, ref) {
   return (
-    <section className="bg-muted/20">
+    <section ref={ref} className="bg-muted/20">
       <div className="container py-16 md:py-24 pb-20">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center mb-10">
