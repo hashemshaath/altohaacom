@@ -10,6 +10,7 @@ import { ChefsTableCategories } from "@/components/chefs-table/ChefsTableCategor
 import { ChefsTableHowItWorks } from "@/components/chefs-table/ChefsTableHowItWorks";
 import { ChefsTableTestimonials } from "@/components/chefs-table/ChefsTableTestimonials";
 import { ChefsTableCTA } from "@/components/chefs-table/ChefsTableCTA";
+import { ChefsTableClients } from "@/components/chefs-table/ChefsTableClients";
 import { ChefsTableSessionsList } from "@/components/chefs-table/ChefsTableSessionsList";
 
 export default function ChefsTable() {
@@ -44,6 +45,7 @@ export default function ChefsTable() {
       <ChefsTableBenefits isAr={isAr} />
       <ChefsTableCategories isAr={isAr} />
       <ChefsTableHowItWorks isAr={isAr} />
+      <ChefsTableClients isAr={isAr} />
       <ChefsTableTestimonials isAr={isAr} />
       <ChefsTableSessionsList
         isAr={isAr}
