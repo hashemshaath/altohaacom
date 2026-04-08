@@ -100,11 +100,9 @@ export default function Community() {
           />
 
           {/* Main Content */}
-          <div className="flex-1 min-w-0 lg:mx-3 xl:mx-4 min-h-screen">
-            <div className="lg:rounded-2xl lg:border lg:border-border/20 lg:bg-card/50 lg:backdrop-blur-sm overflow-hidden">
-              <CommunityMobileTabs activeTab={activeTab} setActiveTab={handleSetActiveTab} />
-              {renderTabContent()}
-            </div>
+          <div className="flex-1 min-w-0 lg:mx-1 min-h-screen lg:border-x lg:border-border/15">
+            <CommunityMobileTabs activeTab={activeTab} setActiveTab={handleSetActiveTab} />
+            {renderTabContent()}
           </div>
 
           {/* Right Sidebar */}
