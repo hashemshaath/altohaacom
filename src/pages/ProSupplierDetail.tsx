@@ -18,6 +18,7 @@ import {
   Package, Crown, Hash, Earth, Calendar, Sparkles,
   ExternalLink, Star, ChefHat, Shield, Clock, MessageCircle,
   Heart, Share2, TrendingUp, Award, Zap, Eye,
+  Search, SlidersHorizontal, Grid3X3, LayoutList, ArrowUpDown,
 } from "lucide-react";
 import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
 import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
