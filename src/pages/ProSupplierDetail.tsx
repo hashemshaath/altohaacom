@@ -130,7 +130,7 @@ export default function ProSupplierDetail() {
       if (!id) return [];
       const { data } = await supabase
         .from("competition_sponsors")
-        .select("id, tier, competitions:competition_id(id, title, title_ar)")
+        .select("id, tier, competitions:competitions!competition_sponsors_competition_id_fkey(id, title, title_ar)")
         .eq("company_id", id)
         .in("status", ["approved", "active"])
         .limit(10);
