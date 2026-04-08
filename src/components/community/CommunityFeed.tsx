@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, memo } from "react";
+import { useState, useEffect, useCallback, useRef, memo, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,6 +20,7 @@ import { PostCard } from "./PostCard";
 import { FeedTabs, type FeedFilter } from "./FeedTabs";
 import { NewPostsBanner } from "./NewPostsBanner";
 import { TrendingCarousel } from "./TrendingCarousel";
+import { FeedScrollProgress } from "./FeedScrollProgress";
 
 export interface CommunityPost {
   id: string;
