@@ -325,6 +325,15 @@ export default function CompetitionDetail() {
     },
     enabled: !!user,
   });
+
+  const supervisors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole === "supervisor") || [], [supervisingBodies]);
+  const accreditors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole !== "supervisor") || [], [supervisingBodies]);
+
+  const isOrganizer = user && competition?.organizer_id === user.id;
+  const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
+
+  // Derived data
+  const totalScore = useMemo(() => criteria?.reduce((sum, c) => sum + (c.max_score || 0), 0) || 0, [criteria]);
   const completionPercent = useMemo(() => {
     if (!competition) return 0;
     const start = new Date(competition.competition_start).getTime();
