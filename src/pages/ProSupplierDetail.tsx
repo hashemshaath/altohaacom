@@ -625,18 +625,103 @@ export default function ProSupplierDetail() {
                     <p className="text-muted-foreground">{isAr ? "لا توجد رعايات حالياً" : "No active sponsorships"}</p>
                   </div>
                 ) : (
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <div className="grid gap-5 sm:grid-cols-2">
                     {sponsorships.map((s) => {
-                      const title = isAr && s.competitions?.title_ar ? s.competitions.title_ar : s.competitions?.title;
+                      const comp = s.competitions;
+                      const title = isAr && comp?.title_ar ? comp.title_ar : comp?.title;
+                      const venue = isAr && comp?.venue_ar ? comp.venue_ar : comp?.venue;
+                      const coverImg = comp?.cover_image_url;
+                      const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
+                        strategic_partner: { en: "Strategic Partner", ar: "شريك استراتيجي", color: "bg-chart-4/15 text-chart-4 border-chart-4/30" },
+                        platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/15 text-chart-3 border-chart-3/30" },
+                        gold: { en: "Gold Sponsor", ar: "الراعي الذهبي", color: "bg-chart-4/15 text-chart-4 border-chart-4/30" },
+                        silver: { en: "Silver Sponsor", ar: "الراعي الفضي", color: "bg-muted text-muted-foreground border-border" },
+                        participant: { en: "Participant", ar: "مشارك", color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },
+                        supporter: { en: "Supporter", ar: "داعم", color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },
+                      };
+                      const tierInfo = tierLabels[s.tier] || { en: s.tier, ar: s.tier, color: "bg-muted text-muted-foreground border-border" };
+                      const editionLabel = comp?.edition_number
+                        ? (isAr ? `النسخة ${comp.edition_number}` : `Edition ${comp.edition_number}`)
+                        : null;
+                      const startDate = comp?.competition_start ? new Date(comp.competition_start) : null;
+                      const endDate = comp?.competition_end ? new Date(comp.competition_end) : null;
+                      const dateStr = startDate
+                        ? `${startDate.toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" })}${endDate ? ` – ${endDate.toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric", year: "numeric" })}` : ""}`
+                        : null;
+
                       return (
-                        <Card key={s.id} interactive className="cursor-pointer rounded-2xl" onClick={() => navigate(`/competitions/${s.competitions?.id || ""}`)}>
-                          <CardContent className="flex items-center gap-4 p-4">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-chart-4/10">
-                              <Crown className="h-6 w-6 text-chart-4" />
+                        <Card
+                          key={s.id}
+                          className="group cursor-pointer overflow-hidden rounded-2xl border-border/20 hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
+                          onClick={() => navigate(`/competitions/${comp?.id || ""}`)}
+                        >
+                          {/* Cover Image */}
+                          <div className="relative h-40 overflow-hidden bg-gradient-to-br from-primary/10 via-muted to-accent/10">
+                            {coverImg ? (
+                              <img src={coverImg} alt={title || ""} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center">
+                                <Crown className="h-12 w-12 text-muted-foreground/15" />
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+
+                            {/* Tier Badge */}
+                            <div className="absolute top-3 start-3">
+                              <Badge className={cn("backdrop-blur-md border text-[11px] font-bold uppercase tracking-wider gap-1", tierInfo.color)}>
+                                <Crown className="h-3 w-3" />
+                                {isAr ? tierInfo.ar : tierInfo.en}
+                              </Badge>
                             </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="truncate text-sm font-semibold">{title}</p>
-                              <Badge variant="outline" className="mt-1.5 text-[11px] uppercase tracking-wider rounded-lg">{s.tier}</Badge>
+
+                            {/* Edition & Year */}
+                            <div className="absolute top-3 end-3 flex items-center gap-1.5">
+                              {comp?.edition_year && (
+                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-white text-[11px]">
+                                  {comp.edition_year}
+                                </Badge>
+                              )}
+                              {editionLabel && (
+                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-white text-[11px]">
+                                  {editionLabel}
+                                </Badge>
+                              )}
+                            </div>
+
+                            {/* Title overlay */}
+                            <div className="absolute bottom-3 start-3 end-3">
+                              <h4 className="text-sm font-bold text-white line-clamp-2 drop-shadow-md">{title}</h4>
+                            </div>
+                          </div>
+
+                          {/* Details */}
+                          <CardContent className="p-4 space-y-2.5">
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+                              {comp?.city && (
+                                <span className="flex items-center gap-1.5">
+                                  <MapPin className="h-3.5 w-3.5 text-primary/60" />
+                                  {comp.country_code && <span>{countryFlag(comp.country_code)}</span>}
+                                  {comp.city}
+                                </span>
+                              )}
+                              {dateStr && (
+                                <span className="flex items-center gap-1.5">
+                                  <Calendar className="h-3.5 w-3.5 text-primary/60" />
+                                  {dateStr}
+                                </span>
+                              )}
+                            </div>
+                            {venue && (
+                              <p className="text-xs text-muted-foreground/70 truncate flex items-center gap-1.5">
+                                <Building2 className="h-3 w-3 shrink-0" />
+                                {venue}
+                              </p>
+                            )}
+                            <div className="flex items-center justify-between pt-1">
+                              <Button variant="ghost" size="sm" className="h-7 text-xs text-primary gap-1 px-2 rounded-lg hover:bg-primary/5">
+                                {isAr ? "عرض المسابقة" : "View Competition"}
+                                <ExternalLink className="h-3 w-3" />
+                              </Button>
                             </div>
                           </CardContent>
                         </Card>
