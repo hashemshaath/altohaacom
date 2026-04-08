@@ -1,10 +1,11 @@
-import { memo, forwardRef } from "react";
+import { memo, forwardRef, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { ShoppingCart, Package, Eye, CheckCircle, XCircle, Star, Flame } from "lucide-react";
+import { ShoppingCart, Package, Eye, CheckCircle, XCircle, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { categories as catalogCategories } from "@/components/company/catalog/catalogTypes";
 
 interface SupplierProductCardProps {
   product: any;
@@ -14,6 +15,13 @@ interface SupplierProductCardProps {
 }
 
 const VAT_RATE = 0.15;
+
+/** Map category value to localized label */
+function getCategoryLabel(cat: string | null, isAr: boolean): string {
+  if (!cat) return "";
+  const found = catalogCategories.find(c => c.value === cat);
+  return found ? (isAr ? found.ar : found.en) : cat;
+}
 
 export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProductCardProps>(function SupplierProductCard({
   product,
@@ -25,16 +33,24 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
   const isAr = language === "ar";
 
   const title = isAr && product.name_ar ? product.name_ar : product.name;
-  const desc = isAr && product.description_ar ? product.description_ar : product.description;
   const price = product.unit_price || 0;
   const priceWithVat = Math.round(price * (1 + VAT_RATE));
   const isInStock = product.in_stock !== false;
   const qty = product.quantity_available;
   const currencyLabel = isAr ? "ر.س" : "SAR";
 
-  const originalPriceVat = Math.round(price * 1.2 * (1 + VAT_RATE));
+  const origPrice = product.original_price || Math.round(price * 1.2);
+  const originalPriceVat = Math.round(origPrice * (1 + VAT_RATE));
   const hasDiscount = originalPriceVat > priceWithVat && price > 0;
   const discountPercent = hasDiscount ? Math.round(((originalPriceVat - priceWithVat) / originalPriceVat) * 100) : 0;
+
+  const categoryLabel = getCategoryLabel(product.category, isAr);
+
+  const handleView = useCallback(() => onViewDetails(product), [onViewDetails, product]);
+  const handleCart = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onAddToCart?.(product);
+  }, [onAddToCart, product]);
 
   return (
     <Card
@@ -47,37 +63,38 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
     >
       {/* Image */}
       <div
-        className="relative aspect-[4/3] overflow-hidden bg-muted/10 cursor-pointer"
-        onClick={() => onViewDetails(product)}
+        className="relative aspect-square overflow-hidden cursor-pointer bg-gradient-to-b from-muted/5 to-muted/15"
+        onClick={handleView}
       >
         {product.image_url ? (
           <img
             loading="lazy"
+            decoding="async"
             src={product.image_url}
-            alt={title}
-            className="h-full w-full object-contain p-3 transition-transform duration-500 group-hover:scale-105"
+            alt={`${title} - ${categoryLabel}`}
+            className="h-full w-full object-contain p-6 transition-transform duration-500 will-change-transform group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/5 to-muted/20">
-            <Package className="h-10 w-10 text-muted-foreground/15" />
+          <div className="flex h-full items-center justify-center">
+            <Package className="h-12 w-12 text-muted-foreground/10" />
           </div>
         )}
 
         {/* Discount badge */}
         {hasDiscount && (
-          <div className="absolute top-2 start-2 z-[5]">
-            <Badge className="bg-destructive text-white text-[11px] font-bold px-2 py-0.5 rounded-lg shadow-sm gap-0.5">
+          <div className="absolute top-2.5 start-2.5 z-[5]">
+            <Badge className="bg-destructive text-destructive-foreground text-[11px] font-bold px-2 py-0.5 rounded-full shadow-md gap-0.5">
               <Flame className="h-3 w-3" />
-              {discountPercent}%−
+              −{discountPercent}%
             </Badge>
           </div>
         )}
 
         {/* Quick view overlay */}
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 bg-background/5 backdrop-blur-[1px]">
-          <Button size="sm" variant="secondary" className="rounded-xl shadow-lg backdrop-blur-md bg-background/80 gap-1.5 active:scale-95 transition-transform">
+          <Button size="sm" variant="secondary" className="rounded-xl shadow-lg backdrop-blur-md bg-background/80 gap-1.5 active:scale-[0.98] transition-transform min-h-[44px]">
             <Eye className="h-3.5 w-3.5" />
-            {isAr ? "التفاصيل" : "Details"}
+            {isAr ? "عرض التفاصيل" : "View Details"}
           </Button>
         </div>
 
@@ -90,49 +107,51 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
           </div>
         )}
 
-        {/* Category pill */}
-        {product.category && !compact && (
-          <div className="absolute bottom-2 start-2 z-[5]">
-            <Badge variant="secondary" className="bg-background/70 backdrop-blur-md text-[10px] font-medium px-2 py-0.5 rounded-lg border border-border/30">
-              {product.category}
+        {/* Category pill - localized */}
+        {categoryLabel && !compact && (
+          <div className="absolute bottom-2.5 end-2.5 z-[5]">
+            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-[10px] font-semibold px-2.5 py-0.5 rounded-lg border border-border/20 shadow-sm">
+              {categoryLabel}
             </Badge>
           </div>
         )}
 
         {/* Low stock warning */}
         {isInStock && qty && qty > 0 && qty <= 5 && (
-          <div className="absolute top-2 end-2 z-[5]">
-            <Badge className="bg-destructive/90 text-white text-[10px] px-1.5 py-0.5 rounded-lg">
-              {isAr ? `باقي ${qty}` : `${qty} left`}
+          <div className="absolute top-2.5 end-2.5 z-[5]">
+            <Badge className="bg-destructive/90 text-destructive-foreground text-[10px] px-1.5 py-0.5 rounded-lg font-bold">
+              {isAr ? `باقي ${qty} فقط` : `Only ${qty} left`}
             </Badge>
           </div>
         )}
       </div>
 
       {/* Content */}
-      <CardContent className="flex flex-1 flex-col p-3 sm:p-3.5">
+      <CardContent className="flex flex-1 flex-col p-3.5 sm:p-4">
         <div className="flex-1 space-y-1.5 min-w-0">
           {/* Title */}
-          <h4
-            className="font-semibold text-[13px] leading-snug line-clamp-2 cursor-pointer hover:text-primary transition-colors"
-            onClick={() => onViewDetails(product)}
+          <h3
+            className="font-bold text-sm leading-snug line-clamp-2 cursor-pointer hover:text-primary transition-colors text-foreground"
+            onClick={handleView}
           >
             {title}
-          </h4>
+          </h3>
 
           {/* SKU + Stock row */}
           <div className="flex items-center gap-1.5 flex-wrap">
             {product.sku && (
-              <span className="text-[10px] font-mono text-muted-foreground/60">{product.sku}</span>
+              <>
+                <span className="text-[10px] font-mono text-muted-foreground/50 tracking-wide">{product.sku}</span>
+                <span className="text-muted-foreground/20">·</span>
+              </>
             )}
-            <span className="text-[10px] text-muted-foreground/30">|</span>
             {isInStock ? (
-              <span className="flex items-center gap-0.5 text-[10px] text-chart-5 font-medium">
+              <span className="flex items-center gap-0.5 text-[10px] text-chart-5 font-semibold">
                 <CheckCircle className="h-2.5 w-2.5" />
                 {isAr ? "متوفر" : "In Stock"}
               </span>
             ) : (
-              <span className="flex items-center gap-0.5 text-[10px] text-destructive">
+              <span className="flex items-center gap-0.5 text-[10px] text-destructive font-semibold">
                 <XCircle className="h-2.5 w-2.5" />
                 {isAr ? "غير متوفر" : "Sold Out"}
               </span>
@@ -140,25 +159,25 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
           </div>
         </div>
 
-        {/* Price + CTA section */}
-        <div className="mt-2.5 pt-2.5 border-t border-border/15">
+        {/* Price + CTA */}
+        <div className="mt-3 pt-3 border-t border-border/10">
           {price > 0 ? (
-            <div className="flex items-end justify-between gap-1.5">
+            <div className="flex items-end justify-between gap-2">
               <div className="min-w-0">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-base font-black tracking-tight text-primary leading-none">
-                    {priceWithVat}
+                <div className="flex items-baseline gap-1.5 flex-wrap">
+                  <span className="text-lg font-black tracking-tight text-primary leading-none tabular-nums">
+                    {priceWithVat.toLocaleString()}
                   </span>
-                  <span className="text-[10px] text-muted-foreground font-medium">
+                  <span className="text-[11px] text-muted-foreground font-medium">
                     {currencyLabel}
                   </span>
                   {hasDiscount && (
-                    <span className="text-[10px] text-muted-foreground/50 line-through ms-0.5">
-                      {originalPriceVat}
+                    <span className="text-[11px] text-muted-foreground/40 line-through tabular-nums">
+                      {originalPriceVat.toLocaleString()}
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                <p className="text-[10px] text-muted-foreground/50 mt-0.5 font-medium">
                   {isAr ? "شامل الضريبة" : "VAT included"}
                 </p>
               </div>
@@ -166,16 +185,17 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
                 <Button
                   size="icon"
                   disabled={!isInStock}
-                  onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                  className="h-8 w-8 rounded-xl shrink-0 shadow-sm active:scale-95 transition-all"
+                  onClick={handleCart}
+                  className="h-10 w-10 rounded-xl shrink-0 shadow-sm active:scale-[0.98] transition-all"
+                  aria-label={isAr ? "أضف للسلة" : "Add to cart"}
                 >
-                  <ShoppingCart className="h-3.5 w-3.5" />
+                  <ShoppingCart className="h-4 w-4" />
                 </Button>
               )}
             </div>
           ) : (
-            <p className="text-xs text-muted-foreground italic">
-              {isAr ? "تواصل للسعر" : "Contact for price"}
+            <p className="text-xs text-muted-foreground">
+              {isAr ? "تواصل للحصول على السعر" : "Contact for pricing"}
             </p>
           )}
         </div>
