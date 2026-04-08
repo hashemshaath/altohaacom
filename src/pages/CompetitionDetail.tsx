@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { useParams, Link } from "react-router-dom";
@@ -16,6 +16,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle,
@@ -24,14 +25,15 @@ import {
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
   Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
   Swords, Layers, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle, Bookmark, BookmarkCheck,
-  Star, TrendingUp, Zap, Crown, Hash, Timer, Ticket,
+  Star, TrendingUp, Zap, Crown, Hash, Timer, Ticket, Activity, Heart,
+  Play, Pause, ChevronRight, ExternalLink, Bell,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SEOHead } from "@/components/SEOHead";
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from "date-fns";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { RegistrationStatusBanner } from "@/components/competitions/RegistrationStatusBanner";
@@ -80,17 +82,70 @@ const NotificationHub = lazy(() => import("@/components/competitions/Notificatio
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
-const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: string; labelAr: string }> = {
+const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: string; labelAr: string; glow?: boolean }> = {
   pending: { bg: "bg-chart-4/10 text-chart-4", dot: "bg-chart-4", label: "Pending Approval", labelAr: "بانتظار الموافقة" },
   draft: { bg: "bg-muted/60", dot: "bg-muted-foreground", label: "Draft", labelAr: "مسودة" },
   upcoming: { bg: "bg-accent/10 text-accent-foreground", dot: "bg-accent", label: "Upcoming", labelAr: "قادمة" },
-  registration_open: { bg: "bg-primary/10 text-primary", dot: "bg-primary", label: "Registration Open", labelAr: "التسجيل مفتوح" },
+  registration_open: { bg: "bg-primary/10 text-primary", dot: "bg-primary", label: "Registration Open", labelAr: "التسجيل مفتوح", glow: true },
   registration_closed: { bg: "bg-muted/60 text-muted-foreground", dot: "bg-muted-foreground", label: "Registration Closed", labelAr: "التسجيل مغلق" },
-  in_progress: { bg: "bg-chart-3/10 text-chart-3", dot: "bg-chart-3", label: "In Progress", labelAr: "جارية" },
-  judging: { bg: "bg-chart-4/10 text-chart-4", dot: "bg-chart-4", label: "Judging", labelAr: "التحكيم" },
+  in_progress: { bg: "bg-chart-3/10 text-chart-3", dot: "bg-chart-3", label: "In Progress", labelAr: "جارية", glow: true },
+  judging: { bg: "bg-chart-4/10 text-chart-4", dot: "bg-chart-4", label: "Judging", labelAr: "التحكيم", glow: true },
   completed: { bg: "bg-chart-5/10 text-chart-5", dot: "bg-chart-5", label: "Completed", labelAr: "مكتملة" },
   cancelled: { bg: "bg-destructive/10 text-destructive", dot: "bg-destructive", label: "Cancelled", labelAr: "ملغاة" },
 };
+
+/* ─── Animated Counter ─── */
+function AnimatedCounter({ target, duration = 800 }: { target: number; duration?: number }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (target === 0) return;
+    let start = 0;
+    const step = Math.max(1, Math.ceil(target / (duration / 16)));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(timer); }
+      else setCount(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [target, duration]);
+  return <span className="tabular-nums">{count}</span>;
+}
+
+/* ─── Live Countdown Hook ─── */
+function useLiveCountdown(targetDate: string | null) {
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    if (!targetDate) return;
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, [targetDate]);
+
+  if (!targetDate) return null;
+  const target = new Date(targetDate).getTime();
+  const diff = target - now;
+  if (diff <= 0) return null;
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  return { days, hours, minutes, seconds, total: diff };
+}
+
+/* ─── Mini Progress Ring ─── */
+function ProgressRing({ value, max, size = 44, strokeWidth = 4, color = "text-primary" }: { value: number; max: number; size?: number; strokeWidth?: number; color?: string }) {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progress = max > 0 ? Math.min(value / max, 1) : 0;
+  const offset = circumference - progress * circumference;
+
+  return (
+    <svg width={size} height={size} className="-rotate-90">
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={strokeWidth} className="text-muted/30" />
+      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className={`${color} transition-all duration-1000 ease-out`} />
+    </svg>
+  );
+}
 
 /* ─── Section Wrapper — premium editorial feel ─── */
 function Section({
@@ -125,6 +180,31 @@ function Section({
   );
 }
 
+/* ─── Live Countdown Display ─── */
+function LiveCountdownStrip({ targetDate, label, labelAr, isAr }: { targetDate: string; label: string; labelAr: string; isAr: boolean }) {
+  const countdown = useLiveCountdown(targetDate);
+  if (!countdown) return null;
+  const units = [
+    { value: countdown.days, en: "Days", ar: "يوم" },
+    { value: countdown.hours, en: "Hrs", ar: "ساعة" },
+    { value: countdown.minutes, en: "Min", ar: "دقيقة" },
+    { value: countdown.seconds, en: "Sec", ar: "ثانية" },
+  ];
+  return (
+    <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] via-transparent to-primary/[0.04] p-4">
+      <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-3">{isAr ? labelAr : label}</p>
+      <div className="grid grid-cols-4 gap-2">
+        {units.map((u) => (
+          <div key={u.en} className="text-center">
+            <div className="text-xl sm:text-2xl font-bold tabular-nums text-foreground leading-none">{String(u.value).padStart(2, "0")}</div>
+            <p className="text-[10px] text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function CompetitionDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { t, language } = useLanguage();
@@ -133,15 +213,7 @@ export default function CompetitionDetail() {
   const [activeSection, setActiveSection] = useState<string>("overview");
   const setActiveTab = useCallback((tabId: string) => {
     setActiveSection(tabId);
-    const el = document.getElementById(`section-${tabId}`);
-    if (el) {
-      const offset = 140;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = el.getBoundingClientRect().top;
-      const elementPosition = elementRect - bodyRect;
-      const offsetPosition = elementPosition - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
@@ -260,7 +332,19 @@ export default function CompetitionDetail() {
   const isOrganizer = user && competition?.organizer_id === user.id;
   const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
 
-  // ─── Grouped Navigation (must be before early returns) ───
+  // Derived data
+  const totalScore = useMemo(() => criteria?.reduce((sum, c) => sum + (c.max_score || 0), 0) || 0, [criteria]);
+  const completionPercent = useMemo(() => {
+    if (!competition) return 0;
+    const start = new Date(competition.competition_start).getTime();
+    const end = new Date(competition.competition_end).getTime();
+    const now = Date.now();
+    if (now < start) return 0;
+    if (now > end) return 100;
+    return Math.round(((now - start) / (end - start)) * 100);
+  }, [competition]);
+
+  // ─── Grouped Navigation ───
   const NAV_GROUPS = useMemo(() => {
     const core = [
       { id: "overview", icon: Eye, labelEn: "Overview", labelAr: "نظرة عامة" },
@@ -296,7 +380,7 @@ export default function CompetitionDetail() {
       insights.push(
         { id: "analytics", icon: TrendingUp, labelEn: "Analytics", labelAr: "التحليلات" },
         { id: "adv-schedule", icon: CalendarClock, labelEn: "Adv. Schedule", labelAr: "جدول متقدم" },
-        { id: "notifications", icon: MessageSquare, labelEn: "Notifications", labelAr: "الإشعارات" },
+        { id: "notifications", icon: Bell, labelEn: "Notifications", labelAr: "الإشعارات" },
       );
     }
     if (user) {
@@ -317,33 +401,39 @@ export default function CompetitionDetail() {
     return groups;
   }, [canSeeKnowledge, isOrganizer, user]);
 
+  // ─── Loading State ───
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
         <main className="flex-1">
-          <Skeleton className="h-56 w-full sm:h-80 md:h-96" />
-          <div className="border-b border-border/40 px-3 sm:px-4 py-2.5 sm:py-3">
-            <div className="container flex gap-2">
-              {Array.from({ length: 5 }).map((_, i) => (
+          <div className="relative">
+            <Skeleton className="h-56 w-full sm:h-80 md:h-96" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+          </div>
+          <div className="border-b border-border/40 px-3 sm:px-4 py-3">
+            <div className="container flex gap-2 overflow-hidden">
+              {Array.from({ length: 8 }).map((_, i) => (
                 <Skeleton key={i} className="h-9 w-24 rounded-full shrink-0" />
               ))}
             </div>
           </div>
-          <div className="container py-5 md:py-8">
-            <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 rounded-2xl" />
+          <div className="container py-6 md:py-8">
+            <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Skeleton key={i} className="h-20 rounded-2xl" />
               ))}
             </div>
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="lg:col-span-2 space-y-5">
                 <Skeleton className="h-44 w-full rounded-2xl" />
                 <Skeleton className="h-60 w-full rounded-2xl" />
+                <Skeleton className="h-40 w-full rounded-2xl" />
               </div>
               <div className="space-y-4">
-                <Skeleton className="h-32 w-full rounded-2xl" />
+                <Skeleton className="h-36 w-full rounded-2xl" />
                 <Skeleton className="h-48 w-full rounded-2xl" />
+                <Skeleton className="h-32 w-full rounded-2xl" />
               </div>
             </div>
           </div>
@@ -378,7 +468,6 @@ export default function CompetitionDetail() {
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
   const hasWinners = competition.status === "completed";
 
-  // Breadcrumb structured data
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -410,10 +499,19 @@ export default function CompetitionDetail() {
     ...(competition.max_participants ? { maximumAttendeeCapacity: competition.max_participants } : {}),
   };
 
-  const totalScore = criteria?.reduce((sum, c) => sum + (c.max_score || 0), 0) || 0;
   const daysUntilStart = competition.competition_start
     ? Math.max(0, Math.ceil((new Date(competition.competition_start).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : null;
+
+  const kpiStats = [
+    { icon: Target, label: isAr ? "الفئات" : "Categories", value: categories?.length || 0, color: "text-primary", onClick: () => setActiveTab("categories") },
+    { icon: Star, label: isAr ? "المعايير" : "Criteria", value: criteria?.length || 0, color: "text-chart-4", onClick: () => setActiveTab("criteria") },
+    { icon: Users, label: isAr ? "المسجلين" : "Registered", value: registrationStats?.total || 0, color: "text-chart-3", onClick: () => setActiveTab("contestants") },
+    { icon: Scale, label: isAr ? "الحكام" : "Judges", value: judgesCount || 0, color: "text-chart-5", onClick: () => setActiveTab("judges") },
+    ...(totalScore > 0 ? [{ icon: Zap, label: isAr ? "مجموع النقاط" : "Total Score", value: totalScore, color: "text-chart-2", onClick: () => setActiveTab("criteria") }] : []),
+  ];
+
+  const statusCfg = statusConfig[competition.status as CompetitionStatus] || statusConfig.pending;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -435,9 +533,9 @@ export default function CompetitionDetail() {
       <main className="flex-1">
         {/* ─── Hero Section — Cinematic ─── */}
         <section className="relative overflow-hidden">
-          <div className="relative h-44 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
+          <div className="relative h-48 w-full sm:h-72 md:h-[28rem] lg:h-[32rem]">
             {competition.cover_image_url ? (
-              <img loading="lazy" src={competition.cover_image_url}
+              <img loading="eager" src={competition.cover_image_url}
                 alt={title}
                 className="h-full w-full object-cover"
                 decoding="async"
@@ -469,16 +567,16 @@ export default function CompetitionDetail() {
 
                 {/* Badges row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={`${statusConfig[competition.status as CompetitionStatus].bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-[12px] shadow-sm`}>
-                    {statusConfig[competition.status as CompetitionStatus].dot.includes("chart-3") ? (
+                  <Badge className={`${statusCfg.bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-[12px] shadow-sm`}>
+                    {statusCfg.glow ? (
                       <span className="relative me-2 flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
                       </span>
                     ) : (
-                      <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusConfig[competition.status as CompetitionStatus].dot}`} />
+                      <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusCfg.dot}`} />
                     )}
-                    {isAr ? statusConfig[competition.status as CompetitionStatus].labelAr : statusConfig[competition.status as CompetitionStatus].label}
+                    {isAr ? statusCfg.labelAr : statusCfg.label}
                   </Badge>
                   {competition.edition_year && (
                     <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-[12px] px-3 py-1">{competition.edition_year}</Badge>
@@ -499,7 +597,7 @@ export default function CompetitionDetail() {
                 </div>
 
                 {/* Title */}
-                <h1 className="font-serif text-lg font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
+                <h1 className="font-serif text-xl font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
                   {title}
                 </h1>
 
@@ -536,21 +634,19 @@ export default function CompetitionDetail() {
         <div className="border-y border-border/30 bg-card/60 backdrop-blur-md">
           <div className="container py-3 sm:py-4">
             <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
-              <div className="flex items-center gap-5 sm:gap-8">
-                {[
-                  { icon: Target, label: isAr ? "الفئات" : "Categories", value: categories?.length || 0, color: "text-primary" },
-                  { icon: Star, label: isAr ? "المعايير" : "Criteria", value: criteria?.length || 0, color: "text-chart-4" },
-                  { icon: Users, label: isAr ? "المسجلين" : "Registered", value: registrationStats?.total || 0, color: "text-chart-3" },
-                  { icon: Scale, label: isAr ? "الحكام" : "Judges", value: judgesCount || 0, color: "text-chart-5" },
-                  ...(totalScore > 0 ? [{ icon: Zap, label: isAr ? "مجموع النقاط" : "Total Score", value: totalScore, color: "text-chart-2" }] : []),
-                ].map((stat, i) => (
-                  <div key={i} className="text-center group">
+              <div className="flex items-center gap-4 sm:gap-7">
+                {kpiStats.map((stat, i) => (
+                  <button
+                    key={i}
+                    onClick={stat.onClick}
+                    className="text-center group cursor-pointer hover:scale-105 transition-transform active:scale-95 touch-manipulation"
+                  >
                     <div className="flex items-center justify-center gap-1.5 mb-0.5">
                       <stat.icon className={`h-3.5 w-3.5 ${stat.color} opacity-60`} />
-                      <p className="text-lg font-bold tabular-nums text-foreground">{stat.value}</p>
+                      <p className="text-lg font-bold text-foreground"><AnimatedCounter target={stat.value} /></p>
                     </div>
-                    <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
-                  </div>
+                    <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{stat.label}</p>
+                  </button>
                 ))}
               </div>
 
@@ -619,6 +715,17 @@ export default function CompetitionDetail() {
                 )}
               </div>
             </div>
+
+            {/* Competition Progress Bar (for in_progress and judging) */}
+            {["in_progress", "judging"].includes(competition.status) && completionPercent > 0 && (
+              <div className="mt-3 pt-3 border-t border-border/20">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
+                  <span className="font-semibold">{isAr ? "تقدم المسابقة" : "Competition Progress"}</span>
+                  <span className="font-bold text-foreground">{completionPercent}%</span>
+                </div>
+                <Progress value={completionPercent} className="h-1.5" />
+              </div>
+            )}
           </div>
         </div>
 
@@ -720,6 +827,67 @@ export default function CompetitionDetail() {
                     </Section>
                   )}
 
+                  {/* Quick Stats Overview Cards */}
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {/* Registration Progress */}
+                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-3/10"><Users className="h-4 w-4 text-chart-3" /></div>
+                          <span className="text-xs font-bold">{isAr ? "التسجيل" : "Registration"}</span>
+                        </div>
+                        <div className="relative">
+                          <ProgressRing value={registrationStats?.approved || 0} max={competition.max_participants || 100} size={40} strokeWidth={3} color="text-chart-3" />
+                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{competition.max_participants ? `${Math.round(((registrationStats?.approved || 0) / competition.max_participants) * 100)}%` : registrationStats?.approved || 0}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span><span className="font-bold text-chart-5">{registrationStats?.approved || 0}</span></div>
+                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span><span className="font-bold text-chart-4">{registrationStats?.pending || 0}</span></div>
+                        {competition.max_participants && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "السعة" : "Capacity"}</span><span className="font-bold">{competition.max_participants}</span></div>}
+                      </div>
+                    </div>
+
+                    {/* Judging Overview */}
+                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-5/10"><Scale className="h-4 w-4 text-chart-5" /></div>
+                          <span className="text-xs font-bold">{isAr ? "التحكيم" : "Judging"}</span>
+                        </div>
+                        <div className="relative">
+                          <ProgressRing value={judgesCount || 0} max={10} size={40} strokeWidth={3} color="text-chart-5" />
+                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{judgesCount || 0}</span>
+                        </div>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "الحكام" : "Judges"}</span><span className="font-bold">{judgesCount || 0}</span></div>
+                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold text-chart-4">{criteria?.length || 0}</span></div>
+                        {totalScore > 0 && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "مجموع النقاط" : "Total Score"}</span><span className="font-bold text-primary">{totalScore}</span></div>}
+                      </div>
+                    </div>
+
+                    {/* Competition Status */}
+                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Activity className="h-4 w-4 text-primary" /></div>
+                          <span className="text-xs font-bold">{isAr ? "الحالة" : "Status"}</span>
+                        </div>
+                        <Badge className={`${statusCfg.bg} text-[10px] px-2 py-0.5 font-bold`}>
+                          {isAr ? statusCfg.labelAr : statusCfg.label}
+                        </Badge>
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "الفئات" : "Categories"}</span><span className="font-bold">{categories?.length || 0}</span></div>
+                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold">{criteria?.length || 0}</span></div>
+                        {daysUntilStart !== null && daysUntilStart > 0 && (
+                          <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "أيام للبدء" : "Days to Start"}</span><span className="font-bold text-primary">{daysUntilStart}</span></div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Entry & Fee Info */}
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-2xl border border-border/40 bg-card p-4 sm:p-5">
@@ -795,7 +963,7 @@ export default function CompetitionDetail() {
 
                   {/* Supervising Bodies */}
                   {supervisors.length > 0 && (
-                    <Section icon={<Shield className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[12px]">{supervisors.length}</Badge>}>
+                    <Section icon={<Building2 className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[12px]">{supervisors.length}</Badge>}>
                       <div className="grid gap-3 sm:grid-cols-2">
                         {supervisors.map((entity) => (
                           <div key={entity.id} className="flex items-center gap-4 rounded-2xl border border-border/40 bg-muted/20 p-4 transition-all hover:bg-muted/40 hover:shadow-sm">
@@ -949,7 +1117,7 @@ export default function CompetitionDetail() {
                           <div
                             key={cat.id}
                             className="group relative overflow-hidden rounded-2xl border border-border/40 bg-muted/20 hover:bg-muted/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
-                            onClick={() => setActiveSection("categories")}
+                            onClick={() => setActiveTab("categories")}
                           >
                             {cat.cover_image_url ? (
                               <div className="relative h-28">
@@ -980,7 +1148,7 @@ export default function CompetitionDetail() {
                         ))}
                       </div>
                       {categories.length > 6 && (
-                        <Button variant="ghost" size="sm" className="mt-4 w-full text-xs rounded-xl" onClick={() => setActiveSection("categories")}>
+                        <Button variant="ghost" size="sm" className="mt-4 w-full text-xs rounded-xl" onClick={() => setActiveTab("categories")}>
                           {isAr ? `عرض جميع الفئات (${categories.length})` : `View all categories (${categories.length})`}
                         </Button>
                       )}
@@ -1022,7 +1190,7 @@ export default function CompetitionDetail() {
                         : "Participate to be among the Gold Medal winners 🏅 Results will be announced after the competition and judging conclude."}
                     </p>
                     {canRegister && (
-                      <Button className="mt-6 shadow-md shadow-primary/15 rounded-xl" onClick={() => { setShowRegistrationForm(true); setActiveSection("overview"); }}>
+                      <Button className="mt-6 shadow-md shadow-primary/15 rounded-xl" onClick={() => { setShowRegistrationForm(true); setActiveTab("overview"); }}>
                         <Sparkles className="me-1.5 h-4 w-4" />
                         {isAr ? "سجّل الآن" : "Register Now"}
                       </Button>
@@ -1079,12 +1247,12 @@ export default function CompetitionDetail() {
 
             {/* ─── Sidebar ─── */}
             <div className="space-y-5 lg:sticky lg:top-[120px] lg:self-start">
-              {/* Countdown */}
+              {/* Live Countdown */}
               {competition.status === "registration_open" && competition.registration_end && (
-                <CompetitionCountdown targetDate={competition.registration_end} label="Registration Closes In" labelAr="ينتهي التسجيل خلال" />
+                <LiveCountdownStrip targetDate={competition.registration_end} label="Registration Closes In" labelAr="ينتهي التسجيل خلال" isAr={isAr} />
               )}
-              {["upcoming", "registration_open", "registration_closed"].includes(competition.status) && (
-                <CompetitionCountdown targetDate={competition.competition_start} label="Competition Starts In" labelAr="تبدأ المسابقة خلال" />
+              {["upcoming", "registration_open", "registration_closed"].includes(competition.status) && competition.competition_start && (
+                <LiveCountdownStrip targetDate={competition.competition_start} label="Competition Starts In" labelAr="تبدأ المسابقة خلال" isAr={isAr} />
               )}
 
               {/* Registration Card */}
@@ -1135,6 +1303,14 @@ export default function CompetitionDetail() {
                         <span className="text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</span>
                         <span className="font-bold">{registrationStats.total}</span>
                       </div>
+                      {competition.max_participants && (
+                        <div className="pt-1">
+                          <Progress value={(registrationStats.approved / competition.max_participants) * 100} className="h-1.5" />
+                          <p className="text-[10px] text-muted-foreground mt-1 text-center">
+                            {registrationStats.approved}/{competition.max_participants} {isAr ? "مقاعد مشغولة" : "spots filled"}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1179,19 +1355,23 @@ export default function CompetitionDetail() {
 
               {/* QR Code */}
               {qrCode && (
-                <QRCodeDisplay
-                  code={qrCode.code}
-                  label={isAr ? "رمز QR للمسابقة" : "Competition QR Code"}
-                  size={140}
-                  compact={false}
-                />
+                <Suspense fallback={null}>
+                  <QRCodeDisplay
+                    code={qrCode.code}
+                    label={isAr ? "رمز QR للمسابقة" : "Competition QR Code"}
+                    size={140}
+                    compact={false}
+                  />
+                </Suspense>
               )}
 
               {/* Organizer */}
               <OrganizerCard organizerId={competition.organizer_id} exhibitionId={competition.exhibition_id} />
 
               {/* Activity Feed */}
-              <CompetitionActivityFeed competitionId={competition.id} isOrganizer={!!isOrganizer} />
+              <Suspense fallback={null}>
+                <CompetitionActivityFeed competitionId={competition.id} isOrganizer={!!isOrganizer} />
+              </Suspense>
             </div>
           </div>
         </div>
