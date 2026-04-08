@@ -1314,9 +1314,15 @@ export default function CompaniesAdmin() {
             ) : !showCatalogForm && (
               <div className="text-center py-12 text-muted-foreground"><Package className="h-12 w-12 mx-auto mb-4 opacity-50" /><p>{isAr ? "لا توجد منتجات" : "No catalog items"}</p></div>
             )}
-          </TabsContent>
 
-          {/* ── Drivers Tab ── */}
+            {/* Extended Catalog Management */}
+            {selectedCompany && (
+              <div className="mt-6">
+                <Separator className="mb-4" />
+                <AdminCatalogExtended companyId={selectedCompany} />
+              </div>
+            )}
+          </TabsContent>
           <TabsContent value="drivers" className="space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="text-lg font-semibold">{isAr ? "السائقون" : "Drivers"}</h3>
