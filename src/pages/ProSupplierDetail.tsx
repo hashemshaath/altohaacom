@@ -29,6 +29,7 @@ import { SupplierProductCard } from "@/components/supplier/SupplierProductCard";
 import { SupplierProductDetail } from "@/components/supplier/SupplierProductDetail";
 import { useSupplierViewTracker } from "@/hooks/useSupplierViewTracker";
 import { useCart } from "@/hooks/useCart";
+import { CartSheet } from "@/components/shop/CartSheet";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -80,7 +81,9 @@ export default function ProSupplierDetail() {
   const [productSearch, setProductSearch] = useState("");
   const [productSort, setProductSort] = useState<"name" | "price_asc" | "price_desc">("name");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const { addItem } = useCart();
+  const cart = useCart();
+  const { addItem } = cart;
+  const [cartOpen, setCartOpen] = useState(false);
   useSupplierViewTracker(id);
 
   const { data: company, isLoading } = useQuery({
@@ -212,6 +215,7 @@ export default function ProSupplierDetail() {
       tax_inclusive: false,
     }, qty);
     toast.success(isAr ? "تمت الإضافة إلى السلة" : "Added to cart");
+    setCartOpen(true);
   }, [addItem, isAr]);
 
   const socialLinks = (company as any)?.social_links as Record<string, string> | null;
@@ -926,7 +930,24 @@ export default function ProSupplierDetail() {
         </div>
       </main>
       <Footer />
-      
+
+      {/* Floating Cart Button */}
+      {cart.totalItems > 0 && (
+        <button
+          onClick={() => setCartOpen(true)}
+          className="fixed bottom-6 end-6 z-50 flex items-center gap-2 rounded-2xl bg-primary px-5 py-3.5 text-primary-foreground shadow-2xl shadow-primary/30 transition-all duration-300 hover:scale-105 active:scale-95 touch-manipulation"
+          aria-label={isAr ? "عرض السلة" : "View Cart"}
+        >
+          <Package className="h-5 w-5" />
+          <span className="font-bold text-sm">{cart.totalItems}</span>
+          <Separator orientation="vertical" className="h-4 bg-primary-foreground/30" />
+          <span className="text-sm font-semibold tabular-nums">
+            {(cart.totalPrice).toLocaleString()} {isAr ? "ر.س" : "SAR"}
+          </span>
+        </button>
+      )}
+
+      <CartSheet open={cartOpen} onOpenChange={setCartOpen} cart={cart} />
     </div>
   );
 }
