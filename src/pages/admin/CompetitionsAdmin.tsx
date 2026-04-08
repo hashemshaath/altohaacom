@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, lazy, Suspense } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense, memo } from "react";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Card, CardContent } from "@/components/ui/card";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -31,6 +31,7 @@ import {
   Search, MoreHorizontal, Eye, Edit, Trash2, Trophy, Users, Calendar, MapPin,
   Sparkles, Plus, Copy, Building2, Tag, FileSpreadsheet, Gavel, Medal,
   BarChart3, CheckCircle, XCircle, Layers, Download, Activity, Clock,
+  TrendingUp, Zap, ListChecks, PieChart, GitBranch,
 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -65,8 +66,47 @@ const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: 
   cancelled: { bg: "bg-destructive/10 text-destructive", dot: "bg-destructive", label: "Cancelled", labelAr: "ملغاة" },
 };
 
-function WidgetFallback() {
-  return <Skeleton className="h-48 w-full rounded-lg" />;
+/* ─── Grouped Tab Navigation ─── */
+const TAB_GROUPS = [
+  {
+    labelEn: "Management",
+    labelAr: "الإدارة",
+    tabs: [
+      { id: "list", icon: Trophy, labelEn: "Competitions", labelAr: "المسابقات" },
+      { id: "judging", icon: Gavel, labelEn: "Judging", labelAr: "التحكيم" },
+      { id: "results", icon: Medal, labelEn: "Results", labelAr: "النتائج" },
+    ],
+  },
+  {
+    labelEn: "Analytics",
+    labelAr: "التحليلات",
+    tabs: [
+      { id: "pipeline", icon: GitBranch, labelEn: "Pipeline", labelAr: "خط السير" },
+      { id: "live", icon: Zap, labelEn: "Live Stats", labelAr: "مباشر" },
+      { id: "scoring", icon: ListChecks, labelEn: "Scoring", labelAr: "التقييم" },
+      { id: "insights", icon: PieChart, labelEn: "Insights", labelAr: "رؤى" },
+    ],
+  },
+  {
+    labelEn: "Import",
+    labelAr: "الاستيراد",
+    tabs: [
+      { id: "import", icon: FileSpreadsheet, labelEn: "Import", labelAr: "استيراد" },
+    ],
+  },
+];
+
+function TabSkeleton() {
+  return (
+    <div className="space-y-4 p-4">
+      <div className="flex gap-3">
+        <Skeleton className="h-20 flex-1 rounded-xl" />
+        <Skeleton className="h-20 flex-1 rounded-xl" />
+        <Skeleton className="h-20 flex-1 rounded-xl" />
+      </div>
+      <Skeleton className="h-40 w-full rounded-xl" />
+    </div>
+  );
 }
 
 export default function CompetitionsAdmin() {
@@ -85,6 +125,8 @@ export default function CompetitionsAdmin() {
   const [showSmartImport, setShowSmartImport] = useState(false);
   const [activeTab, setActiveTab] = useState("list");
   const [seriesFilter, setSeriesFilter] = useState<string>("all");
+
+  const handleTabChange = useCallback((id: string) => setActiveTab(id), []);
 
   // Fetch event series
   const { data: seriesList } = useQuery({
@@ -172,11 +214,6 @@ export default function CompetitionsAdmin() {
       return counts;
     },
   });
-
-  const uniqueOrganizers = competitions?.reduce((acc, c) => {
-    if (c.derivedOrganizer && !acc.find((o: any) => o.name === c.derivedOrganizer.name)) acc.push(c.derivedOrganizer);
-    return acc;
-  }, [] as any[]) || [];
 
   const uniqueExhibitions = competitions?.reduce((acc, c) => {
     if (c.exhibition && !acc.find((e: any) => e.id === c.exhibition.id)) acc.push(c.exhibition);
@@ -268,18 +305,17 @@ export default function CompetitionsAdmin() {
     clearSelection();
   };
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: competitions?.length || 0,
     pending: competitions?.filter(c => c.status === "pending").length || 0,
     active: competitions?.filter(c => ["in_progress", "judging", "registration_open"].includes(c.status)).length || 0,
     completed: competitions?.filter(c => c.status === "completed").length || 0,
     draft: competitions?.filter(c => c.status === "draft").length || 0,
-  };
+    judging: competitions?.filter(c => c.status === "judging").length || 0,
+  }), [competitions]);
 
   const { sorted: sortedCompetitions, sortColumn, sortDirection, toggleSort: toggleCompSort } = useTableSort(competitions || []);
   const compPagination = usePagination(sortedCompetitions || []);
-  const getCategoriesForComp = (compId: string) => allCategories?.filter(c => c.competition_id === compId) || [];
-  const getTypesForComp = (compId: string) => typeAssignments?.filter((t) => t.competition_id === compId) || [];
 
   // Smart Import handler
   const handleSmartImport = useCallback(async (data: ImportedData, mode: "create" | "update", existingId?: string) => {
@@ -363,319 +399,336 @@ export default function CompetitionsAdmin() {
     }
   }, [isAr, user, queryClient, toast]);
 
-  // Tab definitions
-  const tabs = [
-    { value: "list", icon: Trophy, label: isAr ? "المسابقات" : "Competitions" },
-    { value: "judging", icon: Gavel, label: isAr ? "التحكيم" : "Judging" },
-    { value: "results", icon: Medal, label: isAr ? "النتائج" : "Results" },
-    { value: "analytics", icon: BarChart3, label: isAr ? "التحليلات" : "Analytics" },
-    { value: "import", icon: FileSpreadsheet, label: isAr ? "استيراد" : "Import" },
-  ];
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">{isAr ? "إدارة المسابقات" : "Competitions"}</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">
-            {isAr ? "إدارة ومراقبة جميع المسابقات" : "Manage and monitor all competitions"}
-          </p>
+      <div className="flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-chart-4/10">
+          <Trophy className="h-5 w-5 text-primary" />
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs" onClick={() => exportCSV(competitions || [])}>
+        <div className="flex-1 min-w-0">
+          <h1 className="text-lg font-bold tracking-tight">{isAr ? "إدارة المسابقات" : "Competitions Management"}</h1>
+          <p className="text-xs text-muted-foreground">{isAr ? "إدارة ومراقبة وتحليل جميع المسابقات" : "Manage, monitor, and analyze all competitions"}</p>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <Button variant="outline" size="sm" className="gap-1.5 h-8 text-xs rounded-xl" onClick={() => exportCSV(competitions || [])}>
             <Download className="h-3.5 w-3.5" />
-            {isAr ? "تصدير" : "Export"}
+            <span className="hidden sm:inline">{isAr ? "تصدير" : "Export"}</span>
           </Button>
-          <Button asChild size="sm" className="gap-1.5 h-8 text-xs">
+          <Button asChild size="sm" className="gap-1.5 h-8 text-xs rounded-xl shadow-lg shadow-primary/20">
             <Link to="/competitions/create">
               <Plus className="h-3.5 w-3.5" />
-              {isAr ? "إضافة مسابقة" : "Add Competition"}
+              <span className="hidden sm:inline">{isAr ? "إضافة مسابقة" : "Add Competition"}</span>
             </Link>
           </Button>
         </div>
       </div>
 
-      {/* Metric Strip */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+      {/* KPI Strip — interactive */}
+      <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
         {[
-          { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: Trophy },
-          { label: isAr ? "معلقة" : "Pending", value: stats.pending, icon: Clock },
-          { label: isAr ? "نشطة" : "Active", value: stats.active, icon: Activity },
-          { label: isAr ? "مكتملة" : "Completed", value: stats.completed, icon: CheckCircle },
-          { label: isAr ? "مسودة" : "Draft", value: stats.draft, icon: Edit },
+          { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: Trophy, color: "text-primary", filter: "all" },
+          { label: isAr ? "معلقة" : "Pending", value: stats.pending, icon: Clock, color: "text-chart-4", filter: "pending" },
+          { label: isAr ? "نشطة" : "Active", value: stats.active, icon: Activity, color: "text-chart-3", filter: "in_progress" },
+          { label: isAr ? "تحكيم" : "Judging", value: stats.judging, icon: Gavel, color: "text-chart-5", filter: "judging" },
+          { label: isAr ? "مكتملة" : "Completed", value: stats.completed, icon: CheckCircle, color: "text-chart-2", filter: "completed" },
+          { label: isAr ? "مسودة" : "Draft", value: stats.draft, icon: Edit, color: "text-muted-foreground", filter: "draft" },
         ].map(m => (
           <button
-            key={m.label}
-            onClick={() => {
-              if (m.label === (isAr ? "معلقة" : "Pending")) setStatusFilter("pending");
-              else if (m.label === (isAr ? "نشطة" : "Active")) setStatusFilter("in_progress");
-              else if (m.label === (isAr ? "مكتملة" : "Completed")) setStatusFilter("completed");
-              else if (m.label === (isAr ? "مسودة" : "Draft")) setStatusFilter("draft");
-              else setStatusFilter("all");
-            }}
+            key={m.filter}
+            onClick={() => { setStatusFilter(m.filter === "all" ? "all" : m.filter); setActiveTab("list"); }}
             className={cn(
-              "flex items-center gap-3 rounded-lg border border-border/50 bg-card p-3 text-start transition-all hover:border-border hover:shadow-sm"
+              "flex flex-col items-center gap-1 rounded-xl border border-border/40 bg-card p-2.5 transition-all hover:border-primary/20 hover:shadow-sm",
+              statusFilter === m.filter && activeTab === "list" && "ring-2 ring-primary/20 border-primary/30"
             )}
           >
-            <m.icon className="h-4 w-4 text-muted-foreground shrink-0" />
-            <div className="min-w-0">
-              <p className="text-lg font-semibold leading-none"><AnimatedCounter value={m.value} /></p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{m.label}</p>
-            </div>
+            <m.icon className={cn("h-4 w-4 shrink-0", m.color)} />
+            <AnimatedCounter value={m.value} className="text-lg font-bold leading-none" />
+            <span className="text-[10px] text-muted-foreground font-medium">{m.label}</span>
           </button>
         ))}
       </div>
 
-      {/* Tabs */}
-      <div className="overflow-x-auto scrollbar-none -mx-1 px-1">
-        <div className="flex items-center gap-1 w-max">
-          {tabs.map(tab => (
-            <button
-              key={tab.value}
-              onClick={() => setActiveTab(tab.value)}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-md transition-all whitespace-nowrap",
-                activeTab === tab.value
-                  ? "bg-foreground text-background font-medium shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              )}
-            >
-              <tab.icon className="h-3 w-3 shrink-0" />
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* === LIST TAB === */}
-      {activeTab === "list" && (
-        <div className="space-y-4">
-          {/* Filters */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="relative flex-1 min-w-[200px] max-w-sm">
-              <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-              <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={isAr ? "بحث..." : "Search..."} className="ps-8 h-8 text-xs bg-card" />
-            </div>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[130px] h-8 text-xs"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                {ALL_STATUSES.map(s => <SelectItem key={s} value={s}>{isAr ? statusConfig[s].labelAr : statusConfig[s].label}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            {uniqueExhibitions.length > 0 && (
-              <Select value={exhibitionFilter} onValueChange={setExhibitionFilter}>
-                <SelectTrigger className="w-[140px] h-8 text-xs"><SelectValue placeholder={isAr ? "المعرض" : "Exhibition"} /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                  {uniqueExhibitions.map((ex: any) => <SelectItem key={ex.id} value={ex.id}>{isAr && ex.title_ar ? ex.title_ar : ex.title}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            )}
-            {uniqueYears.length > 0 && (
-              <Select value={yearFilter} onValueChange={setYearFilter}>
-                <SelectTrigger className="w-[100px] h-8 text-xs"><SelectValue placeholder={isAr ? "السنة" : "Year"} /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                  {uniqueYears.map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            )}
-            {(searchQuery || statusFilter !== "all" || exhibitionFilter !== "all" || yearFilter !== "all") && (
-              <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={() => { setSearchQuery(""); setStatusFilter("all"); setExhibitionFilter("all"); setYearFilter("all"); setOrganizerFilter("all"); }}>
-                <XCircle className="h-3.5 w-3.5" />{isAr ? "مسح" : "Clear"}
-              </Button>
-            )}
-          </div>
-
-          <BulkActionBar count={bulkCount} onClear={clearSelection} onExport={() => exportCSV(selectedItems)} onStatusChange={bulkStatusChange} onDelete={bulkDelete} />
-
-          {/* Table */}
-          {isLoading ? (
-            <div className="space-y-2">{[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-14 w-full rounded-lg" />)}</div>
-          ) : !competitions?.length ? (
-            <div className="flex flex-col items-center justify-center py-16 rounded-lg border border-dashed border-border">
-              <Trophy className="h-10 w-10 text-muted-foreground/30 mb-3" />
-              <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات" : "No competitions found"}</p>
-              <Button asChild variant="outline" size="sm" className="mt-3 gap-1.5">
-                <Link to="/competitions/create"><Plus className="h-3.5 w-3.5" />{isAr ? "إنشاء مسابقة" : "Create Competition"}</Link>
-              </Button>
-            </div>
-          ) : (
-            <AdminTableCard>
-              <Table>
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-10"><Checkbox checked={isAllSelected} onCheckedChange={toggleAll} /></TableHead>
-                    <SortableTableHead column="title" label={isAr ? "المسابقة" : "Competition"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
-                    <TableHead className="hidden lg:table-cell">{isAr ? "المنظم" : "Organizer"}</TableHead>
-                    <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
-                    <SortableTableHead column="competition_start" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} className="hidden md:table-cell" />
-                    <TableHead className="hidden xl:table-cell">{isAr ? "المشاركين" : "Participants"}</TableHead>
-                    <TableHead className="w-12" />
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {compPagination.paginated?.map(comp => {
-                    const counts = participantCounts?.[comp.id] || { approved: 0, pending: 0 };
-                    const fillPct = comp.max_participants ? Math.min(Math.round((counts.approved / comp.max_participants) * 100), 100) : 0;
-
+      {/* Grouped Tab Navigation */}
+      <div className="sticky top-0 z-20 rounded-xl border border-border/60 bg-card overflow-hidden shadow-sm">
+        <ScrollArea className="w-full">
+          <div className="flex flex-col sm:flex-row sm:items-stretch sm:divide-x sm:divide-border/40 sm:rtl:divide-x-reverse min-w-max">
+            {TAB_GROUPS.map((group) => (
+              <div key={group.labelEn} className="flex flex-col">
+                <div className="px-3 py-1 bg-muted/40 border-b border-border/40">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {isAr ? group.labelAr : group.labelEn}
+                  </span>
+                </div>
+                <div className="flex items-center gap-0.5 px-1 py-1 flex-wrap sm:flex-nowrap">
+                  {group.tabs.map((tab) => {
+                    const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
                     return (
-                      <TableRow key={comp.id} className="group">
-                        <TableCell className="w-10"><Checkbox checked={isSelected(comp.id)} onCheckedChange={() => toggleOne(comp.id)} /></TableCell>
-                        <TableCell>
-                          <div className="min-w-0">
-                            <p className="text-sm font-medium truncate max-w-[200px]">
-                              {(() => {
-                                const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
-                                const yr = comp.edition_year;
-                                if (!yr || title.includes(String(yr))) return title;
-                                return `${title} ${yr}`;
-                              })()}
-                            </p>
-                            <div className="flex items-center gap-1.5 mt-0.5">
-                              {comp.edition_year && (
-                                <Badge variant="outline" className="text-[10px] h-4 px-1 font-mono">{comp.edition_year}</Badge>
-                              )}
-                              {comp.competition_number && (
-                                <span className="text-[10px] text-muted-foreground font-mono">{comp.competition_number}</span>
-                              )}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="hidden lg:table-cell">
-                          {comp.derivedOrganizer ? (
-                            <div className="flex items-center gap-2">
-                              {comp.derivedOrganizer.logo_url ? (
-                                <img src={comp.derivedOrganizer.logo_url} alt="" className="h-5 w-5 rounded object-contain" loading="lazy" />
-                              ) : (
-                                <div className="h-5 w-5 rounded bg-muted flex items-center justify-center"><Building2 className="h-3 w-3 text-muted-foreground" /></div>
-                              )}
-                              <span className="text-xs truncate max-w-[100px]">{isAr && comp.derivedOrganizer.name_ar ? comp.derivedOrganizer.name_ar : comp.derivedOrganizer.name}</span>
-                            </div>
-                          ) : <span className="text-[11px] text-muted-foreground">—</span>}
-                        </TableCell>
-                        <TableCell>
-                          <Badge className={`text-[11px] font-normal border-0 ${statusConfig[comp.status as CompetitionStatus].bg}`}>
-                            <span className={`me-1 inline-block h-1.5 w-1.5 rounded-full ${statusConfig[comp.status as CompetitionStatus].dot}`} />
-                            {isAr ? statusConfig[comp.status as CompetitionStatus].labelAr : statusConfig[comp.status as CompetitionStatus].label}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">
-                          {comp.competition_start ? (
-                            <div>
-                              <span className="text-xs tabular-nums">{format(new Date(comp.competition_start), "MMM d, yyyy")}</span>
-                              {comp.city && <p className="text-[10px] text-muted-foreground">{comp.city}</p>}
-                            </div>
-                          ) : <span className="text-[11px] text-muted-foreground">—</span>}
-                        </TableCell>
-                        <TableCell className="hidden xl:table-cell">
-                          <div className="min-w-[70px]">
-                            <span className="text-xs tabular-nums">{counts.approved}{comp.max_participants ? `/${comp.max_participants}` : ""}</span>
-                            {comp.max_participants && <Progress value={fillPct} className="h-1 mt-1" />}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex justify-end gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {comp.status === "pending" && (
-                              <>
-                                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => approveCompetition.mutate(comp)}><CheckCircle className="h-3.5 w-3.5 text-chart-3" /></Button>
-                                <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => rejectCompetition.mutate(comp)}><XCircle className="h-3.5 w-3.5 text-destructive" /></Button>
-                              </>
-                            )}
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-3.5 w-3.5" /></Button></DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="text-xs">
-                                <DropdownMenuItem asChild><Link to={`/competitions/${comp.id}`}><Eye className="me-2 h-3.5 w-3.5" />{isAr ? "عرض" : "View"}</Link></DropdownMenuItem>
-                                <DropdownMenuItem asChild><Link to={`/competitions/${comp.id}/edit`}><Edit className="me-2 h-3.5 w-3.5" />{isAr ? "تعديل" : "Edit"}</Link></DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => duplicateMutation.mutate(comp)}><Copy className="me-2 h-3.5 w-3.5" />{isAr ? "نسخ" : "Duplicate"}</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                {ALL_STATUSES.filter(s => s !== comp.status).slice(0, 4).map(status => (
-                                  <DropdownMenuItem key={status} onClick={() => updateStatusMutation.mutate({ id: comp.id, status })}>
-                                    <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusConfig[status].dot}`} />
-                                    {isAr ? statusConfig[status].labelAr : statusConfig[status].label}
-                                  </DropdownMenuItem>
-                                ))}
-                                <DropdownMenuSeparator />
-                                {(comp.status === "draft" || comp.status === "pending") && (
-                                  <DropdownMenuItem onClick={() => { if (confirm(isAr ? "حذف؟" : "Delete?")) deleteMutation.mutate(comp.id); }} className="text-destructive">
-                                    <Trash2 className="me-2 h-3.5 w-3.5" />{isAr ? "حذف" : "Delete"}
-                                  </DropdownMenuItem>
-                                )}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </TableCell>
-                      </TableRow>
+                      <button
+                        key={tab.id}
+                        onClick={() => handleTabChange(tab.id)}
+                        className={cn(
+                          "flex items-center gap-1 rounded-xl px-2.5 py-1.5 text-[12px] font-medium transition-all active:scale-95 whitespace-nowrap",
+                          isActive
+                            ? "bg-primary text-primary-foreground shadow-sm"
+                            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        )}
+                      >
+                        <Icon className="h-3.5 w-3.5 shrink-0" />
+                        <span>{isAr ? tab.labelAr : tab.labelEn}</span>
+                      </button>
                     );
                   })}
-                </TableBody>
-              </Table>
-              <AdminTablePagination
-                page={compPagination.page} totalPages={compPagination.totalPages} totalItems={compPagination.totalItems}
-                startItem={compPagination.startItem} endItem={compPagination.endItem} pageSize={compPagination.pageSize}
-                pageSizeOptions={compPagination.pageSizeOptions} hasNext={compPagination.hasNext} hasPrev={compPagination.hasPrev}
-                onPageChange={compPagination.goTo} onPageSizeChange={compPagination.changePageSize}
-              />
-            </AdminTableCard>
-          )}
-        </div>
-      )}
+                </div>
+              </div>
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" className="h-1.5" />
+        </ScrollArea>
+      </div>
 
-      {/* === JUDGING TAB === */}
-      {activeTab === "judging" && (
-        <div className="space-y-4">
-          <JudgingPanel competitions={competitions || []} isAr={isAr} />
-        </div>
-      )}
-
-      {/* === RESULTS TAB === */}
-      {activeTab === "results" && (
-        <div className="space-y-4">
-          <ResultsPanel competitions={competitions || []} isAr={isAr} />
-        </div>
-      )}
-
-      {/* === ANALYTICS TAB === */}
-      {activeTab === "analytics" && (
-        <div className="space-y-4">
-          <Suspense fallback={<WidgetFallback />}><CompetitionLifecycleWidget /></Suspense>
-          <Suspense fallback={<WidgetFallback />}><CompetitionLiveStatsWidget /></Suspense>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2"><Suspense fallback={<WidgetFallback />}><CompetitionPipelineTracker /></Suspense></div>
+      {/* Tab Content */}
+      <div className="mt-1">
+        <Suspense fallback={<TabSkeleton />}>
+          {/* === LIST TAB === */}
+          {activeTab === "list" && (
             <div className="space-y-4">
-              <Suspense fallback={<WidgetFallback />}><JudgingOverviewWidget /></Suspense>
-              <Suspense fallback={<WidgetFallback />}><RegistrationTimelineWidget /></Suspense>
-            </div>
-          </div>
-          <Suspense fallback={<WidgetFallback />}><CompetitionScoringOverview /></Suspense>
-          <Suspense fallback={<WidgetFallback />}><CompetitionJudgingTracker /></Suspense>
-          <Suspense fallback={<WidgetFallback />}><CompetitionAnalyticsWidget /></Suspense>
-        </div>
-      )}
+              {/* Filters */}
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative flex-1 min-w-[200px] max-w-sm">
+                  <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                  <Input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder={isAr ? "بحث..." : "Search..."} className="ps-8 h-8 text-xs bg-card rounded-xl" />
+                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-[130px] h-8 text-xs rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                    {ALL_STATUSES.map(s => <SelectItem key={s} value={s}>{isAr ? statusConfig[s].labelAr : statusConfig[s].label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                {uniqueExhibitions.length > 0 && (
+                  <Select value={exhibitionFilter} onValueChange={setExhibitionFilter}>
+                    <SelectTrigger className="w-[140px] h-8 text-xs rounded-xl"><SelectValue placeholder={isAr ? "المعرض" : "Exhibition"} /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                      {uniqueExhibitions.map((ex: any) => <SelectItem key={ex.id} value={ex.id}>{isAr && ex.title_ar ? ex.title_ar : ex.title}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                )}
+                {uniqueYears.length > 0 && (
+                  <Select value={yearFilter} onValueChange={setYearFilter}>
+                    <SelectTrigger className="w-[100px] h-8 text-xs rounded-xl"><SelectValue placeholder={isAr ? "السنة" : "Year"} /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
+                      {uniqueYears.map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                )}
+                {(searchQuery || statusFilter !== "all" || exhibitionFilter !== "all" || yearFilter !== "all") && (
+                  <Button variant="ghost" size="sm" className="h-8 text-xs gap-1 rounded-xl" onClick={() => { setSearchQuery(""); setStatusFilter("all"); setExhibitionFilter("all"); setYearFilter("all"); setOrganizerFilter("all"); }}>
+                    <XCircle className="h-3.5 w-3.5" />{isAr ? "مسح" : "Clear"}
+                  </Button>
+                )}
+              </div>
 
-      {/* === IMPORT TAB === */}
-      {activeTab === "import" && (
-        <div className="space-y-4">
-          <div className="flex gap-2">
-            <Button variant={showSmartImport ? "default" : "outline"} size="sm" className="gap-1.5 text-xs" onClick={() => { setShowSmartImport(true); setShowBulkImport(false); }}>
-              <Sparkles className="h-3.5 w-3.5" />{isAr ? "استيراد ذكي" : "Smart Import"}
-            </Button>
-            <Button variant={showBulkImport ? "default" : "outline"} size="sm" className="gap-1.5 text-xs" onClick={() => { setShowBulkImport(true); setShowSmartImport(false); }}>
-              <FileSpreadsheet className="h-3.5 w-3.5" />{isAr ? "استيراد ملف" : "File Import"}
-            </Button>
-          </div>
-          {showSmartImport && <CompetitionSmartImport onImport={handleSmartImport} onClose={() => setShowSmartImport(false)} />}
-          {showBulkImport && <BulkImportPanel entityType="competition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); }} />}
-          {!showSmartImport && !showBulkImport && (
-            <div className="flex flex-col items-center justify-center py-16 rounded-lg border border-dashed border-border">
-              <FileSpreadsheet className="h-10 w-10 text-muted-foreground/30 mb-3" />
-              <p className="text-sm text-muted-foreground">{isAr ? "اختر طريقة الاستيراد" : "Choose an import method above"}</p>
+              <BulkActionBar count={bulkCount} onClear={clearSelection} onExport={() => exportCSV(selectedItems)} onStatusChange={bulkStatusChange} onDelete={bulkDelete} />
+
+              {/* Table */}
+              {isLoading ? (
+                <div className="space-y-2">{[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="h-14 w-full rounded-xl" />)}</div>
+              ) : !competitions?.length ? (
+                <div className="flex flex-col items-center justify-center py-16 rounded-xl border border-dashed border-border">
+                  <Trophy className="h-10 w-10 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات" : "No competitions found"}</p>
+                  <Button asChild variant="outline" size="sm" className="mt-3 gap-1.5 rounded-xl">
+                    <Link to="/competitions/create"><Plus className="h-3.5 w-3.5" />{isAr ? "إنشاء مسابقة" : "Create Competition"}</Link>
+                  </Button>
+                </div>
+              ) : (
+                <AdminTableCard>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="hover:bg-transparent">
+                        <TableHead className="w-10"><Checkbox checked={isAllSelected} onCheckedChange={toggleAll} /></TableHead>
+                        <SortableTableHead column="title" label={isAr ? "المسابقة" : "Competition"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
+                        <TableHead className="hidden lg:table-cell">{isAr ? "المنظم" : "Organizer"}</TableHead>
+                        <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} />
+                        <SortableTableHead column="competition_start" label={isAr ? "التاريخ" : "Date"} sortColumn={sortColumn} sortDirection={sortDirection} onSort={toggleCompSort} className="hidden md:table-cell" />
+                        <TableHead className="hidden xl:table-cell">{isAr ? "المشاركين" : "Participants"}</TableHead>
+                        <TableHead className="w-12" />
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {compPagination.paginated?.map(comp => {
+                        const counts = participantCounts?.[comp.id] || { approved: 0, pending: 0 };
+                        const fillPct = comp.max_participants ? Math.min(Math.round((counts.approved / comp.max_participants) * 100), 100) : 0;
+
+                        return (
+                          <TableRow key={comp.id} className="group">
+                            <TableCell className="w-10"><Checkbox checked={isSelected(comp.id)} onCheckedChange={() => toggleOne(comp.id)} /></TableCell>
+                            <TableCell>
+                              <div className="min-w-0">
+                                <p className="text-sm font-medium truncate max-w-[200px]">
+                                  {(() => {
+                                    const title = isAr && comp.title_ar ? comp.title_ar : comp.title;
+                                    const yr = comp.edition_year;
+                                    if (!yr || title.includes(String(yr))) return title;
+                                    return `${title} ${yr}`;
+                                  })()}
+                                </p>
+                                <div className="flex items-center gap-1.5 mt-0.5">
+                                  {comp.edition_year && (
+                                    <Badge variant="outline" className="text-[10px] h-4 px-1 font-mono">{comp.edition_year}</Badge>
+                                  )}
+                                  {comp.competition_number && (
+                                    <span className="text-[10px] text-muted-foreground font-mono">{comp.competition_number}</span>
+                                  )}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell className="hidden lg:table-cell">
+                              {comp.derivedOrganizer ? (
+                                <div className="flex items-center gap-2">
+                                  {comp.derivedOrganizer.logo_url ? (
+                                    <img src={comp.derivedOrganizer.logo_url} alt="" className="h-5 w-5 rounded object-contain" loading="lazy" />
+                                  ) : (
+                                    <div className="h-5 w-5 rounded bg-muted flex items-center justify-center"><Building2 className="h-3 w-3 text-muted-foreground" /></div>
+                                  )}
+                                  <span className="text-xs truncate max-w-[100px]">{isAr && comp.derivedOrganizer.name_ar ? comp.derivedOrganizer.name_ar : comp.derivedOrganizer.name}</span>
+                                </div>
+                              ) : <span className="text-[11px] text-muted-foreground">—</span>}
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={`text-[11px] font-normal border-0 rounded-lg ${statusConfig[comp.status as CompetitionStatus].bg}`}>
+                                <span className={`me-1 inline-block h-1.5 w-1.5 rounded-full ${statusConfig[comp.status as CompetitionStatus].dot}`} />
+                                {isAr ? statusConfig[comp.status as CompetitionStatus].labelAr : statusConfig[comp.status as CompetitionStatus].label}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="hidden md:table-cell">
+                              {comp.competition_start ? (
+                                <div>
+                                  <span className="text-xs tabular-nums">{format(new Date(comp.competition_start), "MMM d, yyyy")}</span>
+                                  {comp.city && <p className="text-[10px] text-muted-foreground">{comp.city}</p>}
+                                </div>
+                              ) : <span className="text-[11px] text-muted-foreground">—</span>}
+                            </TableCell>
+                            <TableCell className="hidden xl:table-cell">
+                              <div className="min-w-[70px]">
+                                <span className="text-xs tabular-nums">{counts.approved}{comp.max_participants ? `/${comp.max_participants}` : ""}</span>
+                                {comp.max_participants && <Progress value={fillPct} className="h-1 mt-1" />}
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex justify-end gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {comp.status === "pending" && (
+                                  <>
+                                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => approveCompetition.mutate(comp)}><CheckCircle className="h-3.5 w-3.5 text-chart-3" /></Button>
+                                    <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => rejectCompetition.mutate(comp)}><XCircle className="h-3.5 w-3.5 text-destructive" /></Button>
+                                  </>
+                                )}
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-3.5 w-3.5" /></Button></DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className="text-xs">
+                                    <DropdownMenuItem asChild><Link to={`/competitions/${comp.id}`}><Eye className="me-2 h-3.5 w-3.5" />{isAr ? "عرض" : "View"}</Link></DropdownMenuItem>
+                                    <DropdownMenuItem asChild><Link to={`/competitions/${comp.id}/edit`}><Edit className="me-2 h-3.5 w-3.5" />{isAr ? "تعديل" : "Edit"}</Link></DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => duplicateMutation.mutate(comp)}><Copy className="me-2 h-3.5 w-3.5" />{isAr ? "نسخ" : "Duplicate"}</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    {ALL_STATUSES.filter(s => s !== comp.status).slice(0, 4).map(status => (
+                                      <DropdownMenuItem key={status} onClick={() => updateStatusMutation.mutate({ id: comp.id, status })}>
+                                        <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusConfig[status].dot}`} />
+                                        {isAr ? statusConfig[status].labelAr : statusConfig[status].label}
+                                      </DropdownMenuItem>
+                                    ))}
+                                    <DropdownMenuSeparator />
+                                    {(comp.status === "draft" || comp.status === "pending") && (
+                                      <DropdownMenuItem onClick={() => { if (confirm(isAr ? "حذف؟" : "Delete?")) deleteMutation.mutate(comp.id); }} className="text-destructive">
+                                        <Trash2 className="me-2 h-3.5 w-3.5" />{isAr ? "حذف" : "Delete"}
+                                      </DropdownMenuItem>
+                                    )}
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                  <AdminTablePagination
+                    page={compPagination.page} totalPages={compPagination.totalPages} totalItems={compPagination.totalItems}
+                    startItem={compPagination.startItem} endItem={compPagination.endItem} pageSize={compPagination.pageSize}
+                    pageSizeOptions={compPagination.pageSizeOptions} hasNext={compPagination.hasNext} hasPrev={compPagination.hasPrev}
+                    onPageChange={compPagination.goTo} onPageSizeChange={compPagination.changePageSize}
+                  />
+                </AdminTableCard>
+              )}
             </div>
           )}
-        </div>
-      )}
+
+          {/* === JUDGING TAB === */}
+          {activeTab === "judging" && <JudgingPanel competitions={competitions || []} isAr={isAr} />}
+
+          {/* === RESULTS TAB === */}
+          {activeTab === "results" && <ResultsPanel competitions={competitions || []} isAr={isAr} />}
+
+          {/* === PIPELINE TAB === */}
+          {activeTab === "pipeline" && (
+            <div className="space-y-4">
+              <CompetitionLifecycleWidget />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div className="lg:col-span-2"><CompetitionPipelineTracker /></div>
+                <RegistrationTimelineWidget />
+              </div>
+            </div>
+          )}
+
+          {/* === LIVE STATS TAB === */}
+          {activeTab === "live" && (
+            <div className="space-y-4">
+              <CompetitionLiveStatsWidget />
+              <JudgingOverviewWidget />
+            </div>
+          )}
+
+          {/* === SCORING TAB === */}
+          {activeTab === "scoring" && (
+            <div className="space-y-4">
+              <CompetitionScoringOverview />
+              <CompetitionJudgingTracker />
+            </div>
+          )}
+
+          {/* === INSIGHTS TAB === */}
+          {activeTab === "insights" && (
+            <div className="space-y-4">
+              <CompetitionAnalyticsWidget />
+            </div>
+          )}
+
+          {/* === IMPORT TAB === */}
+          {activeTab === "import" && (
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <Button variant={showSmartImport ? "default" : "outline"} size="sm" className="gap-1.5 text-xs rounded-xl" onClick={() => { setShowSmartImport(true); setShowBulkImport(false); }}>
+                  <Sparkles className="h-3.5 w-3.5" />{isAr ? "استيراد ذكي" : "Smart Import"}
+                </Button>
+                <Button variant={showBulkImport ? "default" : "outline"} size="sm" className="gap-1.5 text-xs rounded-xl" onClick={() => { setShowBulkImport(true); setShowSmartImport(false); }}>
+                  <FileSpreadsheet className="h-3.5 w-3.5" />{isAr ? "استيراد ملف" : "File Import"}
+                </Button>
+              </div>
+              {showSmartImport && <CompetitionSmartImport onImport={handleSmartImport} onClose={() => setShowSmartImport(false)} />}
+              {showBulkImport && <BulkImportPanel entityType="competition" onImportComplete={() => { setShowBulkImport(false); queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); }} />}
+              {!showSmartImport && !showBulkImport && (
+                <div className="flex flex-col items-center justify-center py-16 rounded-xl border border-dashed border-border">
+                  <FileSpreadsheet className="h-10 w-10 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm text-muted-foreground">{isAr ? "اختر طريقة الاستيراد" : "Choose an import method above"}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </Suspense>
+      </div>
     </div>
   );
 }
@@ -697,7 +750,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
 
   if (judgingComps.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 rounded-lg border border-dashed border-border">
+      <div className="flex flex-col items-center justify-center py-16 rounded-xl border border-dashed border-border">
         <Gavel className="h-10 w-10 text-muted-foreground/30 mb-3" />
         <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات في مرحلة التحكيم" : "No competitions in judging phase"}</p>
       </div>
@@ -713,24 +766,24 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
         const progress = comp.max_participants ? Math.round((approved / comp.max_participants) * 100) : 50;
 
         return (
-          <div key={comp.id} className="rounded-lg border border-border bg-card p-4 space-y-3">
+          <div key={comp.id} className="rounded-xl border border-border/60 bg-card p-4 space-y-3 transition-all hover:shadow-sm hover:border-primary/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
+                <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
                 <p className="text-[11px] text-muted-foreground font-mono">{comp.competition_number}</p>
               </div>
-              <Badge className={`text-[11px] border-0 ${statusConfig[comp.status as CompetitionStatus]?.bg}`}>
+              <Badge className={`text-[11px] border-0 rounded-lg ${statusConfig[comp.status as CompetitionStatus]?.bg}`}>
                 {isAr ? statusConfig[comp.status as CompetitionStatus]?.labelAr : statusConfig[comp.status as CompetitionStatus]?.label}
               </Badge>
             </div>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { label: isAr ? "مسجلين" : "Registered", value: regs.length },
-                { label: isAr ? "معتمدين" : "Approved", value: approved },
-                { label: isAr ? "معلق" : "Pending", value: pending },
+                { label: isAr ? "مسجلين" : "Registered", value: regs.length, color: "text-primary" },
+                { label: isAr ? "معتمدين" : "Approved", value: approved, color: "text-chart-2" },
+                { label: isAr ? "معلق" : "Pending", value: pending, color: "text-chart-4" },
               ].map(s => (
-                <div key={s.label} className="text-center p-2 rounded-md bg-muted/30">
-                  <p className="text-lg font-semibold">{s.value}</p>
+                <div key={s.label} className="text-center p-2 rounded-xl bg-muted/30">
+                  <p className={cn("text-lg font-bold", s.color)}>{s.value}</p>
                   <p className="text-[10px] text-muted-foreground">{s.label}</p>
                 </div>
               ))}
@@ -738,7 +791,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
             <div className="space-y-1">
               <div className="flex justify-between text-[11px] text-muted-foreground">
                 <span>{isAr ? "التقدم" : "Progress"}</span>
-                <span>{progress}%</span>
+                <span className="font-bold">{progress}%</span>
               </div>
               <Progress value={progress} className="h-1.5" />
             </div>
@@ -766,7 +819,7 @@ function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
 
   if (completedComps.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 rounded-lg border border-dashed border-border">
+      <div className="flex flex-col items-center justify-center py-16 rounded-xl border border-dashed border-border">
         <Medal className="h-10 w-10 text-muted-foreground/30 mb-3" />
         <p className="text-sm text-muted-foreground">{isAr ? "لا توجد مسابقات مكتملة" : "No completed competitions"}</p>
       </div>
@@ -780,15 +833,15 @@ function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
       {completedComps.map(comp => {
         const compResults = resultsData.filter(r => r.competition_id === comp.id);
         return (
-          <div key={comp.id} className="rounded-lg border border-border bg-card p-4 space-y-3">
+          <div key={comp.id} className="rounded-xl border border-border/60 bg-card p-4 space-y-3 transition-all hover:shadow-sm hover:border-primary/20">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
-              <Badge variant="secondary" className="text-[11px]">{compResults.length} {isAr ? "نتيجة" : "results"}</Badge>
+              <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
+              <Badge variant="secondary" className="text-[11px] rounded-lg">{compResults.length} {isAr ? "نتيجة" : "results"}</Badge>
             </div>
             {compResults.length > 0 ? (
               <div className="space-y-1.5">
                 {compResults.slice(0, 5).map(result => (
-                  <div key={result.id} className="flex items-center gap-2.5 rounded-md border p-2">
+                  <div key={result.id} className="flex items-center gap-2.5 rounded-xl border border-border/40 p-2 bg-muted/20">
                     <span className="text-sm w-6 text-center">{medalEmoji(result.final_rank)}</span>
                     <p className="text-xs font-medium flex-1 truncate">{isAr ? "مشارك" : "Participant"} #{result.participant_id?.slice(0, 8)}</p>
                   </div>
