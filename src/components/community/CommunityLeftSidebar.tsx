@@ -70,23 +70,24 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
     live: "feature_live_sessions",
   };
 
-  const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
-    { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
-    { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
-    { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
-    { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
-    { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
-    { id: "live", label: isAr ? "جلسات مباشرة" : "Live Sessions", icon: Radio },
-    { id: "bookmarks", label: isAr ? "المحفوظات" : "Bookmarks", icon: Bookmark, requiresAuth: true },
-    { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
-  ];
-
-  const tabs = useMemo(() => allTabs.filter(tab => {
-    const featureCode = TAB_FEATURE_MAP[tab.id];
-    if (!featureCode) return true;
-    if (!enabledFeatures) return true;
-    return enabledFeatures.has(featureCode);
-  }), [allTabs, enabledFeatures]);
+  const tabs = useMemo(() => {
+    const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
+      { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
+      { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
+      { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
+      { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
+      { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
+      { id: "live", label: isAr ? "جلسات مباشرة" : "Live Sessions", icon: Radio },
+      { id: "bookmarks", label: isAr ? "المحفوظات" : "Bookmarks", icon: Bookmark, requiresAuth: true },
+      { id: "network", label: isAr ? "شبكتي" : "My Network", icon: UserPlus, requiresAuth: true },
+    ];
+    return allTabs.filter(tab => {
+      const featureCode = TAB_FEATURE_MAP[tab.id];
+      if (!featureCode) return true;
+      if (!enabledFeatures) return true;
+      return enabledFeatures.has(featureCode);
+    });
+  }, [isAr, enabledFeatures]);
 
   const displayName = profile
     ? (isAr ? (profile.display_name_ar || profile.display_name) : profile.display_name) || profile.full_name
