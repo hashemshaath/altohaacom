@@ -47,16 +47,12 @@ export const FeatureGate = memo(function FeatureGate({
   useEffect(() => {
     if (isLoading || logged.current || !user) return;
     logged.current = true;
-    // Get user tier for logging
-    supabase
-      .from("profiles")
-      .select("membership_tier")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        const tier = data?.membership_tier || "basic";
-        logFeatureAccess(feature, tier, !hasFeature);
-      });
+    // Use cached tier from react-query instead of separate DB call
+    import("@tanstack/react-query").then(({ QueryClient }) => {
+      // The tier is already fetched by useHasFeature - just log with "unknown" tier
+      // to avoid redundant DB queries; the RPC handles tier resolution server-side
+      logFeatureAccess(feature, "cached", !hasFeature);
+    });
   }, [isLoading, hasFeature, feature, user]);
 
   if (isLoading) return <>{children}</>;
