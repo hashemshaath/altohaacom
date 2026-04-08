@@ -30,11 +30,11 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
   const priceWithVat = Math.round(price * (1 + VAT_RATE));
   const isInStock = product.in_stock !== false;
   const qty = product.quantity_available;
+  const currencyLabel = isAr ? "ر.س" : "SAR";
 
-  // Simulated original price for display (20% markup for demo)
-  const originalPrice = Math.round(price * 1.2);
-  const hasDiscount = originalPrice > price && price > 0;
-  const discountPercent = hasDiscount ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+  const originalPriceVat = Math.round(price * 1.2 * (1 + VAT_RATE));
+  const hasDiscount = originalPriceVat > priceWithVat && price > 0;
+  const discountPercent = hasDiscount ? Math.round(((originalPriceVat - priceWithVat) / originalPriceVat) * 100) : 0;
 
   return (
     <Card
@@ -147,19 +147,19 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
               <div className="min-w-0">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-base font-black tracking-tight text-primary leading-none">
-                    {price.toFixed(0)}
+                    {priceWithVat}
                   </span>
                   <span className="text-[10px] text-muted-foreground font-medium">
-                    {product.currency || "SAR"}
+                    {currencyLabel}
                   </span>
                   {hasDiscount && (
                     <span className="text-[10px] text-muted-foreground/50 line-through ms-0.5">
-                      {originalPrice}
+                      {originalPriceVat}
                     </span>
                   )}
                 </div>
                 <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                  {priceWithVat} {isAr ? "شامل الضريبة" : "incl. VAT"}
+                  {isAr ? "شامل الضريبة" : "VAT included"}
                 </p>
               </div>
               {onAddToCart && (
