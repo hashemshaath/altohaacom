@@ -376,66 +376,7 @@ export default function CompetitionDetail() {
   const description = isAr && competition.description_ar ? competition.description_ar : competition.description;
   const venue = isAr && competition.venue_ar ? competition.venue_ar : competition.venue;
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
-  const isOrganizer = user && competition.organizer_id === user.id;
-  const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
   const hasWinners = competition.status === "completed";
-
-  // ─── Grouped Navigation ───
-  const NAV_GROUPS = useMemo(() => {
-    const core = [
-      { id: "overview", icon: Eye, labelEn: "Overview", labelAr: "نظرة عامة" },
-      { id: "categories", icon: Target, labelEn: "Categories", labelAr: "الفئات" },
-      { id: "criteria", icon: BarChart3, labelEn: "Criteria", labelAr: "المعايير" },
-      { id: "contestants", icon: Users, labelEn: "Contestants", labelAr: "المتسابقين" },
-      { id: "winners", icon: Medal, labelEn: "Winners", labelAr: "الفائزين" },
-    ];
-    const competition_tabs = [
-      { id: "rounds", icon: Swords, labelEn: "Rounds", labelAr: "الجولات" },
-      { id: "stages", icon: Layers, labelEn: "Eval Stages", labelAr: "مراحل التقييم" },
-      { id: "judges", icon: Scale, labelEn: "Judging Panel", labelAr: "لجنة التحكيم" },
-      { id: "live-scoring", icon: Radio, labelEn: "Live Scores", labelAr: "النتائج المباشرة" },
-      { id: "schedule", icon: CalendarClock, labelEn: "Schedule", labelAr: "الجدول" },
-      { id: "stations", icon: ChefHat, labelEn: "Stations", labelAr: "المحطات" },
-    ];
-    const community = [
-      { id: "gallery", icon: ImageIcon, labelEn: "Gallery", labelAr: "المعرض" },
-      { id: "feedback", icon: MessageCircle, labelEn: "Feedback", labelAr: "الملاحظات" },
-      { id: "checklist", icon: ClipboardCheck, labelEn: "Prep List", labelAr: "قائمة التحضير" },
-      { id: "team", icon: UsersRound, labelEn: "Team", labelAr: "الفريق" },
-      { id: "collaboration", icon: ClipboardList, labelEn: "Collaboration", labelAr: "التعاون" },
-    ];
-    const insights: typeof core = [];
-    if (canSeeKnowledge) {
-      insights.push(
-        { id: "knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
-        { id: "deliberation", icon: MessageSquare, labelEn: "Deliberation", labelAr: "المداولات" },
-        { id: "judge-analytics", icon: BarChart3, labelEn: "Judge Analytics", labelAr: "تحليل الحكام" },
-      );
-    }
-    if (isOrganizer) {
-      insights.push(
-        { id: "analytics", icon: TrendingUp, labelEn: "Analytics", labelAr: "التحليلات" },
-        { id: "adv-schedule", icon: CalendarClock, labelEn: "Adv. Schedule", labelAr: "جدول متقدم" },
-        { id: "notifications", icon: MessageSquare, labelEn: "Notifications", labelAr: "الإشعارات" },
-      );
-    }
-    if (user) {
-      insights.push({ id: "requirements", icon: ClipboardList, labelEn: "Order Center", labelAr: "مركز الطلبات" });
-    }
-    if (isOrganizer) {
-      insights.push({ id: "manage", icon: Settings, labelEn: "Manage", labelAr: "إدارة" });
-    }
-
-    const groups = [
-      { labelEn: "Core", labelAr: "أساسي", tabs: core },
-      { labelEn: "Competition", labelAr: "المسابقة", tabs: competition_tabs },
-      { labelEn: "Community", labelAr: "المجتمع", tabs: community },
-    ];
-    if (insights.length > 0) {
-      groups.push({ labelEn: "Insights", labelAr: "تحليلات", tabs: insights });
-    }
-    return groups;
-  }, [canSeeKnowledge, isOrganizer, user, isAr]);
 
   // Breadcrumb structured data
   const breadcrumbLd = {
