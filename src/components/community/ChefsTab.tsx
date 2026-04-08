@@ -139,7 +139,7 @@ export const ChefsTab = memo(function ChefsTab() {
       </p>
 
       {/* Chefs Grid */}
-      <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {filtered.map((chef) => {
           const displayName = isAr
             ? (chef.display_name_ar || chef.full_name_ar || chef.display_name || chef.full_name)
@@ -149,50 +149,52 @@ export const ChefsTab = memo(function ChefsTab() {
           const flag = chef.country_code ? countryFlag(chef.country_code) : "";
 
           return (
-            <div
+            <Link
               key={chef.user_id}
-              className="group flex items-center gap-3 rounded-xl border border-border/20 bg-card/70 px-3 py-2.5 transition-all duration-200 hover:shadow-md hover:border-primary/20 active:scale-[0.99]"
+              to={`/${chef.username || chef.user_id}`}
+              className="group relative flex flex-col items-center rounded-2xl border border-border/20 bg-card p-4 pt-5 text-center transition-all duration-200 hover:shadow-lg hover:border-primary/25 hover:-translate-y-0.5"
             >
               {/* Avatar */}
-              <Link to={`/${chef.username || chef.user_id}`} className="relative shrink-0">
-                <Avatar className="h-11 w-11 ring-2 ring-border/15 transition-transform duration-200 group-hover:scale-105">
+              <div className="relative mb-2.5">
+                <Avatar className="h-14 w-14 ring-2 ring-primary/10 transition-transform duration-200 group-hover:ring-primary/30">
                   <AvatarImage src={chef.avatar_url || undefined} alt={displayName || ""} />
-                  <AvatarFallback className="bg-primary/8 text-primary font-bold text-sm">
+                  <AvatarFallback className="bg-primary/8 text-primary font-bold text-base">
                     {(displayName || "C")[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 {chef.is_verified && (
-                  <div className="absolute -bottom-0.5 -end-0.5 h-4 w-4 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] ring-[1.5px] ring-card">
+                  <div className="absolute -bottom-0.5 -end-0.5 h-4.5 w-4.5 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] ring-2 ring-card">
                     ✓
                   </div>
                 )}
-              </Link>
-
-              {/* Info */}
-              <div className="min-w-0 flex-1">
-                <Link to={`/${chef.username || chef.user_id}`} className="block">
-                  <h3 className="font-semibold text-[13px] leading-tight truncate group-hover:text-primary transition-colors">
-                    {displayName || "Chef"}
-                    <ChefBadge userId={chef.user_id} />
-                  </h3>
-                </Link>
-                <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-muted-foreground truncate">
-                  {displaySpec && (
-                    <span className="truncate">{displaySpec}</span>
-                  )}
-                  {displaySpec && (cityName || flag) && <span className="text-border">·</span>}
-                  {flag && <span className="text-xs leading-none">{flag}</span>}
-                  {cityName && <span className="truncate">{cityName}</span>}
-                </div>
               </div>
 
-              {/* Action */}
+              {/* Name */}
+              <h3 className="font-semibold text-sm leading-snug truncate w-full group-hover:text-primary transition-colors">
+                {displayName || "Chef"}
+              </h3>
+              <ChefBadge userId={chef.user_id} />
+
+              {/* Spec */}
+              {displaySpec && (
+                <p className="text-[11px] text-muted-foreground mt-0.5 truncate w-full">{displaySpec}</p>
+              )}
+
+              {/* Location */}
+              {(cityName || flag) && (
+                <p className="text-[11px] text-muted-foreground/60 mt-0.5 flex items-center gap-1 justify-center">
+                  {flag && <span className="text-xs">{flag}</span>}
+                  {cityName && <span className="truncate max-w-[80px]">{cityName}</span>}
+                </p>
+              )}
+
+              {/* Follow */}
               {user && (
-                <div className="shrink-0">
+                <div className="mt-3 w-full" onClick={(e) => e.preventDefault()}>
                   <FollowButton userId={chef.user_id} userName={displayName || undefined} />
                 </div>
               )}
-            </div>
+            </Link>
           );
         })}
       </div>
