@@ -1,4 +1,4 @@
-import { memo, useState, useMemo } from "react";
+import { memo, useState, useMemo, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,8 @@ import { Separator } from "@/components/ui/separator";
 import {
   Package, ShoppingCart, ArrowLeft, CheckCircle, XCircle,
   Minus, Plus, Truck, Shield, RotateCcw, Tag, Box, Ruler,
-  Star, Share2, Heart, ExternalLink,
+  Share2, Heart, ExternalLink, Flame, CreditCard, Info,
+  ListChecks, FileText, ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,17 +22,17 @@ interface SupplierProductDetailProps {
 }
 
 const VAT_RATE = 0.15;
+type InfoTab = "description" | "specs" | "shipping";
 
 /** Parse structured description into sections */
 function parseDescription(text: string) {
   if (!text) return [];
   const lines = text.split("\n").filter(Boolean);
   const sections: { type: "heading" | "bullet" | "text"; content: string }[] = [];
-
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed) continue;
-    if (trimmed.startsWith("✅") || trimmed.startsWith("📦") || trimmed.startsWith("📐") || trimmed.startsWith("🍽️") || trimmed.startsWith("💡") || trimmed.startsWith("🏷️")) {
+    if (/^[✅📦📐🍽️💡🏷️⚡🔧]/.test(trimmed)) {
       sections.push({ type: "heading", content: trimmed });
     } else if (trimmed.startsWith("•") || trimmed.startsWith("-")) {
       sections.push({ type: "bullet", content: trimmed.replace(/^[•\-]\s*/, "") });
@@ -42,18 +43,19 @@ function parseDescription(text: string) {
   return sections;
 }
 
-export const SupplierProductDetail = memo(function SupplierProductDetail({
+export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierProductDetailProps>(function SupplierProductDetail({
   product,
   relatedProducts = [],
   onBack,
   onAddToCart,
   onViewProduct,
   companyName,
-}: SupplierProductDetailProps) {
+}, ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [qty, setQty] = useState(1);
   const [isFav, setIsFav] = useState(false);
+  const [infoTab, setInfoTab] = useState<InfoTab>("description");
 
   const title = product ? (isAr && product.name_ar ? product.name_ar : product.name) : "";
   const desc = product ? (isAr && product.description_ar ? product.description_ar : product.description) : "";
@@ -61,14 +63,22 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
   const priceWithVat = Math.round(price * (1 + VAT_RATE));
   const totalPrice = price * qty;
   const totalWithVat = Math.round(totalPrice * (1 + VAT_RATE));
-  const isInStock = product.in_stock !== false;
-  const stockQty = product.quantity_available;
+  const isInStock = product?.in_stock !== false;
+  const stockQty = product?.quantity_available;
 
   const descSections = useMemo(() => parseDescription(desc || ""), [desc]);
 
   if (!product) return null;
 
-  // Extract subtitle (first text line) and rest
+  // Simulated original price
+  const originalPrice = Math.round(price * 1.2);
+  const hasDiscount = originalPrice > price && price > 0;
+  const discountPercent = hasDiscount ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
+
+  // Installment calculation (4 payments)
+  const installment = price > 0 ? Math.ceil(priceWithVat / 4) : 0;
+
+  // Extract subtitle
   const subtitle = descSections.find(s => s.type === "text" && !s.content.startsWith("🏷️"))?.content || "";
 
   const specs = [
@@ -76,29 +86,34 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
     product.subcategory && { label: isAr ? "الفئة الفرعية" : "Subcategory", value: product.subcategory, icon: Tag },
     product.sku && { label: "SKU", value: product.sku, icon: Box },
     product.unit && { label: isAr ? "الوحدة" : "Unit", value: product.unit, icon: Ruler },
-    stockQty && { label: isAr ? "الكمية المتوفرة" : "Available Qty", value: stockQty.toString(), icon: Package },
+    stockQty && { label: isAr ? "الكمية المتوفرة" : "Available", value: stockQty.toString(), icon: Package },
   ].filter(Boolean) as { label: string; value: string; icon: any }[];
 
   const handleShare = async () => {
-    const url = window.location.href;
     try {
-      await navigator.share({ title, url });
+      await navigator.share({ title, url: window.location.href });
     } catch {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(window.location.href);
     }
   };
 
+  const INFO_TABS: { key: InfoTab; icon: React.ElementType; en: string; ar: string }[] = [
+    { key: "description", icon: FileText, en: "Description", ar: "الوصف" },
+    { key: "specs", icon: ListChecks, en: "Specifications", ar: "المواصفات" },
+    { key: "shipping", icon: Truck, en: "Shipping & Returns", ar: "الشحن والإرجاع" },
+  ];
+
   return (
-    <div className="space-y-6">
-      {/* Breadcrumb/Back */}
+    <div ref={ref} className="space-y-6">
+      {/* Breadcrumb */}
       <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" className="rounded-xl gap-2 text-muted-foreground hover:text-foreground" onClick={onBack}>
+        <Button variant="ghost" size="sm" className="rounded-xl gap-2 text-muted-foreground hover:text-foreground active:scale-[0.98]" onClick={onBack}>
           <ArrowLeft className="h-4 w-4" />
           {isAr ? "العودة للمنتجات" : "Back to Products"}
         </Button>
         <div className="flex gap-1.5">
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={() => setIsFav(!isFav)}>
-            <Heart className={cn("h-4 w-4", isFav && "fill-destructive text-destructive")} />
+          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-destructive/10" onClick={() => setIsFav(!isFav)}>
+            <Heart className={cn("h-4 w-4 transition-colors", isFav ? "fill-destructive text-destructive" : "text-muted-foreground")} />
           </Button>
           <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={handleShare}>
             <Share2 className="h-4 w-4" />
@@ -106,30 +121,39 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
         </div>
       </div>
 
-      {/* Main product layout */}
+      {/* Main layout */}
       <div className="grid gap-6 lg:grid-cols-2">
-        {/* Image section */}
+        {/* Image */}
         <div className="space-y-3">
-          <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted/20 border border-border/20">
+          <div className="relative aspect-square overflow-hidden rounded-2xl bg-muted/10 border border-border/15">
             {product.image_url ? (
-              <img src={product.image_url} alt={title} className="h-full w-full object-contain p-4" />
+              <img src={product.image_url} alt={title} className="h-full w-full object-contain p-6" />
             ) : (
               <div className="flex h-full items-center justify-center">
                 <Package className="h-20 w-20 text-muted-foreground/10" />
               </div>
             )}
+
+            {/* Discount ribbon */}
+            {hasDiscount && (
+              <div className="absolute top-3 start-3">
+                <Badge className="bg-destructive text-white font-bold text-xs px-2.5 py-1 rounded-xl shadow-md gap-1">
+                  <Flame className="h-3.5 w-3.5" />
+                  {isAr ? `خصم ${discountPercent}%` : `${discountPercent}% OFF`}
+                </Badge>
+              </div>
+            )}
+
             {!isInStock && (
               <div className="absolute inset-0 flex items-center justify-center bg-background/60 backdrop-blur-sm">
-                <Badge variant="destructive" className="px-4 py-2 text-sm font-bold">
-                  {isAr ? "نفد المخزون" : "Out of Stock"}
-                </Badge>
+                <Badge variant="destructive" className="px-4 py-2 text-sm font-bold">{isAr ? "نفد المخزون" : "Out of Stock"}</Badge>
               </div>
             )}
           </div>
         </div>
 
-        {/* Info section */}
-        <div className="space-y-5">
+        {/* Info */}
+        <div className="space-y-4">
           {/* Category + Title */}
           <div>
             {product.category && (
@@ -147,26 +171,44 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
             )}
           </div>
 
-          {/* Price block */}
-          <Card className="rounded-2xl border-primary/10 bg-primary/3 overflow-hidden">
-            <CardContent className="p-4 space-y-2">
+          {/* Price card */}
+          <Card className="rounded-2xl border-primary/10 overflow-hidden">
+            <CardContent className="p-4 space-y-2.5">
               {price > 0 ? (
                 <>
-                  <div className="flex items-baseline gap-2">
+                  <div className="flex items-baseline gap-2 flex-wrap">
                     <span className="text-3xl font-black text-primary tracking-tight">{price.toFixed(0)}</span>
                     <span className="text-base text-muted-foreground font-medium">{product.currency || "SAR"}</span>
-                    {product.unit && <span className="text-sm text-muted-foreground">/ {product.unit}</span>}
+                    {hasDiscount && (
+                      <span className="text-base text-muted-foreground/50 line-through">{originalPrice}</span>
+                    )}
+                    {hasDiscount && (
+                      <Badge className="bg-destructive/10 text-destructive border-0 text-xs font-bold">
+                        −{discountPercent}%
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    {priceWithVat.toFixed(0)} {product.currency || "SAR"} {isAr ? "شامل ضريبة القيمة المضافة 15%" : "incl. 15% VAT"}
+                    {priceWithVat.toFixed(0)} {product.currency || "SAR"} <span className="text-xs">{isAr ? "شامل ضريبة القيمة المضافة 15%" : "incl. 15% VAT"}</span>
                   </p>
+
+                  {/* Installments */}
+                  {installment > 0 && (
+                    <div className="flex items-center gap-2 rounded-xl bg-muted/30 p-2.5 text-xs">
+                      <CreditCard className="h-4 w-4 text-primary shrink-0" />
+                      <span className="text-muted-foreground">
+                        {isAr
+                          ? `قسّمها على 4 دفعات بقيمة ${installment} ر.س بدون فوائد`
+                          : `Split into 4 payments of ${installment} SAR interest-free`}
+                      </span>
+                    </div>
+                  )}
+
                   {qty > 1 && (
-                    <div className="pt-1 border-t border-primary/10">
-                      <p className="text-sm font-semibold text-foreground">
+                    <div className="pt-1.5 border-t border-primary/10">
+                      <p className="text-sm font-semibold">
                         {isAr ? "الإجمالي:" : "Total:"} {totalPrice.toFixed(0)} {product.currency || "SAR"}
-                        <span className="text-xs text-muted-foreground ms-1">
-                          ({totalWithVat.toFixed(0)} {isAr ? "شامل الضريبة" : "incl. VAT"})
-                        </span>
+                        <span className="text-xs text-muted-foreground ms-1">({totalWithVat.toFixed(0)} {isAr ? "شامل الضريبة" : "incl. VAT"})</span>
                       </p>
                     </div>
                   )}
@@ -177,34 +219,33 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
             </CardContent>
           </Card>
 
-          {/* Stock status */}
+          {/* Stock */}
           <div className="flex items-center gap-3">
             {isInStock ? (
               <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-1.5 py-1 px-3 rounded-xl">
                 <CheckCircle className="h-3.5 w-3.5" />
-                {isAr ? "متوفر في المخزون" : "In Stock"}
+                {isAr ? "متوفر" : "In Stock"}
                 {stockQty && stockQty > 0 && <span className="font-normal opacity-70">({stockQty})</span>}
               </Badge>
             ) : (
               <Badge variant="destructive" className="gap-1.5 py-1 px-3 rounded-xl">
-                <XCircle className="h-3.5 w-3.5" />
-                {isAr ? "غير متوفر حالياً" : "Currently Unavailable"}
+                <XCircle className="h-3.5 w-3.5" />{isAr ? "غير متوفر" : "Unavailable"}
               </Badge>
             )}
             {isInStock && stockQty && stockQty <= 5 && (
-              <span className="text-xs text-destructive font-bold">{isAr ? `باقي ${stockQty} فقط!` : `Only ${stockQty} left!`}</span>
+              <span className="text-xs text-destructive font-bold animate-pulse">{isAr ? `باقي ${stockQty} فقط!` : `Only ${stockQty} left!`}</span>
             )}
           </div>
 
-          {/* Quantity + Add to Cart */}
+          {/* Quantity + Cart */}
           {onAddToCart && price > 0 && (
             <div className="flex items-center gap-3">
-              <div className="flex items-center border border-border/40 rounded-xl overflow-hidden">
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-none" disabled={qty <= 1} onClick={() => setQty(Math.max(1, qty - 1))}>
+              <div className="flex items-center border border-border/30 rounded-xl overflow-hidden bg-muted/20">
+                <Button variant="ghost" size="icon" className="h-11 w-11 rounded-none active:scale-95" disabled={qty <= 1} onClick={() => setQty(Math.max(1, qty - 1))}>
                   <Minus className="h-4 w-4" />
                 </Button>
-                <span className="w-12 text-center text-sm font-bold tabular-nums">{qty}</span>
-                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-none" disabled={stockQty ? qty >= stockQty : false} onClick={() => setQty(qty + 1)}>
+                <span className="w-12 text-center text-sm font-bold tabular-nums select-none">{qty}</span>
+                <Button variant="ghost" size="icon" className="h-11 w-11 rounded-none active:scale-95" disabled={stockQty ? qty >= stockQty : false} onClick={() => setQty(qty + 1)}>
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
@@ -218,74 +259,112 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
           {/* Trust badges */}
           <div className="grid grid-cols-3 gap-2">
             {[
-              { icon: Truck, en: "Fast Delivery", ar: "توصيل سريع" },
-              { icon: Shield, en: "Guaranteed", ar: "منتج مضمون" },
-              { icon: RotateCcw, en: "Easy Returns", ar: "إرجاع سهل" },
-            ].map(({ icon: Icon, en, ar }) => (
-              <div key={en} className="flex flex-col items-center gap-1 rounded-xl bg-muted/30 p-2.5 text-center">
+              { icon: Truck, en: "Fast Delivery", ar: "توصيل سريع", sub_en: "Within 24h", sub_ar: "خلال 24 ساعة" },
+              { icon: Shield, en: "Guaranteed", ar: "منتج مضمون", sub_en: "Original product", sub_ar: "منتج أصلي" },
+              { icon: RotateCcw, en: "Free Returns", ar: "إرجاع مجاني", sub_en: "Within 7 days", sub_ar: "خلال 7 أيام" },
+            ].map(({ icon: Icon, en, ar, sub_en, sub_ar }) => (
+              <div key={en} className="flex flex-col items-center gap-0.5 rounded-xl bg-muted/20 border border-border/10 p-2.5 text-center">
                 <Icon className="h-4 w-4 text-primary" />
-                <span className="text-[10px] text-muted-foreground font-medium">{isAr ? ar : en}</span>
+                <span className="text-[11px] font-medium">{isAr ? ar : en}</span>
+                <span className="text-[9px] text-muted-foreground/60">{isAr ? sub_ar : sub_en}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Description & Specs — Salla-style structured view */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Description with structured sections */}
-        {descSections.length > 0 && (
-          <div className="lg:col-span-2">
-            <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-              <Package className="h-4 w-4 text-primary" />
-              {isAr ? "وصف المنتج" : "Product Description"}
-            </h2>
-            <Card className="rounded-2xl border-border/20">
-              <CardContent className="p-4 sm:p-5 space-y-3">
-                {descSections.map((section, idx) => {
-                  if (section.type === "heading") {
-                    return (
-                      <h3 key={idx} className="text-sm font-bold text-foreground pt-2 first:pt-0 flex items-center gap-1.5">
-                        {section.content}
-                      </h3>
-                    );
-                  }
-                  if (section.type === "bullet") {
-                    return (
-                      <div key={idx} className="flex items-start gap-2 text-sm text-muted-foreground ps-1">
-                        <span className="text-primary mt-0.5 shrink-0">•</span>
-                        <span className="leading-relaxed">{section.content}</span>
-                      </div>
-                    );
-                  }
+      {/* Info Tabs */}
+      <div>
+        <div className="flex gap-1 border-b border-border/20 mb-4">
+          {INFO_TABS.map(tab => {
+            const Icon = tab.icon;
+            const isActive = infoTab === tab.key;
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setInfoTab(tab.key)}
+                className={cn(
+                  "flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors touch-manipulation",
+                  isActive ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {isAr ? tab.ar : tab.en}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Description tab */}
+        {infoTab === "description" && descSections.length > 0 && (
+          <Card className="rounded-2xl border-border/15">
+            <CardContent className="p-4 sm:p-5 space-y-2.5">
+              {descSections.map((section, idx) => {
+                if (section.type === "heading") {
                   return (
-                    <p key={idx} className="text-sm text-muted-foreground leading-relaxed">{section.content}</p>
+                    <h3 key={idx} className="text-sm font-bold text-foreground pt-3 first:pt-0 flex items-center gap-1.5 border-t border-border/10 first:border-0">
+                      {section.content}
+                    </h3>
                   );
-                })}
-              </CardContent>
-            </Card>
-          </div>
+                }
+                if (section.type === "bullet") {
+                  return (
+                    <div key={idx} className="flex items-start gap-2.5 text-sm text-muted-foreground ps-1">
+                      <ChevronRight className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+                      <span className="leading-relaxed">{section.content}</span>
+                    </div>
+                  );
+                }
+                return <p key={idx} className="text-sm text-muted-foreground leading-relaxed">{section.content}</p>;
+              })}
+            </CardContent>
+          </Card>
         )}
 
-        {/* Specifications */}
-        {specs.length > 0 && (
-          <div className={cn(!descSections.length && "lg:col-span-3")}>
-            <h2 className="text-base font-bold mb-3 flex items-center gap-2">
-              <Box className="h-4 w-4 text-primary" />
-              {isAr ? "المواصفات" : "Specifications"}
-            </h2>
-            <Card className="rounded-2xl border-border/20">
-              <CardContent className="p-0 divide-y divide-border/15">
-                {specs.map((spec) => (
-                  <div key={spec.label} className="flex items-center gap-3 px-4 py-3">
-                    <spec.icon className="h-4 w-4 text-muted-foreground/50 shrink-0" />
-                    <span className="text-sm text-muted-foreground">{spec.label}</span>
-                    <span className="ms-auto text-sm font-medium">{spec.value}</span>
+        {/* Specs tab */}
+        {infoTab === "specs" && (
+          <Card className="rounded-2xl border-border/15">
+            <CardContent className="p-0 divide-y divide-border/10">
+              {specs.length > 0 ? specs.map((spec, idx) => (
+                <div key={spec.label} className={cn("flex items-center gap-3 px-4 py-3.5", idx % 2 === 0 && "bg-muted/15")}>
+                  <spec.icon className="h-4 w-4 text-primary/60 shrink-0" />
+                  <span className="text-sm text-muted-foreground">{spec.label}</span>
+                  <span className="ms-auto text-sm font-medium">{spec.value}</span>
+                </div>
+              )) : (
+                <div className="p-8 text-center text-sm text-muted-foreground">
+                  <Info className="h-8 w-8 text-muted-foreground/20 mx-auto mb-2" />
+                  {isAr ? "لا توجد مواصفات إضافية" : "No additional specifications"}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Shipping tab */}
+        {infoTab === "shipping" && (
+          <Card className="rounded-2xl border-border/15">
+            <CardContent className="p-4 sm:p-5 space-y-4">
+              {[
+                { icon: Truck, title: isAr ? "سياسة الشحن" : "Shipping Policy",
+                  desc: isAr ? "شحن سريع خلال 24 ساعة لجميع المناطق. شحن مجاني للطلبات فوق 200 ر.س" : "Fast shipping within 24 hours to all regions. Free shipping on orders over 200 SAR" },
+                { icon: RotateCcw, title: isAr ? "سياسة الإرجاع" : "Return Policy",
+                  desc: isAr ? "إمكانية الإرجاع خلال 7 أيام من الاستلام. المنتج يجب أن يكون بحالته الأصلية" : "Returns accepted within 7 days of delivery. Product must be in original condition" },
+                { icon: Shield, title: isAr ? "ضمان المنتج" : "Product Warranty",
+                  desc: isAr ? "جميع المنتجات مضمونة ضد عيوب التصنيع. ضمان الشركة المصنعة ساري المفعول" : "All products are guaranteed against manufacturing defects. Manufacturer warranty applies" },
+              ].map(({ icon: Icon, title, desc }) => (
+                <div key={title} className="flex gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/8">
+                    <Icon className="h-5 w-5 text-primary" />
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
+                  <div>
+                    <p className="text-sm font-semibold">{title}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
         )}
       </div>
 
@@ -304,12 +383,12 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
               return (
                 <Card
                   key={rp.id}
-                  className="rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                  className="rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all group"
                   onClick={() => onViewProduct?.(rp)}
                 >
-                  <div className="aspect-square bg-muted/20 overflow-hidden">
+                  <div className="aspect-square bg-muted/10 overflow-hidden">
                     {rp.image_url ? (
-                      <img loading="lazy" src={rp.image_url} className="h-full w-full object-contain p-2 transition-transform duration-500 hover:scale-105" alt={rpTitle} />
+                      <img loading="lazy" src={rp.image_url} className="h-full w-full object-contain p-2 transition-transform duration-500 group-hover:scale-105" alt={rpTitle} />
                     ) : (
                       <div className="h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/15" /></div>
                     )}
@@ -320,9 +399,7 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
                       <div className="flex items-baseline gap-1 mt-1">
                         <span className="text-sm font-bold text-primary">{rpPrice.toFixed(0)}</span>
                         <span className="text-[10px] text-muted-foreground">{rp.currency || "SAR"}</span>
-                        <span className="text-[10px] text-muted-foreground/60 ms-1">
-                          ({Math.round(rpPrice * 1.15)} {isAr ? "شامل الضريبة" : "incl. VAT"})
-                        </span>
+                        <span className="text-[10px] text-muted-foreground/50 ms-1">({Math.round(rpPrice * 1.15)} {isAr ? "شامل الضريبة" : "incl. VAT"})</span>
                       </div>
                     )}
                   </CardContent>
@@ -334,4 +411,4 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
       )}
     </div>
   );
-});
+}));

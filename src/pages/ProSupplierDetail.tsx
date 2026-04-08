@@ -1,4 +1,4 @@
-import { useState, memo, useCallback } from "react";
+import { useState, memo, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,6 +18,7 @@ import {
   Package, Crown, Hash, Earth, Calendar, Sparkles,
   ExternalLink, Star, ChefHat, Shield, Clock, MessageCircle,
   Heart, Share2, TrendingUp, Award, Zap, Eye,
+  Search, SlidersHorizontal, Grid3X3, LayoutList, ArrowUpDown,
 } from "lucide-react";
 import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
 import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
@@ -76,6 +77,9 @@ export default function ProSupplierDetail() {
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [descExpanded, setDescExpanded] = useState(false);
+  const [productSearch, setProductSearch] = useState("");
+  const [productSort, setProductSort] = useState<"name" | "price_asc" | "price_desc">("name");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { addItem } = useCart();
   useSupplierViewTracker(id);
 
@@ -164,6 +168,28 @@ export default function ProSupplierDetail() {
     const c = countries.find((ct) => ct.code === code);
     return c ? (isAr ? c.name_ar || c.name : c.name) : code;
   }, [countries, isAr]);
+
+  const categories = useMemo(() => {
+    const cats = new Set(products.map((p: any) => p.category || "other"));
+    return Array.from(cats);
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    let filtered = [...products];
+    if (selectedCategory !== "all") filtered = filtered.filter((p: any) => (p.category || "other") === selectedCategory);
+    if (productSearch.trim()) {
+      const q = productSearch.toLowerCase();
+      filtered = filtered.filter((p: any) =>
+        (p.name || "").toLowerCase().includes(q) ||
+        (p.name_ar || "").toLowerCase().includes(q) ||
+        (p.sku || "").toLowerCase().includes(q)
+      );
+    }
+    if (productSort === "price_asc") filtered.sort((a: any, b: any) => (a.unit_price || 0) - (b.unit_price || 0));
+    else if (productSort === "price_desc") filtered.sort((a: any, b: any) => (b.unit_price || 0) - (a.unit_price || 0));
+    else filtered.sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
+    return filtered;
+  }, [products, selectedCategory, productSearch, productSort]);
 
   const productsByCategory = products.reduce<Record<string, any[]>>((acc, p: any) => {
     const cat = p.category || "other";
@@ -639,34 +665,93 @@ export default function ProSupplierDetail() {
                     onViewProduct={(p) => setSelectedProduct(p)}
                     companyName={companyName}
                   />
-                ) : Object.keys(productsByCategory).length === 0 ? (
-                  <div className="py-16 text-center">
-                    <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/30 mb-4">
-                      <Package className="h-10 w-10 text-muted-foreground/20" />
-                    </div>
-                    <p className="text-muted-foreground">{isAr ? "لا توجد منتجات حالياً" : "No products available yet"}</p>
-                  </div>
                 ) : (
-                  <div className="space-y-8">
-                    {Object.entries(productsByCategory).map(([cat, items]) => (
-                      <div key={cat}>
-                        <div className="flex items-center gap-2 mb-4">
-                          <ChefHat className="h-4 w-4 text-primary" />
-                          <h3 className="text-base font-bold capitalize">{cat}</h3>
-                          <Badge variant="secondary" className="text-[11px] rounded-full">{items.length}</Badge>
-                        </div>
-                        <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                          {items.map((p) => (
-                            <SupplierProductCard
-                              key={p.id}
-                              product={p}
-                              onViewDetails={(prod) => setSelectedProduct(prod)}
-                              onAddToCart={handleAddToCart}
-                            />
-                          ))}
-                        </div>
+                  <div className="space-y-5">
+                    {/* Search & Filter Bar */}
+                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                      {/* Search */}
+                      <div className="relative flex-1 min-w-0 w-full sm:max-w-sm">
+                        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <input
+                          type="text"
+                          value={productSearch}
+                          onChange={(e) => setProductSearch(e.target.value)}
+                          placeholder={isAr ? "ابحث في المنتجات..." : "Search products..."}
+                          className="w-full h-10 ps-9 pe-3 rounded-xl border border-border/30 bg-muted/20 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
+                        />
                       </div>
-                    ))}
+
+                      {/* Category filter pills */}
+                      <div className="flex gap-1.5 overflow-x-auto scrollbar-none flex-1">
+                        <button
+                          onClick={() => setSelectedCategory("all")}
+                          className={cn(
+                            "px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-all touch-manipulation",
+                            selectedCategory === "all" ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:bg-muted/60"
+                          )}
+                        >
+                          {isAr ? "الكل" : "All"} ({products.length})
+                        </button>
+                        {categories.map(cat => (
+                          <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={cn(
+                              "px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap capitalize transition-all touch-manipulation",
+                              selectedCategory === cat ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:bg-muted/60"
+                            )}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Sort */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+                        <select
+                          value={productSort}
+                          onChange={(e) => setProductSort(e.target.value as any)}
+                          className="h-9 px-2 rounded-lg border border-border/30 bg-muted/20 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        >
+                          <option value="name">{isAr ? "الاسم" : "Name"}</option>
+                          <option value="price_asc">{isAr ? "السعر: الأقل" : "Price: Low"}</option>
+                          <option value="price_desc">{isAr ? "السعر: الأعلى" : "Price: High"}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Results count */}
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? `${filteredProducts.length} منتج` : `${filteredProducts.length} products`}
+                      {productSearch && ` ${isAr ? "لـ" : "for"} "${productSearch}"`}
+                    </p>
+
+                    {/* Products grid */}
+                    {filteredProducts.length === 0 ? (
+                      <div className="py-16 text-center">
+                        <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/30 mb-4">
+                          <Search className="h-10 w-10 text-muted-foreground/20" />
+                        </div>
+                        <p className="text-muted-foreground">{isAr ? "لا توجد نتائج" : "No products found"}</p>
+                        {productSearch && (
+                          <Button variant="link" size="sm" className="text-primary mt-2" onClick={() => { setProductSearch(""); setSelectedCategory("all"); }}>
+                            {isAr ? "مسح البحث" : "Clear search"}
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                        {filteredProducts.map((p: any) => (
+                          <SupplierProductCard
+                            key={p.id}
+                            product={p}
+                            onViewDetails={(prod) => setSelectedProduct(prod)}
+                            onAddToCart={handleAddToCart}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </>
