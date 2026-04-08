@@ -245,6 +245,20 @@ export default function ExhibitionsAdmin() {
     return opt ? (isAr ? opt.ar : opt.en) : type;
   };
 
+  const activeFilterCount = [statusFilter, typeFilter, yearFilter, cityFilter, organizerFilter, seriesFilter].filter(f => f !== "all").length;
+  const tabs = TAB_CONFIG(isAr);
+
+  // KPI data
+  const kpis = useMemo(() => {
+    if (!exhibitions) return [];
+    return [
+      { label: t("Total", "الإجمالي"), value: exhibitions.length, icon: Landmark, color: "text-foreground" },
+      { label: t("Active", "نشطة"), value: exhibitions.filter(e => e.status === "active").length, icon: TrendingUp, color: "text-chart-2" },
+      { label: t("Pending", "معلقة"), value: exhibitions.filter(e => e.status === "pending").length, icon: Clock, color: "text-chart-4" },
+      { label: t("Views", "المشاهدات"), value: exhibitions.reduce((s, e) => s + (e.view_count || 0), 0), icon: Eye, color: "text-primary" },
+    ];
+  }, [exhibitions, isAr]);
+
   // ── Edit Form View ──
   if (showForm) {
     return (
@@ -266,21 +280,6 @@ export default function ExhibitionsAdmin() {
       </div>
     );
   }
-
-  const activeFilterCount = [statusFilter, typeFilter, yearFilter, cityFilter, organizerFilter, seriesFilter].filter(f => f !== "all").length;
-  const tabs = TAB_CONFIG(isAr);
-
-  // KPI data
-  const kpis = useMemo(() => {
-    if (!exhibitions) return [];
-    const now = new Date();
-    return [
-      { label: t("Total", "الإجمالي"), value: exhibitions.length, icon: Landmark, color: "text-foreground" },
-      { label: t("Active", "نشطة"), value: exhibitions.filter(e => e.status === "active").length, icon: TrendingUp, color: "text-chart-2" },
-      { label: t("Pending", "معلقة"), value: exhibitions.filter(e => e.status === "pending").length, icon: Clock, color: "text-chart-4" },
-      { label: t("Views", "المشاهدات"), value: exhibitions.reduce((s, e) => s + (e.view_count || 0), 0), icon: Eye, color: "text-primary" },
-    ];
-  }, [exhibitions, isAr]);
 
   return (
     <div className="space-y-6">
