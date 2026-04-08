@@ -625,7 +625,7 @@ export default function ProSupplierDetail() {
                     <p className="text-muted-foreground">{isAr ? "لا توجد رعايات حالياً" : "No active sponsorships"}</p>
                   </div>
                 ) : (
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {sponsorships.map((s) => {
                       const comp = s.competitions;
                       const title = isAr && comp?.title_ar ? comp.title_ar : comp?.title;
@@ -656,72 +656,51 @@ export default function ProSupplierDetail() {
                           onClick={() => navigate(`/competitions/${comp?.id || ""}`)}
                         >
                           {/* Cover Image */}
-                          <div className="relative h-40 overflow-hidden bg-gradient-to-br from-primary/10 via-muted to-accent/10">
+                          <div className="relative h-28 overflow-hidden bg-gradient-to-br from-primary/10 via-muted to-accent/10">
                             {coverImg ? (
                               <img src={coverImg} alt={title || ""} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center">
-                                <Crown className="h-12 w-12 text-muted-foreground/15" />
+                                <Crown className="h-8 w-8 text-muted-foreground/15" />
                               </div>
                             )}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
 
                             {/* Tier Badge */}
-                            <div className="absolute top-3 start-3">
-                              <Badge className={cn("backdrop-blur-md border text-[11px] font-bold uppercase tracking-wider gap-1", tierInfo.color)}>
-                                <Crown className="h-3 w-3" />
+                            <div className="absolute top-2 start-2">
+                              <Badge className={cn("backdrop-blur-md border text-[10px] font-bold uppercase tracking-wider gap-0.5 py-0 px-1.5", tierInfo.color)}>
+                                <Crown className="h-2.5 w-2.5" />
                                 {isAr ? tierInfo.ar : tierInfo.en}
                               </Badge>
                             </div>
 
                             {/* Edition & Year */}
-                            <div className="absolute top-3 end-3 flex items-center gap-1.5">
+                            <div className="absolute top-2 end-2 flex items-center gap-1">
                               {comp?.edition_year && (
-                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-white text-[11px]">
+                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-white text-[10px] py-0 px-1.5">
                                   {comp.edition_year}
-                                </Badge>
-                              )}
-                              {editionLabel && (
-                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-white text-[11px]">
-                                  {editionLabel}
                                 </Badge>
                               )}
                             </div>
 
                             {/* Title overlay */}
-                            <div className="absolute bottom-3 start-3 end-3">
-                              <h4 className="text-sm font-bold text-white line-clamp-2 drop-shadow-md">{title}</h4>
+                            <div className="absolute bottom-2 start-2 end-2">
+                              <h4 className="text-xs font-bold text-white line-clamp-1 drop-shadow-md">{title}</h4>
                             </div>
                           </div>
 
                           {/* Details */}
-                          <CardContent className="p-4 space-y-2.5">
-                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
+                          <CardContent className="p-2.5 space-y-1.5">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
                               {comp?.city && (
-                                <span className="flex items-center gap-1.5">
-                                  <MapPin className="h-3.5 w-3.5 text-primary/60" />
+                                <span className="flex items-center gap-1">
                                   {comp.country_code && <span>{countryFlag(comp.country_code)}</span>}
                                   {comp.city}
                                 </span>
                               )}
-                              {dateStr && (
-                                <span className="flex items-center gap-1.5">
-                                  <Calendar className="h-3.5 w-3.5 text-primary/60" />
-                                  {dateStr}
-                                </span>
+                              {editionLabel && (
+                                <span className="text-[10px] text-muted-foreground/60">{editionLabel}</span>
                               )}
-                            </div>
-                            {venue && (
-                              <p className="text-xs text-muted-foreground/70 truncate flex items-center gap-1.5">
-                                <Building2 className="h-3 w-3 shrink-0" />
-                                {venue}
-                              </p>
-                            )}
-                            <div className="flex items-center justify-between pt-1">
-                              <Button variant="ghost" size="sm" className="h-7 text-xs text-primary gap-1 px-2 rounded-lg hover:bg-primary/5">
-                                {isAr ? "عرض المسابقة" : "View Competition"}
-                                <ExternalLink className="h-3 w-3" />
-                              </Button>
                             </div>
                           </CardContent>
                         </Card>
