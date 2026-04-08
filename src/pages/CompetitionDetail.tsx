@@ -633,21 +633,23 @@ export default function CompetitionDetail() {
         </section>
 
         {/* ─── KPI Stats Strip ─── */}
-        <div className="border-y border-border/30 bg-card/60 backdrop-blur-md">
-          <div className="container py-3 sm:py-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
-              <div className="flex items-center gap-4 sm:gap-7">
+        <div className="border-y border-border/20 bg-gradient-to-r from-card/80 via-card to-card/80 backdrop-blur-md">
+          <div className="container py-4 sm:py-5">
+            <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5">
+              <div className="flex items-center gap-5 sm:gap-8">
                 {kpiStats.map((stat, i) => (
                   <button
                     key={i}
                     onClick={stat.onClick}
-                    className="text-center group cursor-pointer hover:scale-105 transition-transform active:scale-95 touch-manipulation"
+                    className="text-center group cursor-pointer hover:scale-110 transition-all duration-300 active:scale-95 touch-manipulation relative"
                   >
-                    <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                      <stat.icon className={`h-3.5 w-3.5 ${stat.color} opacity-60`} />
-                      <p className="text-lg font-bold text-foreground"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${stat.color.replace('text-', 'bg-')}/10`}>
+                        <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
+                      </div>
+                      <p className="text-xl sm:text-2xl font-extrabold text-foreground tabular-nums"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
                     </div>
-                    <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{stat.label}</p>
+                    <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</p>
                   </button>
                 ))}
               </div>
@@ -655,7 +657,7 @@ export default function CompetitionDetail() {
               <div className="flex items-center gap-2.5">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50" onClick={async (e) => {
+                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40 hover:border-primary/30 hover:bg-primary/5 transition-all" onClick={async (e) => {
                       if (navigator.share) {
                         e.preventDefault();
                         try {
@@ -667,24 +669,24 @@ export default function CompetitionDetail() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5">
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       const text = encodeURIComponent(`${title}`);
                       const url = encodeURIComponent(window.location.href);
                       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
                     }}>
                       <Twitter className="h-3.5 w-3.5" /> Twitter / X
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
                       <Facebook className="h-3.5 w-3.5" /> Facebook
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
                       <Linkedin className="h-3.5 w-3.5" /> LinkedIn
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       navigator.clipboard.writeText(window.location.href);
                       toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
                     }}>
@@ -694,24 +696,24 @@ export default function CompetitionDetail() {
                 </DropdownMenu>
 
                 {user && (
-                  <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50" onClick={toggleWatchlist}>
-                    {isWatched ? <BookmarkCheck className="me-1.5 h-3.5 w-3.5 text-primary" /> : <Bookmark className="me-1.5 h-3.5 w-3.5" />}
+                  <Button variant={isWatched ? "default" : "outline"} size="sm" className={`h-10 rounded-xl px-4 text-xs font-semibold transition-all ${isWatched ? "shadow-md shadow-primary/20" : "border-border/40 hover:border-primary/30 hover:bg-primary/5"}`} onClick={toggleWatchlist}>
+                    {isWatched ? <BookmarkCheck className="me-1.5 h-3.5 w-3.5" /> : <Bookmark className="me-1.5 h-3.5 w-3.5" />}
                     {isWatched ? (isAr ? "في القائمة" : "Saved") : (isAr ? "أضف للقائمة" : "Watchlist")}
                   </Button>
                 )}
 
                 {competition.status === "completed" && (
-                  <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">
+                  <Button asChild size="sm" className="h-10 rounded-xl px-5 text-xs font-bold bg-gradient-to-r from-chart-5 to-chart-4 text-white shadow-md">
                     <Link to={`/competitions/${competition.slug || competitionId}/results`}><Award className="me-1.5 h-3.5 w-3.5" />{isAr ? "النتائج" : "Results"}</Link>
                   </Button>
                 )}
                 {isOrganizer && (
-                  <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">
+                  <Button asChild variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40">
                     <Link to={`/competitions/${competition.slug || competitionId}/edit`}><Pencil className="me-1.5 h-3.5 w-3.5" />{isAr ? "تعديل" : "Edit"}</Link>
                   </Button>
                 )}
                 {canRegister && !showRegistrationForm && (
-                  <Button className="h-9 rounded-xl px-5 text-xs font-bold shadow-md shadow-primary/15" onClick={() => setShowRegistrationForm(true)}>
+                  <Button className="h-10 rounded-xl px-6 text-xs font-bold shadow-lg shadow-primary/25 bg-gradient-to-r from-primary to-primary/80 hover:shadow-xl hover:shadow-primary/30 transition-all" onClick={() => setShowRegistrationForm(true)}>
                     <Sparkles className="me-1.5 h-3.5 w-3.5" />{t("registerNow")}
                   </Button>
                 )}
@@ -720,12 +722,21 @@ export default function CompetitionDetail() {
 
             {/* Competition Progress Bar (for in_progress and judging) */}
             {["in_progress", "judging"].includes(competition.status) && completionPercent > 0 && (
-              <div className="mt-3 pt-3 border-t border-border/20">
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
-                  <span className="font-semibold">{isAr ? "تقدم المسابقة" : "Competition Progress"}</span>
-                  <span className="font-bold text-foreground">{completionPercent}%</span>
+              <div className="mt-4 pt-4 border-t border-border/15">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-2">
+                  <span className="font-bold uppercase tracking-wider">{isAr ? "تقدم المسابقة" : "Competition Progress"}</span>
+                  <span className="font-extrabold text-primary text-sm">{completionPercent}%</span>
                 </div>
-                <Progress value={completionPercent} className="h-1.5" />
+                <div className="relative h-2 overflow-hidden rounded-full bg-muted/30">
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary via-primary to-chart-3 transition-all duration-1000 ease-out"
+                    style={{ width: `${completionPercent}%` }}
+                  />
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary/50 to-chart-3/50 blur-sm transition-all duration-1000"
+                    style={{ width: `${completionPercent}%` }}
+                  />
+                </div>
               </div>
             )}
           </div>
