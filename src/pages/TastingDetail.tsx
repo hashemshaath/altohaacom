@@ -388,6 +388,10 @@ export default function TastingDetail() {
               <TastingResultsPanel entries={entries} criteria={criteria} scores={scores} evalMethod={session.eval_method} />
             </TabsContent>
 
+            <TabsContent value="report">
+              <TastingReportPanel session={session} entries={entries} criteria={criteria} scores={scores} evalMethod={session.eval_method} />
+            </TabsContent>
+
             {session.competition_id && (
               <>
                 <TabsContent value="analytics">
