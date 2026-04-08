@@ -18,6 +18,7 @@ const REACTIONS = [
 
 interface PostReactionsProps {
   postId: string;
+  initialReactions?: Array<{ type: string; count: number; hasReacted: boolean }>;
 }
 
 interface ReactionCount {
@@ -26,15 +27,17 @@ interface ReactionCount {
   hasReacted: boolean;
 }
 
-export const PostReactions = memo(function PostReactions({ postId }: PostReactionsProps) {
+export const PostReactions = memo(function PostReactions({ postId, initialReactions }: PostReactionsProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [reactions, setReactions] = useState<ReactionCount[]>([]);
+  const [reactions, setReactions] = useState<ReactionCount[]>(initialReactions || []);
   const [open, setOpen] = useState(false);
   const [pending, setPending] = useState(false);
 
+  // Only fetch if no initialReactions provided (fallback for standalone usage)
   useEffect(() => {
+    if (initialReactions) return;
     let cancelled = false;
     const fetchReactions = async () => {
       const { data: allReactions } = await supabase
@@ -62,7 +65,7 @@ export const PostReactions = memo(function PostReactions({ postId }: PostReactio
     };
     fetchReactions();
     return () => { cancelled = true; };
-  }, [postId, user?.id]);
+  }, [postId, user?.id, initialReactions]);
 
   const toggleReaction = useCallback(async (type: string) => {
     if (!user || pending) return;

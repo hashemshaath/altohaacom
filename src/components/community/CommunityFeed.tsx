@@ -49,6 +49,8 @@ export interface CommunityPost {
   is_reposted: boolean;
   is_pinned: boolean;
   moderation_status: string;
+  has_poll: boolean;
+  reactions: Array<{ type: string; count: number; hasReacted: boolean }>;
 }
 
 const PAGE_SIZE = 20;
@@ -104,20 +106,39 @@ export const CommunityFeed = memo(function CommunityFeed() {
     const postIds = postsData.map((p) => p.id);
 
     // Batch all queries in parallel — user-interaction queries only when logged in
-    const [profilesRes, userLikesRes, userBookmarksRes, userRepostsRes] = await Promise.all([
+    const [profilesRes, userLikesRes, userBookmarksRes, userRepostsRes, pollsRes, reactionsRes] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar, username, specialization, avatar_url").in("user_id", authorIds),
       user ? supabase.from("post_likes").select("post_id").eq("user_id", user.id).in("post_id", postIds) : { data: [] },
       user ? supabase.from("post_bookmarks").select("post_id").eq("user_id", user.id).in("post_id", postIds) : { data: [] },
       user ? supabase.from("post_reposts").select("post_id").eq("user_id", user.id).in("post_id", postIds) : { data: [] },
+      supabase.from("post_polls").select("post_id").in("post_id", postIds),
+      supabase.from("post_reactions").select("post_id, reaction_type, user_id").in("post_id", postIds),
     ]);
 
     const profilesMap = new Map(profilesRes.data?.map((p) => [p.user_id, p]) || []);
     const userLikedSet = new Set(userLikesRes.data?.map((l) => l.post_id) || []);
     const userBookmarkedSet = new Set(userBookmarksRes.data?.map((b) => b.post_id) || []);
     const userRepostedSet = new Set(userRepostsRes.data?.map((r) => r.post_id) || []);
+    const pollPostIds = new Set(pollsRes.data?.map((p) => p.post_id) || []);
+
+    // Build reactions map per post
+    const reactionsMap = new Map<string, Map<string, { count: number; hasReacted: boolean }>>();
+    (reactionsRes.data || []).forEach((r) => {
+      if (!reactionsMap.has(r.post_id)) reactionsMap.set(r.post_id, new Map());
+      const postReactions = reactionsMap.get(r.post_id)!;
+      const existing = postReactions.get(r.reaction_type) || { count: 0, hasReacted: false };
+      existing.count++;
+      if (user && r.user_id === user.id) existing.hasReacted = true;
+      postReactions.set(r.reaction_type, existing);
+    });
 
     return postsData.map((p): CommunityPost => {
       const profile = profilesMap.get(p.author_id);
+      const postReactions = reactionsMap.get(p.id);
+      const reactions = postReactions
+        ? Array.from(postReactions.entries()).map(([type, data]) => ({ type, ...data }))
+        : [];
+
       return {
         id: p.id,
         content: p.content,
@@ -143,6 +164,8 @@ export const CommunityFeed = memo(function CommunityFeed() {
         is_reposted: userRepostedSet.has(p.id),
         is_pinned: p.is_pinned || false,
         moderation_status: p.moderation_status || "approved",
+        has_poll: pollPostIds.has(p.id),
+        reactions,
       };
     });
   }, [user?.id]);

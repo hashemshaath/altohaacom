@@ -47,16 +47,8 @@ export const FeatureGate = memo(function FeatureGate({
   useEffect(() => {
     if (isLoading || logged.current || !user) return;
     logged.current = true;
-    // Get user tier for logging
-    supabase
-      .from("profiles")
-      .select("membership_tier")
-      .eq("user_id", user.id)
-      .single()
-      .then(({ data }) => {
-        const tier = data?.membership_tier || "basic";
-        logFeatureAccess(feature, tier, !hasFeature);
-      });
+    // Log without extra DB query - tier is resolved server-side by the RPC
+    logFeatureAccess(feature, "auto", !hasFeature);
   }, [isLoading, hasFeature, feature, user]);
 
   if (isLoading) return <>{children}</>;
