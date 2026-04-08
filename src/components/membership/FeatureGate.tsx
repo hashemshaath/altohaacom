@@ -47,12 +47,8 @@ export const FeatureGate = memo(function FeatureGate({
   useEffect(() => {
     if (isLoading || logged.current || !user) return;
     logged.current = true;
-    // Use cached tier from react-query instead of separate DB call
-    import("@tanstack/react-query").then(({ QueryClient }) => {
-      // The tier is already fetched by useHasFeature - just log with "unknown" tier
-      // to avoid redundant DB queries; the RPC handles tier resolution server-side
-      logFeatureAccess(feature, "cached", !hasFeature);
-    });
+    // Log without extra DB query - tier is resolved server-side by the RPC
+    logFeatureAccess(feature, "auto", !hasFeature);
   }, [isLoading, hasFeature, feature, user]);
 
   if (isLoading) return <>{children}</>;
