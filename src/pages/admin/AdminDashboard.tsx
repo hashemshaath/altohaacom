@@ -589,6 +589,32 @@ export default function AdminDashboard() {
             <MetricCard title={isAr ? "الدورات" : "Masterclasses"} value={stats?.totalMasterclasses || 0} icon={GraduationCap} link="/admin/masterclasses" loading={isLoading} />
           </div>
 
+          {/* Event Charts */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sparkData && sparkData.length > 0 && (
+              <ComparisonBarChart
+                title={isAr ? "الفعاليات حسب اليوم — آخر أسبوع" : "Events by Day — Last Week"}
+                data={sparkData.map(d => ({
+                  label: d.day,
+                  [isAr ? "معارض" : "Exhibitions"]: d.exhibitions || 0,
+                  [isAr ? "مسابقات" : "Competitions"]: d.comps || 0,
+                }))}
+                bars={[
+                  { key: isAr ? "معارض" : "Exhibitions", name: isAr ? "معارض" : "Exhibitions", color: "hsl(var(--chart-3))" },
+                  { key: isAr ? "مسابقات" : "Competitions", name: isAr ? "مسابقات" : "Competitions", color: "hsl(var(--chart-2))" },
+                ]}
+              />
+            )}
+            <DonutChart
+              title={isAr ? "توزيع الفعاليات" : "Events Breakdown"}
+              data={[
+                { name: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, color: "hsl(var(--chart-3))" },
+                { name: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, color: "hsl(var(--chart-2))" },
+                { name: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, color: "hsl(var(--chart-4))" },
+              ]}
+            />
+          </div>
+
           {/* Full events list */}
           <div>
             <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">{isAr ? "جميع الفعاليات القادمة" : "All upcoming events"}</p>
