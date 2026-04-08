@@ -626,7 +626,7 @@ export default function ExhibitionDetail() {
             </Tabs>
 
             {/* Comments Section */}
-            <div className="mt-6 rounded-2xl border border-border/40 bg-card p-5">
+            <div className="mt-8 rounded-2xl border border-border/40 bg-card p-4 sm:p-6">
               <EventComments eventType="exhibition" eventId={exhibition.id} />
             </div>
           </div>
