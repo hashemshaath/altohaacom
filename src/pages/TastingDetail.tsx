@@ -11,6 +11,8 @@ import {
 } from "@/hooks/useTasting";
 import { TastingEvaluationPanel } from "@/components/tasting/TastingEvaluationPanel";
 import { TastingResultsPanel } from "@/components/tasting/TastingResultsPanel";
+import { TastingReportPanel } from "@/components/tasting/TastingReportPanel";
+import { ProductEvaluationTemplates, PRODUCT_TEMPLATES } from "@/components/tasting/ProductEvaluationTemplates";
 import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
 import { EntryComparison } from "@/components/judging/EntryComparison";
 import { Header } from "@/components/Header";
