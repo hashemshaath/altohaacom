@@ -189,7 +189,7 @@ export default function Dashboard() {
       )}
 
       {/* ─── Main 3-Column Grid ─── */}
-      <div className="grid gap-5 lg:grid-cols-12 pb-20 sm:pb-0">
+      <div className="grid gap-6 lg:grid-cols-12 pb-20 sm:pb-0">
         {/* Left Column - Profile & Identity */}
         <aside className="lg:col-span-3 space-y-4">
           <SectionLabel icon={Star} label={isAr ? "ملفك الشخصي" : "Your Profile"} />
