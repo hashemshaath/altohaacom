@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,12 +6,10 @@ import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
-import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { usePagination } from "@/hooks/usePagination";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
-import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
 import { OrganizerExhibitionsPanel } from "@/components/admin/OrganizerExhibitionsPanel";
 import OrganizerDetailDrawer from "@/components/admin/OrganizerDetailDrawer";
 import OrganizerEditForm from "@/components/admin/OrganizerEditForm";
@@ -24,6 +22,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
@@ -37,14 +37,32 @@ import {
   Building2, Plus, MoreHorizontal, Eye, Pencil, Trash2,
   Globe, Mail, Phone, CheckCircle2, Star, Download, RefreshCw,
   Shield, ScanSearch, FileSpreadsheet, Link2, ArrowUpDown, ArrowUp, ArrowDown,
-  LayoutGrid, LayoutList, TrendingUp, Calendar, MapPin, ExternalLink,
-  Activity, Users, BarChart3, Zap, Clock,
+  LayoutGrid, LayoutList, MapPin, Clock, BarChart3, TrendingUp,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import {
+  PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid,
+  Tooltip as RechartsTooltip, AreaChart, Area,
+} from "recharts";
+
+const BulkImportPanel = lazy(() => import("@/components/admin/BulkImportPanel").then(m => ({ default: m.BulkImportPanel })));
+const BatchDuplicateScanner = lazy(() => import("@/components/admin/BatchDuplicateScanner").then(m => ({ default: m.BatchDuplicateScanner })));
 
 type ViewMode = "table" | "cards";
+
+const CHART_COLORS = [
+  "hsl(var(--primary))",
+  "hsl(var(--chart-2))",
+  "hsl(var(--chart-3))",
+  "hsl(var(--chart-4))",
+  "hsl(var(--chart-5))",
+];
+
+function WidgetFallback() {
+  return <div className="h-48 rounded-2xl bg-muted/30 animate-pulse" />;
+}
 
 export default function OrganizersAdmin() {
   const { language } = useLanguage();
@@ -53,8 +71,7 @@ export default function OrganizersAdmin() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");
-  const [adminTab, setAdminTab] = useState<"list" | "scanner">("list");
-  const [showBulkImport, setShowBulkImport] = useState(false);
+  const [activeTab, setActiveTab] = useState("list");
   const [exhibitionsPanel, setExhibitionsPanel] = useState<{ id: string; name: string; logo?: string | null } | null>(null);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [sortKey, setSortKey] = useState<string>("created_at");
@@ -191,10 +208,12 @@ export default function OrganizersAdmin() {
     const totalViews = all.reduce((s, o) => s + (o.total_views || 0), 0);
     const totalFollowers = all.reduce((s, o) => s + (o.follower_count || 0), 0);
     const rated = all.filter(o => o.average_rating > 0);
-    const avgRating = rated.length > 0 ? (rated.reduce((s, o) => s + o.average_rating, 0) / rated.length).toFixed(1) : "0";
+    const avgRating = rated.length > 0 ? +(rated.reduce((s, o) => s + o.average_rating, 0) / rated.length).toFixed(1) : 0;
     return {
       total: all.length,
       active: all.filter(o => o.status === "active").length,
+      inactive: all.filter(o => o.status === "inactive").length,
+      pending: all.filter(o => o.status === "pending").length,
       verified: all.filter(o => o.is_verified).length,
       featured: all.filter(o => o.is_featured).length,
       totalEvents,
@@ -227,6 +246,40 @@ export default function OrganizersAdmin() {
     return Math.round((score / checks.length) * 100);
   };
 
+  // Analytics data
+  const analyticsData = useMemo(() => {
+    const all = organizers || [];
+    const statusData = [
+      { name: isAr ? "نشط" : "Active", value: stats.active },
+      { name: isAr ? "غير نشط" : "Inactive", value: stats.inactive },
+      { name: isAr ? "قيد المراجعة" : "Pending", value: stats.pending },
+    ].filter(d => d.value > 0);
+
+    const countryData = Object.entries(
+      all.reduce((acc: Record<string, number>, o) => {
+        const c = o.country || (isAr ? "غير محدد" : "Unknown");
+        acc[c] = (acc[c] || 0) + 1;
+        return acc;
+      }, {})
+    ).map(([name, value]) => ({ name, value })).sort((a, b) => b.value - a.value).slice(0, 8);
+
+    const topOrganizers = [...all]
+      .sort((a, b) => (b.total_exhibitions || 0) - (a.total_exhibitions || 0))
+      .slice(0, 10)
+      .map(o => ({
+        name: isAr ? (o.name_ar || o.name)?.slice(0, 15) : o.name?.slice(0, 15),
+        events: o.total_exhibitions || 0,
+        views: Math.round((o.total_views || 0) / 1000),
+      }));
+
+    const verificationData = [
+      { name: isAr ? "موثق" : "Verified", value: stats.verified },
+      { name: isAr ? "غير موثق" : "Unverified", value: stats.total - stats.verified },
+    ];
+
+    return { statusData, countryData, topOrganizers, verificationData };
+  }, [organizers, stats, isAr]);
+
   // ── Inline Edit Mode ──
   if (editMode) {
     return (
@@ -238,56 +291,56 @@ export default function OrganizersAdmin() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <AdminPageHeader
-          icon={Building2}
-          title={isAr ? "إدارة المنظمين" : "Organizer Management"}
-          description={isAr ? "إدارة منظمي الفعاليات والمعارض وربطهم بالأحداث" : "Manage event organizers, link exhibitions & track performance"}
-        />
-        <div className="flex gap-2 shrink-0">
-          <Button variant={adminTab === "list" ? "default" : "outline"} size="sm" onClick={() => setAdminTab("list")}>
-            <Building2 className="h-4 w-4 me-1" />{isAr ? "القائمة" : "List"}
+      <AdminPageHeader
+        icon={Building2}
+        title={isAr ? "إدارة المنظمين" : "Organizer Management"}
+        description={isAr ? "إدارة منظمي الفعاليات والمعارض" : "Manage event organizers & track performance"}
+        actions={
+          <Button size="sm" onClick={() => openEdit(null)} className="gap-1.5 rounded-xl">
+            <Plus className="h-4 w-4" />{isAr ? "إضافة" : "Add"}
           </Button>
-          <Button variant={adminTab === "scanner" ? "default" : "outline"} size="sm" onClick={() => setAdminTab("scanner")}>
-            <ScanSearch className="h-4 w-4 me-1" />{isAr ? "فاحص التكرارات" : "Dedup Scanner"}
-          </Button>
-        </div>
+        }
+      />
+
+      {/* KPI Strip */}
+      <div className="flex items-center gap-5 overflow-x-auto pb-1">
+        {[
+          { label: isAr ? "الإجمالي" : "Total", value: stats.total, color: "text-foreground" },
+          { label: isAr ? "نشط" : "Active", value: stats.active, color: "text-chart-2" },
+          { label: isAr ? "موثق" : "Verified", value: stats.verified, color: "text-primary" },
+          { label: isAr ? "مميز" : "Featured", value: stats.featured, color: "text-chart-4" },
+          { label: isAr ? "المعارض" : "Events", value: stats.totalEvents, color: "text-chart-3" },
+          { label: isAr ? "المشاهدات" : "Views", value: stats.totalViews, color: "text-chart-5" },
+          { label: isAr ? "الدول" : "Countries", value: stats.countriesCount, color: "text-muted-foreground" },
+        ].map(kpi => (
+          <div key={kpi.label} className="flex items-baseline gap-2 shrink-0">
+            <AnimatedCounter value={kpi.value} className={cn("text-2xl font-bold tracking-tight", kpi.color)} />
+            <span className="text-xs text-muted-foreground whitespace-nowrap">{kpi.label}</span>
+          </div>
+        ))}
       </div>
 
-      {adminTab === "scanner" ? (
-        <BatchDuplicateScanner
-          defaultTable="organizers"
-          onMergeComplete={() => qc.invalidateQueries({ queryKey: ["admin-organizers"] })}
-        />
-      ) : (
-        <>
-          {/* Enhanced Stats */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {[
-              { label: isAr ? "الإجمالي" : "Total", value: stats.total, icon: Building2, color: "text-primary", bg: "bg-primary/10" },
-              { label: isAr ? "نشط" : "Active", value: stats.active, icon: CheckCircle2, color: "text-chart-2", bg: "bg-chart-2/10", sub: `${stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}%` },
-              { label: isAr ? "موثق" : "Verified", value: stats.verified, icon: Shield, color: "text-blue-600", bg: "bg-blue-600/10" },
-              { label: isAr ? "المعارض" : "Events", value: stats.totalEvents, icon: Calendar, color: "text-purple-600", bg: "bg-purple-600/10" },
-              { label: isAr ? "المشاهدات" : "Views", value: stats.totalViews.toLocaleString(), icon: Eye, color: "text-amber-600", bg: "bg-amber-600/10" },
-              { label: isAr ? "الدول" : "Countries", value: stats.countriesCount, icon: MapPin, color: "text-rose-600", bg: "bg-rose-600/10" },
-            ].map(s => (
-              <Card key={s.label} className="rounded-2xl border-border/40 group transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-                <CardContent className="p-3 flex items-center gap-3">
-                  <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110", s.bg)}>
-                    <s.icon className={cn("h-4 w-4", s.color)} />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-lg font-bold leading-tight">{s.value}</p>
-                    <p className="text-[12px] text-muted-foreground truncate">{s.label}</p>
-                    {s.sub && <p className="text-[12px] text-chart-2 font-medium">{s.sub}</p>}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="bg-muted/50 rounded-xl">
+          <TabsTrigger value="list" className="gap-1.5 rounded-xl text-xs">
+            <Building2 className="h-3.5 w-3.5" />{isAr ? "المنظمين" : "Organizers"}
+          </TabsTrigger>
+          <TabsTrigger value="import" className="gap-1.5 rounded-xl text-xs">
+            <FileSpreadsheet className="h-3.5 w-3.5" />{isAr ? "استيراد" : "Import"}
+          </TabsTrigger>
+          <TabsTrigger value="dedup" className="gap-1.5 rounded-xl text-xs">
+            <ScanSearch className="h-3.5 w-3.5" />{isAr ? "التكرارات" : "Dedup"}
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-1.5 rounded-xl text-xs">
+            <BarChart3 className="h-3.5 w-3.5" />{isAr ? "التحليلات" : "Analytics"}
+          </TabsTrigger>
+        </TabsList>
 
+        {/* ═══ List Tab ═══ */}
+        <TabsContent value="list" className="space-y-4">
           {/* Bulk Action Bar */}
           <BulkActionBar
             count={selectedCount}
@@ -343,23 +396,10 @@ export default function OrganizersAdmin() {
               </Button>
             </div>
 
-            <Button size="sm" variant="outline" onClick={() => setShowBulkImport(!showBulkImport)}>
-              <FileSpreadsheet className="h-3.5 w-3.5 me-1.5" />{isAr ? "استيراد" : "Import"}
-            </Button>
             <Button size="sm" variant="outline" onClick={() => exportCSV(organizers || [])}>
               <Download className="h-3.5 w-3.5 me-1.5" />{isAr ? "تصدير" : "Export"}
             </Button>
-            <Button size="sm" onClick={() => openEdit(null)}>
-              <Plus className="h-4 w-4 me-1.5" />{isAr ? "إضافة منظم" : "Add Organizer"}
-            </Button>
           </AdminFilterBar>
-
-          {showBulkImport && (
-            <BulkImportPanel
-              entityType="organizer"
-              onImportComplete={() => { setShowBulkImport(false); qc.invalidateQueries({ queryKey: ["admin-organizers"] }); }}
-            />
-          )}
 
           {/* Content */}
           {isLoading ? (
@@ -376,51 +416,42 @@ export default function OrganizersAdmin() {
               onAction={() => openEdit(null)}
             />
           ) : viewMode === "cards" ? (
-            /* ═══ Card View ═══ */
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {pagination.paginated.map((org: any) => {
                   const pct = getProfileCompleteness(org);
                   return (
                     <Card key={org.id} className="rounded-2xl border-border/40 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                      {/* Cover */}
-                      <div className="relative h-28 bg-gradient-to-br from-primary/20 to-primary/5">
-                        {org.cover_image_url && (
-                          <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                        )}
+                      <div className="relative h-24 bg-gradient-to-br from-primary/20 to-primary/5">
+                        {org.cover_image_url && <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />}
                         <div className="absolute top-2 end-2 flex gap-1">
-                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[12px] h-5 capitalize shadow-sm">{org.status}</Badge>
+                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[11px] h-5 capitalize">{org.status}</Badge>
                         </div>
-                        {/* Logo */}
                         <div className="absolute -bottom-5 start-4">
-                          <Avatar className="h-12 w-12 rounded-xl border-2 border-background shadow-md">
+                          <Avatar className="h-10 w-10 rounded-xl border-2 border-background shadow-md">
                             {org.logo_url && <AvatarImage src={org.logo_url} />}
-                            <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-sm font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                            <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
                           </Avatar>
                         </div>
                       </div>
-
-                      <CardContent className="pt-8 pb-4 px-4 space-y-3">
-                        {/* Header */}
+                      <CardContent className="pt-7 pb-3 px-4 space-y-2.5">
                         <div className="flex items-start justify-between">
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
-                              <h3 className="text-sm font-bold truncate">{isAr ? (org.name_ar || org.name) : org.name}</h3>
+                              <h3 className="text-sm font-semibold truncate">{isAr ? (org.name_ar || org.name) : org.name}</h3>
                               {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
-                              {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+                              {org.is_featured && <Star className="h-3.5 w-3.5 text-chart-4 shrink-0" />}
                             </div>
-                            {org.name_ar && !isAr && <p className="text-[12px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</p>}
-                            {org.organizer_number && <Badge variant="outline" className="text-[12px] h-4 font-mono px-1.5 mt-1">{org.organizer_number}</Badge>}
+                            {org.organizer_number && <Badge variant="outline" className="text-[10px] h-4 font-mono px-1 mt-0.5">{org.organizer_number}</Badge>}
                           </div>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0"><MoreHorizontal className="h-4 w-4" /></Button>
+                              <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"><MoreHorizontal className="h-4 w-4" /></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => openEdit(org.id)}><Pencil className="h-3.5 w-3.5 me-2" />{isAr ? "تعديل" : "Edit"}</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setDetailId(org.id)}><Building2 className="h-3.5 w-3.5 me-2" />{isAr ? "التفاصيل" : "Details"}</DropdownMenuItem>
                               <DropdownMenuItem asChild><Link to={`/organizers/${org.slug}`}><Eye className="h-3.5 w-3.5 me-2" />{isAr ? "عرض" : "View"}</Link></DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => setExhibitionsPanel({ id: org.id, name: org.name, logo: org.logo_url })}><Link2 className="h-3.5 w-3.5 me-2" />{isAr ? "المعارض" : "Exhibitions"}</DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem className="text-destructive" onClick={() => { if (confirm(isAr ? "هل أنت متأكد؟" : "Are you sure?")) deleteMutation.mutate(org.id); }}>
                                 <Trash2 className="h-3.5 w-3.5 me-2" />{isAr ? "حذف" : "Delete"}
@@ -429,88 +460,32 @@ export default function OrganizersAdmin() {
                           </DropdownMenu>
                         </div>
 
-                        {/* Location */}
                         {(org.city || org.country) && (
-                          <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
                             <MapPin className="h-3 w-3 shrink-0" />
                             <span className="truncate">{isAr ? `${org.city_ar || org.city || ""}${org.country_ar ? `, ${org.country_ar}` : org.country ? `, ${org.country}` : ""}` : `${org.city || ""}${org.country ? `, ${org.country}` : ""}`}</span>
                           </div>
                         )}
 
-                        {/* Quick Stats */}
-                        <div className="grid grid-cols-3 gap-2">
+                        <div className="grid grid-cols-3 gap-1.5">
                           {[
-                            { v: org.total_exhibitions || 0, l: isAr ? "معارض" : "Events", icon: Calendar },
-                            { v: (org.total_views || 0).toLocaleString(), l: isAr ? "مشاهدات" : "Views", icon: Eye },
-                            { v: org.average_rating > 0 ? org.average_rating : "—", l: isAr ? "تقييم" : "Rating", icon: Star },
+                            { v: org.total_exhibitions || 0, l: isAr ? "معارض" : "Events" },
+                            { v: (org.total_views || 0).toLocaleString(), l: isAr ? "مشاهدات" : "Views" },
+                            { v: org.average_rating > 0 ? org.average_rating : "—", l: isAr ? "تقييم" : "Rating" },
                           ].map(s => (
-                            <div key={s.l} className="rounded-xl bg-muted/40 p-2 text-center">
+                            <div key={s.l} className="rounded-lg bg-muted/40 p-1.5 text-center">
                               <p className="text-xs font-bold">{s.v}</p>
-                              <p className="text-[12px] text-muted-foreground">{s.l}</p>
+                              <p className="text-[10px] text-muted-foreground">{s.l}</p>
                             </div>
                           ))}
                         </div>
 
-                        {/* Profile Completeness */}
                         <div className="space-y-1">
-                          <div className="flex items-center justify-between text-[12px]">
+                          <div className="flex items-center justify-between text-[11px]">
                             <span className="text-muted-foreground">{isAr ? "اكتمال الملف" : "Profile"}</span>
-                            <span className={cn("font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-amber-600" : "text-destructive")}>{pct}%</span>
+                            <span className={cn("font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-chart-4" : "text-muted-foreground")}>{pct}%</span>
                           </div>
-                          <Progress value={pct} className="h-1.5" />
-                        </div>
-
-                        {/* Quick Actions */}
-                        <div className="flex items-center gap-1.5 pt-1">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button variant={org.is_verified ? "default" : "outline"} size="icon" className="h-7 w-7 rounded-lg"
-                                  onClick={(e) => { e.stopPropagation(); quickToggleVerify.mutate({ id: org.id, verified: !org.is_verified }); }}>
-                                  <Shield className="h-3 w-3" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent><p className="text-xs">{org.is_verified ? (isAr ? "إلغاء التوثيق" : "Unverify") : (isAr ? "توثيق" : "Verify")}</p></TooltipContent>
-                            </Tooltip>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button variant={org.is_featured ? "default" : "outline"} size="icon" className="h-7 w-7 rounded-lg"
-                                  onClick={(e) => { e.stopPropagation(); quickToggleFeatured.mutate({ id: org.id, featured: !org.is_featured }); }}>
-                                  <Star className="h-3 w-3" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent><p className="text-xs">{org.is_featured ? (isAr ? "إلغاء التمييز" : "Unfeature") : (isAr ? "تمييز" : "Feature")}</p></TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                          <div className="flex-1" />
-                          <Button variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => openEdit(org.id)}>
-                            <Pencil className="h-3 w-3" />{isAr ? "تعديل" : "Edit"}
-                          </Button>
-                        </div>
-
-                        {/* Contact Icons */}
-                        <div className="flex items-center gap-2 pt-1 border-t border-border/40">
-                          {org.email && (
-                            <a href={`mailto:${org.email}`} onClick={e => e.stopPropagation()} className="text-muted-foreground hover:text-primary transition-colors">
-                              <Mail className="h-3.5 w-3.5" />
-                            </a>
-                          )}
-                          {org.phone && (
-                            <a href={`tel:${org.phone}`} onClick={e => e.stopPropagation()} className="text-muted-foreground hover:text-primary transition-colors">
-                              <Phone className="h-3.5 w-3.5" />
-                            </a>
-                          )}
-                          {org.website && (
-                            <a href={org.website} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} className="text-muted-foreground hover:text-primary transition-colors">
-                              <Globe className="h-3.5 w-3.5" />
-                            </a>
-                          )}
-                          <div className="flex-1" />
-                          {org.founded_year && (
-                            <span className="text-[12px] text-muted-foreground flex items-center gap-1">
-                              <Clock className="h-3 w-3" />{isAr ? `تأسس ${org.founded_year}` : `Est. ${org.founded_year}`}
-                            </span>
-                          )}
+                          <Progress value={pct} className="h-1" />
                         </div>
                       </CardContent>
                     </Card>
@@ -532,7 +507,6 @@ export default function OrganizersAdmin() {
               />
             </>
           ) : (
-            /* ═══ Table View ═══ */
             <AdminTableCard>
               <Table>
                 <TableHeader>
@@ -552,75 +526,56 @@ export default function OrganizersAdmin() {
                   {pagination.paginated.map((org: any) => {
                     const pct = getProfileCompleteness(org);
                     return (
-                      <TableRow key={org.id} className={cn("cursor-pointer transition-colors", selected.has(org.id) ? "bg-primary/5" : "hover:bg-muted/30")} onClick={() => setDetailId(org.id)}>
+                      <TableRow key={org.id} className={cn("group transition-colors", selected.has(org.id) ? "bg-primary/5" : "")} data-clickable="true" onClick={() => setDetailId(org.id)}>
                         <TableCell onClick={e => e.stopPropagation()}><Checkbox checked={selected.has(org.id)} onCheckedChange={() => toggleOne(org.id)} /></TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <Avatar className="h-9 w-9 rounded-xl">
+                            <Avatar className="h-8 w-8 rounded-lg">
                               {org.logo_url && <AvatarImage src={org.logo_url} />}
-                              <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
+                              <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-bold">{org.name?.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div className="min-w-0">
                               <div className="flex items-center gap-1.5">
                                 <span className="font-medium text-sm truncate">{isAr ? (org.name_ar || org.name) : org.name}</span>
-                                {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
-                                {org.is_featured && <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />}
+                                {org.is_verified && <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />}
+                                {org.is_featured && <Star className="h-3 w-3 text-chart-4 shrink-0" />}
                               </div>
-                              <div className="flex items-center gap-1.5">
-                                {org.organizer_number && <Badge variant="outline" className="text-[12px] h-4 font-mono px-1.5">{org.organizer_number}</Badge>}
-                                {org.name_ar && !isAr && <span className="text-[12px] text-muted-foreground truncate" dir="rtl">{org.name_ar}</span>}
-                              </div>
+                              {org.organizer_number && <span className="text-[11px] text-muted-foreground font-mono">{org.organizer_number}</span>}
                             </div>
                           </div>
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3 shrink-0" />
-                            <span className="truncate">{org.city && org.country ? `${org.city}, ${org.country}` : org.country || "—"}</span>
-                          </div>
+                          {org.city && org.country ? `${org.city}, ${org.country}` : org.country || "—"}
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-1.5">
-                            {org.email && <TooltipProvider><Tooltip><TooltipTrigger><Mail className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger><TooltipContent><p className="text-xs">{org.email}</p></TooltipContent></Tooltip></TooltipProvider>}
-                            {org.phone && <TooltipProvider><Tooltip><TooltipTrigger><Phone className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger><TooltipContent><p className="text-xs">{org.phone}</p></TooltipContent></Tooltip></TooltipProvider>}
-                            {org.website && <TooltipProvider><Tooltip><TooltipTrigger><Globe className="h-3.5 w-3.5 text-muted-foreground" /></TooltipTrigger><TooltipContent><p className="text-xs">{org.website}</p></TooltipContent></Tooltip></TooltipProvider>}
+                            {org.email && <Mail className="h-3.5 w-3.5 text-muted-foreground" />}
+                            {org.phone && <Phone className="h-3.5 w-3.5 text-muted-foreground" />}
+                            {org.website && <Globe className="h-3.5 w-3.5 text-muted-foreground" />}
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[12px] capitalize">{org.status}</Badge>
+                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[11px] capitalize">{org.status}</Badge>
                         </TableCell>
                         <TableCell className="text-center text-sm font-medium">{org.total_exhibitions || 0}</TableCell>
                         <TableCell className="text-center text-sm text-muted-foreground">{(org.total_views || 0).toLocaleString()}</TableCell>
                         <TableCell className="text-center">
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className="inline-flex items-center gap-1.5">
-                                  <Progress value={pct} className="h-1.5 w-12" />
-                                  <span className={cn("text-[12px] font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-amber-600" : "text-muted-foreground")}>{pct}%</span>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent><p className="text-xs">{isAr ? "اكتمال الملف الشخصي" : "Profile completeness"}</p></TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+                          <div className="inline-flex items-center gap-1.5">
+                            <Progress value={pct} className="h-1 w-10" />
+                            <span className={cn("text-[11px] font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-chart-4" : "text-muted-foreground")}>{pct}%</span>
+                          </div>
                         </TableCell>
                         <TableCell onClick={e => e.stopPropagation()}>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-7 w-7"><MoreHorizontal className="h-4 w-4" /></Button>
+                              <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"><MoreHorizontal className="h-4 w-4" /></Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => setDetailId(org.id)}>
-                                <Building2 className="h-3.5 w-3.5 me-2" />{isAr ? "التفاصيل" : "Details"}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem asChild>
-                                <Link to={`/organizers/${org.slug}`}><Eye className="h-3.5 w-3.5 me-2" />{isAr ? "عرض" : "View"}</Link>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => openEdit(org.id)}>
-                                <Pencil className="h-3.5 w-3.5 me-2" />{isAr ? "تعديل" : "Edit"}
-                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setDetailId(org.id)}><Building2 className="h-3.5 w-3.5 me-2" />{isAr ? "التفاصيل" : "Details"}</DropdownMenuItem>
+                              <DropdownMenuItem asChild><Link to={`/organizers/${org.slug}`}><Eye className="h-3.5 w-3.5 me-2" />{isAr ? "عرض" : "View"}</Link></DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => openEdit(org.id)}><Pencil className="h-3.5 w-3.5 me-2" />{isAr ? "تعديل" : "Edit"}</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setExhibitionsPanel({ id: org.id, name: org.name, logo: org.logo_url })}>
-                                <Link2 className="h-3.5 w-3.5 me-2" />{isAr ? "المعارض المرتبطة" : "Linked Exhibitions"}
+                                <Link2 className="h-3.5 w-3.5 me-2" />{isAr ? "المعارض" : "Exhibitions"}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem onClick={() => quickToggleVerify.mutate({ id: org.id, verified: !org.is_verified })}>
@@ -630,7 +585,7 @@ export default function OrganizersAdmin() {
                                 <Star className="h-3.5 w-3.5 me-2" />{org.is_featured ? (isAr ? "إلغاء التمييز" : "Unfeature") : (isAr ? "تمييز" : "Feature")}
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => refreshStatsMutation.mutate(org.id)}>
-                                <RefreshCw className="h-3.5 w-3.5 me-2" />{isAr ? "تحديث الإحصائيات" : "Refresh Stats"}
+                                <RefreshCw className="h-3.5 w-3.5 me-2" />{isAr ? "تحديث" : "Refresh Stats"}
                               </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem className="text-destructive" onClick={() => { if (confirm(isAr ? "هل أنت متأكد؟" : "Are you sure?")) deleteMutation.mutate(org.id); }}>
@@ -659,10 +614,144 @@ export default function OrganizersAdmin() {
               />
             </AdminTableCard>
           )}
-        </>
-      )}
+        </TabsContent>
 
-      {/* Organizer Exhibitions Panel */}
+        {/* ═══ Import Tab ═══ */}
+        <TabsContent value="import">
+          <Suspense fallback={<WidgetFallback />}>
+            <BulkImportPanel
+              entityType="organizer"
+              onImportComplete={() => qc.invalidateQueries({ queryKey: ["admin-organizers"] })}
+            />
+          </Suspense>
+        </TabsContent>
+
+        {/* ═══ Dedup Tab ═══ */}
+        <TabsContent value="dedup">
+          <Suspense fallback={<WidgetFallback />}>
+            <BatchDuplicateScanner
+              defaultTable="organizers"
+              onMergeComplete={() => qc.invalidateQueries({ queryKey: ["admin-organizers"] })}
+            />
+          </Suspense>
+        </TabsContent>
+
+        {/* ═══ Analytics Tab ═══ */}
+        <TabsContent value="analytics" className="space-y-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Status Distribution */}
+            <Card className="rounded-2xl border-border/40">
+              <CardContent className="p-5">
+                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  {isAr ? "توزيع الحالات" : "Status Distribution"}
+                </h3>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={analyticsData.statusData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={4} dataKey="value" stroke="none">
+                        {analyticsData.statusData.map((_, i) => (
+                          <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip contentStyle={{ borderRadius: 12, border: "1px solid hsl(var(--border))", background: "hsl(var(--background))", fontSize: 12 }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex justify-center gap-4 mt-2">
+                  {analyticsData.statusData.map((d, i) => (
+                    <div key={d.name} className="flex items-center gap-1.5 text-xs">
+                      <div className="h-2.5 w-2.5 rounded-full" style={{ background: CHART_COLORS[i % CHART_COLORS.length] }} />
+                      <span className="text-muted-foreground">{d.name}</span>
+                      <span className="font-medium">{d.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Verification */}
+            <Card className="rounded-2xl border-border/40">
+              <CardContent className="p-5">
+                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-primary" />
+                  {isAr ? "التوثيق" : "Verification Status"}
+                </h3>
+                <div className="h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie data={analyticsData.verificationData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={4} dataKey="value" stroke="none">
+                        <Cell fill="hsl(var(--primary))" />
+                        <Cell fill="hsl(var(--muted-foreground) / 0.3)" />
+                      </Pie>
+                      <RechartsTooltip contentStyle={{ borderRadius: 12, border: "1px solid hsl(var(--border))", background: "hsl(var(--background))", fontSize: 12 }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex justify-center gap-4 mt-2">
+                  {analyticsData.verificationData.map((d, i) => (
+                    <div key={d.name} className="flex items-center gap-1.5 text-xs">
+                      <div className="h-2.5 w-2.5 rounded-full" style={{ background: i === 0 ? "hsl(var(--primary))" : "hsl(var(--muted-foreground) / 0.3)" }} />
+                      <span className="text-muted-foreground">{d.name}</span>
+                      <span className="font-medium">{d.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* By Country */}
+            <Card className="rounded-2xl border-border/40">
+              <CardContent className="p-5">
+                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  {isAr ? "حسب الدولة" : "By Country"}
+                </h3>
+                <div className="h-52">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={analyticsData.countryData} layout="vertical" margin={{ left: 0, right: 16, top: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" horizontal={false} />
+                      <XAxis type="number" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <YAxis type="category" dataKey="name" width={80} tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <RechartsTooltip contentStyle={{ borderRadius: 12, border: "1px solid hsl(var(--border))", background: "hsl(var(--background))", fontSize: 12 }} />
+                      <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 6, 6, 0]} barSize={18} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Top Organizers */}
+            <Card className="rounded-2xl border-border/40">
+              <CardContent className="p-5">
+                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                  <Star className="h-4 w-4 text-chart-4" />
+                  {isAr ? "أفضل المنظمين" : "Top Organizers by Events"}
+                </h3>
+                <div className="h-52">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={analyticsData.topOrganizers} margin={{ left: 0, right: 16, top: 8, bottom: 0 }}>
+                      <defs>
+                        <linearGradient id="orgEventsGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border) / 0.5)" />
+                      <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="hsl(var(--muted-foreground))" angle={-30} textAnchor="end" height={50} />
+                      <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
+                      <RechartsTooltip contentStyle={{ borderRadius: 12, border: "1px solid hsl(var(--border))", background: "hsl(var(--background))", fontSize: 12 }} />
+                      <Area type="monotone" dataKey="events" stroke="hsl(var(--primary))" fill="url(#orgEventsGrad)" strokeWidth={2} />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+
+      {/* Panels & Drawers */}
       {exhibitionsPanel && (
         <OrganizerExhibitionsPanel
           open={!!exhibitionsPanel}
@@ -672,8 +761,6 @@ export default function OrganizersAdmin() {
           organizerLogo={exhibitionsPanel.logo}
         />
       )}
-
-      {/* Detail Drawer */}
       <OrganizerDetailDrawer
         organizerId={detailId}
         open={!!detailId}
