@@ -1,7 +1,6 @@
 import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Eye, Users, Star, Ticket, Building, Heart, Calendar, TrendingUp } from "lucide-react";
-
+import { Eye, Users, Star, Ticket, Building, Heart } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props {
@@ -27,13 +26,15 @@ export const ExhibitionInteractiveStats = memo(function ExhibitionInteractiveSta
   ];
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5 sm:gap-3">
       {stats.map((s, i) => (
         <Card key={i} className="border-border/30 hover:border-primary/20 transition-all hover:shadow-sm group cursor-default">
-          <CardContent className="p-3 text-center">
-            <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} group-hover:scale-110 transition-transform`} />
-            <p className={`text-sm font-bold ${s.color}`}>{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
-            <p className="text-[12px] text-muted-foreground">{s.label}</p>
+          <CardContent className="p-3 sm:p-4 text-center">
+            <s.icon className={`h-4.5 w-4.5 sm:h-5 sm:w-5 mx-auto mb-1.5 ${s.color} group-hover:scale-110 transition-transform`} />
+            <p className={`text-sm sm:text-base font-bold ${s.color}`}>
+              {typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}
+            </p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{s.label}</p>
           </CardContent>
         </Card>
       ))}
