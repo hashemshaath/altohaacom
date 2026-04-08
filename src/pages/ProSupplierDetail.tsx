@@ -24,9 +24,12 @@ import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons
 import { SupplierReviews } from "@/components/supplier/SupplierReviews";
 import { SupplierWishlistButton } from "@/components/supplier/SupplierWishlistButton";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
-import { ProductQuickView } from "@/components/supplier/ProductQuickView";
+import { SupplierProductCard } from "@/components/supplier/SupplierProductCard";
+import { SupplierProductDetail } from "@/components/supplier/SupplierProductDetail";
 import { useSupplierViewTracker } from "@/hooks/useSupplierViewTracker";
+import { useCart } from "@/hooks/useCart";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 /* ─── Tab type ─── */
 type DetailTab = "overview" | "products" | "sponsorships" | "contact" | "reviews";
