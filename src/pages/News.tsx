@@ -440,11 +440,11 @@ export default function News() {
 
             {/* Desktop Advanced Filters Panel */}
             {showAdvancedFilters && (
-              <div className="hidden lg:block mt-3 pt-3 border-t border-border/30 space-y-3">
+              <div className="hidden lg:block mt-2.5 pt-2.5 border-t border-border/10 space-y-2.5">
                 {tags.length > 0 && (
                   <NewsTagsFilter tags={tags} selectedTags={selectedTags} onToggleTag={handleToggleTag} isAr={isAr} />
                 )}
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3">
                   <NewsDateRangeFilter
                     dateFrom={dateFrom}
                     dateTo={dateTo}
@@ -454,8 +454,8 @@ export default function News() {
                     isAr={isAr}
                   />
                   {activeFilterCount > 0 && (
-                    <Button variant="ghost" size="sm" className="rounded-xl text-xs text-muted-foreground hover:text-destructive" onClick={handleClearAll}>
-                      {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
+                    <Button variant="ghost" size="sm" className="rounded-lg text-xs text-muted-foreground hover:text-destructive" onClick={handleClearAll}>
+                      {isAr ? "مسح الفلاتر" : "Clear all"}
                     </Button>
                   )}
                 </div>
