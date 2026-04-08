@@ -225,24 +225,64 @@ export default function ProSupplierDetail() {
   return (
     <div className="flex min-h-screen flex-col bg-background" dir={isAr ? "rtl" : "ltr"}>
       <SEOHead
-        title={`${company.name} | ${isAr ? "الموردين المحترفين" : "Pro Suppliers"}`}
-        description={tagline ? `${tagline} - ${company.name}` : description || `${company.name} - Professional chef product supplier`}
+        title={`${companyName} - ${isAr ? "مورد محترف | الموردين المحترفين" : "Professional Supplier | Pro Suppliers"}`}
+        description={
+          tagline
+            ? `${tagline} - ${companyName}${company.city ? ` | ${company.city}` : ""}`
+            : description?.slice(0, 155) || `${companyName} - ${isAr ? "مورد محترف لأدوات ومعدات الطهي الاحترافية" : "Professional chef equipment and kitchen supply partner"}`
+        }
         ogType="business.business"
-        ogImage={company.logo_url || company.cover_image_url || undefined}
+        ogImage={company.cover_image_url || company.logo_url || undefined}
         canonical={`${window.location.origin}/pro-suppliers/${company.id}`}
         lang={language}
-        keywords={[company.name, (company as any).supplier_category, ...(((company as any).specializations as string[]) || []), "chef supplier", "professional kitchen"].filter(Boolean).join(", ")}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: company.name,
-          description: description || undefined,
-          url: company.website || `${window.location.origin}/pro-suppliers/${company.id}`,
-          logo: company.logo_url || undefined,
-          telephone: company.phone || undefined,
-          email: company.email || undefined,
-          ...(reviewStats && reviewStats.count > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: reviewStats.avg.toFixed(1), reviewCount: reviewStats.count, bestRating: 5, worstRating: 1 } } : {}),
-        }}
+        keywords={[
+          company.name, company.name_ar,
+          (company as any).supplier_category,
+          ...(((company as any).specializations as string[]) || []),
+          company.city, getCountryName(company.country_code),
+          isAr ? "مورد طهي احترافي" : "professional chef supplier",
+          isAr ? "أدوات مطبخ" : "kitchen equipment",
+        ].filter(Boolean).join(", ")}
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: company.name,
+            alternateName: company.name_ar || undefined,
+            description: description || undefined,
+            url: company.website || `${window.location.origin}/pro-suppliers/${company.id}`,
+            logo: company.logo_url || undefined,
+            telephone: company.phone || undefined,
+            email: company.email || undefined,
+            address: company.address ? {
+              "@type": "PostalAddress",
+              streetAddress: company.address,
+              addressLocality: company.city || undefined,
+              postalCode: company.postal_code || undefined,
+              addressCountry: company.country_code || undefined,
+            } : undefined,
+            ...(reviewStats && reviewStats.count > 0 ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: reviewStats.avg.toFixed(1),
+                reviewCount: reviewStats.count,
+                bestRating: 5,
+                worstRating: 1,
+              },
+            } : {}),
+            numberOfEmployees: undefined,
+            foundingDate: (company as any).founded_year ? `${(company as any).founded_year}` : undefined,
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: isAr ? "الرئيسية" : "Home", item: window.location.origin },
+              { "@type": "ListItem", position: 2, name: isAr ? "الموردين المحترفين" : "Pro Suppliers", item: `${window.location.origin}/pro-suppliers` },
+              { "@type": "ListItem", position: 3, name: companyName, item: `${window.location.origin}/pro-suppliers/${company.id}` },
+            ],
+          },
+        ]}
       />
       <Header />
 

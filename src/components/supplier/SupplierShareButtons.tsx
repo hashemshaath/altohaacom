@@ -20,12 +20,16 @@ export const SupplierShareButtons = memo(function SupplierShareButtons({ company
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
   };
 
-  const shareNative = () => {
+  const shareNative = async () => {
     if (navigator.share) {
-      navigator.share({ title: companyName, url });
-    } else {
-      copyLink();
+      try {
+        await navigator.share({ title: companyName, url });
+        return;
+      } catch {
+        // Permission denied or cancelled — fallback to copy
+      }
     }
+    copyLink();
   };
 
   return (
