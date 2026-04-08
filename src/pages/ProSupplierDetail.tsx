@@ -665,6 +665,7 @@ export default function ProSupplierDetail() {
                     onAddToCart={handleAddToCart}
                     onViewProduct={(p) => setSelectedProduct(p)}
                     companyName={companyName}
+                    companyId={id}
                   />
                 ) : (
                   <div className="space-y-5">
