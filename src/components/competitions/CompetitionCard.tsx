@@ -67,10 +67,14 @@ export function getDerivedStatus(comp: Competition) {
 /** Determine which tab bucket a competition falls into */
 export function getTabBucket(comp: Competition): "upcoming" | "active" | "past" {
   const d = getDerivedStatus(comp);
-  if (["registration_upcoming", "registration_open", "registration_closing_soon"].includes(d.status)) return "upcoming";
+  if (["registration_upcoming", "registration_open", "registration_closing_soon", "registration_closed"].includes(d.status)) return "upcoming";
   if (["in_progress", "competition_starting_soon"].includes(d.status)) return "active";
-  if (["ended", "registration_closed"].includes(d.status)) return "past";
-  return "upcoming";
+  if (d.status === "ended") return "past";
+  // Fallback: use actual dates
+  const now = new Date();
+  if (new Date(comp.competition_end) < now) return "past";
+  if (new Date(comp.competition_start) > now) return "upcoming";
+  return "active";
 }
 
 /* ─── Status Badge (reusable) ─── */
@@ -132,13 +136,28 @@ export const CompetitionCard = memo(
 
               {/* Status + Countdown */}
               <div className="absolute inset-x-0 top-0 flex items-start justify-between p-3 sm:p-4">
-                <StatusBadge derived={derived} isAr={isAr} />
-                {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
-                  <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[12px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-xl">
-                    <Clock className="h-2.5 w-2.5 text-primary" />
-                    {isAr ? <><AnimatedCounter value={derived.daysLeft} className="inline" /> يوم</> : <><AnimatedCounter value={derived.daysLeft} className="inline" />D</>}
-                  </Badge>
-                )}
+                <div className="flex flex-col gap-1.5">
+                  <StatusBadge derived={derived} isAr={isAr} />
+                  {competition.edition_year && (
+                    <Badge className="bg-background/80 text-foreground backdrop-blur-md shadow-lg border-0 text-[12px] font-black py-1 px-2.5">
+                      🏷️ {isAr ? `النسخة ${competition.edition_year}` : `Edition ${competition.edition_year}`}
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex flex-col items-end gap-1.5">
+                  {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
+                    <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[12px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-xl">
+                      <Clock className="h-2.5 w-2.5 text-primary" />
+                      {isAr ? <><AnimatedCounter value={derived.daysLeft} className="inline" /> يوم</> : <><AnimatedCounter value={derived.daysLeft} className="inline" />D</>}
+                    </Badge>
+                  )}
+                  {/* Past event indicator */}
+                  {derived.status === "ended" && (
+                    <Badge className="bg-muted/80 text-muted-foreground backdrop-blur-md border-0 text-[12px] font-bold py-1 px-2.5">
+                      {isAr ? "منتهية" : "Ended"}
+                    </Badge>
+                  )}
+                </div>
               </div>
 
               {/* Bottom overlay with date & participants */}
