@@ -14,7 +14,7 @@ const guarantees = [
   { icon: Award, en: "Professional Reports", ar: "تقارير مهنية" },
 ];
 
-export const ChefsTableCTA = memo(function ChefsTableCTA({ isAr, user, onRequestClick }: Props) {
+export const ChefsTableCTA = memo(React.forwardRef<HTMLElement, Props>(function ChefsTableCTA({ isAr, user, onRequestClick }, ref) {
   return (
     <section className="bg-background">
       <div className="container py-16 md:py-24">
