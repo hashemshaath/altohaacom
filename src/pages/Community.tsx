@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -48,6 +48,38 @@ export default function Community() {
     if (tagParam) setActiveTab("feed");
   }, [tagParam]);
 
+  // Stable callbacks to prevent re-renders
+  const handleSetActiveTab = useCallback((tab: CommunityTab) => setActiveTab(tab), []);
+  const handleSetLeftOpen = useCallback((open: boolean) => setLeftSidebarOpen(open), []);
+  const handleSetRightOpen = useCallback((open: boolean) => setRightSidebarOpen(open), []);
+
+  // Render active tab content
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "feed":
+      case "bookmarks":
+        return <CommunityFeed />;
+      case "chefs":
+        return <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><ChefsTab /></div></Suspense>;
+      case "recipes":
+        return <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><RecipesTab /></div></Suspense>;
+      case "groups":
+        return <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><GroupsTab /></div></Suspense>;
+      case "events":
+        return <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><EventsTab /></div></Suspense>;
+      case "live":
+        return (
+          <FeatureGate feature="feature_live_sessions" showUpgrade upgradeVariant="card" featureName="Live Sessions" featureNameAr="الجلسات المباشرة">
+            <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><LiveSessionsTab /></div></Suspense>
+          </FeatureGate>
+        );
+      case "network":
+        return user ? <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><NetworkTab /></div></Suspense> : null;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
@@ -61,26 +93,19 @@ export default function Community() {
         <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-4 px-0 sm:px-4 pt-0 sm:pt-4">
           <CommunityLeftSidebar
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={handleSetActiveTab}
             leftSidebarOpen={leftSidebarOpen}
-            setLeftSidebarOpen={setLeftSidebarOpen}
+            setLeftSidebarOpen={handleSetLeftOpen}
           />
 
           <div className="flex-1 min-w-0 lg:border-x lg:border-border/20 min-h-screen bg-background">
-            <CommunityMobileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
-
-            {(activeTab === "feed" || activeTab === "bookmarks") && <CommunityFeed />}
-            {activeTab === "chefs" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><ChefsTab /></div></Suspense>}
-            {activeTab === "recipes" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><RecipesTab /></div></Suspense>}
-            {activeTab === "groups" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><GroupsTab /></div></Suspense>}
-            {activeTab === "events" && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><EventsTab /></div></Suspense>}
-            {activeTab === "live" && <FeatureGate feature="feature_live_sessions" showUpgrade upgradeVariant="card" featureName="Live Sessions" featureNameAr="الجلسات المباشرة"><Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><LiveSessionsTab /></div></Suspense></FeatureGate>}
-            {activeTab === "network" && user && <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><NetworkTab /></div></Suspense>}
+            <CommunityMobileTabs activeTab={activeTab} setActiveTab={handleSetActiveTab} />
+            {renderTabContent()}
           </div>
 
           <CommunityRightSidebar
             rightSidebarOpen={rightSidebarOpen}
-            setRightSidebarOpen={setRightSidebarOpen}
+            setRightSidebarOpen={handleSetRightOpen}
           />
         </div>
       </main>

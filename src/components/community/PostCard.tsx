@@ -25,6 +25,7 @@ import { PollDisplay } from "./PollDisplay";
 import { PostEditDialog } from "./PostEditDialog";
 import { PostReadTime } from "./PostReadTime";
 import { PostEngagementSummary } from "./PostEngagementSummary";
+import { QuickReactions } from "./QuickReactions";
 import { cn } from "@/lib/utils";
 import type { CommunityPost } from "./CommunityFeed";
 
@@ -263,6 +264,11 @@ export const PostCard = memo(function PostCard({
                 {isAr ? "محتوى نشط" : "Active thread"}
               </div>
             )}
+
+            {/* Quick Reactions */}
+            <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+              <QuickReactions postId={post.id} />
+            </div>
 
             {/* Poll */}
             <PollDisplay postId={post.id} />

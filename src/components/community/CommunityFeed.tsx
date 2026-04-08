@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, memo } from "react";
+import { useState, useEffect, useCallback, useRef, memo, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,6 +20,7 @@ import { PostCard } from "./PostCard";
 import { FeedTabs, type FeedFilter } from "./FeedTabs";
 import { NewPostsBanner } from "./NewPostsBanner";
 import { TrendingCarousel } from "./TrendingCarousel";
+import { FeedScrollProgress } from "./FeedScrollProgress";
 
 export interface CommunityPost {
   id: string;
@@ -376,8 +377,8 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
   const formatDate = useCallback((dateStr: string) => {
     const date = new Date(dateStr);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const now = Date.now();
+    const diffMs = now - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
@@ -399,6 +400,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
   return (
     <>
+      <FeedScrollProgress />
       <div ref={feedTopRef} />
 
       {/* Tag filter banner */}

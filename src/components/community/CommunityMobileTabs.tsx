@@ -23,22 +23,23 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
   const isAr = language === "ar";
   const { data: enabledFeatures } = useUserFeatures();
 
-  const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
-    { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
-    { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
-    { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
-    { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
-    { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
-    { id: "live", label: isAr ? "مباشرة" : "Live", icon: Radio },
-    { id: "bookmarks", label: isAr ? "المحفوظات" : "Saved", icon: Bookmark, requiresAuth: true },
-    { id: "network", label: isAr ? "شبكتي" : "Network", icon: UserPlus, requiresAuth: true },
-  ];
-
-  const tabs = useMemo(() => allTabs.filter(tab => {
-    const featureCode = TAB_FEATURE_MAP[tab.id];
-    if (featureCode && enabledFeatures && !enabledFeatures.has(featureCode)) return false;
-    return true;
-  }), [allTabs, enabledFeatures]);
+  const tabs = useMemo(() => {
+    const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
+      { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
+      { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
+      { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },
+      { id: "groups", label: isAr ? "المجموعات" : "Groups", icon: UsersRound },
+      { id: "events", label: isAr ? "الفعاليات" : "Events", icon: CalendarDays },
+      { id: "live", label: isAr ? "مباشرة" : "Live", icon: Radio },
+      { id: "bookmarks", label: isAr ? "المحفوظات" : "Saved", icon: Bookmark, requiresAuth: true },
+      { id: "network", label: isAr ? "شبكتي" : "Network", icon: UserPlus, requiresAuth: true },
+    ];
+    return allTabs.filter(tab => {
+      const featureCode = TAB_FEATURE_MAP[tab.id];
+      if (featureCode && enabledFeatures && !enabledFeatures.has(featureCode)) return false;
+      return true;
+    });
+  }, [isAr, enabledFeatures]);
 
   return (
     <div className="sticky top-12 z-40 border-b border-border/30 bg-background/98 backdrop-blur-xl lg:hidden safe-area-x">

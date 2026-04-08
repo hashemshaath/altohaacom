@@ -88,30 +88,34 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
         <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
           <Flame className="h-3.5 w-3.5 text-destructive" />
           {isAr ? "الأكثر تفاعلاً" : "Trending Now"}
+          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-bold tabular-nums">{trending.length}</Badge>
         </h3>
         <div className="flex gap-1">
-          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => scroll("left")}>
+          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-muted/50" onClick={() => scroll("left")}>
             <ChevronLeft className="h-3.5 w-3.5" />
           </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={() => scroll("right")}>
+          <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-muted/50" onClick={() => scroll("right")}>
             <ChevronRight className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
-      <div ref={scrollRef} className="flex gap-2.5 overflow-x-auto scrollbar-none">
-        {trending.map((post) => (
+      <div ref={scrollRef} className="flex gap-2.5 overflow-x-auto scrollbar-none scroll-smooth snap-x snap-mandatory">
+        {trending.map((post, idx) => (
           <button
             key={post.id}
             onClick={() => navigate(`/community?post=${post.id}`)}
-            className="shrink-0 w-[200px] rounded-xl border border-border bg-card p-3 text-start hover:bg-muted/30 transition-colors group"
+            className="shrink-0 w-[200px] snap-start rounded-xl border border-border/60 bg-card p-3 text-start hover:bg-muted/30 hover:border-primary/20 hover:shadow-md transition-all duration-200 group active:scale-[0.98] touch-manipulation"
           >
             <div className="flex items-center gap-2 mb-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src={post.author_avatar || undefined} />
-                <AvatarFallback className="text-[12px] bg-primary/10 text-primary">
-                  {(post.author_name || "C")[0].toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="h-6 w-6 ring-1 ring-border/20">
+                  <AvatarImage src={post.author_avatar || undefined} />
+                  <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
+                    {(post.author_name || "C")[0].toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                {idx < 3 && <span className="absolute -top-0.5 -end-0.5 h-2 w-2 rounded-full bg-chart-4 ring-1 ring-card" />}
+              </div>
               <span className="text-[12px] font-semibold truncate group-hover:text-primary transition-colors">
                 {post.author_name || "Chef"}
               </span>
@@ -119,9 +123,9 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
             <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-2">
               {post.content.slice(0, 100)}
             </p>
-            <div className="flex gap-3 text-[12px] text-muted-foreground">
-              <span>❤️ {post.likes_count}</span>
-              <span>💬 {post.comments_count}</span>
+            <div className="flex gap-3 text-[11px] text-muted-foreground font-medium">
+              <span className="flex items-center gap-0.5">❤️ {post.likes_count}</span>
+              <span className="flex items-center gap-0.5">💬 {post.comments_count}</span>
             </div>
           </button>
         ))}
