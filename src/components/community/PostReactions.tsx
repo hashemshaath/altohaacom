@@ -18,6 +18,7 @@ const REACTIONS = [
 
 interface PostReactionsProps {
   postId: string;
+  initialReactions?: Array<{ type: string; count: number; hasReacted: boolean }>;
 }
 
 interface ReactionCount {
