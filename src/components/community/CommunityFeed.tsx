@@ -21,6 +21,8 @@ import { FeedTabs, type FeedFilter } from "./FeedTabs";
 import { NewPostsBanner } from "./NewPostsBanner";
 import { TrendingCarousel } from "./TrendingCarousel";
 import { FeedScrollProgress } from "./FeedScrollProgress";
+import { FeedKeyboardShortcuts } from "./FeedKeyboardShortcuts";
+import { FeedStatsBar } from "./FeedStatsBar";
 
 export interface CommunityPost {
   id: string;
@@ -401,6 +403,10 @@ export const CommunityFeed = memo(function CommunityFeed() {
   return (
     <>
       <FeedScrollProgress />
+      <FeedKeyboardShortcuts
+        onRefresh={() => fetchPosts(0, false)}
+        onScrollTop={() => feedTopRef.current?.scrollIntoView({ behavior: "smooth" })}
+      />
       <div ref={feedTopRef} />
 
       {/* Tag filter banner */}
@@ -444,6 +450,9 @@ export const CommunityFeed = memo(function CommunityFeed() {
           />
         </FeatureGate>
       )}
+
+      {/* Stats Bar */}
+      {!tagFilter && feedFilter === "for_you" && <FeedStatsBar />}
 
       {/* Trending Carousel */}
       {!tagFilter && feedFilter === "for_you" && <TrendingCarousel />}
