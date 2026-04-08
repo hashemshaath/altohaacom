@@ -172,6 +172,21 @@ export default function ProSupplierDetail() {
     return acc;
   }, {});
 
+  const handleAddToCart = useCallback((product: any, qty = 1) => {
+    addItem({
+      product_id: product.id,
+      title: product.name,
+      title_ar: product.name_ar,
+      image_url: product.image_url,
+      price: product.unit_price || 0,
+      currency: product.currency || "SAR",
+      stock_quantity: product.quantity_available || 999,
+      tax_rate: 0.15,
+      tax_inclusive: false,
+    }, qty);
+    toast.success(isAr ? "تمت الإضافة إلى السلة" : "Added to cart");
+  }, [addItem, isAr]);
+
   const socialLinks = (company as any)?.social_links as Record<string, string> | null;
   const companyName = company ? (isAr && company.name_ar ? company.name_ar : company.name) : "";
   const tagline = company ? (isAr && (company as any).tagline_ar ? (company as any).tagline_ar : (company as any).tagline) : "";
