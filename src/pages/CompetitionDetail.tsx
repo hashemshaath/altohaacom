@@ -633,21 +633,23 @@ export default function CompetitionDetail() {
         </section>
 
         {/* ─── KPI Stats Strip ─── */}
-        <div className="border-y border-border/30 bg-card/60 backdrop-blur-md">
-          <div className="container py-3 sm:py-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
-              <div className="flex items-center gap-4 sm:gap-7">
+        <div className="border-y border-border/20 bg-gradient-to-r from-card/80 via-card to-card/80 backdrop-blur-md">
+          <div className="container py-4 sm:py-5">
+            <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5">
+              <div className="flex items-center gap-5 sm:gap-8">
                 {kpiStats.map((stat, i) => (
                   <button
                     key={i}
                     onClick={stat.onClick}
-                    className="text-center group cursor-pointer hover:scale-105 transition-transform active:scale-95 touch-manipulation"
+                    className="text-center group cursor-pointer hover:scale-110 transition-all duration-300 active:scale-95 touch-manipulation relative"
                   >
-                    <div className="flex items-center justify-center gap-1.5 mb-0.5">
-                      <stat.icon className={`h-3.5 w-3.5 ${stat.color} opacity-60`} />
-                      <p className="text-lg font-bold text-foreground"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
+                    <div className="flex items-center justify-center gap-2 mb-1">
+                      <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${stat.color.replace('text-', 'bg-')}/10`}>
+                        <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
+                      </div>
+                      <p className="text-xl sm:text-2xl font-extrabold text-foreground tabular-nums"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
                     </div>
-                    <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{stat.label}</p>
+                    <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</p>
                   </button>
                 ))}
               </div>
@@ -655,7 +657,7 @@ export default function CompetitionDetail() {
               <div className="flex items-center gap-2.5">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50" onClick={async (e) => {
+                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40 hover:border-primary/30 hover:bg-primary/5 transition-all" onClick={async (e) => {
                       if (navigator.share) {
                         e.preventDefault();
                         try {
@@ -667,24 +669,24 @@ export default function CompetitionDetail() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5">
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       const text = encodeURIComponent(`${title}`);
                       const url = encodeURIComponent(window.location.href);
                       window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "width=600,height=400");
                     }}>
                       <Twitter className="h-3.5 w-3.5" /> Twitter / X
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
                       <Facebook className="h-3.5 w-3.5" /> Facebook
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "width=600,height=400");
                     }}>
                       <Linkedin className="h-3.5 w-3.5" /> LinkedIn
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2 text-xs font-medium" onClick={() => {
+                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
                       navigator.clipboard.writeText(window.location.href);
                       toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
                     }}>
@@ -694,24 +696,24 @@ export default function CompetitionDetail() {
                 </DropdownMenu>
 
                 {user && (
-                  <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50" onClick={toggleWatchlist}>
-                    {isWatched ? <BookmarkCheck className="me-1.5 h-3.5 w-3.5 text-primary" /> : <Bookmark className="me-1.5 h-3.5 w-3.5" />}
+                  <Button variant={isWatched ? "default" : "outline"} size="sm" className={`h-10 rounded-xl px-4 text-xs font-semibold transition-all ${isWatched ? "shadow-md shadow-primary/20" : "border-border/40 hover:border-primary/30 hover:bg-primary/5"}`} onClick={toggleWatchlist}>
+                    {isWatched ? <BookmarkCheck className="me-1.5 h-3.5 w-3.5" /> : <Bookmark className="me-1.5 h-3.5 w-3.5" />}
                     {isWatched ? (isAr ? "في القائمة" : "Saved") : (isAr ? "أضف للقائمة" : "Watchlist")}
                   </Button>
                 )}
 
                 {competition.status === "completed" && (
-                  <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">
+                  <Button asChild size="sm" className="h-10 rounded-xl px-5 text-xs font-bold bg-gradient-to-r from-chart-5 to-chart-4 text-white shadow-md">
                     <Link to={`/competitions/${competition.slug || competitionId}/results`}><Award className="me-1.5 h-3.5 w-3.5" />{isAr ? "النتائج" : "Results"}</Link>
                   </Button>
                 )}
                 {isOrganizer && (
-                  <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50">
+                  <Button asChild variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40">
                     <Link to={`/competitions/${competition.slug || competitionId}/edit`}><Pencil className="me-1.5 h-3.5 w-3.5" />{isAr ? "تعديل" : "Edit"}</Link>
                   </Button>
                 )}
                 {canRegister && !showRegistrationForm && (
-                  <Button className="h-9 rounded-xl px-5 text-xs font-bold shadow-md shadow-primary/15" onClick={() => setShowRegistrationForm(true)}>
+                  <Button className="h-10 rounded-xl px-6 text-xs font-bold shadow-lg shadow-primary/25 bg-gradient-to-r from-primary to-primary/80 hover:shadow-xl hover:shadow-primary/30 transition-all" onClick={() => setShowRegistrationForm(true)}>
                     <Sparkles className="me-1.5 h-3.5 w-3.5" />{t("registerNow")}
                   </Button>
                 )}
@@ -720,30 +722,39 @@ export default function CompetitionDetail() {
 
             {/* Competition Progress Bar (for in_progress and judging) */}
             {["in_progress", "judging"].includes(competition.status) && completionPercent > 0 && (
-              <div className="mt-3 pt-3 border-t border-border/20">
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
-                  <span className="font-semibold">{isAr ? "تقدم المسابقة" : "Competition Progress"}</span>
-                  <span className="font-bold text-foreground">{completionPercent}%</span>
+              <div className="mt-4 pt-4 border-t border-border/15">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-2">
+                  <span className="font-bold uppercase tracking-wider">{isAr ? "تقدم المسابقة" : "Competition Progress"}</span>
+                  <span className="font-extrabold text-primary text-sm">{completionPercent}%</span>
                 </div>
-                <Progress value={completionPercent} className="h-1.5" />
+                <div className="relative h-2 overflow-hidden rounded-full bg-muted/30">
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary via-primary to-chart-3 transition-all duration-1000 ease-out"
+                    style={{ width: `${completionPercent}%` }}
+                  />
+                  <div
+                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary/50 to-chart-3/50 blur-sm transition-all duration-1000"
+                    style={{ width: `${completionPercent}%` }}
+                  />
+                </div>
               </div>
             )}
           </div>
         </div>
 
         {/* ─── Grouped Navigation Pills ─── */}
-        <div className="sticky top-14 z-30 border-b border-border/30 bg-background/95 backdrop-blur-xl">
+        <div className="sticky top-14 z-30 border-b border-border/20 bg-background/90 backdrop-blur-2xl shadow-sm">
           <div className="container">
             <ScrollArea className="w-full">
-              <div className="flex items-stretch divide-x divide-border/30 rtl:divide-x-reverse min-w-max">
-                {NAV_GROUPS.map((group) => (
+              <div className="flex items-stretch gap-0.5 min-w-max py-1.5">
+                {NAV_GROUPS.map((group, gi) => (
                   <div key={group.labelEn} className="flex flex-col">
-                    <div className="px-2 pt-1.5 pb-0.5">
-                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+                    <div className={`px-2.5 pt-1 pb-0.5 ${gi > 0 ? "border-s border-border/20 ms-1 ps-3" : ""}`}>
+                      <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.18em] text-muted-foreground/40">
                         {isAr ? group.labelAr : group.labelEn}
                       </span>
                     </div>
-                    <div className="flex items-center gap-0.5 px-1 pb-1.5">
+                    <div className="flex items-center gap-1 px-1.5 pb-1.5">
                       {group.tabs.map((tab) => {
                         const Icon = tab.icon;
                         const isActive = activeSection === tab.id;
@@ -752,13 +763,13 @@ export default function CompetitionDetail() {
                             key={tab.id}
                             onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(tab.id); }}
                             className={`
-                              inline-flex shrink-0 items-center gap-1 rounded-full px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
+                              inline-flex shrink-0 items-center gap-1.5 rounded-xl px-2.5 sm:px-3.5 py-2 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
                               ${isActive
-                                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
-                                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
+                                ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
+                                : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
                             `}
                           >
-                            <Icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 ${isActive ? "" : "opacity-60"}`} />
+                            <Icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 ${isActive ? "" : "opacity-50"}`} />
                             <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
                           </button>
                         );
@@ -830,102 +841,106 @@ export default function CompetitionDetail() {
                   )}
 
                   {/* Quick Stats Overview Cards */}
-                  <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-4 sm:grid-cols-3">
                     {/* Registration Progress */}
-                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-3/10"><Users className="h-4 w-4 text-chart-3" /></div>
-                          <span className="text-xs font-bold">{isAr ? "التسجيل" : "Registration"}</span>
+                    <div className="relative overflow-hidden rounded-2xl border border-chart-3/20 bg-gradient-to-br from-chart-3/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-chart-3/5 transition-all duration-300 group">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-chart-3/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-3/15 shadow-sm"><Users className="h-4 w-4 text-chart-3" /></div>
+                          <span className="text-sm font-bold">{isAr ? "التسجيل" : "Registration"}</span>
                         </div>
                         <div className="relative">
-                          <ProgressRing value={registrationStats?.approved || 0} max={competition.max_participants || 100} size={40} strokeWidth={3} color="text-chart-3" />
-                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{competition.max_participants ? `${Math.round(((registrationStats?.approved || 0) / competition.max_participants) * 100)}%` : registrationStats?.approved || 0}</span>
+                          <ProgressRing value={registrationStats?.approved || 0} max={competition.max_participants || 100} size={44} strokeWidth={3.5} color="text-chart-3" />
+                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-extrabold">{competition.max_participants ? `${Math.round(((registrationStats?.approved || 0) / competition.max_participants) * 100)}%` : registrationStats?.approved || 0}</span>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span><span className="font-bold text-chart-5">{registrationStats?.approved || 0}</span></div>
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span><span className="font-bold text-chart-4">{registrationStats?.pending || 0}</span></div>
-                        {competition.max_participants && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "السعة" : "Capacity"}</span><span className="font-bold">{competition.max_participants}</span></div>}
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span><span className="font-bold text-chart-5">{registrationStats?.approved || 0}</span></div>
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span><span className="font-bold text-chart-4">{registrationStats?.pending || 0}</span></div>
+                        {competition.max_participants && <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "السعة" : "Capacity"}</span><span className="font-extrabold">{competition.max_participants}</span></div>}
                       </div>
                     </div>
 
                     {/* Judging Overview */}
-                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-5/10"><Scale className="h-4 w-4 text-chart-5" /></div>
-                          <span className="text-xs font-bold">{isAr ? "التحكيم" : "Judging"}</span>
+                    <div className="relative overflow-hidden rounded-2xl border border-chart-5/20 bg-gradient-to-br from-chart-5/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-chart-5/5 transition-all duration-300 group">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-chart-5/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/15 shadow-sm"><Scale className="h-4 w-4 text-chart-5" /></div>
+                          <span className="text-sm font-bold">{isAr ? "التحكيم" : "Judging"}</span>
                         </div>
                         <div className="relative">
-                          <ProgressRing value={judgesCount || 0} max={10} size={40} strokeWidth={3} color="text-chart-5" />
-                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{judgesCount || 0}</span>
+                          <ProgressRing value={judgesCount || 0} max={10} size={44} strokeWidth={3.5} color="text-chart-5" />
+                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-extrabold">{judgesCount || 0}</span>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "الحكام" : "Judges"}</span><span className="font-bold">{judgesCount || 0}</span></div>
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold text-chart-4">{criteria?.length || 0}</span></div>
-                        {totalScore > 0 && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "مجموع النقاط" : "Total Score"}</span><span className="font-bold text-primary">{totalScore}</span></div>}
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "الحكام" : "Judges"}</span><span className="font-bold">{judgesCount || 0}</span></div>
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold text-chart-4">{criteria?.length || 0}</span></div>
+                        {totalScore > 0 && <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "مجموع النقاط" : "Total Score"}</span><span className="font-extrabold text-primary">{totalScore}</span></div>}
                       </div>
                     </div>
 
                     {/* Competition Status */}
-                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Activity className="h-4 w-4 text-primary" /></div>
-                          <span className="text-xs font-bold">{isAr ? "الحالة" : "Status"}</span>
+                    <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-primary/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 shadow-sm"><Activity className="h-4 w-4 text-primary" /></div>
+                          <span className="text-sm font-bold">{isAr ? "الحالة" : "Status"}</span>
                         </div>
-                        <Badge className={`${statusCfg.bg} text-[10px] px-2 py-0.5 font-bold`}>
+                        <Badge className={`${statusCfg.bg} text-[11px] px-2.5 py-1 font-bold shadow-sm`}>
                           {isAr ? statusCfg.labelAr : statusCfg.label}
                         </Badge>
                       </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "الفئات" : "Categories"}</span><span className="font-bold">{categories?.length || 0}</span></div>
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold">{criteria?.length || 0}</span></div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "الفئات" : "Categories"}</span><span className="font-bold">{categories?.length || 0}</span></div>
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold">{criteria?.length || 0}</span></div>
                         {daysUntilStart !== null && daysUntilStart > 0 && (
-                          <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "أيام للبدء" : "Days to Start"}</span><span className="font-bold text-primary">{daysUntilStart}</span></div>
+                          <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "أيام للبدء" : "Days to Start"}</span><span className="font-extrabold text-chart-4">{daysUntilStart}</span></div>
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Entry & Fee Info */}
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-border/40 bg-card p-4 sm:p-5">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-3/10"><UsersRound className="h-4 w-4 text-chart-3" /></div>
-                        <h4 className="font-semibold text-sm">{isAr ? "أنواع المشاركة" : "Entry Types"}</h4>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-border/30 bg-gradient-to-br from-card to-muted/10 p-5 hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 shadow-sm"><UsersRound className="h-4 w-4 text-accent-foreground" /></div>
+                        <h4 className="font-bold text-sm">{isAr ? "أنواع المشاركة" : "Entry Types"}</h4>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {competition.allowed_entry_types?.map((t) => (
-                          <Badge key={t} variant="outline" className="rounded-xl text-xs px-3 py-1">{t}</Badge>
+                        {competition.allowed_entry_types?.map((t: string) => (
+                          <Badge key={t} variant="outline" className="rounded-xl text-xs px-3.5 py-1.5 font-medium border-accent/20 bg-accent/5">{t}</Badge>
                         )) || <span className="text-xs text-muted-foreground">{isAr ? "فردي" : "Individual"}</span>}
                       </div>
                       {(competition.min_team_size || competition.max_team_size) && (
-                        <p className="text-[12px] text-muted-foreground mt-2">
+                        <p className="text-[12px] text-muted-foreground mt-3 flex items-center gap-1.5">
+                          <Users className="h-3 w-3 opacity-50" />
                           {isAr ? "حجم الفريق:" : "Team size:"} {competition.min_team_size || 1} – {competition.max_team_size || "∞"}
                         </p>
                       )}
                     </div>
-                    <div className="rounded-2xl border border-border/40 bg-card p-4 sm:p-5">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-5/10"><Ticket className="h-4 w-4 text-chart-5" /></div>
-                        <h4 className="font-semibold text-sm">{isAr ? "رسوم التسجيل" : "Registration Fee"}</h4>
+                    <div className="rounded-2xl border border-border/30 bg-gradient-to-br from-card to-muted/10 p-5 hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/10 shadow-sm"><Ticket className="h-4 w-4 text-chart-5" /></div>
+                        <h4 className="font-bold text-sm">{isAr ? "رسوم التسجيل" : "Registration Fee"}</h4>
                       </div>
                       {competition.registration_fee_type === "paid" ? (
                         <div>
-                          <p className="text-2xl font-bold tabular-nums">{competition.registration_fee} <span className="text-sm font-medium text-muted-foreground">{competition.registration_currency}</span></p>
+                          <p className="text-3xl font-extrabold tabular-nums">{competition.registration_fee} <span className="text-sm font-medium text-muted-foreground">{competition.registration_currency}</span></p>
                           {competition.registration_tax_rate && (
-                            <p className="text-[12px] text-muted-foreground mt-1">
+                            <p className="text-[12px] text-muted-foreground mt-1.5">
                               + {(Number(competition.registration_tax_rate) * 100).toFixed(0)}% {isAr && competition.registration_tax_name_ar ? competition.registration_tax_name_ar : competition.registration_tax_name || "Tax"}
                             </p>
                           )}
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">🎉</span>
-                          <p className="text-lg font-bold text-chart-5">{isAr ? "مجاني" : "Free"}</p>
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl">🎉</span>
+                          <p className="text-xl font-extrabold text-chart-5">{isAr ? "مجاني" : "Free"}</p>
                         </div>
                       )}
                     </div>
@@ -1259,10 +1274,10 @@ export default function CompetitionDetail() {
               )}
 
               {/* Registration Card */}
-              <div className="overflow-hidden rounded-2xl border border-border/40 bg-card">
-                <div className="border-b border-border/30 bg-gradient-to-r from-primary/[0.04] to-transparent px-5 py-3.5">
-                  <h3 className="flex items-center gap-2.5 font-bold text-sm">
-                    <Trophy className="h-4 w-4 text-primary" />
+              <div className="overflow-hidden rounded-2xl border border-border/30 bg-card shadow-sm">
+                <div className="border-b border-border/20 bg-gradient-to-r from-primary/[0.06] via-primary/[0.02] to-transparent px-5 py-4">
+                  <h3 className="flex items-center gap-2.5 font-bold text-[15px]">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15"><Trophy className="h-4 w-4 text-primary" /></div>
                     {isAr ? "التسجيل" : "Registration"}
                   </h3>
                 </div>
@@ -1323,14 +1338,14 @@ export default function CompetitionDetail() {
               <ParticipantStatsCard competitionId={competition.id} maxParticipants={competition.max_participants} />
 
               {/* Quick Info Card */}
-              <div className="overflow-hidden rounded-2xl border border-border/40 bg-card">
-                <div className="border-b border-border/30 bg-gradient-to-r from-accent/[0.04] to-transparent px-5 py-3.5">
-                  <h3 className="flex items-center gap-2.5 font-bold text-sm">
-                    <BookOpen className="h-4 w-4 text-primary" />
+              <div className="overflow-hidden rounded-2xl border border-border/30 bg-card shadow-sm">
+                <div className="border-b border-border/20 bg-gradient-to-r from-accent/[0.06] via-accent/[0.02] to-transparent px-5 py-4">
+                  <h3 className="flex items-center gap-2.5 font-bold text-[15px]">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15"><BookOpen className="h-4 w-4 text-primary" /></div>
                     {isAr ? "معلومات سريعة" : "Quick Info"}
                   </h3>
                 </div>
-                <div className="p-5 space-y-3.5">
+                <div className="p-5 space-y-4">
                   {[
                     competition.country_code && { icon: MapPin, label: isAr ? "الدولة" : "Country", value: `${countryFlag(competition.country_code)} ${competition.country}` },
                     competition.edition_year && { icon: Hash, label: isAr ? "النسخة" : "Edition", value: competition.edition_year },
@@ -1341,15 +1356,15 @@ export default function CompetitionDetail() {
                     competition.blind_judging_enabled && { icon: Shield, label: isAr ? "التحكيم" : "Judging", value: isAr ? "مخفي الهوية" : "Blind", badge: true },
                     competition.series_id && { icon: Layers, label: isAr ? "السلسلة" : "Series", value: isAr ? "جزء من سلسلة" : "Part of Series", badge: true },
                   ].filter(Boolean).map((item: any, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <item.icon className="h-3.5 w-3.5 opacity-50" />
-                        <span>{item.label}</span>
+                    <div key={i} className="flex items-center justify-between text-sm py-1 group/item hover:bg-muted/20 rounded-lg px-2 -mx-2 transition-colors">
+                      <div className="flex items-center gap-2.5 text-muted-foreground">
+                        <item.icon className="h-4 w-4 opacity-40 group-hover/item:opacity-70 transition-opacity" />
+                        <span className="text-[13px]">{item.label}</span>
                       </div>
                       {item.badge ? (
-                        <Badge variant="outline" className="text-[12px] rounded-xl">{item.value}</Badge>
+                        <Badge variant="outline" className="text-[12px] rounded-xl font-medium">{item.value}</Badge>
                       ) : (
-                        <span className="font-semibold">{item.value}</span>
+                        <span className="font-bold text-[13px]">{item.value}</span>
                       )}
                     </div>
                   ))}
