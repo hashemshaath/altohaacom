@@ -1,4 +1,4 @@
-import { useMemo, lazy, Suspense } from "react";
+import { useMemo, lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -11,20 +11,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ActivityPulse } from "@/components/ui/activity-pulse";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useInViewport } from "@/hooks/useInViewport";
 import {
   Users, UserCheck, UserPlus, Flag, Trophy, FileText, Calendar,
   TrendingUp, ArrowRight, ArrowUpRight, ArrowDownRight,
   Shield, Activity, Package, GraduationCap, LayoutDashboard,
   Zap, MessageSquare, AlertTriangle, Settings,
-  Heart, ChefHat, Building2, Landmark, Eye,
+  Heart, ChefHat, Building2, Landmark, BarChart3,
+  Clock, Eye, Globe,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
 
-// Lazy load heavy widgets
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
 const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
 const AdminPendingActionsWidget = lazy(() => import("@/components/admin/AdminPendingActionsWidget").then(m => ({ default: m.AdminPendingActionsWidget })));
@@ -37,27 +37,72 @@ const ReportsSummaryWidget = lazy(() => import("@/components/admin/ReportsSummar
 const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrdersOverviewWidget").then(m => ({ default: m.ShopOrdersOverviewWidget })));
 const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
 
-/* ─── Helpers ─── */
 function LazySection({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
   const { ref, inView } = useInViewport("400px 0px");
   return (
     <div ref={ref}>
-      {inView ? <Suspense fallback={fallback || <SectionSkeleton />}>{children}</Suspense> : <div className="min-h-[80px]" />}
+      {inView ? <Suspense fallback={fallback || <Skeleton className="h-32 w-full rounded-lg" />}>{children}</Suspense> : <div className="min-h-[80px]" />}
     </div>
   );
 }
 
-function SectionSkeleton() {
-  return <div className="space-y-3"><Skeleton className="h-32 w-full rounded-xl" /></div>;
+/* ─── Metric Card ─── */
+function MetricCard({ title, value, icon: Icon, trend, sparkData, chartColor, link, loading, urgent }: {
+  title: string; value: number; icon: any; trend?: number; sparkData?: { v: number }[];
+  chartColor?: string; link: string; loading?: boolean; urgent?: boolean;
+}) {
+  return (
+    <Link to={link}>
+      <div className={cn(
+        "group relative rounded-lg border border-border/50 bg-card p-4 transition-all duration-150 hover:border-border hover:bg-accent/5",
+        urgent && "border-destructive/40"
+      )}>
+        <div className="flex items-center justify-between mb-3">
+          <Icon className="h-4 w-4 text-muted-foreground" />
+          {trend !== undefined && trend !== 0 && (
+            <span className={cn("text-[11px] font-mono font-medium flex items-center gap-0.5",
+              trend > 0 ? "text-chart-5" : "text-destructive"
+            )}>
+              {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+              {trend > 0 ? "+" : ""}{trend}
+            </span>
+          )}
+        </div>
+        {loading ? (
+          <Skeleton className="h-8 w-16 rounded mb-1" />
+        ) : (
+          <p className="text-2xl font-semibold tracking-tight tabular-nums text-foreground">
+            <AnimatedCounter value={value} />
+          </p>
+        )}
+        <p className="text-[12px] text-muted-foreground mt-0.5">{title}</p>
+        {sparkData && sparkData.length > 0 && chartColor && (
+          <div className="mt-2 -mx-1 opacity-40 group-hover:opacity-70 transition-opacity">
+            <ResponsiveContainer width="100%" height={24}>
+              <AreaChart data={sparkData}>
+                <defs>
+                  <linearGradient id={`g-${title.replace(/\s/g, "")}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={chartColor} stopOpacity={0.2} />
+                    <stop offset="100%" stopColor={chartColor} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="v" stroke={chartColor} strokeWidth={1.2} fill={`url(#g-${title.replace(/\s/g, "")})`} dot={false} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+    </Link>
+  );
 }
 
-/* ─── Main Dashboard ─── */
+/* ─── Main ─── */
 export default function AdminDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+  const [activeTab, setActiveTab] = useState("overview");
   useAdminCacheWarmer();
 
-  /* ── Data Queries ── */
   const { data: stats, isLoading } = useQuery({
     queryKey: ["superAdminStats"],
     queryFn: async () => {
@@ -81,8 +126,8 @@ export default function AdminDashboard() {
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "professional"),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "fan"),
         supabase.from("organizers").select("*", { count: "exact", head: true }),
-        supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(5),
-        supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at").order("created_at", { ascending: false }).limit(5),
+        supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(8),
+        supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at, account_type").order("created_at", { ascending: false }).limit(8),
       ]);
       return {
         totalUsers: totalUsers || 0, activeUsers: activeUsers || 0, suspendedUsers: suspendedUsers || 0,
@@ -146,38 +191,23 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const now = new Date().toISOString();
       const [{ data: exh }, { data: comp }] = await Promise.all([
-        supabase.from("exhibitions").select("id, title, title_ar, start_date, city, country, status, slug, edition_year")
-          .gte("start_date", now).in("status", ["upcoming", "active"]).order("start_date").limit(4),
-        supabase.from("competitions").select("id, title, title_ar, competition_start, city, country, status, edition_year")
-          .gte("competition_start", now).in("status", ["upcoming", "registration_open", "in_progress"]).order("competition_start").limit(4),
+        supabase.from("exhibitions").select("id, title, title_ar, start_date, end_date, city, country, status, slug, edition_year")
+          .gte("start_date", now).in("status", ["upcoming", "active"]).order("start_date").limit(6),
+        supabase.from("competitions").select("id, title, title_ar, competition_start, competition_end, city, country, status, edition_year")
+          .gte("competition_start", now).in("status", ["upcoming", "registration_open", "in_progress"]).order("competition_start").limit(6),
       ]);
       return [
         ...(exh || []).map(e => ({ ...e, type: "exhibition" as const, date: e.start_date, link: `/admin/exhibitions` })),
         ...(comp || []).map(c => ({ ...c, type: "competition" as const, date: c.competition_start, link: `/admin/competitions` })),
-      ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 6);
+      ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 8);
     },
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: recentImports } = useQuery({
-    queryKey: ["admin-recent-imports"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("bulk_imports")
-        .select("id, entity_type, status, total_rows, processed_rows, created_at, file_name")
-        .order("created_at", { ascending: false })
-        .limit(5);
-      return data || [];
-    },
-    staleTime: 1000 * 60 * 5,
-  });
-
-  /* ── Derived data ── */
-  const sparklineKeys: Record<string, string> = {
-    "Total Users": "users", "إجمالي المستخدمين": "users",
-    "Competitions": "comps", "المسابقات": "comps",
-    "Exhibitions": "exhibitions", "المعارض": "exhibitions",
-    "Articles": "articles", "المقالات": "articles",
+  const getSparkPoints = (key: string) => sparkData?.map((d) => ({ v: d[key] || 0 })) || [];
+  const getTrend = (key: string) => {
+    const pts = getSparkPoints(key);
+    return pts.length >= 2 ? pts[pts.length - 1].v - pts[0].v : 0;
   };
 
   const greeting = useMemo(() => {
@@ -187,196 +217,132 @@ export default function AdminDashboard() {
     return isAr ? "مساء الخير" : "Good evening";
   }, [isAr]);
 
-  const primaryKPIs = useMemo(() => [
-    { title: isAr ? "إجمالي المستخدمين" : "Total Users", value: stats?.totalUsers || 0, icon: Users, color: "text-primary", bg: "bg-primary/8", chartColor: "hsl(var(--primary))", link: "/admin/users" },
-    { title: isAr ? "المستخدمين النشطين" : "Active Users", value: stats?.activeUsers || 0, icon: UserCheck, color: "text-chart-5", bg: "bg-chart-5/8", chartColor: "hsl(var(--chart-5))", link: "/admin/users?status=active" },
-    { title: isAr ? "تقارير معلقة" : "Pending Reports", value: stats?.pendingReports || 0, icon: Flag, color: "text-destructive", bg: "bg-destructive/8", chartColor: "hsl(var(--destructive))", link: "/admin/moderation", urgent: (stats?.pendingReports || 0) > 0 },
-    { title: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, icon: Trophy, color: "text-chart-2", bg: "bg-chart-2/8", chartColor: "hsl(var(--chart-2))", link: "/admin/competitions" },
-  ], [stats, isAr]);
-
-  const secondaryKPIs = useMemo(() => [
-    { title: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, icon: Landmark, color: "text-chart-3", bg: "bg-chart-3/8", link: "/admin/exhibitions" },
-    { title: isAr ? "المنظمون" : "Organizers", value: stats?.totalOrganizers || 0, icon: Building2, color: "text-chart-4", bg: "bg-chart-4/8", link: "/admin/organizers" },
-    { title: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, icon: GraduationCap, color: "text-accent-foreground", bg: "bg-accent/30", link: "/admin/masterclasses" },
-    { title: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, icon: FileText, color: "text-chart-1", bg: "bg-chart-1/8", link: "/admin/articles" },
-    { title: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package, color: "text-chart-5", bg: "bg-chart-5/8", link: "/admin/orders" },
-  ], [stats, isAr]);
-
-  const quickLinks = useMemo(() => [
-    { title: isAr ? "المستخدمون" : "Users", icon: Users, link: "/admin/users", color: "text-primary" },
-    { title: isAr ? "المنظمون" : "Organizers", icon: Building2, link: "/admin/organizers", color: "text-chart-4" },
-    { title: isAr ? "المعارض" : "Exhibitions", icon: Landmark, link: "/admin/exhibitions", color: "text-chart-3" },
-    { title: isAr ? "المسابقات" : "Competitions", icon: Trophy, link: "/admin/competitions", color: "text-chart-2" },
-    { title: isAr ? "الأدوار" : "Roles", icon: Shield, link: "/admin/roles", color: "text-muted-foreground" },
-    { title: isAr ? "المراجعة" : "Moderation", icon: Flag, link: "/admin/moderation", color: "text-destructive", badge: stats?.pendingReports },
-    { title: isAr ? "الإشعارات" : "Notifications", icon: MessageSquare, link: "/admin/notifications", color: "text-chart-1" },
-    { title: isAr ? "الإعدادات" : "Settings", icon: Settings, link: "/admin/settings", color: "text-muted-foreground" },
-  ], [isAr, stats?.pendingReports]);
-
   return (
     <div className="space-y-6 pb-20 md:pb-6">
-      {/* ═══════════════════ HEADER ═══════════════════ */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-              <LayoutDashboard className="h-5 w-5 text-primary" />
-            </div>
+      {/* ═══ Header ═══ */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight text-foreground">
             {greeting} 👋
           </h1>
-          <p className="text-sm text-muted-foreground">
-            {isAr ? "نظرة شاملة على المنصة" : "Platform overview"} · <span className="font-medium text-foreground/70">{format(new Date(), "EEEE, MMM d, yyyy")}</span>
+          <p className="text-[13px] text-muted-foreground mt-0.5">
+            {format(new Date(), "EEEE, MMM d, yyyy")}
           </p>
         </div>
-        <div className="hidden sm:flex items-center gap-3">
-          <ActivityPulse status="live" label={isAr ? "مباشر" : "Live"} size="md" />
+        <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-border/50 px-2.5 py-1">
+            <div className="h-1.5 w-1.5 rounded-full bg-chart-5 animate-pulse" />
+            <span className="text-[11px] text-muted-foreground font-medium">{isAr ? "مباشر" : "Live"}</span>
+          </div>
           <AdminRealtimeNotificationBell />
         </div>
       </div>
 
       <SecurityAlertsBanner />
 
-      {/* ═══════════════════ PRIMARY KPIs (4 large cards) ═══════════════════ */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        {primaryKPIs.map((kpi) => {
-          const sparkKey = sparklineKeys[kpi.title];
-          const sparkPoints = sparkKey && sparkData ? sparkData.map((d) => ({ v: d[sparkKey] || 0 })) : null;
-          const trend = sparkPoints && sparkPoints.length >= 2 ? sparkPoints[sparkPoints.length - 1].v - sparkPoints[0].v : 0;
+      {/* ═══ Tabs ═══ */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="h-9 w-full justify-start rounded-lg bg-muted/50 p-0.5 gap-0.5">
+          <TabsTrigger value="overview" className="rounded-md text-xs font-medium px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <LayoutDashboard className="h-3.5 w-3.5 me-1.5" />
+            {isAr ? "نظرة عامة" : "Overview"}
+          </TabsTrigger>
+          <TabsTrigger value="users" className="rounded-md text-xs font-medium px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <Users className="h-3.5 w-3.5 me-1.5" />
+            {isAr ? "المستخدمين" : "Users"}
+          </TabsTrigger>
+          <TabsTrigger value="events" className="rounded-md text-xs font-medium px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <Calendar className="h-3.5 w-3.5 me-1.5" />
+            {isAr ? "الفعاليات" : "Events"}
+          </TabsTrigger>
+          <TabsTrigger value="reports" className="rounded-md text-xs font-medium px-3 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <BarChart3 className="h-3.5 w-3.5 me-1.5" />
+            {isAr ? "التقارير" : "Reports"}
+          </TabsTrigger>
+        </TabsList>
 
-          return (
-            <Link key={kpi.title} to={kpi.link}>
-              <Card className={cn(
-                "group relative overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 rounded-xl",
-                kpi.urgent && "ring-1 ring-destructive/30"
-              )}>
-                <CardContent className="p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110", kpi.bg)}>
-                      <kpi.icon className={cn("h-5 w-5", kpi.color)} />
-                    </div>
-                    {trend !== 0 && (
-                      <Badge variant="outline" className={cn("text-xs gap-0.5 font-semibold", trend > 0 ? "text-chart-5 border-chart-5/30" : "text-destructive border-destructive/30")}>
-                        {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                        {Math.abs(trend)}
-                      </Badge>
+        {/* ════════════ OVERVIEW TAB ════════════ */}
+        <TabsContent value="overview" className="mt-5 space-y-5">
+          {/* KPI Grid */}
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+            <MetricCard title={isAr ? "المستخدمون" : "Users"} value={stats?.totalUsers || 0} icon={Users} trend={getTrend("users")} sparkData={getSparkPoints("users")} chartColor="hsl(var(--primary))" link="/admin/users" loading={isLoading} />
+            <MetricCard title={isAr ? "نشط" : "Active"} value={stats?.activeUsers || 0} icon={UserCheck} link="/admin/users?status=active" loading={isLoading} />
+            <MetricCard title={isAr ? "البلاغات" : "Reports"} value={stats?.pendingReports || 0} icon={Flag} link="/admin/moderation" loading={isLoading} urgent={(stats?.pendingReports || 0) > 0} />
+            <MetricCard title={isAr ? "المسابقات" : "Competitions"} value={stats?.totalCompetitions || 0} icon={Trophy} trend={getTrend("comps")} sparkData={getSparkPoints("comps")} chartColor="hsl(var(--chart-2))" link="/admin/competitions" loading={isLoading} />
+            <MetricCard title={isAr ? "المعارض" : "Exhibitions"} value={stats?.totalExhibitions || 0} icon={Landmark} trend={getTrend("exhibitions")} sparkData={getSparkPoints("exhibitions")} chartColor="hsl(var(--chart-3))" link="/admin/exhibitions" loading={isLoading} />
+            <MetricCard title={isAr ? "المقالات" : "Articles"} value={stats?.totalArticles || 0} icon={FileText} trend={getTrend("articles")} sparkData={getSparkPoints("articles")} chartColor="hsl(var(--chart-1))" link="/admin/articles" loading={isLoading} />
+          </div>
+
+          {/* Today strip */}
+          <div className="flex items-center gap-3 overflow-x-auto pb-1">
+            <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground shrink-0">
+              <Clock className="h-3.5 w-3.5" />
+              <span className="font-medium">{isAr ? "اليوم" : "Today"}</span>
+            </div>
+            <div className="h-4 w-px bg-border shrink-0" />
+            {[
+              { label: isAr ? "مستخدمون جدد" : "New users", value: todayStats?.newUsers || 0, color: "text-foreground" },
+              { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, color: "text-foreground" },
+              { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, color: "text-foreground" },
+              { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, color: todayStats?.newReports ? "text-destructive" : "text-foreground" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center gap-1.5 shrink-0">
+                <span className={cn("text-sm font-semibold tabular-nums", item.color)}>{item.value}</span>
+                <span className="text-[11px] text-muted-foreground">{item.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Quick Actions */}
+          <div>
+            <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">
+              {isAr ? "وصول سريع" : "Quick access"}
+            </p>
+            <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+              {[
+                { title: isAr ? "المستخدمون" : "Users", icon: Users, link: "/admin/users" },
+                { title: isAr ? "المنظمون" : "Organizers", icon: Building2, link: "/admin/organizers" },
+                { title: isAr ? "المعارض" : "Exhibitions", icon: Landmark, link: "/admin/exhibitions" },
+                { title: isAr ? "المسابقات" : "Competitions", icon: Trophy, link: "/admin/competitions" },
+                { title: isAr ? "الأدوار" : "Roles", icon: Shield, link: "/admin/roles" },
+                { title: isAr ? "المراجعة" : "Moderation", icon: Flag, link: "/admin/moderation", badge: stats?.pendingReports },
+                { title: isAr ? "الإشعارات" : "Notifications", icon: MessageSquare, link: "/admin/notifications" },
+                { title: isAr ? "الإعدادات" : "Settings", icon: Settings, link: "/admin/settings" },
+              ].map((action) => (
+                <Link key={action.title} to={action.link}>
+                  <div className="group relative flex flex-col items-center gap-1.5 rounded-lg border border-border/40 p-3 text-center transition-all hover:border-border hover:bg-accent/5 active:scale-[0.97]">
+                    <action.icon className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
+                    {action.badge && action.badge > 0 && (
+                      <span className="absolute -top-1 -end-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive text-[9px] font-bold text-destructive-foreground px-1">{action.badge}</span>
                     )}
                   </div>
-                  {isLoading ? (
-                    <Skeleton className="h-8 w-20 rounded mb-1" />
-                  ) : (
-                    <p className="text-3xl font-bold tracking-tight tabular-nums">
-                      <AnimatedCounter value={kpi.value} />
-                    </p>
-                  )}
-                  <p className="text-xs text-muted-foreground font-medium mt-1">{kpi.title}</p>
-                  {sparkPoints && sparkPoints.length > 0 && (
-                    <div className="mt-3 -mx-2 opacity-30 group-hover:opacity-60 transition-opacity">
-                      <ResponsiveContainer width="100%" height={32}>
-                        <AreaChart data={sparkPoints}>
-                          <defs>
-                            <linearGradient id={`grad-${kpi.title}`} x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="0%" stopColor={kpi.chartColor} stopOpacity={0.3} />
-                              <stop offset="100%" stopColor={kpi.chartColor} stopOpacity={0} />
-                            </linearGradient>
-                          </defs>
-                          <Area type="monotone" dataKey="v" stroke={kpi.chartColor} strokeWidth={1.5} fill={`url(#grad-${kpi.title})`} dot={false} />
-                        </AreaChart>
-                      </ResponsiveContainer>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </Link>
-          );
-        })}
-      </div>
+                </Link>
+              ))}
+            </div>
+          </div>
 
-      {/* ═══════════════════ SECONDARY KPIs (5 compact cards) ═══════════════════ */}
-      <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-        {secondaryKPIs.map((kpi) => (
-          <Link key={kpi.title} to={kpi.link}>
-            <Card className="group overflow-hidden transition-all duration-200 hover:shadow-sm hover:-translate-y-0.5 rounded-xl">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-transform group-hover:scale-110", kpi.bg)}>
-                  <kpi.icon className={cn("h-4 w-4", kpi.color)} />
-                </div>
-                <div className="min-w-0">
-                  {isLoading ? (
-                    <Skeleton className="h-5 w-10 rounded mb-0.5" />
-                  ) : (
-                    <p className="text-lg font-bold tabular-nums leading-tight">
-                      <AnimatedCounter value={kpi.value} />
-                    </p>
-                  )}
-                  <p className="text-[11px] text-muted-foreground font-medium truncate">{kpi.title}</p>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
-
-      {/* ═══════════════════ MAIN CONTENT GRID ═══════════════════ */}
-      <div className="grid gap-5 lg:grid-cols-3">
-        {/* ── Left Column (2/3) ── */}
-        <div className="lg:col-span-2 space-y-5">
-          {/* Quick Actions */}
-          <Card className="rounded-xl">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-primary" />
-                  {isAr ? "إجراءات سريعة" : "Quick Actions"}
-                </CardTitle>
+          {/* Two-column: Upcoming Events + Activity */}
+          <div className="grid gap-4 lg:grid-cols-5">
+            {/* Events Preview */}
+            <div className="lg:col-span-3">
+              <div className="flex items-center justify-between mb-2.5">
+                <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "الفعاليات القادمة" : "Upcoming events"}</p>
+                <Button variant="ghost" size="sm" className="text-[11px] h-6 px-2 text-muted-foreground hover:text-foreground" asChild>
+                  <Link to="/admin/exhibitions">{isAr ? "عرض الكل" : "View all"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
+                </Button>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-4 gap-2">
-                {quickLinks.map((action) => (
-                  <Link key={action.title} to={action.link}>
-                    <div className="group relative flex flex-col items-center gap-2 rounded-xl border border-border/40 p-3.5 text-center transition-all duration-200 hover:bg-muted/40 hover:border-primary/20 active:scale-[0.97]">
-                      <action.icon className={cn("h-5 w-5 transition-colors", action.color)} />
-                      <span className="text-[11px] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
-                      {action.badge && action.badge > 0 && (
-                        <Badge variant="destructive" className="absolute -top-1.5 -end-1.5 text-[10px] h-4 min-w-4 px-1">{action.badge}</Badge>
-                      )}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Upcoming Events */}
-          {upcomingEvents && upcomingEvents.length > 0 && (
-            <Card className="rounded-xl">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-chart-4" />
-                    {isAr ? "الفعاليات القادمة" : "Upcoming Events"}
-                  </CardTitle>
-                  <div className="flex gap-1.5">
-                    <Button variant="ghost" size="sm" className="text-xs h-7 px-2" asChild>
-                      <Link to="/admin/exhibitions">{isAr ? "المعارض" : "Exhibitions"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-xs h-7 px-2" asChild>
-                      <Link to="/admin/competitions">{isAr ? "المسابقات" : "Competitions"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-                  {upcomingEvents.map((ev) => (
+              {upcomingEvents && upcomingEvents.length > 0 ? (
+                <div className="space-y-1">
+                  {upcomingEvents.slice(0, 5).map((ev) => (
                     <Link key={ev.id} to={ev.link}>
-                      <div className="group flex items-start gap-3 rounded-xl border border-border/40 p-3 transition-all hover:bg-muted/30 hover:border-primary/20">
-                        <div className="flex flex-col items-center rounded-lg bg-primary/8 p-2 text-center min-w-[44px]">
-                          <span className="text-[11px] font-semibold text-primary uppercase">{format(new Date(ev.date), "MMM")}</span>
-                          <span className="text-lg font-bold text-primary leading-none">{format(new Date(ev.date), "d")}</span>
+                      <div className="group flex items-center gap-3 rounded-lg border border-border/30 p-3 transition-all hover:border-border hover:bg-accent/5">
+                        <div className="flex flex-col items-center rounded-md bg-muted/50 px-2.5 py-1.5 text-center min-w-[44px]">
+                          <span className="text-[10px] font-medium text-muted-foreground uppercase">{format(new Date(ev.date), "MMM")}</span>
+                          <span className="text-base font-semibold text-foreground leading-none">{format(new Date(ev.date), "d")}</span>
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">
                             {(() => {
                               const title = isAr ? ((ev as any).title_ar || ev.title) : ev.title;
                               const year = (ev as any).edition_year;
@@ -384,229 +350,250 @@ export default function AdminDashboard() {
                               return `${title} ${year}`;
                             })()}
                           </p>
-                          <div className="flex items-center gap-1.5 mt-1">
-                            <Badge variant="outline" className="text-[10px] h-4 px-1.5">
-                              {ev.type === "competition" ? (isAr ? "مسابقة" : "Competition") : (isAr ? "معرض" : "Exhibition")}
-                            </Badge>
-                            {(ev as any).city && <span className="text-[11px] text-muted-foreground truncate">{(ev as any).city}</span>}
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[11px] text-muted-foreground capitalize">{ev.type === "competition" ? (isAr ? "مسابقة" : "competition") : (isAr ? "معرض" : "exhibition")}</span>
+                            {(ev as any).city && (
+                              <>
+                                <span className="text-muted-foreground/30">·</span>
+                                <span className="text-[11px] text-muted-foreground truncate">{(ev as any).city}</span>
+                              </>
+                            )}
                           </div>
                         </div>
+                        <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-muted-foreground transition-colors shrink-0" />
                       </div>
                     </Link>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Pending Actions */}
-          <LazySection>
-            <AdminPendingActionsWidget />
-          </LazySection>
-
-          {/* Recent Actions */}
-          <Card className="rounded-xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                {isAr ? "آخر الإجراءات" : "Recent Actions"}
-              </CardTitle>
-              <Button variant="ghost" size="sm" asChild className="text-xs h-7">
-                <Link to="/admin/audit">{isAr ? "عرض الكل" : "View All"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
-              </Button>
-            </CardHeader>
-            <CardContent>
-              {stats?.recentActions?.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-8">{isAr ? "لا توجد إجراءات حديثة" : "No recent actions"}</p>
               ) : (
+                <div className="rounded-lg border border-dashed border-border/50 p-8 text-center">
+                  <Calendar className="h-5 w-5 text-muted-foreground/40 mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">{isAr ? "لا توجد فعاليات قادمة" : "No upcoming events"}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Right side: System + Recent Actions */}
+            <div className="lg:col-span-2 space-y-4">
+              {/* System */}
+              <div className="rounded-lg border border-border/50 p-4">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <div className="relative">
+                    <Shield className="h-4 w-4 text-chart-5" />
+                    <div className="absolute -top-0.5 -end-0.5 h-2 w-2 rounded-full bg-chart-5 animate-pulse" />
+                  </div>
+                  <span className="text-sm font-medium">{isAr ? "حالة النظام" : "System status"}</span>
+                </div>
                 <div className="space-y-2">
-                  {stats?.recentActions?.map((action) => (
-                    <div key={action.id} className="flex items-center justify-between rounded-lg border border-border/30 p-2.5 transition-colors hover:bg-muted/30">
-                      <Badge variant="outline" className="text-xs capitalize">{action.action_type.replace(/_/g, " ")}</Badge>
-                      <span className="text-[11px] text-muted-foreground tabular-nums">{format(new Date(action.created_at), "MMM d, HH:mm")}</span>
+                  {[
+                    { label: isAr ? "الخدمات" : "Services", status: isAr ? "تعمل" : "Operational" },
+                    { label: isAr ? "قاعدة البيانات" : "Database", status: isAr ? "متصلة" : "Connected" },
+                    { label: isAr ? "التخزين" : "Storage", status: isAr ? "متاح" : "Available" },
+                  ].map((s) => (
+                    <div key={s.label} className="flex items-center justify-between">
+                      <span className="text-[12px] text-muted-foreground">{s.label}</span>
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-1.5 w-1.5 rounded-full bg-chart-5" />
+                        <span className="text-[11px] font-medium text-chart-5">{s.status}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+              </div>
 
-        {/* ── Right Column (1/3) ── */}
-        <div className="space-y-5">
-          {/* Today's Activity */}
-          <Card className="rounded-xl">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Activity className="h-4 w-4 text-chart-2" />
-                {isAr ? "نشاط اليوم" : "Today's Activity"}
-                <ActivityPulse status="live" className="ms-auto" />
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2.5">
+              {/* Secondary stats */}
+              <div className="grid grid-cols-2 gap-2">
                 {[
-                  { label: isAr ? "مستخدمون جدد" : "New Users", value: todayStats?.newUsers || 0, icon: UserPlus, color: "text-primary", bg: "bg-primary/8" },
-                  { label: isAr ? "منشورات" : "Posts", value: todayStats?.newPosts || 0, icon: MessageSquare, color: "text-chart-2", bg: "bg-chart-2/8" },
-                  { label: isAr ? "طلبات" : "Orders", value: todayStats?.newOrders || 0, icon: Package, color: "text-chart-3", bg: "bg-chart-3/8" },
-                  { label: isAr ? "بلاغات" : "Reports", value: todayStats?.newReports || 0, icon: AlertTriangle, color: todayStats?.newReports ? "text-destructive" : "text-muted-foreground", bg: todayStats?.newReports ? "bg-destructive/8" : "bg-muted/50" },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-3 rounded-xl border border-border/30 p-3">
-                    <div className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg", item.bg)}>
-                      <item.icon className={cn("h-4 w-4", item.color)} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs text-muted-foreground font-medium">{item.label}</p>
-                    </div>
-                    <p className={cn("text-lg font-bold tabular-nums", item.color)}>
-                      <AnimatedCounter value={Number(item.value) || 0} className="inline" />
-                    </p>
+                  { label: isAr ? "المنظمون" : "Organizers", value: stats?.totalOrganizers || 0, icon: Building2 },
+                  { label: isAr ? "الدورات" : "Classes", value: stats?.totalMasterclasses || 0, icon: GraduationCap },
+                  { label: isAr ? "الطلبات" : "Orders", value: stats?.totalOrders || 0, icon: Package },
+                  { label: isAr ? "الرسائل" : "Messages", value: stats?.totalMessages || 0, icon: MessageSquare },
+                ].map((s) => (
+                  <div key={s.label} className="rounded-lg border border-border/30 p-2.5">
+                    <s.icon className="h-3.5 w-3.5 text-muted-foreground mb-1" />
+                    <p className="text-base font-semibold tabular-nums">{isLoading ? <Skeleton className="h-4 w-8" /> : <AnimatedCounter value={s.value} />}</p>
+                    <p className="text-[10px] text-muted-foreground">{s.label}</p>
                   </div>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          {/* Account Types */}
-          <Card className="rounded-xl">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <Users className="h-4 w-4 text-chart-3" />
-                {isAr ? "أنواع الحسابات" : "Account Types"}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {[
-                  { label: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, icon: ChefHat, color: "text-primary", bg: "bg-primary" },
-                  { label: isAr ? "مستخدم عادي" : "Regular User", value: stats?.fanUsers || 0, icon: Heart, color: "text-chart-4", bg: "bg-chart-4" },
-                ].map((type) => {
-                  const pct = stats?.totalUsers ? Math.round((type.value / stats.totalUsers) * 100) : 0;
-                  return (
-                    <div key={type.label}>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <type.icon className={cn("h-4 w-4", type.color)} />
-                          <span className="text-xs font-medium">{type.label}</span>
-                        </div>
-                        <span className={cn("text-sm font-bold tabular-nums", type.color)}>
-                          <AnimatedCounter value={type.value} />
-                          <span className="text-[11px] text-muted-foreground ms-1">({pct}%)</span>
-                        </span>
-                      </div>
-                      <div className="h-2 rounded-full bg-muted overflow-hidden">
-                        <div className={cn("h-full rounded-full transition-all duration-700", type.bg)} style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
+          {/* Lazy Widgets */}
+          <LazySection><AdminPendingActionsWidget /></LazySection>
+          <LazySection><FinanceMembershipWidget /></LazySection>
+          <Suspense fallback={null}><AdminCommandBar /></Suspense>
+        </TabsContent>
 
-          {/* System Health */}
-          <Card className="rounded-xl border-chart-5/20">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/10">
-                    <Shield className="h-5 w-5 text-chart-5" />
-                  </div>
-                  <div className="absolute -top-0.5 -end-0.5 h-3 w-3 rounded-full bg-chart-5 border-2 border-background animate-pulse" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-chart-5">{isAr ? "النظام يعمل بشكل طبيعي" : "System Healthy"}</p>
-                  <p className="text-[11px] text-muted-foreground">{isAr ? "جميع الخدمات تعمل" : "All services operational"}</p>
-                </div>
+        {/* ════════════ USERS TAB ════════════ */}
+        <TabsContent value="users" className="mt-5 space-y-5">
+          {/* User KPIs */}
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+            <MetricCard title={isAr ? "إجمالي المستخدمين" : "Total Users"} value={stats?.totalUsers || 0} icon={Users} trend={getTrend("users")} sparkData={getSparkPoints("users")} chartColor="hsl(var(--primary))" link="/admin/users" loading={isLoading} />
+            <MetricCard title={isAr ? "محترف" : "Professional"} value={stats?.proUsers || 0} icon={ChefHat} link="/admin/users?type=professional" loading={isLoading} />
+            <MetricCard title={isAr ? "مستخدم عادي" : "Regular"} value={stats?.fanUsers || 0} icon={Heart} link="/admin/users?type=fan" loading={isLoading} />
+            <MetricCard title={isAr ? "موقوف" : "Suspended"} value={stats?.suspendedUsers || 0} icon={AlertTriangle} link="/admin/users?status=suspended" loading={isLoading} urgent={(stats?.suspendedUsers || 0) > 0} />
+          </div>
+
+          {/* Account breakdown bar */}
+          <div className="rounded-lg border border-border/50 p-4">
+            <p className="text-[12px] font-medium text-muted-foreground mb-3">{isAr ? "توزيع الحسابات" : "Account distribution"}</p>
+            <div className="flex rounded-full overflow-hidden h-2 bg-muted">
+              {stats?.totalUsers && stats.totalUsers > 0 && (
+                <>
+                  <div className="bg-primary transition-all duration-700" style={{ width: `${(stats.proUsers / stats.totalUsers) * 100}%` }} />
+                  <div className="bg-chart-4 transition-all duration-700" style={{ width: `${(stats.fanUsers / stats.totalUsers) * 100}%` }} />
+                </>
+              )}
+            </div>
+            <div className="flex items-center gap-4 mt-2">
+              <div className="flex items-center gap-1.5">
+                <div className="h-2 w-2 rounded-full bg-primary" />
+                <span className="text-[11px] text-muted-foreground">{isAr ? "محترف" : "Pro"} ({stats?.totalUsers ? Math.round((stats.proUsers / stats.totalUsers) * 100) : 0}%)</span>
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex items-center gap-1.5">
+                <div className="h-2 w-2 rounded-full bg-chart-4" />
+                <span className="text-[11px] text-muted-foreground">{isAr ? "عادي" : "Regular"} ({stats?.totalUsers ? Math.round((stats.fanUsers / stats.totalUsers) * 100) : 0}%)</span>
+              </div>
+            </div>
+          </div>
 
           {/* Recent Users */}
-          <Card className="rounded-xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                <UserPlus className="h-4 w-4 text-chart-1" />
-                {isAr ? "أحدث المستخدمين" : "Recent Users"}
-              </CardTitle>
-              <Button variant="ghost" size="sm" asChild className="text-xs h-7">
-                <Link to="/admin/users">{isAr ? "الكل" : "All"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "أحدث المستخدمين" : "Recent users"}</p>
+              <Button variant="ghost" size="sm" className="text-[11px] h-6 px-2 text-muted-foreground" asChild>
+                <Link to="/admin/users">{isAr ? "إدارة الكل" : "Manage all"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
               </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-1.5">
-                {stats?.recentUsers?.map((user) => (
-                  <Link key={user.id} to={`/${user.username || user.id}`} className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-muted/40">
-                    <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden bg-primary/10">
-                      {user.avatar_url ? (
-                        <img src={user.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-primary text-xs font-semibold">
-                          {(user.display_name || user.full_name || "U")[0].toUpperCase()}
+            </div>
+            <div className="rounded-lg border border-border/50 divide-y divide-border/30">
+              {stats?.recentUsers?.map((user) => (
+                <Link key={user.id} to={`/${user.username || user.id}`} className="flex items-center gap-3 p-3 transition-colors hover:bg-accent/5">
+                  <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden bg-muted">
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center text-muted-foreground text-xs font-medium">
+                        {(user.display_name || user.full_name || "U")[0].toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{user.display_name || user.full_name || "Unknown"}</p>
+                    <p className="text-[11px] text-muted-foreground">{user.username ? `@${user.username}` : ""}</p>
+                  </div>
+                  <div className="text-end shrink-0">
+                    <Badge variant="outline" className="text-[10px] h-4 font-normal capitalize">{(user as any).account_type || "user"}</Badge>
+                    <p className="text-[10px] text-muted-foreground mt-0.5 tabular-nums">{format(new Date(user.created_at), "MMM d")}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <LazySection>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <AdminActivityFeed />
+              <AdminModerationQueue />
+            </div>
+          </LazySection>
+        </TabsContent>
+
+        {/* ════════════ EVENTS TAB ════════════ */}
+        <TabsContent value="events" className="mt-5 space-y-5">
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+            <MetricCard title={isAr ? "المعارض" : "Exhibitions"} value={stats?.totalExhibitions || 0} icon={Landmark} trend={getTrend("exhibitions")} sparkData={getSparkPoints("exhibitions")} chartColor="hsl(var(--chart-3))" link="/admin/exhibitions" loading={isLoading} />
+            <MetricCard title={isAr ? "المسابقات" : "Competitions"} value={stats?.totalCompetitions || 0} icon={Trophy} trend={getTrend("comps")} sparkData={getSparkPoints("comps")} chartColor="hsl(var(--chart-2))" link="/admin/competitions" loading={isLoading} />
+            <MetricCard title={isAr ? "المنظمون" : "Organizers"} value={stats?.totalOrganizers || 0} icon={Building2} link="/admin/organizers" loading={isLoading} />
+            <MetricCard title={isAr ? "الدورات" : "Masterclasses"} value={stats?.totalMasterclasses || 0} icon={GraduationCap} link="/admin/masterclasses" loading={isLoading} />
+          </div>
+
+          {/* Full events list */}
+          <div>
+            <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">{isAr ? "جميع الفعاليات القادمة" : "All upcoming events"}</p>
+            {upcomingEvents && upcomingEvents.length > 0 ? (
+              <div className="rounded-lg border border-border/50 divide-y divide-border/30">
+                {upcomingEvents.map((ev) => (
+                  <Link key={ev.id} to={ev.link}>
+                    <div className="group flex items-center gap-3 p-3 transition-colors hover:bg-accent/5">
+                      <div className="flex flex-col items-center rounded-md bg-muted/50 px-2.5 py-1.5 text-center min-w-[44px]">
+                        <span className="text-[10px] font-medium text-muted-foreground uppercase">{format(new Date(ev.date), "MMM")}</span>
+                        <span className="text-base font-semibold text-foreground leading-none">{format(new Date(ev.date), "d")}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">
+                          {isAr ? ((ev as any).title_ar || ev.title) : ev.title}
+                        </p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <Badge variant="outline" className="text-[10px] h-4 px-1.5 capitalize">{ev.type === "competition" ? (isAr ? "مسابقة" : "competition") : (isAr ? "معرض" : "exhibition")}</Badge>
+                          {(ev as any).city && <span className="text-[11px] text-muted-foreground">{(ev as any).city}{(ev as any).country ? `, ${(ev as any).country}` : ""}</span>}
                         </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{user.display_name || user.full_name || "Unknown"}</p>
-                      <p className="text-[11px] text-muted-foreground tabular-nums">{format(new Date(user.created_at), "MMM d, yyyy")}</p>
+                      </div>
+                      <Badge variant="outline" className="text-[10px] h-4 capitalize shrink-0">{(ev as any).status}</Badge>
                     </div>
                   </Link>
                 ))}
               </div>
-            </CardContent>
-          </Card>
+            ) : (
+              <div className="rounded-lg border border-dashed border-border/50 p-10 text-center">
+                <Calendar className="h-5 w-5 text-muted-foreground/40 mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">{isAr ? "لا توجد فعاليات" : "No upcoming events"}</p>
+              </div>
+            )}
+          </div>
+        </TabsContent>
 
-          {/* Recent Imports */}
-          {recentImports && recentImports.length > 0 && (
-            <Card className="rounded-xl">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-chart-2" />
-                    {isAr ? "آخر الاستيرادات" : "Recent Imports"}
-                  </CardTitle>
-                  <Button variant="ghost" size="sm" className="text-xs h-7 px-2" asChild>
-                    <Link to="/admin/smart-import">{isAr ? "استيراد" : "Import"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {recentImports.map((imp) => (
-                    <div key={imp.id} className="flex items-center justify-between rounded-lg border border-border/30 p-2.5">
-                      <div className="flex items-center gap-2">
-                        <Badge variant={imp.status === "completed" ? "default" : imp.status === "failed" ? "destructive" : "outline"} className="text-[10px] h-4 capitalize">
-                          {imp.status}
-                        </Badge>
-                        <span className="text-xs font-medium">{imp.entity_type}</span>
-                      </div>
-                      <span className="text-[11px] text-muted-foreground tabular-nums">
-                        {format(new Date(imp.created_at), "MMM d")}
-                      </span>
+        {/* ════════════ REPORTS TAB ════════════ */}
+        <TabsContent value="reports" className="mt-5 space-y-5">
+          <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
+            <MetricCard title={isAr ? "بلاغات معلقة" : "Pending Reports"} value={stats?.pendingReports || 0} icon={Flag} link="/admin/moderation" loading={isLoading} urgent={(stats?.pendingReports || 0) > 0} />
+            <MetricCard title={isAr ? "الطلبات" : "Orders"} value={stats?.totalOrders || 0} icon={Package} link="/admin/orders" loading={isLoading} />
+            <MetricCard title={isAr ? "المقالات" : "Articles"} value={stats?.totalArticles || 0} icon={FileText} link="/admin/articles" loading={isLoading} />
+            <MetricCard title={isAr ? "الرسائل" : "Messages"} value={stats?.totalMessages || 0} icon={MessageSquare} link="/admin/notifications" loading={isLoading} />
+          </div>
+
+          {/* Recent Actions */}
+          <div>
+            <div className="flex items-center justify-between mb-2.5">
+              <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "آخر الإجراءات" : "Recent actions"}</p>
+              <Button variant="ghost" size="sm" className="text-[11px] h-6 px-2 text-muted-foreground" asChild>
+                <Link to="/admin/audit">{isAr ? "سجل التدقيق" : "Audit log"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
+              </Button>
+            </div>
+            {stats?.recentActions && stats.recentActions.length > 0 ? (
+              <div className="rounded-lg border border-border/50 divide-y divide-border/30">
+                {stats.recentActions.map((action) => (
+                  <div key={action.id} className="flex items-center justify-between p-3">
+                    <div className="flex items-center gap-2">
+                      <Activity className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-sm capitalize">{action.action_type.replace(/_/g, " ")}</span>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </div>
+                    <span className="text-[11px] text-muted-foreground tabular-nums">{format(new Date(action.created_at), "MMM d, HH:mm")}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-lg border border-dashed border-border/50 p-10 text-center">
+                <Activity className="h-5 w-5 text-muted-foreground/40 mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground">{isAr ? "لا توجد إجراءات" : "No recent actions"}</p>
+              </div>
+            )}
+          </div>
 
-      {/* ═══════════════════ LAZY WIDGETS ═══════════════════ */}
-      <Suspense fallback={null}><AdminCommandBar /></Suspense>
-      <LazySection><FinanceMembershipWidget /></LazySection>
-      <LazySection><ReportsSummaryWidget /></LazySection>
-      <LazySection><ShopOrdersOverviewWidget /></LazySection>
-      <LazySection>
-        <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <AdminActivityFeed />
-          <AdminModerationQueue />
-          <AdminAlertCenter />
-        </div>
-      </LazySection>
-      <LazySection><CompanyDashboardWidget /></LazySection>
-      <LazySection><DedupDashboardWidget /></LazySection>
-      <LazySection><DataQualityDashboardWidget /></LazySection>
+          <LazySection><ReportsSummaryWidget /></LazySection>
+          <LazySection><ShopOrdersOverviewWidget /></LazySection>
+          <LazySection>
+            <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
+              <AdminAlertCenter />
+              <AdminModerationQueue />
+              <AdminActivityFeed />
+            </div>
+          </LazySection>
+          <LazySection><CompanyDashboardWidget /></LazySection>
+          <LazySection><DedupDashboardWidget /></LazySection>
+          <LazySection><DataQualityDashboardWidget /></LazySection>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
