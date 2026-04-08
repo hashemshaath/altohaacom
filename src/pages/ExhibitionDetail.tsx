@@ -386,7 +386,7 @@ export default function ExhibitionDetail() {
         linkedCompetitionsCount={linkedCompetitions?.length || 0} isAr={isAr}
       />
 
-      <main className="container flex-1 py-4 pb-20 lg:pb-8 md:py-8">
+      <main className="container flex-1 py-5 pb-24 lg:pb-10 md:py-8">
         {/* Breadcrumbs */}
         <div className="mb-3">
           <Breadcrumbs items={[
@@ -405,11 +405,11 @@ export default function ExhibitionDetail() {
           </Suspense>
         )}
         {/* Quick Stats Bar */}
-        <div className="mb-3 sm:mb-4">
+        <div className="mb-4 sm:mb-5">
           <ExhibitionQuickStats exhibitionId={exhibition.id} viewCount={exhibition.view_count || 0} isAr={isAr} />
         </div>
         {/* Interactive Stats Bar */}
-        <div className="mb-4 sm:mb-6">
+        <div className="mb-5 sm:mb-8">
           <ExhibitionInteractiveStats
             viewCount={exhibition.view_count || 0}
             followerCount={followerCount || 0}
@@ -421,13 +421,13 @@ export default function ExhibitionDetail() {
           />
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
           {/* ======== MAIN CONTENT ======== */}
           <div className="lg:col-span-2">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
-              <div className="sticky top-14 z-30 -mx-2 border-b border-border/40 bg-background/80 px-2 py-2 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:border sm:px-4 sm:py-3">
-                <TabsList className="h-auto w-full justify-start gap-0.5 overflow-x-auto bg-transparent p-0 scrollbar-none sm:gap-1">
-                  <TabsTrigger value="overview" className="rounded-xl px-3 py-2 text-[12px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-2.5 sm:text-xs whitespace-nowrap">
+              <div className="sticky top-14 z-30 -mx-2 border-b border-border/40 bg-background/80 px-2 py-2.5 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:border sm:px-4 sm:py-3">
+                <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 scrollbar-none sm:gap-1.5">
+                  <TabsTrigger value="overview" className="rounded-xl px-3.5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap touch-manipulation active:scale-[0.98]">
                     {isAr ? "نظرة عامة" : "Overview"}
                   </TabsTrigger>
                   
