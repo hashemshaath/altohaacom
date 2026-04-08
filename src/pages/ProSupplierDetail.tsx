@@ -74,8 +74,9 @@ export default function ProSupplierDetail() {
   const isAr = language === "ar";
   const { data: countries = [] } = useAllCountries();
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
-  const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [descExpanded, setDescExpanded] = useState(false);
+  const { addItem } = useCart();
   useSupplierViewTracker(id);
 
   const { data: company, isLoading } = useQuery({
