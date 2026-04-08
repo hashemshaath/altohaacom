@@ -208,10 +208,13 @@ export const ExhibitionCard = memo(
               <div className="flex-1 space-y-2.5">
                 <h3 className="line-clamp-2 text-base font-bold leading-snug group-hover:text-primary transition-colors duration-300">
                   {title}
-                  <span className="text-primary/50 font-serif italic ms-1 text-sm">
-                    {toEnglishDigits(new Date(exhibition.start_date).getFullYear())}
-                  </span>
                 </h3>
+                {exhibition.edition_year && (
+                  <p className="text-[11px] font-semibold text-primary/60">
+                    {isAr ? `النسخة ${exhibition.edition_year}` : `Edition ${exhibition.edition_year}`}
+                    {exhibition.edition_number ? ` • ${isAr ? `الإصدار ${exhibition.edition_number}` : `#${exhibition.edition_number}`}` : ""}
+                  </p>
+                )}
 
                 {organizer && (
                   <p className="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground">
