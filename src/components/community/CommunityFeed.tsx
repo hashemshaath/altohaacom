@@ -49,6 +49,8 @@ export interface CommunityPost {
   is_reposted: boolean;
   is_pinned: boolean;
   moderation_status: string;
+  has_poll: boolean;
+  reactions: Array<{ type: string; count: number; hasReacted: boolean }>;
 }
 
 const PAGE_SIZE = 20;
