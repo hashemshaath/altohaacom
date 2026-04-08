@@ -197,6 +197,7 @@ export default function Dashboard() {
             {user && <ProfileCompletionCard />}
             {user && <W><ProfileSummaryCard /></W>}
             {user && isVisible("platform-score") && <W><PlatformScoreWidget /></W>}
+            {user && !isFan && <W name="chef-career"><ChefCareerWidget /></W>}
             {user && isVisible("wallet") && <W><WalletBalanceWidget /></W>}
             {user && isVisible("streak") && <W><StreakWidget /></W>}
             {user && isVisible("quick-actions") && <W><QuickActionsWidget /></W>}
