@@ -630,7 +630,16 @@ export default function ProSupplierDetail() {
             {/* PRODUCTS */}
             {activeTab === "products" && (
               <>
-                {Object.keys(productsByCategory).length === 0 ? (
+                {selectedProduct ? (
+                  <SupplierProductDetail
+                    product={selectedProduct}
+                    relatedProducts={products.filter((p: any) => p.id !== selectedProduct.id && p.category === selectedProduct.category)}
+                    onBack={() => setSelectedProduct(null)}
+                    onAddToCart={handleAddToCart}
+                    onViewProduct={(p) => setSelectedProduct(p)}
+                    companyName={companyName}
+                  />
+                ) : Object.keys(productsByCategory).length === 0 ? (
                   <div className="py-16 text-center">
                     <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/30 mb-4">
                       <Package className="h-10 w-10 text-muted-foreground/20" />
@@ -648,24 +657,12 @@ export default function ProSupplierDetail() {
                         </div>
                         <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                           {items.map((p) => (
-                            <Card key={p.id} interactive className="rounded-2xl overflow-hidden cursor-pointer group" onClick={() => setQuickViewProduct(p)}>
-                              <div className="aspect-[4/3] bg-muted/30 overflow-hidden">
-                                {p.image_url ? (
-                                  <img loading="lazy" src={p.image_url} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt={p.name} />
-                                ) : (
-                                  <div className="h-full flex items-center justify-center"><Package className="h-10 w-10 text-muted-foreground/20" /></div>
-                                )}
-                              </div>
-                              <CardContent className="p-3 space-y-2">
-                                <h4 className="font-medium text-sm truncate">{isAr && p.name_ar ? p.name_ar : p.name}</h4>
-                                {p.description && (
-                                  <p className="text-xs text-muted-foreground line-clamp-2">{isAr && p.description_ar ? p.description_ar : p.description}</p>
-                                )}
-                                <div className="flex items-center gap-1.5 flex-wrap">
-                                  {p.sku && <Badge variant="outline" className="text-[11px] font-mono rounded-lg">{p.sku}</Badge>}
-                                </div>
-                              </CardContent>
-                            </Card>
+                            <SupplierProductCard
+                              key={p.id}
+                              product={p}
+                              onViewDetails={(prod) => setSelectedProduct(prod)}
+                              onAddToCart={handleAddToCart}
+                            />
                           ))}
                         </div>
                       </div>
