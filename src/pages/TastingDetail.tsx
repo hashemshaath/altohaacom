@@ -406,6 +406,31 @@ export default function TastingDetail() {
             {isOrganizer && (
               <TabsContent value="manage">
                 <div className="space-y-6">
+                  {/* Product Evaluation Templates */}
+                  {criteria.length === 0 && (
+                    <ProductEvaluationTemplates onSelect={async (template) => {
+                      if (!id) return;
+                      try {
+                        const items = template.criteria.map((c, i) => ({
+                          session_id: id,
+                          name: c.name,
+                          name_ar: c.name_ar,
+                          description: c.description,
+                          description_ar: c.description_ar,
+                          max_score: c.max_score,
+                          weight: c.weight,
+                          stage: c.stage,
+                          sort_order: i,
+                          is_required: true,
+                        }));
+                        await addCriteria.mutateAsync(items);
+                        toast.success(isAr ? `تم تحميل نموذج ${template.name_ar}` : `${template.name} template loaded`);
+                      } catch {
+                        toast.error(isAr ? "خطأ في تحميل النموذج" : "Failed to load template");
+                      }
+                    }} />
+                  )}
+
                   {/* ── Entries Management ── */}
                   <Card>
                     <CardHeader className="flex-row items-center justify-between space-y-0">
