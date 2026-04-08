@@ -367,9 +367,8 @@ export default function ProSuppliers() {
                 const productCount = catalogCounts[company.id] || 0;
                 const isFeatured = company.featured_order != null && company.featured_order > 0;
                 return (
-                  <>
+                  <React.Fragment key={company.id}>
                     <Card
-                      key={company.id}
                       interactive
                       className="group cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 active:scale-[0.98]"
                       onClick={() => navigate(`/pro-suppliers/${company.id}`)}
