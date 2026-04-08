@@ -74,9 +74,9 @@ export const PostCard = memo(function PostCard({
     <article
       className={cn(
         "transition-colors duration-200 animate-in fade-in-50",
-        !isEditing && "px-4 py-3 sm:px-4 sm:py-4 hover:bg-muted/30 cursor-pointer border-s-2 border-s-transparent hover:border-s-primary/30 active:bg-muted/20 touch-manipulation",
-        post.is_pinned && "bg-primary/5 border-s-primary/40",
-        isHotPost && !post.is_pinned && "border-s-chart-4/40"
+        !isEditing && "px-4 py-4 sm:px-5 sm:py-5 hover:bg-muted/20 cursor-pointer",
+        post.is_pinned && "bg-primary/5",
+        isViral && !post.is_pinned && "bg-chart-4/[0.03]"
       )}
     >
       {isEditing && (
@@ -88,25 +88,25 @@ export const PostCard = memo(function PostCard({
       )}
 
       {!isEditing && post.is_pinned && (
-        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[12px] font-bold text-muted-foreground">
+        <div className="flex items-center gap-1.5 ps-12 mb-2 text-[11px] font-bold text-muted-foreground uppercase tracking-wide">
           <Pin className="h-3 w-3" />
           {isAr ? "منشور مثبت" : "Pinned"}
         </div>
       )}
 
       {!isEditing && isViral && !post.is_pinned && (
-        <div className="flex items-center gap-1.5 ps-12 mb-1.5 text-[12px] font-bold text-chart-4 animate-in fade-in-50">
-          🔥 {isAr ? "منشور رائج" : "Trending post"}
-          <span className="text-muted-foreground font-normal">• {totalEngagement} {isAr ? "تفاعل" : "interactions"}</span>
+        <div className="flex items-center gap-1.5 ps-12 mb-2 text-[11px] font-bold text-chart-4 animate-in fade-in-50">
+          🔥 {isAr ? "منشور رائج" : "Trending"}
+          <span className="text-muted-foreground/60 font-normal">· {totalEngagement} {isAr ? "تفاعل" : "interactions"}</span>
         </div>
       )}
 
       {!isEditing && (
-        <div className="flex gap-3">
+        <div className="flex gap-3 sm:gap-3.5">
           <Link to={`/${post.author_username || post.author_id}`} className="shrink-0 relative group/avatar">
-            <Avatar className="h-9 w-9 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/20 transition-all duration-300 group-hover/avatar:ring-primary/40 group-hover/avatar:scale-105 shadow-sm">
+            <Avatar className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl ring-2 ring-border/15 transition-all duration-300 group-hover/avatar:ring-primary/30 group-hover/avatar:scale-105 shadow-sm">
               <AvatarImage src={post.author_avatar || undefined} className="object-cover rounded-xl" />
-              <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-xs font-bold">
+              <AvatarFallback className="rounded-xl bg-primary/10 text-primary text-sm font-bold">
                 {(post.author_name || "C")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -114,27 +114,27 @@ export const PostCard = memo(function PostCard({
           </Link>
           <div className="min-w-0 flex-1">
             {/* Header */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <Link
                 to={`/${post.author_username || post.author_id}`}
-                className="truncate text-sm font-bold hover:underline"
+                className="truncate text-[14px] sm:text-sm font-bold hover:underline decoration-primary/30"
               >
                 {post.author_name || "Chef"}
               </Link>
               <ChefBadge userId={post.author_id} />
               {post.author_username && (
-                <span className="truncate text-xs text-muted-foreground">
+                <span className="truncate text-[12px] text-muted-foreground/60">
                   @{post.author_username}
                 </span>
               )}
-              <span className="text-muted-foreground/50">·</span>
-              <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+              <span className="text-muted-foreground/30">·</span>
+              <span className="shrink-0 text-[12px] text-muted-foreground/60 tabular-nums">
                 {formatDate(post.created_at)}
               </span>
               <PostReadTime content={post.content} />
               {post.edited_at && (
                 <button
-                  className="shrink-0 text-[12px] text-muted-foreground hover:text-primary transition-colors"
+                  className="shrink-0 text-[11px] text-muted-foreground/50 hover:text-primary transition-colors"
                   onClick={(e) => { e.stopPropagation(); onViewHistory(post.id); }}
                   title={isAr ? "تم التعديل" : "Edited"}
                 >
@@ -189,7 +189,7 @@ export const PostCard = memo(function PostCard({
 
             {/* Content */}
             <div
-              className="mt-1.5 sm:mt-2 text-[13.5px] sm:text-[14.5px] leading-[1.6] whitespace-pre-wrap break-words text-foreground/90"
+              className="mt-2 sm:mt-2.5 text-[14px] sm:text-[15px] leading-[1.7] whitespace-pre-wrap break-words text-foreground/90"
               onClick={() => onOpenThread(post.id)}
             >
               <MentionText content={post.content} />
@@ -259,14 +259,14 @@ export const PostCard = memo(function PostCard({
 
             {/* Hot post indicator */}
             {isHotPost && !isViral && (
-              <div className="mt-2 flex items-center gap-1.5 text-[12px] text-chart-4/80">
+              <div className="mt-2.5 flex items-center gap-1.5 text-[11px] text-chart-4/70">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-chart-4 animate-pulse" />
                 {isAr ? "محتوى نشط" : "Active thread"}
               </div>
             )}
 
             {/* Quick Reactions */}
-            <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+            <div className="mt-2.5" onClick={(e) => e.stopPropagation()}>
               <QuickReactions postId={post.id} />
             </div>
 
@@ -287,8 +287,8 @@ export const PostCard = memo(function PostCard({
             )}
 
             {/* Actions bar */}
-            <div className="mt-2 sm:mt-3 flex items-center justify-between -ms-1 sm:-ms-2 pt-1.5 sm:pt-2 border-t border-border/10" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center gap-0">
+            <div className="mt-3 flex items-center justify-between -ms-2 pt-2.5 border-t border-border/10" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center gap-0.5">
                 <Button
                   variant="ghost"
                   size="sm"
