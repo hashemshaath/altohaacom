@@ -67,10 +67,14 @@ export function getDerivedStatus(comp: Competition) {
 /** Determine which tab bucket a competition falls into */
 export function getTabBucket(comp: Competition): "upcoming" | "active" | "past" {
   const d = getDerivedStatus(comp);
-  if (["registration_upcoming", "registration_open", "registration_closing_soon"].includes(d.status)) return "upcoming";
+  if (["registration_upcoming", "registration_open", "registration_closing_soon", "registration_closed"].includes(d.status)) return "upcoming";
   if (["in_progress", "competition_starting_soon"].includes(d.status)) return "active";
-  if (["ended", "registration_closed"].includes(d.status)) return "past";
-  return "upcoming";
+  if (d.status === "ended") return "past";
+  // Fallback: use actual dates
+  const now = new Date();
+  if (new Date(comp.competition_end) < now) return "past";
+  if (new Date(comp.competition_start) > now) return "upcoming";
+  return "active";
 }
 
 /* ─── Status Badge (reusable) ─── */
