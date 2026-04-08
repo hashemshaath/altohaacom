@@ -168,19 +168,19 @@ export default function Organizers() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mt-10">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto mt-10">
               {[
                 { icon: Building2, value: totalOrgs, label: isAr ? "منظم" : "Organizers", labelEn: "Organizers", color: "text-primary" },
                 { icon: Landmark, value: totalEvents, label: isAr ? "فعالية" : "Events", labelEn: "Events", color: "text-emerald-600 dark:text-emerald-400" },
                 { icon: Globe, value: totalCountries, label: isAr ? "دولة" : "Countries", labelEn: "Countries", color: "text-blue-600 dark:text-blue-400" },
                 { icon: Star, value: parseFloat(avgRating as string), label: isAr ? "متوسط التقييم" : "Avg Rating", labelEn: "Avg Rating", color: "text-amber-500", isDecimal: true },
               ].map(s => (
-                <div key={s.labelEn} className="flex flex-col items-center gap-1.5 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-4 py-5 hover:border-primary/20 transition-colors">
-                  <s.icon className={`h-5 w-5 ${s.color} mb-0.5`} />
-                  <p className="text-2xl md:text-3xl font-bold tabular-nums">
+                <div key={s.labelEn} className="flex flex-col items-center gap-2 rounded-2xl border border-border/40 bg-card/60 backdrop-blur-sm px-4 py-5 sm:py-6 hover:border-primary/20 transition-colors">
+                  <s.icon className={`h-5 w-5 sm:h-6 sm:w-6 ${s.color} mb-0.5`} />
+                  <p className="text-2xl sm:text-3xl md:text-4xl font-bold tabular-nums">
                     {s.isDecimal ? s.value : <AnimatedCounter value={s.value} />}
                   </p>
-                  <p className="text-[12px] text-muted-foreground font-medium uppercase tracking-wider">{s.label}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-medium uppercase tracking-wider">{s.label}</p>
                 </div>
               ))}
             </div>
