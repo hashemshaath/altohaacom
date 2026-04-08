@@ -61,7 +61,7 @@ function MetricCard({ title, value, icon: Icon, trend, sparkData, chartColor, li
           <Icon className="h-4 w-4 text-muted-foreground" />
           {trend !== undefined && trend !== 0 && (
             <span className={cn("text-[11px] font-mono font-medium flex items-center gap-0.5",
-              trend > 0 ? "text-emerald-500" : "text-red-500"
+              trend > 0 ? "text-chart-5" : "text-destructive"
             )}>
               {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
               {trend > 0 ? "+" : ""}{trend}
@@ -231,7 +231,7 @@ export default function AdminDashboard() {
         </div>
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-border/50 px-2.5 py-1">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <div className="h-1.5 w-1.5 rounded-full bg-chart-5 animate-pulse" />
             <span className="text-[11px] text-muted-foreground font-medium">{isAr ? "مباشر" : "Live"}</span>
           </div>
           <AdminRealtimeNotificationBell />
@@ -379,8 +379,8 @@ export default function AdminDashboard() {
               <div className="rounded-lg border border-border/50 p-4">
                 <div className="flex items-center gap-2.5 mb-3">
                   <div className="relative">
-                    <Shield className="h-4 w-4 text-emerald-500" />
-                    <div className="absolute -top-0.5 -end-0.5 h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <Shield className="h-4 w-4 text-chart-5" />
+                    <div className="absolute -top-0.5 -end-0.5 h-2 w-2 rounded-full bg-chart-5 animate-pulse" />
                   </div>
                   <span className="text-sm font-medium">{isAr ? "حالة النظام" : "System status"}</span>
                 </div>
@@ -393,8 +393,8 @@ export default function AdminDashboard() {
                     <div key={s.label} className="flex items-center justify-between">
                       <span className="text-[12px] text-muted-foreground">{s.label}</span>
                       <div className="flex items-center gap-1.5">
-                        <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                        <span className="text-[11px] font-medium text-emerald-500">{s.status}</span>
+                        <div className="h-1.5 w-1.5 rounded-full bg-chart-5" />
+                        <span className="text-[11px] font-medium text-chart-5">{s.status}</span>
                       </div>
                     </div>
                   ))}
