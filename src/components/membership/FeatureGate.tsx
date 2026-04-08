@@ -1,4 +1,4 @@
-import { useHasFeature, useHasFeatureForUser } from "@/hooks/useMembershipFeatures";
+import { useHasFeature, useHasFeatureForUser, useUserMembershipTier } from "@/hooks/useMembershipFeatures";
 import { UpgradePrompt } from "./UpgradePrompt";
 import { useEffect, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,14 +42,14 @@ export const FeatureGate = memo(function FeatureGate({
 }: FeatureGateProps) {
   const { hasFeature, isLoading } = useHasFeature(feature);
   const { user } = useAuth();
+  const { data: tier } = useUserMembershipTier(user?.id);
   const logged = useRef(false);
 
   useEffect(() => {
-    if (isLoading || logged.current || !user) return;
+    if (isLoading || logged.current || !user || !tier) return;
     logged.current = true;
-    // Log without extra DB query - tier is resolved server-side by the RPC
-    logFeatureAccess(feature, "auto", !hasFeature);
-  }, [isLoading, hasFeature, feature, user]);
+    logFeatureAccess(feature, tier, !hasFeature);
+  }, [isLoading, hasFeature, feature, user, tier]);
 
   if (isLoading) return <>{children}</>;
   if (!hasFeature) {
