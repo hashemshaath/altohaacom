@@ -645,7 +645,7 @@ export default function CompetitionDetail() {
                   >
                     <div className="flex items-center justify-center gap-1.5 mb-0.5">
                       <stat.icon className={`h-3.5 w-3.5 ${stat.color} opacity-60`} />
-                      <p className="text-lg font-bold text-foreground"><AnimatedCounter target={stat.value} /></p>
+                      <p className="text-lg font-bold text-foreground"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
                     </div>
                     <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{stat.label}</p>
                   </button>
