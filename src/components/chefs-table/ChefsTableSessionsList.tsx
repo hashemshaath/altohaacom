@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { forwardRef, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -44,9 +44,9 @@ const categoryLabels: Record<string, { en: string; ar: string }> = {
   other: { en: "Other", ar: "أخرى" },
 };
 
-export const ChefsTableSessionsList = memo(function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSearchChange, statusFilter, onStatusFilterChange, onSessionClick }: Props) {
+export const ChefsTableSessionsList = memo(forwardRef<HTMLElement, Props>(function ChefsTableSessionsList({ isAr, sessions, isLoading, search, onSearchChange, statusFilter, onStatusFilterChange, onSessionClick }: Props, ref) {
   return (
-    <section className="bg-muted/20">
+    <section ref={ref} className="bg-muted/20">
       <div className="container py-16 md:py-24 pb-20">
         {/* Header */}
         <div className="mx-auto max-w-2xl text-center mb-10">
@@ -191,4 +191,4 @@ export const ChefsTableSessionsList = memo(function ChefsTableSessionsList({ isA
       </div>
     </section>
   );
-});
+}));
