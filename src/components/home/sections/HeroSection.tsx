@@ -182,7 +182,7 @@ export function HeroSection() {
       onMouseLeave={() => setIsPaused(false)}
       {...swipe}
     >
-      <div className="relative aspect-[4/5] sm:aspect-[16/9] lg:aspect-[21/9]">
+      <div className="relative aspect-[3/4] sm:aspect-[16/9] lg:aspect-[21/8]">
         {slides.map((s, idx) => (
           <div
             key={s.id}
