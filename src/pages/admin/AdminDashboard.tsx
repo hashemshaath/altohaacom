@@ -24,6 +24,7 @@ import {
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
+import { GrowthAreaChart, DonutChart, ComparisonBarChart, ActivityHeatmap } from "@/components/admin/AdminDashboardCharts";
 
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
 const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
@@ -204,6 +205,34 @@ export default function AdminDashboard() {
     staleTime: 1000 * 60 * 5,
   });
 
+  // Activity heatmap data (based on posts creation times over last 4 weeks)
+  const { data: heatmapData } = useQuery({
+    queryKey: ["admin-activity-heatmap"],
+    queryFn: async () => {
+      const since = subDays(new Date(), 28).toISOString();
+      const { data: posts } = await supabase
+        .from("posts").select("created_at").gte("created_at", since).limit(500);
+      const { data: users } = await supabase
+        .from("profiles").select("created_at").gte("created_at", since).limit(500);
+      const all = [...(posts || []), ...(users || [])];
+      const grid: { day: number; hour: number; value: number }[] = [];
+      for (let d = 0; d < 7; d++) {
+        for (let h = 0; h < 24; h++) {
+          grid.push({ day: d, hour: h, value: 0 });
+        }
+      }
+      all.forEach((item) => {
+        const date = new Date(item.created_at);
+        const day = (date.getDay() + 6) % 7; // Mon=0
+        const hour = date.getHours();
+        const cell = grid.find(c => c.day === day && c.hour === hour);
+        if (cell) cell.value++;
+      });
+      return grid;
+    },
+    staleTime: 1000 * 60 * 15,
+  });
+
   const getSparkPoints = (key: string) => sparkData?.map((d) => ({ v: d[key] || 0 })) || [];
   const getTrend = (key: string) => {
     const pts = getSparkPoints(key);
@@ -322,7 +351,38 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Two-column: Upcoming Events + Activity */}
+          {/* ── Charts Row ── */}
+          {sparkData && sparkData.length > 0 && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <GrowthAreaChart
+                title={isAr ? "نمو المنصة — آخر 7 أيام" : "Platform Growth — Last 7 Days"}
+                data={sparkData}
+                lines={[
+                  { key: "users", name: isAr ? "المستخدمين" : "Users", color: "hsl(var(--primary))" },
+                  { key: "articles", name: isAr ? "المقالات" : "Articles", color: "hsl(var(--chart-1))" },
+                  { key: "comps", name: isAr ? "المسابقات" : "Competitions", color: "hsl(var(--chart-2))" },
+                ]}
+              />
+              <DonutChart
+                title={isAr ? "توزيع المحتوى" : "Content Distribution"}
+                data={[
+                  { name: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, color: "hsl(var(--chart-2))" },
+                  { name: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, color: "hsl(var(--chart-3))" },
+                  { name: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, color: "hsl(var(--chart-1))" },
+                  { name: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, color: "hsl(var(--chart-4))" },
+                ]}
+              />
+            </div>
+          )}
+
+          {heatmapData && heatmapData.length > 0 && (
+            <ActivityHeatmap
+              title={isAr ? "خريطة النشاط — آخر 4 أسابيع" : "Activity Heatmap — Last 4 Weeks"}
+              data={heatmapData}
+            />
+          )}
+
+
           <div className="grid gap-4 lg:grid-cols-5">
             {/* Events Preview */}
             <div className="lg:col-span-3">
@@ -458,6 +518,27 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+          {/* User Charts */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sparkData && sparkData.length > 0 && (
+              <GrowthAreaChart
+                title={isAr ? "نمو المستخدمين — آخر 7 أيام" : "User Growth — Last 7 Days"}
+                data={sparkData}
+                lines={[
+                  { key: "users", name: isAr ? "المستخدمين" : "Users", color: "hsl(var(--primary))" },
+                ]}
+              />
+            )}
+            <DonutChart
+              title={isAr ? "أنواع الحسابات" : "Account Types"}
+              data={[
+                { name: isAr ? "محترف" : "Professional", value: stats?.proUsers || 0, color: "hsl(var(--primary))" },
+                { name: isAr ? "مستخدم عادي" : "Regular", value: stats?.fanUsers || 0, color: "hsl(var(--chart-4))" },
+                { name: isAr ? "موقوف" : "Suspended", value: stats?.suspendedUsers || 0, color: "hsl(var(--destructive))" },
+              ]}
+            />
+          </div>
+
           {/* Recent Users */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
@@ -508,6 +589,32 @@ export default function AdminDashboard() {
             <MetricCard title={isAr ? "الدورات" : "Masterclasses"} value={stats?.totalMasterclasses || 0} icon={GraduationCap} link="/admin/masterclasses" loading={isLoading} />
           </div>
 
+          {/* Event Charts */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sparkData && sparkData.length > 0 && (
+              <ComparisonBarChart
+                title={isAr ? "الفعاليات حسب اليوم — آخر أسبوع" : "Events by Day — Last Week"}
+                data={sparkData.map(d => ({
+                  label: d.day,
+                  [isAr ? "معارض" : "Exhibitions"]: d.exhibitions || 0,
+                  [isAr ? "مسابقات" : "Competitions"]: d.comps || 0,
+                }))}
+                bars={[
+                  { key: isAr ? "معارض" : "Exhibitions", name: isAr ? "معارض" : "Exhibitions", color: "hsl(var(--chart-3))" },
+                  { key: isAr ? "مسابقات" : "Competitions", name: isAr ? "مسابقات" : "Competitions", color: "hsl(var(--chart-2))" },
+                ]}
+              />
+            )}
+            <DonutChart
+              title={isAr ? "توزيع الفعاليات" : "Events Breakdown"}
+              data={[
+                { name: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, color: "hsl(var(--chart-3))" },
+                { name: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, color: "hsl(var(--chart-2))" },
+                { name: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, color: "hsl(var(--chart-4))" },
+              ]}
+            />
+          </div>
+
           {/* Full events list */}
           <div>
             <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">{isAr ? "جميع الفعاليات القادمة" : "All upcoming events"}</p>
@@ -551,6 +658,39 @@ export default function AdminDashboard() {
             <MetricCard title={isAr ? "المقالات" : "Articles"} value={stats?.totalArticles || 0} icon={FileText} link="/admin/articles" loading={isLoading} />
             <MetricCard title={isAr ? "الرسائل" : "Messages"} value={stats?.totalMessages || 0} icon={MessageSquare} link="/admin/notifications" loading={isLoading} />
           </div>
+
+          {/* Report Charts */}
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sparkData && sparkData.length > 0 && (
+              <GrowthAreaChart
+                title={isAr ? "نشاط المحتوى — آخر 7 أيام" : "Content Activity — Last 7 Days"}
+                data={sparkData}
+                lines={[
+                  { key: "articles", name: isAr ? "المقالات" : "Articles", color: "hsl(var(--chart-1))" },
+                  { key: "users", name: isAr ? "المستخدمين" : "Users", color: "hsl(var(--primary))" },
+                ]}
+              />
+            )}
+            <ComparisonBarChart
+              title={isAr ? "مقارنة المحتوى" : "Content Comparison"}
+              data={[
+                { label: isAr ? "مقالات" : "Articles", [isAr ? "العدد" : "Count"]: stats?.totalArticles || 0 },
+                { label: isAr ? "طلبات" : "Orders", [isAr ? "العدد" : "Count"]: stats?.totalOrders || 0 },
+                { label: isAr ? "بلاغات" : "Reports", [isAr ? "العدد" : "Count"]: stats?.pendingReports || 0 },
+                { label: isAr ? "رسائل" : "Messages", [isAr ? "العدد" : "Count"]: stats?.totalMessages || 0 },
+              ]}
+              bars={[
+                { key: isAr ? "العدد" : "Count", name: isAr ? "العدد" : "Count", color: "hsl(var(--primary))" },
+              ]}
+            />
+          </div>
+
+          {heatmapData && heatmapData.length > 0 && (
+            <ActivityHeatmap
+              title={isAr ? "خريطة النشاط — آخر 4 أسابيع" : "Platform Activity Heatmap — Last 4 Weeks"}
+              data={heatmapData}
+            />
+          )}
 
           {/* Recent Actions */}
           <div>
