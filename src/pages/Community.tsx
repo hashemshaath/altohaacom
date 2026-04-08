@@ -59,7 +59,12 @@ export default function Community() {
     switch (activeTab) {
       case "feed":
       case "bookmarks":
-        return <CommunityFeed />;
+        return (
+          <>
+            <CommunityStories />
+            <CommunityFeed />
+          </>
+        );
       case "chefs":
         return <Suspense fallback={<TabFallback />}><div className="px-4 py-3 sm:p-4"><ChefsTab /></div></Suspense>;
       case "recipes":
