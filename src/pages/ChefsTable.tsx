@@ -6,7 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { PageShell } from "@/components/PageShell";
 import { ChefsTableHero } from "@/components/chefs-table/ChefsTableHero";
 import { ChefsTableBenefits } from "@/components/chefs-table/ChefsTableBenefits";
+import { ChefsTableCategories } from "@/components/chefs-table/ChefsTableCategories";
 import { ChefsTableHowItWorks } from "@/components/chefs-table/ChefsTableHowItWorks";
+import { ChefsTableTestimonials } from "@/components/chefs-table/ChefsTableTestimonials";
+import { ChefsTableCTA } from "@/components/chefs-table/ChefsTableCTA";
 import { ChefsTableSessionsList } from "@/components/chefs-table/ChefsTableSessionsList";
 
 export default function ChefsTable() {
@@ -27,6 +30,8 @@ export default function ChefsTable() {
 
   const publishedSessions = useMemo(() => filtered?.filter(s => s.is_published || s.organizer_id === user?.id), [filtered, user?.id]);
 
+  const handleRequest = () => navigate("/chefs-table/request");
+
   return (
     <PageShell
       title={isAr ? "طاولة الشيف — تقييم المنتجات الغذائية" : "Chef's Table — Food Product Evaluation"}
@@ -35,9 +40,11 @@ export default function ChefsTable() {
       container={false}
       padding="none"
     >
-      <ChefsTableHero isAr={isAr} user={user} onRequestClick={() => navigate("/chefs-table/request")} />
+      <ChefsTableHero isAr={isAr} user={user} onRequestClick={handleRequest} />
       <ChefsTableBenefits isAr={isAr} />
+      <ChefsTableCategories isAr={isAr} />
       <ChefsTableHowItWorks isAr={isAr} />
+      <ChefsTableTestimonials isAr={isAr} />
       <ChefsTableSessionsList
         isAr={isAr}
         sessions={publishedSessions}
@@ -48,6 +55,7 @@ export default function ChefsTable() {
         onStatusFilterChange={setStatusFilter}
         onSessionClick={(id) => navigate(`/chefs-table/${id}`)}
       />
+      <ChefsTableCTA isAr={isAr} user={user} onRequestClick={handleRequest} />
     </PageShell>
   );
 }
