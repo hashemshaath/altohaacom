@@ -45,6 +45,7 @@ export default function ChefsTable() {
       <ChefsTableBenefits isAr={isAr} />
       <ChefsTableCategories isAr={isAr} />
       <ChefsTableHowItWorks isAr={isAr} />
+      <ChefsTableClients isAr={isAr} />
       <ChefsTableTestimonials isAr={isAr} />
       <ChefsTableSessionsList
         isAr={isAr}
