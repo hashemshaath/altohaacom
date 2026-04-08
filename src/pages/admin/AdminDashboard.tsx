@@ -24,6 +24,7 @@ import {
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
+import { GrowthAreaChart, DonutChart, ComparisonBarChart, ActivityHeatmap } from "@/components/admin/AdminDashboardCharts";
 
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
 const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
