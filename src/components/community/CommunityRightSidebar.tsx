@@ -49,50 +49,39 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
 
   return (
     <aside className={cn(
-      "hidden xl:flex flex-col shrink-0 sticky top-14 self-start py-4 transition-all duration-300 ease-in-out max-h-[calc(100vh-3.5rem)] overflow-y-auto scrollbar-none",
-      rightSidebarOpen ? "w-[290px]" : "w-[52px]"
+      "hidden xl:flex flex-col shrink-0 sticky top-14 self-start py-3 transition-all duration-300 ease-in-out max-h-[calc(100vh-3.5rem)] overflow-y-auto scrollbar-none",
+      rightSidebarOpen ? "w-[280px]" : "w-[52px]"
     )}>
       <Button
         variant="ghost"
         size="icon"
-        className="h-8 w-8 mb-3 self-start rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50"
+        className="h-7 w-7 mb-2 self-start rounded-lg text-muted-foreground/60 hover:text-foreground hover:bg-muted/40"
         onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
         aria-label={rightSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
       >
         {rightSidebarOpen
-          ? (isAr ? <PanelLeftClose className="h-4 w-4" /> : <PanelRightClose className="h-4 w-4" />)
-          : (isAr ? <PanelLeftOpen className="h-4 w-4" /> : <PanelRightOpen className="h-4 w-4" />)
+          ? (isAr ? <PanelLeftClose className="h-3.5 w-3.5" /> : <PanelRightClose className="h-3.5 w-3.5" />)
+          : (isAr ? <PanelLeftOpen className="h-3.5 w-3.5" /> : <PanelRightOpen className="h-3.5 w-3.5" />)
         }
       </Button>
 
       {rightSidebarOpen && (
-        <div className="space-y-4">
-          {/* Search */}
+        <div className="space-y-3">
           <CommunitySearch />
-
-          {/* Live activity pulse */}
           <CommunityActivityPulse />
-
-          {/* Trending Topics */}
           <TrendingTopics />
-
-          {/* Weekly Highlights */}
           <WeeklyHighlights />
-
-          {/* Upcoming Events */}
           <UpcomingEventsWidget />
-
-          {/* Activity Feed */}
           <ActivitySidebar />
 
           {/* Who to Follow */}
           {suggestedUsers.length > 0 && (
-            <div className="rounded-2xl border border-border/30 bg-card overflow-hidden">
-              <h3 className="px-4 pt-3.5 pb-2 text-sm font-bold flex items-center gap-2">
+            <div className="rounded-xl bg-muted/15 overflow-hidden">
+              <h3 className="px-3 pt-3 pb-1.5 text-[13px] font-semibold flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5 text-chart-4" />
                 {isAr ? "من تتابع" : "Who to Follow"}
               </h3>
-              <div className="divide-y divide-border/15">
+              <div className="divide-y divide-border/10">
                 {suggestedUsers.slice(0, 3).map((profile) => {
                   const name = isAr
                     ? (profile.display_name_ar || profile.full_name_ar || profile.display_name || profile.full_name || profile.username)
@@ -100,30 +89,30 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
                   return (
                     <div
                       key={profile.user_id}
-                      className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors cursor-pointer"
+                      className="flex items-center gap-2.5 px-3 py-2.5 hover:bg-muted/20 transition-colors cursor-pointer"
                       onClick={() => navigate(`/chef/${profile.user_id}`)}
                       role="button"
                       tabIndex={0}
                     >
-                      <Avatar className="h-9 w-9 rounded-xl">
-                        <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl" />
-                        <AvatarFallback className="rounded-xl text-[12px] font-bold bg-muted">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={profile.avatar_url || undefined} />
+                        <AvatarFallback className="text-[11px] font-semibold bg-muted/40">
                           {(name || "U")[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-semibold truncate flex items-center gap-1">
+                        <p className="text-[12px] font-semibold truncate flex items-center gap-1">
                           {name}
                           {profile.is_verified && (
-                            <Badge variant="secondary" className="h-3.5 w-3.5 p-0 rounded-full bg-primary/10 text-primary text-[7px]">✓</Badge>
+                            <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[7px]">✓</span>
                           )}
                         </p>
-                        <p className="text-[11px] text-muted-foreground truncate">
+                        <p className="text-[10px] text-muted-foreground/60 truncate">
                           {profile.specialization || (isAr ? "طاهٍ" : "Chef")}
                         </p>
                       </div>
-                      <Button variant="outline" size="sm" className="h-7 text-[11px] rounded-xl px-3 border-border/30 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors">
-                        <UserPlus className="h-3 w-3 me-1" />
+                      <Button variant="ghost" size="sm" className="h-6 text-[10px] rounded-md px-2 text-primary hover:bg-primary/10 font-semibold">
+                        <UserPlus className="h-3 w-3 me-0.5" />
                         {isAr ? "تابع" : "Follow"}
                       </Button>
                     </div>
@@ -133,15 +122,12 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
             </div>
           )}
 
-          {/* Ad */}
-          <AdBanner placementSlug="sidebar" className="rounded-2xl overflow-hidden" />
+          <AdBanner placementSlug="sidebar" className="rounded-xl overflow-hidden" />
 
-          {/* Footer */}
-          <div className="px-3 py-3">
-            <p className="text-[11px] text-muted-foreground/40 leading-relaxed">
-              {isAr ? "الشروط · الخصوصية · سياسة ملفات تعريف الارتباط · حول" : "Terms · Privacy · Cookie Policy · About"}
-              <br />
-              © {new Date().getFullYear()} Altoha
+          <div className="px-3 py-2">
+            <p className="text-[10px] text-muted-foreground/30 leading-relaxed">
+              {isAr ? "الشروط · الخصوصية · حول" : "Terms · Privacy · About"}
+              {" "}© {new Date().getFullYear()} Altoha
             </p>
           </div>
         </div>
