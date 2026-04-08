@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 import { useAdTracking } from "@/hooks/useAdTracking";
 import { CommunityFeed } from "@/components/community/CommunityFeed";
+import { CommunityStories } from "@/components/community/CommunityStories";
 import { CommunityLeftSidebar, type CommunityTab } from "@/components/community/CommunityLeftSidebar";
 import { CommunityRightSidebar } from "@/components/community/CommunityRightSidebar";
 import { CommunityMobileTabs } from "@/components/community/CommunityMobileTabs";
