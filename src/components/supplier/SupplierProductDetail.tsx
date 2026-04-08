@@ -74,6 +74,17 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
 
   const descSections = useMemo(() => parseDescription(desc || ""), [desc]);
 
+  // Build rating breakdown from real data
+  const ratingBreakdown = useMemo(() => {
+    if (reviews.length === 0) return [
+      { stars: 5, pct: 0 }, { stars: 4, pct: 0 }, { stars: 3, pct: 0 }, { stars: 2, pct: 0 }, { stars: 1, pct: 0 },
+    ];
+    return [5, 4, 3, 2, 1].map(stars => ({
+      stars,
+      pct: Math.round((reviews.filter(r => r.rating === stars).length / reviews.length) * 100),
+    }));
+  }, [reviews]);
+
   if (!product) return null;
 
   // Use real DB fields for pricing
@@ -83,7 +94,6 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
   const discountPercent = hasDiscount ? Math.round(((originalPriceVat - priceWithVat) / originalPriceVat) * 100) : 0;
   const installment = priceWithVat > 0 ? Math.ceil(priceWithVat / 4) : 0;
 
-  // Platform exclusive price from DB
   const platformDiscountPct = product.platform_discount_pct || 0;
   const platformPriceVat = platformDiscountPct > 0
     ? Math.round(price * (1 - platformDiscountPct / 100) * (1 + VAT_RATE))
@@ -95,20 +105,8 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
 
   const subtitle = descSections.find(s => s.type === "text" && !s.content.startsWith("🏷️"))?.content || "";
 
-  // Rating calculations from real reviews
   const avgRating = reviewStats.avg || 0;
   const totalReviews = reviewStats.count || 0;
-
-  // Build rating breakdown from real data
-  const ratingBreakdown = useMemo(() => {
-    if (reviews.length === 0) return [
-      { stars: 5, pct: 0 }, { stars: 4, pct: 0 }, { stars: 3, pct: 0 }, { stars: 2, pct: 0 }, { stars: 1, pct: 0 },
-    ];
-    return [5, 4, 3, 2, 1].map(stars => ({
-      stars,
-      pct: Math.round((reviews.filter(r => r.rating === stars).length / reviews.length) * 100),
-    }));
-  }, [reviews]);
 
   const specs = [
     product.category && { label: isAr ? "الفئة" : "Category", value: product.category, icon: Tag },
