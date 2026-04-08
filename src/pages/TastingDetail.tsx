@@ -11,6 +11,8 @@ import {
 } from "@/hooks/useTasting";
 import { TastingEvaluationPanel } from "@/components/tasting/TastingEvaluationPanel";
 import { TastingResultsPanel } from "@/components/tasting/TastingResultsPanel";
+import { TastingReportPanel } from "@/components/tasting/TastingReportPanel";
+import { ProductEvaluationTemplates, PRODUCT_TEMPLATES } from "@/components/tasting/ProductEvaluationTemplates";
 import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
 import { EntryComparison } from "@/components/judging/EntryComparison";
 import { Header } from "@/components/Header";
@@ -30,7 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft, Calendar, MapPin, Eye, Plus, UtensilsCrossed, ClipboardList,
   BarChart3, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, FileEdit,
-  Trophy, ArrowLeftRight, Coffee, Wine, Palette, Globe, ChefHat
+  Trophy, ArrowLeftRight, Coffee, Wine, Palette, Globe, ChefHat, FileText
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -324,6 +326,10 @@ export default function TastingDetail() {
                 <BarChart3 className="h-3.5 w-3.5" />
                 {isAr ? "النتائج" : "Results"}
               </TabsTrigger>
+              <TabsTrigger value="report" className="gap-1.5">
+                <FileText className="h-3.5 w-3.5" />
+                {isAr ? "التقرير" : "Report"}
+              </TabsTrigger>
               {session.competition_id && (
                 <>
                   <TabsTrigger value="analytics" className="gap-1.5">
@@ -382,6 +388,10 @@ export default function TastingDetail() {
               <TastingResultsPanel entries={entries} criteria={criteria} scores={scores} evalMethod={session.eval_method} />
             </TabsContent>
 
+            <TabsContent value="report">
+              <TastingReportPanel session={session} entries={entries} criteria={criteria} scores={scores} evalMethod={session.eval_method} />
+            </TabsContent>
+
             {session.competition_id && (
               <>
                 <TabsContent value="analytics">
@@ -396,6 +406,31 @@ export default function TastingDetail() {
             {isOrganizer && (
               <TabsContent value="manage">
                 <div className="space-y-6">
+                  {/* Product Evaluation Templates */}
+                  {criteria.length === 0 && (
+                    <ProductEvaluationTemplates onSelect={async (template) => {
+                      if (!id) return;
+                      try {
+                        const items = template.criteria.map((c, i) => ({
+                          session_id: id,
+                          name: c.name,
+                          name_ar: c.name_ar,
+                          description: c.description,
+                          description_ar: c.description_ar,
+                          max_score: c.max_score,
+                          weight: c.weight,
+                          stage: c.stage,
+                          sort_order: i,
+                          is_required: true,
+                        }));
+                        await addCriteria.mutateAsync(items);
+                        toast.success(isAr ? `تم تحميل نموذج ${template.name_ar}` : `${template.name} template loaded`);
+                      } catch {
+                        toast.error(isAr ? "خطأ في تحميل النموذج" : "Failed to load template");
+                      }
+                    }} />
+                  )}
+
                   {/* ── Entries Management ── */}
                   <Card>
                     <CardHeader className="flex-row items-center justify-between space-y-0">
