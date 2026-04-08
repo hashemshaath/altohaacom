@@ -205,6 +205,34 @@ export default function AdminDashboard() {
     staleTime: 1000 * 60 * 5,
   });
 
+  // Activity heatmap data (based on posts creation times over last 4 weeks)
+  const { data: heatmapData } = useQuery({
+    queryKey: ["admin-activity-heatmap"],
+    queryFn: async () => {
+      const since = subDays(new Date(), 28).toISOString();
+      const { data: posts } = await supabase
+        .from("posts").select("created_at").gte("created_at", since).limit(500);
+      const { data: users } = await supabase
+        .from("profiles").select("created_at").gte("created_at", since).limit(500);
+      const all = [...(posts || []), ...(users || [])];
+      const grid: { day: number; hour: number; value: number }[] = [];
+      for (let d = 0; d < 7; d++) {
+        for (let h = 0; h < 24; h++) {
+          grid.push({ day: d, hour: h, value: 0 });
+        }
+      }
+      all.forEach((item) => {
+        const date = new Date(item.created_at);
+        const day = (date.getDay() + 6) % 7; // Mon=0
+        const hour = date.getHours();
+        const cell = grid.find(c => c.day === day && c.hour === hour);
+        if (cell) cell.value++;
+      });
+      return grid;
+    },
+    staleTime: 1000 * 60 * 15,
+  });
+
   const getSparkPoints = (key: string) => sparkData?.map((d) => ({ v: d[key] || 0 })) || [];
   const getTrend = (key: string) => {
     const pts = getSparkPoints(key);
