@@ -23,7 +23,7 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
   ];
 
   return (
-    <div className="flex border-b border-border/30 sticky top-0 lg:top-0 z-10 bg-background/98 backdrop-blur-xl">
+    <div className="flex border-b border-border/20 sticky top-0 lg:top-0 z-10 bg-background/95 backdrop-blur-xl" role="tablist">
       {tabs
         .filter((t) => !t.requiresAuth || isLoggedIn)
         .map((tab) => {
@@ -31,21 +31,23 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
           return (
             <button
               key={tab.id}
+              role="tab"
+              aria-selected={isActive}
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex-1 flex items-center justify-center gap-1.5 min-h-[48px] text-[14px] sm:text-sm font-semibold transition-all duration-200 relative touch-manipulation active:scale-[0.98]",
+                "flex-1 flex items-center justify-center gap-2 min-h-[48px] text-[13px] sm:text-sm font-semibold transition-all duration-200 relative touch-manipulation active:scale-[0.98]",
                 isActive
                   ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/20 active:text-foreground"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/15 active:text-foreground"
               )}
             >
               <tab.icon className={cn(
                 "h-4 w-4 transition-colors duration-200",
-                isActive ? "text-primary" : "text-muted-foreground/60"
+                isActive ? "text-primary" : "text-muted-foreground/50"
               )} />
               <span>{tab.label}</span>
               {isActive && (
-                <span className="absolute bottom-0 inset-x-4 h-[3px] rounded-full bg-primary transition-all duration-300" />
+                <span className="absolute bottom-0 inset-x-6 h-[2.5px] rounded-full bg-primary transition-all duration-300" />
               )}
             </button>
           );

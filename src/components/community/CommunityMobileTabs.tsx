@@ -42,9 +42,9 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
   }, [isAr, enabledFeatures]);
 
   return (
-    <div className="sticky top-12 z-40 border-b border-border/20 bg-background/98 backdrop-blur-xl lg:hidden safe-area-x">
+    <div className="sticky top-12 z-40 border-b border-border/15 bg-background/95 backdrop-blur-xl lg:hidden safe-area-x">
       <div
-        className="flex overflow-x-auto scrollbar-none touch-pan-x gap-0.5 px-1"
+        className="flex overflow-x-auto scrollbar-none touch-pan-x gap-0 px-1.5"
         role="tablist"
       >
         {tabs.filter(t => !t.requiresAuth || user).map((tab) => {
@@ -57,19 +57,19 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex-shrink-0 flex flex-col items-center gap-0.5 px-3 pt-2 pb-1.5 min-w-[56px] text-[11px] font-semibold transition-all duration-200 relative touch-manipulation active:scale-[0.96]",
+                "flex-shrink-0 flex flex-col items-center gap-0.5 px-3.5 pt-2.5 pb-2 min-w-[58px] text-[11px] font-semibold transition-all duration-200 relative touch-manipulation active:scale-[0.96]",
                 isActive
                   ? "text-primary"
-                  : "text-muted-foreground/70 active:text-foreground"
+                  : "text-muted-foreground/60 active:text-foreground"
               )}
             >
               <Icon className={cn(
                 "h-5 w-5 transition-all duration-200",
-                isActive ? "text-primary scale-110" : "text-muted-foreground/50"
+                isActive ? "text-primary scale-110" : "text-muted-foreground/40"
               )} />
               <span className="whitespace-nowrap leading-tight">{tab.label}</span>
               {isActive && (
-                <span className="absolute bottom-0 inset-x-2 h-[2.5px] rounded-full bg-primary" />
+                <span className="absolute bottom-0 inset-x-3 h-[2.5px] rounded-full bg-primary" />
               )}
             </button>
           );
