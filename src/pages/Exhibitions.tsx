@@ -85,23 +85,28 @@ export default function Exhibitions() {
     [exhibitions]
   );
 
-  const { happeningNowCount, upcomingCount, countriesCount, featuredExhibitions, nextEvent } = useMemo(() => {
-    if (!exhibitions) return { happeningNowCount: 0, upcomingCount: 0, countriesCount: 0, featuredExhibitions: [], nextEvent: undefined };
+  const { happeningNowCount, upcomingCount, pastCount, countriesCount, featuredExhibitions, nextEvent } = useMemo(() => {
+    if (!exhibitions) return { happeningNowCount: 0, upcomingCount: 0, pastCount: 0, countriesCount: 0, featuredExhibitions: [], nextEvent: undefined };
     const now = new Date();
     let happeningNow = 0;
     let upcoming = 0;
+    let past = 0;
     const featured: Exhibition[] = [];
     let next: Exhibition | undefined;
 
     for (const e of exhibitions) {
       const start = new Date(e.start_date);
       const end = new Date(e.end_date);
-      try {
-        if (isWithinInterval(now, { start, end })) happeningNow++;
-      } catch { /* invalid interval */ }
-      if (isFuture(start)) {
-        upcoming++;
-        if (!next) next = e;
+      if (isPast(end)) {
+        past++;
+      } else {
+        try {
+          if (isWithinInterval(now, { start, end })) happeningNow++;
+        } catch { /* invalid interval */ }
+        if (isFuture(start)) {
+          upcoming++;
+          if (!next) next = e;
+        }
       }
       if (e.is_featured && !isPast(end)) featured.push(e);
     }
@@ -109,6 +114,7 @@ export default function Exhibitions() {
     return {
       happeningNowCount: happeningNow,
       upcomingCount: upcoming,
+      pastCount: past,
       countriesCount: new Set(exhibitions.map(e => e.country).filter(Boolean)).size,
       featuredExhibitions: featured,
       nextEvent: next,
@@ -411,7 +417,7 @@ export default function Exhibitions() {
               { id: "active", label: isAr ? "الجارية والقادمة" : "Active & Upcoming", icon: TrendingUp, count: happeningNowCount + upcomingCount },
               { id: "current", label: isAr ? "يحدث الآن" : "Live Now", icon: Clock, count: happeningNowCount },
               { id: "upcoming", label: isAr ? "القادمة" : "Upcoming", icon: CalendarDays, count: upcomingCount },
-              { id: "past", label: isAr ? "السابقة" : "Past", icon: History, count: null },
+              { id: "past", label: isAr ? "السابقة" : "Past", icon: History, count: pastCount },
               { id: "all", label: isAr ? "الكل" : "All", icon: null, count: exhibitions?.length },
             ].map((t) => (
               <TabsTrigger
