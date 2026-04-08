@@ -24,6 +24,7 @@ import { FeedScrollProgress } from "./FeedScrollProgress";
 import { FeedKeyboardShortcuts } from "./FeedKeyboardShortcuts";
 import { FeedStatsBar } from "./FeedStatsBar";
 import { CommunityInsights } from "./CommunityInsights";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 export interface CommunityPost {
   id: string;
@@ -435,7 +436,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
       {/* Tag filter banner */}
       {tagFilter && (
-        <div className="flex items-center gap-2 border-b border-border px-4 min-h-[44px] bg-primary/5">
+        <div className="flex items-center gap-2 border-b border-border/30 px-4 min-h-[44px] bg-primary/5">
           <span className="text-[15px] sm:text-sm font-bold text-primary">#{tagFilter}</span>
           <span className="text-[13px] sm:text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
           <Button
@@ -449,7 +450,20 @@ export const CommunityFeed = memo(function CommunityFeed() {
         </div>
       )}
 
-      {/* Feed Tabs */}
+      {/* ─── COMPOSER SECTION (Priority #1) ─── */}
+      {user && !tagFilter && feedFilter !== "bookmarks" && (
+        <div className="border-b border-border/30 bg-gradient-to-b from-card to-background">
+          <FeatureGate feature="feature_posts" showUpgrade featureName="Create Posts" featureNameAr="إنشاء المنشورات">
+            <PostComposer
+              onPosted={() => fetchPosts(0, false)}
+              replyToPostId={null}
+              placeholder={isAr ? "شارك أفكارك مع مجتمع الطهاة..." : "Share your thoughts with the chef community..."}
+            />
+          </FeatureGate>
+        </div>
+      )}
+
+      {/* ─── FEED NAVIGATION ─── */}
       {!tagFilter && <FeedTabs active={feedFilter} onChange={setFeedFilter} isLoggedIn={!!user} />}
 
       {/* New posts banner */}
@@ -457,35 +471,25 @@ export const CommunityFeed = memo(function CommunityFeed() {
         <NewPostsBanner count={newPostsCount} onClick={handleLoadNewPosts} />
       )}
 
-      {/* Stories */}
+      {/* ─── STORIES ─── */}
       {!tagFilter && feedFilter === "for_you" && (
         <FeatureGate feature="feature_stories" showUpgrade upgradeVariant="inline" featureName="Stories" featureNameAr="القصص">
           <StoriesBar />
         </FeatureGate>
       )}
 
-      {/* Composer */}
-      {user && !tagFilter && feedFilter !== "bookmarks" && (
-        <FeatureGate feature="feature_posts" showUpgrade featureName="Create Posts" featureNameAr="إنشاء المنشورات">
-          <PostComposer
-            onPosted={() => fetchPosts(0, false)}
-            replyToPostId={null}
-            placeholder={isAr ? "ماذا يحدث في مجتمع الطهاة؟" : "What's happening in the chef community?"}
-          />
-        </FeatureGate>
+      {/* ─── DISCOVERY SECTION ─── */}
+      {!tagFilter && feedFilter === "for_you" && (
+        <div className="border-b border-border/20">
+          <CommunityInsights />
+          <TrendingCarousel />
+        </div>
       )}
-
-      {/* Stats Bar */}
-      {!tagFilter && feedFilter === "for_you" && <FeedStatsBar />}
-      {!tagFilter && feedFilter === "for_you" && <CommunityInsights />}
-
-      {/* Trending Carousel */}
-      {!tagFilter && feedFilter === "for_you" && <TrendingCarousel />}
 
       {/* AI Recommendations */}
       {!tagFilter && feedFilter === "for_you" && <FeedRecommendations />}
 
-      {/* Feed */}
+      {/* ─── POSTS FEED ─── */}
       <div className="divide-y divide-border/50">
         {posts.length === 0 ? (
           <div className="flex flex-col items-center py-20 text-center px-6">

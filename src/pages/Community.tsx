@@ -90,7 +90,7 @@ export default function Community() {
       <Header />
 
       <main className="flex-1 safe-area-x">
-        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-4 px-0 sm:px-4 pt-0 sm:pt-4">
+        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-0 px-0 sm:px-2 pt-0 sm:pt-2">
           <CommunityLeftSidebar
             activeTab={activeTab}
             setActiveTab={handleSetActiveTab}
@@ -98,7 +98,7 @@ export default function Community() {
             setLeftSidebarOpen={handleSetLeftOpen}
           />
 
-          <div className="flex-1 min-w-0 lg:border-x lg:border-border/20 min-h-screen bg-background">
+          <div className="flex-1 min-w-0 lg:border-x lg:border-border/15 min-h-screen bg-background">
             <CommunityMobileTabs activeTab={activeTab} setActiveTab={handleSetActiveTab} />
             {renderTabContent()}
           </div>
