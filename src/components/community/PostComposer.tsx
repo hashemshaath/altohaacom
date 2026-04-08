@@ -283,9 +283,9 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
   const TypeIcon = POST_TYPE_CONFIG[postType].icon;
 
   return (
-    <div className={cn("border-b border-border px-3 sm:px-4 py-2.5 sm:py-3", compact && "px-3 py-2")}>
-      <div className="flex gap-2.5 sm:gap-3">
-        <Avatar className={cn("shrink-0 ring-2 ring-primary/10", compact ? "h-8 w-8" : "h-9 w-9 sm:h-10 sm:w-10")}>
+    <div className={cn("border-b border-border/20 px-4 sm:px-5 py-3.5 sm:py-4", compact && "px-3 py-2")}>
+      <div className="flex gap-3 sm:gap-3.5">
+        <Avatar className={cn("shrink-0 ring-2 ring-primary/10 shadow-sm", compact ? "h-8 w-8" : "h-10 w-10 sm:h-11 sm:w-11")}>
           <AvatarImage src={profile?.avatar_url || undefined} />
           <AvatarFallback className="bg-primary/10 text-primary">
             <User className="h-4 w-4" />
@@ -294,7 +294,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
         <div className="flex-1 min-w-0">
           {/* Post type selector - only for new posts */}
           {!replyToPostId && !compact && (
-            <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-border/30">
+            <div className="flex items-center gap-1.5 mb-2.5 pb-2.5 border-b border-border/20">
               {(["text", "competition", "event", "testimonial"] as PostType[]).map((type) => {
                 const config = POST_TYPE_CONFIG[type];
                 const Icon = config.icon;
@@ -339,7 +339,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
               placeholder={getPlaceholder()}
               value={content}
               onChange={(e) => setContent(e.target.value.slice(0, MAX_CHARS + 50))}
-              className="resize-none border-0 bg-transparent px-0 py-1 text-base shadow-none placeholder:text-muted-foreground/60 focus-visible:ring-0 min-h-[44px]"
+              className="resize-none border-0 bg-transparent px-0 py-1.5 text-[15px] sm:text-base shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0 min-h-[48px]"
               rows={compact ? 1 : 2}
               autoFocus={autoFocus}
             />
@@ -395,7 +395,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
           )}
 
           {/* Toolbar */}
-          <div className="mt-2 flex items-center justify-between border-t border-border/50 pt-2">
+          <div className="mt-2.5 flex items-center justify-between border-t border-border/20 pt-2.5">
             <div className="flex items-center gap-1">
               <input
                 ref={fileRef}
@@ -507,7 +507,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
               )}
               <Button
                 size="sm"
-                className="rounded-full px-5 font-bold"
+                className="rounded-full px-6 h-9 font-bold text-sm shadow-sm"
                 disabled={posting || (content.trim().length === 0 && images.length === 0 && !video) || isOverLimit}
                 onClick={handlePost}
               >
