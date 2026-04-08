@@ -72,6 +72,7 @@ export default function ProSupplierDetail() {
   const { data: countries = [] } = useAllCountries();
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
   const [quickViewProduct, setQuickViewProduct] = useState<any>(null);
+  const [descExpanded, setDescExpanded] = useState(false);
   useSupplierViewTracker(id);
 
   const { data: company, isLoading } = useQuery({
@@ -428,7 +429,14 @@ export default function ProSupplierDetail() {
                       <Building2 className="h-5 w-5 text-primary" />
                       {isAr ? "عن الشركة" : "About"}
                     </h2>
-                    <p className="text-muted-foreground leading-relaxed text-sm md:text-base">{description}</p>
+                    <p className={cn("text-muted-foreground leading-relaxed text-sm md:text-base whitespace-pre-line", !descExpanded && "line-clamp-4")}>
+                      {description}
+                    </p>
+                    {description.length > 200 && (
+                      <Button variant="link" size="sm" className="text-primary px-0 mt-1 h-auto" onClick={() => setDescExpanded(!descExpanded)}>
+                        {descExpanded ? (isAr ? "عرض أقل" : "Show less") : (isAr ? "عرض المزيد" : "Read more")}
+                      </Button>
+                    )}
                   </div>
                 )}
 
@@ -459,7 +467,7 @@ export default function ProSupplierDetail() {
                         </h3>
                       </div>
                       <CardContent className="p-4 text-sm text-muted-foreground space-y-2">
-                        <p>{[isAr && company.address_ar ? company.address_ar : company.address, company.city, company.country].filter(Boolean).join(", ")}</p>
+                        <p>{[isAr && company.address_ar ? company.address_ar : company.address, company.city, getCountryName(company.country_code)].filter(Boolean).join(", ")}</p>
                         {company.postal_code && <p className="text-xs text-muted-foreground/70">{isAr ? "رمز بريدي:" : "Postal:"} {company.postal_code}</p>}
                       </CardContent>
                     </Card>
