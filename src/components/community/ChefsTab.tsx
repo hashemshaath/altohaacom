@@ -139,7 +139,7 @@ export const ChefsTab = memo(function ChefsTab() {
       </p>
 
       {/* Chefs Grid */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="grid gap-2.5 sm:gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((chef) => {
           const displayName = isAr
             ? (chef.display_name_ar || chef.full_name_ar || chef.display_name || chef.full_name)
@@ -151,62 +151,47 @@ export const ChefsTab = memo(function ChefsTab() {
           return (
             <div
               key={chef.user_id}
-              className="group rounded-2xl border border-border/25 bg-card/80 backdrop-blur-sm p-4 sm:p-5 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]"
+              className="group flex items-center gap-3 rounded-xl border border-border/20 bg-card/70 px-3 py-2.5 transition-all duration-200 hover:shadow-md hover:border-primary/20 active:scale-[0.99]"
             >
-              <div className="flex flex-col items-center text-center gap-3">
-                {/* Avatar */}
-                <Link to={`/${chef.username || chef.user_id}`} className="relative">
-                  <Avatar className="h-16 w-16 sm:h-[72px] sm:w-[72px] ring-[3px] ring-border/20 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/25 group-hover:shadow-lg">
-                    <AvatarImage src={chef.avatar_url || undefined} alt={displayName || ""} />
-                    <AvatarFallback className="bg-primary/8 text-primary font-bold text-xl">
-                      {(displayName || "C")[0].toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  {chef.is_verified && (
-                    <div className="absolute -bottom-1 -end-1 h-5.5 w-5.5 flex items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md text-[11px] ring-2 ring-card">
-                      ✓
-                    </div>
-                  )}
-                </Link>
-
-                {/* Name & Info */}
-                <div className="min-w-0 w-full space-y-1.5 flex-1">
-                  <Link to={`/${chef.username || chef.user_id}`} className="block">
-                    <h3 className="font-bold text-[13px] sm:text-sm leading-snug group-hover:text-primary transition-colors line-clamp-2">
-                      {displayName || "Chef"}
-                      <ChefBadge userId={chef.user_id} />
-                    </h3>
-                  </Link>
-
-                  {chef.experience_level && (
-                    <Badge variant="secondary" className="capitalize text-[11px] px-2.5 py-0.5 rounded-lg font-semibold">
-                      {chef.experience_level}
-                    </Badge>
-                  )}
-
-                  {displaySpec && (
-                    <p className="flex items-center justify-center gap-1 text-[11px] sm:text-[12px] text-muted-foreground leading-snug line-clamp-1">
-                      <ChefHat className="h-3 w-3 shrink-0 text-muted-foreground/50" />
-                      <span className="truncate">{displaySpec}</span>
-                    </p>
-                  )}
-
-                  {(cityName || flag) && (
-                    <p className="flex items-center justify-center gap-1.5 text-[11px] sm:text-[12px] text-muted-foreground/70">
-                      {flag && <span className="text-sm leading-none">{flag}</span>}
-                      {cityName && <span className="truncate">{cityName}</span>}
-                    </p>
-                  )}
-                </div>
-
-                {/* Actions */}
-                {user && (
-                  <div className="flex items-center gap-2 w-full mt-auto pt-1">
-                    <MessageButton userId={chef.user_id} variant="outline" size="sm" />
-                    <FollowButton userId={chef.user_id} userName={displayName || undefined} fullWidth />
+              {/* Avatar */}
+              <Link to={`/${chef.username || chef.user_id}`} className="relative shrink-0">
+                <Avatar className="h-11 w-11 ring-2 ring-border/15 transition-transform duration-200 group-hover:scale-105">
+                  <AvatarImage src={chef.avatar_url || undefined} alt={displayName || ""} />
+                  <AvatarFallback className="bg-primary/8 text-primary font-bold text-sm">
+                    {(displayName || "C")[0].toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                {chef.is_verified && (
+                  <div className="absolute -bottom-0.5 -end-0.5 h-4 w-4 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] ring-[1.5px] ring-card">
+                    ✓
                   </div>
                 )}
+              </Link>
+
+              {/* Info */}
+              <div className="min-w-0 flex-1">
+                <Link to={`/${chef.username || chef.user_id}`} className="block">
+                  <h3 className="font-semibold text-[13px] leading-tight truncate group-hover:text-primary transition-colors">
+                    {displayName || "Chef"}
+                    <ChefBadge userId={chef.user_id} />
+                  </h3>
+                </Link>
+                <div className="flex items-center gap-1.5 mt-0.5 text-[11px] text-muted-foreground truncate">
+                  {displaySpec && (
+                    <span className="truncate">{displaySpec}</span>
+                  )}
+                  {displaySpec && (cityName || flag) && <span className="text-border">·</span>}
+                  {flag && <span className="text-xs leading-none">{flag}</span>}
+                  {cityName && <span className="truncate">{cityName}</span>}
+                </div>
               </div>
+
+              {/* Action */}
+              {user && (
+                <div className="shrink-0">
+                  <FollowButton userId={chef.user_id} userName={displayName || undefined} />
+                </div>
+              )}
             </div>
           );
         })}
