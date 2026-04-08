@@ -55,11 +55,9 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
   const [qty, setQty] = useState(1);
   const [isFav, setIsFav] = useState(false);
 
-  if (!product) return null;
-
-  const title = isAr && product.name_ar ? product.name_ar : product.name;
-  const desc = isAr && product.description_ar ? product.description_ar : product.description;
-  const price = product.unit_price || 0;
+  const title = product ? (isAr && product.name_ar ? product.name_ar : product.name) : "";
+  const desc = product ? (isAr && product.description_ar ? product.description_ar : product.description) : "";
+  const price = product?.unit_price || 0;
   const priceWithVat = Math.round(price * (1 + VAT_RATE));
   const totalPrice = price * qty;
   const totalWithVat = Math.round(totalPrice * (1 + VAT_RATE));
