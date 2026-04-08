@@ -77,6 +77,9 @@ export default function ProSupplierDetail() {
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [descExpanded, setDescExpanded] = useState(false);
+  const [productSearch, setProductSearch] = useState("");
+  const [productSort, setProductSort] = useState<"name" | "price_asc" | "price_desc">("name");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const { addItem } = useCart();
   useSupplierViewTracker(id);
 
