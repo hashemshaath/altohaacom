@@ -12,6 +12,9 @@ import { ChefsTableTestimonials } from "@/components/chefs-table/ChefsTableTesti
 import { ChefsTableCTA } from "@/components/chefs-table/ChefsTableCTA";
 import { ChefsTableClients } from "@/components/chefs-table/ChefsTableClients";
 import { ChefsTableSessionsList } from "@/components/chefs-table/ChefsTableSessionsList";
+import { ChefsTablePricing } from "@/components/chefs-table/ChefsTablePricing";
+import { ChefsTableFAQ } from "@/components/chefs-table/ChefsTableFAQ";
+import { ChefsTableSuccessMetrics } from "@/components/chefs-table/ChefsTableSuccessMetrics";
 
 export default function ChefsTable() {
   const { language } = useLanguage();
@@ -45,7 +48,9 @@ export default function ChefsTable() {
       <ChefsTableBenefits isAr={isAr} />
       <ChefsTableCategories isAr={isAr} />
       <ChefsTableHowItWorks isAr={isAr} />
+      <ChefsTableSuccessMetrics isAr={isAr} />
       <ChefsTableClients isAr={isAr} />
+      <ChefsTablePricing isAr={isAr} onRequestClick={handleRequest} />
       <ChefsTableTestimonials isAr={isAr} />
       <ChefsTableSessionsList
         isAr={isAr}
@@ -57,6 +62,7 @@ export default function ChefsTable() {
         onStatusFilterChange={setStatusFilter}
         onSessionClick={(id) => navigate(`/chefs-table/${id}`)}
       />
+      <ChefsTableFAQ isAr={isAr} />
       <ChefsTableCTA isAr={isAr} user={user} onRequestClick={handleRequest} />
     </PageShell>
   );
