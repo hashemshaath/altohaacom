@@ -1338,14 +1338,14 @@ export default function CompetitionDetail() {
               <ParticipantStatsCard competitionId={competition.id} maxParticipants={competition.max_participants} />
 
               {/* Quick Info Card */}
-              <div className="overflow-hidden rounded-2xl border border-border/40 bg-card">
-                <div className="border-b border-border/30 bg-gradient-to-r from-accent/[0.04] to-transparent px-5 py-3.5">
-                  <h3 className="flex items-center gap-2.5 font-bold text-sm">
-                    <BookOpen className="h-4 w-4 text-primary" />
+              <div className="overflow-hidden rounded-2xl border border-border/30 bg-card shadow-sm">
+                <div className="border-b border-border/20 bg-gradient-to-r from-accent/[0.06] via-accent/[0.02] to-transparent px-5 py-4">
+                  <h3 className="flex items-center gap-2.5 font-bold text-[15px]">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15"><BookOpen className="h-4 w-4 text-primary" /></div>
                     {isAr ? "معلومات سريعة" : "Quick Info"}
                   </h3>
                 </div>
-                <div className="p-5 space-y-3.5">
+                <div className="p-5 space-y-4">
                   {[
                     competition.country_code && { icon: MapPin, label: isAr ? "الدولة" : "Country", value: `${countryFlag(competition.country_code)} ${competition.country}` },
                     competition.edition_year && { icon: Hash, label: isAr ? "النسخة" : "Edition", value: competition.edition_year },
