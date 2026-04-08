@@ -159,20 +159,20 @@ function Section({
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <div className={`overflow-hidden rounded-2xl border transition-all duration-300 ${accent ? "border-primary/15 bg-primary/[0.02]" : "border-border/40 bg-card"} ${open ? "shadow-sm" : "shadow-none"}`}>
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-5 py-3 sm:py-4 text-start hover:bg-muted/20 transition-colors group touch-manipulation">
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 text-start hover:bg-muted/20 transition-colors group touch-manipulation active:scale-[0.98]">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
               <span className="text-primary">{icon}</span>
             </div>
             <div>
-              <h3 className="font-semibold text-sm sm:text-[15px] tracking-tight">{title}</h3>
+              <h3 className="font-semibold text-sm sm:text-base tracking-tight">{title}</h3>
               {badge && <div className="mt-0.5">{badge}</div>}
             </div>
           </div>
-          <ChevronDown className={`h-4 w-4 text-muted-foreground/60 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-5 w-5 text-muted-foreground/60 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-          <div className="mx-4 sm:mx-5 mb-0.5">
+          <div className="mx-4 sm:mx-6 mb-0.5">
             <Separator className="opacity-30" />
           </div>
           <div className="p-4 sm:p-6">{children}</div>
@@ -193,13 +193,13 @@ function LiveCountdownStrip({ targetDate, label, labelAr, isAr }: { targetDate: 
     { value: countdown.seconds, en: "Sec", ar: "ثانية" },
   ];
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] via-transparent to-primary/[0.04] p-4">
-      <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-3">{isAr ? labelAr : label}</p>
-      <div className="grid grid-cols-4 gap-2">
+    <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] via-transparent to-primary/[0.04] p-4 sm:p-5">
+      <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">{isAr ? labelAr : label}</p>
+      <div className="grid grid-cols-4 gap-2 sm:gap-3">
         {units.map((u) => (
           <div key={u.en} className="text-center">
-            <div className="text-xl sm:text-2xl font-bold tabular-nums text-foreground leading-none">{String(u.value).padStart(2, "0")}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
+            <div className="text-2xl sm:text-3xl font-bold tabular-nums text-foreground leading-none">{String(u.value).padStart(2, "0")}</div>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
           </div>
         ))}
       </div>
@@ -569,7 +569,7 @@ export default function CompetitionDetail() {
 
                 {/* Badges row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={`${statusCfg.bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-[12px] shadow-sm`}>
+                  <Badge className={`${statusCfg.bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-xs shadow-sm`}>
                     {statusCfg.glow ? (
                       <span className="relative me-2 flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -581,19 +581,19 @@ export default function CompetitionDetail() {
                     {isAr ? statusCfg.labelAr : statusCfg.label}
                   </Badge>
                   {competition.edition_year && (
-                    <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-[12px] px-3 py-1">{competition.edition_year}</Badge>
+                    <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-xs px-3 py-1">{competition.edition_year}</Badge>
                   )}
                   {competition.competition_number && (
-                    <Badge variant="outline" className="font-mono text-[12px] font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
+                    <Badge variant="outline" className="font-mono text-xs font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
                   )}
                   {competition.registration_fee_type === "free" && (
-                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[12px] px-3 py-1 font-bold">
-                      <Ticket className="h-3 w-3 me-1" />{isAr ? "مجاني" : "Free Entry"}
+                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-xs px-3 py-1 font-bold">
+                      <Ticket className="h-3.5 w-3.5 me-1" />{isAr ? "مجاني" : "Free Entry"}
                     </Badge>
                   )}
                   {competition.blind_judging_enabled && (
-                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-[12px] px-3 py-1 font-bold">
-                      <Shield className="h-3 w-3 me-1" />{isAr ? "تحكيم مخفي" : "Blind Judging"}
+                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-xs px-3 py-1 font-bold">
+                      <Shield className="h-3.5 w-3.5 me-1" />{isAr ? "تحكيم مخفي" : "Blind Judging"}
                     </Badge>
                   )}
                 </div>
