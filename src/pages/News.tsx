@@ -483,16 +483,16 @@ export default function News() {
           {/* ─── Tabs ─── */}
           <Tabs value={activeType} onValueChange={handleTypeChange} className="space-y-6">
             <div className="flex items-center justify-between gap-4">
-              <TabsList className="h-auto w-auto justify-start gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-2xl border border-border/40 bg-muted/30 p-1.5" aria-label={isAr ? "فلترة حسب النوع" : "Filter by type"}>
+              <TabsList className="h-auto w-auto justify-start gap-0.5 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-xl border border-border/15 bg-muted/20 p-1" aria-label={isAr ? "فلترة حسب النوع" : "Filter by type"}>
                 {typeTabItems.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="rounded-xl px-4 py-2 text-xs font-semibold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-sm gap-1.5"
+                    className="rounded-lg px-3 py-1.5 text-[12px] font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-[13px] gap-1"
                   >
                     {isAr ? tab.ar : tab.en}
                     {typeCounts[tab.value] != null && (
-                      <span className="text-[12px] opacity-60 tabular-nums">({typeCounts[tab.value]})</span>
+                      <span className="text-[10px] opacity-50 tabular-nums">({typeCounts[tab.value]})</span>
                     )}
                   </TabsTrigger>
                 ))}
@@ -619,7 +619,7 @@ export default function News() {
                     </div>
 
                     {/* Sidebar */}
-                    <aside className="hidden lg:block space-y-6">
+                    <aside className="hidden lg:block space-y-4">
                       <NewsReadingStats isAr={isAr} />
                       <NewsWeeklyDigest articles={articles} isAr={isAr} />
                       <NewsTrendingSidebar articles={articles} isAr={isAr} />
@@ -628,22 +628,22 @@ export default function News() {
 
                       {/* Category Quick Links */}
                       {categories.length > 0 && (
-                        <Card className="rounded-2xl border-border/40">
-                          <CardContent className="p-5">
-                            <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                              <Filter className="h-4 w-4 text-muted-foreground" />
+                        <Card className="rounded-xl border-border/15">
+                          <CardContent className="p-4">
+                            <h3 className="text-[13px] font-semibold mb-2.5 flex items-center gap-1.5">
+                              <Filter className="h-3.5 w-3.5 text-muted-foreground/50" />
                               {isAr ? "التصنيفات" : "Categories"}
                             </h3>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1">
                               {categories.map((cat) => (
                                 <Badge
                                   key={cat.id}
                                   variant={selectedCategory === cat.id ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-lg text-[12px] transition-colors",
+                                    "cursor-pointer rounded-md text-[11px] transition-colors",
                                     selectedCategory === cat.id
                                       ? "bg-primary text-primary-foreground"
-                                      : "border-border/40 hover:bg-primary/5"
+                                      : "border-border/15 hover:bg-primary/5"
                                   )}
                                   onClick={() => handleCategoryChange(selectedCategory === cat.id ? "all" : cat.id)}
                                 >
@@ -657,22 +657,22 @@ export default function News() {
 
                       {/* Sidebar Tags */}
                       {tags.length > 0 && (
-                        <Card className="rounded-2xl border-border/40">
-                          <CardContent className="p-5">
-                            <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        <Card className="rounded-xl border-border/15">
+                          <CardContent className="p-4">
+                            <h3 className="text-[13px] font-semibold mb-2.5 flex items-center gap-1.5">
+                              <TrendingUp className="h-3.5 w-3.5 text-muted-foreground/50" />
                               {isAr ? "الوسوم" : "Tags"}
                             </h3>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1">
                               {tags.slice(0, 15).map((tag) => (
                                 <Badge
                                   key={tag.id}
                                   variant={selectedTags.includes(tag.id) ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-lg text-[12px] transition-colors",
+                                    "cursor-pointer rounded-md text-[11px] transition-colors",
                                     selectedTags.includes(tag.id)
                                       ? "bg-primary text-primary-foreground"
-                                      : "border-border/40 hover:bg-primary/5"
+                                      : "border-border/15 hover:bg-primary/5"
                                   )}
                                   onClick={() => handleToggleTag(tag.id)}
                                 >
