@@ -856,14 +856,14 @@ export default function CompetitionDetail() {
                           <span className="text-xs font-bold">{isAr ? "التحكيم" : "Judging"}</span>
                         </div>
                         <div className="relative">
-                          <ProgressRing value={scoresData?.length || 0} max={registrationStats?.approved || 1} size={40} strokeWidth={3} color="text-chart-5" />
-                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{scoresData?.length || 0}</span>
+                          <ProgressRing value={judgesCount || 0} max={10} size={40} strokeWidth={3} color="text-chart-5" />
+                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{judgesCount || 0}</span>
                         </div>
                       </div>
                       <div className="space-y-1">
                         <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "الحكام" : "Judges"}</span><span className="font-bold">{judgesCount || 0}</span></div>
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "تم التقييم" : "Scored"}</span><span className="font-bold text-chart-5">{scoresData?.length || 0}</span></div>
-                        {avgScore > 0 && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعدل" : "Avg Score"}</span><span className="font-bold text-primary">{avgScore}/{totalScore}</span></div>}
+                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold text-chart-4">{criteria?.length || 0}</span></div>
+                        {totalScore > 0 && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "مجموع النقاط" : "Total Score"}</span><span className="font-bold text-primary">{totalScore}</span></div>}
                       </div>
                     </div>
 
