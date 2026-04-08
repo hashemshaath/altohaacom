@@ -18,14 +18,14 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
     queryFn: async () => {
       const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
 
-      // Top posts this week (by likes)
+      // Top posts this week (by engagement: replies + reposts)
       const { data: topPosts } = await supabase
         .from("posts")
-        .select("id, content, author_id, likes_count, comments_count, reposts_count")
+        .select("id, content, author_id, replies_count, reposts_count")
         .is("reply_to_post_id", null)
         .eq("moderation_status", "approved")
         .gte("created_at", weekAgo)
-        .order("likes_count", { ascending: false })
+        .order("replies_count", { ascending: false })
         .limit(3);
 
       // Get author profiles for top posts
