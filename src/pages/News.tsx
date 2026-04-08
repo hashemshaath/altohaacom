@@ -362,10 +362,10 @@ export default function News() {
               <div className="relative flex-1 sm:max-w-md">
                 <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/40" />
                 <Input
-                  placeholder={isAr ? "ابحث في الأخبار والمقالات..." : "Search news & articles..."}
+                  placeholder={isAr ? "ابحث في الأخبار..." : "Search articles..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQueryParam(e.target.value)}
-                  className="h-10 border-border/40 bg-muted/20 ps-10 rounded-xl focus:ring-primary/20"
+                  className="h-9 border-border/20 bg-muted/15 ps-9 rounded-lg text-sm focus:ring-primary/15"
                   aria-label={isAr ? "البحث" : "Search"}
                 />
               </div>
