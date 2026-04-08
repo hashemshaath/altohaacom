@@ -35,15 +35,15 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
   return (
     <Link to={`/blog/${article.slug}`} className="group block" role="listitem">
       <article>
-        <Card className="overflow-hidden rounded-2xl border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
-          <div className="flex gap-4 p-4">
+        <Card className="overflow-hidden rounded-xl border-border/15 transition-all duration-200 hover:shadow-md hover:border-primary/15">
+          <div className="flex gap-4 p-3.5">
             {/* Image */}
-            <div className="relative h-28 w-44 shrink-0 overflow-hidden rounded-xl bg-muted hidden sm:block">
+            <div className="relative h-24 w-36 shrink-0 overflow-hidden rounded-lg bg-muted hidden sm:block">
               {article.featured_image_url ? (
-                <img src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
+                <img src={article.featured_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" decoding="async" />
               ) : (
                 <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-                  <TypeIcon className="h-8 w-8 text-primary/20" />
+                  <TypeIcon className="h-8 w-8 text-primary/15" />
                 </div>
               )}
             </div>
@@ -51,27 +51,27 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
             {/* Content */}
             <div className="flex flex-1 flex-col justify-between min-w-0">
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary" className="text-[12px] rounded-md gap-1 px-1.5 py-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <Badge variant="secondary" className="text-[10px] rounded-md gap-0.5 px-1.5 py-0 h-4 bg-muted/50">
                     <TypeIcon className="h-2.5 w-2.5" />
                     {typeBadgeLabel(article.type)}
                   </Badge>
-                  <span className="text-[12px] text-muted-foreground/60 flex items-center gap-0.5">
+                  <span className="text-[10px] text-muted-foreground/40 flex items-center gap-0.5">
                     <BookOpen className="h-2.5 w-2.5" /> {readTime} {isAr ? "د" : "min"}
                   </span>
                   {(article.view_count ?? 0) >= 100 && (
-                    <Badge variant="secondary" className="text-[12px] px-1.5 py-0 h-4 rounded-lg gap-0.5 bg-chart-4/10 text-chart-4 border-0">
-                      🔥 {isAr ? "رائج" : "Trending"}
+                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 rounded-md gap-0.5 bg-chart-4/8 text-chart-4 border-0">
+                      🔥
                     </Badge>
                   )}
                 </div>
-                <h3 className="text-sm font-semibold line-clamp-1 group-hover:text-primary transition-colors mb-1">{title}</h3>
-                {excerpt && <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{excerpt}</p>}
+                <h3 className="text-[14px] font-semibold line-clamp-1 group-hover:text-primary transition-colors mb-1 leading-snug">{title}</h3>
+                {excerpt && <p className="text-[12px] text-muted-foreground/50 line-clamp-2 leading-relaxed">{excerpt}</p>}
               </div>
               <div className="flex items-center justify-between mt-2">
-                <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
-                  <span className="flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{formatDate(article.published_at || article.created_at)}</span>
-                  <span className="flex items-center gap-1"><Eye className="h-2.5 w-2.5" />{article.view_count}</span>
+                <div className="flex items-center gap-2.5 text-[10px] text-muted-foreground/40">
+                  <span className="flex items-center gap-0.5"><Calendar className="h-2.5 w-2.5" />{formatDate(article.published_at || article.created_at)}</span>
+                  <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{article.view_count}</span>
                 </div>
                 <ShareButton title={title} url={`/news/${article.slug}`} isAr={isAr} />
               </div>

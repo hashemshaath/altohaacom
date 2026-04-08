@@ -297,55 +297,54 @@ export default function News() {
     >
       <main className="flex-1">
         <NewsReadingProgress />
-        <section className="relative overflow-hidden border-b border-border/20 bg-gradient-to-b from-primary/5 via-primary/[0.02] to-background" aria-labelledby="news-heading">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.08),transparent_70%)]" />
-          <div className="absolute bottom-0 start-0 end-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-          <div className="container relative py-8 md:py-10">
-            <Breadcrumbs items={breadcrumbItems} className="mb-4" />
+        <section className="relative overflow-hidden border-b border-border/10 bg-gradient-to-b from-primary/4 via-transparent to-background" aria-labelledby="news-heading">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--primary)/0.06),transparent_60%)]" />
+          <div className="container relative py-7 md:py-9">
+            <Breadcrumbs items={breadcrumbItems} className="mb-3" />
 
-            <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-              <div className="space-y-3 max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 ring-1 ring-primary/20">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="space-y-2 max-w-2xl">
+                <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/8 px-2.5 py-1 ring-1 ring-primary/15">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-primary">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
                     {isAr ? "مركز الأخبار" : "News Center"}
                   </span>
                 </div>
                 <h1 id="news-heading" className="font-serif text-2xl font-extrabold tracking-tight sm:text-3xl md:text-4xl">
                   {isAr ? "أخبار ومقالات عالم الطهي" : "Culinary News & Insights"}
                 </h1>
-                <p className="text-muted-foreground text-sm leading-relaxed max-w-xl">
+                <p className="text-muted-foreground/70 text-sm leading-relaxed max-w-xl">
                   {isAr
-                    ? "اكتشف آخر أخبار الطهاة، الشركات، والجمعيات المهنية مع مقالات ملهمة وقصص نجاح."
-                    : "Discover the latest about chefs, companies, and culinary associations — with inspiring articles and success stories."}
+                    ? "اكتشف آخر أخبار الطهاة، الشركات، والجمعيات المهنية."
+                    : "Discover the latest about chefs, companies, and culinary associations."}
                 </p>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-1.5">
                 {[
-                  { icon: Newspaper, value: articles.length, label: isAr ? "مقال" : "Articles", color: "text-primary", bg: "bg-primary/10" },
-                  { icon: Eye, value: totalViews.toLocaleString(), label: isAr ? "مشاهدة" : "Views", color: "text-chart-2", bg: "bg-chart-2/10" },
-                  { icon: Sparkles, value: featuredArticles.length, label: isAr ? "مميز" : "Featured", color: "text-chart-4", bg: "bg-chart-4/10" },
+                  { icon: Newspaper, value: articles.length, label: isAr ? "مقال" : "Articles", color: "text-primary", bg: "bg-primary/8" },
+                  { icon: Eye, value: totalViews.toLocaleString(), label: isAr ? "مشاهدة" : "Views", color: "text-chart-2", bg: "bg-chart-2/8" },
+                  { icon: Sparkles, value: featuredArticles.length, label: isAr ? "مميز" : "Featured", color: "text-chart-4", bg: "bg-chart-4/8" },
                 ].map((stat) => (
-                  <div key={stat.label} className="group flex flex-col items-center rounded-2xl border border-border/30 bg-card/70 backdrop-blur-sm px-3.5 py-2.5 min-w-[72px] transition-all hover:shadow-md hover:border-primary/15">
-                    <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${stat.bg} mb-1 transition-transform group-hover:scale-110`}>
-                      <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
+                  <div key={stat.label} className="flex flex-col items-center rounded-xl bg-card/50 px-3 py-2 min-w-[64px] border border-border/10">
+                    <div className={`flex h-6 w-6 items-center justify-center rounded-lg ${stat.bg} mb-0.5`}>
+                      <stat.icon className={`h-3 w-3 ${stat.color}`} />
                     </div>
-                    <span className="text-base font-extrabold leading-none">{stat.value}</span>
-                    <span className="text-[12px] text-muted-foreground mt-0.5 font-medium">{stat.label}</span>
+                    <span className="text-sm font-bold leading-none tabular-nums">{stat.value}</span>
+                    <span className="text-[10px] text-muted-foreground/50 mt-0.5">{stat.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-1.5 mt-5">
+            <div className="flex flex-wrap gap-1 mt-4">
               {[
                 { icon: ChefHat, en: "Chefs", ar: "الطهاة" },
                 { icon: Building2, en: "Companies", ar: "الشركات" },
                 { icon: Award, en: "Associations", ar: "الجمعيات" },
               ].map((topic) => (
-                <Badge key={topic.en} variant="outline" className="gap-1.5 px-2.5 py-1 text-[12px] rounded-lg border-border/30 bg-card/50 backdrop-blur-sm cursor-default hover:bg-primary/5 transition-colors">
-                  <topic.icon className="h-2.5 w-2.5 text-primary/60" />
+                <Badge key={topic.en} variant="outline" className="gap-1 px-2 py-0.5 text-[11px] rounded-md border-border/15 bg-card/30 cursor-default">
+                  <topic.icon className="h-2.5 w-2.5 text-primary/40" />
                   {isAr ? topic.ar : topic.en}
                 </Badge>
               ))}
@@ -358,15 +357,15 @@ export default function News() {
 
         <div className="container py-5 md:py-6">
           {/* ─── Sticky Filters ─── */}
-          <div className="sticky top-12 z-40 -mx-4 mb-6 border-y border-border/30 bg-background/70 px-4 py-2.5 backdrop-blur-xl md:rounded-2xl md:border md:px-4 md:shadow-sm">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="sticky top-12 z-40 -mx-4 mb-5 border-b border-border/10 bg-background/90 px-4 py-2 backdrop-blur-xl md:rounded-xl md:border md:border-border/10 md:px-3.5 md:shadow-sm">
+            <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center">
               <div className="relative flex-1 sm:max-w-md">
-                <Search className="absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/60" />
+                <Search className="absolute start-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/40" />
                 <Input
-                  placeholder={isAr ? "ابحث في الأخبار والمقالات..." : "Search news & articles..."}
+                  placeholder={isAr ? "ابحث في الأخبار..." : "Search articles..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQueryParam(e.target.value)}
-                  className="h-10 border-border/40 bg-muted/20 ps-10 rounded-xl focus:ring-primary/20"
+                  className="h-9 border-border/20 bg-muted/15 ps-9 rounded-lg text-sm focus:ring-primary/15"
                   aria-label={isAr ? "البحث" : "Search"}
                 />
               </div>
@@ -374,10 +373,10 @@ export default function News() {
               {/* Desktop-only dropdowns */}
               <div className="hidden lg:contents">
                 <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44" aria-label={isAr ? "التصنيف" : "Category"}>
+                  <SelectTrigger className="h-9 w-full border-border/20 bg-muted/15 rounded-lg sm:w-40 text-sm" aria-label={isAr ? "التصنيف" : "Category"}>
                     <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="rounded-lg">
                     <SelectItem value="all">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
                     {categories.map((cat) => (
                       <SelectItem key={cat.id} value={cat.id}>
@@ -387,10 +386,10 @@ export default function News() {
                   </SelectContent>
                 </Select>
                 <Select value={sortBy} onValueChange={handleSortChange}>
-                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40" aria-label={isAr ? "ترتيب" : "Sort"}>
+                  <SelectTrigger className="h-9 w-full border-border/20 bg-muted/15 rounded-lg sm:w-36 text-sm" aria-label={isAr ? "ترتيب" : "Sort"}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="rounded-lg">
                     {SORT_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
                         {isAr ? opt.ar : opt.en}
@@ -399,15 +398,15 @@ export default function News() {
                   </SelectContent>
                 </Select>
                 <Button
-                  variant={showAdvancedFilters ? "default" : "outline"}
+                  variant={showAdvancedFilters ? "default" : "ghost"}
                   size="sm"
-                  className="rounded-xl gap-1.5 h-10 shrink-0 relative"
+                  className="rounded-lg gap-1.5 h-9 shrink-0 relative text-sm"
                   onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                 >
                   <SlidersHorizontal className="h-3.5 w-3.5" />
                   {isAr ? "فلاتر" : "Filters"}
                   {activeFilterCount > 0 && (
-                    <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[12px] font-bold">
+                    <span className="absolute -top-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
                       {activeFilterCount}
                     </span>
                   )}
@@ -441,11 +440,11 @@ export default function News() {
 
             {/* Desktop Advanced Filters Panel */}
             {showAdvancedFilters && (
-              <div className="hidden lg:block mt-3 pt-3 border-t border-border/30 space-y-3">
+              <div className="hidden lg:block mt-2.5 pt-2.5 border-t border-border/10 space-y-2.5">
                 {tags.length > 0 && (
                   <NewsTagsFilter tags={tags} selectedTags={selectedTags} onToggleTag={handleToggleTag} isAr={isAr} />
                 )}
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3">
                   <NewsDateRangeFilter
                     dateFrom={dateFrom}
                     dateTo={dateTo}
@@ -455,8 +454,8 @@ export default function News() {
                     isAr={isAr}
                   />
                   {activeFilterCount > 0 && (
-                    <Button variant="ghost" size="sm" className="rounded-xl text-xs text-muted-foreground hover:text-destructive" onClick={handleClearAll}>
-                      {isAr ? "مسح جميع الفلاتر" : "Clear all filters"}
+                    <Button variant="ghost" size="sm" className="rounded-lg text-xs text-muted-foreground hover:text-destructive" onClick={handleClearAll}>
+                      {isAr ? "مسح الفلاتر" : "Clear all"}
                     </Button>
                   )}
                 </div>
@@ -484,16 +483,16 @@ export default function News() {
           {/* ─── Tabs ─── */}
           <Tabs value={activeType} onValueChange={handleTypeChange} className="space-y-6">
             <div className="flex items-center justify-between gap-4">
-              <TabsList className="h-auto w-auto justify-start gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-2xl border border-border/40 bg-muted/30 p-1.5" aria-label={isAr ? "فلترة حسب النوع" : "Filter by type"}>
+              <TabsList className="h-auto w-auto justify-start gap-0.5 overflow-x-auto overflow-y-hidden whitespace-nowrap rounded-xl border border-border/15 bg-muted/20 p-1" aria-label={isAr ? "فلترة حسب النوع" : "Filter by type"}>
                 {typeTabItems.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="rounded-xl px-4 py-2 text-xs font-semibold uppercase tracking-wider data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-sm gap-1.5"
+                    className="rounded-lg px-3 py-1.5 text-[12px] font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-[13px] gap-1"
                   >
                     {isAr ? tab.ar : tab.en}
                     {typeCounts[tab.value] != null && (
-                      <span className="text-[12px] opacity-60 tabular-nums">({typeCounts[tab.value]})</span>
+                      <span className="text-[10px] opacity-50 tabular-nums">({typeCounts[tab.value]})</span>
                     )}
                   </TabsTrigger>
                 ))}
@@ -620,7 +619,7 @@ export default function News() {
                     </div>
 
                     {/* Sidebar */}
-                    <aside className="hidden lg:block space-y-6">
+                    <aside className="hidden lg:block space-y-4">
                       <NewsReadingStats isAr={isAr} />
                       <NewsWeeklyDigest articles={articles} isAr={isAr} />
                       <NewsTrendingSidebar articles={articles} isAr={isAr} />
@@ -629,22 +628,22 @@ export default function News() {
 
                       {/* Category Quick Links */}
                       {categories.length > 0 && (
-                        <Card className="rounded-2xl border-border/40">
-                          <CardContent className="p-5">
-                            <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                              <Filter className="h-4 w-4 text-muted-foreground" />
+                        <Card className="rounded-xl border-border/15">
+                          <CardContent className="p-4">
+                            <h3 className="text-[13px] font-semibold mb-2.5 flex items-center gap-1.5">
+                              <Filter className="h-3.5 w-3.5 text-muted-foreground/50" />
                               {isAr ? "التصنيفات" : "Categories"}
                             </h3>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1">
                               {categories.map((cat) => (
                                 <Badge
                                   key={cat.id}
                                   variant={selectedCategory === cat.id ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-lg text-[12px] transition-colors",
+                                    "cursor-pointer rounded-md text-[11px] transition-colors",
                                     selectedCategory === cat.id
                                       ? "bg-primary text-primary-foreground"
-                                      : "border-border/40 hover:bg-primary/5"
+                                      : "border-border/15 hover:bg-primary/5"
                                   )}
                                   onClick={() => handleCategoryChange(selectedCategory === cat.id ? "all" : cat.id)}
                                 >
@@ -658,22 +657,22 @@ export default function News() {
 
                       {/* Sidebar Tags */}
                       {tags.length > 0 && (
-                        <Card className="rounded-2xl border-border/40">
-                          <CardContent className="p-5">
-                            <h3 className="text-sm font-bold mb-3 flex items-center gap-2">
-                              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                        <Card className="rounded-xl border-border/15">
+                          <CardContent className="p-4">
+                            <h3 className="text-[13px] font-semibold mb-2.5 flex items-center gap-1.5">
+                              <TrendingUp className="h-3.5 w-3.5 text-muted-foreground/50" />
                               {isAr ? "الوسوم" : "Tags"}
                             </h3>
-                            <div className="flex flex-wrap gap-1.5">
+                            <div className="flex flex-wrap gap-1">
                               {tags.slice(0, 15).map((tag) => (
                                 <Badge
                                   key={tag.id}
                                   variant={selectedTags.includes(tag.id) ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-lg text-[12px] transition-colors",
+                                    "cursor-pointer rounded-md text-[11px] transition-colors",
                                     selectedTags.includes(tag.id)
                                       ? "bg-primary text-primary-foreground"
-                                      : "border-border/40 hover:bg-primary/5"
+                                      : "border-border/15 hover:bg-primary/5"
                                   )}
                                   onClick={() => handleToggleTag(tag.id)}
                                 >
