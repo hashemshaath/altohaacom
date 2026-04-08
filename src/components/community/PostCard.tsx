@@ -265,6 +265,11 @@ export const PostCard = memo(function PostCard({
               </div>
             )}
 
+            {/* Quick Reactions */}
+            <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+              <QuickReactions postId={post.id} />
+            </div>
+
             {/* Poll */}
             <PollDisplay postId={post.id} />
 
