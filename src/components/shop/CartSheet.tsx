@@ -180,7 +180,10 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
 
       // 6. Increment discount code usage
       if (cart.appliedDiscount) {
-        await supabase.rpc("increment_discount_usage", { discount_code: cart.appliedDiscount.code }).catch(() => {});
+        await supabase
+          .from("shop_discount_codes")
+          .update({ used_count: (cart.items.length || 0) + 1 })
+          .eq("code", cart.appliedDiscount.code);
       }
 
       // 7. Track purchase
