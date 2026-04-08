@@ -1356,15 +1356,15 @@ export default function CompetitionDetail() {
                     competition.blind_judging_enabled && { icon: Shield, label: isAr ? "التحكيم" : "Judging", value: isAr ? "مخفي الهوية" : "Blind", badge: true },
                     competition.series_id && { icon: Layers, label: isAr ? "السلسلة" : "Series", value: isAr ? "جزء من سلسلة" : "Part of Series", badge: true },
                   ].filter(Boolean).map((item: any, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <item.icon className="h-3.5 w-3.5 opacity-50" />
-                        <span>{item.label}</span>
+                    <div key={i} className="flex items-center justify-between text-sm py-1 group/item hover:bg-muted/20 rounded-lg px-2 -mx-2 transition-colors">
+                      <div className="flex items-center gap-2.5 text-muted-foreground">
+                        <item.icon className="h-4 w-4 opacity-40 group-hover/item:opacity-70 transition-opacity" />
+                        <span className="text-[13px]">{item.label}</span>
                       </div>
                       {item.badge ? (
-                        <Badge variant="outline" className="text-[12px] rounded-xl">{item.value}</Badge>
+                        <Badge variant="outline" className="text-[12px] rounded-xl font-medium">{item.value}</Badge>
                       ) : (
-                        <span className="font-semibold">{item.value}</span>
+                        <span className="font-bold text-[13px]">{item.value}</span>
                       )}
                     </div>
                   ))}
