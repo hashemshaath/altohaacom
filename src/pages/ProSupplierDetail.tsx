@@ -578,19 +578,13 @@ export default function ProSupplierDetail() {
                     </div>
                     <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
                       {products.slice(0, 4).map((p: any) => (
-                        <Card key={p.id} interactive className="rounded-2xl overflow-hidden cursor-pointer" onClick={() => setQuickViewProduct(p)}>
-                          <div className="aspect-[4/3] bg-muted/30 overflow-hidden">
-                            {p.image_url ? (
-                              <img loading="lazy" src={p.image_url} className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" alt={p.name} />
-                            ) : (
-                              <div className="h-full flex items-center justify-center"><Package className="h-8 w-8 text-muted-foreground/20" /></div>
-                            )}
-                          </div>
-                          <CardContent className="p-3">
-                            <p className="font-medium text-sm truncate">{isAr && p.name_ar ? p.name_ar : p.name}</p>
-                            {p.category && <Badge variant="outline" className="text-[11px] mt-1.5 rounded-lg">{p.category}</Badge>}
-                          </CardContent>
-                        </Card>
+                        <SupplierProductCard
+                          key={p.id}
+                          product={p}
+                          compact
+                          onViewDetails={(prod) => { setSelectedProduct(prod); setActiveTab("products"); }}
+                          onAddToCart={handleAddToCart}
+                        />
                       ))}
                     </div>
                   </div>
