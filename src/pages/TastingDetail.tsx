@@ -32,7 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft, Calendar, MapPin, Eye, Plus, UtensilsCrossed, ClipboardList,
   BarChart3, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, FileEdit,
-  Trophy, ArrowLeftRight, Coffee, Wine, Palette, Globe, ChefHat
+  Trophy, ArrowLeftRight, Coffee, Wine, Palette, Globe, ChefHat, FileText
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
