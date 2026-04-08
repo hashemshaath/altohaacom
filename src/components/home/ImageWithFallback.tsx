@@ -44,6 +44,7 @@ export const ImageWithFallback = forwardRef<HTMLImageElement, ImageWithFallbackP
 
   return (
     <img
+      ref={ref}
       src={src}
       alt={alt}
       className={className}
@@ -51,4 +52,4 @@ export const ImageWithFallback = forwardRef<HTMLImageElement, ImageWithFallbackP
       {...props}
     />
   );
-}
+});
