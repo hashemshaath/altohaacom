@@ -191,4 +191,4 @@ export const ChefsTableSessionsList = memo(forwardRef<HTMLElement, Props>(functi
       </div>
     </section>
   );
-});
+}));
