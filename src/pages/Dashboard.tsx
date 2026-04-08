@@ -189,7 +189,7 @@ export default function Dashboard() {
       )}
 
       {/* ─── Main 3-Column Grid ─── */}
-      <div className="grid gap-5 lg:grid-cols-12 pb-20 sm:pb-0">
+      <div className="grid gap-6 lg:grid-cols-12 pb-20 sm:pb-0">
         {/* Left Column - Profile & Identity */}
         <aside className="lg:col-span-3 space-y-4">
           <SectionLabel icon={Star} label={isAr ? "ملفك الشخصي" : "Your Profile"} />
@@ -261,11 +261,11 @@ export default function Dashboard() {
 
 const SectionLabel = memo(function SectionLabel({ icon: Icon, label }: { icon: any; label: string }) {
   return (
-    <div className="flex items-center gap-2 mb-1 lg:mb-0">
-      <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
-        <Icon className="h-3 w-3 text-primary" />
+    <div className="flex items-center gap-2.5 mb-2 lg:mb-0">
+      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+        <Icon className="h-3.5 w-3.5 text-primary" />
       </div>
-      <h2 className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground">
+      <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-muted-foreground">
         {label}
       </h2>
       <div className="flex-1 h-px bg-gradient-to-r from-border/60 to-transparent hidden lg:block" />
@@ -328,24 +328,24 @@ const HeroWelcome = memo(function HeroWelcome({
                   </h1>
                   <ActivityPulse status="live" label={isAr ? "متصل" : "Online"} />
                 </div>
-                <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground/80 line-clamp-1">{subtitle}</p>
+                <p className="mt-1.5 text-sm sm:text-base text-muted-foreground/80 line-clamp-1">{subtitle}</p>
 
                 {/* Quick stats chips */}
                 <div className="flex items-center gap-2 mt-3 flex-wrap">
                   {membershipTier && membershipTier !== "free" && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-bold bg-primary/10 text-primary border border-primary/15">
-                      <Zap className="h-3 w-3" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/15">
+                      <Zap className="h-3.5 w-3.5" />
                       {membershipTier === "enterprise" ? (isAr ? "مؤسسي" : "Enterprise") : (isAr ? "احترافي" : "Professional")}
                     </span>
                   )}
                   {(loyaltyPoints ?? 0) > 0 && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-bold bg-chart-4/10 text-chart-4 border border-chart-4/15">
-                      <Star className="h-3 w-3" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-chart-4/10 text-chart-4 border border-chart-4/15">
+                      <Star className="h-3.5 w-3.5" />
                       <AnimatedCounter value={loyaltyPoints || 0} /> {isAr ? "نقطة" : "pts"}
                     </span>
                   )}
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-medium bg-muted/60 text-muted-foreground border border-border/30">
-                    <Calendar className="h-3 w-3" />
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted/60 text-muted-foreground border border-border/30">
+                    <Calendar className="h-3.5 w-3.5" />
                     {new Date().toLocaleDateString(isAr ? "ar-SA" : "en-US", { weekday: "short", month: "short", day: "numeric" })}
                   </span>
                 </div>
@@ -397,27 +397,27 @@ const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
 const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
   const { prefetchProps } = usePrefetchRoute();
   return (
-    <div className="mb-6">
+    <div className="mb-8">
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10">
-            <Sparkles className="h-3 w-3 text-primary" />
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
           </div>
-          <h2 className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground">
+          <h2 className="text-xs sm:text-sm font-bold uppercase tracking-widest text-muted-foreground">
             {isAr ? "الوصول السريع" : "Quick Access"}
           </h2>
         </div>
       </div>
 
       <div className="relative">
-        <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-11 sm:overflow-visible scrollbar-none touch-manipulation" dir={isAr ? "rtl" : "ltr"}>
+        <div className="flex gap-2.5 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-11 sm:overflow-visible scrollbar-none touch-manipulation" dir={isAr ? "rtl" : "ltr"}>
           {sections.map((s) => (
             <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink" {...prefetchProps(s.href)}>
-              <div className={`flex flex-col items-center gap-1.5 p-3 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 active:scale-[0.95] w-[72px] sm:w-auto ${s.glow}`}>
-                <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
-                  <s.icon className={`h-4.5 w-4.5 ${s.color}`} />
+              <div className={`flex flex-col items-center gap-2 p-3.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 active:scale-[0.95] w-[78px] sm:w-auto ${s.glow}`}>
+                <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
+                  <s.icon className={`h-5 w-5 ${s.color}`} />
                 </div>
-                <span className="text-[12px] sm:text-[12px] font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
+                <span className="text-xs sm:text-xs font-semibold text-center text-foreground/80 leading-tight w-full line-clamp-2">{s.title}</span>
               </div>
             </Link>
           ))}
@@ -456,16 +456,16 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3 mb-6">
+    <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
       {items.map((item) => (
         <Card key={item.label} className={`border-s-[3px] ${item.border} rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] group`}>
-          <CardContent className="flex items-center gap-3 p-3.5 sm:p-4">
-            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${item.bg} border border-border/20 transition-transform duration-300 group-hover:scale-110`}>
-              <item.icon className={`h-4.5 w-4.5 ${item.color}`} />
+          <CardContent className="flex items-center gap-3 p-4 sm:p-5">
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${item.bg} border border-border/20 transition-transform duration-300 group-hover:scale-110`}>
+              <item.icon className={`h-5 w-5 ${item.color}`} />
             </div>
             <div>
-              <AnimatedCounter value={item.value} className="text-2xl font-black tabular-nums" />
-              <p className="text-[12px] uppercase tracking-wider text-muted-foreground leading-tight font-medium">{item.label}</p>
+              <AnimatedCounter value={item.value} className="text-2xl sm:text-3xl font-black tabular-nums" />
+              <p className="text-xs uppercase tracking-wider text-muted-foreground leading-tight font-medium">{item.label}</p>
             </div>
           </CardContent>
         </Card>

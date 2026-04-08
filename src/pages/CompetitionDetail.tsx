@@ -159,20 +159,20 @@ function Section({
   return (
     <Collapsible open={open} onOpenChange={setOpen} className="scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
       <div className={`overflow-hidden rounded-2xl border transition-all duration-300 ${accent ? "border-primary/15 bg-primary/[0.02]" : "border-border/40 bg-card"} ${open ? "shadow-sm" : "shadow-none"}`}>
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-5 py-3 sm:py-4 text-start hover:bg-muted/20 transition-colors group touch-manipulation">
+        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 text-start hover:bg-muted/20 transition-colors group touch-manipulation active:scale-[0.98]">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
+            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
               <span className="text-primary">{icon}</span>
             </div>
             <div>
-              <h3 className="font-semibold text-sm sm:text-[15px] tracking-tight">{title}</h3>
+              <h3 className="font-semibold text-sm sm:text-base tracking-tight">{title}</h3>
               {badge && <div className="mt-0.5">{badge}</div>}
             </div>
           </div>
-          <ChevronDown className={`h-4 w-4 text-muted-foreground/60 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-5 w-5 text-muted-foreground/60 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-          <div className="mx-4 sm:mx-5 mb-0.5">
+          <div className="mx-4 sm:mx-6 mb-0.5">
             <Separator className="opacity-30" />
           </div>
           <div className="p-4 sm:p-6">{children}</div>
@@ -193,13 +193,13 @@ function LiveCountdownStrip({ targetDate, label, labelAr, isAr }: { targetDate: 
     { value: countdown.seconds, en: "Sec", ar: "ثانية" },
   ];
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] via-transparent to-primary/[0.04] p-4">
-      <p className="text-[11px] font-bold uppercase tracking-widest text-primary mb-3">{isAr ? labelAr : label}</p>
-      <div className="grid grid-cols-4 gap-2">
+    <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] via-transparent to-primary/[0.04] p-4 sm:p-5">
+      <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">{isAr ? labelAr : label}</p>
+      <div className="grid grid-cols-4 gap-2 sm:gap-3">
         {units.map((u) => (
           <div key={u.en} className="text-center">
-            <div className="text-xl sm:text-2xl font-bold tabular-nums text-foreground leading-none">{String(u.value).padStart(2, "0")}</div>
-            <p className="text-[10px] text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
+            <div className="text-2xl sm:text-3xl font-bold tabular-nums text-foreground leading-none">{String(u.value).padStart(2, "0")}</div>
+            <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
           </div>
         ))}
       </div>
@@ -569,7 +569,7 @@ export default function CompetitionDetail() {
 
                 {/* Badges row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={`${statusCfg.bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-[12px] shadow-sm`}>
+                  <Badge className={`${statusCfg.bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-xs shadow-sm`}>
                     {statusCfg.glow ? (
                       <span className="relative me-2 flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -581,19 +581,19 @@ export default function CompetitionDetail() {
                     {isAr ? statusCfg.labelAr : statusCfg.label}
                   </Badge>
                   {competition.edition_year && (
-                    <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-[12px] px-3 py-1">{competition.edition_year}</Badge>
+                    <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-xs px-3 py-1">{competition.edition_year}</Badge>
                   )}
                   {competition.competition_number && (
-                    <Badge variant="outline" className="font-mono text-[12px] font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
+                    <Badge variant="outline" className="font-mono text-xs font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
                   )}
                   {competition.registration_fee_type === "free" && (
-                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[12px] px-3 py-1 font-bold">
-                      <Ticket className="h-3 w-3 me-1" />{isAr ? "مجاني" : "Free Entry"}
+                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-xs px-3 py-1 font-bold">
+                      <Ticket className="h-3.5 w-3.5 me-1" />{isAr ? "مجاني" : "Free Entry"}
                     </Badge>
                   )}
                   {competition.blind_judging_enabled && (
-                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-[12px] px-3 py-1 font-bold">
-                      <Shield className="h-3 w-3 me-1" />{isAr ? "تحكيم مخفي" : "Blind Judging"}
+                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-xs px-3 py-1 font-bold">
+                      <Shield className="h-3.5 w-3.5 me-1" />{isAr ? "تحكيم مخفي" : "Blind Judging"}
                     </Badge>
                   )}
                 </div>
@@ -604,7 +604,7 @@ export default function CompetitionDetail() {
                 </h1>
 
                 {/* Meta info */}
-                <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-3 sm:gap-6 text-sm sm:text-base text-muted-foreground flex-wrap">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-primary" />
                     <span className="font-medium">{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
@@ -635,7 +635,7 @@ export default function CompetitionDetail() {
         {/* ─── KPI Stats Strip ─── */}
         <div className="border-y border-border/20 bg-gradient-to-r from-card/80 via-card to-card/80 backdrop-blur-md">
           <div className="container py-4 sm:py-5">
-            <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-5">
+            <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-6">
               <div className="flex items-center gap-5 sm:gap-8">
                 {kpiStats.map((stat, i) => (
                   <button
@@ -643,13 +643,13 @@ export default function CompetitionDetail() {
                     onClick={stat.onClick}
                     className="text-center group cursor-pointer hover:scale-110 transition-all duration-300 active:scale-95 touch-manipulation relative"
                   >
-                    <div className="flex items-center justify-center gap-2 mb-1">
-                      <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${stat.color.replace('text-', 'bg-')}/10`}>
-                        <stat.icon className={`h-3.5 w-3.5 ${stat.color}`} />
+                    <div className="flex items-center justify-center gap-2 mb-1.5">
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${stat.color.replace('text-', 'bg-')}/10`}>
+                        <stat.icon className={`h-4 w-4 ${stat.color}`} />
                       </div>
-                      <p className="text-xl sm:text-2xl font-extrabold text-foreground tabular-nums"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
+                      <p className="text-2xl sm:text-3xl font-extrabold text-foreground tabular-nums"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
                     </div>
-                    <p className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</p>
+                    <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</p>
                   </button>
                 ))}
               </div>
@@ -746,15 +746,15 @@ export default function CompetitionDetail() {
         <div className="sticky top-14 z-30 border-b border-border/20 bg-background/90 backdrop-blur-2xl shadow-sm">
           <div className="container">
             <ScrollArea className="w-full">
-              <div className="flex items-stretch gap-0.5 min-w-max py-1.5">
+              <div className="flex items-stretch gap-0.5 min-w-max py-2">
                 {NAV_GROUPS.map((group, gi) => (
                   <div key={group.labelEn} className="flex flex-col">
-                    <div className={`px-2.5 pt-1 pb-0.5 ${gi > 0 ? "border-s border-border/20 ms-1 ps-3" : ""}`}>
-                      <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-[0.18em] text-muted-foreground/40">
+                    <div className={`px-2.5 pt-1 pb-1 ${gi > 0 ? "border-s border-border/20 ms-1 ps-3" : ""}`}>
+                      <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-[0.18em] text-muted-foreground/40">
                         {isAr ? group.labelAr : group.labelEn}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 px-1.5 pb-1.5">
+                    <div className="flex items-center gap-1 px-1.5 pb-2">
                       {group.tabs.map((tab) => {
                         const Icon = tab.icon;
                         const isActive = activeSection === tab.id;
@@ -763,13 +763,13 @@ export default function CompetitionDetail() {
                             key={tab.id}
                             onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(tab.id); }}
                             className={`
-                              inline-flex shrink-0 items-center gap-1.5 rounded-xl px-2.5 sm:px-3.5 py-2 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
+                              inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
                               ${isActive
                                 ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
                                 : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
                             `}
                           >
-                            <Icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 ${isActive ? "" : "opacity-50"}`} />
+                            <Icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 ${isActive ? "" : "opacity-50"}`} />
                             <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
                           </button>
                         );
@@ -778,7 +778,7 @@ export default function CompetitionDetail() {
                   </div>
                 ))}
               </div>
-              <ScrollBar orientation="horizontal" className="h-1" />
+              <ScrollBar orientation="horizontal" className="h-1.5" />
             </ScrollArea>
           </div>
         </div>
