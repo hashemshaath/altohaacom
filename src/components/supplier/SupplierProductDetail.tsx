@@ -66,6 +66,8 @@ export const SupplierProductDetail = memo(function SupplierProductDetail({
 
   const descSections = useMemo(() => parseDescription(desc || ""), [desc]);
 
+  if (!product) return null;
+
   // Extract subtitle (first text line) and rest
   const subtitle = descSections.find(s => s.type === "text" && !s.content.startsWith("🏷️"))?.content || "";
 
