@@ -351,7 +351,38 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Two-column: Upcoming Events + Activity */}
+          {/* ── Charts Row ── */}
+          {sparkData && sparkData.length > 0 && (
+            <div className="grid gap-4 lg:grid-cols-2">
+              <GrowthAreaChart
+                title={isAr ? "نمو المنصة — آخر 7 أيام" : "Platform Growth — Last 7 Days"}
+                data={sparkData}
+                lines={[
+                  { key: "users", name: isAr ? "المستخدمين" : "Users", color: "hsl(var(--primary))" },
+                  { key: "articles", name: isAr ? "المقالات" : "Articles", color: "hsl(var(--chart-1))" },
+                  { key: "comps", name: isAr ? "المسابقات" : "Competitions", color: "hsl(var(--chart-2))" },
+                ]}
+              />
+              <DonutChart
+                title={isAr ? "توزيع المحتوى" : "Content Distribution"}
+                data={[
+                  { name: isAr ? "المسابقات" : "Competitions", value: stats?.totalCompetitions || 0, color: "hsl(var(--chart-2))" },
+                  { name: isAr ? "المعارض" : "Exhibitions", value: stats?.totalExhibitions || 0, color: "hsl(var(--chart-3))" },
+                  { name: isAr ? "المقالات" : "Articles", value: stats?.totalArticles || 0, color: "hsl(var(--chart-1))" },
+                  { name: isAr ? "الدورات" : "Masterclasses", value: stats?.totalMasterclasses || 0, color: "hsl(var(--chart-4))" },
+                ]}
+              />
+            </div>
+          )}
+
+          {heatmapData && heatmapData.length > 0 && (
+            <ActivityHeatmap
+              title={isAr ? "خريطة النشاط — آخر 4 أسابيع" : "Activity Heatmap — Last 4 Weeks"}
+              data={heatmapData}
+            />
+          )}
+
+
           <div className="grid gap-4 lg:grid-cols-5">
             {/* Events Preview */}
             <div className="lg:col-span-3">
