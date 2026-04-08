@@ -1,28 +1,28 @@
 
-## SEO Optimization Sprint — 4 Areas
+# خطة تحسين شاملة لباقي الأقسام
 
-### 1. Image SEO Audit
-- Scan all `<img>` tags for missing `alt`, `width`, `height`, `loading` attributes
-- Verify hero images use `fetchPriority="high"` and `loading="eager"`
-- Check all other images use `loading="lazy"`
-- Ensure WebP format usage where possible
-- Create a reusable `OptimizedImage` component if missing
+## المرحلة 1: صفحات المسابقات (Competition Detail)
+- تكبير خطوط العنوان والتواريخ والإحصائيات
+- تحسين حجم التابات وأهداف اللمس (44px+)
+- تحسين هوامش البطاقات والمحتوى على الجوال
+- تحسين شريط الإجراءات السفلي
 
-### 2. Internal Linking Strategy
-- Audit for orphan pages (pages with no internal links pointing to them)
-- Check that `RelatedPages` component is used on all major content pages
-- Add contextual cross-links between related sections (competitions↔exhibitions, recipes↔masterclasses)
-- Verify breadcrumb coverage on all public pages
+## المرحلة 2: المجتمع والمنشورات (Community)
+- تحسين خطوط المنشورات والتعليقات
+- تحسين بطاقات المنشورات والتفاعلات
+- تحسين تجربة الجوال للتمرير والتنقل
+- تحسين أزرار التفاعل وحقل الكتابة
 
-### 3. Mobile SEO Audit
-- Verify `viewport` meta tag configuration
-- Check tap target sizes (minimum 48x48px)
-- Audit font sizes for readability (minimum 16px base)
-- Verify mobile-specific schema (MobileApplication)
-- Check for horizontal scroll issues
+## المرحلة 3: لوحة تحكم المستخدم (Dashboard)
+- تحسين بطاقات الإحصائيات والويدجات
+- تكبير الخطوط والأيقونات
+- تحسين الشبكة للجوال (grid responsive)
+- تحسين التباعد بين الأقسام
 
-### 4. Content Gap Analysis
-- Analyze existing page titles/descriptions for keyword opportunities
-- Identify thin content pages (low word count)
-- Check for duplicate/similar meta descriptions
-- Generate recommendations for missing topic coverage
+## المرحلة 4: صفحات المنظمين (Organizers)
+- تحسين بطاقات المنظمين في القائمة
+- تحسين صفحة الملف الشخصي
+- تكبير الخطوط والمعلومات
+- تحسين عرض الجوال
+
+> **ملاحظة**: سيتم تطبيق نفس معايير التحسين التي تمت على صفحة المعارض (خطوط أكبر، هوامش أفضل، أهداف لمس 44px+، تصميم احترافي)
