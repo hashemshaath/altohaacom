@@ -841,102 +841,106 @@ export default function CompetitionDetail() {
                   )}
 
                   {/* Quick Stats Overview Cards */}
-                  <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-4 sm:grid-cols-3">
                     {/* Registration Progress */}
-                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-3/10"><Users className="h-4 w-4 text-chart-3" /></div>
-                          <span className="text-xs font-bold">{isAr ? "التسجيل" : "Registration"}</span>
+                    <div className="relative overflow-hidden rounded-2xl border border-chart-3/20 bg-gradient-to-br from-chart-3/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-chart-3/5 transition-all duration-300 group">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-chart-3/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-3/15 shadow-sm"><Users className="h-4 w-4 text-chart-3" /></div>
+                          <span className="text-sm font-bold">{isAr ? "التسجيل" : "Registration"}</span>
                         </div>
                         <div className="relative">
-                          <ProgressRing value={registrationStats?.approved || 0} max={competition.max_participants || 100} size={40} strokeWidth={3} color="text-chart-3" />
-                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{competition.max_participants ? `${Math.round(((registrationStats?.approved || 0) / competition.max_participants) * 100)}%` : registrationStats?.approved || 0}</span>
+                          <ProgressRing value={registrationStats?.approved || 0} max={competition.max_participants || 100} size={44} strokeWidth={3.5} color="text-chart-3" />
+                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-extrabold">{competition.max_participants ? `${Math.round(((registrationStats?.approved || 0) / competition.max_participants) * 100)}%` : registrationStats?.approved || 0}</span>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span><span className="font-bold text-chart-5">{registrationStats?.approved || 0}</span></div>
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span><span className="font-bold text-chart-4">{registrationStats?.pending || 0}</span></div>
-                        {competition.max_participants && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "السعة" : "Capacity"}</span><span className="font-bold">{competition.max_participants}</span></div>}
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span><span className="font-bold text-chart-5">{registrationStats?.approved || 0}</span></div>
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span><span className="font-bold text-chart-4">{registrationStats?.pending || 0}</span></div>
+                        {competition.max_participants && <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "السعة" : "Capacity"}</span><span className="font-extrabold">{competition.max_participants}</span></div>}
                       </div>
                     </div>
 
                     {/* Judging Overview */}
-                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-5/10"><Scale className="h-4 w-4 text-chart-5" /></div>
-                          <span className="text-xs font-bold">{isAr ? "التحكيم" : "Judging"}</span>
+                    <div className="relative overflow-hidden rounded-2xl border border-chart-5/20 bg-gradient-to-br from-chart-5/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-chart-5/5 transition-all duration-300 group">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-chart-5/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/15 shadow-sm"><Scale className="h-4 w-4 text-chart-5" /></div>
+                          <span className="text-sm font-bold">{isAr ? "التحكيم" : "Judging"}</span>
                         </div>
                         <div className="relative">
-                          <ProgressRing value={judgesCount || 0} max={10} size={40} strokeWidth={3} color="text-chart-5" />
-                          <span className="absolute inset-0 flex items-center justify-center text-[9px] font-bold">{judgesCount || 0}</span>
+                          <ProgressRing value={judgesCount || 0} max={10} size={44} strokeWidth={3.5} color="text-chart-5" />
+                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-extrabold">{judgesCount || 0}</span>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "الحكام" : "Judges"}</span><span className="font-bold">{judgesCount || 0}</span></div>
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold text-chart-4">{criteria?.length || 0}</span></div>
-                        {totalScore > 0 && <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "مجموع النقاط" : "Total Score"}</span><span className="font-bold text-primary">{totalScore}</span></div>}
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "الحكام" : "Judges"}</span><span className="font-bold">{judgesCount || 0}</span></div>
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold text-chart-4">{criteria?.length || 0}</span></div>
+                        {totalScore > 0 && <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "مجموع النقاط" : "Total Score"}</span><span className="font-extrabold text-primary">{totalScore}</span></div>}
                       </div>
                     </div>
 
                     {/* Competition Status */}
-                    <div className="relative overflow-hidden rounded-2xl border border-border/40 bg-card p-4">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Activity className="h-4 w-4 text-primary" /></div>
-                          <span className="text-xs font-bold">{isAr ? "الحالة" : "Status"}</span>
+                    <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-primary/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 shadow-sm"><Activity className="h-4 w-4 text-primary" /></div>
+                          <span className="text-sm font-bold">{isAr ? "الحالة" : "Status"}</span>
                         </div>
-                        <Badge className={`${statusCfg.bg} text-[10px] px-2 py-0.5 font-bold`}>
+                        <Badge className={`${statusCfg.bg} text-[11px] px-2.5 py-1 font-bold shadow-sm`}>
                           {isAr ? statusCfg.labelAr : statusCfg.label}
                         </Badge>
                       </div>
-                      <div className="space-y-1">
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "الفئات" : "Categories"}</span><span className="font-bold">{categories?.length || 0}</span></div>
-                        <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold">{criteria?.length || 0}</span></div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "الفئات" : "Categories"}</span><span className="font-bold">{categories?.length || 0}</span></div>
+                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold">{criteria?.length || 0}</span></div>
                         {daysUntilStart !== null && daysUntilStart > 0 && (
-                          <div className="flex justify-between text-[11px]"><span className="text-muted-foreground">{isAr ? "أيام للبدء" : "Days to Start"}</span><span className="font-bold text-primary">{daysUntilStart}</span></div>
+                          <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "أيام للبدء" : "Days to Start"}</span><span className="font-extrabold text-chart-4">{daysUntilStart}</span></div>
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Entry & Fee Info */}
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-border/40 bg-card p-4 sm:p-5">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-3/10"><UsersRound className="h-4 w-4 text-chart-3" /></div>
-                        <h4 className="font-semibold text-sm">{isAr ? "أنواع المشاركة" : "Entry Types"}</h4>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-border/30 bg-gradient-to-br from-card to-muted/10 p-5 hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 shadow-sm"><UsersRound className="h-4 w-4 text-accent-foreground" /></div>
+                        <h4 className="font-bold text-sm">{isAr ? "أنواع المشاركة" : "Entry Types"}</h4>
                       </div>
                       <div className="flex flex-wrap gap-2">
-                        {competition.allowed_entry_types?.map((t) => (
-                          <Badge key={t} variant="outline" className="rounded-xl text-xs px-3 py-1">{t}</Badge>
+                        {competition.allowed_entry_types?.map((t: string) => (
+                          <Badge key={t} variant="outline" className="rounded-xl text-xs px-3.5 py-1.5 font-medium border-accent/20 bg-accent/5">{t}</Badge>
                         )) || <span className="text-xs text-muted-foreground">{isAr ? "فردي" : "Individual"}</span>}
                       </div>
                       {(competition.min_team_size || competition.max_team_size) && (
-                        <p className="text-[12px] text-muted-foreground mt-2">
+                        <p className="text-[12px] text-muted-foreground mt-3 flex items-center gap-1.5">
+                          <Users className="h-3 w-3 opacity-50" />
                           {isAr ? "حجم الفريق:" : "Team size:"} {competition.min_team_size || 1} – {competition.max_team_size || "∞"}
                         </p>
                       )}
                     </div>
-                    <div className="rounded-2xl border border-border/40 bg-card p-4 sm:p-5">
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-5/10"><Ticket className="h-4 w-4 text-chart-5" /></div>
-                        <h4 className="font-semibold text-sm">{isAr ? "رسوم التسجيل" : "Registration Fee"}</h4>
+                    <div className="rounded-2xl border border-border/30 bg-gradient-to-br from-card to-muted/10 p-5 hover:shadow-md transition-all duration-300">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/10 shadow-sm"><Ticket className="h-4 w-4 text-chart-5" /></div>
+                        <h4 className="font-bold text-sm">{isAr ? "رسوم التسجيل" : "Registration Fee"}</h4>
                       </div>
                       {competition.registration_fee_type === "paid" ? (
                         <div>
-                          <p className="text-2xl font-bold tabular-nums">{competition.registration_fee} <span className="text-sm font-medium text-muted-foreground">{competition.registration_currency}</span></p>
+                          <p className="text-3xl font-extrabold tabular-nums">{competition.registration_fee} <span className="text-sm font-medium text-muted-foreground">{competition.registration_currency}</span></p>
                           {competition.registration_tax_rate && (
-                            <p className="text-[12px] text-muted-foreground mt-1">
+                            <p className="text-[12px] text-muted-foreground mt-1.5">
                               + {(Number(competition.registration_tax_rate) * 100).toFixed(0)}% {isAr && competition.registration_tax_name_ar ? competition.registration_tax_name_ar : competition.registration_tax_name || "Tax"}
                             </p>
                           )}
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl">🎉</span>
-                          <p className="text-lg font-bold text-chart-5">{isAr ? "مجاني" : "Free"}</p>
+                        <div className="flex items-center gap-3">
+                          <span className="text-3xl">🎉</span>
+                          <p className="text-xl font-extrabold text-chart-5">{isAr ? "مجاني" : "Free"}</p>
                         </div>
                       )}
                     </div>
