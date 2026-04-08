@@ -1,4 +1,4 @@
-import { useState, type ImgHTMLAttributes } from "react";
+import { forwardRef, useState, type ImgHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 interface ImageWithFallbackProps extends ImgHTMLAttributes<HTMLImageElement> {
@@ -9,13 +9,13 @@ interface ImageWithFallbackProps extends ImgHTMLAttributes<HTMLImageElement> {
  * Image component with automatic fallback on error or missing src.
  * Shows a neutral placeholder instead of broken image icons.
  */
-export function ImageWithFallback({
+export const ImageWithFallback = forwardRef<HTMLImageElement, ImageWithFallbackProps>(function ImageWithFallback({
   src,
   alt,
   className,
   fallbackIcon,
   ...props
-}: ImageWithFallbackProps) {
+}, ref) {
   const [hasError, setHasError] = useState(false);
 
   const isValidUrl =
@@ -44,6 +44,7 @@ export function ImageWithFallback({
 
   return (
     <img
+      ref={ref}
       src={src}
       alt={alt}
       className={className}
@@ -51,4 +52,4 @@ export function ImageWithFallback({
       {...props}
     />
   );
-}
+});
