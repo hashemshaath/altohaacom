@@ -270,8 +270,8 @@ export const PostCard = memo(function PostCard({
               <QuickReactions postId={post.id} />
             </div>
 
-            {/* Poll */}
-            <PollDisplay postId={post.id} />
+            {/* Poll - only render if post has a poll */}
+            {post.has_poll && <PollDisplay postId={post.id} />}
 
             {/* Link preview */}
             {post.link_url && (
@@ -316,7 +316,7 @@ export const PostCard = memo(function PostCard({
                   displayCount={`${post.likes_count}`}
                   onClick={() => onLike(post.id, post.is_liked)}
                 />
-                <PostReactions postId={post.id} />
+                <PostReactions postId={post.id} initialReactions={post.reactions} />
               </div>
               <div className="flex items-center">
                 <BookmarkCollections postId={post.id} />
