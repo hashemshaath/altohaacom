@@ -105,9 +105,10 @@ export default function ProSupplierDetail() {
       if (!id) return [];
       const { data } = await supabase
         .from("company_catalog")
-        .select("id, company_id, name, name_ar, description, description_ar, category, subcategory, unit_price, currency, unit, image_url, is_active, sku, in_stock, quantity_available")
+        .select("id, company_id, name, name_ar, description, description_ar, category, subcategory, unit_price, currency, unit, image_url, is_active, sku, in_stock, quantity_available, warranty_years, platform_discount_pct, coupon_code, coupon_discount_pct, original_price, is_archived")
         .eq("company_id", id)
         .eq("is_active", true)
+        .or("is_archived.is.null,is_archived.eq.false")
         .order("category")
         .order("name");
       return data || [];
@@ -664,6 +665,7 @@ export default function ProSupplierDetail() {
                     onAddToCart={handleAddToCart}
                     onViewProduct={(p) => setSelectedProduct(p)}
                     companyName={companyName}
+                    companyId={id}
                   />
                 ) : (
                   <div className="space-y-5">

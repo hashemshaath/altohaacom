@@ -3865,6 +3865,8 @@ export type Database = {
         Row: {
           category: string
           company_id: string
+          coupon_code: string | null
+          coupon_discount_pct: number | null
           created_at: string | null
           currency: string | null
           description: string | null
@@ -3873,8 +3875,11 @@ export type Database = {
           image_url: string | null
           in_stock: boolean | null
           is_active: boolean | null
+          is_archived: boolean | null
           name: string
           name_ar: string | null
+          original_price: number | null
+          platform_discount_pct: number | null
           quantity_available: number | null
           shop_product_id: string | null
           sku: string | null
@@ -3882,10 +3887,13 @@ export type Database = {
           unit: string | null
           unit_price: number | null
           updated_at: string | null
+          warranty_years: number | null
         }
         Insert: {
           category: string
           company_id: string
+          coupon_code?: string | null
+          coupon_discount_pct?: number | null
           created_at?: string | null
           currency?: string | null
           description?: string | null
@@ -3894,8 +3902,11 @@ export type Database = {
           image_url?: string | null
           in_stock?: boolean | null
           is_active?: boolean | null
+          is_archived?: boolean | null
           name: string
           name_ar?: string | null
+          original_price?: number | null
+          platform_discount_pct?: number | null
           quantity_available?: number | null
           shop_product_id?: string | null
           sku?: string | null
@@ -3903,10 +3914,13 @@ export type Database = {
           unit?: string | null
           unit_price?: number | null
           updated_at?: string | null
+          warranty_years?: number | null
         }
         Update: {
           category?: string
           company_id?: string
+          coupon_code?: string | null
+          coupon_discount_pct?: number | null
           created_at?: string | null
           currency?: string | null
           description?: string | null
@@ -3915,8 +3929,11 @@ export type Database = {
           image_url?: string | null
           in_stock?: boolean | null
           is_active?: boolean | null
+          is_archived?: boolean | null
           name?: string
           name_ar?: string | null
+          original_price?: number | null
+          platform_discount_pct?: number | null
           quantity_available?: number | null
           shop_product_id?: string | null
           sku?: string | null
@@ -3924,6 +3941,7 @@ export type Database = {
           unit?: string | null
           unit_price?: number | null
           updated_at?: string | null
+          warranty_years?: number | null
         }
         Relationships: [
           {
@@ -17562,6 +17580,119 @@ export type Database = {
             columns: ["competition_id"]
             isOneToOne: false
             referencedRelation: "competitions_public"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_qa: {
+        Row: {
+          answer: string | null
+          answer_ar: string | null
+          answered_by: string | null
+          answered_by_ar: string | null
+          asked_by: string | null
+          catalog_item_id: string
+          created_at: string | null
+          helpful_count: number | null
+          id: string
+          is_visible: boolean | null
+          question: string
+          question_ar: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          answer?: string | null
+          answer_ar?: string | null
+          answered_by?: string | null
+          answered_by_ar?: string | null
+          asked_by?: string | null
+          catalog_item_id: string
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_visible?: boolean | null
+          question: string
+          question_ar?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          answer?: string | null
+          answer_ar?: string | null
+          answered_by?: string | null
+          answered_by_ar?: string | null
+          asked_by?: string | null
+          catalog_item_id?: string
+          created_at?: string | null
+          helpful_count?: number | null
+          id?: string
+          is_visible?: boolean | null
+          question?: string
+          question_ar?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_qa_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "company_catalog"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_trust_badges: {
+        Row: {
+          badge_type: string
+          catalog_item_id: string | null
+          color_class: string | null
+          company_id: string | null
+          created_at: string | null
+          icon_name: string | null
+          id: string
+          is_active: boolean | null
+          label: string
+          label_ar: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          badge_type?: string
+          catalog_item_id?: string | null
+          color_class?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          label: string
+          label_ar?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          badge_type?: string
+          catalog_item_id?: string | null
+          color_class?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          icon_name?: string | null
+          id?: string
+          is_active?: boolean | null
+          label?: string
+          label_ar?: string | null
+          sort_order?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_trust_badges_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "company_catalog"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_trust_badges_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
             referencedColumns: ["id"]
           },
         ]
