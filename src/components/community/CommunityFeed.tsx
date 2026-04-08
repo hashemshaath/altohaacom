@@ -400,6 +400,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
   return (
     <>
+      <FeedScrollProgress />
       <div ref={feedTopRef} />
 
       {/* Tag filter banner */}
