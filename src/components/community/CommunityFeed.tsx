@@ -452,7 +452,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
       {/* ─── COMPOSER SECTION (Priority #1) ─── */}
       {user && !tagFilter && feedFilter !== "bookmarks" && (
-        <div className="border-b border-border/30 bg-gradient-to-b from-card to-background">
+        <div className="border-b border-border/20 bg-gradient-to-b from-card/80 to-background">
           <FeatureGate feature="feature_posts" showUpgrade featureName="Create Posts" featureNameAr="إنشاء المنشورات">
             <PostComposer
               onPosted={() => fetchPosts(0, false)}
@@ -473,14 +473,16 @@ export const CommunityFeed = memo(function CommunityFeed() {
 
       {/* ─── STORIES ─── */}
       {!tagFilter && feedFilter === "for_you" && (
-        <FeatureGate feature="feature_stories" showUpgrade upgradeVariant="inline" featureName="Stories" featureNameAr="القصص">
-          <StoriesBar />
-        </FeatureGate>
+        <div className="border-b border-border/15">
+          <FeatureGate feature="feature_stories" showUpgrade upgradeVariant="inline" featureName="Stories" featureNameAr="القصص">
+            <StoriesBar />
+          </FeatureGate>
+        </div>
       )}
 
       {/* ─── DISCOVERY SECTION ─── */}
       {!tagFilter && feedFilter === "for_you" && (
-        <div className="border-b border-border/20">
+        <div className="border-b border-border/15">
           <CommunityInsights />
           <TrendingCarousel />
         </div>
@@ -490,7 +492,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
       {!tagFilter && feedFilter === "for_you" && <FeedRecommendations />}
 
       {/* ─── POSTS FEED ─── */}
-      <div className="divide-y divide-border/50">
+      <div className="divide-y divide-border/30">
         {posts.length === 0 ? (
           <div className="flex flex-col items-center py-20 text-center px-6">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/40 ring-1 ring-border/30">

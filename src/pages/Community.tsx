@@ -90,7 +90,8 @@ export default function Community() {
       <Header />
 
       <main className="flex-1 safe-area-x">
-        <div className="mx-auto max-w-[1200px] flex gap-0 lg:gap-0 px-0 sm:px-2 pt-0 sm:pt-2">
+        <div className="mx-auto max-w-[1280px] flex gap-0 px-0 sm:px-3 lg:px-4 pt-0 sm:pt-3">
+          {/* Left Sidebar */}
           <CommunityLeftSidebar
             activeTab={activeTab}
             setActiveTab={handleSetActiveTab}
@@ -98,11 +99,15 @@ export default function Community() {
             setLeftSidebarOpen={handleSetLeftOpen}
           />
 
-          <div className="flex-1 min-w-0 lg:border-x lg:border-border/15 min-h-screen bg-background">
-            <CommunityMobileTabs activeTab={activeTab} setActiveTab={handleSetActiveTab} />
-            {renderTabContent()}
+          {/* Main Content */}
+          <div className="flex-1 min-w-0 lg:mx-3 xl:mx-4 min-h-screen">
+            <div className="lg:rounded-2xl lg:border lg:border-border/20 lg:bg-card/50 lg:backdrop-blur-sm overflow-hidden">
+              <CommunityMobileTabs activeTab={activeTab} setActiveTab={handleSetActiveTab} />
+              {renderTabContent()}
+            </div>
           </div>
 
+          {/* Right Sidebar */}
           <CommunityRightSidebar
             rightSidebarOpen={rightSidebarOpen}
             setRightSidebarOpen={handleSetRightOpen}
@@ -110,7 +115,7 @@ export default function Community() {
         </div>
       </main>
 
-      <div className="container px-4">
+      <div className="container px-4 mt-6">
         <RelatedPages currentPath="/community" />
       </div>
       <div className="pb-20 sm:pb-0" />

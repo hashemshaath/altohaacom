@@ -95,14 +95,15 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
 
   return (
     <aside className={cn(
-      "hidden lg:flex flex-col shrink-0 sticky top-12 self-start py-3 pe-1 transition-all duration-300 ease-in-out max-h-[calc(100vh-3rem)] overflow-y-auto scrollbar-none",
-      leftSidebarOpen ? "w-[220px]" : "w-[48px]"
+      "hidden lg:flex flex-col shrink-0 sticky top-14 self-start py-4 transition-all duration-300 ease-in-out max-h-[calc(100vh-3.5rem)] overflow-y-auto scrollbar-none",
+      leftSidebarOpen ? "w-[230px]" : "w-[52px]"
     )}>
       <Button
         variant="ghost"
         size="icon"
-        className="h-7 w-7 mb-2 self-end rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50"
+        className="h-8 w-8 mb-3 self-end rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted/50"
         onClick={() => setLeftSidebarOpen(!leftSidebarOpen)}
+        aria-label={leftSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
       >
         {leftSidebarOpen
           ? (isAr ? <PanelRightClose className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />)
@@ -114,19 +115,19 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
       {user && profile && leftSidebarOpen && (
         <Link
           to={`/${profile.username || user.id}`}
-          className="block mb-3 rounded-2xl border border-border/40 bg-gradient-to-b from-card to-muted/10 p-3 hover:shadow-md hover:border-primary/20 transition-all duration-200 group"
+          className="block mb-4 rounded-2xl border border-border/30 bg-gradient-to-b from-card to-muted/10 p-3.5 hover:shadow-lg hover:border-primary/25 transition-all duration-200 group"
         >
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 rounded-xl ring-2 ring-primary/10 transition-transform group-hover:scale-105 shadow-sm">
+            <Avatar className="h-11 w-11 rounded-xl ring-2 ring-primary/10 transition-transform group-hover:scale-105 shadow-sm">
               <AvatarImage src={profile.avatar_url || undefined} className="rounded-xl" />
               <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold text-sm">
                 {(displayName || "C")[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold truncate">{displayName}</p>
+              <p className="text-sm font-bold truncate leading-snug">{displayName}</p>
               {profile.username && (
-                <p className="text-[12px] text-muted-foreground">@{profile.username}</p>
+                <p className="text-[12px] text-muted-foreground mt-0.5">@{profile.username}</p>
               )}
             </div>
           </div>
@@ -134,14 +135,15 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
       )}
 
       {/* Navigation */}
-      <nav className="space-y-0.5">
+      <nav className="space-y-1">
         {tabs.filter(t => !t.requiresAuth || user).map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             title={!leftSidebarOpen ? tab.label : undefined}
+            aria-label={tab.label}
             className={cn(
-              "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-200",
+              "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 touch-manipulation",
               !leftSidebarOpen && "justify-center px-0",
               activeTab === tab.id
                 ? "bg-primary text-primary-foreground shadow-sm"
@@ -155,22 +157,22 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
       </nav>
 
       {/* Profile completion */}
-      {leftSidebarOpen && <div className="mt-3"><ProfileCompletionCard /></div>}
+      {leftSidebarOpen && <div className="mt-4"><ProfileCompletionCard /></div>}
 
       {/* Stats */}
       {leftSidebarOpen && (
-        <div className="mt-3 rounded-2xl border border-border/40 bg-card p-3.5">
-          <OnlineCountBadge className="mb-2.5" />
-          <div className="grid grid-cols-2 gap-2">
+        <div className="mt-4 rounded-2xl border border-border/30 bg-card p-4">
+          <OnlineCountBadge className="mb-3" />
+          <div className="grid grid-cols-2 gap-2.5">
             {[
               { label: isAr ? "عضو" : "Members", value: stats.members, color: "text-primary" },
               { label: isAr ? "منشور" : "Posts", value: stats.posts, color: "text-chart-2" },
               { label: isAr ? "مجموعة" : "Groups", value: stats.groups, color: "text-chart-3" },
               { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
             ].map((stat, i) => (
-              <div key={i} className="rounded-xl bg-muted/30 p-2 text-center">
+              <div key={i} className="rounded-xl bg-muted/30 p-2.5 text-center">
                 <AnimatedCounter value={stat.value} className={cn("text-sm font-bold tabular-nums", stat.color)} />
-                <p className="text-[12px] text-muted-foreground mt-0.5">{stat.label}</p>
+                <p className="text-[11px] text-muted-foreground mt-1 font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
