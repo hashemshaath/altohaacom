@@ -820,9 +820,9 @@ export default function CompetitionDetail() {
           <div className="grid gap-8 lg:grid-cols-3">
             {/* ─── Main Content ─── */}
             <div className="lg:col-span-2 space-y-5">
+            <TabTransition activeKey={activeSection}>
               {activeSection === "overview" && (
                 <>
-                  {/* Description */}
                   {description && (
                     <Section icon={<BookOpen className="h-4 w-4" />} title={isAr ? "نبذة عن المسابقة" : "About this Competition"}>
                       <p className="whitespace-pre-wrap text-sm leading-[1.8] text-muted-foreground">{description}</p>
@@ -1239,6 +1239,7 @@ export default function CompetitionDetail() {
                 </div>
               )}
               </Suspense>
+              </TabTransition>
               {/* Comments Section */}
               <Suspense fallback={null}>
               <Card className="p-5">
