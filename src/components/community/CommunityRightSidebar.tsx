@@ -11,6 +11,8 @@ import { ActivitySidebar } from "./ActivitySidebar";
 import { TrendingTopics } from "./TrendingTopics";
 import { CommunitySearch } from "./CommunitySearch";
 import { UpcomingEventsWidget } from "./UpcomingEventsWidget";
+import { WeeklyHighlights } from "./WeeklyHighlights";
+import { CommunityActivityPulse } from "./CommunityActivityPulse";
 import {
   UserPlus, Sparkles,
   PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen,
@@ -67,8 +69,14 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
           {/* Search */}
           <CommunitySearch />
 
-          {/* Trending Topics — single source of truth */}
+          {/* Live activity pulse */}
+          <CommunityActivityPulse />
+
+          {/* Trending Topics */}
           <TrendingTopics />
+
+          {/* Weekly Highlights */}
+          <WeeklyHighlights />
 
           {/* Upcoming Events */}
           <UpcomingEventsWidget />
