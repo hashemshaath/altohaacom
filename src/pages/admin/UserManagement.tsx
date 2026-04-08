@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,34 +13,36 @@ import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InlinePanel } from "@/components/ui/InlinePanel";
 import { InlineConfirm } from "@/components/ui/InlineConfirm";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
-import { BulkUserImport } from "@/components/admin/BulkUserImport";
 import { UserAdvancedFilters, INITIAL_FILTERS, type FilterValues } from "@/components/admin/UserAdvancedFilters";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import { UserStatsBar } from "@/components/admin/UserStatsBar";
 import { UserEditPanel } from "@/components/admin/UserEditPanel";
 import { UsersTable } from "@/components/admin/UsersTable";
 import { UserDetailsSidePanel } from "@/components/admin/UserDetailsSidePanel";
-import { UserGrowthTrendWidget } from "@/components/admin/UserGrowthTrendWidget";
-import { UserAnalyticsWidget } from "@/components/admin/UserAnalyticsWidget";
-import { UserDemographicsWidget } from "@/components/admin/UserDemographicsWidget";
-import { UsersLiveStatsWidget } from "@/components/admin/UsersLiveStatsWidget";
-import { UserActivityTimeline } from "@/components/admin/UserActivityTimeline";
 import { InlineUserSearch } from "@/components/admin/InlineUserSearch";
-import { AdminSessionTracker } from "@/components/admin/AdminSessionTracker";
-import { AdminNotificationCenter } from "@/components/admin/AdminNotificationCenter";
-import { SecurityAuditTimeline } from "@/components/admin/SecurityAuditTimeline";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import {
   Search, UserPlus, Mail, Loader2, Users, FileSpreadsheet, Download,
-  BarChart3, X, ChevronRight, KeyRound,
+  X, KeyRound, Activity, BarChart3, Shield, TrendingUp, UserCheck, UserX, Clock,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+
+// Lazy-loaded heavy widgets
+const UserGrowthTrendWidget = lazy(() => import("@/components/admin/UserGrowthTrendWidget").then(m => ({ default: m.UserGrowthTrendWidget })));
+const UserAnalyticsWidget = lazy(() => import("@/components/admin/UserAnalyticsWidget").then(m => ({ default: m.UserAnalyticsWidget })));
+const UserDemographicsWidget = lazy(() => import("@/components/admin/UserDemographicsWidget").then(m => ({ default: m.UserDemographicsWidget })));
+const UsersLiveStatsWidget = lazy(() => import("@/components/admin/UsersLiveStatsWidget").then(m => ({ default: m.UsersLiveStatsWidget })));
+const UserActivityTimeline = lazy(() => import("@/components/admin/UserActivityTimeline").then(m => ({ default: m.UserActivityTimeline })));
+const AdminNotificationCenter = lazy(() => import("@/components/admin/AdminNotificationCenter").then(m => ({ default: m.AdminNotificationCenter })));
+const SecurityAuditTimeline = lazy(() => import("@/components/admin/SecurityAuditTimeline").then(m => ({ default: m.SecurityAuditTimeline })));
+const AdminSessionTracker = lazy(() => import("@/components/admin/AdminSessionTracker").then(m => ({ default: m.AdminSessionTracker })));
+const BulkUserImport = lazy(() => import("@/components/admin/BulkUserImport").then(m => ({ default: m.BulkUserImport })));
 
 type AccountStatus = Database["public"]["Enums"]["account_status"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -72,6 +74,13 @@ interface UserProfile {
   roles?: { role: AppRole }[];
 }
 
+const TabSkeleton = () => (
+  <div className="space-y-4 animate-pulse">
+    <div className="h-40 rounded-2xl bg-muted/50" />
+    <div className="h-60 rounded-2xl bg-muted/50" />
+  </div>
+);
+
 export default function UserManagement() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
@@ -79,7 +88,7 @@ export default function UserManagement() {
   const queryClient = useQueryClient();
   const isAr = language === "ar";
 
-  // ── State ──
+  const [activeTab, setActiveTab] = useState("users");
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
@@ -88,8 +97,6 @@ export default function UserManagement() {
 
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
   const [viewingUserId, setViewingUserId] = useState<string | null>(null);
-  const [showAnalytics, setShowAnalytics] = useState(false);
-  const [showBulkImport, setShowBulkImport] = useState(false);
   const [advancedFilters, setAdvancedFilters] = useState<FilterValues>(INITIAL_FILTERS);
 
   // Inline panels state
@@ -125,7 +132,7 @@ export default function UserManagement() {
 
   const [userSearchOpen, setUserSearchOpen] = useState(false);
 
-  // ── Keyboard shortcut ──
+  // Keyboard shortcut
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "u") { e.preventDefault(); setUserSearchOpen(true); }
@@ -162,6 +169,30 @@ export default function UserManagement() {
       return { users, totalCount: count || 0 };
     },
     staleTime: 1000 * 60 * 2,
+  });
+
+  // KPI stats query
+  const { data: kpiStats } = useQuery({
+    queryKey: ["admin-user-kpis"],
+    queryFn: async () => {
+      const [totalRes, activeRes, pendingRes, suspendedRes, verifiedRes, proRes] = await Promise.all([
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "active"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "pending"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "suspended"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_verified", true),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_type", "professional"),
+      ]);
+      return {
+        total: totalRes.count || 0,
+        active: activeRes.count || 0,
+        pending: pendingRes.count || 0,
+        suspended: suspendedRes.count || 0,
+        verified: verifiedRes.count || 0,
+        professional: proRes.count || 0,
+      };
+    },
+    staleTime: 1000 * 60 * 5,
   });
 
   const filteredUsers = usersData?.users?.filter((u) => {
@@ -217,7 +248,7 @@ export default function UserManagement() {
     }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
-      toast({ title: isAr ? "تم إنشاء المستخدم بنجاح" : "User created successfully", description: newSendInvite ? (isAr ? "تم إرسال دعوة التفعيل" : "Activation invite sent") : undefined });
+      toast({ title: isAr ? "تم إنشاء المستخدم بنجاح" : "User created successfully" });
       setCreateOpen(false);
       setNewEmail(""); setNewPassword(""); setNewFullName(""); setNewFullNameAr(""); setNewUsername(""); setNewPhone(""); setNewSendInvite(true);
     },
@@ -261,9 +292,17 @@ export default function UserManagement() {
 
   const editingUser = filteredUsers.find((u) => u.user_id === editingUserId);
 
-  // ── Render ──
+  const kpis = [
+    { label: isAr ? "إجمالي" : "Total", value: kpiStats?.total || 0, icon: Users, color: "text-primary" },
+    { label: isAr ? "نشط" : "Active", value: kpiStats?.active || 0, icon: UserCheck, color: "text-emerald-500" },
+    { label: isAr ? "معلق" : "Pending", value: kpiStats?.pending || 0, icon: Clock, color: "text-amber-500" },
+    { label: isAr ? "موقوف" : "Suspended", value: kpiStats?.suspended || 0, icon: UserX, color: "text-destructive" },
+    { label: isAr ? "موثق" : "Verified", value: kpiStats?.verified || 0, icon: Shield, color: "text-blue-500" },
+    { label: isAr ? "محترف" : "Pro", value: kpiStats?.professional || 0, icon: TrendingUp, color: "text-violet-500" },
+  ];
+
   return (
-    <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
+    <div className="space-y-6" dir={isAr ? "rtl" : "ltr"}>
       {userSearchOpen && (
         <InlineUserSearch
           onSelectUser={(userId) => { setViewingUserId(userId); setUserSearchOpen(false); }}
@@ -272,76 +311,187 @@ export default function UserManagement() {
       )}
 
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <AdminPageHeader
-          icon={Users}
-          title={isAr ? "إدارة المستخدمين" : "User Management"}
-          description={isAr ? "إدارة الحسابات والأدوار والمجموعات" : "Manage accounts, roles & groups"}
-          actions={
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-sm tabular-nums">
-                <AnimatedCounter value={usersData?.totalCount || 0} className="inline" /> {isAr ? "مستخدم" : "users"}
-              </Badge>
-              <UserStatsQuickView isAr={isAr} />
+      <AdminPageHeader
+        icon={Users}
+        title={isAr ? "إدارة المستخدمين" : "User Management"}
+        description={isAr ? "إدارة الحسابات والأدوار والمجموعات" : "Manage accounts, roles & groups"}
+        actions={
+          <div className="flex items-center gap-2">
+            <Button size="sm" className="rounded-xl gap-1.5" onClick={() => setCreateOpen(true)}>
+              <UserPlus className="h-3.5 w-3.5" />{isAr ? "إنشاء" : "Create"}
+            </Button>
+            <Button variant="outline" size="sm" className="rounded-xl gap-1.5" onClick={() => setInviteOpen(true)}>
+              <Mail className="h-3.5 w-3.5" />{isAr ? "دعوة" : "Invite"}
+            </Button>
+          </div>
+        }
+      />
+
+      {/* KPI Strip */}
+      <div className="flex items-center gap-3 overflow-x-auto pb-1">
+        {kpis.map((kpi) => (
+          <div key={kpi.label} className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border/50 bg-card min-w-fit">
+            <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
+            <div className="flex flex-col">
+              <span className="text-[11px] text-muted-foreground font-medium leading-none">{kpi.label}</span>
+              <AnimatedCounter value={kpi.value} className="text-lg font-bold leading-tight" />
             </div>
-          }
-        />
+          </div>
+        ))}
       </div>
 
-      <UserStatsBar />
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="bg-muted/50 p-1">
+          <TabsTrigger value="users" className="gap-1.5 data-[state=active]:bg-background">
+            <Users className="h-3.5 w-3.5" />{isAr ? "المستخدمين" : "Users"}
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="gap-1.5 data-[state=active]:bg-background">
+            <BarChart3 className="h-3.5 w-3.5" />{isAr ? "التحليلات" : "Analytics"}
+          </TabsTrigger>
+          <TabsTrigger value="import" className="gap-1.5 data-[state=active]:bg-background">
+            <FileSpreadsheet className="h-3.5 w-3.5" />{isAr ? "الاستيراد" : "Import"}
+          </TabsTrigger>
+          <TabsTrigger value="activity" className="gap-1.5 data-[state=active]:bg-background">
+            <Activity className="h-3.5 w-3.5" />{isAr ? "النشاط" : "Activity"}
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Analytics Toggle */}
-      <Button variant={showAnalytics ? "secondary" : "outline"} size="sm" className="gap-1.5 text-xs rounded-xl" onClick={() => setShowAnalytics(!showAnalytics)}>
-        <BarChart3 className="h-3.5 w-3.5" />
-        {isAr ? "التحليلات والإحصائيات" : "Analytics & Insights"}
-        {showAnalytics ? <X className="h-3 w-3" /> : <ChevronRight className={`h-3 w-3 ${isAr ? "rtl:rotate-180" : ""}`} />}
-      </Button>
+        {/* ── Users Tab ── */}
+        <TabsContent value="users" className="space-y-4 mt-0">
+          {/* Toolbar */}
+          <Card className="border-border/40 rounded-2xl">
+            <CardContent className="p-3 flex flex-wrap items-center gap-2">
+              <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5 rounded-xl">
+                <Search className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "بحث سريع" : "Quick Search"}</span>
+                <kbd className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono hidden sm:inline">⌘U</kbd>
+              </Button>
+              <Separator orientation="vertical" className="h-5 mx-0.5" />
+              <Button variant="outline" size="sm" onClick={() => exportCSV(filteredUsers)} className="gap-1.5 rounded-xl">
+                <Download className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "تصدير" : "Export"}</span>
+              </Button>
+              <UserAdvancedFilters filters={advancedFilters} onChange={setAdvancedFilters} onReset={() => setAdvancedFilters(INITIAL_FILTERS)} />
+            </CardContent>
+          </Card>
 
-      {showAnalytics && (
-        <div className="space-y-4 rounded-2xl border border-border/40 bg-muted/20 p-4 animate-in slide-in-from-top-2 duration-300">
-          <UsersLiveStatsWidget />
-          <UserActivityTimeline />
-          <UserGrowthTrendWidget />
-          <UserAnalyticsWidget />
-          <UserDemographicsWidget />
-          <div className="grid gap-4 md:grid-cols-2">
-            <AdminNotificationCenter />
-            <SecurityAuditTimeline />
+          <BulkActionBar count={bulkCount} onClear={clearSelection} onExport={() => exportCSV(selectedItems)} onStatusChange={bulkActivate} onDelete={bulkSuspend} />
+
+          {/* Filters */}
+          <AdminFilterBar searchValue={searchQuery} onSearchChange={setSearchQuery} searchPlaceholder={isAr ? "بحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account #..."}>
+            <Select value={roleFilter} onValueChange={setRoleFilter}>
+              <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الدور" : "Role"} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الأدوار" : "All Roles"}</SelectItem>
+                {ALL_ROLES.map((role) => <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الحالات" : "All Statuses"}</SelectItem>
+                <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
+                <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
+                <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
+                <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
+              <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "نوع الحساب" : "Account Type"} /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
+                <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
+                <SelectItem value="fan">{isAr ? "مستخدم عادي" : "Regular User"}</SelectItem>
+              </SelectContent>
+            </Select>
+          </AdminFilterBar>
+
+          {/* Edit Panel */}
+          {editingUser && (
+            <UserEditPanel
+              user={editingUser}
+              onClose={() => setEditingUserId(null)}
+              onResetPassword={(uid, name) => { setResetUserId(uid); setResetUserName(name); setResetOpen(true); }}
+              onInvite={(email) => { setInviteEmail(email); setInviteOpen(true); }}
+            />
+          )}
+
+          {/* Table + Side Panel */}
+          <div className={`flex gap-4 items-start ${viewingUserId ? "flex-col lg:flex-row" : ""}`}>
+            <div className={viewingUserId ? "flex-1 min-w-0 w-full lg:w-auto" : "w-full"}>
+              <UsersTable
+                users={filteredUsers}
+                isLoading={isLoading}
+                totalCount={usersData?.totalCount || 0}
+                page={page}
+                pageSize={PAGE_SIZE}
+                onPageChange={setPage}
+                editingUserId={editingUserId}
+                onEdit={(profile) => { setEditingUserId(profile.user_id); setViewingUserId(null); }}
+                onCancelEdit={() => setEditingUserId(null)}
+                onViewProfile={(userId) => { setViewingUserId(userId); setEditingUserId(null); }}
+                onResetPassword={(uid, name) => { setResetUserId(uid); setResetUserName(name); setResetOpen(true); }}
+                onSuspend={(uid, name, email) => setSuspendTarget({ userId: uid, userName: name, email })}
+                onSendNotification={(uid, name) => setNotifyTarget({ userId: uid, userName: name })}
+                onActivate={async (uid) => { await updateStatusMutation.mutateAsync({ userId: uid, newStatus: "active" }); }}
+                selected={selected}
+                toggleOne={toggleOne}
+                toggleAll={toggleAll}
+                isAllSelected={isAllSelected}
+                isSelected={isSelected}
+              />
+            </div>
+            {viewingUserId && (
+              <div className="w-full lg:w-[380px] shrink-0">
+                <UserDetailsSidePanel
+                  userId={viewingUserId}
+                  onClose={() => setViewingUserId(null)}
+                  onEdit={(uid) => {
+                    const u = filteredUsers.find((p) => p.user_id === uid);
+                    if (u) { setEditingUserId(uid); setViewingUserId(null); }
+                  }}
+                />
+              </div>
+            )}
           </div>
-          <AdminSessionTracker />
-        </div>
-      )}
+        </TabsContent>
 
-      {/* Toolbar */}
-      <Card className="border-border/40 rounded-2xl">
-        <CardContent className="p-3 flex flex-wrap items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5 rounded-xl">
-            <Search className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "بحث سريع" : "Quick Search"}</span>
-            <kbd className="text-[12px] bg-muted px-1.5 py-0.5 rounded-md font-mono hidden sm:inline">⌘U</kbd>
-          </Button>
-          <Button size="sm" className="rounded-xl gap-1.5" onClick={() => setCreateOpen(!createOpen)}>
-            <UserPlus className="h-3.5 w-3.5" />{isAr ? "إنشاء حساب" : "Create User"}
-          </Button>
-          <Button variant="outline" size="sm" className="rounded-xl gap-1.5" onClick={() => setInviteOpen(!inviteOpen)}>
-            <Mail className="h-3.5 w-3.5" />{isAr ? "إرسال دعوة" : "Invite"}
-          </Button>
-          <Separator orientation="vertical" className="h-5 mx-0.5" />
-          <Button variant="outline" size="sm" onClick={() => setShowBulkImport(!showBulkImport)} className="gap-1.5 rounded-xl">
-            <FileSpreadsheet className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "استيراد" : "Import"}</span>
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => exportCSV(filteredUsers)} className="gap-1.5 rounded-xl">
-            <Download className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "تصدير" : "Export"}</span>
-          </Button>
-          <UserAdvancedFilters filters={advancedFilters} onChange={setAdvancedFilters} onReset={() => setAdvancedFilters(INITIAL_FILTERS)} />
-        </CardContent>
-      </Card>
+        {/* ── Analytics Tab ── */}
+        <TabsContent value="analytics" className="space-y-4 mt-0">
+          <Suspense fallback={<TabSkeleton />}>
+            <UsersLiveStatsWidget />
+            <div className="grid gap-4 md:grid-cols-2">
+              <UserGrowthTrendWidget />
+              <UserDemographicsWidget />
+            </div>
+            <UserAnalyticsWidget />
+          </Suspense>
+        </TabsContent>
 
-      {/* ── Inline Panels ── */}
+        {/* ── Import Tab ── */}
+        <TabsContent value="import" className="mt-0">
+          <Suspense fallback={<TabSkeleton />}>
+            <BulkUserImport />
+          </Suspense>
+        </TabsContent>
+
+        {/* ── Activity Tab ── */}
+        <TabsContent value="activity" className="space-y-4 mt-0">
+          <Suspense fallback={<TabSkeleton />}>
+            <UserActivityTimeline />
+            <div className="grid gap-4 md:grid-cols-2">
+              <AdminNotificationCenter />
+              <SecurityAuditTimeline />
+            </div>
+            <AdminSessionTracker />
+          </Suspense>
+        </TabsContent>
+      </Tabs>
+
+      {/* ── Inline Panels (shared across tabs) ── */}
       <InlinePanel open={createOpen} onClose={() => setCreateOpen(false)} title={isAr ? "إنشاء حساب جديد" : "Create New Account"} description={isAr ? "أنشئ حساب مستخدم جديد مع إمكانية إرسال دعوة تلقائية" : "Create a new user account with optional auto-invitation"} icon={<UserPlus className="h-4 w-4 text-primary" />} size="lg"
         footer={<><Button variant="outline" onClick={() => setCreateOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => createUserMutation.mutate()} disabled={!newEmail || !newPassword || !newFullName || createUserMutation.isPending} className="gap-2">{createUserMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isAr ? "إنشاء الحساب" : "Create Account"}</Button></>}
       >
         <div className="space-y-5" dir={isAr ? "rtl" : "ltr"}>
-          {/* Name section - Arabic first */}
           <div className="rounded-xl border border-border/50 p-4 space-y-3">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الاسم والهوية" : "Name & Identity"}</h4>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -349,7 +499,6 @@ export default function UserManagement() {
               <div className="space-y-1.5"><Label className="text-xs">{isAr ? "الاسم الكامل (إنجليزي)" : "Full Name (EN)"} *</Label><Input value={newFullName} onChange={(e) => setNewFullName(e.target.value)} dir="ltr" placeholder="Full name in English" /></div>
             </div>
           </div>
-          {/* Account section */}
           <div className="rounded-xl border border-border/50 p-4 space-y-3">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "بيانات الحساب" : "Account Details"}</h4>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -359,7 +508,6 @@ export default function UserManagement() {
               <div className="space-y-1.5"><Label className="text-xs">{isAr ? "رقم الهاتف" : "Phone"}</Label><Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} dir="ltr" placeholder="+966..." /></div>
             </div>
           </div>
-          {/* Role & Type */}
           <div className="rounded-xl border border-border/50 p-4 space-y-3">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الدور ونوع الحساب" : "Role & Account Type"}</h4>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -389,7 +537,6 @@ export default function UserManagement() {
         </div>
       </InlinePanel>
 
-      {/* ── Invite Panel ── */}
       <InlinePanel open={inviteOpen} onClose={() => { setInviteOpen(false); setInviteEmail(""); setInviteFullName(""); setInviteMessageEn(""); setInviteMessageAr(""); }} title={isAr ? "إرسال دعوة انضمام" : "Send Membership Invitation"} description={isAr ? "أرسل دعوة احترافية مخصصة بالعربية والإنجليزية" : "Send a professional bilingual invitation"} icon={<Mail className="h-4 w-4 text-primary" />} size="lg"
         footer={<><Button variant="outline" onClick={() => setInviteOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => inviteMutation.mutate()} disabled={!inviteEmail || inviteMutation.isPending} className="gap-2">{inviteMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isAr ? "إرسال الدعوة" : "Send Invitation"}</Button></>}
       >
@@ -416,7 +563,6 @@ export default function UserManagement() {
         </div>
       </InlinePanel>
 
-      {/* ── Reset Password Panel ── */}
       <InlinePanel open={resetOpen} onClose={() => setResetOpen(false)} title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"} description={resetUserName} icon={<KeyRound className="h-4 w-4 text-primary" />} size="md"
         footer={<><Button variant="outline" onClick={() => setResetOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => resetPasswordMutation.mutate()} disabled={!resetNewPassword || resetPasswordMutation.isPending} className="gap-2">{resetPasswordMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isAr ? "إعادة التعيين" : "Reset Password"}</Button></>}
       >
@@ -448,112 +594,6 @@ export default function UserManagement() {
           </div>
         </div>
       </InlinePanel>
-
-      {/* Bulk Actions */}
-      <BulkActionBar count={bulkCount} onClear={clearSelection} onExport={() => exportCSV(selectedItems)} onStatusChange={bulkActivate} onDelete={bulkSuspend} />
-      {showBulkImport && <BulkUserImport />}
-
-      {/* Filters */}
-      <AdminFilterBar searchValue={searchQuery} onSearchChange={setSearchQuery} searchPlaceholder={isAr ? "بحث بالاسم أو البريد أو رقم الحساب..." : "Search by name, email, or account #..."}>
-        <Select value={roleFilter} onValueChange={setRoleFilter}>
-          <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الدور" : "Role"} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{isAr ? "جميع الأدوار" : "All Roles"}</SelectItem>
-            {ALL_ROLES.map((role) => <SelectItem key={role} value={role}>{t(role as any)}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "الحالة" : "Status"} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{isAr ? "جميع الحالات" : "All Statuses"}</SelectItem>
-            <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-            <SelectItem value="pending">{isAr ? "معلق" : "Pending"}</SelectItem>
-            <SelectItem value="suspended">{isAr ? "موقوف" : "Suspended"}</SelectItem>
-            <SelectItem value="banned">{isAr ? "محظور" : "Banned"}</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={accountTypeFilter} onValueChange={setAccountTypeFilter}>
-          <SelectTrigger className="w-36 h-9 text-sm rounded-xl"><SelectValue placeholder={isAr ? "نوع الحساب" : "Account Type"} /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{isAr ? "جميع الأنواع" : "All Types"}</SelectItem>
-            <SelectItem value="professional">{isAr ? "محترف" : "Professional"}</SelectItem>
-            <SelectItem value="fan">{isAr ? "مستخدم عادي" : "Regular User"}</SelectItem>
-          </SelectContent>
-        </Select>
-      </AdminFilterBar>
-
-      {/* Edit Panel */}
-      {editingUser && (
-        <UserEditPanel
-          user={editingUser}
-          onClose={() => setEditingUserId(null)}
-          onResetPassword={(uid, name) => { setResetUserId(uid); setResetUserName(name); setResetOpen(true); }}
-          onInvite={(email) => { setInviteEmail(email); setInviteOpen(true); }}
-        />
-      )}
-
-      {/* ── Main Content: Table + Side Panel ── */}
-      <div className={`flex gap-4 items-start ${viewingUserId ? "flex-col lg:flex-row" : ""}`}>
-        <div className={viewingUserId ? "flex-1 min-w-0 w-full lg:w-auto" : "w-full"}>
-          <UsersTable
-            users={filteredUsers}
-            isLoading={isLoading}
-            totalCount={usersData?.totalCount || 0}
-            page={page}
-            pageSize={PAGE_SIZE}
-            onPageChange={setPage}
-            editingUserId={editingUserId}
-            onEdit={(profile) => { setEditingUserId(profile.user_id); setViewingUserId(null); }}
-            onCancelEdit={() => setEditingUserId(null)}
-            onViewProfile={(userId) => { setViewingUserId(userId); setEditingUserId(null); }}
-            onResetPassword={(uid, name) => { setResetUserId(uid); setResetUserName(name); setResetOpen(true); }}
-            onSuspend={(uid, name, email) => setSuspendTarget({ userId: uid, userName: name, email })}
-            onSendNotification={(uid, name) => setNotifyTarget({ userId: uid, userName: name })}
-            onActivate={async (uid) => { await updateStatusMutation.mutateAsync({ userId: uid, newStatus: "active" }); }}
-            selected={selected}
-            toggleOne={toggleOne}
-            toggleAll={toggleAll}
-            isAllSelected={isAllSelected}
-            isSelected={isSelected}
-          />
-        </div>
-
-        {/* Side Panel - replaces drawer */}
-        {viewingUserId && (
-          <div className="w-full lg:w-[380px] shrink-0">
-            <UserDetailsSidePanel
-              userId={viewingUserId}
-              onClose={() => setViewingUserId(null)}
-              onEdit={(uid) => {
-                const u = filteredUsers.find((p) => p.user_id === uid);
-                if (u) { setEditingUserId(uid); setViewingUserId(null); }
-              }}
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ── Small helper component ──
-function UserStatsQuickView({ isAr }: { isAr: boolean }) {
-  const { data } = useQuery({
-    queryKey: ["admin-user-quick-stats"],
-    queryFn: async () => {
-      const [activeRes, pendingRes] = await Promise.all([
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "active"),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "pending"),
-      ]);
-      return { active: activeRes.count || 0, pending: pendingRes.count || 0 };
-    },
-    staleTime: 1000 * 60 * 5,
-  });
-  if (!data) return null;
-  return (
-    <div className="flex items-center gap-2">
-      <Badge className="bg-chart-3/15 text-chart-3 border-chart-3/20">{data.active} {isAr ? "نشط" : "active"}</Badge>
-      {data.pending > 0 && <Badge variant="secondary">{data.pending} {isAr ? "معلق" : "pending"}</Badge>}
     </div>
   );
 }
