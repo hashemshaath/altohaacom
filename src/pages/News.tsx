@@ -373,10 +373,10 @@ export default function News() {
               {/* Desktop-only dropdowns */}
               <div className="hidden lg:contents">
                 <Select value={selectedCategory} onValueChange={handleCategoryChange}>
-                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-44" aria-label={isAr ? "التصنيف" : "Category"}>
+                  <SelectTrigger className="h-9 w-full border-border/20 bg-muted/15 rounded-lg sm:w-40 text-sm" aria-label={isAr ? "التصنيف" : "Category"}>
                     <SelectValue placeholder={isAr ? "التصنيف" : "Category"} />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="rounded-lg">
                     <SelectItem value="all">{isAr ? "جميع التصنيفات" : "All Categories"}</SelectItem>
                     {categories.map((cat) => (
                       <SelectItem key={cat.id} value={cat.id}>
@@ -386,10 +386,10 @@ export default function News() {
                   </SelectContent>
                 </Select>
                 <Select value={sortBy} onValueChange={handleSortChange}>
-                  <SelectTrigger className="h-10 w-full border-border/40 bg-muted/20 rounded-xl sm:w-40" aria-label={isAr ? "ترتيب" : "Sort"}>
+                  <SelectTrigger className="h-9 w-full border-border/20 bg-muted/15 rounded-lg sm:w-36 text-sm" aria-label={isAr ? "ترتيب" : "Sort"}>
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
+                  <SelectContent className="rounded-lg">
                     {SORT_OPTIONS.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
                         {isAr ? opt.ar : opt.en}
@@ -398,15 +398,15 @@ export default function News() {
                   </SelectContent>
                 </Select>
                 <Button
-                  variant={showAdvancedFilters ? "default" : "outline"}
+                  variant={showAdvancedFilters ? "default" : "ghost"}
                   size="sm"
-                  className="rounded-xl gap-1.5 h-10 shrink-0 relative"
+                  className="rounded-lg gap-1.5 h-9 shrink-0 relative text-sm"
                   onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
                 >
                   <SlidersHorizontal className="h-3.5 w-3.5" />
                   {isAr ? "فلاتر" : "Filters"}
                   {activeFilterCount > 0 && (
-                    <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[12px] font-bold">
+                    <span className="absolute -top-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
                       {activeFilterCount}
                     </span>
                   )}
