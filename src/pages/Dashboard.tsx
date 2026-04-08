@@ -60,6 +60,7 @@ const SmartRecommendationsWidget = lazy(() => import("@/components/community/Sma
 const PlatformScoreWidget = lazy(() => import("@/components/dashboard/PlatformScoreWidget").then(m => ({ default: m.PlatformScoreWidget })));
 const WeeklyTrendChart = lazy(() => import("@/components/dashboard/WeeklyTrendChart").then(m => ({ default: m.WeeklyTrendChart })));
 const JobAvailabilityWidget = lazy(() => import("@/components/dashboard/JobAvailabilityWidget").then(m => ({ default: m.JobAvailabilityWidget })));
+const ChefCareerWidget = lazy(() => import("@/components/dashboard/ChefCareerWidget").then(m => ({ default: m.ChefCareerWidget })));
 import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 
 function W({ children, lines, name }: { children: React.ReactNode; lines?: number; name?: string }) {
@@ -196,6 +197,7 @@ export default function Dashboard() {
             {user && <ProfileCompletionCard />}
             {user && <W><ProfileSummaryCard /></W>}
             {user && isVisible("platform-score") && <W><PlatformScoreWidget /></W>}
+            {user && !isFan && <W name="chef-career"><ChefCareerWidget /></W>}
             {user && isVisible("wallet") && <W><WalletBalanceWidget /></W>}
             {user && isVisible("streak") && <W><StreakWidget /></W>}
             {user && isVisible("quick-actions") && <W><QuickActionsWidget /></W>}
