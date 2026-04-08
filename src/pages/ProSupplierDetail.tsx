@@ -665,34 +665,93 @@ export default function ProSupplierDetail() {
                     onViewProduct={(p) => setSelectedProduct(p)}
                     companyName={companyName}
                   />
-                ) : Object.keys(productsByCategory).length === 0 ? (
-                  <div className="py-16 text-center">
-                    <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/30 mb-4">
-                      <Package className="h-10 w-10 text-muted-foreground/20" />
-                    </div>
-                    <p className="text-muted-foreground">{isAr ? "لا توجد منتجات حالياً" : "No products available yet"}</p>
-                  </div>
                 ) : (
-                  <div className="space-y-8">
-                    {Object.entries(productsByCategory).map(([cat, items]) => (
-                      <div key={cat}>
-                        <div className="flex items-center gap-2 mb-4">
-                          <ChefHat className="h-4 w-4 text-primary" />
-                          <h3 className="text-base font-bold capitalize">{cat}</h3>
-                          <Badge variant="secondary" className="text-[11px] rounded-full">{items.length}</Badge>
-                        </div>
-                        <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                          {items.map((p) => (
-                            <SupplierProductCard
-                              key={p.id}
-                              product={p}
-                              onViewDetails={(prod) => setSelectedProduct(prod)}
-                              onAddToCart={handleAddToCart}
-                            />
-                          ))}
-                        </div>
+                  <div className="space-y-5">
+                    {/* Search & Filter Bar */}
+                    <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                      {/* Search */}
+                      <div className="relative flex-1 min-w-0 w-full sm:max-w-sm">
+                        <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <input
+                          type="text"
+                          value={productSearch}
+                          onChange={(e) => setProductSearch(e.target.value)}
+                          placeholder={isAr ? "ابحث في المنتجات..." : "Search products..."}
+                          className="w-full h-10 ps-9 pe-3 rounded-xl border border-border/30 bg-muted/20 text-sm placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all"
+                        />
                       </div>
-                    ))}
+
+                      {/* Category filter pills */}
+                      <div className="flex gap-1.5 overflow-x-auto scrollbar-none flex-1">
+                        <button
+                          onClick={() => setSelectedCategory("all")}
+                          className={cn(
+                            "px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap transition-all touch-manipulation",
+                            selectedCategory === "all" ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:bg-muted/60"
+                          )}
+                        >
+                          {isAr ? "الكل" : "All"} ({products.length})
+                        </button>
+                        {categories.map(cat => (
+                          <button
+                            key={cat}
+                            onClick={() => setSelectedCategory(cat)}
+                            className={cn(
+                              "px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap capitalize transition-all touch-manipulation",
+                              selectedCategory === cat ? "bg-primary text-primary-foreground" : "bg-muted/40 text-muted-foreground hover:bg-muted/60"
+                            )}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Sort */}
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <ArrowUpDown className="h-3.5 w-3.5 text-muted-foreground" />
+                        <select
+                          value={productSort}
+                          onChange={(e) => setProductSort(e.target.value as any)}
+                          className="h-9 px-2 rounded-lg border border-border/30 bg-muted/20 text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        >
+                          <option value="name">{isAr ? "الاسم" : "Name"}</option>
+                          <option value="price_asc">{isAr ? "السعر: الأقل" : "Price: Low"}</option>
+                          <option value="price_desc">{isAr ? "السعر: الأعلى" : "Price: High"}</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {/* Results count */}
+                    <p className="text-xs text-muted-foreground">
+                      {isAr ? `${filteredProducts.length} منتج` : `${filteredProducts.length} products`}
+                      {productSearch && ` ${isAr ? "لـ" : "for"} "${productSearch}"`}
+                    </p>
+
+                    {/* Products grid */}
+                    {filteredProducts.length === 0 ? (
+                      <div className="py-16 text-center">
+                        <div className="inline-flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/30 mb-4">
+                          <Search className="h-10 w-10 text-muted-foreground/20" />
+                        </div>
+                        <p className="text-muted-foreground">{isAr ? "لا توجد نتائج" : "No products found"}</p>
+                        {productSearch && (
+                          <Button variant="link" size="sm" className="text-primary mt-2" onClick={() => { setProductSearch(""); setSelectedCategory("all"); }}>
+                            {isAr ? "مسح البحث" : "Clear search"}
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                        {filteredProducts.map((p: any) => (
+                          <SupplierProductCard
+                            key={p.id}
+                            product={p}
+                            onViewDetails={(prod) => setSelectedProduct(prod)}
+                            onAddToCart={handleAddToCart}
+                          />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </>
