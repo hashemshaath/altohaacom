@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle,
@@ -23,13 +24,14 @@ import {
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
   Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
   Swords, Layers, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle, Bookmark, BookmarkCheck,
+  Star, TrendingUp, Zap, Crown, Hash, Timer, Ticket,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SEOHead } from "@/components/SEOHead";
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { RegistrationStatusBanner } from "@/components/competitions/RegistrationStatusBanner";
@@ -40,7 +42,7 @@ import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import type { Database } from "@/integrations/supabase/types";
 
-// Lazy-loaded tab panels (only loaded when user opens the tab)
+// Lazy-loaded tab panels
 const CompetitionStatusManager = lazy(() => import("@/components/competitions/CompetitionStatusManager").then(m => ({ default: m.CompetitionStatusManager })));
 const RegistrationForm = lazy(() => import("@/components/competitions/RegistrationDialog").then(m => ({ default: m.RegistrationForm })));
 const RegistrationApprovalPanel = lazy(() => import("@/components/competitions/RegistrationApprovalPanel").then(m => ({ default: m.RegistrationApprovalPanel })));
@@ -129,7 +131,7 @@ export default function CompetitionDetail() {
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
   const [activeSection, setActiveSection] = useState<string>("overview");
-  const setActiveTab = (tabId: string) => {
+  const setActiveTab = useCallback((tabId: string) => {
     setActiveSection(tabId);
     const el = document.getElementById(`section-${tabId}`);
     if (el) {
@@ -140,14 +142,13 @@ export default function CompetitionDetail() {
       const offsetPosition = elementPosition - offset;
       window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     }
-  };
+  }, []);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", slug],
     queryFn: async () => {
-      // Try slug first, fall back to id for backwards compatibility
       let { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix, slug").eq("slug", slug).maybeSingle();
       if (!data) {
         ({ data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix, slug").eq("id", slug).maybeSingle());
@@ -196,6 +197,29 @@ export default function CompetitionDetail() {
     enabled: !!competitionId && !!user,
   });
 
+  const { data: registrationStats } = useQuery({
+    queryKey: ["registration-stats", competitionId],
+    queryFn: async () => {
+      const { data } = await supabase.from("competition_registrations").select("status").eq("competition_id", competitionId!);
+      const total = data?.length || 0;
+      const approved = data?.filter(r => r.status === "approved").length || 0;
+      const pending = data?.filter(r => r.status === "pending").length || 0;
+      return { total, approved, pending };
+    },
+    enabled: !!competitionId,
+    staleTime: 1000 * 60 * 2,
+  });
+
+  const { data: judgesCount } = useQuery({
+    queryKey: ["judges-count", competitionId],
+    queryFn: async () => {
+      const { data } = await supabase.from("competition_judges").select("id").eq("competition_id", competitionId!);
+      return data?.length || 0;
+    },
+    enabled: !!competitionId,
+    staleTime: 1000 * 60 * 5,
+  });
+
   const { data: competitionTypes } = useQuery({
     queryKey: ["competition-detail-types", competitionId],
     queryFn: async () => {
@@ -232,6 +256,66 @@ export default function CompetitionDetail() {
 
   const supervisors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole === "supervisor") || [], [supervisingBodies]);
   const accreditors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole !== "supervisor") || [], [supervisingBodies]);
+
+  const isOrganizer = user && competition?.organizer_id === user.id;
+  const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
+
+  // ─── Grouped Navigation (must be before early returns) ───
+  const NAV_GROUPS = useMemo(() => {
+    const core = [
+      { id: "overview", icon: Eye, labelEn: "Overview", labelAr: "نظرة عامة" },
+      { id: "categories", icon: Target, labelEn: "Categories", labelAr: "الفئات" },
+      { id: "criteria", icon: BarChart3, labelEn: "Criteria", labelAr: "المعايير" },
+      { id: "contestants", icon: Users, labelEn: "Contestants", labelAr: "المتسابقين" },
+      { id: "winners", icon: Medal, labelEn: "Winners", labelAr: "الفائزين" },
+    ];
+    const competition_tabs = [
+      { id: "rounds", icon: Swords, labelEn: "Rounds", labelAr: "الجولات" },
+      { id: "stages", icon: Layers, labelEn: "Eval Stages", labelAr: "مراحل التقييم" },
+      { id: "judges", icon: Scale, labelEn: "Judging Panel", labelAr: "لجنة التحكيم" },
+      { id: "live-scoring", icon: Radio, labelEn: "Live Scores", labelAr: "النتائج المباشرة" },
+      { id: "schedule", icon: CalendarClock, labelEn: "Schedule", labelAr: "الجدول" },
+      { id: "stations", icon: ChefHat, labelEn: "Stations", labelAr: "المحطات" },
+    ];
+    const community = [
+      { id: "gallery", icon: ImageIcon, labelEn: "Gallery", labelAr: "المعرض" },
+      { id: "feedback", icon: MessageCircle, labelEn: "Feedback", labelAr: "الملاحظات" },
+      { id: "checklist", icon: ClipboardCheck, labelEn: "Prep List", labelAr: "قائمة التحضير" },
+      { id: "team", icon: UsersRound, labelEn: "Team", labelAr: "الفريق" },
+      { id: "collaboration", icon: ClipboardList, labelEn: "Collaboration", labelAr: "التعاون" },
+    ];
+    const insights: typeof core = [];
+    if (canSeeKnowledge) {
+      insights.push(
+        { id: "knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
+        { id: "deliberation", icon: MessageSquare, labelEn: "Deliberation", labelAr: "المداولات" },
+        { id: "judge-analytics", icon: BarChart3, labelEn: "Judge Analytics", labelAr: "تحليل الحكام" },
+      );
+    }
+    if (isOrganizer) {
+      insights.push(
+        { id: "analytics", icon: TrendingUp, labelEn: "Analytics", labelAr: "التحليلات" },
+        { id: "adv-schedule", icon: CalendarClock, labelEn: "Adv. Schedule", labelAr: "جدول متقدم" },
+        { id: "notifications", icon: MessageSquare, labelEn: "Notifications", labelAr: "الإشعارات" },
+      );
+    }
+    if (user) {
+      insights.push({ id: "requirements", icon: ClipboardList, labelEn: "Order Center", labelAr: "مركز الطلبات" });
+    }
+    if (isOrganizer) {
+      insights.push({ id: "manage", icon: Settings, labelEn: "Manage", labelAr: "إدارة" });
+    }
+
+    const groups = [
+      { labelEn: "Core", labelAr: "أساسي", tabs: core },
+      { labelEn: "Competition", labelAr: "المسابقة", tabs: competition_tabs },
+      { labelEn: "Community", labelAr: "المجتمع", tabs: community },
+    ];
+    if (insights.length > 0) {
+      groups.push({ labelEn: "Insights", labelAr: "تحليلات", tabs: insights });
+    }
+    return groups;
+  }, [canSeeKnowledge, isOrganizer, user]);
 
   if (isLoading) {
     return (
@@ -288,41 +372,11 @@ export default function CompetitionDetail() {
   }
 
   const baseTitle = isAr && competition.title_ar ? competition.title_ar : competition.title;
-  const title = competition.edition_year ? `${baseTitle} +${competition.edition_year}` : baseTitle;
+  const title = competition.edition_year ? `${baseTitle} ${competition.edition_year}` : baseTitle;
   const description = isAr && competition.description_ar ? competition.description_ar : competition.description;
   const venue = isAr && competition.venue_ar ? competition.venue_ar : competition.venue;
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
-  const isOrganizer = user && competition.organizer_id === user.id;
-  const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
   const hasWinners = competition.status === "completed";
-
-
-  const navItems = [
-    { id: "overview", icon: <Eye className="h-4 w-4" />, label: isAr ? "نظرة عامة" : "Overview" },
-    { id: "rounds", icon: <Swords className="h-4 w-4" />, label: isAr ? "الجولات" : "Rounds" },
-    { id: "judges", icon: <Scale className="h-4 w-4" />, label: isAr ? "لجنة التحكيم" : "Judging Panel" },
-    { id: "contestants", icon: <Users className="h-4 w-4" />, label: isAr ? "المتسابقين" : "Contestants" },
-    { id: "categories", icon: <Target className="h-4 w-4" />, label: isAr ? "الفئات" : "Categories" },
-    { id: "criteria", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "المعايير" : "Criteria" },
-    { id: "stages", icon: <Layers className="h-4 w-4" />, label: isAr ? "مراحل التقييم" : "Eval Stages" },
-    { id: "live-scoring", icon: <Radio className="h-4 w-4" />, label: isAr ? "النتائج المباشرة" : "Live Scores" },
-    { id: "schedule", icon: <CalendarClock className="h-4 w-4" />, label: isAr ? "الجدول" : "Schedule" },
-    { id: "stations", icon: <ChefHat className="h-4 w-4" />, label: isAr ? "المحطات" : "Stations" },
-    { id: "winners", icon: <Medal className="h-4 w-4" />, label: isAr ? "الفائزين" : "Winners" },
-    { id: "feedback", icon: <MessageCircle className="h-4 w-4" />, label: isAr ? "الملاحظات" : "Feedback" },
-    { id: "checklist", icon: <ClipboardCheck className="h-4 w-4" />, label: isAr ? "قائمة التحضير" : "Prep List" },
-    { id: "team", icon: <UsersRound className="h-4 w-4" />, label: isAr ? "الفريق" : "Team" },
-    { id: "collaboration", icon: <ClipboardList className="h-4 w-4" />, label: isAr ? "التعاون" : "Collaboration" },
-    ...(canSeeKnowledge ? [{ id: "knowledge", icon: <BookOpen className="h-4 w-4" />, label: isAr ? "المعرفة" : "Knowledge" }] : []),
-    ...(canSeeKnowledge ? [{ id: "deliberation", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "المداولات" : "Deliberation" }] : []),
-    ...(canSeeKnowledge ? [{ id: "judge-analytics", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "تحليل الحكام" : "Judge Analytics" }] : []),
-    { id: "gallery", icon: <ImageIcon className="h-4 w-4" />, label: isAr ? "المعرض" : "Gallery" },
-    ...(isOrganizer ? [{ id: "analytics", icon: <BarChart3 className="h-4 w-4" />, label: isAr ? "التحليلات" : "Analytics" }] : []),
-    ...(isOrganizer ? [{ id: "adv-schedule", icon: <CalendarClock className="h-4 w-4" />, label: isAr ? "جدول متقدم" : "Adv. Schedule" }] : []),
-    ...(isOrganizer ? [{ id: "notifications", icon: <MessageSquare className="h-4 w-4" />, label: isAr ? "الإشعارات" : "Notifications" }] : []),
-    ...(user ? [{ id: "requirements", icon: <ClipboardList className="h-4 w-4" />, label: isAr ? "مركز الطلبات" : "Order Center" }] : []),
-    ...(isOrganizer ? [{ id: "manage", icon: <Settings className="h-4 w-4" />, label: isAr ? "إدارة" : "Manage" }] : []),
-  ];
 
   // Breadcrumb structured data
   const breadcrumbLd = {
@@ -356,6 +410,11 @@ export default function CompetitionDetail() {
     ...(competition.max_participants ? { maximumAttendeeCapacity: competition.max_participants } : {}),
   };
 
+  const totalScore = criteria?.reduce((sum, c) => sum + (c.max_score || 0), 0) || 0;
+  const daysUntilStart = competition.competition_start
+    ? Math.max(0, Math.ceil((new Date(competition.competition_start).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : null;
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
@@ -370,7 +429,6 @@ export default function CompetitionDetail() {
         keywords={`${title}, culinary competition, ${competition.city || ""}, ${competition.country || ""}, chef competition`}
         jsonLd={eventLd}
       />
-      {/* Breadcrumb JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <Header />
 
@@ -382,7 +440,6 @@ export default function CompetitionDetail() {
               <img loading="lazy" src={competition.cover_image_url}
                 alt={title}
                 className="h-full w-full object-cover"
-               
                 decoding="async"
                 fetchPriority="high"
               />
@@ -391,12 +448,10 @@ export default function CompetitionDetail() {
                 <Trophy className="h-28 w-28 sm:h-40 sm:w-40 text-primary/[0.06]" />
               </div>
             )}
-            {/* Cinematic gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" style={{ top: "50%" }} />
           </div>
 
-          {/* Hero content bar — below image overlay */}
           <div className="absolute inset-x-0 bottom-0">
              <div className="container pb-5 sm:pb-8 md:pb-10">
                 <div className="max-w-4xl space-y-2 sm:space-y-4 animate-fade-in">
@@ -431,6 +486,16 @@ export default function CompetitionDetail() {
                   {competition.competition_number && (
                     <Badge variant="outline" className="font-mono text-[12px] font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
                   )}
+                  {competition.registration_fee_type === "free" && (
+                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[12px] px-3 py-1 font-bold">
+                      <Ticket className="h-3 w-3 me-1" />{isAr ? "مجاني" : "Free Entry"}
+                    </Badge>
+                  )}
+                  {competition.blind_judging_enabled && (
+                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-[12px] px-3 py-1 font-bold">
+                      <Shield className="h-3 w-3 me-1" />{isAr ? "تحكيم مخفي" : "Blind Judging"}
+                    </Badge>
+                  )}
                 </div>
 
                 {/* Title */}
@@ -455,24 +520,36 @@ export default function CompetitionDetail() {
                       <span className="font-medium">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
                     </div>
                   )}
+                  {competition.allowed_entry_types && competition.allowed_entry_types.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <UsersRound className="h-4 w-4 text-primary" />
+                      <span className="font-medium">{competition.allowed_entry_types.join(" / ")}</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ─── Info Bar + Actions ─── */}
+        {/* ─── KPI Stats Strip ─── */}
         <div className="border-y border-border/30 bg-card/60 backdrop-blur-md">
           <div className="container py-3 sm:py-4">
             <div className="flex flex-wrap items-center justify-between gap-3 sm:gap-4">
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-5 sm:gap-8">
                 {[
-                  { label: isAr ? "الفئات" : "Categories", value: categories?.length || 0 },
-                  { label: isAr ? "المعايير" : "Criteria", value: criteria?.length || 0 },
+                  { icon: Target, label: isAr ? "الفئات" : "Categories", value: categories?.length || 0, color: "text-primary" },
+                  { icon: Star, label: isAr ? "المعايير" : "Criteria", value: criteria?.length || 0, color: "text-chart-4" },
+                  { icon: Users, label: isAr ? "المسجلين" : "Registered", value: registrationStats?.total || 0, color: "text-chart-3" },
+                  { icon: Scale, label: isAr ? "الحكام" : "Judges", value: judgesCount || 0, color: "text-chart-5" },
+                  ...(totalScore > 0 ? [{ icon: Zap, label: isAr ? "مجموع النقاط" : "Total Score", value: totalScore, color: "text-chart-2" }] : []),
                 ].map((stat, i) => (
-                  <div key={i} className="text-center">
-                    <p className="text-lg font-bold tabular-nums text-foreground">{stat.value}</p>
-                    <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
+                  <div key={i} className="text-center group">
+                    <div className="flex items-center justify-center gap-1.5 mb-0.5">
+                      <stat.icon className={`h-3.5 w-3.5 ${stat.color} opacity-60`} />
+                      <p className="text-lg font-bold tabular-nums text-foreground">{stat.value}</p>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -481,7 +558,6 @@ export default function CompetitionDetail() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm" className="h-9 rounded-xl px-4 text-xs font-semibold border-border/50" onClick={async (e) => {
-                      // Try native share first on mobile
                       if (navigator.share) {
                         e.preventDefault();
                         try {
@@ -546,28 +622,44 @@ export default function CompetitionDetail() {
           </div>
         </div>
 
-        {/* ─── Navigation Pills ─── */}
+        {/* ─── Grouped Navigation Pills ─── */}
         <div className="sticky top-14 z-30 border-b border-border/30 bg-background/95 backdrop-blur-xl">
           <div className="container">
-            <div className="flex gap-0.5 sm:gap-1 overflow-x-auto py-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0 snap-x scroll-smooth">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(item.id); }}
-                  className={`
-                    snap-start inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 sm:px-3.5 py-1.5 sm:py-2 text-[12px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
-                    ${activeSection === item.id
-                      ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
-                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
-                  `}
-                >
-                  <span className={`hidden sm:inline ${activeSection === item.id ? "text-primary-foreground" : "text-primary/70"}`}>
-                    {item.icon}
-                  </span>
-                  <span className="whitespace-nowrap">{item.label}</span>
-                </button>
-              ))}
-            </div>
+            <ScrollArea className="w-full">
+              <div className="flex items-stretch divide-x divide-border/30 rtl:divide-x-reverse min-w-max">
+                {NAV_GROUPS.map((group) => (
+                  <div key={group.labelEn} className="flex flex-col">
+                    <div className="px-2 pt-1.5 pb-0.5">
+                      <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/50">
+                        {isAr ? group.labelAr : group.labelEn}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-0.5 px-1 pb-1.5">
+                      {group.tabs.map((tab) => {
+                        const Icon = tab.icon;
+                        const isActive = activeSection === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(tab.id); }}
+                            className={`
+                              inline-flex shrink-0 items-center gap-1 rounded-full px-2 sm:px-3 py-1.5 text-[11px] sm:text-xs font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
+                              ${isActive
+                                ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
+                            `}
+                          >
+                            <Icon className={`h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0 ${isActive ? "" : "opacity-60"}`} />
+                            <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <ScrollBar orientation="horizontal" className="h-1" />
+            </ScrollArea>
           </div>
         </div>
 
@@ -627,6 +719,47 @@ export default function CompetitionDetail() {
                       <p className="whitespace-pre-wrap text-sm leading-[1.8] text-muted-foreground">{description}</p>
                     </Section>
                   )}
+
+                  {/* Entry & Fee Info */}
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-2xl border border-border/40 bg-card p-4 sm:p-5">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-3/10"><UsersRound className="h-4 w-4 text-chart-3" /></div>
+                        <h4 className="font-semibold text-sm">{isAr ? "أنواع المشاركة" : "Entry Types"}</h4>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {competition.allowed_entry_types?.map((t) => (
+                          <Badge key={t} variant="outline" className="rounded-xl text-xs px-3 py-1">{t}</Badge>
+                        )) || <span className="text-xs text-muted-foreground">{isAr ? "فردي" : "Individual"}</span>}
+                      </div>
+                      {(competition.min_team_size || competition.max_team_size) && (
+                        <p className="text-[12px] text-muted-foreground mt-2">
+                          {isAr ? "حجم الفريق:" : "Team size:"} {competition.min_team_size || 1} – {competition.max_team_size || "∞"}
+                        </p>
+                      )}
+                    </div>
+                    <div className="rounded-2xl border border-border/40 bg-card p-4 sm:p-5">
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-5/10"><Ticket className="h-4 w-4 text-chart-5" /></div>
+                        <h4 className="font-semibold text-sm">{isAr ? "رسوم التسجيل" : "Registration Fee"}</h4>
+                      </div>
+                      {competition.registration_fee_type === "paid" ? (
+                        <div>
+                          <p className="text-2xl font-bold tabular-nums">{competition.registration_fee} <span className="text-sm font-medium text-muted-foreground">{competition.registration_currency}</span></p>
+                          {competition.registration_tax_rate && (
+                            <p className="text-[12px] text-muted-foreground mt-1">
+                              + {(Number(competition.registration_tax_rate) * 100).toFixed(0)}% {isAr && competition.registration_tax_name_ar ? competition.registration_tax_name_ar : competition.registration_tax_name || "Tax"}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">🎉</span>
+                          <p className="text-lg font-bold text-chart-5">{isAr ? "مجاني" : "Free"}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
 
                   {/* Competition specialty */}
                   {competitionTypes && competitionTypes.length > 0 && (
@@ -840,10 +973,6 @@ export default function CompetitionDetail() {
                                   {cat.description && (
                                     <p className="text-[12px] text-muted-foreground truncate mt-0.5">{isAr && cat.description_ar ? cat.description_ar : cat.description}</p>
                                   )}
-                                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-1">
-                                    {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                    <Badge variant="outline" className="text-[12px] h-4 px-1.5 rounded-md">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
-                                  </div>
                                 </div>
                               </div>
                             )}
@@ -991,6 +1120,23 @@ export default function CompetitionDetail() {
                       <span className="font-semibold text-foreground">{format(new Date(competition.registration_end), "MMM d, yyyy")}</span>
                     </p>
                   )}
+                  {/* Registration breakdown */}
+                  {registrationStats && registrationStats.total > 0 && (
+                    <div className="border-t border-border/30 pt-3 space-y-1.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span>
+                        <span className="font-semibold text-chart-5">{registrationStats.approved}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span>
+                        <span className="font-semibold text-chart-4">{registrationStats.pending}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</span>
+                        <span className="font-bold">{registrationStats.total}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1007,14 +1153,20 @@ export default function CompetitionDetail() {
                 </div>
                 <div className="p-5 space-y-3.5">
                   {[
-                    competition.country_code && { label: isAr ? "الدولة" : "Country", value: `${countryFlag(competition.country_code)} ${competition.country}` },
-                    competition.edition_year && { label: isAr ? "النسخة" : "Edition", value: competition.edition_year },
-                    competition.max_participants && { label: isAr ? "السعة" : "Capacity", value: competition.max_participants },
-                    competition.is_virtual !== null && { label: isAr ? "النوع" : "Format", value: competition.is_virtual ? (isAr ? "افتراضية" : "Virtual") : (isAr ? "حضورية" : "In-Person"), badge: true },
-                    competition.registration_fee_type === "paid" && { label: isAr ? "رسوم التسجيل" : "Entry Fee", value: `${competition.registration_fee} ${competition.registration_currency}` },
+                    competition.country_code && { icon: MapPin, label: isAr ? "الدولة" : "Country", value: `${countryFlag(competition.country_code)} ${competition.country}` },
+                    competition.edition_year && { icon: Hash, label: isAr ? "النسخة" : "Edition", value: competition.edition_year },
+                    competition.max_participants && { icon: Users, label: isAr ? "السعة" : "Capacity", value: competition.max_participants },
+                    competition.is_virtual !== null && { icon: Globe, label: isAr ? "النوع" : "Format", value: competition.is_virtual ? (isAr ? "افتراضية" : "Virtual") : (isAr ? "حضورية" : "In-Person"), badge: true },
+                    competition.registration_fee_type === "paid" && { icon: Ticket, label: isAr ? "رسوم التسجيل" : "Entry Fee", value: `${competition.registration_fee} ${competition.registration_currency}` },
+                    daysUntilStart !== null && daysUntilStart > 0 && { icon: Timer, label: isAr ? "أيام للبدء" : "Days to Start", value: daysUntilStart },
+                    competition.blind_judging_enabled && { icon: Shield, label: isAr ? "التحكيم" : "Judging", value: isAr ? "مخفي الهوية" : "Blind", badge: true },
+                    competition.series_id && { icon: Layers, label: isAr ? "السلسلة" : "Series", value: isAr ? "جزء من سلسلة" : "Part of Series", badge: true },
                   ].filter(Boolean).map((item: any, i) => (
                     <div key={i} className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">{item.label}</span>
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <item.icon className="h-3.5 w-3.5 opacity-50" />
+                        <span>{item.label}</span>
+                      </div>
                       {item.badge ? (
                         <Badge variant="outline" className="text-[12px] rounded-xl">{item.value}</Badge>
                       ) : (
