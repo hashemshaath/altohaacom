@@ -1,6 +1,7 @@
-import { useState, useCallback, useMemo, lazy, Suspense, useEffect } from "react";
+import { useState, useCallback, useMemo, lazy, Suspense, useEffect, useRef } from "react";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
+import { AnimatedCounter as SharedAnimatedCounter } from "@/components/ui/animated-counter";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -94,21 +95,22 @@ const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: 
   cancelled: { bg: "bg-destructive/10 text-destructive", dot: "bg-destructive", label: "Cancelled", labelAr: "ملغاة" },
 };
 
-/* ─── Animated Counter ─── */
-function AnimatedCounter({ target, duration = 800 }: { target: number; duration?: number }) {
-  const [count, setCount] = useState(0);
+/* ─── Tab Content Transition Wrapper ─── */
+function TabTransition({ children, activeKey }: { children: React.ReactNode; activeKey: string }) {
+  const [visible, setVisible] = useState(true);
+  const prevKey = useRef(activeKey);
   useEffect(() => {
-    if (target === 0) return;
-    let start = 0;
-    const step = Math.max(1, Math.ceil(target / (duration / 16)));
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setCount(target); clearInterval(timer); }
-      else setCount(start);
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration]);
-  return <span className="tabular-nums">{count}</span>;
+    if (prevKey.current !== activeKey) {
+      setVisible(false);
+      const t = setTimeout(() => { setVisible(true); prevKey.current = activeKey; }, 80);
+      return () => clearTimeout(t);
+    }
+  }, [activeKey]);
+  return (
+    <div className={`transition-all duration-300 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>
+      {children}
+    </div>
+  );
 }
 
 /* ─── Live Countdown Hook ─── */
@@ -643,7 +645,7 @@ export default function CompetitionDetail() {
                   >
                     <div className="flex items-center justify-center gap-1.5 mb-0.5">
                       <stat.icon className={`h-3.5 w-3.5 ${stat.color} opacity-60`} />
-                      <p className="text-lg font-bold text-foreground"><AnimatedCounter target={stat.value} /></p>
+                      <p className="text-lg font-bold text-foreground"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
                     </div>
                     <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">{stat.label}</p>
                   </button>
@@ -818,9 +820,9 @@ export default function CompetitionDetail() {
           <div className="grid gap-8 lg:grid-cols-3">
             {/* ─── Main Content ─── */}
             <div className="lg:col-span-2 space-y-5">
+            <TabTransition activeKey={activeSection}>
               {activeSection === "overview" && (
                 <>
-                  {/* Description */}
                   {description && (
                     <Section icon={<BookOpen className="h-4 w-4" />} title={isAr ? "نبذة عن المسابقة" : "About this Competition"}>
                       <p className="whitespace-pre-wrap text-sm leading-[1.8] text-muted-foreground">{description}</p>
@@ -1160,7 +1162,7 @@ export default function CompetitionDetail() {
                 </>
               )}
 
-              <Suspense fallback={<div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
+              <Suspense fallback={<div className="space-y-4 animate-pulse"><Skeleton className="h-10 w-48 rounded-xl" /><Skeleton className="h-64 w-full rounded-2xl" /><Skeleton className="h-40 w-full rounded-2xl" /></div>}>
               {activeSection === "rounds" && <TournamentRoundsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "judges" && <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
               {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
@@ -1237,6 +1239,7 @@ export default function CompetitionDetail() {
                 </div>
               )}
               </Suspense>
+              </TabTransition>
               {/* Comments Section */}
               <Suspense fallback={null}>
               <Card className="p-5">
