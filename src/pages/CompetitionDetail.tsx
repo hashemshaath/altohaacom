@@ -210,7 +210,8 @@ function LiveCountdownStrip({ targetDate, label, labelAr, isAr }: { targetDate: 
 }
 
 export default function CompetitionDetail() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug: urlParam } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
@@ -221,6 +222,7 @@ export default function CompetitionDetail() {
   }, []);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
+  const slug = urlParam;
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", slug],
