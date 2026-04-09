@@ -245,12 +245,6 @@ export default function Exhibitions() {
 
               {user && (
                 <div className="flex gap-2 pt-2">
-                  <Button variant="outline" className="rounded-xl" asChild>
-                    <Link to="/exhibitions/compare">
-                      <Scale className="me-1.5 h-4 w-4" />
-                      {isAr ? "مقارنة" : "Compare"}
-                    </Link>
-                  </Button>
                   <Button className="shadow-lg shadow-primary/15 rounded-xl" asChild>
                     <Link to="/exhibitions/create">
                       <Plus className="me-1.5 h-4 w-4" />
