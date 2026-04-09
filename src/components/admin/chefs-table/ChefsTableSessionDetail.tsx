@@ -86,7 +86,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
 
       {/* Public Report Link */}
       {/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- report_token not in schema yet */}
-      {(session as Record<string, unknown>).report_token && (
+      {(session as unknown as Record<string, unknown>).report_token && (
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
           <div className="flex items-center gap-2 mb-2">
             <Globe className="h-4 w-4 text-primary" />

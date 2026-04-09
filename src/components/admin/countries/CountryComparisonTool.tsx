@@ -52,7 +52,8 @@ const rows: ComparisonRow[] = [
   { label: "Languages", labelAr: "اللغات", getValue: c => (c.supported_languages || []).join(", ").toUpperCase() },
   { label: "Support Email", labelAr: "بريد الدعم", getValue: c => c.support_email || "—" },
   { label: "Support Phone", labelAr: "هاتف الدعم", getValue: c => c.support_phone || "—" },
-  { label: "Completeness", labelAr: "الاكتمال", getValue: (c: Country) => `${getCompletenessScore(c).score}%` },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Country type mismatch between modules
+  { label: "Completeness", labelAr: "الاكتمال", getValue: c => `${getCompletenessScore(c as any).score}%` },
   ...featureKeys.map(key => ({
     label: key.replace(/_/g, " ").replace(/^\w/, c => c.toUpperCase()),
     labelAr: key,
