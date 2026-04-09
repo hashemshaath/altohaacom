@@ -403,7 +403,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                 <Label>{isAr ? "النوع" : "Action"}</Label>
                 <Select
                   value={newInvoice.action}
-                  onValueChange={v => setNewInvoice(p => ({ ...p, action: v as any }))}
+                  onValueChange={v => setNewInvoice(p => ({ ...p, action: v as "subscription" | "renewal" | "upgrade" | "downgrade" }))}
                 >
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>

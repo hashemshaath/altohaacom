@@ -241,8 +241,8 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                         <TableRow key={code.id}>
                           <TableCell>
                             <div>
-                              <p className="text-sm font-medium">{(code as any).profiles?.full_name || (code as any).profiles?.username || "-"}</p>
-                              <p className="text-xs text-muted-foreground">{(code as any).profiles?.email}</p>
+                              <p className="text-sm font-medium">{(code as unknown as Record<string, Record<string, string>>).profiles?.full_name || (code as unknown as Record<string, Record<string, string>>).profiles?.username || "-"}</p>
+                              <p className="text-xs text-muted-foreground">{(code as unknown as Record<string, Record<string, string>>).profiles?.email}</p>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -300,12 +300,12 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                       conversions?.map((c) => (
                         <TableRow key={c.id}>
                           <TableCell>
-                            <p className="text-sm font-medium">{(c as any).referrer?.full_name || (c as any).referrer?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{(c as any).referrer?.email}</p>
+                            <p className="text-sm font-medium">{(c as unknown as Record<string, Record<string, string>>).referrer?.full_name || (c as unknown as Record<string, Record<string, string>>).referrer?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(c as unknown as Record<string, Record<string, string>>).referrer?.email}</p>
                           </TableCell>
                           <TableCell>
-                            <p className="text-sm font-medium">{(c as any).referred?.full_name || (c as any).referred?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{(c as any).referred?.email}</p>
+                            <p className="text-sm font-medium">{(c as unknown as Record<string, Record<string, string>>).referred?.full_name || (c as unknown as Record<string, Record<string, string>>).referred?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(c as unknown as Record<string, Record<string, string>>).referred?.email}</p>
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline">{c.conversion_type}</Badge>
@@ -365,12 +365,12 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
                       membershipReferrals?.map((r) => (
                         <TableRow key={r.id}>
                           <TableCell>
-                            <p className="text-sm font-medium">{(r as any).referrer?.full_name || (r as any).referrer?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{(r as any).referrer?.email}</p>
+                            <p className="text-sm font-medium">{(r as unknown as Record<string, Record<string, string>>).referrer?.full_name || (r as unknown as Record<string, Record<string, string>>).referrer?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(r as unknown as Record<string, Record<string, string>>).referrer?.email}</p>
                           </TableCell>
                           <TableCell>
-                            <p className="text-sm font-medium">{(r as any).referred?.full_name || (r as any).referred?.username || "-"}</p>
-                            <p className="text-xs text-muted-foreground">{(r as any).referred?.email}</p>
+                            <p className="text-sm font-medium">{(r as unknown as Record<string, Record<string, string>>).referred?.full_name || (r as unknown as Record<string, Record<string, string>>).referred?.username || "-"}</p>
+                            <p className="text-xs text-muted-foreground">{(r as unknown as Record<string, Record<string, string>>).referred?.email}</p>
                           </TableCell>
                           <TableCell>
                             <Badge variant="outline" className="capitalize">{r.tier}</Badge>

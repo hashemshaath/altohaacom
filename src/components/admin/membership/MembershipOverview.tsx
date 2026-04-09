@@ -374,7 +374,7 @@ const RecentActivityFeed = memo(function RecentActivityFeed({ isAr }: { isAr: bo
             const isUpgrade = (tierOrder[entry.new_tier] || 0) > (tierOrder[entry.previous_tier || "basic"] || 0);
             const prev = tierLabels[entry.previous_tier || "basic"] || tierLabels.basic;
             const next = tierLabels[entry.new_tier] || tierLabels.basic;
-            const profile = entry.profile as any;
+            const profile = entry.profile as unknown as Record<string, string> | null;
 
             return (
               <div key={entry.id} className="flex items-center gap-3 rounded-lg border p-2.5 text-sm">

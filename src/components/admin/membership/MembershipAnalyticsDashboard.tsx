@@ -180,7 +180,8 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
       // Tier breakdown
       const byTier: Record<string, number> = {};
       for (const g of gifts || []) {
-        byTier[(g as any).tier] = (byTier[(g as any).tier] || 0) + 1;
+        const tier = (g as unknown as Record<string, string>).tier ?? "unknown";
+        byTier[tier] = (byTier[tier] || 0) + 1;
       }
 
       return { total, pending, redeemed, totalRevenue, redemptionRate, byTier };
