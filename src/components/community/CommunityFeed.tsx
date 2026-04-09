@@ -385,7 +385,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
         image_urls: deletedPost.image_urls || [],
         reason: "User deleted own post",
         reason_ar: "حذف المستخدم منشوره",
-      }).then(() => {});
+      }).then(null, () => {});
     }
     toast({ title: isAr ? "تم حذف المنشور" : "Post deleted" });
   }, [user, posts, isAr, toast]);

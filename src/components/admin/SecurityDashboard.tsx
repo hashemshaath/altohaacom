@@ -90,7 +90,7 @@ const SecurityDashboard = memo(function SecurityDashboard() {
     }
   };
 
-  useEffect(() => { fetchDashboard(); }, []);
+  useEffect(() => { fetchDashboard(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const filteredEvents = useMemo(() => {
     return events.filter((e) => {
