@@ -40,8 +40,8 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
 
       // Revenue calculation
       const totalRevenue = confirmed.reduce((s, t) => {
-        const price = parseFloat((t as any).price_paid || "0");
-        return s + price;
+        const price = parseFloat(String((t as Record<string, unknown>).price_paid ?? "0"));
+        return s + (Number.isNaN(price) ? 0 : price);
       }, 0);
 
       // Daily breakdown (last 14 days)

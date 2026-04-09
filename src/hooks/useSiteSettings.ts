@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic JSON settings from DB
 export type SiteSettingsMap = Record<string, Record<string, any>>;
 
 export function useSiteSettings() {
@@ -20,7 +21,11 @@ export function useSiteSettings() {
       if (error) throw error;
       const map: SiteSettingsMap = {};
       (data || []).forEach((row) => {
-        map[row.key] = typeof row.value === "string" ? JSON.parse(row.value) : row.value;
+        try {
+          map[row.key] = typeof row.value === "string" ? JSON.parse(row.value as string) : (row.value as Record<string, any>);
+        } catch {
+          map[row.key] = {};
+        }
       });
       return map;
     },

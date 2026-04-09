@@ -437,7 +437,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
                       </Badge>
                       {report.data_snapshot && (
                         <Badge variant="outline" className="text-[12px]">
-                          {(report.data_snapshot as any)?.totalUsers || 0} {isAr ? "مستخدم" : "users"}
+                          {((report.data_snapshot as Record<string, unknown>)?.totalUsers as number) || 0} {isAr ? "مستخدم" : "users"}
                         </Badge>
                       )}
                     </div>
