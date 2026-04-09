@@ -96,14 +96,14 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
           </div>
           <div className="flex items-center gap-2">
             <code className="flex-1 text-xs bg-background border border-border/30 rounded px-3 py-2 truncate font-mono">
-              {`${window.location.origin}/evaluation-report/${(session as Record<string, unknown>).report_token}`}
+              {`${window.location.origin}/evaluation-report/${(session as unknown as Record<string, unknown>).report_token}`}
             </code>
             <Button
               size="sm"
               variant="outline"
               className="gap-1 shrink-0"
               onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/evaluation-report/${(session as Record<string, unknown>).report_token}`);
+                navigator.clipboard.writeText(`${window.location.origin}/evaluation-report/${(session as unknown as Record<string, unknown>).report_token}`);
                 toast.success(isAr ? "تم نسخ الرابط" : "Link copied!");
               }}
             >
@@ -113,7 +113,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
               size="sm"
               variant="outline"
               className="gap-1 shrink-0"
-              onClick={() => window.open(`/evaluation-report/${(session as Record<string, unknown>).report_token}`, "_blank")}
+              onClick={() => window.open(`/evaluation-report/${(session as unknown as Record<string, unknown>).report_token}`, "_blank")}
             >
               <ExternalLink className="h-3 w-3" />
             </Button>
