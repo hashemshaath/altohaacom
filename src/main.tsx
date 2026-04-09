@@ -116,7 +116,7 @@ if (!root) {
 } else {
   try {
     createRoot(root).render(<App />);
-  } catch (error) {
+  } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to initialize the application.";
     handleBootFailure(message);
   }

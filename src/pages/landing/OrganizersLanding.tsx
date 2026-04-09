@@ -103,7 +103,7 @@ export default function OrganizersLanding() {
       });
 
       setFormData({ organizationName: "", contactName: "", email: "", phone: "", message: "" });
-    } catch (error) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: isAr ? "خطأ" : "Error",
