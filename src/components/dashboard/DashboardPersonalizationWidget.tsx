@@ -20,14 +20,13 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const [selectedTheme, setSelectedTheme] = useState(() => localStorage.getItem(THEME_KEY) || "");
-  const [bodyFont, setBodyFont] = useState(() => localStorage.getItem(FONT_KEY) || "");
-  const [headingFont, setHeadingFont] = useState(() => localStorage.getItem(HEADING_FONT_KEY) || "");
+  const [selectedTheme, setSelectedTheme] = useState(() => { try { return localStorage.getItem(THEME_KEY) || ""; } catch { return ""; } });
+  const [bodyFont, setBodyFont] = useState(() => { try { return localStorage.getItem(FONT_KEY) || ""; } catch { return ""; } });
+  const [headingFont, setHeadingFont] = useState(() => { try { return localStorage.getItem(HEADING_FONT_KEY) || ""; } catch { return ""; } });
   const [fontSize, setFontSize] = useState(() => {
-    const saved = localStorage.getItem(FONT_SIZE_KEY);
-    return saved ? parseInt(saved) : 100;
+    try { const saved = localStorage.getItem(FONT_SIZE_KEY); return saved ? parseInt(saved) : 100; } catch { return 100; }
   });
-  const [compactMode, setCompactMode] = useState(() => localStorage.getItem(COMPACT_KEY) === "true");
+  const [compactMode, setCompactMode] = useState(() => { try { return localStorage.getItem(COMPACT_KEY) === "true"; } catch { return false; } });
   const [expanded, setExpanded] = useState(false);
 
   const handleTheme = (id: string) => {

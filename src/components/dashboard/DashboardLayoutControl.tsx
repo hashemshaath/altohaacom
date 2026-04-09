@@ -88,7 +88,7 @@ export function useDashboardLayout() {
   }, []);
 
   const resetLayout = useCallback(() => {
-    localStorage.removeItem(LAYOUT_KEY);
+    try { localStorage.removeItem(LAYOUT_KEY); } catch {}
     setWidgets(DEFAULT_WIDGETS);
   }, []);
 
