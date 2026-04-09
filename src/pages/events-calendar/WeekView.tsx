@@ -6,7 +6,7 @@ import { isSameDay, startOfWeek, endOfWeek, eachDayOfInterval, format } from "da
 import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { EventChip } from "./EventChip";
-import { getEventsForDay } from "./utils";
+import { getEventsForDay } from "@/lib/eventsCalendarUtils";
 
 export function WeekView({ events, currentDate, isAr }: { events: GlobalEvent[]; currentDate: Date; isAr: boolean }) {
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });

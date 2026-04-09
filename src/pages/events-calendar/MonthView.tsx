@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { getDaysInMonth } from "@/hooks/useChefSchedule";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
 import { EventChip } from "./EventChip";
-import { getEventsForDay } from "./utils";
+import { getEventsForDay } from "@/lib/eventsCalendarUtils";
 export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr }: {
   events: GlobalEvent[]; currentDate: Date;
   selectedDay: Date | null; onSelectDay: (d: Date) => void; isAr: boolean;
