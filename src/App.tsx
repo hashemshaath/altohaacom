@@ -39,6 +39,11 @@ const AIChatbot = safeLazy(() => import("@/components/ai/AIChatbot"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      console.error("[Mutation Error]", error instanceof Error ? error.message : error);
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: 1000 * 60 * 3,
