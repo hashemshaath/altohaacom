@@ -57,6 +57,8 @@ export const PageShell = memo(function PageShell({
   container = true,
   padding = "md",
   relatedPages = true,
+  breadcrumbs = true,
+  breadcrumbLabel,
 }: PageShellProps) {
   const location = useLocation();
   const showRelated = relatedPages && !seoProps?.noIndex;
