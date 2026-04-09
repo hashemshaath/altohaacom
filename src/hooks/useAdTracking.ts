@@ -25,14 +25,6 @@ function getBrowser() {
   return "other";
 }
 
-function getBrowser() {
-  const ua = navigator.userAgent;
-  if (ua.includes("Chrome") && !ua.includes("Edg")) return "chrome";
-  if (ua.includes("Firefox")) return "firefox";
-  if (ua.includes("Safari") && !ua.includes("Chrome")) return "safari";
-  if (ua.includes("Edg")) return "edge";
-  return "other";
-}
 
 function getPageCategory(url: string) {
   if (url.includes("/competitions")) return "competitions";
