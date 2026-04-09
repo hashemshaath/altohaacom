@@ -37,12 +37,15 @@ import {
   ChevronUp, Trash2, RotateCcw, Eye, Users, Zap, Target, TrendingUp,
   CheckSquare, XSquare, Download, Sparkles,
 } from "lucide-react";
-import { SmartNotificationRules } from "@/components/admin/SmartNotificationRules";
-import { NotificationAnalyticsWidget } from "@/components/admin/NotificationAnalyticsWidget";
-import { NotificationDeliveryWidget } from "@/components/admin/NotificationDeliveryWidget";
-import { NotificationInsightsWidget } from "@/components/admin/NotificationInsightsWidget";
-import { NotificationLiveStatsWidget } from "@/components/admin/NotificationLiveStatsWidget";
-import { CommunicationsOverviewWidget } from "@/components/admin/CommunicationsOverviewWidget";
+import { safeLazy } from "@/lib/safeLazy";
+
+// Lazy-load heavy notification widgets
+const SmartNotificationRules = safeLazy(() => import("@/components/admin/SmartNotificationRules").then(m => ({ default: m.SmartNotificationRules })));
+const NotificationAnalyticsWidget = safeLazy(() => import("@/components/admin/NotificationAnalyticsWidget").then(m => ({ default: m.NotificationAnalyticsWidget })));
+const NotificationDeliveryWidget = safeLazy(() => import("@/components/admin/NotificationDeliveryWidget").then(m => ({ default: m.NotificationDeliveryWidget })));
+const NotificationInsightsWidget = safeLazy(() => import("@/components/admin/NotificationInsightsWidget").then(m => ({ default: m.NotificationInsightsWidget })));
+const NotificationLiveStatsWidget = safeLazy(() => import("@/components/admin/NotificationLiveStatsWidget").then(m => ({ default: m.NotificationLiveStatsWidget })));
+const CommunicationsOverviewWidget = safeLazy(() => import("@/components/admin/CommunicationsOverviewWidget").then(m => ({ default: m.CommunicationsOverviewWidget })));
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 
