@@ -588,6 +588,7 @@ export default function CompetitionDetail() {
                 className="h-full w-full object-cover"
                 decoding="async"
                 fetchPriority="high"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-muted/30 to-background">
@@ -1072,7 +1073,9 @@ export default function CompetitionDetail() {
                   )}
 
                   {/* Judging Panel Preview */}
-                  <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />
+                  <Suspense fallback={null}>
+                    <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />
+                  </Suspense>
 
                   {/* Timeline */}
                   <CompetitionTimeline
