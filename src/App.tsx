@@ -26,6 +26,8 @@ import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProv
 import { PageTracker } from "@/components/tracking/PageTracker";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
 import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
+import { NetworkStatus } from "@/components/NetworkStatus";
+import { RouteLoadingBar } from "@/components/RouteLoadingBar";
 
 import { publicRoutes } from "@/routes/publicRoutes";
 import { protectedRoutes } from "@/routes/protectedRoutes";
@@ -126,6 +128,8 @@ function AppContent() {
   return (
     <>
       <AppBootMarker />
+      <NetworkStatus />
+      <RouteLoadingBar />
       <ScrollToTop />
       <RouteAnnouncer />
       <SkipToContent />
