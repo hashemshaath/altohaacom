@@ -59,8 +59,8 @@ export const AdPopup = memo(function AdPopup() {
         campaign_id: creative.campaign_id,
         placement_id: creative.placement_id,
         page_url: window.location.pathname,
-        device_type: window.innerWidth < 768 ? "mobile" : "desktop",
-      });
+        device_type: getDeviceType(),
+      }).then(null, () => { /* fire-and-forget */ });
     }
   }, [creative, visible]);
 
@@ -72,7 +72,8 @@ export const AdPopup = memo(function AdPopup() {
       placement_id: creative.placement_id,
       destination_url: creative.destination_url,
       page_url: window.location.pathname,
-    });
+      device_type: getDeviceType(),
+    }).then(null, () => { /* fire-and-forget */ });
     window.open(creative.destination_url, "_blank", "noopener");
     setVisible(false);
     sessionStorage.setItem("ad_popup_dismissed", "true");
