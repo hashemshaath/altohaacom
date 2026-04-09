@@ -62,7 +62,7 @@ export default function CompanyPublicProfile() {
       if (!id) return [];
       const { data } = await supabase
         .from("competition_sponsors")
-        .select("id, tier, competitions:competition_id(title, title_ar)")
+        .select("id, tier, competitions:competition_id(id, title, title_ar)")
         .eq("company_id", id)
         .eq("status", "approved")
         .limit(6);
