@@ -85,7 +85,7 @@ export const AdminCommandBar = memo(function AdminCommandBar() {
             <Link key={a.href} to={a.href}>
               <div className={cn(
                 "flex flex-col items-center gap-1.5 rounded-xl p-3 border border-border/30",
-                "hover:border-primary/30 hover:shadow-sm transition-all active:scale-[0.97]",
+                "hover:border-primary/30 hover:shadow-sm transition-all active:scale-[0.98]",
                 "relative group"
               )}>
                 <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", a.color)}>

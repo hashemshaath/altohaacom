@@ -116,7 +116,7 @@ export const ChefsTableSessionsList = memo(forwardRef<HTMLElement, Props>(functi
               return (
                 <Card
                   key={session.id}
-                  className="group cursor-pointer overflow-hidden border-border/40 bg-card transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/20 active:scale-[0.98]"
+                  className="group cursor-pointer overflow-hidden border-border/40 bg-card transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]"
                   onClick={() => onSessionClick(session.id)}
                 >
                   {/* Image */}

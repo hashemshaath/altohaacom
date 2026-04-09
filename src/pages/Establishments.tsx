@@ -197,7 +197,7 @@ export default function Establishments() {
               const typeLabel = establishmentTypes.find((t) => t.value === est.type);
               return (
                 <Link key={est.id} to={`/establishments/${est.id}`}>
-                  <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
+                  <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card">
                     <CardContent className="p-5">
                       <div className="flex items-start gap-3">
                         {est.logo_url ? (

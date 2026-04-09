@@ -133,7 +133,7 @@ export default function Mentorship() {
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {filteredPrograms.map(program => (
                   <Link key={program.id} to={`/mentorship/${program.id}`}>
-                    <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
+                    <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card">
                       {program.cover_image_url && (
                         <div className="aspect-video overflow-hidden bg-muted relative">
                           <img src={program.cover_image_url} alt={program.title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />
