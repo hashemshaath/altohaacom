@@ -3,6 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Bell, BellOff, Ticket, Globe, Share2, Download, Bookmark, BookmarkCheck } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+interface BeforeInstallPromptEvt extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: string }>;
+}
+
 interface Props {
   user: { id: string } | null;
   isFollowing: boolean;
@@ -23,10 +28,10 @@ export const ExhibitionMobileActionBar = memo(function ExhibitionMobileActionBar
   const showRegistration = registrationUrl && !hasEnded;
   const showFollow = !!user;
   const showWebsite = !!websiteUrl;
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvt | null>(null);
 
   useEffect(() => {
-    const handler = (e: Event) => { e.preventDefault(); setDeferredPrompt(e as BeforeInstallPromptEvent); };
+    const handler = (e: Event) => { e.preventDefault(); setDeferredPrompt(e as BeforeInstallPromptEvt); };
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
