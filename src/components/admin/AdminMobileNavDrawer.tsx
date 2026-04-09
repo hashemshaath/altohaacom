@@ -40,7 +40,7 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl touch-manipulation active:scale-90 transition-transform">
+        <Button variant="ghost" size="icon" className="md:hidden h-9 w-9 rounded-xl touch-manipulation active:scale-90 transition-transform" aria-label={isAr ? "القائمة" : "Menu"}>
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
