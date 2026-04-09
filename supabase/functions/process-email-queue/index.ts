@@ -14,7 +14,8 @@ function isRateLimited(error: unknown): boolean {
   if (error && typeof error === 'object' && 'status' in error) {
     return (error as { status: number }).status === 429
   }
-  return error instanceof Error && error instanceof Error ? error.message : String(error).includes('429')
+  const msg = error instanceof Error ? error.message : String(error)
+  return msg.includes('429')
 }
 
 // Check if an error is a forbidden (403) response, which means emails are
@@ -23,7 +24,8 @@ function isForbidden(error: unknown): boolean {
   if (error && typeof error === 'object' && 'status' in error) {
     return (error as { status: number }).status === 403
   }
-  return error instanceof Error && error instanceof Error ? error.message : String(error).includes('403')
+  const msg = error instanceof Error ? error.message : String(error)
+  return msg.includes('403')
 }
 
 // Extract Retry-After seconds from a structured EmailAPIError, or default to 60s.
