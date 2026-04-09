@@ -29,7 +29,7 @@ export const CompanyQuickActions = memo(function CompanyQuickActions() {
         return (
           <Link key={action.to} to={action.to}>
             <Card
-              className="group cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.97] hover:-translate-y-0.5 border-transparent hover:border-border animate-fade-in"
+              className="group cursor-pointer transition-all duration-200 hover:shadow-md active:scale-[0.98] hover:-translate-y-0.5 border-transparent hover:border-border animate-fade-in"
               style={{ animationDelay: `${idx * 0.03}s` }}
             >
               <CardContent className="flex flex-col items-center gap-1.5 p-3">

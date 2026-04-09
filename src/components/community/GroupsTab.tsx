@@ -242,7 +242,7 @@ export const GroupsTab = memo(function GroupsTab() {
                 <Button
                   variant={group.is_member ? "ghost" : "default"}
                   size="sm"
-                  className="h-7 text-[11px] rounded-lg px-3 active:scale-[0.96]"
+                  className="h-7 text-[11px] rounded-lg px-3 active:scale-[0.98]"
                   onClick={() => handleJoinLeave(group.id, group.is_member)}
                 >
                   {group.is_member ? (isAr ? "مغادرة" : "Leave") : (isAr ? "انضمام" : "Join")}

@@ -41,7 +41,7 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
     : null, [reviews]);
   return (
     <Card
-      className="group flex h-full flex-col overflow-hidden cursor-pointer border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card"
+      className="group flex h-full flex-col overflow-hidden cursor-pointer border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card"
       onClick={() => navigate(`/masterclasses/${mc.id}`)}
     >
       <div className="relative aspect-video shrink-0 overflow-hidden bg-muted">

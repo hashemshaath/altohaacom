@@ -339,7 +339,7 @@ export default function AdminDashboard() {
                 { title: isAr ? "الإعدادات" : "Settings", icon: Settings, link: "/admin/settings" },
               ].map((action) => (
                 <Link key={action.title} to={action.link}>
-                  <div className="group relative flex flex-col items-center gap-1.5 rounded-lg border border-border/40 p-3 text-center transition-all hover:border-border hover:bg-accent/5 active:scale-[0.97]">
+                  <div className="group relative flex flex-col items-center gap-1.5 rounded-lg border border-border/40 p-3 text-center transition-all hover:border-border hover:bg-accent/5 active:scale-[0.98]">
                     <action.icon className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
                     <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
                     {action.badge && action.badge > 0 && (

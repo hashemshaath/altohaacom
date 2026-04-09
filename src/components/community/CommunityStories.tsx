@@ -49,7 +49,7 @@ export const CommunityStories = memo(function CommunityStories() {
       <div className="flex gap-3 overflow-x-auto scrollbar-none px-4 py-3 touch-pan-x">
         {/* My story */}
         {user && (
-          <button className="flex flex-col items-center gap-1 flex-shrink-0 touch-manipulation active:scale-[0.95]">
+          <button className="flex flex-col items-center gap-1 flex-shrink-0 touch-manipulation active:scale-[0.98]">
             <div className="relative">
               <Avatar className="h-14 w-14 ring-2 ring-border/20">
                 <AvatarImage src={myProfile?.avatar_url || undefined} />
@@ -75,7 +75,7 @@ export const CommunityStories = memo(function CommunityStories() {
           return (
             <button
               key={p.user_id}
-              className="flex flex-col items-center gap-1 flex-shrink-0 touch-manipulation active:scale-[0.95]"
+              className="flex flex-col items-center gap-1 flex-shrink-0 touch-manipulation active:scale-[0.98]"
             >
               <Avatar className="h-14 w-14 ring-2 ring-primary/30 p-0.5">
                 <AvatarImage src={p.avatar_url || undefined} />

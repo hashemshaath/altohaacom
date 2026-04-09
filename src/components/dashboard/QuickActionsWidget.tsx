@@ -125,7 +125,7 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
           <Button
             key={action.href}
             variant="ghost"
-            className="w-full justify-start gap-3 active:scale-[0.97] group transition-all h-9 px-3 text-xs font-medium hover:bg-muted/60"
+            className="w-full justify-start gap-3 active:scale-[0.98] group transition-all h-9 px-3 text-xs font-medium hover:bg-muted/60"
             asChild
           >
             <Link to={action.href}>

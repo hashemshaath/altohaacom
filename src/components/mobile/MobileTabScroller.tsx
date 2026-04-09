@@ -70,7 +70,7 @@ export const MobileTabScroller = memo(function MobileTabScroller({ tabs, value, 
               aria-selected={isActive}
               onClick={() => onChange(tab.value)}
               className={cn(
-                "relative flex shrink-0 snap-start items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 touch-manipulation active:scale-[0.95] whitespace-nowrap mx-0.5",
+                "relative flex shrink-0 snap-start items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 touch-manipulation active:scale-[0.98] whitespace-nowrap mx-0.5",
                 isActive
                   ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"

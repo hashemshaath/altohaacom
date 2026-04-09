@@ -42,7 +42,7 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
 
   return (
     <Link to={`/recipes/${recipe.slug || recipe.id}`}>
-      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 hover:border-primary/30 hover:bg-card">
+      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card">
         <div className="aspect-video overflow-hidden bg-muted relative">
           {recipe.image_url ? (
             <img src={recipe.image_url} alt={recipe.title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110" loading="lazy" />

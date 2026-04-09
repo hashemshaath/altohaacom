@@ -88,7 +88,7 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
                         onClick={() => setOpen(false)}
                         className={({ isActive }) =>
                           cn(
-                            "group/nav flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 touch-manipulation active:scale-[0.97] select-none",
+                            "group/nav flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 touch-manipulation active:scale-[0.98] select-none",
                             isActive
                               ? "bg-primary text-primary-foreground font-medium shadow-sm shadow-primary/15"
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"

@@ -763,7 +763,7 @@ export default function CompetitionDetail() {
                             key={tab.id}
                             onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(tab.id); }}
                             className={`
-                              inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-[0.96] touch-manipulation select-none
+                              inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-[0.98] touch-manipulation select-none
                               ${isActive
                                 ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
                                 : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
