@@ -46,7 +46,7 @@ export const AdminHeader = memo(function AdminHeader() {
         <div className="flex items-center gap-0.5">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" asChild className="rounded-md h-8 w-8 hover:bg-muted transition-all active:scale-95">
+              <Button variant="ghost" size="icon" asChild className="rounded-md h-8 w-8 hover:bg-muted transition-all active:scale-95" aria-label={isAr ? "العودة للموقع" : "Back to site"}>
                 <Link to="/dashboard">
                   <Home className="h-4 w-4" />
                 </Link>
@@ -61,7 +61,7 @@ export const AdminHeader = memo(function AdminHeader() {
           <div className="mx-1 h-5 w-px bg-border" />
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-md h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all active:scale-95">
+              <Button variant="ghost" size="icon" onClick={signOut} className="rounded-md h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all active:scale-95" aria-label={isAr ? "تسجيل الخروج" : "Sign out"}>
                 <LogOut className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
