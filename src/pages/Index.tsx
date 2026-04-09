@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
+
 import { HeroSection } from "@/components/home/sections/HeroSection";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
@@ -86,7 +86,7 @@ const Index = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <OfflineIndicator />
+      
       <SEOHead
         title={seo.title}
         description={seo.description}
