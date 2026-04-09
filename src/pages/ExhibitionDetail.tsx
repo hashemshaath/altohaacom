@@ -264,7 +264,7 @@ export default function ExhibitionDetail() {
         supabase.from("exhibition_reviews").select("rating").eq("exhibition_id", exhibition!.id),
       ]);
       const ratings = reviewRatings.data || [];
-      const avgRating = ratings.length > 0 ? ratings.reduce((s, r) => s + (r as any).rating, 0) / ratings.length : 0;
+      const avgRating = ratings.length > 0 ? ratings.reduce((s, r) => s + ((r as unknown as Record<string, number>).rating || 0), 0) / ratings.length : 0;
       return { agenda: agenda.count || 0, booths: booths.count || 0, reviews: reviews.count || 0, scheduleItems: scheduleItems.count || 0, tickets: tickets.count || 0, avgRating };
     },
     enabled: !!exhibition,
@@ -316,7 +316,7 @@ export default function ExhibitionDetail() {
 
   /* ---------- derived data ---------- */
   const baseTitle = isAr && exhibition.title_ar ? exhibition.title_ar : exhibition.title;
-  const editionYear = (exhibition as any).edition_year;
+  const editionYear = (exhibition as unknown as Record<string, number>).edition_year;
   const title = editionYear && !baseTitle.includes(String(editionYear)) ? `${baseTitle} ${editionYear}` : baseTitle;
   const description = isAr && exhibition.description_ar ? exhibition.description_ar : exhibition.description;
   const venue = isAr && exhibition.venue_ar ? exhibition.venue_ar : exhibition.venue;

@@ -62,7 +62,7 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
 
       return data.map((n): ActivityItem => {
-        const meta = n.metadata as any;
+        const meta = n.metadata as Record<string, string> | null;
         const actorId = meta?.follower_id || meta?.reactor_id || meta?.viewer_id;
         const profile = profileMap.get(actorId);
         return {

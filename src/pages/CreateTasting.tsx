@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCreateTastingSession, useAddTastingCriteria, useCriteriaPresets, EvalMethod } from "@/hooks/useTasting";
 import { Header } from "@/components/Header";
@@ -123,7 +124,7 @@ export default function CreateTasting() {
         is_blind_tasting: form.is_blind_tasting,
         allow_notes: form.allow_notes,
         competition_id: mode === "competition" ? form.competition_id : null,
-        status: "draft" as any,
+        status: "draft" as Database["public"]["Enums"]["tasting_session_status"],
       });
 
       if (form.preset && presets) {

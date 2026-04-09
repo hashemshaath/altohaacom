@@ -3,6 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -85,7 +86,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
   const signMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("certificates").update({
-        status: "signed" as any, signed_at: new Date().toISOString(), signed_by: user?.id,
+        status: "signed" as Database["public"]["Enums"]["certificate_status"], signed_at: new Date().toISOString(), signed_by: user?.id,
       }).eq("id", cert.id);
       if (error) throw error;
     },
@@ -98,7 +99,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
   const issueMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("certificates").update({
-        status: "issued" as any, issued_at: new Date().toISOString(),
+        status: "issued" as Database["public"]["Enums"]["certificate_status"], issued_at: new Date().toISOString(),
       }).eq("id", cert.id);
       if (error) throw error;
     },
@@ -124,7 +125,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
   const revokeMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("certificates").update({
-        status: "revoked" as any, revoked_at: new Date().toISOString(), revoked_by: user?.id,
+        status: "revoked" as Database["public"]["Enums"]["certificate_status"], revoked_at: new Date().toISOString(), revoked_by: user?.id,
       }).eq("id", cert.id);
       if (error) throw error;
     },

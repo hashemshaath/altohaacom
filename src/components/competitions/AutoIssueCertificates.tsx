@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -144,7 +145,7 @@ export const AutoIssueCertificates = memo(function AutoIssueCertificates({ compe
 
           certsToInsert.push({
             template_id: winnerTemplate.id,
-            type: winnerCertType as any,
+            type: winnerCertType as Database["public"]["Enums"]["certificate_type"],
             competition_id: competitionId,
             recipient_id: result.participantId,
             recipient_name: result.name,

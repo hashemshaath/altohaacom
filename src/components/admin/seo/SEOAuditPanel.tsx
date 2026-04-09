@@ -183,7 +183,7 @@ export function SEOAuditPanel() {
           )}
           {audits.map((audit) => {
             const isExpanded = expandedAudit === audit.id;
-            const summary = audit.summary as any;
+            const summary = audit.summary as Record<string, unknown> | null;
             return (
               <div key={audit.id}>
                 <button
@@ -208,7 +208,7 @@ export function SEOAuditPanel() {
                         {audit.completed_at ? format(new Date(audit.completed_at), "MMM d, yyyy HH:mm") : "Running..."}
                       </p>
                       <p className="text-[12px] text-muted-foreground">
-                        {summary?.pages_audited || 0} {isAr ? "صفحة" : "pages"} · {audit.issues_found || 0} {isAr ? "مشكلة" : "issues"}
+                        {String(summary?.pages_audited || 0)} {isAr ? "صفحة" : "pages"} · {audit.issues_found || 0} {isAr ? "مشكلة" : "issues"}
                       </p>
                     </div>
                   </div>

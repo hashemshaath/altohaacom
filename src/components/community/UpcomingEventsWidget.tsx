@@ -24,7 +24,8 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
         .gte("start_date", now)
         .order("start_date", { ascending: true })
         .limit(3);
-      return (data as any[]) || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- exhibitions query with dynamic status filter
+      return (data as Record<string, string>[]) || [];
     },
     staleTime: 1000 * 60 * 10,
   });

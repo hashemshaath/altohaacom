@@ -293,7 +293,7 @@ export default function Entities() {
                   const tLabel = typeLabels[entity.type as EntityType];
                   const sLabel = scopeLabels[entity.scope as EntityScope];
                   const isFollowing = myFollows?.includes(entity.id);
-                  const followerCount = (entity as any).entity_followers?.length || 0;
+                  const followerCount = (entity as unknown as Record<string, unknown[]>).entity_followers?.length || 0;
 
                   return (
                     <Card key={entity.id} className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20">

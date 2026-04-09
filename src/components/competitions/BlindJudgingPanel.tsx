@@ -160,7 +160,7 @@ export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {blindCodes.map(code => {
-                    const reg = code.competition_registrations as any;
+                    const reg = code.competition_registrations as unknown as Record<string, Record<string, string>> | null;
                     const profile = reg?.profiles;
                     const name = isAr ? profile?.full_name_ar || profile?.full_name : profile?.full_name;
                     return (

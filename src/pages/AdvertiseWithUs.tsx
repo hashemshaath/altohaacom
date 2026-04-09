@@ -94,7 +94,7 @@ export default function AdvertiseWithUs() {
         .select("company_id, companies(id, name, name_ar, logo_url)")
         .eq("user_id", user.id)
         .maybeSingle();
-      return data?.companies as any;
+      return data?.companies as { id: string; name: string; name_ar: string | null; logo_url: string | null } | null;
     },
     enabled: !!user,
   });
@@ -303,7 +303,7 @@ export default function AdvertiseWithUs() {
                   <CardHeader className="pb-3">
                     <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground font-normal">
                       <Building2 className="h-4 w-4" />
-                      {isAr ? "الإعلان باسم:" : "Advertising as:"} <span className="font-semibold text-foreground">{isAr && (company as any).name_ar ? (company as any).name_ar : (company as any).name}</span>
+                      {isAr ? "الإعلان باسم:" : "Advertising as:"} <span className="font-semibold text-foreground">{isAr && company?.name_ar ? company.name_ar : company?.name}</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">

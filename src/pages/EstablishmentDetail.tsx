@@ -207,7 +207,7 @@ export default function EstablishmentDetail() {
                 </div>
               ) : (
                 associations.map((a) => {
-                  const profile = a.profiles as any;
+                  const profile = a.profiles as unknown as Record<string, string> | null;
                   const assocLabel = associationTypes.find((t) => t.value === a.association_type);
                   return (
                     <Card key={a.id} className="transition-all hover:shadow-sm">
