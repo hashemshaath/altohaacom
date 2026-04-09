@@ -341,8 +341,6 @@ export default function CertificateVerify() {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
