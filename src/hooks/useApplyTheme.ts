@@ -30,7 +30,7 @@ export function useApplyTheme() {
     if (typeof document === "undefined") return;
 
     const currentSettings = settingsRef.current;
-    const globalPresetId = (currentSettings.theme as any)?.preset || "gold";
+    const globalPresetId = (currentSettings.theme as Record<string, string> | null)?.preset || "gold";
     const localPresetId = safeStorageGet(LOCAL_THEME_KEY);
     const activePresetId = localPresetId || globalPresetId;
 
@@ -50,12 +50,12 @@ export function useApplyTheme() {
     // IMPORTANT: Surface/text/border colors are only applied in light mode
     // because admin-configured colors are light-mode specific.
     // Primary/accent/chart colors work in both modes.
-    const identity = currentSettings.brand_identity as any;
+    const identity = currentSettings.brand_identity as Record<string, unknown> | null;
     if (identity) {
-      const pc = identity.primaryColors;
-      const sc = identity.secondaryColors;
-      const tc = identity.typographyColors;
-      const st = identity.statusColors;
+      const pc = identity.primaryColors as Record<string, string> | undefined;
+      const sc = identity.secondaryColors as Record<string, string> | undefined;
+      const tc = identity.typographyColors as Record<string, string> | undefined;
+      const st = identity.statusColors as Record<string, string> | undefined;
 
       // Primary colors apply in both modes (they're brand colors)
       if (pc) {
@@ -106,24 +106,26 @@ export function useApplyTheme() {
       // Seasonal identity — primary colors only (work in both modes)
       if (identity.activeSeasonalId && identity.seasonalIdentities) {
         const now = new Date();
-        const seasonal = (identity.seasonalIdentities as any[]).find(
+        const seasonals = identity.seasonalIdentities as Array<Record<string, unknown>>;
+        const seasonal = seasonals.find(
           (s) => s.id === identity.activeSeasonalId
         );
         if (seasonal) {
-          const start = seasonal.startDate ? new Date(seasonal.startDate) : null;
-          const end = seasonal.endDate ? new Date(seasonal.endDate) : null;
+          const start = seasonal.startDate ? new Date(String(seasonal.startDate)) : null;
+          const end = seasonal.endDate ? new Date(String(seasonal.endDate)) : null;
           const inRange = (!start || now >= start) && (!end || now <= end);
-          if (inRange && seasonal.colors?.length >= 3) {
-            root.style.setProperty("--primary", seasonal.colors[0]);
-            root.style.setProperty("--accent", seasonal.colors[1]);
-            root.style.setProperty("--chart-1", seasonal.colors[2]);
+          const colors = seasonal.colors as string[] | undefined;
+          if (inRange && colors && colors.length >= 3) {
+            root.style.setProperty("--primary", colors[0]);
+            root.style.setProperty("--accent", colors[1]);
+            root.style.setProperty("--chart-1", colors[2]);
           }
         }
       }
     }
 
     // Apply typography fonts
-    const globalTypo = (currentSettings.typography as any) || {};
+    const globalTypo = (currentSettings.typography as Record<string, string> | null) || {};
     const localBodyFont = safeStorageGet(LOCAL_FONT_KEY);
     const localHeadingFont = safeStorageGet(LOCAL_HEADING_FONT_KEY);
 

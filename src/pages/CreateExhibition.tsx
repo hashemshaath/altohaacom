@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
@@ -55,8 +56,8 @@ export default function CreateExhibition() {
           slug,
           description: data.description || null,
           description_ar: data.descriptionAr || null,
-          type: data.type as any,
-          status: "draft" as any,
+          type: data.type as Database["public"]["Enums"]["exhibition_type"],
+          status: "draft" as Database["public"]["Enums"]["exhibition_status"],
           start_date: data.startDate,
           end_date: data.endDate,
           registration_deadline: data.registrationDeadline || null,
