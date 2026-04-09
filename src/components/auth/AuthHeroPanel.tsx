@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { Trophy, Globe, GraduationCap, Award, CheckCircle } from "lucide-react";
 import { useAuthHeroSlides, type AuthHeroSlide } from "@/hooks/useAuthHeroSlides";
 import authHeroFallback from "@/assets/auth-hero.jpg";
