@@ -3,6 +3,14 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Trophy, Star, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+/** Pre-computed particle positions to avoid Math.random() in render */
+const PARTICLE_POSITIONS = Array.from({ length: 12 }, (_, i) => ({
+  left: `${(i * 8.3 + 4) % 100}%`,
+  top: `${((i * 37 + 11) % 100)}%`,
+  delay: `${(i * 0.17) % 2}s`,
+  duration: `${1.5 + (i % 4) * 0.25}s`,
+}));
+
 interface AchievementEvent {
   type: "challenge" | "badge";
   points?: number;
