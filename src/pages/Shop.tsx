@@ -91,7 +91,7 @@ export default function Shop() {
     // trackProductListView is stable; filtered changes tracked via filteredLen
   }, [filteredLen, categoryFilter, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleAddToCart = useCallback((product) => {
+  const handleAddToCart = useCallback((product: typeof products[number]) => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
       return;
