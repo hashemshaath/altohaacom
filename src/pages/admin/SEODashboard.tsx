@@ -663,7 +663,7 @@ export default function SEODashboard() {
           cls,
           fcp,
           ttfb,
-          device_type: window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop",
+          device_type: getDeviceType(),
           connection_type: (navigator as any)?.connection?.effectiveType || null,
           session_id: "manual-collect-" + Date.now().toString(36),
           user_agent: navigator.userAgent.slice(0, 200),
