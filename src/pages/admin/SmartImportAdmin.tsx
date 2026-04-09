@@ -753,7 +753,7 @@ export default function SmartImportAdmin() {
       toast({
         title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully`,
         description: isAr ? "انقر لعرض السجل" : "Click to view record",
-        action: <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button>,
+        action: <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank', 'noopener')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button>,
       });
       setLastSavedRecord({ table: record.table, id: record.id });
       await logImport('update', record.table, record.id, record.sub_type);
@@ -851,7 +851,7 @@ export default function SmartImportAdmin() {
       toast({
         title: isAr ? "تم الإضافة بنجاح (بانتظار الموافقة)" : `${tableLabel?.label_en || 'Record'} added (pending approval)`,
         description: recordId ? (isAr ? "انقر لعرض السجل" : "Click to view record") : undefined,
-        action: recordId ? <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(targetTable, recordId!), '_blank')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button> : undefined,
+        action: recordId ? <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(targetTable, recordId!), '_blank', 'noopener')}><ExternalLink className="h-3 w-3" />{isAr ? "عرض" : "View"}</Button> : undefined,
       });
       if (recordId) setLastSavedRecord({ table: targetTable, id: recordId });
       await logImport('create', targetTable, recordId, subType);
@@ -1640,7 +1640,7 @@ export default function SmartImportAdmin() {
                             {updating && selectedExistingId === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                             {isAr ? "تحديث المعلومات" : "Update Information"}
                           </Button>
-                          <Button size="sm" variant="ghost" className="gap-1 text-[12px] text-muted-foreground h-6" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank')}>
+                          <Button size="sm" variant="ghost" className="gap-1 text-[12px] text-muted-foreground h-6" onClick={() => window.open(getAdminEditUrl(record.table, record.id), '_blank', 'noopener')}>
                             <ExternalLink className="h-2.5 w-2.5" />{isAr ? "فتح السجل" : "Open Record"}
                           </Button>
                           </div>
@@ -1679,7 +1679,7 @@ export default function SmartImportAdmin() {
                     <CheckCircle className="h-4 w-4 text-green-600" />
                     <span className="text-sm font-medium text-green-700">{isAr ? "تم حفظ السجل بنجاح" : "Record saved successfully"}</span>
                   </div>
-                  <Button size="sm" variant="outline" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(lastSavedRecord.table, lastSavedRecord.id), '_blank')}>
+                  <Button size="sm" variant="outline" className="gap-1.5" onClick={() => window.open(getAdminEditUrl(lastSavedRecord.table, lastSavedRecord.id), '_blank', 'noopener')}>
                     <ExternalLink className="h-3.5 w-3.5" />
                     {isAr ? "فتح صفحة التعديل" : "Open Edit Page"}
                   </Button>
