@@ -151,13 +151,19 @@ export default function Organizers() {
               </div>
 
               <div className="space-y-2">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight" dir="rtl" style={{ fontFamily: '"IBM Plex Arabic", "Segoe UI", Tahoma, sans-serif' }}>
-                  منظمو الفعاليات والمعارض
-                </h1>
-                {!isAr && (
-                  <p className="text-lg md:text-xl font-semibold text-muted-foreground/70 tracking-wide">
-                    Event & Exhibition Organizers
-                  </p>
+                {isAr ? (
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-normal" dir="rtl" style={{ fontFamily: '"IBM Plex Arabic", "Segoe UI", Tahoma, sans-serif' }}>
+                    منظمو الفعاليات والمعارض
+                  </h1>
+                ) : (
+                  <>
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-normal" dir="rtl" style={{ fontFamily: '"IBM Plex Arabic", "Segoe UI", Tahoma, sans-serif' }}>
+                      منظمو الفعاليات والمعارض
+                    </h1>
+                    <p className="text-lg md:text-xl font-semibold text-muted-foreground/70 tracking-wide">
+                      Event &amp; Exhibition Organizers
+                    </p>
+                  </>
                 )}
               </div>
 
@@ -397,7 +403,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollo
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
           {featured && (
             <div className="absolute top-2.5 end-2.5">
-              <Badge className="text-[12px] gap-1 bg-amber-500 text-white border-0 shadow-sm">
+              <Badge className="text-[12px] gap-1 bg-primary text-primary-foreground border-0 shadow-sm">
                 <Star className="h-2.5 w-2.5 fill-current" />{isAr ? "مميز" : "Featured"}
               </Badge>
             </div>
