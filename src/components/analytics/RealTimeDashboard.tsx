@@ -61,10 +61,30 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
     fetchCounts();
 
-    // Refresh active users every 30 seconds
-    const refreshInterval = setInterval(fetchCounts, 30000);
+    // Visibility-aware polling: pause when tab is hidden
+    let refreshInterval: ReturnType<typeof setInterval> | null = null;
+
+    const startPolling = () => {
+      if (refreshInterval) clearInterval(refreshInterval);
+      refreshInterval = setInterval(() => {
+        if (!cancelled) fetchCounts();
+      }, 30000);
+    };
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; }
+      } else {
+        if (!cancelled) fetchCounts();
+        startPolling();
+      }
+    };
+
+    startPolling();
+    document.addEventListener("visibilitychange", handleVisibility);
 
     const channel = supabase
       .channel("realtime-analytics")
@@ -97,8 +117,10 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
       });
 
     return () => {
+      cancelled = true;
+      document.removeEventListener("visibilitychange", handleVisibility);
       supabase.removeChannel(channel);
-      clearInterval(refreshInterval);
+      if (refreshInterval) clearInterval(refreshInterval);
     };
   }, [fetchCounts]);
 
