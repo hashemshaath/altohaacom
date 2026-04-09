@@ -173,7 +173,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
         </div>
       )}
 
-      {showResults && <div className="fixed inset-0 z-[-1]" onClick={() => setShowResults(false)} />}
+      {showResults && <div className="fixed inset-0 z-[-1]" role="presentation" onClick={() => setShowResults(false)} />}
 
       {/* ── Inline Create Venue Form (no popup) ── */}
       {showCreateForm && (

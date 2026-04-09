@@ -180,7 +180,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
                 </Button>
                 {copyMenuOpen && (
                   <>
-                    <div className="fixed inset-0 z-10" onClick={() => setCopyMenuOpen(false)} />
+                    <div className="fixed inset-0 z-10" role="presentation" onClick={() => setCopyMenuOpen(false)} onKeyDown={(e) => e.key === "Escape" && setCopyMenuOpen(false)} />
                     <div className="absolute end-0 top-full mt-1 z-20 bg-popover border rounded-xl shadow-lg p-1 min-w-[160px]">
                       {ALL_ROLES.filter(r => r !== activeRole).map(role => {
                         const rm = ROLE_META[role];

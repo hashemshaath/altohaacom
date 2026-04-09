@@ -32,7 +32,7 @@ export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox
   if (!isOpen || images.length === 0) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-md" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/95 backdrop-blur-md" role="dialog" aria-label="Image gallery" onClick={onClose}>
       <div className="absolute top-4 end-4 flex items-center gap-2 z-10">
         <span className="text-xs text-muted-foreground bg-muted/80 px-2 py-1 rounded-md">
           {index + 1} / {images.length}

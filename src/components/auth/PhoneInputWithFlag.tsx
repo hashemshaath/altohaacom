@@ -63,7 +63,7 @@ export const PhoneInputWithFlag = memo(function PhoneInputWithFlag({
 
           {dropdownOpen && (
             <>
-              <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
+              <div className="fixed inset-0 z-40" role="presentation" onClick={() => setDropdownOpen(false)} />
               <div className="absolute top-full mt-1 z-50 w-64 max-h-60 overflow-auto rounded-xl border bg-popover shadow-lg">
                 {(countries || []).map((c) => (
                   <button
