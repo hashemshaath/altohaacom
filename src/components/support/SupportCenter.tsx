@@ -45,7 +45,7 @@ export const SupportCenter = memo(function SupportCenter() {
   const [newTicketOpen, setNewTicketOpen] = useState(false);
   const [form, setForm] = useState({ subject: "", description: "", priority: "normal", category: "general" });
   const [searchFaq, setSearchFaq] = useState("");
-  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [selectedTicket, setSelectedTicket] = useState<(typeof tickets)[number] | null>(null);
   const [replyText, setReplyText] = useState("");
 
   const { data: tickets = [], isLoading } = useQuery({
