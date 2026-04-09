@@ -27,13 +27,13 @@ export const ExhibitionAnalyticsWidget = memo(function ExhibitionAnalyticsWidget
         { data: upcomingExh },
       ] = await Promise.all([
         supabase.from("exhibitions").select("*", { count: "exact", head: true }),
-        supabase.from("exhibitions").select("*", { count: "exact", head: true }).eq("status", "active" as any),
-        supabase.from("exhibitions").select("*", { count: "exact", head: true }).eq("status", "active" as any).gte("start_date", new Date().toISOString()),
+        supabase.from("exhibitions").select("*", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("exhibitions").select("*", { count: "exact", head: true }).eq("status", "active").gte("start_date", new Date().toISOString()),
         supabase.from("exhibition_booths").select("*", { count: "exact", head: true }),
         supabase.from("exhibition_booths").select("*", { count: "exact", head: true }).eq("status", "occupied"),
         supabase.from("exhibition_tickets").select("*", { count: "exact", head: true }),
         supabase.from("exhibitions").select("id, title, title_ar, start_date, venue, city, status")
-          .eq("status", "active" as any)
+          .eq("status", "active")
           .gte("start_date", new Date().toISOString())
           .order("start_date", { ascending: true })
           .limit(4),

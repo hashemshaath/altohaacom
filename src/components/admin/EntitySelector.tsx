@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllCountries } from "@/hooks/useCountries";
 import { Input } from "@/components/ui/input";
@@ -114,12 +115,12 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
         name_ar: newNameAr || null,
         country: newCountry || null,
         city: newCity || null,
-        type: newType as any,
+        type: newType as Database["public"]["Enums"]["entity_type"],
         website: newWebsite || null,
         slug,
         entity_number: "",
-        status: "pending" as any,
-        scope: "local" as any,
+        status: "pending" as Database["public"]["Enums"]["entity_status"],
+        scope: "local" as Database["public"]["Enums"]["entity_scope"],
         is_visible: false,
       }).select("id, name, name_ar").single();
 

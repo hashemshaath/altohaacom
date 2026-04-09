@@ -77,7 +77,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
   const { data: seriesList, isLoading } = useQuery({
     queryKey: ["event-series"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("event_series")
         .select("id, name, name_ar, description, description_ar, series_type, logo_url, cover_image_url, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, default_organizer_phone, default_organizer_website, website_url, tags, is_active, created_at")
         .order("name");
@@ -91,8 +91,8 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
     queryKey: ["event-series-edition-counts"],
     queryFn: async () => {
       const [exh, comp] = await Promise.all([
-        (supabase as any).from("exhibitions").select("series_id, edition_year").not("series_id", "is", null),
-        (supabase as any).from("competitions").select("series_id, edition_year").not("series_id", "is", null),
+        supabase.from("exhibitions").select("series_id, edition_year").not("series_id", "is", null),
+        supabase.from("competitions").select("series_id, edition_year").not("series_id", "is", null),
       ]);
       const counts: Record<string, { exhibitions: number; competitions: number; years: number[] }> = {};
       (exh.data || []).forEach((r) => {
@@ -111,7 +111,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      const payload: any = {
+      const payload: Record<string, unknown> = {
         name: form.name,
         name_ar: form.name_ar || null,
         description: form.description || null,
@@ -133,10 +133,10 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
         created_by: user?.id,
       };
       if (editingId) {
-        const { error } = await (supabase as any).from("event_series").update(payload).eq("id", editingId);
+        const { error } = await supabase.from("event_series").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await (supabase as any).from("event_series").insert(payload);
+        const { error } = await supabase.from("event_series").insert(payload as never);
         if (error) throw error;
       }
     },
@@ -150,7 +150,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await (supabase as any).from("event_series").delete().eq("id", id);
+      const { error } = await supabase.from("event_series").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

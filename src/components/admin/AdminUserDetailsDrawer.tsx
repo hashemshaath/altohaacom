@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Card, CardContent } from "@/components/ui/card";
@@ -52,9 +53,9 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
   const roleMutation = useMutation({
     mutationFn: async ({ role, action }: { role: string; action: "add" | "remove" }) => {
       if (action === "add") {
-        await supabase.from("user_roles").insert({ user_id: userId!, role: role as any });
+        await supabase.from("user_roles").insert({ user_id: userId!, role: role as Database["public"]["Enums"]["app_role"] });
       } else {
-        await supabase.from("user_roles").delete().eq("user_id", userId!).eq("role", role as any);
+        await supabase.from("user_roles").delete().eq("user_id", userId!).eq("role", role as Database["public"]["Enums"]["app_role"]);
       }
     },
     onSuccess: () => {
