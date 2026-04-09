@@ -22,13 +22,16 @@ function HomeEmergencyHero({ language }: { language: string }) {
           {isAr ? "مرحباً بك في مجتمع الطهاة" : "Welcome to the Culinary Community"}
         </h1>
         <p className="text-base text-muted-foreground max-w-lg mx-auto mb-8">
-          {isAr
-            ? "جارِ تحميل المحتوى..."
-            : "Loading content..."}
+          {isAr ? "اكتشف المسابقات والمعارض والطهاة حول العالم" : "Discover competitions, exhibitions, and chefs worldwide"}
         </p>
-        <Link to="/search" className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground font-semibold px-6 py-3 text-sm hover:opacity-90 transition-opacity">
-          {isAr ? "ابدأ البحث" : "Start searching"}
-        </Link>
+        <div className="flex gap-3 justify-center">
+          <Link to="/competitions" className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground font-semibold px-6 py-3 text-sm hover:opacity-90 transition-opacity">
+            {isAr ? "المسابقات" : "Competitions"}
+          </Link>
+          <Link to="/exhibitions" className="inline-flex items-center justify-center rounded-xl border border-border text-foreground font-semibold px-6 py-3 text-sm hover:bg-muted/50 transition-opacity">
+            {isAr ? "المعارض" : "Exhibitions"}
+          </Link>
+        </div>
       </div>
     </section>
   );
@@ -41,13 +44,10 @@ function HomeEmergencySections({ language }: { language: string }) {
       <div className="container py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[0, 1, 2].map((card) => (
-            <div key={card} className="rounded-2xl bg-card border border-border/40 p-6">
-              <h2 className="text-lg font-bold text-foreground mb-2">
-                {isAr ? `قسم ${card + 1}` : `Section ${card + 1}`}
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                {isAr ? "جارِ تحميل المحتوى..." : "Loading..."}
-              </p>
+            <div key={card} className="rounded-2xl bg-card border border-border/40 p-6 animate-pulse">
+              <div className="h-5 w-2/3 rounded bg-muted mb-3" />
+              <div className="h-3 w-full rounded bg-muted/60 mb-2" />
+              <div className="h-3 w-4/5 rounded bg-muted/40" />
             </div>
           ))}
         </div>

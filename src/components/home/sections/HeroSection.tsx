@@ -106,10 +106,27 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
             </div>
           </div>
           <div className="hidden lg:flex items-center justify-center">
-            <div className="w-full max-w-sm rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 border border-border/50 p-10 text-center">
-              <Sparkles className="h-14 w-14 text-primary mx-auto mb-5 opacity-40" />
-              <p className="text-xl font-bold text-foreground mb-2">{isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}</p>
-              <p className="text-sm text-muted-foreground">{isAr ? "جارِ تحميل المحتوى..." : "Loading content..."}</p>
+            <div className="w-full max-w-sm rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 border border-border/50 p-10 text-center space-y-4">
+              <Sparkles className="h-14 w-14 text-primary mx-auto opacity-40 animate-pulse" />
+              <p className="text-xl font-bold text-foreground">{isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}</p>
+              <div className="flex flex-col items-center gap-3">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  {isAr ? "متصل الآن" : "Live Now"}
+                </div>
+                <div className="grid grid-cols-3 gap-3 w-full">
+                  {[
+                    { n: "30K+", l: isAr ? "طاهٍ" : "Chefs" },
+                    { n: "500+", l: isAr ? "مسابقة" : "Events" },
+                    { n: "50+", l: isAr ? "دولة" : "Countries" },
+                  ].map((s) => (
+                    <div key={s.l} className="text-center">
+                      <p className="text-lg font-bold text-primary">{s.n}</p>
+                      <p className="text-[11px] text-muted-foreground">{s.l}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
