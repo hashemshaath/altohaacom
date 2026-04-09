@@ -37,7 +37,7 @@ export const SectionSponsor = memo(function SectionSponsor({ sectionType, sectio
 
   if (!sponsorship) return null;
 
-  const company = sponsorship.companies as any;
+  const company = sponsorship.companies as unknown as Record<string, string> | null;
 
   return (
     <div className="flex items-center gap-2 text-xs text-muted-foreground">

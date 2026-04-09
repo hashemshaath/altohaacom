@@ -43,7 +43,7 @@ function extractTOC(content: string): TOCItem[] {
 export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, minRows = 16, isAr, className, contentLang, onTranslateContent }: Props) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [preview, setPreview] = useState(false);
-  const [direction, setDirection] = useState<"ltr" | "rtl" | "auto">(initialDir as any || "auto");
+  const [direction, setDirection] = useState<"ltr" | "rtl" | "auto">((initialDir as "ltr" | "rtl" | "auto") || "auto");
   const [expanded, setExpanded] = useState(false);
   const [showOutline, setShowOutline] = useState(false);
   const [translating, setTranslating] = useState(false);
