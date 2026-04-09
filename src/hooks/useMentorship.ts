@@ -555,8 +555,10 @@ export function useMentorshipAnalytics() {
       const matchesData = matches.data || [];
       const sessionsData = sessions.data || [];
       const completedSessions = sessionsData.filter(s => s.status === "completed");
-      const avgMentorRating = completedSessions.filter(s => s.mentor_rating).reduce((s, c) => s + (c.mentor_rating || 0), 0) / (completedSessions.filter(s => s.mentor_rating).length || 1);
-      const avgMenteeRating = completedSessions.filter(s => s.mentee_rating).reduce((s, c) => s + (c.mentee_rating || 0), 0) / (completedSessions.filter(s => s.mentee_rating).length || 1);
+      const mentorRatings = completedSessions.filter(s => s.mentor_rating);
+      const menteeRatings = completedSessions.filter(s => s.mentee_rating);
+      const avgMentorRating = mentorRatings.reduce((s, c) => s + (c.mentor_rating || 0), 0) / (mentorRatings.length || 1);
+      const avgMenteeRating = menteeRatings.reduce((s, c) => s + (c.mentee_rating || 0), 0) / (menteeRatings.length || 1);
 
       return {
         totalPrograms: (programs.data || []).length,
