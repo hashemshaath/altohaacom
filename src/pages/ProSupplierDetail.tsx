@@ -932,6 +932,7 @@ export default function ProSupplierDetail() {
           </div>
         </div>
       </main>
+      </Suspense>
       <Footer />
 
       {/* Floating Cart Button */}
