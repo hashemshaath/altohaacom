@@ -66,7 +66,7 @@ export function useSessionManager() {
 
     if (result?.session_id) {
       setCurrentSessionId(result.session_id);
-      sessionStorage.setItem(SESSION_ID_KEY, result.session_id);
+      try { sessionStorage.setItem(SESSION_ID_KEY, result.session_id); } catch {}
     }
 
     return result;

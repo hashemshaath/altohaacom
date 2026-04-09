@@ -32,21 +32,21 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
 
   const handleTheme = (id: string) => {
     setSelectedTheme(id);
-    localStorage.setItem(THEME_KEY, id);
+    try { localStorage.setItem(THEME_KEY, id); } catch {}
     // Trigger re-apply by dispatching a storage event
     window.dispatchEvent(new Event("theme-change"));
   };
 
   const handleBodyFont = (id: string) => {
     setBodyFont(id);
-    localStorage.setItem(FONT_KEY, id);
+    try { localStorage.setItem(FONT_KEY, id); } catch {}
     const font = FONT_OPTIONS.find(f => f.id === id);
     if (font) document.documentElement.style.setProperty("--font-sans", font.family);
   };
 
   const handleHeadingFont = (id: string) => {
     setHeadingFont(id);
-    localStorage.setItem(HEADING_FONT_KEY, id);
+    try { localStorage.setItem(HEADING_FONT_KEY, id); } catch {}
     const font = HEADING_FONT_OPTIONS.find(f => f.id === id);
     if (font) document.documentElement.style.setProperty("--font-serif", font.family);
   };
@@ -54,13 +54,13 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
   const handleFontSize = (value: number[]) => {
     const v = value[0];
     setFontSize(v);
-    localStorage.setItem(FONT_SIZE_KEY, String(v));
+    try { localStorage.setItem(FONT_SIZE_KEY, String(v)); } catch {}
     document.documentElement.style.fontSize = `${v}%`;
   };
 
   const handleCompact = (v: boolean) => {
     setCompactMode(v);
-    localStorage.setItem(COMPACT_KEY, String(v));
+    try { localStorage.setItem(COMPACT_KEY, String(v)); } catch {}
   };
 
   const handleReset = () => {

@@ -37,19 +37,19 @@ export const NotificationPreferencesWidget = memo(function NotificationPreferenc
   const toggleCategory = (cat: string) => {
     const next = mutedCats.includes(cat) ? mutedCats.filter((c) => c !== cat) : [...mutedCats, cat];
     setMutedCats(next);
-    localStorage.setItem(MUTED_CATS_KEY, JSON.stringify(next));
+    try { localStorage.setItem(MUTED_CATS_KEY, JSON.stringify(next)); } catch {}
   };
 
   const updateDigest = (v: string) => {
     setDigest(v);
-    localStorage.setItem(DIGEST_KEY, v);
+    try { localStorage.setItem(DIGEST_KEY, v); } catch {}
   };
 
   const updateQuietHours = (start: string, end: string) => {
     setQuietStart(start);
     setQuietEnd(end);
-    localStorage.setItem(QUIET_START_KEY, start);
-    localStorage.setItem(QUIET_END_KEY, end);
+    try { localStorage.setItem(QUIET_START_KEY, start); } catch {}
+    try { localStorage.setItem(QUIET_END_KEY, end); } catch {}
   };
 
   return (

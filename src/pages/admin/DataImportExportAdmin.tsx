@@ -142,7 +142,7 @@ function loadTemplates(): ExportTemplate[] {
 }
 
 function saveTemplates(templates: ExportTemplate[]) {
-  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates));
+  try { localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates)); } catch {}
 }
 
 /* ─── Main Page ─── */

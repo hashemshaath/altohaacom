@@ -37,8 +37,8 @@ async function createLoginSession(loginMethod = "email") {
     });
 
     if (data?.session_id) {
-      sessionStorage.setItem("tabaq_session_id", data.session_id);
-      sessionStorage.setItem(SESSION_CREATED_KEY, "true");
+      try { sessionStorage.setItem("tabaq_session_id", data.session_id); } catch {}
+      try { sessionStorage.setItem(SESSION_CREATED_KEY, "true"); } catch {}
     }
   } catch (err: unknown) {
     console.warn("Session creation failed:", err instanceof Error ? err.message : err);

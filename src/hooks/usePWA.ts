@@ -45,7 +45,7 @@ export function useInstallPrompt() {
 
   const dismiss = useCallback(() => {
     setDismissed(true);
-    try { localStorage.setItem("pwa_banner_dismissed", Date.now().toString()); } catch { /* restricted */ }
+    try { try { localStorage.setItem("pwa_banner_dismissed", Date.now().toString()); } catch { /* restricted */ } } catch {}
   }, []);
 
   return {

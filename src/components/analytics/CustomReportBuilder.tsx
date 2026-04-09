@@ -138,7 +138,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
     const report: SavedReport = { name: reportName, metrics: selectedMetrics, chartType };
     const updated = [...savedReports, report];
     setSavedReports(updated);
-    localStorage.setItem("custom-reports", JSON.stringify(updated));
+    try { localStorage.setItem("custom-reports", JSON.stringify(updated)); } catch {}
     setReportName("");
     toast({ title: isAr ? "تم حفظ التقرير" : "Report saved" });
   }, [reportName, selectedMetrics, chartType, savedReports, isAr]);
@@ -152,7 +152,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
   const deleteReport = (index: number) => {
     const updated = savedReports.filter((_, i) => i !== index);
     setSavedReports(updated);
-    localStorage.setItem("custom-reports", JSON.stringify(updated));
+    try { localStorage.setItem("custom-reports", JSON.stringify(updated)); } catch {}
   };
 
   const exportCSV = useCallback(() => {

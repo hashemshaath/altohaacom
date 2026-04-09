@@ -11,7 +11,7 @@ export function useSupplierViewTracker(companyId: string | undefined) {
     tracked.current = true;
 
     const sessionId = sessionStorage.getItem("supplier_session") || crypto.randomUUID();
-    sessionStorage.setItem("supplier_session", sessionId);
+    try { sessionStorage.setItem("supplier_session", sessionId); } catch {}
 
     supabase
       .from("supplier_profile_views")

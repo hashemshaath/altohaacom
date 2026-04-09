@@ -32,7 +32,7 @@ export const ExhibitionNotificationPrompt = forwardRef<HTMLDivElement, Props>(fu
 
   const handleDismiss = () => {
     setDismissed(true);
-    localStorage.setItem(dismissKey, "1");
+    try { localStorage.setItem(dismissKey, "1"); } catch {}
   };
 
   const handleEnable = async () => {
