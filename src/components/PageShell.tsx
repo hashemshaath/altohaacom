@@ -5,6 +5,7 @@ import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 import { BackToTop } from "@/components/ui/back-to-top";
+import { Breadcrumbs } from "@/components/navigation/Breadcrumbs";
 import { cn } from "@/lib/utils";
 
 interface PageShellProps {
@@ -28,6 +29,10 @@ interface PageShellProps {
   padding?: "none" | "sm" | "md" | "lg";
   /** Whether to show related pages section for internal linking (default: true) */
   relatedPages?: boolean;
+  /** Whether to show breadcrumbs (default: true) */
+  breadcrumbs?: boolean;
+  /** Override breadcrumb label for current page */
+  breadcrumbLabel?: string;
 }
 
 const paddingMap = {
@@ -52,6 +57,8 @@ export const PageShell = memo(function PageShell({
   container = true,
   padding = "md",
   relatedPages = true,
+  breadcrumbs = true,
+  breadcrumbLabel,
 }: PageShellProps) {
   const location = useLocation();
   const showRelated = relatedPages && !seoProps?.noIndex;
@@ -68,6 +75,7 @@ export const PageShell = memo(function PageShell({
           className
         )}
       >
+        {breadcrumbs && <Breadcrumbs currentLabel={breadcrumbLabel} />}
         {children}
         {showRelated && (
           <div className={cn(!container && "container")}>

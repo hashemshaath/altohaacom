@@ -21,6 +21,7 @@ import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { AnnouncementBanner } from "@/components/engagement/AnnouncementBanner";
 import { safeLazy } from "@/lib/safeLazy";
+import { CommandPalette } from "@/components/search/CommandPalette";
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 import { PageTracker } from "@/components/tracking/PageTracker";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
@@ -132,6 +133,7 @@ function AppContent() {
       <GoogleTrackingProvider />
       <PageTracker />
       {!isHome && <AnnouncementBanner />}
+      <CommandPalette />
       <AppRoutes />
       <AppOverlays isHome={isHome} />
     </>
