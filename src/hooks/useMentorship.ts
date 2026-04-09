@@ -386,7 +386,7 @@ export function useUpdateGoalProgress(matchId: string) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ goalId, progress, status }: { goalId: string; progress: number; status?: string }) => {
-      const update: any = { progress };
+      const update: Record<string, unknown> = { progress };
       if (status) update.status = status;
       if (progress >= 100) {
         update.status = "completed";

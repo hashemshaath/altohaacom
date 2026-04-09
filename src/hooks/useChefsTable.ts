@@ -351,7 +351,7 @@ export function useRespondToInvitation() {
       response_message?: string;
       declined_reason?: string;
     }) => {
-      const updates: any = {
+      const updates: Record<string, unknown> = {
         status,
         responded_at: new Date().toISOString(),
         ...(response_message && { response_message }),
