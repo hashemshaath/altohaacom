@@ -71,7 +71,8 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
     attendeesRes.data?.forEach((a) => countMap.set(a.session_id, (countMap.get(a.session_id) || 0) + 1));
     const registeredSet = new Set(userAttendeesRes.data?.map((a) => a.session_id) || []);
 
-    const enrich = (s: any): LiveSession => {
+    type RawSession = NonNullable<typeof upcomingRes.data>[number];
+    const enrich = (s: RawSession): LiveSession => {
       const host = profileMap.get(s.host_id);
       return { ...s, host_name: host?.full_name || null, host_avatar: host?.avatar_url || null, attendee_count: countMap.get(s.id) || 0, is_registered: registeredSet.has(s.id) };
     };
