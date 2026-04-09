@@ -1,12 +1,9 @@
-import { useState } from "react";
-import { AdminCatalogExtended } from "@/components/admin/AdminCatalogExtended";
+import { useState, lazy, Suspense } from "react";
+import { safeLazy } from "@/lib/safeLazy";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
-import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
-import { BatchDuplicateScanner } from "@/components/admin/BatchDuplicateScanner";
-import { CompanyFinanceWidget } from "@/components/admin/CompanyFinanceWidget";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useTableSort } from "@/hooks/useTableSort";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -18,14 +15,21 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CountrySelector } from "@/components/auth/CountrySelector";
-import { CompanyClassificationsPanel } from "@/components/admin/CompanyClassificationsPanel";
-import { CompanySponsorshipPanelEnhanced } from "@/components/admin/CompanySponsorshipPanelEnhanced";
-import { AdminSupplierControls } from "@/components/admin/AdminSupplierControls";
-import { AdminReviewsModeration } from "@/components/admin/AdminReviewsModeration";
-import { CompanyEditPanel } from "@/components/admin/CompanyEditPanel";
-import { CompanySupplierScorecard } from "@/components/admin/CompanySupplierScorecard";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
+
+// Lazy-load heavy sub-panels to reduce initial bundle
+const AdminCatalogExtended = safeLazy(() => import("@/components/admin/AdminCatalogExtended").then(m => ({ default: m.AdminCatalogExtended })));
+const BulkImportPanel = safeLazy(() => import("@/components/admin/BulkImportPanel").then(m => ({ default: m.BulkImportPanel })));
+const BatchDuplicateScanner = safeLazy(() => import("@/components/admin/BatchDuplicateScanner").then(m => ({ default: m.BatchDuplicateScanner })));
+const CompanyFinanceWidget = safeLazy(() => import("@/components/admin/CompanyFinanceWidget").then(m => ({ default: m.CompanyFinanceWidget })));
+const CompanyClassificationsPanel = safeLazy(() => import("@/components/admin/CompanyClassificationsPanel").then(m => ({ default: m.CompanyClassificationsPanel })));
+const CompanySponsorshipPanelEnhanced = safeLazy(() => import("@/components/admin/CompanySponsorshipPanelEnhanced").then(m => ({ default: m.CompanySponsorshipPanelEnhanced })));
+const AdminSupplierControls = safeLazy(() => import("@/components/admin/AdminSupplierControls").then(m => ({ default: m.AdminSupplierControls })));
+const AdminReviewsModeration = safeLazy(() => import("@/components/admin/AdminReviewsModeration").then(m => ({ default: m.AdminReviewsModeration })));
+const CompanyEditPanel = safeLazy(() => import("@/components/admin/CompanyEditPanel").then(m => ({ default: m.CompanyEditPanel })));
+const CompanySupplierScorecard = safeLazy(() => import("@/components/admin/CompanySupplierScorecard").then(m => ({ default: m.CompanySupplierScorecard })));
+const CompanyAnalyticsWidget = safeLazy(() => import("@/components/admin/CompanyAnalyticsWidget").then(m => ({ default: m.CompanyAnalyticsWidget })));
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -46,7 +50,6 @@ import {
   Upload, FolderOpen, FileImage, File, Sparkles, FileSpreadsheet, Factory,
 } from "lucide-react";
 import { SmartImportDialog, type ImportedData } from "@/components/smart-import/SmartImportDialog";
-import { CompanyAnalyticsWidget } from "@/components/admin/CompanyAnalyticsWidget";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { CompanyLiveStatsWidget } from "@/components/admin/CompanyLiveStatsWidget";
 import { format } from "date-fns";
