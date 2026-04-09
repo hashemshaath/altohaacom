@@ -127,7 +127,7 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
         // Send cancellation email
         supabase.functions.invoke("send-membership-email", {
           body: { type: "cancellation_approved", user_id: userId, data: { tier: reviewRequest?.current_tier } },
-        }).catch(() => {});
+        }).then(null, () => {});
 
       } else if (action === "retained") {
         await supabase.from("notifications").insert({
@@ -143,7 +143,7 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
         // Send retention offer email
         supabase.functions.invoke("send-membership-email", {
           body: { type: "retention_offer", user_id: userId, data: { tier: reviewRequest?.current_tier, offer: retentionOffer, offer_ar: retentionOfferAr } },
-        }).catch(() => {});
+        }).then(null, () => {});
 
       } else {
         await supabase.from("notifications").insert({

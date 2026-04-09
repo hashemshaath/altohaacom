@@ -210,7 +210,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       // Send upgrade/downgrade email
       supabase.functions.invoke("send-membership-email", {
         body: { type: isUpgrade ? "upgraded" : "downgraded", user_id: userId, data: { previous_tier: prevTier, new_tier: newTier, tier: newTier } },
-      }).catch(() => {});
+      }).then(null, () => {});
 
       // Auto-create invoice for paid tiers
       if (newTier !== "basic") {
@@ -218,7 +218,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
           userId,
           tier: newTier,
           action: isUpgrade ? "upgrade" : "downgrade",
-        }).catch(() => {});
+        }).then(null, () => {});
       }
     },
     onSuccess: () => {
@@ -276,13 +276,13 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
           periodStart: new Date().toISOString(),
           periodEnd: newExpiry.toISOString(),
           notes: actionReason || undefined,
-        }).catch(() => {});
+        }).then(null, () => {});
       }
 
       // Send extension email
       supabase.functions.invoke("send-membership-email", {
         body: { type: "extended", user_id: userId, data: { tier: targetUser.membership_tier, new_expiry: newExpiry.toISOString() } },
-      }).catch(() => {});
+      }).then(null, () => {});
     },
     onSuccess: () => {
       invalidateAll();
@@ -315,7 +315,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       // Send suspension email
       supabase.functions.invoke("send-membership-email", {
         body: { type: "suspended", user_id: userId, data: { tier: targetUser.membership_tier, reason: actionReason } },
-      }).catch(() => {});
+      }).then(null, () => {});
     },
     onSuccess: () => {
       invalidateAll();
@@ -355,7 +355,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       // Send revocation email
       supabase.functions.invoke("send-membership-email", {
         body: { type: "revoked", user_id: userId, data: { previous_tier: prevTier, reason: actionReason } },
-      }).catch(() => {});
+      }).then(null, () => {});
     },
     onSuccess: () => {
       invalidateAll();
@@ -388,7 +388,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       // Send reactivation email
       supabase.functions.invoke("send-membership-email", {
         body: { type: "reactivated", user_id: userId, data: { tier: targetUser.membership_tier } },
-      }).catch(() => {});
+      }).then(null, () => {});
     },
     onSuccess: () => {
       invalidateAll();

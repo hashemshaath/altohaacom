@@ -121,7 +121,7 @@ export default function Auth() {
       // Track referral link click
       supabase.functions.invoke("track-referral-click", {
         body: { code: refCode, source: searchParams.get("utm_source") || "direct" },
-      }).catch(() => {});
+      }).then(null, () => {});
     }
   }, [refCode]);
 
@@ -488,7 +488,7 @@ export default function Auth() {
               idempotencyKey: `pwd-changed-${currentUser.id}-${Date.now()}`,
               templateData: { name: currentUser.user_metadata?.full_name },
             },
-          }).catch(() => {});
+          }).then(null, () => {});
         }
       } catch {}
       toast({
@@ -677,7 +677,7 @@ export default function Auth() {
             idempotencyKey: `welcome-${data.user.id}`,
             templateData: { name: fullName },
           },
-        }).catch(() => {});
+        }).then(null, () => {});
       } catch {}
 
       // Track signup conversion (fire-and-forget)

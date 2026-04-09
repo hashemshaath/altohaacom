@@ -186,7 +186,7 @@ export const CompetitionStatusManager = memo(function CompetitionStatusManager({
       executeWorkflow("competition_status_changed", {
         competitionId,
         metadata: { newStatus },
-      }).catch(() => {});
+      }).then(null, () => {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition", competitionId] });
