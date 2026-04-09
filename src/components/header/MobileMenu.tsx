@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -36,11 +37,12 @@ const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
 };
 
 /* ── Single nav item ── */
-const NavItem = memo(function NavItem({ to, icon: Icon, children, active, onClose }: {
+const NavItem = memo(React.forwardRef<HTMLAnchorElement, {
   to: string; icon: React.ElementType; children: React.ReactNode; active?: boolean; onClose: () => void;
-}) {
+}>(function NavItem({ to, icon: Icon, children, active, onClose }, ref) {
   return (
     <Link
+      ref={ref}
       to={to}
       onClick={onClose}
       className={cn(
@@ -54,7 +56,7 @@ const NavItem = memo(function NavItem({ to, icon: Icon, children, active, onClos
       <span className="flex-1">{children}</span>
     </Link>
   );
-});
+}));
 
 /* ── Collapsible section ── */
 const Section = memo(function Section({ label, defaultOpen = false, children }: {

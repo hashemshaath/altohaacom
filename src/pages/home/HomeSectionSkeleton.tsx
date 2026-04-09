@@ -1,3 +1,4 @@
+import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface HomeSectionSkeletonProps {
@@ -59,7 +60,13 @@ function MinimalPlaceholder() {
 
 const VARIANTS = [GridSkeleton, CarouselSkeleton, MetricsSkeleton, MinimalPlaceholder] as const;
 
-export function HomeSectionSkeleton({ index }: HomeSectionSkeletonProps) {
-  const Variant = VARIANTS[index % VARIANTS.length];
-  return <Variant />;
-}
+export const HomeSectionSkeleton = React.forwardRef<HTMLDivElement, HomeSectionSkeletonProps>(
+  function HomeSectionSkeleton({ index }, ref) {
+    const Variant = VARIANTS[index % VARIANTS.length];
+    return (
+      <div ref={ref}>
+        <Variant />
+      </div>
+    );
+  }
+);
