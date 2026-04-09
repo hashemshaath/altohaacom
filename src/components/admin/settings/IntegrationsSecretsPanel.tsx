@@ -116,7 +116,7 @@ export const IntegrationsSecretsPanel = memo(function IntegrationsSecretsPanel()
               </div>
               <a
                 href={secret.docsUrl}
-                target="_blank"
+                target="_blank" rel="noopener noreferrer"
                 rel="noopener noreferrer"
                 className="flex items-center gap-1 text-[12px] text-primary hover:underline shrink-0 mt-0.5"
               >

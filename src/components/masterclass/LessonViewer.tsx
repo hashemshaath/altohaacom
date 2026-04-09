@@ -80,7 +80,7 @@ export const LessonViewer = memo(function LessonViewer({ lesson, isCompleted, is
             <PlayCircle className="mx-auto mb-2 h-10 w-10 text-muted-foreground" />
             <a
               href={lesson.video_url}
-              target="_blank"
+              target="_blank" rel="noopener noreferrer"
               rel="noopener noreferrer"
               className="text-primary underline"
             >

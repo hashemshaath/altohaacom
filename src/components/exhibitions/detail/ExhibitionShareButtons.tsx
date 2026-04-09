@@ -72,7 +72,7 @@ export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ tit
                   <a
                     key={link.name}
                     href={link.href}
-                    target="_blank"
+                    target="_blank" rel="noopener noreferrer"
                     rel="noopener noreferrer"
                     className="flex flex-col items-center gap-1.5 rounded-xl border border-border/50 p-3 transition-all hover:bg-muted/50 hover:border-primary/20 active:scale-95"
                   >

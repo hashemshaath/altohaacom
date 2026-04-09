@@ -115,7 +115,7 @@ export const SEOStructuredData = memo(function SEOStructuredData({ isAr }: { isA
             <span>{isAr ? "تحقق من الصلاحية:" : "Validate at:"}</span>
             <a
               href="https://search.google.com/test/rich-results"
-              target="_blank"
+              target="_blank" rel="noopener noreferrer"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >
@@ -124,7 +124,7 @@ export const SEOStructuredData = memo(function SEOStructuredData({ isAr }: { isA
             <span>·</span>
             <a
               href="https://validator.schema.org/"
-              target="_blank"
+              target="_blank" rel="noopener noreferrer"
               rel="noopener noreferrer"
               className="text-primary hover:underline"
             >

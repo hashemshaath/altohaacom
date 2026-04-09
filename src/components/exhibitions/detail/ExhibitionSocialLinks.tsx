@@ -63,7 +63,7 @@ export const ExhibitionSocialLinks = forwardRef<HTMLDivElement, Props>(function 
             <a
               key={platform}
               href={url}
-              target="_blank"
+              target="_blank" rel="noopener noreferrer"
               rel="noopener noreferrer"
               className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${info.color} group`}
             >

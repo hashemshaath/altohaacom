@@ -104,7 +104,7 @@ export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAd
       <div className="container" dir={isAr ? "rtl" : "ltr"}>
         <a
           href={creative.destination_url}
-          target="_blank"
+          target="_blank" rel="noopener noreferrer"
           rel="noopener noreferrer sponsored"
           onClick={handleClick}
           className="group block overflow-hidden rounded-2xl border border-border/40 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
@@ -150,7 +150,7 @@ export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAd
     <div className="container" dir={isAr ? "rtl" : "ltr"}>
       <a
         href={creative.destination_url}
-        target="_blank"
+        target="_blank" rel="noopener noreferrer"
         rel="noopener noreferrer sponsored"
         onClick={handleClick}
         className="group block rounded-2xl border border-border/40 bg-muted/20 p-4 sm:p-5 transition-all duration-300 hover:shadow-md hover:bg-muted/40"

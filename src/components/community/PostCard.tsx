@@ -277,7 +277,7 @@ export const PostCard = memo(function PostCard({
             {post.link_url && (
               <a
                 href={post.link_url}
-                target="_blank"
+                target="_blank" rel="noopener noreferrer"
                 rel="noopener noreferrer"
                 className="mt-3 block rounded-2xl border border-border/30 overflow-hidden hover:bg-muted/20 hover:border-primary/20 hover:shadow-sm transition-all duration-200 shadow-sm group/link"
                 onClick={(e) => e.stopPropagation()}
