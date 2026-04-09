@@ -27,7 +27,7 @@ import {
   StickyNote, BarChart3, Eye, Activity, Briefcase, Clock,
   ExternalLink, Info, Copy, Users, Trash2, Plus, RefreshCw,
   Undo2, Youtube, MessageCircle, MapPinned, Navigation, TrendingUp,
-  Zap, History, ChevronRight, Hash, FileCheck, Sparkles,
+  Zap, History, ChevronRight, Hash, FileCheck, Sparkles, type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
@@ -97,7 +97,7 @@ const TABS = [
 ];
 
 /* ─── Helpers ─── */
-const SectionHeader = memo(({ icon: Icon, title, desc, actions }: { icon: any; title: string; desc: string; actions?: ReactNode }) => (
+const SectionHeader = memo(({ icon: Icon, title, desc, actions }: { icon: LucideIcon; title: string; desc: string; actions?: ReactNode }) => (
   <div className="flex items-center justify-between gap-3 mb-5">
     <div className="flex items-center gap-3">
       <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -165,7 +165,7 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
             </Button>
           )}
         </div>
-        <InputComp value={valueAr} onChange={(e: any) => onChangeAr(e.target.value)} dir="rtl" placeholder={placeholder_ar} {...extraProps} />
+        <InputComp value={valueAr} onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChangeAr(e.target.value)} dir="rtl" placeholder={placeholder_ar} {...extraProps} />
       </div>
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
