@@ -1,12 +1,12 @@
 import { useLocation } from "react-router-dom";
-import { useEffect, memo, type ReactNode, useRef, useState } from "react";
+import { useEffect, memo, forwardRef, type ReactNode, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 /**
  * Apple-style page transition: subtle fade + slide-up on enter,
  * quick fade on exit. Falls back instantly if stuck.
  */
-export const PageTransition = memo(function PageTransition({ children }: { children: ReactNode }) {
+export const PageTransition = memo(forwardRef<HTMLDivElement, { children: ReactNode }>(function PageTransition({ children }, ref) {
   const { pathname } = useLocation();
   const isFirstRender = useRef(true);
   const [phase, setPhase] = useState<"visible" | "exiting" | "entering">("visible");
@@ -17,17 +17,14 @@ export const PageTransition = memo(function PageTransition({ children }: { child
       return;
     }
 
-    // Exit phase
     setPhase("exiting");
 
     const enterTimer = window.setTimeout(() => {
       setPhase("entering");
-      // Entering → visible after animation
       const visibleTimer = window.setTimeout(() => setPhase("visible"), 200);
       return () => window.clearTimeout(visibleTimer);
     }, 150);
 
-    // Absolute fallback
     const fallback = window.setTimeout(() => setPhase("visible"), 500);
 
     return () => {
@@ -38,6 +35,7 @@ export const PageTransition = memo(function PageTransition({ children }: { child
 
   return (
     <div
+      ref={ref}
       className={cn(
         "will-change-[opacity,transform]",
         phase === "visible" && "opacity-100 translate-y-0",
@@ -49,4 +47,4 @@ export const PageTransition = memo(function PageTransition({ children }: { child
       {children}
     </div>
   );
-});
+}));

@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { Construction } from "lucide-react";
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -13,7 +13,7 @@ interface Props {
  * Shows a maintenance page if maintenance mode is enabled in site settings.
  * Admins bypass this and see the normal site.
  */
-export const MaintenanceGuard = memo(function MaintenanceGuard({ children }: Props) {
+export const MaintenanceGuard = memo(forwardRef<HTMLDivElement, Props>(function MaintenanceGuard({ children }, _ref) {
   const settings = useSiteSettingsContext();
   const { user } = useAuth();
   const { data: roles = [] } = useUserRoles();
@@ -43,4 +43,4 @@ export const MaintenanceGuard = memo(function MaintenanceGuard({ children }: Pro
   }
 
   return <>{children}</>;
-});
+}));
