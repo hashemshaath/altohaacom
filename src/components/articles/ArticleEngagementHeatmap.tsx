@@ -54,6 +54,7 @@ export const ArticleEngagementHeatmap = memo(function ArticleEngagementHeatmap({
 
   // Initialize sections
   useEffect(() => {
+    const sectionCount = headings.length;
     const initial = headings.map((h, i) => ({
       id: `section-${i}`,
       title: h,
@@ -61,18 +62,20 @@ export const ArticleEngagementHeatmap = memo(function ArticleEngagementHeatmap({
       scrollDepth: 0,
     }));
     setSections(initial);
+    timersRef.current = {};
+    activeSection.current = null;
 
     // Track which section is visible
     const handleScroll = () => {
       if (!isTracking) return;
-      const scrollPct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
-      const sectionIdx = Math.min(Math.floor((scrollPct / 100) * headings.length), headings.length - 1);
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+      const scrollPct = (window.scrollY / docHeight) * 100;
+      const sectionIdx = Math.min(Math.floor((scrollPct / 100) * sectionCount), sectionCount - 1);
       const sectionId = `section-${sectionIdx}`;
-      
-      if (activeSection.current !== sectionId) {
-        activeSection.current = sectionId;
-      }
-      
+
+      activeSection.current = sectionId;
+
       // Update scroll depth
       setSections(prev => prev.map((s, i) => ({
         ...s,
@@ -82,12 +85,12 @@ export const ArticleEngagementHeatmap = memo(function ArticleEngagementHeatmap({
 
     window.addEventListener("scroll", handleScroll, { passive: true });
 
-    // Increment time for active section
+    // Increment time for active section every second
     intervalRef.current = setInterval(() => {
-      if (activeSection.current && isTracking) {
-        const id = activeSection.current;
+      const id = activeSection.current;
+      if (id && isTracking && document.visibilityState === "visible") {
         timersRef.current[id] = (timersRef.current[id] || 0) + 1;
-        setSections(prev => prev.map(s => 
+        setSections(prev => prev.map(s =>
           s.id === id ? { ...s, timeSpent: timersRef.current[id] } : s
         ));
       }

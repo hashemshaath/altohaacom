@@ -111,7 +111,7 @@ export const EventsTab = memo(function EventsTab() {
       const votes = votesMap.get(p.id) || {};
       const totalVotes = Object.values(votes).reduce((s, n) => s + n, 0);
       return {
-        id: p.id, question: p.question, options: (p.options as any) || [],
+        id: p.id, question: p.question, options: (p.options as { text: string }[]) || [],
         expires_at: p.expires_at, is_active: p.is_active ?? true,
         author_id: p.author_id, author_name: profileMap.get(p.author_id) || null,
         votes, total_votes: totalVotes,
