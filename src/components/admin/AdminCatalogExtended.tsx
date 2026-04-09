@@ -46,7 +46,8 @@ export function AdminCatalogExtended({ companyId }: Props) {
       const itemIds = items.map(i => i.id);
       if (!itemIds.length) return [];
       const { data } = await supabase.from("product_qa").select("*").in("catalog_item_id", itemIds).order("created_at", { ascending: false });
-      return (data || []) as any[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_qa select("*") returns dynamic columns
+      return (data || []) as Record<string, unknown>[];
     },
     enabled: items.length > 0,
   });
@@ -56,13 +57,14 @@ export function AdminCatalogExtended({ companyId }: Props) {
     queryKey: ["admin-trust-badges", companyId],
     queryFn: async () => {
       const { data } = await supabase.from("product_trust_badges").select("*").eq("company_id", companyId).order("sort_order");
-      return (data || []) as any[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_trust_badges select("*") returns dynamic columns
+      return (data || []) as Record<string, unknown>[];
     },
   });
 
   // Update catalog item
   const updateMut = useMutation({
-    mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
+    mutationFn: async ({ id, updates }: { id: string; updates: Record<string, unknown> }) => {
       const { error } = await supabase.from("company_catalog").update(updates).eq("id", id);
       if (error) throw error;
     },
