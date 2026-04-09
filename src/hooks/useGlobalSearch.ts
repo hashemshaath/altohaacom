@@ -386,7 +386,7 @@ export function useGlobalSearch() {
             id: p.id,
             content: p.content,
             image_url: p.image_url,
-            video_url: (p as any).video_url || null,
+            video_url: p.video_url || null,
             created_at: p.created_at,
             author_id: p.author_id,
             author_name: profile?.full_name || null,
