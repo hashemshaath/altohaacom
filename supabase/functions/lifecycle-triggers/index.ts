@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({ processed, triggers: triggers.length });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Lifecycle trigger error:", error);
     return errorResponse(error);
   }

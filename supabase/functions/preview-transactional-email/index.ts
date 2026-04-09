@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
         html,
         status: 'ready',
       })
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Failed to render template for preview', {
         template: name,
         error: err,

@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
       default:
         return jsonResponse({ error: "Unknown action" }, 400);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Security audit error:", error);
     return errorResponse(error);
   }

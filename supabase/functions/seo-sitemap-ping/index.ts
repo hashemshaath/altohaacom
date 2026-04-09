@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
         } else {
           results.push({ engine: "Google", status: "error", message: "Token exchange failed" });
         }
-      } catch (e) {
+      } catch (e: unknown) {
         results.push({ engine: "Google", status: "error", message: String(e).slice(0, 200) });
       }
     } else {
@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
     await supabaseAdmin.from("seo_crawl_log").insert({ action: "sitemap_ping", target_url: sitemapUrl, search_engine: "bing", status: "info", response_body: "Bing sitemap ping deprecated (410). Auto-discovered via robots.txt." });
 
     return jsonResponse({ success: sitemapAccessible, results });
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("seo-sitemap-ping error:", e);
     return errorResponse(e);
   }

@@ -103,7 +103,7 @@ Be objective, professional, and thorough.`;
     });
 
     return streamResponse(aiRes.body);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Judge AI Assistant error:", error);
     return errorResponse(error);
   }

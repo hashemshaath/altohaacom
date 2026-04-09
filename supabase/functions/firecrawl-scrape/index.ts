@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
 
     console.log('Scrape successful');
     return jsonResponse(data);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error scraping:', error);
     return errorResponse(error);
   }

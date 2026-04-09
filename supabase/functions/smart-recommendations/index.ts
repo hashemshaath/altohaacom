@@ -136,7 +136,7 @@ EXHIBITIONS (top 4): ${JSON.stringify(exhibitionsRes.data?.map((e: any, i: numbe
         tip_ar: "اكتشف محتوى طهي جديد مخصص لك!",
       });
     }
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("smart-recommendations error:", e);
     return errorResponse(e);
   }

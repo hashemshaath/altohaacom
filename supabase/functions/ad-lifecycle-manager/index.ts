@@ -92,7 +92,7 @@ Deno.serve(async (req) => {
     });
 
     return jsonResponse(results);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Ad lifecycle error:", error);
     return errorResponse(error);
   }

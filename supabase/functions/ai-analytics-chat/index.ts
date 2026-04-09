@@ -29,7 +29,7 @@ Answer questions about the platform's performance, trends, and insights using th
     });
 
     return jsonResponse({ response: response.content });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("AI Analytics Chat error:", error);
     return errorResponse(error);
   }

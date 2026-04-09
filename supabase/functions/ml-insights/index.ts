@@ -124,7 +124,7 @@ ${language === "ar" ? "Respond in Arabic." : "Respond in English."}` },
     if (!insights) throw new Error("No structured response from AI");
 
     return jsonResponse({ ...(insights as Record<string, unknown>), monthlyData: data.monthlyData });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("ML Insights error:", error);
     return errorResponse(error);
   }

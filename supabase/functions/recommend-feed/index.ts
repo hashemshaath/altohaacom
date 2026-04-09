@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
       recommended_posts: recommendedPosts || [],
       user_interests: Array.from(userHashtags).slice(0, 10),
     });
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("recommend-feed error:", e);
     return errorResponse(e);
   }

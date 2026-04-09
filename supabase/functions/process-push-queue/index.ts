@@ -133,7 +133,7 @@ Deno.serve(async (req) => {
 
     console.log("Push queue processed:", results);
     return jsonResponse({ success: true, ...results });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Process push queue error:", error);
     return errorResponse(error);
   }

@@ -53,7 +53,7 @@ Provide your risk assessment and recommendations.` },
     if (!analysis) throw new Error("No analysis results returned");
 
     return jsonResponse({ success: true, analysis });
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("Verification AI error:", e);
     return errorResponse(e);
   }

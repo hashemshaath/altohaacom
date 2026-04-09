@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
 
     console.log("Notification sent:", { userId, userLang, channels: channelsToUse });
     return jsonResponse({ success: true, userLanguage: userLang, results });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Send notification error:", error);
     return errorResponse(error);
   }

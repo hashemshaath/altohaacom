@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
       parser: parseSuppressionPayload,
     })
     payload = verified.payload
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof WebhookError) {
       switch (error.code) {
         case 'invalid_signature':

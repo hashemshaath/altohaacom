@@ -67,7 +67,7 @@ Deno.serve(async (req) => {
     if (!parsed) return jsonResponse({ error: "No suggestions returned" }, 500);
 
     return jsonResponse(parsed);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("AI Requirements error:", error);
     return errorResponse(error);
   }

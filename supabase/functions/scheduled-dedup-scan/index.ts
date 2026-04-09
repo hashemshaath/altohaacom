@@ -65,7 +65,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({ success: true, duplicates_found: duplicateGroups.length, groups: duplicateGroups });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Scheduled dedup scan error:", error);
     return errorResponse(error);
   }

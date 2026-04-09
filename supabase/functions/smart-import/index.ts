@@ -72,7 +72,7 @@ async function firecrawlFetch(url: string, body: any, apiKey: string, timeoutMs:
         continue;
       }
       return data;
-    } catch (e) {
+    } catch (e: unknown) {
       if (e instanceof DOMException && e.name === 'AbortError') {
         console.warn(`[SmartImport] Timed out (attempt ${attempt + 1}): ${url}`);
         if (attempt < retries) continue;
@@ -160,7 +160,7 @@ async function callAI(prompt: string, lovableKey: string, model = 'google/gemini
       }
       const data = await res.json();
       return data.choices?.[0]?.message?.content || '';
-    } catch (e) {
+    } catch (e: unknown) {
       if (e instanceof DOMException && e.name === 'AbortError') {
         console.warn(`[SmartImport] AI timed out (attempt ${attempt + 1})`);
         if (attempt === 0) continue;
@@ -270,7 +270,7 @@ Rules: Every listing. No filtering. No hallucination. ONLY valid JSON array.`;
         google_maps_url: e.google_maps_url || null, place_type: e.place_type || e.description || null,
       }));
     }
-  } catch (e) { console.error('[SmartImport] AI parse error:', e); }
+  } catch (e: unknown) { console.error('[SmartImport] AI parse error:', e); }
   return [];
 }
 
@@ -425,7 +425,7 @@ async function handleBulkUrl(urls: string[], apiKey: string, lovableKey: string)
           const result = await handleUrlImport(url, apiKey, lovableKey);
           const suggestion = autoDetectTargetTable(result.data);
           return { success: true, url, ...result, suggested_target: suggestion };
-        } catch (e) {
+        } catch (e: unknown) {
           return { success: false, url, error: (e as Error).message };
         }
       })
@@ -611,7 +611,7 @@ Extract ALL data comprehensively. Services & specializations in BOTH languages. 
   try {
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) return JSON.parse(jsonMatch[0]);
-  } catch (e) { console.error('[SmartImport] AI parse error:', e); }
+  } catch (e: unknown) { console.error('[SmartImport] AI parse error:', e); }
   return {};
 }
 
@@ -826,7 +826,7 @@ Return ONLY valid JSON:
   try {
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) data = JSON.parse(jsonMatch[0]);
-  } catch (e) { console.error('[SmartImport] Competition text parse error:', e); }
+  } catch (e: unknown) { console.error('[SmartImport] Competition text parse error:', e); }
 
   const dataQuality = calculateDataQuality(data, sources);
   return { data, sources_used: sources, data_quality: dataQuality };
@@ -932,7 +932,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({ success: false, error: "Invalid mode." }, 400);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[SmartImport] Error:', error);
     return errorResponse(error);
   }

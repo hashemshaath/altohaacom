@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     });
 
     return jsonResponse({ reply: response.content || "I'm sorry, I couldn't generate a response. Please try again." });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("ai-chat error:", error);
     return errorResponse(error);
   }

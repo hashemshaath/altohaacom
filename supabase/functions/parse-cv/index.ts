@@ -106,7 +106,7 @@ OTHER GUIDELINES:
     if (!toolCall) throw new Error("No structured data returned from AI");
 
     return jsonResponse({ success: true, data: JSON.parse(toolCall.function.arguments), target_user_id: effectiveUserId });
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("parse-cv error:", e);
     return errorResponse(e);
   }

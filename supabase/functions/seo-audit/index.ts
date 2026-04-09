@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
     }).eq("id", audit.id);
 
     return jsonResponse({ audit_id: audit.id, score, total_issues: allIssues.length, errors, warnings, pages_audited: pagesAudited });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("SEO Audit error:", error);
     return errorResponse(error);
   }

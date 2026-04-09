@@ -74,7 +74,7 @@ ${!hasResults ? "\nNo direct matches found. Provide helpful suggestions." : ""}`
     });
 
     return streamResponse(aiRes.body);
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("ai-search error:", e);
     return errorResponse(e);
   }

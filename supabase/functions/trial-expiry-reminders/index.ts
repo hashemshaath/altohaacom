@@ -41,7 +41,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({ success: true, sent_3day: sent3Day, sent_1day: sent1Day, checked: cards?.length || 0 });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Trial expiry reminders error:", err);
     return errorResponse(err);
   }

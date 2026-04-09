@@ -235,7 +235,7 @@ Deno.serve(async (req) => {
     }
 
     throw new Error("Invalid mode. Use: check, batch_scan, or merge");
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("entity-dedup error:", error);
     return errorResponse(error);
   }

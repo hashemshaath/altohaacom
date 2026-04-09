@@ -76,7 +76,7 @@ ${lang === "ar" ? "Write entirely in Arabic." : "Write in English."}`;
     });
 
     return jsonResponse({ success: true, content, metrics });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("PDF report error:", error);
     return errorResponse(error);
   }

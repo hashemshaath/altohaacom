@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
       default:
         return jsonResponse({ error: "Unknown action" }, 400);
     }
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Admin user management error:", err);
     return errorResponse(err);
   }

@@ -201,7 +201,7 @@ Deno.serve(async (req) => {
 
     console.log(`Membership email enqueued: ${type} for ${profile.email}`);
     return jsonResponse({ success: true, email: profile.email, type, queued: true });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Send membership email failed:", err);
     return errorResponse(err);
   }

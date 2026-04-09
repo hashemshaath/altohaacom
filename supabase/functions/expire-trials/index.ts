@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
 
     console.log(`Expired ${data} trial(s)`);
     return jsonResponse({ expired: data });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Expire trials error:", err);
     return errorResponse(err);
   }

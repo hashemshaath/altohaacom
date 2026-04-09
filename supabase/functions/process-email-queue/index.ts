@@ -284,7 +284,7 @@ Deno.serve(async (req) => {
           console.error('Failed to delete sent message from queue', { queue, msg_id: msg.msg_id, error: delError })
         }
         totalProcessed++
-      } catch (error) {
+      } catch (error: unknown) {
         const errorMsg = error instanceof Error ? error.message : String(error)
         console.error('Email send failed', {
           queue,

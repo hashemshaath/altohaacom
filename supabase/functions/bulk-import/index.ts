@@ -565,7 +565,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({ error: "Unknown action" }, 400);
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("bulk-import error:", e);
     return errorResponse(e);
   }
