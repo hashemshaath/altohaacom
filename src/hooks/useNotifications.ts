@@ -120,15 +120,18 @@ export function useNotifications() {
         .eq("id", notificationId)
         .eq("user_id", user.id);
       if (error) throw error;
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
-      setUnreadCount(prev => {
-        const wasUnread = notifications.find(n => n.id === notificationId && !n.is_read);
-        return wasUnread ? Math.max(0, prev - 1) : prev;
+      setNotifications(prev => {
+        const deleted = prev.find(n => n.id === notificationId);
+        const next = prev.filter(n => n.id !== notificationId);
+        if (deleted && !deleted.is_read) {
+          setUnreadCount(c => Math.max(0, c - 1));
+        }
+        return next;
       });
     } catch (error: unknown) {
       console.error("Error deleting notification:", error);
     }
-  }, [user?.id, notifications]);
+  }, [user?.id]);
 
   const clearAllRead = useCallback(async () => {
     if (!user) return;
