@@ -42,6 +42,7 @@ export const FunnelAnalysis = memo(function FunnelAnalysis() {
 
       return { signups, profilesCompleted, competitionRegs, purchases, totalUsers: totalUsersRes.count || 0 };
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   const steps: FunnelStep[] = [

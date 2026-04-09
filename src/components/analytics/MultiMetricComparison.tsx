@@ -80,6 +80,7 @@ export const MultiMetricComparison = memo(function MultiMetricComparison() {
       }));
     },
     enabled: selected.length > 0,
+    staleTime: 1000 * 60 * 2,
   });
 
   return (

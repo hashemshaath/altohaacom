@@ -66,6 +66,7 @@ export const ExecutiveSummary = memo(function ExecutiveSummary() {
         generatedAt: new Date().toISOString(),
       };
     },
+    staleTime: 1000 * 60 * 2,
   });
 
   const handlePrint = () => {
