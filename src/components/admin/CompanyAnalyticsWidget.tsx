@@ -15,10 +15,10 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
     queryKey: ["company-analytics-widget"],
     queryFn: async () => {
       const [totalRes, activeRes, pendingRes, suspendedRes, typeBreakdown, recentOrders] = await Promise.all([
-        supabase.from("companies").select("*", { count: "exact", head: true }),
-        supabase.from("companies").select("*", { count: "exact", head: true }).eq("status", "active"),
-        supabase.from("companies").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("companies").select("*", { count: "exact", head: true }).eq("status", "suspended"),
+        supabase.from("companies").select("id", { count: "exact", head: true }),
+        supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "suspended"),
         supabase.from("companies").select("type"),
         supabase.from("company_orders").select("id, total_amount, status").order("created_at", { ascending: false }).limit(100),
       ]);

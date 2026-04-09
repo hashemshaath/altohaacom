@@ -105,7 +105,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
             { count: total },
             { data: records },
           ] = await Promise.all([
-            supabase.from(metric.table as any).select("*", { count: "exact", head: true }),
+            supabase.from(metric.table as any).select("id", { count: "exact", head: true }),
             supabase.from(metric.table as any).select("created_at").order("created_at", { ascending: true }),
           ]);
 

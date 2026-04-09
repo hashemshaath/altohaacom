@@ -19,7 +19,7 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
       const [{ count: mergeCount }, { data: recentMerges }] = await Promise.all([
         supabase
           .from("admin_actions")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .eq("action_type", "entity_merge"),
         supabase
           .from("admin_actions")

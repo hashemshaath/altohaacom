@@ -155,7 +155,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
 
       const { count: totalUpgrades } = await supabase
         .from("membership_history")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .gte("created_at", subMonths(now, 1).toISOString());
 
       return { total, active, paid, newThisMonth, expiringSoon, recentChanges: totalUpgrades || 0 };

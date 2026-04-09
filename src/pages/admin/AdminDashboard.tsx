@@ -114,19 +114,19 @@ export default function AdminDashboard() {
         { count: totalMasterclasses }, { count: proUsers }, { count: fanUsers },
         { count: totalOrganizers }, { data: recentActions }, { data: recentUsers },
       ] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_status", "active"),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_status", "suspended"),
-        supabase.from("content_reports").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("competitions").select("*", { count: "exact", head: true }),
-        supabase.from("articles").select("*", { count: "exact", head: true }),
-        supabase.from("messages").select("*", { count: "exact", head: true }),
-        supabase.from("exhibitions").select("*", { count: "exact", head: true }),
-        supabase.from("company_orders").select("*", { count: "exact", head: true }),
-        supabase.from("masterclasses").select("*", { count: "exact", head: true }),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "professional"),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("account_type", "fan"),
-        supabase.from("organizers").select("*", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "active"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "suspended"),
+        supabase.from("content_reports").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("competitions").select("id", { count: "exact", head: true }),
+        supabase.from("articles").select("id", { count: "exact", head: true }),
+        supabase.from("messages").select("id", { count: "exact", head: true }),
+        supabase.from("exhibitions").select("id", { count: "exact", head: true }),
+        supabase.from("company_orders").select("id", { count: "exact", head: true }),
+        supabase.from("masterclasses").select("id", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_type", "professional"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_type", "fan"),
+        supabase.from("organizers").select("id", { count: "exact", head: true }),
         supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(8),
         supabase.from("profiles").select("id, full_name, display_name, username, avatar_url, created_at, account_type").order("created_at", { ascending: false }).limit(8),
       ]);
@@ -147,10 +147,10 @@ export default function AdminDashboard() {
       const today = new Date(); today.setHours(0, 0, 0, 0);
       const todayISO = today.toISOString();
       const [newUsers, newPosts, newOrders, newReports] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
-        supabase.from("posts").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
-        supabase.from("company_orders").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
-        supabase.from("content_reports").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
+        supabase.from("posts").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
+        supabase.from("company_orders").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
+        supabase.from("content_reports").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
       ]);
       return { newUsers: newUsers.count || 0, newPosts: newPosts.count || 0, newOrders: newOrders.count || 0, newReports: newReports.count || 0 };
     },

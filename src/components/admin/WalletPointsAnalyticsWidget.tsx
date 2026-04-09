@@ -25,7 +25,7 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
           .gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()).limit(500),
         supabase.from("points_ledger").select("points, action_type, created_at")
           .gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()).limit(500),
-        supabase.from("points_ledger").select("*", { count: "exact", head: true })
+        supabase.from("points_ledger").select("id", { count: "exact", head: true })
           .lt("points", 0),
       ]);
 

@@ -32,15 +32,15 @@ export const ExecutiveSummary = memo(function ExecutiveSummary() {
         ordersRes, prevOrdersRes,
         regsRes, postsRes,
       ] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", since),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", prevSince).lt("created_at", since),
-        supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", since),
-        supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", prevSince).lt("created_at", since),
-        supabase.from("shop_orders").select("*", { count: "exact", head: true }).gte("created_at", since),
-        supabase.from("shop_orders").select("*", { count: "exact", head: true }).gte("created_at", prevSince).lt("created_at", since),
-        supabase.from("competition_registrations").select("*", { count: "exact", head: true }).gte("registered_at", since),
-        supabase.from("articles").select("*", { count: "exact", head: true }).gte("created_at", since),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", since),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", prevSince).lt("created_at", since),
+        supabase.from("competitions").select("id", { count: "exact", head: true }).gte("created_at", since),
+        supabase.from("competitions").select("id", { count: "exact", head: true }).gte("created_at", prevSince).lt("created_at", since),
+        supabase.from("shop_orders").select("id", { count: "exact", head: true }).gte("created_at", since),
+        supabase.from("shop_orders").select("id", { count: "exact", head: true }).gte("created_at", prevSince).lt("created_at", since),
+        supabase.from("competition_registrations").select("id", { count: "exact", head: true }).gte("registered_at", since),
+        supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", since),
       ]);
 
       const calcChange = (current: number, previous: number) =>

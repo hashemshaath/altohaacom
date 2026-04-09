@@ -30,9 +30,9 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
         { data: scores },
         { data: registrations },
       ] = await Promise.all([
-        supabase.from("competition_registrations").select("*", { count: "exact", head: true }),
-        supabase.from("competition_judges").select("*", { count: "exact", head: true }),
-        supabase.from("competition_scores").select("*", { count: "exact", head: true }),
+        supabase.from("competition_registrations").select("id", { count: "exact", head: true }),
+        supabase.from("competition_judges").select("id", { count: "exact", head: true }),
+        supabase.from("competition_scores").select("id", { count: "exact", head: true }),
         supabase.from("competitions").select("id, title, status, competition_start, country_code"),
         supabase.from("competition_scores").select("score"),
         supabase.from("competition_registrations").select("registered_at"),

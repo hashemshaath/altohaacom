@@ -49,7 +49,7 @@ export default function DatabaseAdmin() {
         tables.map(async (table) => {
           const { count } = await supabase
             .from(table.name as any)
-            .select("*", { count: "exact", head: true });
+            .select("id", { count: "exact", head: true });
           return { ...table, count: count || 0 };
         })
       );

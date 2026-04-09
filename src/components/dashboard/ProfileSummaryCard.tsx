@@ -37,12 +37,12 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
     queryFn: async () => {
       if (!user) return null;
       const [followersQ, postsQ, recipesQ, certsQ, compsQ, badgesQ] = await Promise.allSettled([
-        supabase.from("user_follows").select("*", { count: "exact", head: true }).eq("following_id", user.id),
-        supabase.from("posts").select("*", { count: "exact", head: true }).eq("author_id", user.id),
-        supabase.from("recipes").select("*", { count: "exact", head: true }).eq("author_id", user.id),
-        supabase.from("certificates").select("*", { count: "exact", head: true }).eq("recipient_id", user.id),
-        supabase.from("competition_registrations").select("*", { count: "exact", head: true }).eq("participant_id", user.id),
-        supabase.from("user_badges").select("*", { count: "exact", head: true }).eq("user_id", user.id),
+        supabase.from("user_follows").select("id", { count: "exact", head: true }).eq("following_id", user.id),
+        supabase.from("posts").select("id", { count: "exact", head: true }).eq("author_id", user.id),
+        supabase.from("recipes").select("id", { count: "exact", head: true }).eq("author_id", user.id),
+        supabase.from("certificates").select("id", { count: "exact", head: true }).eq("recipient_id", user.id),
+        supabase.from("competition_registrations").select("id", { count: "exact", head: true }).eq("participant_id", user.id),
+        supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
       const gc = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value.count || 0) : 0;
       return {

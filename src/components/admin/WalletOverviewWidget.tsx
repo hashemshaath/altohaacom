@@ -23,7 +23,7 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
         { data: transactions },
         { data: recentTxns },
       ] = await Promise.all([
-        supabase.from("user_wallets").select("*", { count: "exact", head: true }),
+        supabase.from("user_wallets").select("id", { count: "exact", head: true }),
         supabase.from("wallet_transactions").select("type, amount, created_at").gte("created_at", sevenDaysAgo).limit(1000),
         supabase.from("wallet_transactions").select("type, amount, description, created_at").order("created_at", { ascending: false }).limit(5),
       ]);

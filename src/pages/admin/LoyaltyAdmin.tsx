@@ -123,10 +123,10 @@ export default memo(function LoyaltyAdmin() {
   const { data: stats } = useQuery({
     queryKey: ["loyaltyStats"],
     queryFn: async () => {
-      const { count: totalChallenges } = await supabase.from("challenges").select("*", { count: "exact", head: true }).eq("is_active", true);
-      const { count: totalRewards } = await supabase.from("rewards_catalog").select("*", { count: "exact", head: true }).eq("is_active", true);
-      const { count: totalRedemptions } = await supabase.from("reward_redemptions").select("*", { count: "exact", head: true });
-      const { count: pendingRedemptions } = await supabase.from("reward_redemptions").select("*", { count: "exact", head: true }).eq("status", "pending");
+      const { count: totalChallenges } = await supabase.from("challenges").select("id", { count: "exact", head: true }).eq("is_active", true);
+      const { count: totalRewards } = await supabase.from("rewards_catalog").select("id", { count: "exact", head: true }).eq("is_active", true);
+      const { count: totalRedemptions } = await supabase.from("reward_redemptions").select("id", { count: "exact", head: true });
+      const { count: pendingRedemptions } = await supabase.from("reward_redemptions").select("id", { count: "exact", head: true }).eq("status", "pending");
       return { totalChallenges: totalChallenges || 0, totalRewards: totalRewards || 0, totalRedemptions: totalRedemptions || 0, pendingRedemptions: pendingRedemptions || 0 };
     },
   });

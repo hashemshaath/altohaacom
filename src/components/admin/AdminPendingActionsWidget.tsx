@@ -32,11 +32,11 @@ export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget
     queryKey: ["admin-pending-actions"],
     queryFn: async (): Promise<{ pendingReports: number; pendingOrders: number; pendingTickets: number; pendingCompanies: number; pendingPosts: number }> => {
       const [r1, r2, r3, r4, r5] = await Promise.all([
-        supabase.from("content_reports").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("company_orders").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("support_tickets").select("*", { count: "exact", head: true }).eq("status", "open"),
-        supabase.from("companies").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("posts").select("*", { count: "exact", head: true }).eq("moderation_status", "pending"),
+        supabase.from("content_reports").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("company_orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("support_tickets").select("id", { count: "exact", head: true }).eq("status", "open"),
+        supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("posts").select("id", { count: "exact", head: true }).eq("moderation_status", "pending"),
       ] as const);
 
       return {

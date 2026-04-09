@@ -16,8 +16,8 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
     queryFn: async () => {
       const [{ data: certs }, { count: templateCount }, { count: verificationCount }] = await Promise.all([
         supabase.from("certificates").select("status, type, downloaded_count, sent_at").limit(500),
-        supabase.from("certificate_templates").select("*", { count: "exact", head: true }).eq("is_active", true),
-        supabase.from("certificate_verifications").select("*", { count: "exact", head: true }),
+        supabase.from("certificate_templates").select("id", { count: "exact", head: true }).eq("is_active", true),
+        supabase.from("certificate_verifications").select("id", { count: "exact", head: true }),
       ]);
 
       const total = certs?.length || 0;
