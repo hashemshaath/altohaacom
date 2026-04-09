@@ -32,9 +32,9 @@ interface PageShellProps {
 
 const paddingMap = {
   none: "",
-  sm: "py-4",
-  md: "py-6 md:py-8",
-  lg: "py-8 md:py-12",
+  sm: "py-4 sm:py-6",
+  md: "py-6 sm:py-8 md:py-12",
+  lg: "py-8 sm:py-12 md:py-16",
 };
 
 /**
