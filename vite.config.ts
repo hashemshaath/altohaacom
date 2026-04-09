@@ -292,7 +292,8 @@ export default defineConfig(({ mode }) => ({
           "vendor-qr": ["qrcode.react"],
           // PDF & doc parsers: dynamically imported at call-site, never in initial bundle
           "vendor-pdf": ["pdfjs-dist"],
-          "vendor-heavy": ["mammoth", "html2canvas"],
+          "vendor-docparse": ["mammoth"],
+          "vendor-canvas": ["html2canvas"],
           "vendor-dnd": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
           "vendor-embla": ["embla-carousel-react"],
           "vendor-panels": ["react-resizable-panels"],
