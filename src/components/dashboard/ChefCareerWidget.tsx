@@ -39,7 +39,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
         supabase.from("leaderboard_scores" as any).select("total_points, rank").eq("user_id", user.id).order("total_points", { ascending: false }).limit(1),
       ]);
 
-      const gc = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
+      const gc = (r: PromiseSettledResult<{ data: unknown; count: number | null }>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
 
       const regs = gc(compsRes).data || [];
       const certs = gc(certsRes).data || [];
