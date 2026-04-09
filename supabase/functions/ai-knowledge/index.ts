@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     });
 
     return streamResponse(aiRes.body);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("AI Knowledge error:", error);
     return errorResponse(error);
   }

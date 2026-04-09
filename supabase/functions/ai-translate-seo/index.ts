@@ -81,7 +81,7 @@ RULES:
     });
 
     return jsonResponse(optimize_only ? { optimized: response.content } : { translated: response.content });
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("ai-translate-seo error:", e);
     return errorResponse(e);
   }

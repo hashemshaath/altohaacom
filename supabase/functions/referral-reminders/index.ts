@@ -52,14 +52,14 @@ Deno.serve(async (req) => {
 
         await supabase.from("referral_invitations").update({ reminder_sent_at: new Date().toISOString() }).eq("id", inv.id);
         reminded++;
-      } catch (e) {
+      } catch (e: unknown) {
         errors.push(`Failed for invitation ${inv.id}: ${e instanceof Error ? e.message : "Unknown"}`);
       }
     }
 
     console.log(`Referral reminders sent: ${reminded}/${pendingInvitations.length}`);
     return jsonResponse({ reminded, total: pendingInvitations.length, errors });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Referral reminders error:", error);
     return errorResponse(error);
   }

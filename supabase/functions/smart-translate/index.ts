@@ -38,7 +38,7 @@ ${text}`;
     });
 
     return jsonResponse({ translated: response.content });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("smart-translate error:", (error as Error).message);
     return errorResponse(error);
   }

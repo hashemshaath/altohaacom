@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
     console.log(`Broadcast sent: ${sentCount} notifications to ${userIds.length} users`);
 
     return jsonResponse({ success: true, sent: sentCount, failed: failedCount, totalUsers: userIds.length });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Broadcast error:", error);
     return errorResponse(error);
   }

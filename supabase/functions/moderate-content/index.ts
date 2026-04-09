@@ -143,7 +143,7 @@ ${image_urls?.length ? `\nATTACHED IMAGES: ${image_urls.length} image(s) attache
       categories: analysis.categories,
       explanation: language === "ar" ? analysis.explanation_ar : analysis.explanation_en,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Moderation error:", error);
     return errorResponse(error);
   }

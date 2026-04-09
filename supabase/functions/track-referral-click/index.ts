@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
     ]);
 
     return jsonResponse({ tracked: true });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Track referral click error:", error);
     return errorResponse(error);
   }

@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({ success: true, reminders_sent: notificationCount, events_found: upcomingEvents?.length || 0 });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Schedule reminders error:", err);
     return errorResponse(err);
   }

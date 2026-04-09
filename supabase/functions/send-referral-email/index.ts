@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
 
     console.log("Referral email sent:", { to: payload.to });
     return jsonResponse({ success: true, emailId: emailResult?.data?.id });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Send referral email error:", error);
     return errorResponse(error);
   }

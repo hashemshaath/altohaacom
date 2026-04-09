@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
           headers: { "Content-Type": "application/json", "Authorization": `Bearer ${serviceKey}` },
           body: JSON.stringify({ type, user_id, data }),
         });
-      } catch (e) { console.error("Email failed:", e); }
+      } catch (e: unknown) { console.error("Email failed:", e); }
     };
 
     // Process expiring memberships
@@ -129,7 +129,7 @@ Deno.serve(async (req) => {
       expiring_count: expiringProfiles?.length || 0, expired_count: expiredProfiles?.length || 0,
       auto_downgraded: autoDowngraded, trials_expired: trialsExpired,
     });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Membership expiry check failed:", err);
     return errorResponse(err);
   }

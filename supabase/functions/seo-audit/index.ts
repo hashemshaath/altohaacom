@@ -88,8 +88,8 @@ Deno.serve(async (req) => {
             if (!resp.ok) return [{ page_path: path, issue_type: "http_error", severity: "error" as const, message: `HTTP ${resp.status} response`, message_ar: `استجابة HTTP ${resp.status}`, details: { status: resp.status } }];
             pagesAudited++;
             return auditHtml(path, await resp.text());
-          } catch (e: any) {
-            return [{ page_path: path, issue_type: "fetch_error", severity: "error" as const, message: `Failed to fetch: ${e.message}`, message_ar: `فشل في الجلب: ${e.message}`, details: { error: e.message } }];
+          } catch (e: unknown) {
+            return [{ page_path: path, issue_type: "fetch_error", severity: "error" as const, message: `Failed to fetch: ${e instanceof Error ? e.message : String(e)}`, message_ar: `فشل في الجلب: ${e instanceof Error ? e.message : String(e)}`, details: { error: e instanceof Error ? e.message : String(e) } }];
           }
         })
       );
@@ -116,7 +116,7 @@ Deno.serve(async (req) => {
     }).eq("id", audit.id);
 
     return jsonResponse({ audit_id: audit.id, score, total_issues: allIssues.length, errors, warnings, pages_audited: pagesAudited });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("SEO Audit error:", error);
     return errorResponse(error);
   }

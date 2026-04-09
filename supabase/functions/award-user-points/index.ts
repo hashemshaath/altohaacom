@@ -96,7 +96,7 @@ Deno.serve(async (req) => {
       actionLabel: rule.action_label,
       actionLabelAr: rule.action_label_ar,
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Award points error:", error);
     return errorResponse(error);
   }

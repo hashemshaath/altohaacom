@@ -213,7 +213,7 @@ Deno.serve(async (req) => {
       activityChart, reactionBreakdown, pointsByAction,
       topPosts, topHashtags, aiInsight,
     });
-  } catch (e) {
+  } catch (e: unknown) {
     console.error("personal-analytics error:", e);
     return errorResponse(e);
   }

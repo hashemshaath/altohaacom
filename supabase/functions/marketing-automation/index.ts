@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
                   : `<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px"><h1>Welcome ${name}! 🎉</h1><p>Thank you for joining the Altoha community.</p><a href="https://altoha.com/profile/edit" style="display:inline-block;background:#c8a97e;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px">Complete Your Profile</a></div>`,
               }),
             });
-          } catch (e) { console.error("Welcome email error:", e); }
+          } catch (e: unknown) { console.error("Welcome email error:", e); }
         }
         welcomeCount++;
       }
@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse({ success: true, results });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Marketing automation error:", error);
     return errorResponse(error);
   }

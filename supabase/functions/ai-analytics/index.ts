@@ -72,7 +72,7 @@ ${summary}`;
     // Streaming mode
     const aiRes = await callAIStream({ messages });
     return streamResponse(aiRes.body);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("AI Analytics error:", error);
     return errorResponse(error);
   }

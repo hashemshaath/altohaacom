@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
           body: JSON.stringify({ type: emailType, user_id: userId, data }),
         });
         if (resp.ok) stats.emails_queued++;
-      } catch (e) { console.error("Email send failed for", userId, emailType, e); }
+      } catch (e: unknown) { console.error("Email send failed for", userId, emailType, e); }
     };
 
     // ═══════════ 1. WELCOME NOTIFICATIONS ═══════════
@@ -182,7 +182,7 @@ Deno.serve(async (req) => {
 
     console.log("Membership lifecycle complete:", stats);
     return jsonResponse({ success: true, stats });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Membership lifecycle error:", error);
     return errorResponse(error);
   }

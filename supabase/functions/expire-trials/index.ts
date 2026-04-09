@@ -12,12 +12,12 @@ Deno.serve(async (req) => {
 
     if (error) {
       console.error("Error expiring trials:", error);
-      return jsonResponse({ error: error.message }, 500);
+      return jsonResponse({ error: error instanceof Error ? error.message : String(error) }, 500);
     }
 
     console.log(`Expired ${data} trial(s)`);
     return jsonResponse({ expired: data });
-  } catch (err) {
+  } catch (err: unknown) {
     console.error("Expire trials error:", err);
     return errorResponse(err);
   }

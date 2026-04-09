@@ -500,7 +500,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
             input_method: "paste",
           });
         }
-      } catch (logErr) {
+      } catch (logErr: unknown) {
         console.error("Failed to log import:", logErr);
       }
 

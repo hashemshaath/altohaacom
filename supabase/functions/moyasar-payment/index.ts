@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
     }
 
     throw new Error("Unknown action: " + action);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Moyasar payment error:", error);
     return errorResponse(error);
   }

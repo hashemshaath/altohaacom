@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
     console.log("Referral conversion processed:", { referrerId: refData.user_id, newUserId, referrerPoints, inviteePoints, tierBonus: tierBonusPoints, campaignMultiplier });
 
     return jsonResponse({ converted: true, referrerPoints, inviteePoints, tierBonus: tierBonusPoints, campaignMultiplier, referrerId: refData.user_id });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Process referral error:", error);
     return errorResponse(error);
   }

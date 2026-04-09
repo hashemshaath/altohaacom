@@ -73,7 +73,7 @@ Deno.serve(async (req) => {
 
     console.log("Scheduled workflows completed:", results);
     return jsonResponse({ success: true, ...results });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Scheduled workflows error:", error);
     return errorResponse(error);
   }

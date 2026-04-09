@@ -108,7 +108,7 @@ Format as JSON with keys: summary, recommendations (array), targeting (array), b
     } catch {
       return jsonResponse({ ...fallbackInsights, raw_stats: rawStats });
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("ai-ad-insights error:", error);
     return errorResponse(error);
   }

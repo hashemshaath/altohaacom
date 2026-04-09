@@ -90,13 +90,13 @@ ${lang === "ar" ? "Write entirely in Arabic." : "Write in English."}`;
             generated_at: now.toISOString(),
           });
         }
-      } catch (aiErr) {
+      } catch (aiErr: unknown) {
         console.error(`AI report generation failed for ${lang}:`, aiErr);
       }
     }
 
     return jsonResponse({ success: true });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Weekly digest error:", error);
     return errorResponse(error);
   }

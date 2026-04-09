@@ -104,7 +104,7 @@ async function handlePreview(req: Request): Promise<Response> {
   try {
     const body = await req.json()
     type = body.type
-  } catch (error) {
+  } catch (error: unknown) {
     return new Response(JSON.stringify({ error: 'Invalid JSON in request body' }), {
       status: 400,
       headers: { ...previewCorsHeaders, 'Content-Type': 'application/json' },
@@ -152,21 +152,21 @@ async function handleWebhook(req: Request): Promise<Response> {
     })
     payload = verified.payload
     run_id = payload.run_id
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof WebhookError) {
       switch (error.code) {
         case 'invalid_signature':
         case 'missing_timestamp':
         case 'invalid_timestamp':
         case 'stale_timestamp':
-          console.error('Invalid webhook signature', { error: error.message })
+          console.error('Invalid webhook signature', { error: error instanceof Error ? error.message : String(error) })
           return new Response(JSON.stringify({ error: 'Invalid signature' }), {
             status: 401,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           })
         case 'invalid_payload':
         case 'invalid_json':
-          console.error('Invalid webhook payload', { error: error.message })
+          console.error('Invalid webhook payload', { error: error instanceof Error ? error.message : String(error) })
           return new Response(
             JSON.stringify({ error: 'Invalid webhook payload' }),
             { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -306,9 +306,9 @@ Deno.serve(async (req) => {
   // Main webhook handler
   try {
     return await handleWebhook(req)
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Webhook handler error:', error)
-    const message = error instanceof Error ? error.message : 'Unknown error'
+    const message = error instanceof Error ? error instanceof Error ? error.message : String(error) : 'Unknown error'
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
