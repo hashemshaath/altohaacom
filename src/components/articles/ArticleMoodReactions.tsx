@@ -18,7 +18,8 @@ const REACTIONS = [
   { emoji: "😮", labelEn: "Wow", labelAr: "مذهل", key: "wow" },
 ];
 
-function getSessionId(): string {
+// Session ID for anonymous reaction deduplication
+function getReactionSessionId(): string {
   let sid = sessionStorage.getItem("reaction_session_id");
   if (!sid) {
     sid = crypto.randomUUID();
