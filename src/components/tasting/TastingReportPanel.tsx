@@ -242,7 +242,7 @@ th{background:#f5f5f5;font-weight:600}
 
   function handleCopyLink() {
     const url = `${window.location.origin}/tastings/${session.id}?tab=report`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url).then(null, () => {});
     setShareUrl(url);
     toast.success(isAr ? "تم نسخ الرابط" : "Link copied");
   }

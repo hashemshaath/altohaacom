@@ -16,7 +16,7 @@ export const SupplierShareButtons = memo(function SupplierShareButtons({ company
   const url = `${window.location.origin}/pro-suppliers/${companyId}`;
 
   const copyLink = () => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url).then(null, () => {});
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
   };
 
