@@ -63,7 +63,7 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
     try {
       await saveSetting.mutateAsync({
         key: SETTINGS_KEY,
-        value: policy as Record<string, unknown>,
+        value: policy as unknown as Record<string, unknown>,
         category: "membership",
       });
       setDirty(false);
