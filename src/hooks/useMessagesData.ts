@@ -78,6 +78,7 @@ export function useMessagesData() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
+  const messagesRefetchInterval = useVisibleRefetchInterval(30000);
   const initialUserId = searchParams.get("user");
 
   const [selectedPartner, setSelectedPartner] = useState<ConversationPartner | null>(null);
@@ -154,7 +155,7 @@ export function useMessagesData() {
         .sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
     },
     enabled: !!user,
-    refetchInterval: 30000,
+    refetchInterval: messagesRefetchInterval,
     staleTime: 1000 * 60 * 1,
   });
 
