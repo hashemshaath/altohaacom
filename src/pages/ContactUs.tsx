@@ -52,7 +52,7 @@ export default function ContactUs() {
         body: `${form.email}: ${form.subject ? form.subject + " — " : ""}${form.message}`,
         body_ar: `${form.email}: ${form.subject ? form.subject + " — " : ""}${form.message}`,
         type: "contact_form",
-        metadata: { id, sender_name: form.name, sender_email: form.email, subject: form.subject, message: form.message } as any,
+        metadata: { id, sender_name: form.name, sender_email: form.email, subject: form.subject, message: form.message } as Record<string, string>,
       });
 
       // Send confirmation email

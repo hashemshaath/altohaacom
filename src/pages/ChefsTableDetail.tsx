@@ -54,7 +54,7 @@ export default function ChefsTableDetail() {
   const submittedEvaluations = evaluations.filter(e => e.status === "submitted");
   const recommendedCount = submittedEvaluations.filter(e => e.is_recommended).length;
   const avgScores = scoreLabels.map(s => {
-    const scores = submittedEvaluations.map(e => (e as any)[s.key]).filter((v) => v != null);
+    const scores = submittedEvaluations.map(e => (e as Record<string, unknown>)[s.key] as number).filter((v) => v != null);
     return { ...s, avg: scores.length ? scores.reduce((a: number, b: number) => a + b, 0) / scores.length : 0 };
   });
 
@@ -74,7 +74,7 @@ export default function ChefsTableDetail() {
     name: `${isAr ? "مقيّم" : "Evaluator"} ${i + 1}`,
     scores: scoreLabels.map(s => ({
       name: isAr ? s.ar : s.en,
-      score: (ev as any)[s.key] || 0,
+      score: ((ev as Record<string, unknown>)[s.key] as number) || 0,
     })),
   }));
 
@@ -359,7 +359,7 @@ export default function ChefsTableDetail() {
                       {/* Individual scores grid */}
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                         {scoreLabels.map(s => {
-                          const val = (ev as any)[s.key];
+                          const val = (ev as Record<string, unknown>)[s.key] as number | null;
                           if (val == null) return null;
                           return (
                             <div key={s.key} className="flex items-center justify-between rounded-xl border border-border/50 p-2.5">

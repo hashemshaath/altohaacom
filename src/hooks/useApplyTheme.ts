@@ -30,7 +30,7 @@ export function useApplyTheme() {
     if (typeof document === "undefined") return;
 
     const currentSettings = settingsRef.current;
-    const globalPresetId = (currentSettings.theme as any)?.preset || "gold";
+    const globalPresetId = (currentSettings.theme as Record<string, string> | null)?.preset || "gold";
     const localPresetId = safeStorageGet(LOCAL_THEME_KEY);
     const activePresetId = localPresetId || globalPresetId;
 
@@ -50,7 +50,7 @@ export function useApplyTheme() {
     // IMPORTANT: Surface/text/border colors are only applied in light mode
     // because admin-configured colors are light-mode specific.
     // Primary/accent/chart colors work in both modes.
-    const identity = currentSettings.brand_identity as any;
+    const identity = currentSettings.brand_identity as Record<string, Record<string, string> & { seasonalIdentities?: Array<Record<string, unknown>>; activeSeasonalId?: string }> | null;
     if (identity) {
       const pc = identity.primaryColors;
       const sc = identity.secondaryColors;
@@ -106,7 +106,7 @@ export function useApplyTheme() {
       // Seasonal identity — primary colors only (work in both modes)
       if (identity.activeSeasonalId && identity.seasonalIdentities) {
         const now = new Date();
-        const seasonal = (identity.seasonalIdentities as any[]).find(
+        const seasonal = (identity.seasonalIdentities as Array<Record<string, unknown>>).find(
           (s) => s.id === identity.activeSeasonalId
         );
         if (seasonal) {
@@ -123,7 +123,7 @@ export function useApplyTheme() {
     }
 
     // Apply typography fonts
-    const globalTypo = (currentSettings.typography as any) || {};
+    const globalTypo = (currentSettings.typography as Record<string, string> | null) || {};
     const localBodyFont = safeStorageGet(LOCAL_FONT_KEY);
     const localHeadingFont = safeStorageGet(LOCAL_HEADING_FONT_KEY);
 
