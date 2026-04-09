@@ -23,7 +23,6 @@ import { useEntityQRCode } from "@/hooks/useQRCode";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { EventComments } from "@/components/fan/EventComments";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { useSwipeTabs } from "@/hooks/useSwipeTabs";
 
 // Static imports for critical path
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
@@ -70,7 +69,11 @@ const OrganizerAdvancedReports = lazy(() => import("@/components/exhibitions/det
 const RelatedExhibitions = lazy(() => import("@/components/exhibitions/detail/RelatedExhibitions").then(m => ({ default: m.RelatedExhibitions })));
 const ExhibitionEditionsSection = lazy(() => import("@/components/exhibitions/detail/ExhibitionEditionsSection").then(m => ({ default: m.ExhibitionEditionsSection })));
 
-const TabFallback = () => <div className="space-y-3">{[1, 2, 3].map(i => <div key={i} className="h-24 animate-pulse rounded-2xl bg-muted" />)}</div>;
+const TabFallback = () => (
+  <div className="space-y-4 py-4">
+    {[1, 2, 3].map(i => <Skeleton key={i} className="h-28 w-full rounded-xl" />)}
+  </div>
+);
 
 /* ---------- types ---------- */
 interface ScheduleDay {
@@ -93,11 +96,14 @@ function getCountryFlag(country?: string): string {
 
 /* ---------- Memoized Tab Trigger ---------- */
 const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: any; label: string; count?: number }) => (
-  <TabsTrigger value={value} className="gap-1.5 rounded-xl px-3.5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 hover:bg-muted/60 sm:gap-2 sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap touch-manipulation active:scale-[0.98]">
-    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+  <TabsTrigger
+    value={value}
+    className="gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted/50 sm:px-4 sm:py-2.5 sm:text-sm whitespace-nowrap touch-manipulation"
+  >
+    <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
     {label}
     {count !== undefined && count > 0 && (
-      <Badge variant="secondary" className="ms-1 h-5 rounded-full bg-background/20 text-current px-1.5 text-xs">{count}</Badge>
+      <Badge variant="secondary" className="ms-1 h-4.5 rounded-full px-1.5 text-[10px] font-bold">{count}</Badge>
     )}
   </TabsTrigger>
 ));
@@ -278,17 +284,25 @@ export default function ExhibitionDetail() {
   const handleFollow = useCallback(() => toggleFollow.mutate(), [toggleFollow]);
   const handleLightbox = useCallback((i: number) => { setLightboxIndex(i); setLightboxOpen(true); }, []);
 
-  /* ---------- loading / not found ---------- */
+  /* ---------- loading ---------- */
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="container flex-1 py-8">
-          <Skeleton className="mb-4 h-8 w-32 rounded-md" />
-          <Skeleton className="mb-8 h-64 w-full rounded-2xl md:h-80" />
-          <div className="grid gap-8 lg:grid-cols-3">
-            <div className="space-y-4 lg:col-span-2"><Skeleton className="h-10 w-full rounded-xl" /><Skeleton className="h-40 w-full rounded-xl" /></div>
-            <div className="space-y-4"><Skeleton className="h-44 w-full rounded-xl" /><Skeleton className="h-56 w-full rounded-xl" /></div>
+        <main className="flex-1">
+          <Skeleton className="h-64 w-full md:h-80" />
+          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+            <Skeleton className="mb-4 h-6 w-48" />
+            <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+              <div className="space-y-4">
+                <Skeleton className="h-12 w-full rounded-lg" />
+                <Skeleton className="h-48 w-full rounded-xl" />
+              </div>
+              <div className="space-y-4">
+                <Skeleton className="h-40 w-full rounded-xl" />
+                <Skeleton className="h-56 w-full rounded-xl" />
+              </div>
+            </div>
           </div>
         </main>
         <Footer />
@@ -296,13 +310,14 @@ export default function ExhibitionDetail() {
     );
   }
 
+  /* ---------- not found ---------- */
   if (!exhibition) {
     return (
-      <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
+      <div className="flex min-h-screen flex-col bg-background">
         <Header />
-        <main className="container flex-1 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/60">
-            <Landmark className="h-8 w-8 text-muted-foreground/40" />
+        <main className="flex flex-1 flex-col items-center justify-center px-4 py-16">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+            <Landmark className="h-8 w-8 text-muted-foreground" />
           </div>
           <p className="text-lg font-semibold">{isAr ? "الحدث غير موجود" : "Event not found"}</p>
           <Button variant="outline" className="mt-4" asChild>
@@ -353,7 +368,7 @@ export default function ExhibitionDetail() {
   const hasScheduleItems = scheduleItemCount > 0;
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-hidden bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
         title={isAr
           ? `${title} — معرض الطعام والمشروبات | الطهاة`
@@ -379,6 +394,7 @@ export default function ExhibitionDetail() {
       />
       <Header />
 
+      {/* ===== HERO ===== */}
       <ExhibitionHero
         exhibition={exhibition} title={title} venue={venue} organizer={organizer}
         organizerLogoUrl={organizerLogoUrl} isHappening={isHappening} isUpcoming={isUpcoming}
@@ -386,295 +402,332 @@ export default function ExhibitionDetail() {
         linkedCompetitionsCount={linkedCompetitions?.length || 0} isAr={isAr}
       />
 
-      <main className="container flex-1 py-5 pb-24 lg:pb-10 md:py-8">
-        {/* Breadcrumbs */}
-        <div className="mb-3">
+      {/* ===== MAIN CONTENT ===== */}
+      <main className="flex-1 pb-24 lg:pb-8">
+        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+
+          {/* Breadcrumbs */}
           <Breadcrumbs items={[
             { label: "Exhibitions", labelAr: "المعارض", href: "/exhibitions" },
             { label: title },
           ]} />
-        </div>
-        {/* Payment Callback */}
-        {hasPaymentCallback && (
-          <Suspense fallback={null}>
-            <ExhibitionPaymentCallback
-              exhibitionId={exhibition.id}
-              isAr={isAr}
-              onDismiss={() => setActiveTab("my-tickets")}
-            />
-          </Suspense>
-        )}
-        {/* Quick Stats Bar */}
-        <div className="mb-4 sm:mb-5">
-          <ExhibitionQuickStats exhibitionId={exhibition.id} viewCount={exhibition.view_count || 0} isAr={isAr} />
-        </div>
-        {/* Interactive Stats Bar */}
-        <div className="mb-5 sm:mb-8">
-          <ExhibitionInteractiveStats
-            viewCount={exhibition.view_count || 0}
-            followerCount={followerCount || 0}
-            reviewCount={reviewCount}
-            avgRating={featureCounts?.avgRating || 0}
-            boothCount={boothCount}
-            ticketCount={featureCounts?.tickets || 0}
-            isAr={isAr}
-          />
-        </div>
 
-        <div className="grid gap-6 sm:gap-8 lg:grid-cols-3">
-          {/* ======== MAIN CONTENT ======== */}
-          <div className="lg:col-span-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 sm:space-y-8">
-              <div className="sticky top-14 z-30 -mx-2 border-b border-border/40 bg-background/80 px-2 py-2.5 backdrop-blur-md sm:mx-0 sm:rounded-2xl sm:border sm:px-4 sm:py-3">
-                <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 scrollbar-none sm:gap-1.5">
-                  <TabsTrigger value="overview" className="rounded-xl px-3.5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg shadow-primary/20 sm:px-5 sm:py-3 sm:text-sm whitespace-nowrap touch-manipulation active:scale-[0.98]">
-                    {isAr ? "نظرة عامة" : "Overview"}
-                  </TabsTrigger>
-                  
-                  {hasWinningDishes && <ExhibitionTabTrigger value="winning-dishes" icon={Award} label={isAr ? "الأطباق" : "Winners"} count={winningDishes!.length} />}
-                  {hasCompetitions && <ExhibitionTabTrigger value="competitions" icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} count={linkedCompetitions!.length} />}
-                  {hasSchedule && <ExhibitionTabTrigger value="schedule" icon={Calendar} label={isAr ? "الجدول" : "Schedule"} />}
-                  {(hasJudges || hasSpeakers) && <ExhibitionTabTrigger value="people" icon={Users} label={isAr ? "الأشخاص" : "People"} />}
-                  {hasGallery && <ExhibitionTabTrigger value="gallery" icon={ImageIcon} label={isAr ? "المعرض" : "Gallery"} />}
-                  {hasAgenda && <ExhibitionTabTrigger value="agenda" icon={Clock} label={isAr ? "الأجندة" : "Agenda"} count={agendaCount} />}
-                  {hasScheduleItems && <ExhibitionTabTrigger value="event-schedule" icon={CalendarClock} label={isAr ? "البرنامج" : "Program"} count={scheduleItemCount} />}
-                  {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} />}
-                  {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
-                  <ExhibitionTabTrigger value="cooking" icon={ChefHat} label={isAr ? "الطهي الحي" : "Live Cooking"} />
-                  <ExhibitionTabTrigger value="social" icon={MessageSquare} label={isAr ? "اجتماعي" : "Social"} />
-                  <ExhibitionTabTrigger value="navigation" icon={Navigation} label={isAr ? "الملاحة" : "Navigate"} />
-                  <ExhibitionTabTrigger value="auctions" icon={Gavel} label={isAr ? "مزادات" : "Auctions"} />
-                  {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
-              {user && <ExhibitionTabTrigger value="my-tickets" icon={Ticket} label={isAr ? "تذاكري" : "My Tickets"} />}
-              {user && <ExhibitionTabTrigger value="my-schedule" icon={BookmarkCheck} label={isAr ? "جدولي" : "My Schedule"} />}
-              <ExhibitionTabTrigger value="sponsorship" icon={Gem} label={isAr ? "الرعاية" : "Sponsors"} />
-              {isOwner && <ExhibitionTabTrigger value="checkin" icon={ScanLine} label={isAr ? "تسجيل الدخول" : "Check-in"} />}
-              {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
-                </TabsList>
-              </div>
+          {/* Payment Callback */}
+          {hasPaymentCallback && (
+            <Suspense fallback={null}>
+              <ExhibitionPaymentCallback
+                exhibitionId={exhibition.id}
+                isAr={isAr}
+                onDismiss={() => setActiveTab("my-tickets")}
+              />
+            </Suspense>
+          )}
 
-              <TabsContent value="overview" className="mt-6">
-                <Suspense fallback={<TabFallback />}>
-                  <ExhibitionOverviewTab
-                    exhibition={exhibition} title={title} description={description} isAr={isAr}
-                    linkedCompetitions={linkedCompetitions} sections={sections}
-                    targetAudience={targetAudience} galleryUrls={galleryUrls}
-                    onSetActiveTab={setActiveTab} onLightboxOpen={handleLightbox}
-                  />
-                </Suspense>
-              </TabsContent>
-
-
-              {hasWinningDishes && (
-                <TabsContent value="winning-dishes" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionWinningDishesTab winningDishes={winningDishes!} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {hasCompetitions && (
-                <TabsContent value="competitions" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionCompetitionsTab competitions={linkedCompetitions!} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {hasSchedule && (
-                <TabsContent value="schedule" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionScheduleTab schedule={schedule} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {(hasJudges || hasSpeakers) && (
-                <TabsContent value="people" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionPeopleTab judgeProfiles={judgeProfiles || null} speakers={speakers} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {hasGallery && (
-                <TabsContent value="gallery" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionGalleryTab galleryUrls={galleryUrls} title={title} onLightboxOpen={handleLightbox} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {hasSponsors && (
-                <TabsContent value="sponsors" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionSponsorsTab sponsors={sponsorsInfo} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {hasAgenda && (
-                <TabsContent value="agenda" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionAgendaTab exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {hasScheduleItems && (
-                <TabsContent value="event-schedule" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionSchedulePublic exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {hasBooths && (
-                <TabsContent value="booths" className="mt-6 space-y-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionInteractiveBoothManager exhibitionId={exhibition.id} isAr={isAr} isOwner={!!isOwner} />
-                    <ExhibitionBoothNavigator exhibitionId={exhibition.id} isAr={isAr} />
-                    <ExhibitionFloorMap exhibitionId={exhibition.id} isAr={isAr} />
-                    <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
-                    {!isOwner && !hasEnded && (
-                      <ExhibitionExhibitorRegistration exhibitionId={exhibition.id} isAr={isAr} />
-                    )}
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              <TabsContent value="cooking" className="mt-6">
-                <Suspense fallback={<TabFallback />}>
-                  <ExhibitionCookingSessions exhibitionId={exhibition.id} isAr={isAr} />
-                </Suspense>
-              </TabsContent>
-
-              <TabsContent value="social" className="mt-6">
-                <Suspense fallback={<TabFallback />}>
-                  <ExhibitionSocialWall exhibitionId={exhibition.id} exhibitionTitle={title} exhibitionHashtag={exhibition.slug?.replace(/-/g, "_")} />
-                </Suspense>
-              </TabsContent>
-
-              <TabsContent value="navigation" className="mt-6">
-                <Suspense fallback={<TabFallback />}>
-                  <ExhibitionIndoorMap exhibitionId={exhibition.id} isAr={isAr} />
-                </Suspense>
-              </TabsContent>
-
-              <TabsContent value="auctions" className="mt-6">
-                <Suspense fallback={<TabFallback />}>
-                  <ExhibitionAuctionsOffers exhibitionId={exhibition.id} isAr={isAr} />
-                </Suspense>
-              </TabsContent>
-
-              {hasReviews && (
-                <TabsContent value="reviews" className="mt-6 space-y-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} creatorId={exhibition.created_by || undefined} />
-                    {hasEnded && (
-                      <ExhibitionSurveyManager exhibitionId={exhibition.id} isAr={isAr} isOrganizer={!!isOwner} />
-                    )}
-                    <ExhibitionLoyaltyWidget exhibitionId={exhibition.id} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {user && (
-                <TabsContent value="my-tickets" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionMyTickets exhibitionId={exhibition.id} exhibitionTitle={title} exhibitionDate={exhibition.start_date} exhibitionVenue={venue || undefined} isAr={isAr} />
-                    <div className="mt-4">
-                      <ExhibitionTicketSummary exhibitionId={exhibition.id} maxAttendees={exhibition.max_attendees} isAr={isAr} />
-                    </div>
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {user && (
-                <TabsContent value="my-schedule" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionAttendeeSchedule exhibitionId={exhibition.id} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              <TabsContent value="sponsorship" className="mt-6">
-                <Suspense fallback={<TabFallback />}>
-                  <ExhibitionSponsorshipHub exhibitionId={exhibition.id} isAr={isAr} />
-                </Suspense>
-              </TabsContent>
-
-              {isOwner && (
-                <TabsContent value="checkin" className="mt-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <ExhibitionCheckinScanner exhibitionId={exhibition.id} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-
-              {isOwner && (
-                <TabsContent value="organizer" className="mt-6 space-y-6">
-                  <Suspense fallback={<TabFallback />}>
-                    <OrganizerAdvancedReports exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
-                    <OrganizerSalesReport exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
-                    <OrganizerAttendeeCommunication exhibitionId={exhibition.id} isAr={isAr} />
-                    <ExhibitionEventScheduleWidget exhibitionId={exhibition.id} isAr={isAr} />
-                    <ExhibitionOrganizerDashboard exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
-                  </Suspense>
-                </TabsContent>
-              )}
-            </Tabs>
-
-            {/* Comments Section */}
-            <div className="mt-8 rounded-2xl border border-border/40 bg-card p-4 sm:p-6">
-              <EventComments eventType="exhibition" eventId={exhibition.id} />
-            </div>
+          {/* Quick Stats */}
+          <div className="mt-4">
+            <ExhibitionQuickStats exhibitionId={exhibition.id} viewCount={exhibition.view_count || 0} isAr={isAr} />
           </div>
 
-          {/* ======== SIDEBAR (Desktop) ======== */}
-          <Suspense fallback={null}>
-            <ExhibitionSidebar
-              exhibition={exhibition} title={title} description={description} venue={venue}
-              organizer={organizer} organizerLogoUrl={organizerLogoUrl}
-              isHappening={isHappening} isUpcoming={isUpcoming} hasEnded={hasEnded}
-              isFollowing={!!isFollowing} followerCount={followerCount || 0} user={user}
-              isAr={isAr} countryFlag={countryFlag} tags={tags}
-              exhibitionQrCode={exhibitionQrCode} onFollow={handleFollow} followPending={toggleFollow.isPending}
-              isWatchlisted={isWatchlisted} onToggleWatchlist={toggleWatchlist}
-            />
-          </Suspense>
-        </div>
-
-        {/* Previous Editions Section */}
-        {(exhibition as any).series_id && (
-          <Suspense fallback={null}>
-            <ExhibitionEditionsSection
-              seriesId={(exhibition as any).series_id}
-              currentExhibitionId={exhibition.id}
+          {/* Interactive Stats */}
+          <div className="mt-4">
+            <ExhibitionInteractiveStats
+              viewCount={exhibition.view_count || 0}
+              followerCount={followerCount || 0}
+              reviewCount={reviewCount}
+              avgRating={featureCounts?.avgRating || 0}
+              boothCount={boothCount}
+              ticketCount={featureCounts?.tickets || 0}
               isAr={isAr}
             />
-          </Suspense>
-        )}
+          </div>
 
-        {/* Smart Recommendations */}
-        <Suspense fallback={null}>
-          <SmartEventRecommendations
-            currentEventId={exhibition.id}
-            currentEventCountry={exhibition.country}
-            currentEventCategories={(exhibition.categories as string[]) || []}
-          />
-        </Suspense>
+          {/* ===== TWO-COLUMN GRID ===== */}
+          <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
 
-        {/* Related Exhibitions */}
-        <Suspense fallback={null}>
-          <RelatedExhibitions
-            exhibitionId={exhibition.id}
-            country={exhibition.country}
-            type={exhibition.type}
-            seriesId={(exhibition as any).series_id}
-            isAr={isAr}
-          />
-        </Suspense>
+            {/* ---- LEFT: Tabs + Content ---- */}
+            <div className="min-w-0">
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                {/* Sticky Tab Navigation */}
+                <div className="sticky top-14 z-30 -mx-1 mb-6 rounded-xl border border-border/40 bg-background/95 p-1.5 backdrop-blur-lg sm:mx-0 sm:p-2">
+                  <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto bg-transparent p-0 scrollbar-none">
+                    <TabsTrigger
+                      value="overview"
+                      className="rounded-lg px-3 py-2 text-xs font-semibold transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md sm:px-4 sm:py-2.5 sm:text-sm whitespace-nowrap touch-manipulation"
+                    >
+                      {isAr ? "نظرة عامة" : "Overview"}
+                    </TabsTrigger>
+                    {hasWinningDishes && <ExhibitionTabTrigger value="winning-dishes" icon={Award} label={isAr ? "الأطباق" : "Winners"} count={winningDishes!.length} />}
+                    {hasCompetitions && <ExhibitionTabTrigger value="competitions" icon={Trophy} label={isAr ? "المسابقات" : "Competitions"} count={linkedCompetitions!.length} />}
+                    {hasSchedule && <ExhibitionTabTrigger value="schedule" icon={Calendar} label={isAr ? "الجدول" : "Schedule"} />}
+                    {(hasJudges || hasSpeakers) && <ExhibitionTabTrigger value="people" icon={Users} label={isAr ? "الأشخاص" : "People"} />}
+                    {hasGallery && <ExhibitionTabTrigger value="gallery" icon={ImageIcon} label={isAr ? "المعرض" : "Gallery"} />}
+                    {hasAgenda && <ExhibitionTabTrigger value="agenda" icon={Clock} label={isAr ? "الأجندة" : "Agenda"} count={agendaCount} />}
+                    {hasScheduleItems && <ExhibitionTabTrigger value="event-schedule" icon={CalendarClock} label={isAr ? "البرنامج" : "Program"} count={scheduleItemCount} />}
+                    {hasBooths && <ExhibitionTabTrigger value="booths" icon={LayoutGrid} label={isAr ? "الأجنحة" : "Booths"} count={boothCount} />}
+                    {hasSponsors && <ExhibitionTabTrigger value="sponsors" icon={Star} label={isAr ? "الرعاة" : "Sponsors"} />}
+                    <ExhibitionTabTrigger value="cooking" icon={ChefHat} label={isAr ? "الطهي الحي" : "Live Cooking"} />
+                    <ExhibitionTabTrigger value="social" icon={MessageSquare} label={isAr ? "اجتماعي" : "Social"} />
+                    <ExhibitionTabTrigger value="navigation" icon={Navigation} label={isAr ? "الملاحة" : "Navigate"} />
+                    <ExhibitionTabTrigger value="auctions" icon={Gavel} label={isAr ? "مزادات" : "Auctions"} />
+                    {hasReviews && <ExhibitionTabTrigger value="reviews" icon={MessageSquare} label={isAr ? "التقييمات" : "Reviews"} count={reviewCount > 0 ? reviewCount : undefined} />}
+                    {user && <ExhibitionTabTrigger value="my-tickets" icon={Ticket} label={isAr ? "تذاكري" : "My Tickets"} />}
+                    {user && <ExhibitionTabTrigger value="my-schedule" icon={BookmarkCheck} label={isAr ? "جدولي" : "My Schedule"} />}
+                    <ExhibitionTabTrigger value="sponsorship" icon={Gem} label={isAr ? "الرعاية" : "Sponsors"} />
+                    {isOwner && <ExhibitionTabTrigger value="checkin" icon={ScanLine} label={isAr ? "تسجيل الدخول" : "Check-in"} />}
+                    {isOwner && <ExhibitionTabTrigger value="organizer" icon={Settings} label={isAr ? "لوحة التحكم" : "Dashboard"} />}
+                  </TabsList>
+                </div>
+
+                {/* Tab Contents */}
+                <div className="space-y-6">
+                  <TabsContent value="overview" className="mt-0">
+                    <Suspense fallback={<TabFallback />}>
+                      <ExhibitionOverviewTab
+                        exhibition={exhibition} title={title} description={description} isAr={isAr}
+                        linkedCompetitions={linkedCompetitions} sections={sections}
+                        targetAudience={targetAudience} galleryUrls={galleryUrls}
+                        onSetActiveTab={setActiveTab} onLightboxOpen={handleLightbox}
+                      />
+                    </Suspense>
+                  </TabsContent>
+
+                  {hasWinningDishes && (
+                    <TabsContent value="winning-dishes" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionWinningDishesTab winningDishes={winningDishes!} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {hasCompetitions && (
+                    <TabsContent value="competitions" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionCompetitionsTab competitions={linkedCompetitions!} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {hasSchedule && (
+                    <TabsContent value="schedule" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionScheduleTab schedule={schedule} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {(hasJudges || hasSpeakers) && (
+                    <TabsContent value="people" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionPeopleTab judgeProfiles={judgeProfiles || null} speakers={speakers} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {hasGallery && (
+                    <TabsContent value="gallery" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionGalleryTab galleryUrls={galleryUrls} title={title} onLightboxOpen={handleLightbox} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {hasSponsors && (
+                    <TabsContent value="sponsors" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionSponsorsTab sponsors={sponsorsInfo} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {hasAgenda && (
+                    <TabsContent value="agenda" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionAgendaTab exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {hasScheduleItems && (
+                    <TabsContent value="event-schedule" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionSchedulePublic exhibitionId={exhibition.id} startDate={exhibition.start_date} endDate={exhibition.end_date} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {hasBooths && (
+                    <TabsContent value="booths" className="mt-0 space-y-6">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionInteractiveBoothManager exhibitionId={exhibition.id} isAr={isAr} isOwner={!!isOwner} />
+                        <ExhibitionBoothNavigator exhibitionId={exhibition.id} isAr={isAr} />
+                        <ExhibitionFloorMap exhibitionId={exhibition.id} isAr={isAr} />
+                        <ExhibitionBoothsTab exhibitionId={exhibition.id} isAr={isAr} />
+                        {!isOwner && !hasEnded && (
+                          <ExhibitionExhibitorRegistration exhibitionId={exhibition.id} isAr={isAr} />
+                        )}
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  <TabsContent value="cooking" className="mt-0">
+                    <Suspense fallback={<TabFallback />}>
+                      <ExhibitionCookingSessions exhibitionId={exhibition.id} isAr={isAr} />
+                    </Suspense>
+                  </TabsContent>
+
+                  <TabsContent value="social" className="mt-0">
+                    <Suspense fallback={<TabFallback />}>
+                      <ExhibitionSocialWall exhibitionId={exhibition.id} exhibitionTitle={title} exhibitionHashtag={exhibition.slug?.replace(/-/g, "_")} />
+                    </Suspense>
+                  </TabsContent>
+
+                  <TabsContent value="navigation" className="mt-0">
+                    <Suspense fallback={<TabFallback />}>
+                      <ExhibitionIndoorMap exhibitionId={exhibition.id} isAr={isAr} />
+                    </Suspense>
+                  </TabsContent>
+
+                  <TabsContent value="auctions" className="mt-0">
+                    <Suspense fallback={<TabFallback />}>
+                      <ExhibitionAuctionsOffers exhibitionId={exhibition.id} isAr={isAr} />
+                    </Suspense>
+                  </TabsContent>
+
+                  {hasReviews && (
+                    <TabsContent value="reviews" className="mt-0 space-y-6">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionReviewsTab exhibitionId={exhibition.id} hasEnded={hasEnded} isAr={isAr} creatorId={exhibition.created_by || undefined} />
+                        {hasEnded && (
+                          <ExhibitionSurveyManager exhibitionId={exhibition.id} isAr={isAr} isOrganizer={!!isOwner} />
+                        )}
+                        <ExhibitionLoyaltyWidget exhibitionId={exhibition.id} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {user && (
+                    <TabsContent value="my-tickets" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionMyTickets exhibitionId={exhibition.id} exhibitionTitle={title} exhibitionDate={exhibition.start_date} exhibitionVenue={venue || undefined} isAr={isAr} />
+                        <div className="mt-4">
+                          <ExhibitionTicketSummary exhibitionId={exhibition.id} maxAttendees={exhibition.max_attendees} isAr={isAr} />
+                        </div>
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {user && (
+                    <TabsContent value="my-schedule" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionAttendeeSchedule exhibitionId={exhibition.id} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  <TabsContent value="sponsorship" className="mt-0">
+                    <Suspense fallback={<TabFallback />}>
+                      <ExhibitionSponsorshipHub exhibitionId={exhibition.id} isAr={isAr} />
+                    </Suspense>
+                  </TabsContent>
+
+                  {isOwner && (
+                    <TabsContent value="checkin" className="mt-0">
+                      <Suspense fallback={<TabFallback />}>
+                        <ExhibitionCheckinScanner exhibitionId={exhibition.id} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+
+                  {isOwner && (
+                    <TabsContent value="organizer" className="mt-0 space-y-6">
+                      <Suspense fallback={<TabFallback />}>
+                        <OrganizerAdvancedReports exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
+                        <OrganizerSalesReport exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
+                        <OrganizerAttendeeCommunication exhibitionId={exhibition.id} isAr={isAr} />
+                        <ExhibitionEventScheduleWidget exhibitionId={exhibition.id} isAr={isAr} />
+                        <ExhibitionOrganizerDashboard exhibitionId={exhibition.id} exhibitionTitle={title} isAr={isAr} />
+                      </Suspense>
+                    </TabsContent>
+                  )}
+                </div>
+              </Tabs>
+
+              {/* Comments */}
+              <div className="mt-8 rounded-xl border border-border/40 bg-card p-5">
+                <EventComments eventType="exhibition" eventId={exhibition.id} />
+              </div>
+            </div>
+
+            {/* ---- RIGHT: Sidebar ---- */}
+            <aside className="hidden lg:block">
+              <div className="sticky top-20 space-y-5">
+                <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+                  <ExhibitionSidebar
+                    exhibition={exhibition} title={title} description={description} venue={venue}
+                    organizer={organizer} organizerLogoUrl={organizerLogoUrl}
+                    isHappening={isHappening} isUpcoming={isUpcoming} hasEnded={hasEnded}
+                    isFollowing={!!isFollowing} followerCount={followerCount || 0} user={user}
+                    isAr={isAr} countryFlag={countryFlag} tags={tags}
+                    exhibitionQrCode={exhibitionQrCode} onFollow={handleFollow} followPending={toggleFollow.isPending}
+                    isWatchlisted={isWatchlisted} onToggleWatchlist={toggleWatchlist}
+                  />
+                </Suspense>
+              </div>
+            </aside>
+          </div>
+
+          {/* Mobile Sidebar (shown below tabs on mobile) */}
+          <div className="mt-6 lg:hidden">
+            <Suspense fallback={null}>
+              <ExhibitionSidebar
+                exhibition={exhibition} title={title} description={description} venue={venue}
+                organizer={organizer} organizerLogoUrl={organizerLogoUrl}
+                isHappening={isHappening} isUpcoming={isUpcoming} hasEnded={hasEnded}
+                isFollowing={!!isFollowing} followerCount={followerCount || 0} user={user}
+                isAr={isAr} countryFlag={countryFlag} tags={tags}
+                exhibitionQrCode={exhibitionQrCode} onFollow={handleFollow} followPending={toggleFollow.isPending}
+                isWatchlisted={isWatchlisted} onToggleWatchlist={toggleWatchlist}
+              />
+            </Suspense>
+          </div>
+
+          {/* Previous Editions */}
+          {(exhibition as any).series_id && (
+            <div className="mt-8">
+              <Suspense fallback={null}>
+                <ExhibitionEditionsSection
+                  seriesId={(exhibition as any).series_id}
+                  currentExhibitionId={exhibition.id}
+                  isAr={isAr}
+                />
+              </Suspense>
+            </div>
+          )}
+
+          {/* Smart Recommendations */}
+          <div className="mt-8">
+            <Suspense fallback={null}>
+              <SmartEventRecommendations
+                currentEventId={exhibition.id}
+                currentEventCountry={exhibition.country}
+                currentEventCategories={(exhibition.categories as string[]) || []}
+              />
+            </Suspense>
+          </div>
+
+          {/* Related Exhibitions */}
+          <div className="mt-8">
+            <Suspense fallback={null}>
+              <RelatedExhibitions
+                exhibitionId={exhibition.id}
+                country={exhibition.country}
+                type={exhibition.type}
+                seriesId={(exhibition as any).series_id}
+                isAr={isAr}
+              />
+            </Suspense>
+          </div>
+        </div>
       </main>
 
       {/* Sticky mobile action bar */}
