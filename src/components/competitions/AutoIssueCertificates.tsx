@@ -144,7 +144,7 @@ export const AutoIssueCertificates = memo(function AutoIssueCertificates({ compe
 
           certsToInsert.push({
             template_id: winnerTemplate.id,
-            type: winnerCertType as any,
+            type: winnerCertType as Database["public"]["Enums"]["certificate_type"],
             competition_id: competitionId,
             recipient_id: result.participantId,
             recipient_name: result.name,

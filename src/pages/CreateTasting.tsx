@@ -123,7 +123,7 @@ export default function CreateTasting() {
         is_blind_tasting: form.is_blind_tasting,
         allow_notes: form.allow_notes,
         competition_id: mode === "competition" ? form.competition_id : null,
-        status: "draft" as any,
+        status: "draft" as Database["public"]["Enums"]["tasting_session_status"],
       });
 
       if (form.preset && presets) {

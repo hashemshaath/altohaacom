@@ -38,7 +38,7 @@ export function useCompanyContactRole() {
         .maybeSingle();
       if (error || !data) return null;
       return {
-        role: (data as any).role || "viewer",
+        role: data.role || "viewer",
         isPrimary: data.is_primary || false,
       };
     },
