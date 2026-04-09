@@ -307,7 +307,7 @@ export const SEOTechnicalChecklist = memo(function SEOTechnicalChecklist({ isAr 
                 </p>
                 <p className="text-[12px] text-muted-foreground uppercase tracking-wider">{isAr ? "النتيجة" : "Score"}</p>
               </div>
-              <Button onClick={runAllChecks} disabled={running} variant="outline" size="sm" className="gap-1.5">
+              <Button onClick={() => runAllChecks()} disabled={running} variant="outline" size="sm" className="gap-1.5">
                 {running ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
                 {isAr ? "إعادة فحص" : "Re-scan"}
               </Button>
