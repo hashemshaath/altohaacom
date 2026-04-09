@@ -96,7 +96,7 @@ export default function AcceptInvite() {
     );
   }
 
-  const company = invite.companies as any;
+  const company = invite.companies as { name?: string; name_ar?: string; logo_url?: string } | null;
   const companyName = isAr && company?.name_ar ? company.name_ar : company?.name;
   const roleLabels: Record<string, { en: string; ar: string }> = {
     owner: { en: "Owner", ar: "مالك" }, admin: { en: "Admin", ar: "مدير" },
