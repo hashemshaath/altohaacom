@@ -2,14 +2,32 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 
+export interface RecipeIngredient {
+  name: string;
+  name_ar?: string;
+  quantity?: string;
+  unit?: string;
+}
+
+export interface RecipeStep {
+  instruction: string;
+  instruction_ar?: string;
+  duration_minutes?: number;
+  image_url?: string;
+}
+
+/** Ingredients/steps can be structured objects or simple strings */
+export type RecipeIngredientInput = RecipeIngredient | string;
+export type RecipeStepInput = RecipeStep | string;
+
 export interface Recipe {
   id: string;
   title: string;
   title_ar: string | null;
   description: string | null;
   description_ar: string | null;
-  ingredients: any[];
-  steps: any[];
+  ingredients: RecipeIngredientInput[];
+  steps: RecipeStepInput[];
   image_url: string | null;
   gallery_urls: string[] | null;
   cuisine: string | null;
@@ -179,8 +197,8 @@ export function useCreateRecipe() {
       title_ar?: string;
       description?: string;
       description_ar?: string;
-      ingredients: any[];
-      steps: any[];
+      ingredients: RecipeIngredientInput[];
+      steps: RecipeStepInput[];
       cuisine?: string;
       difficulty?: string;
       category?: string;

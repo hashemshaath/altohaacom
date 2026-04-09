@@ -59,9 +59,9 @@ export function useWebVitalsTracking() {
       // CLS
       let clsValue = 0;
       const clsObs = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries() as any[]) {
-          if (!entry.hadRecentInput) {
-            clsValue += entry.value;
+        for (const entry of list.getEntries() as PerformanceEntry[]) {
+          if (!(entry as unknown as { hadRecentInput: boolean }).hadRecentInput) {
+            clsValue += (entry as unknown as { value: number }).value;
           }
         }
         vitalsRef.current.cls = Math.round(clsValue * 1000) / 1000;
@@ -84,7 +84,7 @@ export function useWebVitalsTracking() {
       // INP (Interaction to Next Paint)
       let maxINP = 0;
       const inpObs = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries() as any[]) {
+        for (const entry of list.getEntries()) {
           const duration = entry.duration || 0;
           if (duration > maxINP) {
             maxINP = duration;

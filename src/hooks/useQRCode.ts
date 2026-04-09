@@ -4,6 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import type { QREntityType } from "@/lib/qrCode";
 import { CODE_PREFIXES } from "@/lib/qrCode";
 
+export interface QRVerifyResult {
+  entity_type: string;
+  entity_id: string;
+  code?: string;
+  is_active?: boolean;
+  [key: string]: unknown;
+}
+
 /** Fetch or create a QR code for a given entity */
 export function useEntityQRCode(entityType: QREntityType, entityId: string | undefined, category?: string) {
   const { user } = useAuth();
@@ -54,14 +62,15 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
 
 /** Verify a QR code (public, no auth needed) */
 export function useVerifyQRCode(code: string | null) {
-  return useQuery({
+  return useQuery<QRVerifyResult | null>({
     queryKey: ["verify-qr", code],
     queryFn: async () => {
       if (!code) return null;
       const { data, error } = await supabase.rpc("verify_qr_code", { p_code: code.toUpperCase() });
       if (error) throw error;
-      if (!data || (data as any[]).length === 0) return null;
-      return (data as any[])[0];
+      if (!data || (Array.isArray(data) && data.length === 0)) return null;
+      const row = Array.isArray(data) ? data[0] : data;
+      return row as unknown as QRVerifyResult;
     },
     enabled: !!code,
   });

@@ -347,7 +347,7 @@ export function useSubmitForApproval() {
       // Notify admins
       const { data: admins } = await supabase.from("user_roles" as any).select("user_id").eq("role", "supervisor");
       if (admins && est) {
-        for (const a of (admins as any[])) {
+        for (const a of (admins as unknown as { user_id: string }[])) {
           sendNotification({
             userId: a.user_id,
             title: `Cost Estimate Submitted: ${(est as any).estimate_number}`,
