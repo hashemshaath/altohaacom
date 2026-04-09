@@ -128,7 +128,7 @@ export default function EditCompetition() {
         selectedTypeIds: existingTypeAssignments.map((t) => t.type_id),
         supervisingBodyIds: existingSupervisingBodies.map((s) => s.entity_id),
         judgeIds: existingJudges.map((j) => j.judge_id),
-        registrationFeeType: ((competition as Record<string, unknown>).registration_fee_type as string) || "free",
+        registrationFeeType: ((competition as Record<string, unknown>).registration_fee_type as "free" | "paid") || "free",
         registrationFee: (competition as Record<string, unknown>).registration_fee as number || 0,
         registrationCurrency: (competition as Record<string, unknown>).registration_currency as string || "SAR",
         registrationTaxRate: (competition as Record<string, unknown>).registration_tax_rate as number || 0,
