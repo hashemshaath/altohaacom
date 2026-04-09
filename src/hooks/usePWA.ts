@@ -12,7 +12,6 @@ export function useInstallPrompt() {
     try {
       const ts = localStorage.getItem("pwa_banner_dismissed");
       if (!ts) return false;
-      // Re-show after 7 days
       return Date.now() - parseInt(ts) < 7 * 24 * 60 * 60 * 1000;
     } catch { return false; }
   });
@@ -26,9 +25,13 @@ export function useInstallPrompt() {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
+    const onInstalled = () => setIsInstalled(true);
     window.addEventListener("beforeinstallprompt", handler);
-    window.addEventListener("appinstalled", () => setIsInstalled(true));
-    return () => window.removeEventListener("beforeinstallprompt", handler);
+    window.addEventListener("appinstalled", onInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handler);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
   }, []);
 
   const install = useCallback(async () => {
@@ -50,7 +53,7 @@ export function useInstallPrompt() {
     isInstalled,
     install,
     dismiss,
-    isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream,
+    isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
   };
 }
 
@@ -77,10 +80,11 @@ export function usePWAUpdate() {
 
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
+    let cancelled = false;
 
     const check = async () => {
       const reg = await navigator.serviceWorker.getRegistration();
-      if (!reg) return;
+      if (!reg || cancelled) return;
       setRegistration(reg);
 
       reg.addEventListener("updatefound", () => {
@@ -94,6 +98,7 @@ export function usePWAUpdate() {
       });
     };
     check();
+    return () => { cancelled = true; };
   }, []);
 
   const update = useCallback(() => {

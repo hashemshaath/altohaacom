@@ -60,7 +60,7 @@ export function useNotifications() {
 
       setNotifications(data || []);
       setUnreadCount(data?.filter(n => !n.is_read).length || 0);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error fetching notifications:", error);
     } finally {
       setLoading(false);
@@ -85,7 +85,7 @@ export function useNotifications() {
         )
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error marking notification as read:", error);
     }
   }, [user?.id]);
@@ -106,7 +106,7 @@ export function useNotifications() {
         prev.map(n => ({ ...n, is_read: true, read_at: new Date().toISOString() }))
       );
       setUnreadCount(0);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error marking all as read:", error);
     }
   }, [user?.id]);
@@ -125,7 +125,7 @@ export function useNotifications() {
         const wasUnread = notifications.find(n => n.id === notificationId && !n.is_read);
         return wasUnread ? Math.max(0, prev - 1) : prev;
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error deleting notification:", error);
     }
   }, [user?.id, notifications]);
@@ -140,7 +140,7 @@ export function useNotifications() {
         .eq("is_read", true);
       if (error) throw error;
       setNotifications(prev => prev.filter(n => !n.is_read));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error clearing read notifications:", error);
     }
   }, [user?.id]);
