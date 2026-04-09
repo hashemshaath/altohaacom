@@ -3,14 +3,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { pushToDataLayer, sendGoogleConversion } from "./useGoogleTracking";
 import { getDeviceType } from "@/lib/deviceType";
+import { getSessionId, getBrowser } from "@/lib/analyticsUtils";
 import type { Json } from "@/integrations/supabase/types";
 
-function getSessionId(): string {
-  return sessionStorage.getItem("ad_session_id") || "";
-}
-function getBrowser(): string {
-  return navigator.userAgent.slice(0, 100);
-}
 
 interface TrackItemPayload {
   product_id: string;

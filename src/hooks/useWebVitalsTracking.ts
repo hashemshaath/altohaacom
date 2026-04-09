@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeviceType } from "@/lib/deviceType";
+import { getSessionId } from "@/lib/analyticsUtils";
 
 /**
  * Tracks Core Web Vitals (LCP, INP, CLS, FCP, TTFB) per route
@@ -19,15 +20,6 @@ interface VitalsData {
 function getConnectionType(): string | null {
   const conn = (navigator as unknown as { connection?: { effectiveType?: string } }).connection;
   return conn?.effectiveType || null;
-}
-
-function getSessionId(): string {
-  let id = sessionStorage.getItem("altoha_vitals_session");
-  if (!id) {
-    id = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    sessionStorage.setItem("altoha_vitals_session", id);
-  }
-  return id;
 }
 
 export function useWebVitalsTracking() {

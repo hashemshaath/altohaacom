@@ -2,28 +2,7 @@ import { useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDeviceType } from "@/lib/deviceType";
-
-let sessionId: string | null = null;
-
-function getSessionId() {
-  if (!sessionId) {
-    sessionId = sessionStorage.getItem("ad_session_id");
-    if (!sessionId) {
-      sessionId = crypto.randomUUID();
-      sessionStorage.setItem("ad_session_id", sessionId);
-    }
-  }
-  return sessionId;
-}
-
-function getBrowser() {
-  const ua = navigator.userAgent;
-  if (ua.includes("Chrome") && !ua.includes("Edg")) return "chrome";
-  if (ua.includes("Firefox")) return "firefox";
-  if (ua.includes("Safari") && !ua.includes("Chrome")) return "safari";
-  if (ua.includes("Edg")) return "edge";
-  return "other";
-}
+import { getSessionId, getBrowser } from "@/lib/analyticsUtils";
 
 
 function getPageCategory(url: string) {

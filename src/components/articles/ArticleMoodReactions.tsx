@@ -18,7 +18,8 @@ const REACTIONS = [
   { emoji: "😮", labelEn: "Wow", labelAr: "مذهل", key: "wow" },
 ];
 
-function getSessionId(): string {
+// Session ID for anonymous reaction deduplication
+function getReactionSessionId(): string {
   let sid = sessionStorage.getItem("reaction_session_id");
   if (!sid) {
     sid = crypto.randomUUID();
@@ -52,7 +53,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
         setCounts(reactionCounts);
 
         // Get user's own reactions
-        const sessionId = getSessionId();
+       const sessionId = getReactionSessionId();
 
         let userQuery = supabase
           .from("article_reactions")
@@ -83,7 +84,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
 
   const handleReaction = useCallback(async (key: string) => {
     const isActive = !!selected[key];
-    const sessionId = getSessionId();
+    const sessionId = getReactionSessionId();
 
     // Optimistic update
     setSelected(prev => ({ ...prev, [key]: !isActive }));

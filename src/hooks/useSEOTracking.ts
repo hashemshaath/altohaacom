@@ -2,17 +2,8 @@ import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { getDeviceType } from "@/lib/deviceType";
+import { getSessionId } from "@/lib/analyticsUtils";
 
-const SESSION_KEY = "altoha_seo_session";
-
-function getSessionId(): string {
-  let sid = sessionStorage.getItem(SESSION_KEY);
-  if (!sid) {
-    sid = crypto.randomUUID();
-    sessionStorage.setItem(SESSION_KEY, sid);
-  }
-  return sid;
-}
 
 // Known crawler user-agent patterns
 const CRAWLER_PATTERNS: { pattern: RegExp; name: string; type: string }[] = [

@@ -93,7 +93,7 @@ export function useSubmitVerification() {
           verificationType: variables.verification_level,
           userId: user!.id,
         });
-      });
+      }, () => { /* dynamic import failed — non-critical */ });
     },
     onError: (err: Error) => {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) });
