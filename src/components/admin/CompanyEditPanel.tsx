@@ -129,7 +129,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
     "city", "country_code", "description", "description_ar", "registration_number",
     "tax_number", "logo_url", "type", "neighborhood", "street",
   ];
-  const filledFields = completionFields.filter(f => !!(form as any)[f]);
+  const filledFields = completionFields.filter(f => !!(form as Record<string, unknown>)[f]);
   const completionPct = Math.round((filledFields.length / completionFields.length) * 100);
 
   const updateMutation = useMutation({
@@ -137,7 +137,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
       const { status, import_source, ...rest } = data;
       const { error } = await supabase.from("companies").update({
         ...rest,
-        status: status as any,
+        status: status as Database["public"]["Enums"]["company_status"],
         country_code: rest.country_code || null,
         credit_limit: Number(rest.credit_limit) || 0,
         payment_terms: Number(rest.payment_terms) || 30,

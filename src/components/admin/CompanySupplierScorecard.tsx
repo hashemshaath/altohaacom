@@ -124,7 +124,7 @@ export const CompanySupplierScorecard = memo(function CompanySupplierScorecard()
             <SelectItem value="vendor">{isAr ? "بائع" : "Vendor"}</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={sortBy} onValueChange={v => setSortBy(v as any)}>
+        <Select value={sortBy} onValueChange={v => setSortBy(v as typeof sortBy)}>
           <SelectTrigger className="w-40"><ArrowUpDown className="h-3.5 w-3.5 me-1" /><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="score">{isAr ? "التقييم" : "Score"}</SelectItem>

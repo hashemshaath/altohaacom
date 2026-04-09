@@ -30,13 +30,13 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
   const { data: linked } = useQuery({
     queryKey: ["exhibition-competitions-admin", exhibitionId],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("exhibition_competitions")
         .select("*, competitions:competition_id(id, title, title_ar, status, slug)")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as any[];
+      return data ?? [];
     },
     enabled: !!exhibitionId,
   });
@@ -60,7 +60,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
       if (linked?.some(l => l.competitions?.id === competitionId)) {
         throw new Error(t("Competition already linked", "المسابقة مرتبطة بالفعل"));
       }
-      const { error } = await (supabase as any).from("exhibition_competitions").insert({
+      const { error } = await supabase.from("exhibition_competitions").insert({
         exhibition_id: exhibitionId,
         competition_id: competitionId,
         edition_year: editionYear,
@@ -79,7 +79,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
 
   const unlinkMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await (supabase as any).from("exhibition_competitions").delete().eq("id", id);
+      const { error } = await supabase.from("exhibition_competitions").delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

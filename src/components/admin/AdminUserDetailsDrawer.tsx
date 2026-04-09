@@ -52,9 +52,9 @@ export const AdminUserDetailsDrawer = memo(function AdminUserDetailsDrawer({ use
   const roleMutation = useMutation({
     mutationFn: async ({ role, action }: { role: string; action: "add" | "remove" }) => {
       if (action === "add") {
-        await supabase.from("user_roles").insert({ user_id: userId!, role: role as any });
+        await supabase.from("user_roles").insert({ user_id: userId!, role: role as Database["public"]["Enums"]["app_role"] });
       } else {
-        await supabase.from("user_roles").delete().eq("user_id", userId!).eq("role", role as any);
+        await supabase.from("user_roles").delete().eq("user_id", userId!).eq("role", role as Database["public"]["Enums"]["app_role"]);
       }
     },
     onSuccess: () => {
