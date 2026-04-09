@@ -73,10 +73,11 @@ export default function CertificateVerify() {
 
   return (
     <PageShell
-      title={isAr ? "التحقق من الشهادة" : "Verify Certificate"}
-      description={isAr ? "تحقق من صحة شهادة صادرة عن منصة الطهاة" : "Verify the authenticity of a certificate issued by Altoha"}
-      seoProps={{ keywords: isAr ? "تحقق, شهادة, التحقق من الشهادة" : "verify, certificate, authentication" }}
+      title={language === "ar" ? "التحقق من الشهادة" : "Verify Certificate"}
+      description={language === "ar" ? "تحقق من صحة شهادة صادرة عن منصة الطهاة" : "Verify the authenticity of a certificate issued by Altoha"}
+      seoProps={{ keywords: language === "ar" ? "تحقق, شهادة, التحقق من الشهادة" : "verify, certificate, authentication" }}
       container={false}
+    >
     >
       
       <main className="flex-1">
