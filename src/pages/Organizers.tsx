@@ -151,13 +151,19 @@ export default function Organizers() {
               </div>
 
               <div className="space-y-2">
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight" dir="rtl" style={{ fontFamily: '"IBM Plex Arabic", "Segoe UI", Tahoma, sans-serif' }}>
-                  منظمو الفعاليات والمعارض
-                </h1>
-                {!isAr && (
-                  <p className="text-lg md:text-xl font-semibold text-muted-foreground/70 tracking-wide">
-                    Event & Exhibition Organizers
-                  </p>
+                {isAr ? (
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-normal" dir="rtl" style={{ fontFamily: '"IBM Plex Arabic", "Segoe UI", Tahoma, sans-serif' }}>
+                    منظمو الفعاليات والمعارض
+                  </h1>
+                ) : (
+                  <>
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight tracking-normal" dir="rtl" style={{ fontFamily: '"IBM Plex Arabic", "Segoe UI", Tahoma, sans-serif' }}>
+                      منظمو الفعاليات والمعارض
+                    </h1>
+                    <p className="text-lg md:text-xl font-semibold text-muted-foreground/70 tracking-wide">
+                      Event &amp; Exhibition Organizers
+                    </p>
+                  </>
                 )}
               </div>
 
