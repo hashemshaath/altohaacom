@@ -43,9 +43,10 @@ export default function CertificateVerify() {
         .rpc("verify_certificate", { p_code: searchedCode.toUpperCase() });
       
       if (error) throw error;
-      if (!data || (data as Record<string, unknown>[]).length === 0) return null;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC returns dynamic shape
+      if (!data || (data as any[]).length === 0) return null;
       
-      return (data as Record<string, unknown>[])[0];
+      return (data as any[])[0];
     },
     enabled: !!searchedCode,
   });
