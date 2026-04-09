@@ -244,7 +244,7 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
         </div>
       </div>
 
-      {expanded && <div className="fixed inset-0 bg-black/20 -z-10" onClick={() => setExpanded(false)} />}
+      {expanded && <div className="fixed inset-0 bg-black/20 -z-10" role="presentation" onClick={() => setExpanded(false)} />}
     </div>
   );
 }
