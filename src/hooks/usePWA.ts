@@ -81,24 +81,33 @@ export function usePWAUpdate() {
   useEffect(() => {
     if (!("serviceWorker" in navigator)) return;
     let cancelled = false;
+    let reg: ServiceWorkerRegistration | null = null;
+    let newSW: ServiceWorker | null = null;
+
+    const onStateChange = () => {
+      if (newSW?.state === "installed" && navigator.serviceWorker.controller) {
+        setNeedsUpdate(true);
+      }
+    };
+    const onUpdateFound = () => {
+      newSW = reg?.installing ?? null;
+      if (!newSW) return;
+      newSW.addEventListener("statechange", onStateChange);
+    };
 
     const check = async () => {
-      const reg = await navigator.serviceWorker.getRegistration();
+      reg = (await navigator.serviceWorker.getRegistration()) ?? null;
       if (!reg || cancelled) return;
       setRegistration(reg);
-
-      reg.addEventListener("updatefound", () => {
-        const newSW = reg.installing;
-        if (!newSW) return;
-        newSW.addEventListener("statechange", () => {
-          if (newSW.state === "installed" && navigator.serviceWorker.controller) {
-            setNeedsUpdate(true);
-          }
-        });
-      });
+      reg.addEventListener("updatefound", onUpdateFound);
     };
-    check();
-    return () => { cancelled = true; };
+    check().then(null, () => {});
+
+    return () => {
+      cancelled = true;
+      reg?.removeEventListener("updatefound", onUpdateFound);
+      newSW?.removeEventListener("statechange", onStateChange);
+    };
   }, []);
 
   const update = useCallback(() => {

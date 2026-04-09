@@ -442,13 +442,15 @@ export default function SmartImportAdmin() {
 
   // Load stats on mount
   useEffect(() => {
+    let cancelled = false;
     const loadStats = async () => {
       try {
         const { data } = await supabase.functions.invoke("smart-import", { body: { mode: "stats" } });
-        if (data?.success) setStats(data.stats);
-      } catch {} finally { setLoadingStats(false); }
+        if (!cancelled && data?.success) setStats(data.stats);
+      } catch {} finally { if (!cancelled) setLoadingStats(false); }
     };
     loadStats();
+    return () => { cancelled = true; };
   }, []);
 
   // Keyboard shortcuts
