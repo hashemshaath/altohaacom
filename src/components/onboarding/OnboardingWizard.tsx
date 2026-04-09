@@ -129,7 +129,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
       });
       setShowCelebration(true);
     } catch (error: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
+      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error instanceof Error ? error.message : "Unknown error" });
     } finally {
       setSaving(false);
     }

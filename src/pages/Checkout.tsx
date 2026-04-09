@@ -125,7 +125,7 @@ export default function Checkout() {
       setCompletedOrder(order);
       setStep("confirm");
     } catch (error: unknown) {
-      toast({ title: isAr ? "خطأ في تقديم الطلب" : "Order failed", description: error.message, variant: "destructive" });
+      toast({ title: isAr ? "خطأ في تقديم الطلب" : "Order failed", description: error instanceof Error ? error.message : "Unknown error", variant: "destructive" });
     } finally {
       setIsPlacing(false);
     }
