@@ -78,10 +78,11 @@ export const StoriesBar = memo(function StoriesBar() {
     setIsDragging(false);
   }, []);
 
+  const userId = user?.id;
   useEffect(() => {
     fetchStories();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
+    // fetchStories is defined below and depends on supabase (stable)
+  }, [userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchStories = async () => {
     const { data: stories } = await supabase

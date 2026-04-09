@@ -59,6 +59,7 @@ export default function ShopProduct() {
   });
 
   // Track product view (must be before early returns)
+  const productId = product?.id;
   useEffect(() => {
     if (product) {
       trackProductView({
@@ -69,7 +70,8 @@ export default function ShopProduct() {
         category: product.category,
       });
     }
-  }, [product?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Track once per product load — trackProductView is stable
+  }, [productId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading) {
     return (
