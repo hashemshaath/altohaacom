@@ -51,13 +51,13 @@ export function useRecordProfileView(profileUserId: string | undefined) {
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ["publicProfile"] });
         }, 500);
-      } catch (err: unknown) {
-        console.error("Failed to record profile view:", err);
+      } catch {
+        // Non-critical — profile view recording can fail silently
       }
     };
 
     record();
-  }, [profileUserId, user?.id]);
+  }, [profileUserId, user?.id, queryClient]);
 }
 
 export function useProfileAnalytics(profileUserId: string | undefined) {

@@ -14,8 +14,8 @@ export function usePresence() {
       .on("presence", { event: "sync" }, () => {
         const state = channel.presenceState();
         const ids = new Set<string>();
-        Object.values(state).forEach((presences: any[]) => {
-          presences.forEach((p) => {
+        Object.values(state).forEach((presences) => {
+          (presences as Array<{ user_id?: string }>).forEach((p) => {
             if (p.user_id) ids.add(p.user_id);
           });
         });
