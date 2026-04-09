@@ -44,7 +44,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
         supabase.from("competition_registrations").select("id", { count: "exact", head: true }).eq("participant_id", user.id),
         supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
-      const gc = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value.count || 0) : 0;
+      const gc = (r: PromiseSettledResult<{ count: number | null }>) => r.status === "fulfilled" ? (r.value.count || 0) : 0;
       return {
         followers: gc(followersQ),
         posts: gc(postsQ),

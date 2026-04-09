@@ -56,7 +56,7 @@ export const QuickStatsWidget = memo(function QuickStatsWidget() {
         supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
 
-      const gc = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
+      const gc = (r: PromiseSettledResult<{ data: unknown; count: number | null }>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
       const regs = gc(regsRes).data || [];
       
       let pending = 0, approved = 0, completed = 0;

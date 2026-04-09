@@ -37,7 +37,7 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
         supabase.from("post_reactions").select("id", { count: "exact", head: true }).eq("user_id", user.id).gte("created_at", prevThirtyDays).lt("created_at", thirtyDaysAgo),
       ]);
 
-      const getCount = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value.count || 0) : 0;
+      const getCount = (r: PromiseSettledResult<{ count: number | null }>) => r.status === "fulfilled" ? (r.value.count || 0) : 0;
 
       const postCount = getCount(posts);
       const reactionCount = getCount(reactions);
