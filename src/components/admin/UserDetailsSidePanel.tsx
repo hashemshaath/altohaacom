@@ -149,8 +149,10 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
   const completeness = profile ? calcCompleteness(profile) : { score: 0, missing: [] };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success(isAr ? "تم النسخ" : "Copied");
+    navigator.clipboard.writeText(text).then(
+      () => toast.success(isAr ? "تم النسخ" : "Copied"),
+      () => toast.error(isAr ? "فشل النسخ" : "Copy failed")
+    );
   };
 
   return (

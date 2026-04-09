@@ -287,8 +287,10 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
             </>
           )}
           <Button size="sm" variant="outline" onClick={() => {
-            navigator.clipboard.writeText(cert.verification_code);
-            toast({ title: language === "ar" ? "تم النسخ" : "Verification code copied" });
+            navigator.clipboard.writeText(cert.verification_code).then(
+              () => toast({ title: language === "ar" ? "تم النسخ" : "Verification code copied" }),
+              () => toast({ title: language === "ar" ? "فشل النسخ" : "Copy failed", variant: "destructive" })
+            );
           }}>
             <Copy className="h-3.5 w-3.5 me-1.5" />
             {language === "ar" ? "نسخ الكود" : "Copy Code"}
