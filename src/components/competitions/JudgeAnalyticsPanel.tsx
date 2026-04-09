@@ -44,7 +44,7 @@ export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competiti
   const profiles = analytics?.profiles || {};
 
   const { avgConsistency, avgBias, avgCompletion, totalScores, consistencyData, scoringData } = useMemo(() => {
-    if (!judges.length) return { avgConsistency: 0, avgBias: 0, avgCompletion: 0, totalScores: 0, consistencyData: [] as any[], scoringData: [] as any[] };
+    if (!judges.length) return { avgConsistency: 0, avgBias: 0, avgCompletion: 0, totalScores: 0, consistencyData: [] as Record<string, unknown>[], scoringData: [] as Record<string, unknown>[] };
     const avgC = judges.reduce((s, j) => s + (j.consistency_score || 0), 0) / judges.length;
     const avgB = judges.reduce((s, j) => s + Math.abs(j.bias_indicator || 0), 0) / judges.length;
     const avgCo = judges.reduce((s, j) => s + (j.completion_rate || 0), 0) / judges.length;

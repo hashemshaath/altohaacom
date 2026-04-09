@@ -183,7 +183,7 @@ export function SEOAuditPanel() {
           )}
           {audits.map((audit) => {
             const isExpanded = expandedAudit === audit.id;
-            const summary = audit.summary as any;
+            const summary = audit.summary as Record<string, unknown> | null;
             return (
               <div key={audit.id}>
                 <button

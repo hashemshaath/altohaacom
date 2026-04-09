@@ -193,7 +193,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
     const roleMembers = filtered.filter((m) => m.role === role.value);
     if (roleMembers.length > 0) acc.push({ ...role, members: roleMembers });
     return acc;
-  }, [] as any[]), [filtered]);
+  }, [] as Array<typeof ROLES[number] & { members: typeof filtered }>), [filtered]);
 
   const checkedInCount = useMemo(() => members.filter((m) => m.is_checked_in).length, [members]);
 
