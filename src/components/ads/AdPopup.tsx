@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { getDeviceType } from "@/lib/deviceType";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
