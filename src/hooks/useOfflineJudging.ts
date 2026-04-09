@@ -163,7 +163,7 @@ export function useOfflineJudging() {
       }));
 
       await cacheItems("judging_data", judgingDataItems);
-      localStorage.setItem(JUDGING_SYNC_KEY, Date.now().toString());
+      try { localStorage.setItem(JUDGING_SYNC_KEY, Date.now().toString()); } catch { /* restricted */ }
 
       setCachedCompetitions(judgingDataItems);
 
