@@ -75,6 +75,7 @@ export const PageShell = memo(function PageShell({
           className
         )}
       >
+        {breadcrumbs && <Breadcrumbs currentLabel={breadcrumbLabel} />}
         {children}
         {showRelated && (
           <div className={cn(!container && "container")}>
