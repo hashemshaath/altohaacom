@@ -87,7 +87,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
       queryClient.invalidateQueries({ queryKey: ["userAllFeatures"] });
       queryClient.invalidateQueries({ queryKey: ["userFeatureAccess"] });
       toast.success(isAr ? "تم التحديث" : "Updated");
-    } catch (err) {
+    } catch (err: unknown) {
       toast.error(isAr ? "فشل التحديث" : "Update failed");
     } finally {
       setUpdating(null);

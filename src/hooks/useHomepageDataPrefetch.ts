@@ -229,7 +229,7 @@ export function useHomepageDataPrefetch() {
           organizers: getCount(stats[4]),
         });
 
-      } catch (err) {
+      } catch (err: unknown) {
         // Non-blocking: individual sections will fetch their own data as fallback
         console.warn("[Homepage prefetch] Error:", err);
       }

@@ -182,7 +182,7 @@ export const ChefScoringForm = memo(function ChefScoringForm({
 
       toast.success(isAr ? "تم إرسال تقييمك بنجاح! شكرًا لك." : "Your evaluation has been submitted! Thank you.");
       onComplete?.();
-    } catch (err) {
+    } catch (err: unknown) {
       toast.error(isAr ? "حدث خطأ أثناء الإرسال" : "Error submitting evaluation");
     } finally {
       setIsSubmitting(false);

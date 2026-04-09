@@ -275,8 +275,8 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
       setSelectedIds(new Set());
       setBulkAction(null);
       setBulkReason("");
-    } catch (error: any) {
-      toast({ variant: "destructive", title: "Error", description: error.message });
+    } catch (error: unknown) {
+      toast({ variant: "destructive", title: "Error", description: error instanceof Error ? error.message : "Unknown error" });
     } finally {
       setIsProcessing(false);
       setProgress(0);

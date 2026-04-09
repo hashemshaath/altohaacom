@@ -46,7 +46,7 @@ export const QRScanner = memo(function QRScanner({ onScan }: QRScannerProps) {
       }
       setIsScanning(true);
       scanFrame();
-    } catch (err) {
+    } catch (err: unknown) {
       setError(isAr ? "لا يمكن الوصول للكاميرا" : "Cannot access camera. Please allow camera permissions.");
     }
   };

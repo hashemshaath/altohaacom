@@ -91,7 +91,7 @@ export function useAIKnowledge() {
           }
         }
       }
-    } catch (err) {
+    } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "An error occurred";
       setError(errorMessage);
       setMessages(prev => [

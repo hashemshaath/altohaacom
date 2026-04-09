@@ -203,11 +203,11 @@ export default function RegisterCompany() {
           submittedBy: form.contact_name || user?.email || "User",
         });
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Registration error:", error);
       toast({
         title: isAr ? "فشل في التسجيل" : "Registration failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unknown error",
         variant: "destructive",
       });
     } finally {

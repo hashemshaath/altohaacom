@@ -80,7 +80,7 @@ export function useAdminExport() {
             ? `تم تصدير ${data.length} سجل بنجاح`
             : `Exported ${data.length} records successfully`
         );
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Export error:", err);
         toast.error(isAr ? "فشل التصدير" : "Export failed");
       } finally {

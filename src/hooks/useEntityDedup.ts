@@ -62,7 +62,7 @@ export function useEntityDedup(options: UseEntityDedupOptions = {}) {
       });
       if (error) throw error;
       setDuplicates(data?.duplicates || []);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Dedup check failed:", err);
       setDuplicates([]);
     } finally {
@@ -83,7 +83,7 @@ export function useEntityDedup(options: UseEntityDedupOptions = {}) {
       if (error) throw error;
       setScanGroups(data?.groups || []);
       return data?.groups || [];
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Batch scan failed:", err);
       setScanGroups([]);
       return [];
@@ -104,7 +104,7 @@ export function useEntityDedup(options: UseEntityDedupOptions = {}) {
       });
       if (error) throw error;
       return data;
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Merge failed:", err);
       throw err;
     } finally {

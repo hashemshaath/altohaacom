@@ -69,7 +69,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
           setChefNames(names);
         }
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Failed to load import history:", err);
     }
     setLoading(false);

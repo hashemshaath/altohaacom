@@ -72,7 +72,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
           userSelected[r.reaction_type] = true;
         });
         setSelected(userSelected);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Failed to fetch reactions:", err);
       } finally {
         setLoading(false);
@@ -121,7 +121,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
           });
         }
       }
-    } catch (err) {
+    } catch (err: unknown) {
       // Revert on error
       setSelected(prev => ({ ...prev, [key]: isActive }));
       setCounts(prev => ({ ...prev, [key]: Math.max(0, (prev[key] || 0) + (isActive ? 1 : -1)) }));

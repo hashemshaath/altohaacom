@@ -226,7 +226,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
       }
 
       toast({ title: t("Export complete ✅", "تم التصدير ✅") });
-    } catch (err) {
+    } catch (err: unknown) {
       toast({ title: t("Export failed", "فشل التصدير"), variant: "destructive" });
     } finally {
       setExporting(false);

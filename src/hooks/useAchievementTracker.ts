@@ -99,7 +99,7 @@ export function useAchievementTracker() {
         queryClient.invalidateQueries({ queryKey: ["user-challenge-progress"] });
         queryClient.invalidateQueries({ queryKey: ["userTier"] });
         queryClient.invalidateQueries({ queryKey: ["dashboard-achievements"] });
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Achievement tracking error:", err);
       }
     },
