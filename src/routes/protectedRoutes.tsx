@@ -86,5 +86,6 @@ export const protectedRoutes = (
     <Route path="/tastings/create" element={<ProtectedRoute><FanRouteGuard><CreateTasting /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/tastings/:id" element={<ProtectedRoute><TastingDetail /></ProtectedRoute>} />
     <Route path="/verification" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
+    <Route path="/jobs/my-applications" element={<ProtectedRoute><MyJobApplications /></ProtectedRoute>} />
   </>
 );
