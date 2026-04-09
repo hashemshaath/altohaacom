@@ -57,7 +57,7 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex-shrink-0 flex items-center gap-1.5 px-4 py-3 text-xs font-semibold transition-all duration-150 relative touch-manipulation active:scale-[0.96] whitespace-nowrap",
+                "flex-shrink-0 flex items-center gap-1.5 px-4 py-3 text-xs font-semibold transition-all duration-150 relative touch-manipulation active:scale-[0.98] whitespace-nowrap",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground/50 active:text-foreground"
