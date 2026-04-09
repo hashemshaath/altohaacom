@@ -56,7 +56,7 @@ const StatsBar = forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
         supabase.from("exhibitions").select("id", { count: "exact", head: true }),
         supabase.from("organizers").select("id", { count: "exact", head: true }),
       ]);
-      const getCount = (r: PromiseSettledResult<any>) => r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
+      const getCount = (r: PromiseSettledResult<{ count: number | null }>) => r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
       return { members: getCount(results[0]), competitions: getCount(results[1]), entities: getCount(results[2]), exhibitions: getCount(results[3]), organizers: getCount(results[4]) };
     },
     staleTime: 1000 * 60 * 10,
