@@ -23938,6 +23938,7 @@ export type Database = {
           email: string | null
           id: string | null
           invitation_status: string | null
+          invitation_token: string | null
           invited_at: string | null
           invited_by: string | null
           is_primary: boolean | null
@@ -23962,6 +23963,7 @@ export type Database = {
           email?: string | null
           id?: string | null
           invitation_status?: string | null
+          invitation_token?: never
           invited_at?: string | null
           invited_by?: string | null
           is_primary?: boolean | null
@@ -23986,6 +23988,7 @@ export type Database = {
           email?: string | null
           id?: string | null
           invitation_status?: string | null
+          invitation_token?: never
           invited_at?: string | null
           invited_by?: string | null
           is_primary?: boolean | null
