@@ -28,7 +28,6 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
 import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/ExhibitionMobileActionBar";
 import { ExhibitionInteractiveStats } from "@/components/exhibitions/detail/ExhibitionInteractiveStats";
-import { ExhibitionQuickStats } from "@/components/exhibitions/detail/ExhibitionQuickStats";
 
 // Lazy-loaded components
 const ExhibitionOverviewTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionOverviewTab").then(m => ({ default: m.ExhibitionOverviewTab })));
