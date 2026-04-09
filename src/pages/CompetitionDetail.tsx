@@ -1072,7 +1072,9 @@ export default function CompetitionDetail() {
                   )}
 
                   {/* Judging Panel Preview */}
-                  <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />
+                  <Suspense fallback={null}>
+                    <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />
+                  </Suspense>
 
                   {/* Timeline */}
                   <CompetitionTimeline
