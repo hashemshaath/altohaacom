@@ -3,8 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -73,8 +72,12 @@ export default function CertificateVerify() {
   const notFound = searchedCode && !certificate && !isLoading;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <PageShell
+      title={language === "ar" ? "التحقق من الشهادة" : "Verify Certificate"}
+      description={language === "ar" ? "تحقق من صحة شهادة صادرة عن منصة الطهاة" : "Verify the authenticity of a certificate issued by Altoha"}
+      seoProps={{ keywords: language === "ar" ? "تحقق, شهادة, التحقق من الشهادة" : "verify, certificate, authentication" }}
+      container={false}
+    >
       
       <main className="flex-1">
         {/* Hero Section */}
@@ -338,8 +341,6 @@ export default function CertificateVerify() {
           </div>
         </section>
       </main>
-
-      <Footer />
-    </div>
+    </PageShell>
   );
 }
