@@ -663,7 +663,7 @@ export default function Auth() {
           });
           localStorage.removeItem("altoha_ref_code");
         } catch (err: unknown) {
-          console.error("Referral processing error:", e);
+          console.error("Referral processing error:", err instanceof Error ? err.message : err);
           localStorage.removeItem("altoha_ref_code");
         }
       }

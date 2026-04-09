@@ -30,7 +30,7 @@ export const lovable = {
       try {
         await supabase.auth.setSession(result.tokens);
       } catch (err: unknown) {
-        return { error: e instanceof Error ? e : new Error(String(e)) };
+        return { error: err instanceof Error ? err : new Error(String(err)) };
       }
       return result;
     },
