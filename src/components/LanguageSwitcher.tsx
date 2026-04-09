@@ -15,7 +15,7 @@ export const LanguageSwitcher = memo(function LanguageSwitcher() {
       aria-label={language === "en" ? "التبديل إلى العربية" : "Switch to English"}
     >
       <Globe className="h-4 w-4" />
-      <span className="hidden lg:inline text-sm font-medium">
+      <span className="hidden lg:inline text-sm font-medium" style={language === "en" ? { fontFamily: '"IBM Plex Arabic", "Noto Sans Arabic", sans-serif', letterSpacing: 0 } : undefined}>
         {language === "en" ? "العربية" : "English"}
       </span>
     </Button>
