@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
 
       default: return jsonResponse({ error: "Unknown action: " + action }, 400);
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error("session-manager error:", err);
     return errorResponse(err);
   }

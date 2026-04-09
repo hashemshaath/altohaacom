@@ -88,7 +88,7 @@ Deno.serve(async (req) => {
             if (!resp.ok) return [{ page_path: path, issue_type: "http_error", severity: "error" as const, message: `HTTP ${resp.status} response`, message_ar: `استجابة HTTP ${resp.status}`, details: { status: resp.status } }];
             pagesAudited++;
             return auditHtml(path, await resp.text());
-          } catch (e: any) {
+          } catch (e: unknown) {
             return [{ page_path: path, issue_type: "fetch_error", severity: "error" as const, message: `Failed to fetch: ${e instanceof Error ? e.message : String(e)}`, message_ar: `فشل في الجلب: ${e instanceof Error ? e.message : String(e)}`, details: { error: e instanceof Error ? e.message : String(e) } }];
           }
         })

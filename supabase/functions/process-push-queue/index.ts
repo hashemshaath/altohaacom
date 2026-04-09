@@ -120,12 +120,12 @@ Deno.serve(async (req) => {
             if (response.status === 201 || response.status === 200) { anySent = true; }
             else if (response.status === 404 || response.status === 410) { await supabase.from("push_subscriptions").delete().eq("id", sub.id); results.removed_stale++; }
             else { console.error(`Push failed: ${response.status}`); try { await response.text(); } catch {} }
-          } catch (subErr: any) { console.error(`Push error for sub ${sub.id}:`, subErr.message); }
+          } catch (subErr: unknown) { console.error(`Push error for sub ${sub.id}:`, subErr.message); }
         }
 
         await supabase.from("notification_queue").update(anySent ? { status: "sent", sent_at: new Date().toISOString(), attempts: (item.attempts || 0) + 1 } : { status: "failed", error_message: "All push endpoints failed", attempts: (item.attempts || 0) + 1 }).eq("id", item.id);
         if (anySent) results.sent++; else results.failed++;
-      } catch (itemErr: any) {
+      } catch (itemErr: unknown) {
         await supabase.from("notification_queue").update({ status: "failed", error_message: itemErr.message?.substring(0, 200), attempts: (item.attempts || 0) + 1 }).eq("id", item.id);
         results.failed++;
       }

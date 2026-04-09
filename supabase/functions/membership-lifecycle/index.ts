@@ -182,7 +182,7 @@ Deno.serve(async (req) => {
 
     console.log("Membership lifecycle complete:", stats);
     return jsonResponse({ success: true, stats });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Membership lifecycle error:", error);
     return errorResponse(error);
   }

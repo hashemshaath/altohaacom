@@ -276,7 +276,7 @@ Deno.serve(async (req) => {
       default:
         return jsonResponse({ error: "Unknown action" }, 400);
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("PIN auth error:", error);
     return errorResponse(error);
   }

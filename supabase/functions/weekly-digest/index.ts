@@ -90,7 +90,7 @@ ${lang === "ar" ? "Write entirely in Arabic." : "Write in English."}`;
             generated_at: now.toISOString(),
           });
         }
-      } catch (aiErr) {
+      } catch (aiErr: unknown) {
         console.error(`AI report generation failed for ${lang}:`, aiErr);
       }
     }
