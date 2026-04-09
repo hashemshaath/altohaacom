@@ -8,13 +8,26 @@ import {
   Legend,
 } from "recharts";
 
+interface TooltipPayloadItem {
+  color?: string;
+  fill?: string;
+  name: string;
+  value: number;
+}
+
+interface ChartTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayloadItem[];
+  label?: string;
+}
+
 /* ─── Shared tooltip ─── */
-function ChartTooltip({ active, payload, label }: any) {
+function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-lg">
       {label && <p className="text-[11px] font-medium text-muted-foreground mb-1">{label}</p>}
-      {payload.map((p: any, i: number) => (
+      {payload.map((p, i: number) => (
         <div key={i} className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full" style={{ background: p.color || p.fill }} />
           <span className="text-xs text-muted-foreground">{p.name}</span>
@@ -29,7 +42,7 @@ function ChartTooltip({ active, payload, label }: any) {
 export const GrowthAreaChart = memo(function GrowthAreaChart({
   data, lines, title, className,
 }: {
-  data: any[]; lines: { key: string; name: string; color: string }[];
+  data: Record<string, unknown>[]; lines: { key: string; name: string; color: string }[];
   title: string; className?: string;
 }) {
   return (
@@ -145,7 +158,7 @@ export const DonutChart = memo(function DonutChart({
 export const ComparisonBarChart = memo(function ComparisonBarChart({
   data, bars, title, className,
 }: {
-  data: any[]; bars: { key: string; name: string; color: string }[];
+  data: Record<string, unknown>[]; bars: { key: string; name: string; color: string }[];
   title: string; className?: string;
 }) {
   return (
