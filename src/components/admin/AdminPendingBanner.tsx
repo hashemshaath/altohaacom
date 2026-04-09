@@ -53,8 +53,8 @@ const AdminPendingBanner = memo(function AdminPendingBanner() {
         supabase.from("chefs_table_requests").select("*", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("articles").select("*", { count: "exact", head: true }).eq("status", "draft"),
         supabase.from("invoices").select("*", { count: "exact", head: true }).eq("status", "draft"),
-        (supabase as any).from("exhibitions").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        (supabase as any).from("competitions").select("*", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("exhibitions").select("*", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("competitions").select("*", { count: "exact", head: true }).eq("status", "pending"),
       ]);
 
       const list: PendingItem[] = [

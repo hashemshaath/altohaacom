@@ -37,7 +37,7 @@ export const SEOHead = memo(function SEOHead({
   const siteSettings = useSiteSettingsContext();
   const brandCfg = siteSettings.branding || {};
   const seoCfg = siteSettings.seo || {};
-  const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
+  const identityLogos = (siteSettings.brand_identity as Record<string, Record<string, string>> | undefined)?.logos || {};
 
   const siteName = lang === "ar" ? (brandCfg.siteNameAr || brandCfg.siteName || "Altoha") : (brandCfg.siteName || "Altoha");
 
