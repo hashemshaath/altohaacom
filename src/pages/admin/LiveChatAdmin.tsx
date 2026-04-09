@@ -37,6 +37,7 @@ export default function LiveChatAdmin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
+  const chatRefetchInterval = useVisibleRefetchInterval(30000);
 
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
