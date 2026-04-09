@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Activity, TrendingUp, Users, Ticket } from "lucide-react";
@@ -17,6 +17,7 @@ export const ExhibitionRealtimeStats = memo(function ExhibitionRealtimeStats({
   const [tickets, setTickets] = useState(initialTickets);
   const [checkins, setCheckins] = useState(initialCheckins);
   const [recentAction, setRecentAction] = useState<string | null>(null);
+  const actionTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     setTickets(initialTickets);
@@ -37,7 +38,8 @@ export const ExhibitionRealtimeStats = memo(function ExhibitionRealtimeStats({
         () => {
           setTickets((p) => p + 1);
           setRecentAction(t("New ticket booked!", "تم حجز تذكرة جديدة!"));
-          setTimeout(() => setRecentAction(null), 3000);
+          clearTimeout(actionTimerRef.current);
+          actionTimerRef.current = setTimeout(() => setRecentAction(null), 3000);
         },
       )
       .on(
@@ -49,16 +51,20 @@ export const ExhibitionRealtimeStats = memo(function ExhibitionRealtimeStats({
           filter: `exhibition_id=eq.${exhibitionId}`,
         },
         (payload) => {
-          if (payload.new && (payload.new as any).checked_in_at && !(payload.old as any)?.checked_in_at) {
+          const newRow = payload.new as Record<string, unknown>;
+          const oldRow = payload.old as Record<string, unknown> | undefined;
+          if (newRow?.checked_in_at && !oldRow?.checked_in_at) {
             setCheckins((p) => p + 1);
             setRecentAction(t("Someone just checked in!", "شخص ما قام بتسجيل الدخول!"));
-            setTimeout(() => setRecentAction(null), 3000);
+            clearTimeout(actionTimerRef.current);
+            actionTimerRef.current = setTimeout(() => setRecentAction(null), 3000);
           }
         },
       )
       .subscribe();
 
     return () => {
+      clearTimeout(actionTimerRef.current);
       supabase.removeChannel(channel);
     };
   }, [exhibitionId]);
