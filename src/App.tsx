@@ -141,25 +141,29 @@ function AppContent() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ErrorBoundary>
-      <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-        <LanguageProvider>
-          <AuthProvider>
-            <SiteSettingsProvider>
-              <ThemeApplicator />
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <ResourceHints />
-                  <ErrorBoundary>
-                    <AppContent />
-                  </ErrorBoundary>
-                </BrowserRouter>
-              </TooltipProvider>
-            </SiteSettingsProvider>
-          </AuthProvider>
-        </LanguageProvider>
-      </ThemeProvider>
+      <div>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <LanguageProvider>
+            <AuthProvider>
+              <SiteSettingsProvider>
+                <ThemeApplicator />
+                <TooltipProvider>
+                  <Toaster />
+                  <Sonner />
+                  <BrowserRouter>
+                    <ResourceHints />
+                    <ErrorBoundary>
+                      <div>
+                        <AppContent />
+                      </div>
+                    </ErrorBoundary>
+                  </BrowserRouter>
+                </TooltipProvider>
+              </SiteSettingsProvider>
+            </AuthProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </div>
     </ErrorBoundary>
   </QueryClientProvider>
 );
