@@ -339,6 +339,7 @@ export default function ProSupplierDetail() {
       />
       <Header />
 
+      <Suspense fallback={null}>
       <main className="flex-1">
         {/* ━━━ CINEMATIC HERO ━━━ */}
         <section className="relative overflow-hidden bg-gradient-to-br from-primary/8 via-background to-accent/5">
