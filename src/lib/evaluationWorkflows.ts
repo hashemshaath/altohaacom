@@ -57,7 +57,7 @@ async function getSessionInfo(sessionId: string) {
     .select("title, title_ar, product_name, product_name_ar, company_id")
     .eq("id", sessionId)
     .single();
-  return data as { title: string; title_ar: string | null; product_name: string; product_name_ar: string | null; company_id: string | null } | null;
+  return data as unknown as { title: string; title_ar: string | null; product_name: string; product_name_ar: string | null; company_id: string | null } | null;
 }
 
 async function handleChefAssigned(ctx: EvaluationContext) {
@@ -187,7 +187,7 @@ async function handleSessionStatusChanged(ctx: EvaluationContext) {
     .eq("session_id", ctx.sessionId)
     .eq("status", "matched");
 
-  const chefIds = (registrations as Array<{ chef_id: string }> | null)?.map(r => r.chef_id) || [];
+  const chefIds = (registrations as unknown as Array<{ chef_id: string }> | null)?.map(r => r.chef_id) || [];
   if (!chefIds.length) return;
 
   const statusMessages: Record<string, { en: string; ar: string }> = {
