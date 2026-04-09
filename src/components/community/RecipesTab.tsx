@@ -98,7 +98,7 @@ export const RecipesTab = memo(function RecipesTab() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchRecipes(); }, []);
+  useEffect(() => { fetchRecipes(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const recipes = filter === "all" ? allRecipes : allRecipes.filter((r) => r.difficulty === filter);
 

@@ -69,14 +69,14 @@ export default function SocialLinks() {
   // View tracking
   useEffect(() => {
     if (!profileUserId || isOwner) return;
-    supabase.rpc("increment_field" as any, { table_name: "profiles_public", field_name: "view_count", row_id: profileUserId }).then(() => {});
+    supabase.rpc("increment_field" as any, { table_name: "profiles_public", field_name: "view_count", row_id: profileUserId }).then(null, () => {});
     if (data?.page?.id) {
       const ua = navigator.userAgent;
       const isMobile = /Mobi|Android|iPhone/i.test(ua);
       const isTablet = /iPad|Tablet/i.test(ua);
       const deviceType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
       const browser = /Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : "Other";
-      supabase.from("social_link_visits").insert({ page_id: data.page.id, device_type: deviceType, browser, referrer: document.referrer || null, page_url: window.location.href } as any).then(() => {});
+      supabase.from("social_link_visits").insert({ page_id: data.page.id, device_type: deviceType, browser, referrer: document.referrer || null, page_url: window.location.href } as any).then(null, () => {});
     }
   }, [profileUserId, isOwner, data?.page?.id]);
 
@@ -85,9 +85,9 @@ export default function SocialLinks() {
   const handleLinkClick = useCallback((itemId: string) => {
     const variant = abVariantsRef.current[itemId];
     if (variant === "B") {
-      supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "ab_variant_click_count", row_id: itemId }).then(() => {});
+      supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "ab_variant_click_count", row_id: itemId }).then(null, () => {});
     } else {
-      supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(() => {});
+      supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId }).then(null, () => {});
     }
     if (data?.page?.id) {
       const ua = navigator.userAgent;
@@ -95,7 +95,7 @@ export default function SocialLinks() {
       const isTablet = /iPad|Tablet/i.test(ua);
       const deviceType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
       const browser = /Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : "Other";
-      supabase.from("social_link_clicks" as any).insert({ page_id: data.page.id, link_id: itemId, device_type: deviceType, browser, referrer: document.referrer || null } as any).then(() => {});
+      supabase.from("social_link_clicks" as any).insert({ page_id: data.page.id, link_id: itemId, device_type: deviceType, browser, referrer: document.referrer || null } as any).then(null, () => {});
     }
   }, [data?.page?.id]);
 

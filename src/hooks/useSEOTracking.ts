@@ -92,7 +92,7 @@ export function useSEOTracking() {
         user_agent: ua.slice(0, 500),
         device_type: getDeviceType(),
       };
-      supabase.from("seo_crawler_visits").insert(crawlerRecord).then(() => {});
+      supabase.from("seo_crawler_visits").insert(crawlerRecord).then(null, () => {});
       return; // Don't count crawlers as regular page views
     }
 
@@ -108,6 +108,6 @@ export function useSEOTracking() {
       session_id: getSessionId(),
     };
 
-    supabase.from("seo_page_views").insert(record).then(() => {});
+    supabase.from("seo_page_views").insert(record).then(null, () => {});
   }, [location.pathname]);
 }

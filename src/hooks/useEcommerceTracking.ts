@@ -51,7 +51,7 @@ export function useEcommerceTracking() {
           browser: getBrowser(),
           metadata: (metadata || {}) as any,
         })
-        .then(() => {});
+        .then(null, () => {});
     },
     [user?.id]
   );

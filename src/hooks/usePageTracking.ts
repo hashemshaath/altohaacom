@@ -25,7 +25,7 @@ export function usePageTracking() {
       session_id: sessionStorage.getItem("ad_session_id") || null,
       device_type: getDeviceType(),
       browser: navigator.userAgent.slice(0, 100),
-    }).then(() => {});
+    }).then(null, () => { /* fire-and-forget */ });
 
     // Push to GTM
     pushToDataLayer("page_view", {

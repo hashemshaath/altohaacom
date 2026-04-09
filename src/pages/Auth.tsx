@@ -694,7 +694,7 @@ export default function Auth() {
           campaign: new URLSearchParams(window.location.search).get("utm_campaign") || null,
           session_id: sessionStorage.getItem("ad_session_id") || null,
           metadata: { method: signUpMethod, country: countryCode } as any,
-        }]).then(() => {});
+        }]).then(null, () => {});
       } catch {}
     }
 
