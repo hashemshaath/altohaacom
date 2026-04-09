@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-export type SiteSettingsMap = Record<string, Record<string, any>>;
+export type SiteSettingsMap = Record<string, Record<string, unknown>>;
 
 export function useSiteSettings() {
   const { toast } = useToast();
@@ -20,14 +20,18 @@ export function useSiteSettings() {
       if (error) throw error;
       const map: SiteSettingsMap = {};
       (data || []).forEach((row) => {
-        map[row.key] = typeof row.value === "string" ? JSON.parse(row.value) : row.value;
+        try {
+          map[row.key] = typeof row.value === "string" ? JSON.parse(row.value as string) : (row.value as Record<string, unknown>);
+        } catch {
+          map[row.key] = {};
+        }
       });
       return map;
     },
   });
 
   const saveSetting = useMutation({
-    mutationFn: async ({ key, value, category }: { key: string; value: Record<string, any>; category?: string }) => {
+    mutationFn: async ({ key, value, category }: { key: string; value: Record<string, unknown>; category?: string }) => {
       const { error } = await supabase
         .from("site_settings")
         .upsert({

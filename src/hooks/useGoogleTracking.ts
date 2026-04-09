@@ -50,6 +50,7 @@ export function useGoogleTracking() {
     if (!configs || configs.length === 0) return;
 
     // Ensure dataLayer exists once before any script needs it
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- GTM global requires window extension
     (window as any).dataLayer = (window as any).dataLayer || [];
     console.info(`[Tracking] Injecting ${configs.length} tracking script(s):`, configs.map(c => c.integration_type).join(", "));
 
@@ -58,7 +59,10 @@ export function useGoogleTracking() {
       // Skip if this type was already injected
       if (injectedTypes.current.has(row.integration_type)) return;
       injectedTypes.current.add(row.integration_type);
-      const cfg = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) || {};
+      let cfg: Record<string, string> = {};
+      try {
+        cfg = (typeof row.config === "string" ? JSON.parse(row.config as string) : row.config as Record<string, string>) || {};
+      } catch { /* malformed config — skip */ }
       switch (row.integration_type) {
         case "google_tag_manager":
           if (cfg.container_id) injectGTM(cfg.container_id);

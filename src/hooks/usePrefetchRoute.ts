@@ -60,7 +60,7 @@ export function usePrefetchRoute() {
       prefetched.add(path);
 
       const schedule = "requestIdleCallback" in window
-        ? (fn: () => void) => (window as any).requestIdleCallback(fn)
+        ? (fn: () => void) => (window as unknown as { requestIdleCallback: (cb: () => void) => void }).requestIdleCallback(fn)
         : (fn: () => void) => fn();
 
       schedule(() => {
