@@ -34,6 +34,8 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SEOHead } from "@/components/SEOHead";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { buildPublicUrl } from "@/lib/publicAppUrl";
 import { format, formatDistanceToNow, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from "date-fns";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { useEntityQRCode } from "@/hooks/useQRCode";
@@ -470,12 +472,41 @@ export default function CompetitionDetail() {
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
   const hasWinners = competition.status === "completed";
 
+  // SEO: Build optimized meta
+  const competitionSlug = competition.slug || competitionId;
+  const canonicalPath = `/competitions/${competitionSlug}`;
+  const canonicalUrl = buildPublicUrl(canonicalPath);
+
+  const seoTitle = isAr
+    ? `${title} | مسابقة طهي احترافية — الطهاة`
+    : `${title} | Professional Culinary Competition — AlToha`;
+
+  const locationMeta = [competition.city, competition.country].filter(Boolean).join(", ");
+  const dateMeta = competition.competition_start ? format(new Date(competition.competition_start), "MMM yyyy") : "";
+  const seoDescription = description
+    ? description.slice(0, 145) + (description.length > 145 ? "…" : "")
+    : isAr
+      ? `مسابقة ${title} للطهي${locationMeta ? ` في ${locationMeta}` : ""}${dateMeta ? ` — ${dateMeta}` : ""}. سجّل الآن وشارك مع أفضل الطهاة.`
+      : `${title} culinary competition${locationMeta ? ` in ${locationMeta}` : ""}${dateMeta ? ` — ${dateMeta}` : ""}. Register now and compete with top chefs.`;
+
+  const seoKeywords = [
+    title,
+    baseTitle,
+    "culinary competition",
+    "مسابقة طهي",
+    competition.city,
+    competition.country,
+    "chef competition",
+    competition.edition_year ? `${competition.edition_year}` : "",
+    competition.is_virtual ? "virtual competition" : "live competition",
+  ].filter(Boolean).join(", ");
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": isAr ? "الرئيسية" : "Home", "item": window.location.origin },
-      { "@type": "ListItem", "position": 2, "name": isAr ? "المسابقات" : "Competitions", "item": `${window.location.origin}/competitions` },
+      { "@type": "ListItem", "position": 1, "name": isAr ? "الرئيسية" : "Home", "item": buildPublicUrl("/") },
+      { "@type": "ListItem", "position": 2, "name": isAr ? "المسابقات" : "Competitions", "item": buildPublicUrl("/competitions") },
       { "@type": "ListItem", "position": 3, "name": title },
     ],
   };
@@ -484,9 +515,10 @@ export default function CompetitionDetail() {
     "@context": "https://schema.org",
     "@type": "Event",
     name: title,
-    description: description || undefined,
+    description: seoDescription,
     startDate: competition.competition_start,
     endDate: competition.competition_end,
+    url: canonicalUrl,
     eventAttendanceMode: competition.is_virtual
       ? "https://schema.org/OnlineEventAttendanceMode"
       : "https://schema.org/OfflineEventAttendanceMode",
@@ -497,9 +529,15 @@ export default function CompetitionDetail() {
       ? { "@type": "VirtualLocation" }
       : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: competition.city, addressCountry: competition.country } },
     image: competition.cover_image_url || undefined,
-    organizer: { "@type": "Organization", name: "Altoha", url: window.location.origin },
+    organizer: { "@type": "Organization", name: "Altoha", url: buildPublicUrl("/") },
     ...(competition.max_participants ? { maximumAttendeeCapacity: competition.max_participants } : {}),
   };
+
+  const breadcrumbItems = [
+    { label: "Home", labelAr: "الرئيسية", href: "/" },
+    { label: "Competitions", labelAr: "المسابقات", href: "/competitions" },
+    { label: title },
+  ];
 
   const daysUntilStart = competition.competition_start
     ? Math.max(0, Math.ceil((new Date(competition.competition_start).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
@@ -518,15 +556,13 @@ export default function CompetitionDetail() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr
-          ? `${title} — مسابقة الطهي | الطهاة`
-          : `${title} — Culinary Competition | AlToha`}
-        description={(description || `${title} - Culinary competition`).slice(0, 155)}
+        title={seoTitle}
+        description={seoDescription}
         ogImage={competition.cover_image_url || undefined}
         ogType="article"
-        canonical={`https://altoha.com/competitions/${competition.slug || competitionId}`}
+        canonical={canonicalUrl}
         lang={language}
-        keywords={`${title}, culinary competition, ${competition.city || ""}, ${competition.country || ""}, chef competition`}
+        keywords={seoKeywords}
         jsonLd={eventLd}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
@@ -534,38 +570,30 @@ export default function CompetitionDetail() {
 
       <main className="flex-1">
         {/* ─── Hero Section — Cinematic ─── */}
-        <section className="relative overflow-hidden">
-          <div className="relative h-48 w-full sm:h-72 md:h-[28rem] lg:h-[32rem]">
+        <section className="relative overflow-hidden" aria-label={isAr ? "صورة المسابقة" : "Competition hero"}>
+          <div className="relative h-52 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
             {competition.cover_image_url ? (
               <img loading="eager" src={competition.cover_image_url}
-                alt={title}
+                alt={`${title}${locationMeta ? ` — ${locationMeta}` : ""}`}
                 className="h-full w-full object-cover"
                 decoding="async"
                 fetchPriority="high"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-muted/30 to-background">
-                <Trophy className="h-28 w-28 sm:h-40 sm:w-40 text-primary/[0.06]" />
+                <Trophy className="h-24 w-24 sm:h-36 sm:w-36 text-primary/[0.06]" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent" style={{ top: "50%" }} />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-transparent to-transparent" style={{ top: "40%" }} />
           </div>
 
           <div className="absolute inset-x-0 bottom-0">
-             <div className="container pb-5 sm:pb-8 md:pb-10">
-                <div className="max-w-4xl space-y-2 sm:space-y-4 animate-fade-in">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="group -ms-2 w-fit text-foreground/80 hover:bg-foreground/5 hover:text-foreground"
-                  asChild
-                >
-                  <Link to="/competitions">
-                    <ArrowLeft className="me-2 h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                    {isAr ? "جميع المسابقات" : "All Competitions"}
-                  </Link>
-                </Button>
+             <div className="container pb-6 sm:pb-8 md:pb-12">
+                <div className="max-w-4xl space-y-3 sm:space-y-4 animate-fade-in">
+
+                {/* Breadcrumbs */}
+                <Breadcrumbs items={breadcrumbItems} className="text-foreground/60" />
 
                 {/* Badges row */}
                 <div className="flex items-center gap-2 flex-wrap">
@@ -598,31 +626,33 @@ export default function CompetitionDetail() {
                   )}
                 </div>
 
-                {/* Title */}
-                <h1 className="font-serif text-xl font-bold leading-[1.1] tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground">
+                {/* Title — single H1 */}
+                <h1 className="font-serif text-2xl font-extrabold leading-[1.15] tracking-tight sm:text-3xl md:text-[2.75rem] lg:text-5xl text-foreground drop-shadow-sm">
                   {title}
                 </h1>
 
                 {/* Meta info */}
-                <div className="flex items-center gap-3 sm:gap-6 text-sm sm:text-base text-muted-foreground flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-primary" />
-                    <span className="font-medium">{format(new Date(competition.competition_start), "MMM d")} – {format(new Date(competition.competition_end), "MMM d, yyyy")}</span>
+                <div className="flex items-center gap-3 sm:gap-5 text-sm text-foreground/70 flex-wrap">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-primary/80" />
+                    <time dateTime={competition.competition_start} className="font-medium">{format(new Date(competition.competition_start), "MMM d")}</time>
+                    <span>–</span>
+                    <time dateTime={competition.competition_end} className="font-medium">{format(new Date(competition.competition_end), "MMM d, yyyy")}</time>
                   </div>
                   {competition.is_virtual ? (
-                    <div className="flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-1.5">
+                      <Globe className="h-4 w-4 text-primary/80" />
                       <span className="font-medium">{isAr ? "افتراضية" : "Virtual"}</span>
                     </div>
                   ) : (venue || competition.city) && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="h-4 w-4 text-primary/80" />
                       <span className="font-medium">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
                     </div>
                   )}
                   {competition.allowed_entry_types && competition.allowed_entry_types.length > 0 && (
-                    <div className="flex items-center gap-2">
-                      <UsersRound className="h-4 w-4 text-primary" />
+                    <div className="flex items-center gap-1.5">
+                      <UsersRound className="h-4 w-4 text-primary/80" />
                       <span className="font-medium">{competition.allowed_entry_types.join(" / ")}</span>
                     </div>
                   )}
@@ -641,6 +671,7 @@ export default function CompetitionDetail() {
                   <button
                     key={i}
                     onClick={stat.onClick}
+                    aria-label={`${stat.label}: ${stat.value}`}
                     className="text-center group cursor-pointer hover:scale-110 transition-all duration-300 active:scale-95 touch-manipulation relative"
                   >
                     <div className="flex items-center justify-center gap-2 mb-1.5">
@@ -657,7 +688,7 @@ export default function CompetitionDetail() {
               <div className="flex items-center gap-2.5">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40 hover:border-primary/30 hover:bg-primary/5 transition-all" onClick={async (e) => {
+                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40 hover:border-primary/30 hover:bg-primary/5 transition-all" aria-label={isAr ? "مشاركة" : "Share"} onClick={async (e) => {
                       if (navigator.share) {
                         e.preventDefault();
                         try {
