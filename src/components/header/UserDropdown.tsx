@@ -51,7 +51,7 @@ export const UserDropdown = memo(function UserDropdown() {
 
   const displayName = getDisplayName(profile, isAr, user?.email?.split("@")[0] || "");
   const initials = getDisplayInitial(profile, isAr);
-  const tier = (profile as any)?.membership_tier;
+  const tier = profile?.membership_tier;
   const tierInfo = tier ? tierLabels[tier] : null;
 
   if (!user) {
