@@ -124,7 +124,7 @@ export default function Checkout() {
       cart.clearCart();
       setCompletedOrder(order);
       setStep("confirm");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({ title: isAr ? "خطأ في تقديم الطلب" : "Order failed", description: error.message, variant: "destructive" });
     } finally {
       setIsPlacing(false);

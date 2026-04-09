@@ -59,7 +59,7 @@ const AIChatbot = memo(function AIChatbot() {
         content: data?.reply || (isAr ? "عذراً، حدث خطأ. حاول مرة أخرى." : "Sorry, something went wrong. Please try again."),
       };
       setMessages((prev) => [...prev, assistantMsg]);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Chat error:", err);
       setMessages((prev) => [
         ...prev,

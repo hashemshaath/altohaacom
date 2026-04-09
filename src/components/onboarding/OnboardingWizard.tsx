@@ -128,7 +128,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
         description: isAr ? "مرحباً بك في المجتمع" : "Welcome to the community",
       });
       setShowCelebration(true);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: error.message });
     } finally {
       setSaving(false);

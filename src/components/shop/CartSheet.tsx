@@ -197,7 +197,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
         description: isAr ? `رقم الطلب: ${order.order_number}` : `Order #${order.order_number}`,
       });
       navigate("/shop/orders");
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: isAr ? "خطأ في تقديم الطلب" : "Error placing order",
         description: error.message,

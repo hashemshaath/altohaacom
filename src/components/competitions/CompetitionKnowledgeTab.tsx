@@ -207,7 +207,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
       setScrapeUrl("");
       setShowScrape(false);
       toast({ title: language === "ar" ? "تم استخراج المحتوى" : "Content scraped successfully" });
-    } catch (err) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Scrape failed", description: err instanceof Error ? err.message : "Unknown error" });
     } finally {
       setIsScraping(false);
@@ -283,7 +283,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
         setEditRules(true);
         toast({ title: language === "ar" ? "تم إنشاء الملخص" : "Summary generated — review and save" });
       }
-    } catch (err) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : "Failed to summarize" });
     } finally {
       setIsSummarizing(false);

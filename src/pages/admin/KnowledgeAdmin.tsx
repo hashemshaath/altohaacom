@@ -294,7 +294,7 @@ export default function KnowledgeAdmin() {
       setScrapeUrl("");
       setShowScrapeUrl(false);
       toast({ title: language === "ar" ? "تم استخراج المحتوى بنجاح" : "Content scraped successfully" });
-    } catch (err) {
+    } catch (err: unknown) {
       toast({ variant: "destructive", title: "Scrape failed", description: err instanceof Error ? err.message : "Unknown error" });
     } finally {
       setIsScraping(false);

@@ -1019,7 +1019,7 @@ export default function SmartImportAdmin() {
           });
         } catch {}
         successCount++;
-      } catch (err) {
+      } catch (err: unknown) {
         console.error('Batch import error:', item.name, err);
         failCount++;
       }

@@ -96,7 +96,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       } else {
         toast({ title: t("No duplicates found ✨", "لا توجد تكرارات ✨") });
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Dedup check failed:", err);
     } finally {
       setDupChecking(false);
@@ -269,7 +269,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
         try {
           await insertRow(row);
           insertedCount++;
-        } catch (err) {
+        } catch (err: unknown) {
           console.error("Row insert failed:", err);
         }
         setSaveProgress(Math.round((insertedCount / validRows.length) * 100));

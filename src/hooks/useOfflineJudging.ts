@@ -171,7 +171,7 @@ export function useOfflineJudging() {
         title: "✅ Judging data downloaded",
         description: `${judgingDataItems.length} competition(s) cached for offline use.`,
       });
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Failed to download judging data:", err);
       toast({
         title: "Download failed",
@@ -294,7 +294,7 @@ export function useOfflineJudging() {
           description: "Your offline scores have been submitted successfully.",
         });
       }
-    } catch (err) {
+    } catch (err: unknown) {
       console.error("Score sync failed:", err);
     } finally {
       syncingRef.current = false;

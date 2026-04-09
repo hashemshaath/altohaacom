@@ -51,7 +51,7 @@ export function useRecordProfileView(profileUserId: string | undefined) {
         setTimeout(() => {
           queryClient.invalidateQueries({ queryKey: ["publicProfile"] });
         }, 500);
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Failed to record profile view:", err);
       }
     };
