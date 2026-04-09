@@ -15,6 +15,7 @@ import { ExhibitionBasicInfoStep } from "@/components/exhibitions/wizard/BasicIn
 import { ExhibitionDatesLocationStep } from "@/components/exhibitions/wizard/DatesLocationStep";
 import { ExhibitionOrganizerTicketsStep } from "@/components/exhibitions/wizard/OrganizerTicketsStep";
 import type { ExhibitionFormData } from "@/components/exhibitions/wizard/types";
+import type { Database } from "@/integrations/supabase/types";
 
 export default function EditExhibition() {
   const { slug } = useParams<{ slug: string }>();
