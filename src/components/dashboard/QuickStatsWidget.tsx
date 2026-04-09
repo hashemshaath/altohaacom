@@ -56,15 +56,15 @@ export const QuickStatsWidget = memo(function QuickStatsWidget() {
         supabase.from("user_badges").select("id", { count: "exact", head: true }).eq("user_id", user.id),
       ]);
 
-      const gc = (r: PromiseSettledResult<{ data: unknown; count: number | null }>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
-      const regs = gc(regsRes).data || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const gc = (r: PromiseSettledResult<{ data: any; count: number | null }>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
+      const regs = (gc(regsRes).data || []) as Array<{ status: string; competitions: { status: string } | null }>;
       
       let pending = 0, approved = 0, completed = 0;
-      regs.forEach((reg: any) => {
+      regs.forEach((reg) => {
         if (reg.status === "pending") pending++;
         if (reg.status === "approved") approved++;
-        const comp = reg.competitions as { status: string } | null;
-        if (comp?.status === "completed" && reg.status === "approved") completed++;
+        if (reg.competitions?.status === "completed" && reg.status === "approved") completed++;
       });
 
       return {

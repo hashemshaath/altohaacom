@@ -39,20 +39,20 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
         supabase.from("leaderboard_scores" as any).select("total_points, rank").eq("user_id", user.id).order("total_points", { ascending: false }).limit(1),
       ]);
 
-      const gc = (r: PromiseSettledResult<{ data: unknown; count: number | null }>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const gc = (r: PromiseSettledResult<{ data: any; count: number | null }>) => r.status === "fulfilled" ? r.value : { data: null, count: 0 };
 
-      const regs = gc(compsRes).data || [];
-      const certs = gc(certsRes).data || [];
-      const badges = gc(badgesRes).data || [];
+      const regs = (gc(compsRes).data || []) as Array<{ status: string; competitions: { status: string } | null }>;
+      const certs = (gc(certsRes).data || []) as Array<Record<string, unknown>>;
+      const badges = (gc(badgesRes).data || []) as Array<Record<string, unknown>>;
       const recipes = gc(recipesRes).count || 0;
       const posts = gc(postsRes).count || 0;
-      const profileData = gc(pointsRes).data;
-      const rankData = gc(rankRes).data;
+      const profileData = gc(pointsRes).data as { loyalty_points?: number; years_of_experience?: number } | null;
+      const rankData = gc(rankRes).data as Array<{ rank?: number; total_points?: number }> | null;
 
       const totalComps = regs.length;
-      const wonComps = regs.filter((r: any) => {
-        const comp = r.competitions as { status: string } | null;
-        return r.status === "approved" && comp?.status === "completed";
+      const wonComps = regs.filter((r) => {
+        return r.status === "approved" && r.competitions?.status === "completed";
       }).length;
 
       // Career score: weighted formula
