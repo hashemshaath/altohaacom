@@ -1,7 +1,15 @@
-import { useState, useEffect, useCallback, forwardRef } from "react";
+import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Trophy, Star, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+/** Pre-computed particle positions to avoid Math.random() in render */
+const PARTICLE_POSITIONS = Array.from({ length: 12 }, (_, i) => ({
+  left: `${(i * 8.3 + 4) % 100}%`,
+  top: `${((i * 37 + 11) % 100)}%`,
+  delay: `${(i * 0.17) % 2}s`,
+  duration: `${1.5 + (i % 4) * 0.25}s`,
+}));
 
 interface AchievementEvent {
   type: "challenge" | "badge";
@@ -15,17 +23,22 @@ export const AchievementCelebration = forwardRef<HTMLDivElement>(function Achiev
   const isAr = language === "ar";
   const [event, setEvent] = useState<AchievementEvent | null>(null);
   const [visible, setVisible] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const handleEvent = useCallback((e: Event) => {
     const detail = (e as CustomEvent).detail as AchievementEvent;
     setEvent(detail);
     setVisible(true);
-    setTimeout(() => setVisible(false), 5000);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setVisible(false), 5000);
   }, []);
 
   useEffect(() => {
     window.addEventListener("achievement-unlocked", handleEvent);
-    return () => window.removeEventListener("achievement-unlocked", handleEvent);
+    return () => {
+      window.removeEventListener("achievement-unlocked", handleEvent);
+      clearTimeout(timerRef.current);
+    };
   }, [handleEvent]);
 
   if (!visible || !event) return null;
@@ -37,14 +50,14 @@ export const AchievementCelebration = forwardRef<HTMLDivElement>(function Achiev
       <div className="relative pointer-events-auto animate-scale-in z-10 mx-4 max-w-sm w-full">
         <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card shadow-2xl shadow-primary/10">
           <div className="absolute inset-0 overflow-hidden">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {PARTICLE_POSITIONS.map((p, i) => (
               <div
                 key={i}
                 className="absolute h-1.5 w-1.5 rounded-full bg-primary/40 animate-bounce"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 2}s`,
+                  left: p.left,
+                  top: p.top,
+                  animationDelay: p.delay,
                   animationDuration: `${1.5 + Math.random()}s`,
                 }}
               />
