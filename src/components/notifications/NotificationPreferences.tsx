@@ -95,7 +95,7 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
     })();
   }, [user?.id]);
 
-  const updateChannel = (channel: ChannelType, key: keyof ChannelPrefs, value: any) => {
+  const updateChannel = (channel: ChannelType, key: keyof ChannelPrefs, value: boolean | string | string[]) => {
     setChannels(prev => ({
       ...prev,
       [channel]: { ...prev[channel], [key]: value },
