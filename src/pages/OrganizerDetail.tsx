@@ -1,11 +1,15 @@
+import { lazy, Suspense } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
 import { Header } from "@/components/Header";
-import { OrganizerAnalyticsTab } from "@/components/organizers/OrganizerAnalyticsTab";
-import { OrganizerRatingSummary } from "@/components/organizers/OrganizerRatingSummary";
+import { safeLazy } from "@/lib/safeLazy";
+
+// Lazy-load heavy tab components
+const OrganizerAnalyticsTab = safeLazy(() => import("@/components/organizers/OrganizerAnalyticsTab").then(m => ({ default: m.OrganizerAnalyticsTab })));
+const OrganizerRatingSummary = safeLazy(() => import("@/components/organizers/OrganizerRatingSummary").then(m => ({ default: m.OrganizerRatingSummary })));
 import { SEOHead } from "@/components/SEOHead";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
