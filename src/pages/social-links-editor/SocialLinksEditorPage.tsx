@@ -39,7 +39,7 @@ import { LinksTab } from "./LinksTab";
 import { AppearanceTab } from "./AppearanceTab";
 import { VisibilityTab } from "./VisibilityTab";
 import { AnalyticsTab } from "./AnalyticsTab";
-import type { PageForm } from "./types";
+import type { PageForm, BioNotification } from "./types";
 
 export default function SocialLinksEditorPage() {
   const { user } = useAuth();
