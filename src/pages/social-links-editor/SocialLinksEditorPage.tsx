@@ -356,7 +356,7 @@ export default function SocialLinksEditorPage() {
                 )}
                 {profile?.username && (
                   <Button variant="outline" size="sm" asChild className="gap-1.5 hidden sm:inline-flex">
-                    <Link to={previewUrl} target="_blank"><Eye className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "معاينة" : "Preview"}</span></Link>
+                    <Link to={previewUrl} target="_blank" rel="noopener noreferrer"><Eye className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "معاينة" : "Preview"}</span></Link>
                   </Button>
                 )}
                 <Button size="sm" onClick={handleSavePage} disabled={upsertPage.isPending} className="gap-1.5 min-w-[80px]">
