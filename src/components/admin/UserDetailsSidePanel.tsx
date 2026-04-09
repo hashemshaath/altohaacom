@@ -70,7 +70,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
     queryFn: async () => {
       if (!userId) return null;
       const [profileRes, rolesRes, walletRes, actionsRes, certsRes] = await Promise.all([
-        supabase.from("profiles").select("*").eq("user_id", userId).single(),
+        supabase.from("profiles").select("user_id, full_name, full_name_ar, avatar_url, email, phone, country, city, bio, bio_ar, experience_level, specialization, specialization_ar, is_verified, is_chef_visible, account_type, account_number, membership_tier, membership_status, membership_expires_at, created_at, updated_at").eq("user_id", userId).single(),
         supabase.from("user_roles").select("role").eq("user_id", userId),
         supabase.from("user_wallets").select("balance, points_balance, wallet_number").eq("user_id", userId).maybeSingle(),
         supabase.from("admin_actions").select("action_type, details, created_at, admin_id").eq("target_user_id", userId).order("created_at", { ascending: false }).limit(15),
