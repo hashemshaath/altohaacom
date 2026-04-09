@@ -78,8 +78,9 @@ export default function Shop() {
   }, [products, search, categoryFilter, typeFilter, sortBy, isAr]);
 
   // Track product list view when filtered results change
+  const filteredLen = filtered.length;
   useEffect(() => {
-    if (filtered.length > 0) {
+    if (filteredLen > 0) {
       trackProductListView("shop_main", filtered.slice(0, 10).map((p) => ({
         product_id: p.id,
         title: p.title,
@@ -87,7 +88,8 @@ export default function Shop() {
         category: p.category,
       })));
     }
-  }, [filtered.length, categoryFilter, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+    // trackProductListView is stable; filtered changes tracked via filteredLen
+  }, [filteredLen, categoryFilter, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAddToCart = useCallback((product) => {
     if (!user) {

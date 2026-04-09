@@ -80,7 +80,8 @@ export default function Checkout() {
       trackCheckoutBegin(cart.totalPrice, cart.totalItems);
     }
     trackCheckoutStep(step, stepIndex, cart.totalPrice, cart.totalItems);
-  }, [step]); // eslint-disable-line react-hooks/exhaustive-deps
+    // Tracking functions are stable; only step matters
+  }, [step, stepIndex]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fieldLabel = (en: string, ar: string) => (isAr ? ar : en);
 
