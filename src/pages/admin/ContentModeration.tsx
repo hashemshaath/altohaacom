@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { notifyReportResolved } from "@/lib/notificationTriggers";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -89,7 +89,9 @@ export default function ContentModeration() {
       // Notify the reporter
       const report = reports?.find(r => r.id === variables.reportId);
       if (report?.reporter_id) {
-        notifyReportResolved({ userId: report.reporter_id, status: variables.status });
+        import("@/lib/notificationTriggers").then(({ notifyReportResolved }) => {
+          notifyReportResolved({ userId: report.reporter_id, status: variables.status });
+        }).then(null, () => {});
       }
 
       setExpandedReportId(null);
