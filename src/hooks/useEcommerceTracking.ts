@@ -2,13 +2,11 @@ import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { pushToDataLayer, sendGoogleConversion } from "./useGoogleTracking";
+import { getDeviceType } from "@/lib/deviceType";
+import type { Json } from "@/integrations/supabase/types";
 
 function getSessionId(): string {
   return sessionStorage.getItem("ad_session_id") || "";
-}
-function getDeviceType(): string {
-  const w = window.innerWidth;
-  return w < 768 ? "mobile" : w < 1024 ? "tablet" : "desktop";
 }
 function getBrowser(): string {
   return navigator.userAgent.slice(0, 100);
@@ -49,7 +47,7 @@ export function useEcommerceTracking() {
           page_category: "shop",
           device_type: getDeviceType(),
           browser: getBrowser(),
-          metadata: (metadata || {}) as any,
+          metadata: (metadata || {}) as Json,
         })
         .then(null, () => {});
     },
