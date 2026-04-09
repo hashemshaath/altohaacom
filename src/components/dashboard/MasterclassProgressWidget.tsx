@@ -69,7 +69,8 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
         {enrollments && enrollments.length > 0 ? (
           <div className="space-y-3">
             {enrollments.map((enrollment) => {
-              const mc = enrollment.masterclasses as unknown as Record<string, string | number | null> | null;
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- nested join
+              const mc = enrollment.masterclasses as any;
               if (!mc) return null;
               const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
               const progress = enrollment.progress_percent || 0;

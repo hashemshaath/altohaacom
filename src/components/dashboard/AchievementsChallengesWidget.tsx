@@ -48,7 +48,8 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
 
       const challenges = challengesRes.data || [];
       const progress = progressRes.data || [];
-      const badges = (badgesRes.data || []) as Array<{ badge_type: string; earned_at: string }>;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- badges query has complex join
+      const badges = (badgesRes.data || []) as any[];
       const streak = streakRes.data;
 
       const activeChallenges = challenges.map((c) => {
