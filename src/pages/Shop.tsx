@@ -35,7 +35,7 @@ export default function Shop() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("shop_products")
-        .select("id, title, title_ar, description, description_ar, price, currency, category, product_type, image_url, gallery_urls, is_featured, is_active, seller_id, created_at")
+        .select("id, title, title_ar, description, description_ar, price, compare_at_price, discount_percent, currency, category, product_type, image_url, gallery_urls, is_featured, is_active, seller_id, stock_quantity, tax_rate, tax_inclusive, created_at")
         .eq("is_active", true)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
@@ -91,7 +91,7 @@ export default function Shop() {
     // trackProductListView is stable; filtered changes tracked via filteredLen
   }, [filteredLen, categoryFilter, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleAddToCart = useCallback((product) => {
+  const handleAddToCart = useCallback((product: typeof products[number]) => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول أولاً" : "Please sign in first", variant: "destructive" });
       return;
