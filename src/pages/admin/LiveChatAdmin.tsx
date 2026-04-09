@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +37,7 @@ export default function LiveChatAdmin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
+  const chatRefetchInterval = useVisibleRefetchInterval(30000);
 
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
@@ -63,7 +65,7 @@ export default function LiveChatAdmin() {
       if (error) throw error;
       return data;
     },
-    refetchInterval: 30000,
+    refetchInterval: chatRefetchInterval,
   });
 
   // Fetch user profiles
