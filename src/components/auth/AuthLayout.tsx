@@ -21,7 +21,7 @@ export const AuthLayout = memo(function AuthLayout({ children, stage, isAr, show
         <AuthHeroPanel stage={stage} isAr={isAr} currentStep={currentStep} pageType={pageType} />
 
         {/* Form panel */}
-        <div className="relative flex flex-1 items-start justify-center overflow-x-hidden px-4 py-4 md:items-center sm:px-6 sm:py-8 lg:px-10">
+        <div className="relative flex flex-1 items-start justify-center overflow-x-hidden px-4 py-6 sm:px-6 sm:py-8 md:items-center lg:px-8">
           {/* Subtle ambient background */}
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.04),transparent_60%)]" />
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,hsl(var(--accent)/0.03),transparent_60%)]" />

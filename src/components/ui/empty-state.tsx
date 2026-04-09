@@ -16,7 +16,7 @@ export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(
       <div
         ref={ref}
         className={cn(
-          "flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border/60 bg-muted/30 py-14 px-6 text-center animate-in fade-in-50 slide-in-from-bottom-4 duration-500",
+          "flex flex-col items-center justify-center gap-4 rounded-2xl border border-dashed border-border/60 bg-muted/20 py-16 px-6 text-center animate-in fade-in-50 slide-in-from-bottom-4 duration-500",
           className
         )}
       >
