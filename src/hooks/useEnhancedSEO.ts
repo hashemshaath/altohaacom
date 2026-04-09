@@ -122,7 +122,7 @@ export function useEnhancedSEO(language: string) {
       document.head.appendChild(script);
     }
     
-    const jsonLdItems: any[] = [];
+    const jsonLdItems: Record<string, unknown>[] = [];
 
     // Related links for this page (SEO relatedLink signal)
     const relatedLinks: Record<string, string[]> = {
