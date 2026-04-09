@@ -115,7 +115,13 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
     toast({ title: isAr ? `تم تأجيل الإشعار لمدة ${label}` : `Snoozed for ${label}` });
   }, [isAr]);
 
-  const { data: notifications = [], isLoading } = useQuery({
+  type NotificationRow = {
+    id: string; user_id: string; title: string | null; title_ar: string | null;
+    body: string | null; body_ar: string | null; type: string | null; link: string | null;
+    is_read: boolean | null; read_at: string | null; priority: string | null; created_at: string;
+  };
+
+  const { data: notifications = [], isLoading } = useQuery<NotificationRow[]>({
     queryKey: ["smart-notifications", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -125,7 +131,7 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
         .order("created_at", { ascending: false })
         .limit(100);
       if (error) throw error;
-      return data || [];
+      return (data || []) as NotificationRow[];
     },
     enabled: !!user?.id && open,
     staleTime: 1000 * 60 * 2,
@@ -322,11 +328,11 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
                   <p className="text-xs font-medium text-muted-foreground mb-2 sticky top-0 bg-background/80 backdrop-blur-sm z-10 py-1.5 flex items-center gap-2">
                     {date}
                     <Badge variant="outline" className="text-[12px] px-1.5 py-0 rounded-lg font-normal tabular-nums">
-                      {(items as any[]).length}
+                      {items.length}
                     </Badge>
                   </p>
                   <div className="space-y-1">
-                    {(items as any[]).map((n) => {
+                    {items.map((n) => {
                       const priority = inferPriority(n);
                       return (
                         <SwipeableNotificationCard
@@ -421,8 +427,8 @@ const SmartNotificationCenter = memo(function SmartNotificationCenter({ open, on
 
 export default SmartNotificationCenter;
 
-function groupByDate(notifications: any[], isAr: boolean) {
-  const groups: Record<string, any[]> = {};
+function groupByDate<T extends { created_at: string }>(notifications: T[], isAr: boolean): Record<string, T[]> {
+  const groups: Record<string, T[]> = {};
   const today = new Date().toDateString();
   const yesterday = new Date(Date.now() - 86400000).toDateString();
 

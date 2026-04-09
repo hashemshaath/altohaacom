@@ -117,7 +117,7 @@ export function useCart() {
     };
   }, [items, appliedDiscount]);
 
-  const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
+  const totalItems = useMemo(() => items.reduce((sum, i) => sum + i.quantity, 0), [items]);
 
   return {
     items,

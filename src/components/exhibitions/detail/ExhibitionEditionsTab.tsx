@@ -27,7 +27,7 @@ interface EditionRow {
   start_date: string;
   end_date: string;
   edition_year: number | null;
-  edition_stats: any;
+  edition_stats: unknown;
   status: string;
   city: string | null;
   country: string | null;
@@ -38,22 +38,30 @@ interface EditionRow {
   description_ar: string | null;
 }
 
-function parseStats(raw: any): { visitors?: number; exhibitors?: number; countries?: number; area?: number } {
+interface EditionStats { visitors?: number; exhibitors?: number; countries?: number; area?: number }
+
+function parseStats(raw: unknown): EditionStats {
   if (!raw) return {};
-  const s = typeof raw === "string" ? JSON.parse(raw) : raw;
-  return {
-    visitors: s.visitors ? Number(s.visitors) : undefined,
-    exhibitors: s.exhibitors ? Number(s.exhibitors) : undefined,
-    countries: s.countries ? Number(s.countries) : undefined,
-    area: s.area ? Number(s.area) : undefined,
-  };
+  try {
+    const s = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (!s || typeof s !== "object") return {};
+    const obj = s as Record<string, unknown>;
+    return {
+      visitors: obj.visitors ? Number(obj.visitors) : undefined,
+      exhibitors: obj.exhibitors ? Number(obj.exhibitors) : undefined,
+      countries: obj.countries ? Number(obj.countries) : undefined,
+      area: obj.area ? Number(obj.area) : undefined,
+    };
+  } catch {
+    return {};
+  }
 }
 
 function TrendIcon({ current, previous }: { current?: number; previous?: number }) {
-  if (!current || !previous) return null;
+  if (!current || !previous || previous === 0) return null;
   const pct = Math.round(((current - previous) / previous) * 100);
-  if (pct > 0) return <span className="inline-flex items-center gap-0.5 text-emerald-600 text-[12px] font-semibold"><TrendingUp className="h-3 w-3" />+{pct}%</span>;
-  if (pct < 0) return <span className="inline-flex items-center gap-0.5 text-red-500 text-[12px] font-semibold"><TrendingDown className="h-3 w-3" />{pct}%</span>;
+  if (pct > 0) return <span className="inline-flex items-center gap-0.5 text-primary text-[12px] font-semibold"><TrendingUp className="h-3 w-3" />+{pct}%</span>;
+  if (pct < 0) return <span className="inline-flex items-center gap-0.5 text-destructive text-[12px] font-semibold"><TrendingDown className="h-3 w-3" />{pct}%</span>;
   return <span className="inline-flex items-center gap-0.5 text-muted-foreground text-[12px]"><Minus className="h-3 w-3" />0%</span>;
 }
 
