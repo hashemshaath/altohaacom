@@ -99,7 +99,7 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
             <div className="flex justify-center lg:justify-start gap-4 flex-wrap mt-8">
               {(isAr ? ["مجاني تماماً", "مجتمع عالمي", "بدون بطاقة ائتمان"] : ["Completely Free", "Global Community", "No Credit Card"]).map((item) => (
                 <span key={item} className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Check className="h-4 w-4 text-emerald-500" />
+                  <Check className="h-4 w-4 text-semantic-success" />
                   {item}
                 </span>
               ))}
