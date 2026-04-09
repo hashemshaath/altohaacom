@@ -19,6 +19,7 @@ import { DashboardLayoutControl, useDashboardLayout } from "@/components/dashboa
 import { ProfileCompletionCard } from "@/components/profile/ProfileCompletionCard";
 import { GlobalSearchWidget } from "@/components/dashboard/GlobalSearchWidget";
 import { ScrollToTopFAB } from "@/components/mobile/ScrollToTopFAB";
+import { DashboardStatusStrip } from "@/components/dashboard/DashboardStatusStrip";
 
 // Lazy-loaded widgets
 const UpcomingCompetitionsWidget = lazy(() => import("@/components/dashboard/UpcomingCompetitionsWidget").then(m => ({ default: m.UpcomingCompetitionsWidget })));
