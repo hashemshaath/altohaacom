@@ -34,7 +34,7 @@ export async function sendNotification(params: SendNotificationParams) {
 
     if (error) throw error;
     return data;
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Failed to send notification:", error);
   }
 }

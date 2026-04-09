@@ -106,7 +106,7 @@ export default function SponsorsLanding() {
       });
 
       setFormData({ companyName: "", contactName: "", email: "", phone: "", message: "" });
-    } catch (error) {
+    } catch (error: unknown) {
       toast({
         variant: "destructive",
         title: isAr ? "خطأ" : "Error",
