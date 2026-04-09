@@ -176,7 +176,7 @@ function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr, onChan
             </Button>
           )}
         </div>
-        <InputComp value={valueEn} onChange={(e: any) => onChangeEn(e.target.value)} dir="ltr" placeholder={placeholder_en} {...extraProps} />
+        <InputComp value={valueEn} onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => onChangeEn(e.target.value)} dir="ltr" placeholder={placeholder_en} {...extraProps} />
       </div>
     </div>
   );
