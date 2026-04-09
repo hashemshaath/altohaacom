@@ -34,7 +34,7 @@ export const CompanyLiveStatsWidget = memo(function CompanyLiveStatsWidget() {
       // Totals
       const totalCompanies = companies.length;
       const verifiedCompanies = companies.filter(c => c.is_verified).length;
-      const activeCompanies = companies.filter(c => (c as any).status === "active").length;
+      const activeCompanies = companies.filter(c => c.status === "active").length;
       const totalEstablishments = establishments.length;
       const totalEntities = entities.length;
 
@@ -65,7 +65,7 @@ export const CompanyLiveStatsWidget = memo(function CompanyLiveStatsWidget() {
       // Top countries
       const countryMap: Record<string, number> = {};
       [...companies, ...establishments].forEach(c => {
-        const cc = (c as any).country_code || "N/A";
+        const cc = c.country_code || "N/A";
         countryMap[cc] = (countryMap[cc] || 0) + 1;
       });
       const topCountries = Object.entries(countryMap).sort(([, a], [, b]) => b - a).slice(0, 5);
