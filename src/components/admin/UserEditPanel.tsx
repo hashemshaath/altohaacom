@@ -139,7 +139,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
     mutationFn: async (updates: Record<string, unknown>) => {
       const { error } = await supabase.from("profiles").update(updates).eq("user_id", editingUser.user_id);
       if (error) throw error;
-      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: editingUser.user_id, action_type: "update_profile", details: updates as any }]);
+      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: editingUser.user_id, action_type: "update_profile", details: updates as Record<string, unknown> as Database["public"]["Tables"]["admin_actions"]["Insert"]["details"] }]);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
@@ -274,7 +274,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
             </Avatar>
             <div>
               <CardTitle className="text-lg flex items-center gap-2">
-                {isAr ? ((editingUser as any).display_name_ar || (editingUser as any).full_name_ar || editingUser.full_name) : ((editingUser as any).display_name || editingUser.full_name || "Unknown")}
+                {isAr ? (editingUser.display_name_ar || editingUser.full_name_ar || editingUser.full_name) : (editingUser.display_name || editingUser.full_name || "Unknown")}
                 {statusBadge(editingUser.account_status)}
                 {editingUser.is_verified && <Badge variant="outline" className="text-[12px] border-primary/30 text-primary">✓ {isAr ? "موثق" : "Verified"}</Badge>}
               </CardTitle>
