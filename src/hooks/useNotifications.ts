@@ -12,19 +12,19 @@ const DND_KEY = "altoha_dnd_mode";
 
 export function useNotificationPrefs() {
   const [soundEnabled, setSoundEnabledState] = useState(() => {
-    return localStorage.getItem(SOUND_KEY) !== "false";
+    try { return localStorage.getItem(SOUND_KEY) !== "false"; } catch { return true; }
   });
   const [dndMode, setDndModeState] = useState(() => {
-    return localStorage.getItem(DND_KEY) === "true";
+    try { return localStorage.getItem(DND_KEY) === "true"; } catch { return false; }
   });
 
   const setSoundEnabled = (v: boolean) => {
-    localStorage.setItem(SOUND_KEY, String(v));
+    try { localStorage.setItem(SOUND_KEY, String(v)); } catch { /* restricted */ }
     setSoundEnabledState(v);
   };
 
   const setDndMode = (v: boolean) => {
-    localStorage.setItem(DND_KEY, String(v));
+    try { localStorage.setItem(DND_KEY, String(v)); } catch { /* restricted */ }
     setDndModeState(v);
   };
 
@@ -120,15 +120,18 @@ export function useNotifications() {
         .eq("id", notificationId)
         .eq("user_id", user.id);
       if (error) throw error;
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
-      setUnreadCount(prev => {
-        const wasUnread = notifications.find(n => n.id === notificationId && !n.is_read);
-        return wasUnread ? Math.max(0, prev - 1) : prev;
+      setNotifications(prev => {
+        const deleted = prev.find(n => n.id === notificationId);
+        const next = prev.filter(n => n.id !== notificationId);
+        if (deleted && !deleted.is_read) {
+          setUnreadCount(c => Math.max(0, c - 1));
+        }
+        return next;
       });
     } catch (error: unknown) {
       console.error("Error deleting notification:", error);
     }
-  }, [user?.id, notifications]);
+  }, [user?.id]);
 
   const clearAllRead = useCallback(async () => {
     if (!user) return;

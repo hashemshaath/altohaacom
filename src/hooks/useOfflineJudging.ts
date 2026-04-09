@@ -163,7 +163,7 @@ export function useOfflineJudging() {
       }));
 
       await cacheItems("judging_data", judgingDataItems);
-      localStorage.setItem(JUDGING_SYNC_KEY, Date.now().toString());
+      try { localStorage.setItem(JUDGING_SYNC_KEY, Date.now().toString()); } catch { /* restricted */ }
 
       setCachedCompetitions(judgingDataItems);
 
@@ -320,7 +320,7 @@ export function useOfflineJudging() {
     return getCachedItem<OfflineScore>("offline_scores", `${registrationId}_${user.id}`);
   }, [user]);
 
-  const lastSync = useMemo(() => localStorage.getItem(JUDGING_SYNC_KEY), [pendingCount]);
+  const lastSync = useMemo(() => { try { return localStorage.getItem(JUDGING_SYNC_KEY); } catch { return null; } }, [pendingCount]);
 
   return {
     cachedCompetitions,
