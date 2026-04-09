@@ -133,7 +133,7 @@ export default function ExhibitionDetail() {
   useEffect(() => {
     if (exhibition?.id && !viewIncremented.current) {
       viewIncremented.current = true;
-      supabase.rpc("increment_exhibition_views", { exhibition_id: exhibition.id }).then();
+      supabase.rpc("increment_exhibition_views", { exhibition_id: exhibition.id }).then(null, () => {});
     }
   }, [exhibition?.id]);
 

@@ -432,7 +432,7 @@ export const ChatArea = memo(function ChatArea({
                             .from("messages")
                             .update({ metadata: { ...((msg.metadata as any) || {}), reactions: newReactions } })
                             .eq("id", msg.id)
-                            .then();
+                            .then(null, () => {});
                         }}
                       />
                     </div>
