@@ -39,7 +39,9 @@ interface UserProfile {
   id: string;
   user_id: string;
   full_name: string | null;
-  display_name: string | null;
+  full_name_ar?: string | null;
+  display_name?: string | null;
+  display_name_ar?: string | null;
   username: string | null;
   account_number: string | null;
   account_status: AccountStatus | null;
@@ -50,12 +52,18 @@ interface UserProfile {
   created_at: string;
   location: string | null;
   country_code: string | null;
-  city: string | null;
+  city?: string | null;
   specialization: string | null;
+  specialization_ar?: string | null;
+  bio?: string | null;
+  bio_ar?: string | null;
   is_verified: boolean | null;
   email: string | null;
   phone?: string | null;
-  bio?: string | null;
+  date_of_birth?: string | null;
+  gender?: string | null;
+  preferred_language?: string | null;
+  nationality?: string | null;
   roles?: { role: AppRole }[];
 }
 
@@ -79,23 +87,23 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   const [editStatus, setEditStatus] = useState<AccountStatus>(editingUser.account_status || "pending");
   const [editVerified, setEditVerified] = useState(editingUser.is_verified || false);
   const [editFullName, setEditFullName] = useState(editingUser.full_name || "");
-  const [editDisplayName, setEditDisplayName] = useState((editingUser as any).display_name || "");
+  const [editDisplayName, setEditDisplayName] = useState(editingUser.display_name || "");
   const [editUsername, setEditUsername] = useState(editingUser.username || "");
   const [editEmail] = useState(editingUser.email || "");
   const [editPhone, setEditPhone] = useState(editingUser.phone || "");
   const [editBio, setEditBio] = useState(editingUser.bio || "");
-  const [editBioAr, setEditBioAr] = useState((editingUser as any).bio_ar || "");
+  const [editBioAr, setEditBioAr] = useState(editingUser.bio_ar || "");
   const [editCountryCode, setEditCountryCode] = useState(editingUser.country_code || "");
-  const [editCity, setEditCity] = useState((editingUser as any).city || "");
+  const [editCity, setEditCity] = useState(editingUser.city || "");
   const [editSpecialization, setEditSpecialization] = useState(editingUser.specialization || "");
-  const [editSpecializationAr, setEditSpecializationAr] = useState((editingUser as any).specialization_ar || "");
-  const [editFullNameAr, setEditFullNameAr] = useState((editingUser as any).full_name_ar || "");
-  const [editDisplayNameAr, setEditDisplayNameAr] = useState((editingUser as any).display_name_ar || "");
+  const [editSpecializationAr, setEditSpecializationAr] = useState(editingUser.specialization_ar || "");
+  const [editFullNameAr, setEditFullNameAr] = useState(editingUser.full_name_ar || "");
+  const [editDisplayNameAr, setEditDisplayNameAr] = useState(editingUser.display_name_ar || "");
   const [editPersonal, setEditPersonal] = useState({
-    dateOfBirth: (editingUser as any).date_of_birth || "",
-    gender: (editingUser as any).gender || "",
-    preferredLanguage: (editingUser as any).preferred_language || "",
-    nationality: (editingUser as any).nationality || "",
+    dateOfBirth: editingUser.date_of_birth || "",
+    gender: editingUser.gender || "",
+    preferredLanguage: editingUser.preferred_language || "",
+    nationality: editingUser.nationality || "",
   });
   const [usernameError, setUsernameError] = useState("");
   const [usernameChecking, setUsernameChecking] = useState(false);
@@ -131,7 +139,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
     mutationFn: async (updates: Record<string, unknown>) => {
       const { error } = await supabase.from("profiles").update(updates).eq("user_id", editingUser.user_id);
       if (error) throw error;
-      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: editingUser.user_id, action_type: "update_profile", details: updates as any }]);
+      await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: editingUser.user_id, action_type: "update_profile", details: updates as Record<string, unknown> as Database["public"]["Tables"]["admin_actions"]["Insert"]["details"] }]);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
@@ -266,7 +274,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
             </Avatar>
             <div>
               <CardTitle className="text-lg flex items-center gap-2">
-                {isAr ? ((editingUser as any).display_name_ar || (editingUser as any).full_name_ar || editingUser.full_name) : ((editingUser as any).display_name || editingUser.full_name || "Unknown")}
+                {isAr ? (editingUser.display_name_ar || editingUser.full_name_ar || editingUser.full_name) : (editingUser.display_name || editingUser.full_name || "Unknown")}
                 {statusBadge(editingUser.account_status)}
                 {editingUser.is_verified && <Badge variant="outline" className="text-[12px] border-primary/30 text-primary">✓ {isAr ? "موثق" : "Verified"}</Badge>}
               </CardTitle>

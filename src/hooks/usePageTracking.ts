@@ -1,39 +1,28 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
 import { pushToDataLayer } from "./useGoogleTracking";
 
 /**
- * Automatically tracks page views on route changes.
- * Logs to ad_user_behaviors and pushes to GTM dataLayer.
+ * Pushes page_view events to GTM dataLayer on route changes.
+ * 
+ * NOTE: DB logging for page views is handled by:
+ * - useSEOTracking → seo_page_views (global, in AppContent)
+ * - useAdTracking → ad_user_behaviors (per-page, where used)
+ * This hook only handles GTM/dataLayer to avoid duplicate DB inserts.
  */
 export function usePageTracking() {
   const location = useLocation();
-  const { user } = useAuth();
 
   useEffect(() => {
     const path = location.pathname;
     const category = detectCategory(path);
 
-    // Log to internal DB (fire-and-forget)
-    supabase.from("ad_user_behaviors").insert({
-      event_type: "page_view",
-      page_url: path,
-      page_category: category,
-      user_id: user?.id || null,
-      session_id: sessionStorage.getItem("ad_session_id") || null,
-      device_type: getDeviceType(),
-      browser: navigator.userAgent.slice(0, 100),
-    }).then(null, () => { /* fire-and-forget */ });
-
-    // Push to GTM
+    // Push to GTM only — DB logging handled by dedicated hooks
     pushToDataLayer("page_view", {
       page_path: path,
       page_category: category,
-      userId: user?.id,
     });
-  }, [location.pathname, user?.id]);
+  }, [location.pathname]);
 }
 
 function detectCategory(path: string): string {
@@ -55,11 +44,4 @@ function detectCategory(path: string): string {
     company: "company",
   };
   return map[segment] || "other";
-}
-
-function getDeviceType(): string {
-  const w = window.innerWidth;
-  if (w < 768) return "mobile";
-  if (w < 1024) return "tablet";
-  return "desktop";
 }
