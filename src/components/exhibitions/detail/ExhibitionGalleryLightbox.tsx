@@ -41,7 +41,7 @@ export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox
           variant="ghost"
           size="icon"
           className="h-9 w-9 rounded-full bg-muted/80 hover:bg-muted"
-          onClick={(e) => { e.stopPropagation(); window.open(images[index], "_blank"); }}
+          onClick={(e) => { e.stopPropagation(); window.open(images[index], "_blank", "noopener"); }}
         >
           <Download className="h-4 w-4" />
         </Button>

@@ -63,7 +63,7 @@ export const ArticleHighlightShare = memo(function ArticleHighlightShare({ artic
       onMouseDown={(e) => e.preventDefault()}
     >
       <button
-        onClick={() => window.open(tweetUrl, "_blank")}
+        onClick={() => window.open(tweetUrl, "_blank", "noopener")}
         className="h-7 w-7 rounded-lg hover:bg-background/20 flex items-center justify-center transition-colors"
         title="Tweet"
       >

@@ -70,7 +70,7 @@ export const ExecutiveSummary = memo(function ExecutiveSummary() {
   });
 
   const handlePrint = () => {
-    const printWindow = window.open("", "_blank");
+    const printWindow = window.open("", "_blank", "noopener");
     if (!printWindow || !reportRef.current) return;
 
     printWindow.document.write(`

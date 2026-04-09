@@ -256,7 +256,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
             </div>
           )}
           <span className="hidden md:inline text-[12px] text-muted-foreground tabular-nums">{wordCount} {t("كلمة", "words")}</span>
-          <Button variant="outline" size="sm" className="rounded-xl gap-1.5 text-xs h-8" onClick={() => window.open(`/news/${form.slug}`, "_blank")} disabled={!form.slug}>
+          <Button variant="outline" size="sm" className="rounded-xl gap-1.5 text-xs h-8" onClick={() => window.open(`/news/${form.slug}`, "_blank", "noopener")} disabled={!form.slug}>
             <Eye className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{t("Preview", "معاينة")}</span>
           </Button>
           <Button size="sm" className="rounded-xl gap-1.5 text-xs h-8" onClick={() => saveMutation.mutate(form)} disabled={saveMutation.isPending || (!form.title && !form.title_ar)}>

@@ -493,13 +493,13 @@ export default function ArticleDetail() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align={isAr ? "start" : "end"} className="w-44 rounded-xl">
-                    <DropdownMenuItem onClick={() => window.open(shareLinks.twitter, "_blank")} className="cursor-pointer gap-2 rounded-lg text-xs">
+                    <DropdownMenuItem onClick={() => window.open(shareLinks.twitter, "_blank", "noopener")} className="cursor-pointer gap-2 rounded-lg text-xs">
                       <Twitter className="h-3.5 w-3.5" /> Twitter / X
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => window.open(shareLinks.facebook, "_blank")} className="cursor-pointer gap-2 rounded-lg text-xs">
+                    <DropdownMenuItem onClick={() => window.open(shareLinks.facebook, "_blank", "noopener")} className="cursor-pointer gap-2 rounded-lg text-xs">
                       <Facebook className="h-3.5 w-3.5" /> Facebook
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => window.open(shareLinks.linkedin, "_blank")} className="cursor-pointer gap-2 rounded-lg text-xs">
+                    <DropdownMenuItem onClick={() => window.open(shareLinks.linkedin, "_blank", "noopener")} className="cursor-pointer gap-2 rounded-lg text-xs">
                       <Linkedin className="h-3.5 w-3.5" /> LinkedIn
                     </DropdownMenuItem>
                     <Separator className="my-1" />
@@ -748,13 +748,13 @@ export default function ArticleDetail() {
                       {isAr ? "شارك المقال" : "Share Article"}
                     </p>
                     <div className="flex items-center gap-2">
-                      <button onClick={() => window.open(shareLinks.twitter, "_blank")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="Twitter">
+                      <button onClick={() => window.open(shareLinks.twitter, "_blank", "noopener")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="Twitter">
                         <Twitter className="h-3.5 w-3.5" />
                       </button>
-                      <button onClick={() => window.open(shareLinks.facebook, "_blank")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="Facebook">
+                      <button onClick={() => window.open(shareLinks.facebook, "_blank", "noopener")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="Facebook">
                         <Facebook className="h-3.5 w-3.5" />
                       </button>
-                      <button onClick={() => window.open(shareLinks.linkedin, "_blank")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="LinkedIn">
+                      <button onClick={() => window.open(shareLinks.linkedin, "_blank", "noopener")} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title="LinkedIn">
                         <Linkedin className="h-3.5 w-3.5" />
                       </button>
                       <button onClick={handleCopyLink} className="h-9 w-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors active:scale-95" title={isAr ? "نسخ" : "Copy"}>

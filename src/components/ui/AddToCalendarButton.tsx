@@ -43,11 +43,11 @@ export const AddToCalendarButton = memo(function AddToCalendarButton({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
-        <DropdownMenuItem onClick={() => window.open(getGoogleCalendarUrl(event), "_blank")}>
+        <DropdownMenuItem onClick={() => window.open(getGoogleCalendarUrl(event), "_blank", "noopener")}>
           <ExternalLink className="h-4 w-4 me-2" />
           Google Calendar
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => window.open(getOutlookCalendarUrl(event), "_blank")}>
+        <DropdownMenuItem onClick={() => window.open(getOutlookCalendarUrl(event), "_blank", "noopener")}>
           <ExternalLink className="h-4 w-4 me-2" />
           Outlook
         </DropdownMenuItem>
