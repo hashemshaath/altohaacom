@@ -149,7 +149,7 @@ export default function ArticleDetail() {
   // Increment view count in DB (real tracking)
   useEffect(() => {
     if (article?.id) {
-      supabase.from("articles").update({ view_count: (article.view_count || 0) + 1 }).eq("id", article.id).then();
+      supabase.from("articles").update({ view_count: (article.view_count || 0) + 1 }).eq("id", article.id).then(null, () => {});
     }
   }, [article?.id]);
 

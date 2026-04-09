@@ -297,7 +297,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
                     queryClient.invalidateQueries({ queryKey: ["company", companyId] });
                     queryClient.invalidateQueries({ queryKey: ["companies"] });
                     toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" });
-                  });
+                  }).then(null, () => {});
                 }
               }}
             />
