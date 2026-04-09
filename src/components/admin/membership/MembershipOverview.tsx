@@ -52,11 +52,11 @@ const MembershipOverview = memo(function MembershipOverview() {
     queryFn: async () => {
       const [profilesRes, cardsRes, historyRes, cancellationsRes, invoicesRes, walletsRes] = await Promise.all([
         supabase.from("profiles").select("membership_tier, membership_status, membership_expires_at, created_at").limit(5000),
-        supabase.from("membership_cards").select("is_trial, trial_ends_at, card_status, expires_at"),
+        supabase.from("membership_cards").select("is_trial, trial_ends_at, card_status, expires_at").limit(5000),
         supabase.from("membership_history").select("new_tier, previous_tier, created_at").order("created_at", { ascending: false }).limit(200),
         supabase.from("membership_cancellation_requests").select("status, created_at").eq("status", "pending"),
         supabase.from("invoices").select("amount, status, created_at, paid_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("user_wallets").select("balance, points_balance"),
+        supabase.from("user_wallets").select("balance, points_balance").limit(5000),
       ]);
 
       const profiles = profilesRes.data || [];

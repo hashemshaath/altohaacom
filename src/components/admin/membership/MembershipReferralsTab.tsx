@@ -108,8 +108,10 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
   };
 
   const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
-    toast({ title: isAr ? "تم النسخ" : "Copied!" });
+    navigator.clipboard.writeText(code).then(
+      () => toast({ title: isAr ? "تم النسخ" : "Copied!" }),
+      () => toast({ title: isAr ? "فشل النسخ" : "Copy failed", variant: "destructive" })
+    );
   };
 
   return (
