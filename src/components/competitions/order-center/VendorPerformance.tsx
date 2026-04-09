@@ -55,6 +55,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
         .select("id, list_id, status, deadline, delivered_at, assigned_at, assigned_vendor_id, requirement_items(category)")
         .in("list_id", lists.map(l => l.id));
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- nested join
       return data as any[];
     },
     enabled: !!lists?.length,

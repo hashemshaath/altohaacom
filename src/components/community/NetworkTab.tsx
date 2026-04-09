@@ -247,7 +247,7 @@ export const NetworkTab = memo(function NetworkTab() {
             <Select
               value={myProfile?.follow_privacy || "public"}
               onValueChange={(val) => {
-                updatePrivacy.mutate(val as any, {
+                updatePrivacy.mutate(val as "public" | "approval" | "private", {
                   onSuccess: () => toast({ title: isAr ? "تم تحديث الإعدادات" : "Privacy updated" }),
                 });
               }}

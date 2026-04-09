@@ -63,17 +63,17 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
         articles: {
           recent: articlesRecent.data?.length || 0,
           prev: articlesPrev.data?.length || 0,
-          sparkline: buildDailyCounts(articlesRecent.data as any, 14),
+          sparkline: buildDailyCounts(articlesRecent.data as Array<{ created_at: string }> | null, 14),
         },
         competitions: {
           recent: compsRecent.data?.length || 0,
           prev: compsPrev.data?.length || 0,
-          sparkline: buildDailyCounts(compsRecent.data as any, 14),
+          sparkline: buildDailyCounts(compsRecent.data as Array<{ created_at: string }> | null, 14),
         },
         profiles: {
           recent: profilesRecent.data?.length || 0,
           prev: profilesPrev.data?.length || 0,
-          sparkline: buildDailyCounts(profilesRecent.data as any, 14),
+          sparkline: buildDailyCounts(profilesRecent.data as Array<{ created_at: string }> | null, 14),
         },
       };
     },

@@ -1,6 +1,7 @@
 import { useState, useRef, memo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -275,7 +276,7 @@ export const RegistrationForm = memo(function RegistrationForm({
           event_category: "engagement",
           user_id: user?.id || null,
           session_id: sessionStorage.getItem("ad_session_id") || null,
-          metadata: { competition_id: competitionId } as any,
+          metadata: { competition_id: competitionId } as unknown as Json,
         }]).then(null, () => {});
       } catch {}
 

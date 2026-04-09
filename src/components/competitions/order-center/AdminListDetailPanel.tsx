@@ -72,6 +72,7 @@ export const AdminListDetailPanel = memo(function AdminListDetailPanel({ listId,
         .eq("list_id", listId)
         .order("sort_order");
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex nested join
       return data as any[];
     },
   });

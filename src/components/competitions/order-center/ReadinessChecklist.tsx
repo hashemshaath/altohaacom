@@ -52,6 +52,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
         .select("id, status, checked, assigned_vendor_id, estimated_cost, quantity, deadline")
         .in("list_id", lists.map(l => l.id));
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- partial select
       return data as any[];
     },
     enabled: !!lists?.length,

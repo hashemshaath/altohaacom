@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -86,7 +87,7 @@ export const PreparationChecklistPanel = memo(function PreparationChecklistPanel
       const { error } = await supabase.from("preparation_checklists").upsert({
         competition_id: competitionId,
         user_id: user.id,
-        items: updatedItems as any,
+        items: updatedItems as unknown as Json,
         progress_percentage: progress,
       }, { onConflict: "competition_id,user_id" });
       if (error) throw error;

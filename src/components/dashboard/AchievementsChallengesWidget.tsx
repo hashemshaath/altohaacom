@@ -48,6 +48,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
 
       const challenges = challengesRes.data || [];
       const progress = progressRes.data || [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- badges query has complex join
       const badges = (badgesRes.data || []) as any[];
       const streak = streakRes.data;
 

@@ -1,6 +1,7 @@
 import { useState, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -74,7 +75,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
         competition_type: form.competition_type || null,
         category_type: form.category_type || null,
         is_active: form.is_active,
-        criteria: form.criteria as any,
+        criteria: form.criteria as unknown as Json,
         created_by: user?.id,
       };
 
@@ -111,7 +112,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
       const rubric = rubrics?.find(r => r.id === rubricId);
       if (!rubric) return;
 
-      const criteriaList = (rubric.criteria as any as CriterionItem[]) || [];
+      const criteriaList = (rubric.criteria as unknown as CriterionItem[]) || [];
 
       // Delete existing criteria
       await supabase.from("judging_criteria").delete().eq("competition_id", competitionId);
@@ -154,7 +155,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
       description: rubric.description || "", description_ar: rubric.description_ar || "",
       competition_type: rubric.competition_type || "", category_type: rubric.category_type || "",
       is_active: rubric.is_active ?? true,
-      criteria: (rubric.criteria as any as CriterionItem[]) || [],
+      criteria: (rubric.criteria as unknown as CriterionItem[]) || [],
     });
     setShowForm(true);
   };
@@ -284,7 +285,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
         ) : rubrics && rubrics.length > 0 ? (
           <div className="space-y-3">
             {rubrics.map(rubric => {
-              const criteriaList = (rubric.criteria as any as CriterionItem[]) || [];
+              const criteriaList = (rubric.criteria as unknown as CriterionItem[]) || [];
               const isExpanded = expandedId === rubric.id;
               return (
                 <div key={rubric.id} className="rounded-xl border">

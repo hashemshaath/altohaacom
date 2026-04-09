@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -114,7 +115,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
         requested_by: user!.id,
         title,
         description: message || null,
-        items: itemsData as any,
+        items: itemsData as unknown as Json,
         total_estimated_cost: totalCost,
         status: "pending",
       });
@@ -306,7 +307,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
             {existingRequests.map((req) => {
               const statusInfo = STATUS_STYLES[req.status] || STATUS_STYLES.pending;
               const StatusIcon = statusInfo.icon;
-              const companyData = req.companies as any;
+              const companyData = req.companies as unknown as Record<string, string | null> | null;
               const companyName = companyData
                 ? (isAr && companyData.name_ar ? companyData.name_ar : companyData.name)
                 : "—";
