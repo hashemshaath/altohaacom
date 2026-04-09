@@ -2,6 +2,7 @@ import { useState, useMemo, lazy, Suspense, useEffect, useCallback } from "react
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { getDeviceType } from "@/lib/deviceType";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
