@@ -75,6 +75,8 @@ export const ExhibitionHero = memo(function ExhibitionHero({
               alt={title}
               className="h-full w-full object-cover"
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           ) : (
             <div className="h-full w-full bg-gradient-to-br from-primary/20 via-accent/10 to-background" />
