@@ -207,7 +207,7 @@ export default function RegisterCompany() {
       console.error("Registration error:", error);
       toast({
         title: isAr ? "فشل في التسجيل" : "Registration failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unknown error",
         variant: "destructive",
       });
     } finally {

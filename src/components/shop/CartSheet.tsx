@@ -200,7 +200,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
     } catch (error: unknown) {
       toast({
         title: isAr ? "خطأ في تقديم الطلب" : "Error placing order",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Unknown error",
         variant: "destructive",
       });
     } finally {
