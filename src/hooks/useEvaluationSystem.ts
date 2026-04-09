@@ -164,7 +164,8 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
       }
       const { data: categories } = await catQuery;
 
-      const catIds = (categories || []).map((c: Record<string, unknown>) => c.id as string);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const catIds = (categories || []).map((c: any) => c.id);
       if (catIds.length === 0) return { categories: categories || [], criteria: [] };
 
       // Get criteria for those categories
