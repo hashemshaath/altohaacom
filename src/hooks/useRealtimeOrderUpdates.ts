@@ -25,8 +25,8 @@ export function useRealtimeOrderUpdates(competitionId: string, enabled = true) {
           table: "requirement_list_items",
         },
         (payload) => {
-          const newRecord = payload.new as any;
-          const oldRecord = payload.old as any;
+          const newRecord = payload.new as Record<string, unknown>;
+          const oldRecord = payload.old as Record<string, unknown>;
 
           // Invalidate relevant queries
           queryClient.invalidateQueries({ queryKey: ["vendor-items", competitionId] });
