@@ -276,7 +276,7 @@ export const RegistrationForm = memo(function RegistrationForm({
           user_id: user?.id || null,
           session_id: sessionStorage.getItem("ad_session_id") || null,
           metadata: { competition_id: competitionId } as any,
-        }]).then(() => {});
+        }]).then(null, () => {});
       } catch {}
 
       toast({
