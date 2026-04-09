@@ -47,21 +47,21 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
     const text = isAr
       ? `انضم إلى Altoha عبر الرابط الخاص بي: ${referralLink}`
       : `Join Altoha using my referral link: ${referralLink}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener");
   }, [referralLink, isAr]);
 
   const shareViaTwitter = useCallback(() => {
     const text = isAr
       ? `انضم إلى @Altoha — منصة الطهاة المحترفين! ${referralLink}`
       : `Join @Altoha — the professional culinary platform! ${referralLink}`;
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank");
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, "_blank", "noopener");
   }, [referralLink, isAr]);
 
   const shareViaTelegram = useCallback(() => {
     const text = isAr
       ? `انضم إلى Altoha عبر الرابط الخاص بي`
       : `Join Altoha using my referral link`;
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(text)}`, "_blank");
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(text)}`, "_blank", "noopener");
   }, [referralLink, isAr]);
 
   const handleSendEmailInvite = useCallback(async () => {

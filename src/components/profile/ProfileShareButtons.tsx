@@ -44,22 +44,22 @@ export const ProfileShareButtons = memo(function ProfileShareButtons({ username,
     {
       label: "X / Twitter",
       icon: Twitter,
-      action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(profileUrl)}`, "_blank"),
+      action: () => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(profileUrl)}`, "_blank", "noopener"),
     },
     {
       label: "LinkedIn",
       icon: Linkedin,
-      action: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`, "_blank"),
+      action: () => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(profileUrl)}`, "_blank", "noopener"),
     },
     {
       label: "Facebook",
       icon: Facebook,
-      action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`, "_blank"),
+      action: () => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(profileUrl)}`, "_blank", "noopener"),
     },
     {
       label: "WhatsApp",
       icon: Send,
-      action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + profileUrl)}`, "_blank"),
+      action: () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + " " + profileUrl)}`, "_blank", "noopener"),
     },
   ];
 

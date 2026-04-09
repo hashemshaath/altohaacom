@@ -594,7 +594,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
 
   // ─── Print CV Report ───
   const handlePrintCV = useCallback(() => {
-    const win = window.open("", "_blank");
+    const win = window.open("", "_blank", "noopener");
     if (!win) return;
     const p = data.personal_info;
     const formatD = (d?: string) => { if (!d) return ""; try { return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short" }); } catch { return d; } };

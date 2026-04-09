@@ -136,7 +136,7 @@ export const ProfileResumeExport = memo(function ProfileResumeExport({
 </html>`;
 
       // Open in new window for print
-      const printWindow = window.open("", "_blank");
+      const printWindow = window.open("", "_blank", "noopener");
       if (printWindow) {
         printWindow.document.write(html);
         printWindow.document.close();

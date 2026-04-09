@@ -46,26 +46,26 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
   };
 
   const shareWhatsApp = () => {
-    window.open(`https://wa.me/?text=${encodeURIComponent(getMessage())}`, "_blank");
+    window.open(`https://wa.me/?text=${encodeURIComponent(getMessage())}`, "_blank", "noopener");
     sendInvitation.mutate({ channel: "whatsapp", referralCodeId });
     trackShare("whatsapp");
   };
 
   const shareTwitter = () => {
     const text = isAr ? "انضم إلى ألطهاة - المنصة الأولى للطهاة المحترفين" : "Join Altoha - The #1 platform for professional chefs";
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(referralLink)}`, "_blank");
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(referralLink)}`, "_blank", "noopener");
     sendInvitation.mutate({ channel: "twitter", referralCodeId });
     trackShare("twitter");
   };
 
   const shareFacebook = () => {
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, "_blank");
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`, "_blank", "noopener");
     sendInvitation.mutate({ channel: "facebook", referralCodeId });
     trackShare("facebook");
   };
 
   const shareLinkedIn = () => {
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`, "_blank");
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(referralLink)}`, "_blank", "noopener");
     sendInvitation.mutate({ channel: "linkedin", referralCodeId });
     trackShare("linkedin");
   };
@@ -78,7 +78,7 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
   };
 
   const shareTelegram = () => {
-    window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(getMessage())}`, "_blank");
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(getMessage())}`, "_blank", "noopener");
     sendInvitation.mutate({ channel: "telegram", referralCodeId });
     trackShare("telegram");
   };

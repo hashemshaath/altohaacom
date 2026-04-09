@@ -209,7 +209,7 @@ export default function CertificatesAdmin() {
       toast({ variant: "destructive", title: language === "ar" ? "لا توجد شهادات صادرة للطباعة" : "No issued certificates to print" });
       return;
     }
-    const printWindow = window.open("", "_blank");
+    const printWindow = window.open("", "_blank", "noopener");
     if (!printWindow) return;
     const pages = issuedCerts.map(cert => `
       <div style="page-break-after: always; padding: 40px; text-align: center; font-family: Georgia, serif;">
@@ -316,7 +316,7 @@ export default function CertificatesAdmin() {
             }
           }}
           onPrint={() => {
-            const printWindow = window.open("", "_blank");
+            const printWindow = window.open("", "_blank", "noopener");
             if (!printWindow) return;
             const previewEl = document.querySelector("[data-certificate-preview]");
             if (!previewEl) return;

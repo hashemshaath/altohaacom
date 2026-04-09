@@ -29,7 +29,7 @@ export function downloadJSON(data: any, filename: string) {
 export function printableReport(elementId: string, title: string, options?: { subtitle?: string; orientation?: "portrait" | "landscape" }) {
   const el = document.getElementById(elementId);
   if (!el) return;
-  const win = window.open("", "_blank");
+  const win = window.open("", "_blank", "noopener");
   if (!win) return;
   const orient = options?.orientation || "portrait";
   win.document.write(`

@@ -138,7 +138,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
   const handlePrint = useCallback(() => {
     const printEl = printRef.current;
     if (!printEl) return;
-    const printWindow = window.open("", "_blank");
+    const printWindow = window.open("", "_blank", "noopener");
     if (!printWindow) return;
     printWindow.document.write(`
       <!DOCTYPE html>

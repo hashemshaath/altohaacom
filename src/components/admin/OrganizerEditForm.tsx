@@ -663,7 +663,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
             {organizerId && orgData?.slug && (
               <TooltipProvider><Tooltip><TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl" asChild>
-                  <Link to={`/organizers/${orgData.slug}`} target="_blank"><ExternalLink className="h-3.5 w-3.5" /></Link>
+                  <Link to={`/organizers/${orgData.slug}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3.5 w-3.5" /></Link>
                 </Button>
               </TooltipTrigger><TooltipContent><p className="text-xs">{isAr ? "عرض الصفحة العامة" : "View public page"}</p></TooltipContent></Tooltip></TooltipProvider>
             )}
