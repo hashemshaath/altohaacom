@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Lightbulb, Plus, CheckCircle, XCircle, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
-import { notifySuggestionReviewed } from "@/lib/notificationTriggers";
+
 import { SUGGESTION_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string }> = {

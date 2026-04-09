@@ -18,7 +18,7 @@ import {
   Send, Building2, FileText, CheckCircle, Clock,
   XCircle, Mail,
 } from "lucide-react";
-import { notifyQuoteRequestSent } from "@/lib/notificationTriggers";
+
 import { QUOTE_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 
 interface Props {

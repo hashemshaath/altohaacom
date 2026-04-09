@@ -6,7 +6,7 @@ import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { notifyFromTemplate } from "@/lib/notificationTriggers";
+
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { Button } from "@/components/ui/button";

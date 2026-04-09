@@ -18,7 +18,7 @@ import {
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { DISH_TEMPLATES } from "@/data/dishTemplates";
 import { downloadCSV } from "@/lib/exportUtils";
-import { notifyItemRequestSubmitted, notifyItemRequestReviewed } from "@/lib/notificationTriggers";
+
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string; labelEn: string; labelAr: string }> = {
   pending: { icon: Clock, color: "bg-chart-4/15 text-chart-4", labelEn: "Pending", labelAr: "قيد الانتظار" },
