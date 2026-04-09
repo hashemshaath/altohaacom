@@ -18,7 +18,7 @@ const PremiumCTASection = memo(forwardRef<HTMLElement>(function PremiumCTASectio
 
   return (
     <section dir={isAr ? "rtl" : "ltr"} className="relative overflow-hidden bg-[#F8F8F8] dark:bg-muted/10">
-      <div className="container relative py-16 sm:py-20 lg:py-28">
+      <div className="container relative py-12 sm:py-16 lg:py-24">
         <div className="max-w-2xl mx-auto text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 border border-primary/20 text-primary px-4 py-2 text-sm font-semibold mb-6">
@@ -27,7 +27,7 @@ const PremiumCTASection = memo(forwardRef<HTMLElement>(function PremiumCTASectio
           </div>
 
           {/* Title */}
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15] mb-5">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15] mb-4">
             {title}
           </h2>
 
@@ -37,7 +37,7 @@ const PremiumCTASection = memo(forwardRef<HTMLElement>(function PremiumCTASectio
           </p>
 
           {/* Features row */}
-          <div className="flex flex-wrap justify-center gap-4 mb-10">
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
             {(isAr
               ? ["شهادات احترافية", "تصنيف عالمي", "فرص حصرية"]
               : ["Pro Certifications", "Global Rankings", "Exclusive Access"]
