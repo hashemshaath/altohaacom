@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState, useCallback } from "react";
+import { forwardRef, useEffect, useState, useCallback, useRef } from "react";
 import { ArrowUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -8,15 +8,24 @@ interface BackToTopProps {
 
 /**
  * Floating "back to top" button that appears after scrolling down.
+ * Uses requestAnimationFrame to throttle scroll checks.
  */
 export const BackToTop = forwardRef<HTMLButtonElement, BackToTopProps>(function BackToTop(
   { className },
   ref
 ) {
   const [visible, setVisible] = useState(false);
+  const ticking = useRef(false);
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400);
+    const onScroll = () => {
+      if (ticking.current) return;
+      ticking.current = true;
+      requestAnimationFrame(() => {
+        setVisible(window.scrollY > 400);
+        ticking.current = false;
+      });
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);

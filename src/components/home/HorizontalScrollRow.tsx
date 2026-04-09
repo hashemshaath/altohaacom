@@ -30,7 +30,9 @@ export const HorizontalScrollRow = forwardRef<HTMLDivElement, HorizontalScrollRo
     [ref]
   );
 
-  const checkScroll = useCallback(() => {
+  const tickingRef = useRef(false);
+
+  const checkScrollImmediate = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
 
@@ -41,6 +43,15 @@ export const HorizontalScrollRow = forwardRef<HTMLDivElement, HorizontalScrollRo
     setCanScrollStart(!atStart);
     setCanScrollEnd(!atEnd);
   }, []);
+
+  const checkScroll = useCallback(() => {
+    if (tickingRef.current) return;
+    tickingRef.current = true;
+    requestAnimationFrame(() => {
+      checkScrollImmediate();
+      tickingRef.current = false;
+    });
+  }, [checkScrollImmediate]);
 
   useEffect(() => {
     const el = scrollRef.current;
