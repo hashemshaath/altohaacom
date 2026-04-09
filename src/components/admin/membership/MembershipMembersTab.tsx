@@ -110,7 +110,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         query = query.or(`full_name.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       }
       if (tierFilter !== "all") query = query.eq("membership_tier", tierFilter as MembershipTier);
-      if (statusFilter !== "all") query = query.eq("membership_status", statusFilter);
+      if (statusFilter !== "all") query = query.eq("membership_status", statusFilter as "active" | "cancelled" | "expired" | "suspended");
 
       const { data, error } = await query;
       if (error) throw error;
