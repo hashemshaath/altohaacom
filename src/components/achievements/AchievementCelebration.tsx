@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, forwardRef } from "react";
+import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Trophy, Star, Sparkles, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,17 +15,22 @@ export const AchievementCelebration = forwardRef<HTMLDivElement>(function Achiev
   const isAr = language === "ar";
   const [event, setEvent] = useState<AchievementEvent | null>(null);
   const [visible, setVisible] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const handleEvent = useCallback((e: Event) => {
     const detail = (e as CustomEvent).detail as AchievementEvent;
     setEvent(detail);
     setVisible(true);
-    setTimeout(() => setVisible(false), 5000);
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setVisible(false), 5000);
   }, []);
 
   useEffect(() => {
     window.addEventListener("achievement-unlocked", handleEvent);
-    return () => window.removeEventListener("achievement-unlocked", handleEvent);
+    return () => {
+      window.removeEventListener("achievement-unlocked", handleEvent);
+      clearTimeout(timerRef.current);
+    };
   }, [handleEvent]);
 
   if (!visible || !event) return null;
