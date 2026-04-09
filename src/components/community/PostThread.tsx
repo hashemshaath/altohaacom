@@ -40,7 +40,12 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
   const { user } = useAuth();
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [parentPost, setParentPost] = useState<Record<string, unknown> | null>(null);
+  const [parentPost, setParentPost] = useState<{
+    avatar_url?: string; display_name?: string; full_name?: string;
+    username?: string; author_id: string; content: string;
+    image_url?: string | null; image_urls?: string[] | null;
+    created_at: string; [key: string]: unknown;
+  } | null>(null);
   const [replies, setReplies] = useState<ThreadReply[]>([]);
   const [loading, setLoading] = useState(true);
 
