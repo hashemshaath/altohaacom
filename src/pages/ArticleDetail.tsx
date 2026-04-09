@@ -819,7 +819,7 @@ export default function ArticleDetail() {
                             )}
                             <span className="flex items-center gap-1">
                               <Eye className="h-2.5 w-2.5" />
-                              {((r as any).view_count || 0).toLocaleString()}
+                              {((r as unknown as Record<string, number>).view_count || 0).toLocaleString()}
                             </span>
                           </div>
                         </CardContent>
