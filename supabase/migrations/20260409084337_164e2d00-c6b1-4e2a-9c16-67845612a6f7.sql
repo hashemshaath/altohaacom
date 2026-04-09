@@ -1,0 +1,21 @@
+
+CREATE INDEX IF NOT EXISTS idx_posts_author ON public.posts (author_id);
+CREATE INDEX IF NOT EXISTS idx_posts_reply_to ON public.posts (reply_to_post_id) WHERE reply_to_post_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_posts_moderation ON public.posts (moderation_status);
+CREATE INDEX IF NOT EXISTS idx_messages_sender ON public.messages (sender_id);
+CREATE INDEX IF NOT EXISTS idx_messages_receiver ON public.messages (receiver_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_read ON public.notifications (user_id, is_read);
+CREATE INDEX IF NOT EXISTS idx_bookings_user ON public.bookings (user_id);
+CREATE INDEX IF NOT EXISTS idx_bookings_establishment ON public.bookings (establishment_id) WHERE establishment_id IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_companies_status ON public.companies (status);
+CREATE INDEX IF NOT EXISTS idx_companies_type ON public.companies (type);
+CREATE INDEX IF NOT EXISTS idx_companies_verified ON public.companies (is_verified);
+CREATE INDEX IF NOT EXISTS idx_community_events_organizer ON public.community_events (organizer_id);
+CREATE INDEX IF NOT EXISTS idx_community_events_date ON public.community_events (event_date);
+CREATE INDEX IF NOT EXISTS idx_comp_reg_participant ON public.competition_registrations (participant_id);
+CREATE INDEX IF NOT EXISTS idx_recipes_author ON public.recipes (author_id);
+CREATE INDEX IF NOT EXISTS idx_ad_campaigns_company ON public.ad_campaigns (company_id);
+CREATE INDEX IF NOT EXISTS idx_ad_campaigns_status ON public.ad_campaigns (status);
+CREATE INDEX IF NOT EXISTS idx_approval_requests_status ON public.approval_requests (status);
+CREATE INDEX IF NOT EXISTS idx_approval_requests_by ON public.approval_requests (requested_by);
+CREATE INDEX IF NOT EXISTS idx_bookmark_collections_user ON public.bookmark_collections (user_id);
