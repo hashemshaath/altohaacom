@@ -1136,17 +1136,17 @@ export default function CompetitionDetail() {
                 <Suspense fallback={<div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
                 {activeSection === "categories" && <CategoryManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
                 {activeSection === "criteria" && <CriteriaManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
-                {activeSection === "rubrics" && <RubricTemplatesPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
-                {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={isOrganizer} competitionSlug={competition.slug} />}
+                {activeSection === "rubrics" && <RubricTemplatesPanel competitionId={competition.id} />}
+                {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={isOrganizer} />}
                 {activeSection === "rounds" && <TournamentRoundsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
                 {activeSection === "stages" && <EvaluationStagesPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
                 {activeSection === "judges" && <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
                 {activeSection === "live-scoring" && <LiveScoringDashboard competitionId={competition.id} isOrganizer={!!isOrganizer} />}
                 {activeSection === "schedule" && <CompetitionSchedulePanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-                {activeSection === "stations" && <KitchenStationsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-                {activeSection === "deliberation" && canSeeKnowledge && <JudgeDeliberationPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-                {activeSection === "feedback" && <CompetitionFeedbackPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-                {activeSection === "checklist" && <PreparationChecklistPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "stations" && <KitchenStationsPanel competitionId={competition.id} />}
+                {activeSection === "deliberation" && canSeeKnowledge && <JudgeDeliberationPanel competitionId={competition.id} />}
+                {activeSection === "feedback" && <CompetitionFeedbackPanel competitionId={competition.id} />}
+                {activeSection === "checklist" && <PreparationChecklistPanel competitionId={competition.id} />}
                 {activeSection === "sponsors" && <CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
                 {activeSection === "winners" && (
                   hasWinners ? (
