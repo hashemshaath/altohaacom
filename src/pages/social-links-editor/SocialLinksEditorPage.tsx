@@ -110,7 +110,7 @@ export default function SocialLinksEditorPage() {
       const heatmap: number[][] = Array.from({ length: 7 }, () => Array(24).fill(0));
       const dailyClickMap: Record<string, number> = {};
       const linkDaily: Record<string, Record<string, number>> = {};
-      for (const c of clicks as any[]) {
+      for (const c of clicks) {
         const d = new Date(c.created_at); heatmap[d.getDay()][d.getHours()]++;
         const dayKey = c.created_at.slice(0, 10); dailyClickMap[dayKey] = (dailyClickMap[dayKey] || 0) + 1;
         if (c.link_id) { if (!linkDaily[c.link_id]) linkDaily[c.link_id] = {}; linkDaily[c.link_id][dayKey] = (linkDaily[c.link_id][dayKey] || 0) + 1; }
