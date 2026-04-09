@@ -50,7 +50,7 @@ export function useRealtimeMessages(partnerId: string | null) {
       supabase.removeChannel(channel);
       channelRef.current = null;
     };
-  }, [user, partnerId, queryClient]);
+  }, [user?.id, partnerId, queryClient]);
 
   const sendTypingIndicator = useCallback(() => {
     if (!user || !channelRef.current) return;

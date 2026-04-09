@@ -11,13 +11,17 @@ export function useRecipeSave(recipeId: string) {
 
   useEffect(() => {
     if (!user || !recipeId) return;
+    let cancelled = false;
     supabase
       .from("recipe_saves")
       .select("id")
       .eq("user_id", user.id)
       .eq("recipe_id", recipeId)
       .maybeSingle()
-      .then(({ data }) => setIsSaved(!!data));
+      .then(({ data }) => {
+        if (!cancelled) setIsSaved(!!data);
+      });
+    return () => { cancelled = true; };
   }, [user?.id, recipeId]);
 
   const toggle = useCallback(async () => {

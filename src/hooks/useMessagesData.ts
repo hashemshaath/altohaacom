@@ -273,21 +273,22 @@ export function useMessagesData() {
 
   // Handle initial user from URL
   useEffect(() => {
-    if (initialUserId && conversations && !selectedPartner) {
-      const existing = conversations.find((c) => c.user_id === initialUserId);
-      if (existing) {
-        setSelectedPartner(existing);
-      } else {
-        supabase
-          .from("profiles")
-          .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
-          .eq("user_id", initialUserId)
-          .single()
-          .then(({ data }) => {
-            if (data) setSelectedPartner({ ...data, unread_count: 0, has_approval: false, is_starred: false });
-          });
-      }
+    if (!initialUserId || !conversations || selectedPartner) return;
+    let cancelled = false;
+    const existing = conversations.find((c) => c.user_id === initialUserId);
+    if (existing) {
+      setSelectedPartner(existing);
+    } else {
+      supabase
+        .from("profiles")
+        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
+        .eq("user_id", initialUserId)
+        .single()
+        .then(({ data }) => {
+          if (!cancelled && data) setSelectedPartner({ ...data, unread_count: 0, has_approval: false, is_starred: false });
+        });
     }
+    return () => { cancelled = true; };
   }, [initialUserId, conversations, selectedPartner]);
 
   useEffect(() => {

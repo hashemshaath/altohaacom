@@ -111,7 +111,7 @@ export function useSessionManager() {
     await invoke("heartbeat", { session_id: currentSessionId });
   }, [invoke, currentSessionId]);
 
-  // Start heartbeat interval
+  // Start heartbeat interval (single effect handles both start & cleanup)
   useEffect(() => {
     if (!user || !currentSessionId) return;
 
@@ -122,13 +122,6 @@ export function useSessionManager() {
       if (heartbeatRef.current) clearInterval(heartbeatRef.current);
     };
   }, [user, currentSessionId, sendHeartbeat]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (heartbeatRef.current) clearInterval(heartbeatRef.current);
-    };
-  }, []);
 
   return {
     sessions,
