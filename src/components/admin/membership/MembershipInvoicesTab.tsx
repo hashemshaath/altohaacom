@@ -38,10 +38,15 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [userSearch, setUserSearch] = useState("");
   const [selectedUser, setSelectedUser] = useState<{ user_id: string; full_name: string | null; username: string | null; avatar_url: string | null; membership_tier: string | null } | null>(null);
-  const [newInvoice, setNewInvoice] = useState({
+  const [newInvoice, setNewInvoice] = useState<{
+    userId: string;
+    tier: string;
+    action: "subscription" | "renewal" | "upgrade" | "downgrade";
+    amount: number;
+  }>({
     userId: "",
     tier: "professional",
-    action: "subscription" as const,
+    action: "subscription",
     amount: 19,
   });
 
@@ -403,7 +408,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
                 <Label>{isAr ? "النوع" : "Action"}</Label>
                 <Select
                   value={newInvoice.action}
-                  onValueChange={v => setNewInvoice(p => ({ ...p, action: v as any }))}
+                  onValueChange={v => setNewInvoice(p => ({ ...p, action: v as "subscription" | "renewal" | "upgrade" | "downgrade" }))}
                 >
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>

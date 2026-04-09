@@ -53,7 +53,7 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
   // Load from DB
   useEffect(() => {
     if (settings && settings[SETTINGS_KEY]) {
-      const stored = settings[SETTINGS_KEY] as any;
+      const stored = settings[SETTINGS_KEY] as Record<string, unknown>;
       setPolicy(prev => ({ ...prev, ...stored }));
     }
   }, [settings]);
@@ -63,7 +63,7 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
     try {
       await saveSetting.mutateAsync({
         key: SETTINGS_KEY,
-        value: policy as any,
+        value: policy as unknown as Record<string, unknown>,
         category: "membership",
       });
       setDirty(false);

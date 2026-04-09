@@ -47,7 +47,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
 
     for (const f of features) {
       if (!f.is_active) continue;
-      const mappings = (f as any).membership_feature_tiers || [];
+      const mappings = (f as unknown as Record<string, { tier: string; is_enabled: boolean }[]>).membership_feature_tiers || [];
       for (const tier of TIERS) {
         if (mappings.some((m) => m.tier === tier && m.is_enabled)) {
           tierCoverage[tier]++;
@@ -174,7 +174,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
                 <card.icon className={`h-4 w-4 ${card.color}`} />
                 <span className="text-xs font-medium text-muted-foreground">{card.label}</span>
               </div>
-              <AnimatedCounter value={card.value} className="text-2xl" suffix={(card as any).suffix} />
+              <AnimatedCounter value={card.value} className="text-2xl" suffix={"suffix" in card ? (card as { suffix: string }).suffix : undefined} />
             </CardContent>
           </Card>
         ))}

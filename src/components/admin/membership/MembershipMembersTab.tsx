@@ -110,7 +110,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         query = query.or(`full_name.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       }
       if (tierFilter !== "all") query = query.eq("membership_tier", tierFilter as MembershipTier);
-      if (statusFilter !== "all") query = query.eq("membership_status", statusFilter as any);
+      if (statusFilter !== "all") query = query.eq("membership_status", statusFilter as "active" | "cancelled" | "expired" | "suspended");
 
       const { data, error } = await query;
       if (error) throw error;
@@ -333,7 +333,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       const prevTier = targetUser.membership_tier;
 
       const { error } = await supabase.from("profiles").update({
-        membership_tier: "basic" as any,
+        membership_tier: "basic" as Database["public"]["Enums"]["membership_tier"],
         membership_status: "active",
         membership_expires_at: null,
         membership_started_at: null,
