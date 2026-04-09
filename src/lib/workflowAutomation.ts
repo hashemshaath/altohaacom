@@ -46,7 +46,7 @@ export async function executeWorkflow(trigger: WorkflowTrigger, ctx: WorkflowCon
       default:
         console.warn("Unknown workflow trigger:", trigger);
     }
-  } catch (e) {
+  } catch (err: unknown) {
     console.error("Workflow execution failed:", trigger, e);
   }
 }

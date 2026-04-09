@@ -87,7 +87,7 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
           setChannels(channelMap);
         }
         setSoundEnabled(localStorage.getItem("altoha_notification_sound") !== "false");
-      } catch (e) {
+      } catch (err: unknown) {
         console.error("Failed to load notification prefs:", e);
       } finally {
         setLoading(false);
@@ -138,7 +138,7 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
       }
 
       toast({ title: isAr ? "تم حفظ التفضيلات ✅" : "Preferences saved ✅" });
-    } catch (e) {
+    } catch (err: unknown) {
       console.error("Failed to save prefs:", e);
       toast({ title: isAr ? "فشل الحفظ" : "Save failed", variant: "destructive" });
     } finally {

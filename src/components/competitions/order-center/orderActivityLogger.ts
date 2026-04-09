@@ -37,7 +37,7 @@ export async function logOrderActivity(params: LogParams) {
       entity_id: params.entityId || null,
       details: params.details || {},
     });
-  } catch (e) {
+  } catch (err: unknown) {
     console.error("Failed to log order activity:", e);
   }
 }

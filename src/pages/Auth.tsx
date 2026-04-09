@@ -662,7 +662,7 @@ export default function Auth() {
             body: { referralCode: storedRef, newUserId: data.user.id },
           });
           localStorage.removeItem("altoha_ref_code");
-        } catch (e) {
+        } catch (err: unknown) {
           console.error("Referral processing error:", e);
           localStorage.removeItem("altoha_ref_code");
         }

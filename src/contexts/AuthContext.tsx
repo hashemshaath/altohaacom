@@ -40,7 +40,7 @@ async function createLoginSession(loginMethod = "email") {
       sessionStorage.setItem("tabaq_session_id", data.session_id);
       sessionStorage.setItem(SESSION_CREATED_KEY, "true");
     }
-  } catch (e) {
+  } catch (err: unknown) {
     console.warn("Session creation failed:", e);
   }
 }
