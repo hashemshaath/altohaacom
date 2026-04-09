@@ -146,7 +146,7 @@ export default function OrganizerDetail() {
   // Increment views
   useEffect(() => {
     if (data?.orgRecord?.id) {
-      supabase.rpc("increment_organizer_views", { p_organizer_id: data.orgRecord.id }).then();
+      supabase.rpc("increment_organizer_views", { p_organizer_id: data.orgRecord.id }).then(null, () => {});
     }
   }, [data?.orgRecord?.id]);
 
