@@ -14,7 +14,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface Props { exhibitionId: string; isAr: boolean; }
 
-const TIER_ICONS: Record<string, any> = {
+const TIER_ICONS: Record<string, typeof Crown> = {
   platinum: Crown, gold: Award, silver: Medal, bronze: Star, partner: Gem, patron: Crown,
 };
 const TIER_COLORS: Record<string, string> = {
@@ -31,7 +31,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [applyOpen, setApplyOpen] = useState(false);
-  const [selectedPkg, setSelectedPkg] = useState<any>(null);
+  const [selectedPkg, setSelectedPkg] = useState<(typeof packages)[number] | null>(null);
   const [form, setForm] = useState({ name: "", email: "", phone: "", companyName: "", message: "", logoUrl: "", websiteUrl: "" });
 
   // Fetch sponsor packages

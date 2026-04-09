@@ -4,7 +4,7 @@ import { Bell, BellOff, Ticket, Globe, Share2, Download, Bookmark, BookmarkCheck
 import { toast } from "@/hooks/use-toast";
 
 interface Props {
-  user: any;
+  user: { id: string } | null;
   isFollowing: boolean;
   followPending: boolean;
   onFollow: () => void;
@@ -23,10 +23,10 @@ export const ExhibitionMobileActionBar = memo(function ExhibitionMobileActionBar
   const showRegistration = registrationUrl && !hasEnded;
   const showFollow = !!user;
   const showWebsite = !!websiteUrl;
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
-    const handler = (e: any) => { e.preventDefault(); setDeferredPrompt(e); };
+    const handler = (e: Event) => { e.preventDefault(); setDeferredPrompt(e as BeforeInstallPromptEvent); };
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);

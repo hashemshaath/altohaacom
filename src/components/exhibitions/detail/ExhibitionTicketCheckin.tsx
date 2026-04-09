@@ -18,7 +18,7 @@ export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ e
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [code, setCode] = useState("");
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{ id: string; ticket_number: string; qr_code: string | null; status: string | null; checked_in_at: string | null; attendee_name: string | null; attendee_email: string | null; user_id: string | null } | null>(null);
   const [status, setStatus] = useState<"idle" | "found" | "not_found" | "already_checked_in">("idle");
 
   const searchTicket = useMutation({
