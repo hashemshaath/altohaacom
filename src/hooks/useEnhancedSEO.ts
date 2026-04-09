@@ -142,7 +142,7 @@ export function useEnhancedSEO(language: string) {
     };
 
     // Primary page schema with relatedLink
-    const pageSchema: any = {
+    const pageSchema: Record<string, unknown> = {
       "@context": "https://schema.org",
       "@type": meta.type || "WebPage",
       name: title,
