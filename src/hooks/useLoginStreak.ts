@@ -80,15 +80,15 @@ export function useLoginStreak() {
     },
   });
 
-  // Auto-update streak on mount
+  // Auto-update streak on mount (once per session)
   useEffect(() => {
-    if (user && !isLoading) {
-      const today = new Date().toISOString().split("T")[0];
-      if (!streak || streak.last_activity_date !== today) {
-        updateStreak.mutate();
-      }
+    if (!user || isLoading) return;
+    const today = new Date().toISOString().split("T")[0];
+    if (!streak || streak.last_activity_date !== today) {
+      updateStreak.mutate();
     }
-  }, [user?.id, isLoading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.id, isLoading, streak?.last_activity_date]);
 
   return {
     currentStreak: streak?.current_streak || 0,
