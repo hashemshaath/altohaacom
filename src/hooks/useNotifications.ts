@@ -196,7 +196,8 @@ export function useNotifications() {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          const deletedId = (payload.old as any).id;
+          const deletedId = (payload.old as Record<string, unknown>)?.id as string | undefined;
+          if (!deletedId) return;
           setNotifications(prev => {
             const next = prev.filter(n => n.id !== deletedId);
             setUnreadCount(next.filter(n => !n.is_read).length);

@@ -47,13 +47,13 @@ export function useOfflineSync() {
       const tasks: Promise<void>[] = [];
 
       if (compRes.status === "fulfilled" && compRes.value.data) {
-        tasks.push(cacheItems("competitions", compRes.value.data as any));
+        tasks.push(cacheItems("competitions", compRes.value.data as unknown as Record<string, unknown>[]));
       }
       if (artRes.status === "fulfilled" && artRes.value.data) {
-        tasks.push(cacheItems("articles", artRes.value.data as any));
+        tasks.push(cacheItems("articles", artRes.value.data as unknown as Record<string, unknown>[]));
       }
       if (recRes.status === "fulfilled" && recRes.value.data) {
-        tasks.push(cacheItems("recipes", recRes.value.data as any));
+        tasks.push(cacheItems("recipes", recRes.value.data as unknown as Record<string, unknown>[]));
       }
 
       await Promise.all(tasks);
@@ -73,11 +73,11 @@ export function useOfflineSync() {
     for (const action of actions) {
       try {
         if (action.type === "insert") {
-          await (supabase.from(action.table as any) as any).insert(action.payload);
+          await (supabase.from(action.table as "abandoned_carts") as ReturnType<typeof supabase.from>).insert(action.payload);
           succeeded++;
         } else if (action.type === "update" && action.payload.id) {
           const { id, ...rest } = action.payload;
-          await (supabase.from(action.table as any) as any).update(rest).eq("id", id);
+          await (supabase.from(action.table as "abandoned_carts") as ReturnType<typeof supabase.from>).update(rest).eq("id", id);
           succeeded++;
         }
       } catch {
