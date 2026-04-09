@@ -54,4 +54,4 @@ export const HomepageSectionShell = forwardRef<HTMLDivElement, { children: React
       </section>
     </SectionBackgroundWrapper>
   );
-}
+});
