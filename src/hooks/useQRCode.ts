@@ -60,8 +60,8 @@ export function useVerifyQRCode(code: string | null) {
       if (!code) return null;
       const { data, error } = await supabase.rpc("verify_qr_code", { p_code: code.toUpperCase() });
       if (error) throw error;
-      if (!data || (data as any[]).length === 0) return null;
-      return (data as any[])[0];
+      if (!data || (Array.isArray(data) && data.length === 0)) return null;
+      return Array.isArray(data) ? data[0] : data;
     },
     enabled: !!code,
   });

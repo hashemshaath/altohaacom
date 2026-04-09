@@ -63,7 +63,7 @@ export function useSubmitVerification() {
       applicant_name_ar?: string;
       applicant_role?: string;
       applicant_position?: string;
-      documents?: any[];
+      documents?: { url: string; name: string; type?: string }[];
     }) => {
       const { data, error } = await supabase
         .from("verification_requests")
