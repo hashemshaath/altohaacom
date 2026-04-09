@@ -44,7 +44,7 @@ export const NewsletterSignup = function NewsletterSignup() {
 
   return (
     <section ref={scrollRef} className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
-      <div className="container relative px-5 sm:px-6">
+      <div className="container relative">
         <div
           className={cn(
             "mx-auto max-w-3xl text-center transition-all duration-700",

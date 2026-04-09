@@ -64,7 +64,7 @@ export const HomeTestimonials = function HomeTestimonials() {
   return (
     <div>
       <section aria-label={isAr ? "آراء المستخدمين" : "Testimonials"} dir={isAr ? "rtl" : "ltr"}>
-        <div className="container max-w-3xl px-5 sm:px-6">
+        <div className="container max-w-3xl">
           <SectionHeader
             icon={Quote}
             badge={isAr ? "آراء المجتمع" : "Community Voices"}

@@ -75,14 +75,14 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
 function FallbackHero({ isAr }: { isAr: boolean }) {
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5" dir={isAr ? "rtl" : "ltr"}>
-      <div className="container py-16 lg:py-28">
+      <div className="container py-12 sm:py-16 lg:py-24">
         <div className="lg:grid lg:grid-cols-2 lg:gap-16 lg:items-center">
           <div className="text-center lg:text-start">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary text-sm font-semibold px-4 py-2 mb-6">
               <Sparkles className="h-4 w-4" />
               {isAr ? "مجتمع الطهاة العالمي" : "Global Chef Community"}
             </div>
-            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight text-foreground mb-5 leading-[1.1]">
+            <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight text-foreground mb-4 leading-[1.1]">
               {isAr ? "مجتمع الطهاة العالمي" : "The Global Culinary Community"}
             </h1>
             <p className="text-lg text-muted-foreground max-w-md mx-auto lg:mx-0 mb-8">
@@ -96,10 +96,10 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
                 {isAr ? "استكشف المسابقات" : "Explore Competitions"}
               </Link>
             </div>
-            <div className="flex justify-center lg:justify-start gap-5 flex-wrap mt-7">
+            <div className="flex justify-center lg:justify-start gap-4 flex-wrap mt-8">
               {(isAr ? ["مجاني تماماً", "مجتمع عالمي", "بدون بطاقة ائتمان"] : ["Completely Free", "Global Community", "No Credit Card"]).map((item) => (
                 <span key={item} className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Check className="h-4 w-4 text-emerald-500" />
+                  <Check className="h-4 w-4 text-semantic-success" />
                   {item}
                 </span>
               ))}
@@ -111,7 +111,7 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
               <p className="text-xl font-bold text-foreground">{isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}</p>
               <div className="flex flex-col items-center gap-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="inline-block h-2 w-2 rounded-full bg-semantic-success animate-pulse" />
                   {isAr ? "جاري التحميل..." : "Loading..."}
                 </div>
                 <div className="grid grid-cols-3 gap-3 w-full">
