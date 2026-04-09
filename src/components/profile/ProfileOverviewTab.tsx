@@ -87,8 +87,7 @@ export const ProfileOverviewTab = memo(function ProfileOverviewTab({ profile, us
                     <a
                       key={link.key}
                       href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      target="_blank" rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 rounded-xl border border-border/30 bg-muted/15 px-3.5 py-2 text-xs transition-all duration-200 hover:bg-primary/10 hover:border-primary/25 hover:text-primary hover:shadow-sm hover:-translate-y-0.5 active:scale-95"
                     >
                       <span className="font-bold">{link.label}</span>

@@ -50,8 +50,7 @@ export const EntitySocialLinks = memo(function EntitySocialLinks({ socialLinks }
             <a
               key={platform}
               href={url}
-              target="_blank"
-              rel="noopener noreferrer"
+              target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-2 rounded-xl border border-border/50 bg-muted/20 px-3 py-2 text-xs font-medium transition-all hover:bg-muted/50 hover:shadow-sm"
             >
               <ExternalLink className={`h-3 w-3 shrink-0 ${info.color}`} />

@@ -228,8 +228,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
                     {booth.website_url && (
                       <a
                         href={booth.website_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        target="_blank" rel="noopener noreferrer"
                         className="flex items-center gap-1 text-[12px] text-primary font-medium hover:underline"
                       >
                         <Globe className="h-3 w-3" />
