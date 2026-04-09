@@ -21,6 +21,7 @@ export function useNotificationProfiles(notifications: Array<{ metadata?: unknow
   const fetchedRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
+    let cancelled = false;
     const userIds = new Set<string>();
     for (const n of notifications) {
       const meta = n.metadata as NotificationMeta;
@@ -45,6 +46,7 @@ export function useNotificationProfiles(notifications: Array<{ metadata?: unknow
       .select("user_id, full_name, username, avatar_url")
       .in("user_id", missing)
       .then(({ data }) => {
+        if (cancelled) return;
         if (data?.length) {
           setProfiles((prev) => {
             const next = new Map(prev);
@@ -56,6 +58,8 @@ export function useNotificationProfiles(notifications: Array<{ metadata?: unknow
         // Remove from fetched so retry is possible
         missing.forEach((id) => fetchedRef.current.delete(id));
       });
+
+    return () => { cancelled = true; };
   }, [notifications]);
 
   const getProfile = useCallback((metadata: NotificationMeta): NotificationProfile | null => {
