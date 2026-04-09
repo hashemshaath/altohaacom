@@ -91,9 +91,10 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
   const { data: companies = [] } = useQuery({
     queryKey: ["organizer-companies"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- deep type instantiation workaround
+      const { data, error } = await (supabase
         .from("companies")
-        .select("id, name, name_ar, type, country_code, city, logo_url, website, email, phone")
+        .select("id, name, name_ar, type, country_code, city, logo_url, website, email, phone") as any)
         .eq("is_active", true)
         .order("name");
       if (error) throw error;
