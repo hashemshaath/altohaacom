@@ -32,7 +32,7 @@ export const ROUTES = {
   // ── Exhibitions ───────────────────────────────────
   exhibitions: '/exhibitions',
   exhibition: (slug: string) => `/exhibitions/${slug}`,
-  compareExhibitions: '/exhibitions/compare',
+  
 
   // ── Blog (canonical) ───────────────────────────────
   blog: '/blog',

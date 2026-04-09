@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { EmptyState } from "@/components/ui/empty-state";
-import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp, LayoutGrid, List, Scale } from "lucide-react";
+import { Search, CalendarDays, Landmark, MapPin, Plus, Globe, Clock, History, TrendingUp, LayoutGrid, List } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { ExhibitionCard, type Exhibition } from "@/components/exhibitions/ExhibitionCard";
 import { ExhibitionListItem } from "@/components/exhibitions/ExhibitionListItem";
@@ -245,12 +245,6 @@ export default function Exhibitions() {
 
               {user && (
                 <div className="flex gap-2 pt-2">
-                  <Button variant="outline" className="rounded-xl" asChild>
-                    <Link to="/exhibitions/compare">
-                      <Scale className="me-1.5 h-4 w-4" />
-                      {isAr ? "مقارنة" : "Compare"}
-                    </Link>
-                  </Button>
                   <Button className="shadow-lg shadow-primary/15 rounded-xl" asChild>
                     <Link to="/exhibitions/create">
                       <Plus className="me-1.5 h-4 w-4" />
