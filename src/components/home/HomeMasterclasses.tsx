@@ -140,7 +140,7 @@ export const HomeMasterclasses = memo(function HomeMasterclasses() {
 
             return (
               <Link key={mc.id} to={`/masterclasses/${mc.id}`} className="group block snap-start shrink-0 w-[64vw] sm:w-[40vw] md:w-[30vw] lg:w-[22vw] xl:w-[18vw] touch-manipulation">
-                <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
                   <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     {mc.cover_image_url ? (
                       <img src={mc.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 will-change-transform" loading="lazy" decoding="async" />

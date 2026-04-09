@@ -117,7 +117,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
                 to={user.username ? `/${user.username}` : `/profile/${user.user_id}`}
                 className="group block snap-start shrink-0 w-[32vw] sm:w-[24vw] md:w-[18vw] lg:w-[14vw] xl:w-[11vw] touch-manipulation"
               >
-                <Card className="h-full border-border/40 rounded-2xl p-3 text-center transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                <Card className="h-full border-border/40 rounded-2xl p-3 text-center transition-all duration-200 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
                   <div className="relative mx-auto mb-2 w-fit">
                     <Avatar className="h-11 w-11 sm:h-13 sm:w-13 ring-2 ring-background shadow-md transition-transform duration-300 group-hover:scale-105">
                       <AvatarImage src={user.avatar_url} alt={name} />

@@ -116,7 +116,7 @@ export function SponsorshipOpportunities() {
                 to={`/competitions/${comp.id}`}
                 className="group block snap-start shrink-0 w-[72vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
               >
-                <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
                   <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     {comp.cover_image_url ? (
                       <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />

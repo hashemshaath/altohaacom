@@ -281,7 +281,7 @@ const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; is
     <article
       className={cn(
         "group relative flex flex-col rounded-2xl border border-border/30 bg-card overflow-hidden",
-        "transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1",
+        "transition-all duration-200 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5",
         "active:scale-[0.98] touch-manipulation h-full"
       )}
     >
