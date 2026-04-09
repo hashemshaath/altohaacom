@@ -55,11 +55,15 @@ export const UserQuickActions = memo(function UserQuickActions({
     }
   };
 
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const copyId = () => {
     navigator.clipboard.writeText(userId);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    clearTimeout(copyTimeoutRef.current);
+    copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
   };
+
+  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
 
   return (
     <TooltipProvider>
