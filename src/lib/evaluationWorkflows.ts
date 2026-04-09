@@ -45,8 +45,8 @@ export async function executeEvaluationWorkflow(
       default:
         console.warn("Unknown evaluation trigger:", trigger);
     }
-  } catch (e) {
-    console.error("Evaluation workflow failed:", trigger, e);
+  } catch (err: unknown) {
+    console.error("Evaluation workflow failed:", trigger, err instanceof Error ? err.message : err);
   }
 }
 

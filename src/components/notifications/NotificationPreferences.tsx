@@ -87,15 +87,15 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
           setChannels(channelMap);
         }
         setSoundEnabled(localStorage.getItem("altoha_notification_sound") !== "false");
-      } catch (e) {
-        console.error("Failed to load notification prefs:", e);
+      } catch (err: unknown) {
+        console.error("Failed to load notification prefs:", err instanceof Error ? err.message : err);
       } finally {
         setLoading(false);
       }
     })();
   }, [user?.id]);
 
-  const updateChannel = (channel: ChannelType, key: keyof ChannelPrefs, value: any) => {
+  const updateChannel = (channel: ChannelType, key: keyof ChannelPrefs, value: boolean | string | string[]) => {
     setChannels(prev => ({
       ...prev,
       [channel]: { ...prev[channel], [key]: value },
@@ -138,8 +138,8 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
       }
 
       toast({ title: isAr ? "تم حفظ التفضيلات ✅" : "Preferences saved ✅" });
-    } catch (e) {
-      console.error("Failed to save prefs:", e);
+    } catch (err: unknown) {
+      console.error("Failed to save prefs:", err instanceof Error ? err.message : err);
       toast({ title: isAr ? "فشل الحفظ" : "Save failed", variant: "destructive" });
     } finally {
       setSaving(false);
