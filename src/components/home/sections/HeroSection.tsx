@@ -208,8 +208,8 @@ export function HeroSection() {
               idx === 0 && isFirstRender
                 ? "opacity-100 scale-100"
                 : idx === safeCurrent
-                ? "opacity-100 scale-100 transition-all duration-[1200ms] ease-in-out"
-                : "opacity-0 scale-[1.03] pointer-events-none transition-all duration-[1200ms] ease-in-out"
+                ? "opacity-100 scale-100 transition-all duration-1200 ease-in-out"
+                : "opacity-0 scale-[1.03] pointer-events-none transition-all duration-1200 ease-in-out"
             )}
           >
             <img

@@ -61,7 +61,7 @@ export const CollapsibleProfileSection = memo(function CollapsibleProfileSection
         <div className="flex-1 h-px bg-border/25" />
         <ChevronDown
           className={cn(
-            "h-4 w-4 text-muted-foreground/50 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:text-primary",
+            "h-4 w-4 text-muted-foreground/50 transition-transform duration-300 ease-out-expo group-hover:text-primary",
             open && "rotate-180"
           )}
         />
@@ -69,7 +69,7 @@ export const CollapsibleProfileSection = memo(function CollapsibleProfileSection
 
       <div
         className={cn(
-          "grid transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]",
+          "grid transition-all duration-400 ease-out-expo",
           open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         )}
       >

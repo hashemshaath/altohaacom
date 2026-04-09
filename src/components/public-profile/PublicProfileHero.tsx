@@ -88,7 +88,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
       {/* Cover */}
       <div className="h-36 sm:h-56 md:h-72 relative overflow-hidden">
         {profile.cover_image_url ? (
-          <img src={profile.cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-[2s] hover:scale-105" />
+          <img src={profile.cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-2000 hover:scale-105" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/20 via-primary/5 to-chart-3/12 relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_25%_40%,hsl(var(--primary)/0.12),transparent_65%)]" />

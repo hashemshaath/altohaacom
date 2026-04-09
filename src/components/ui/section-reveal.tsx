@@ -62,7 +62,7 @@ export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(func
       ref={ref}
       className={cn(
         // Only animate GPU-composited properties: transform + opacity
-        shouldAnimate && "transition-[transform,opacity] duration-600 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[transform,opacity]",
+        shouldAnimate && "transition-[transform,opacity] duration-600 ease-out-quint will-change-[transform,opacity]",
         isHidden ? `opacity-0 ${hiddenTransform}` : "opacity-100 translate-y-0 translate-x-0",
         className
       )}

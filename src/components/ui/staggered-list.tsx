@@ -34,7 +34,7 @@ export const StaggeredList = forwardRef<HTMLDivElement, StaggeredListProps>(
         {React.Children.map(children, (child, i) => (
           <div
             className={cn(
-              "transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "transition-all duration-500 ease-out-expo",
               visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-3 scale-[0.98]"
             )}
             style={{ transitionDelay: visible ? `${i * stagger}ms` : "0ms" }}
