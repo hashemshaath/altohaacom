@@ -97,7 +97,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         .eq("is_active", true)
         .order("name");
       if (error) throw error;
-      return (data || []) as Array<{id:string; name:string; name_ar:string|null; type:string; country_code:string|null; city:string|null; logo_url:string|null; website:string|null; email:string|null; phone:string|null}>;
+      return data || [];
     },
     staleTime: 1000 * 60 * 5,
   });

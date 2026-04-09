@@ -122,7 +122,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
     queryKey: ["event-series-select"],
     queryFn: async () => {
       const { data } = await supabase.from("event_series").select("id, name, name_ar, series_type, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, cover_image_url, tags, website_url").eq("is_active", true).order("name");
-      return (data || []) as Array<Record<string, unknown>>;
+      return data || [];
     },
   });
 
