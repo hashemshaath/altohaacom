@@ -10,12 +10,15 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, 
 import { Bell, Send, CheckCircle2, Eye, TrendingUp, Zap } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
 export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  const visibleInterval = useVisibleRefetchInterval(60000);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-notification-delivery"],
@@ -76,7 +79,7 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
         topTypes: typeReadRates.slice(0, 5),
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: visibleInterval,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

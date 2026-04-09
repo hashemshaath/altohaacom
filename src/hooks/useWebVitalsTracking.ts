@@ -136,7 +136,7 @@ export function useWebVitalsTracking() {
 
       try {
         // Use fetch with keepalive for reliable delivery with auth headers
-        fetch(url, { method: "POST", headers, body: JSON.stringify(payload), keepalive: true }).catch(() => {});
+        fetch(url, { method: "POST", headers, body: JSON.stringify(payload), keepalive: true }).then(null, () => {});
       } catch {
         // Silent fail — vitals are non-critical
       }

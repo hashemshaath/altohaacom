@@ -88,7 +88,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
       if (oldUrl?.includes("/user-media/")) {
         const oldPath = oldUrl.split("/user-media/").pop();
         if (oldPath) {
-          await supabase.storage.from("user-media").remove([decodeURIComponent(oldPath)]).catch(() => {});
+          await supabase.storage.from("user-media").remove([decodeURIComponent(oldPath)]).then(null, () => {});
         }
       }
 

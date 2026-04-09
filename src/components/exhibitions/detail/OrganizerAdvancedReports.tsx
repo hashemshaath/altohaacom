@@ -11,6 +11,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Download, TrendingUp, Users, Ticket, DollarSign, BarChart3, Eye, Star, MapPin, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, differenceInDays } from "date-fns";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 interface Props { exhibitionId: string; exhibitionTitle: string; isAr: boolean; }
 
@@ -18,6 +19,8 @@ const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4
 
 export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
+
+  const visibleInterval = useVisibleRefetchInterval(60000);
 
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-advanced-reports", exhibitionId],
@@ -99,7 +102,7 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
         tickets, booths,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: visibleInterval,
   });
 
   const { exportCSV: exportTickets } = useCSVExport({

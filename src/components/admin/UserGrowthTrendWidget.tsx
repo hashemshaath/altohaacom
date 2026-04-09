@@ -10,12 +10,15 @@ import { Users, TrendingUp, UserCheck, UserX, Globe, Shield } from "lucide-react
 import { translateRole } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
 export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  const visibleInterval = useVisibleRefetchInterval(60000);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-user-growth-widget"],
@@ -77,7 +80,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
         suspendedCount,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: visibleInterval,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

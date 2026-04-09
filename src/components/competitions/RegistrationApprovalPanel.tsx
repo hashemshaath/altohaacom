@@ -150,7 +150,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
       executeWorkflow("registration_approved", {
         competitionId,
         userId: registration.participant?.user_id,
-      }).catch(() => {});
+      }).then(null, () => {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-registrations", competitionId] });
@@ -203,7 +203,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
         competitionId,
         userId: registration.participant?.user_id,
         metadata: { reason },
-      }).catch(() => {});
+      }).then(null, () => {});
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-registrations", competitionId] });

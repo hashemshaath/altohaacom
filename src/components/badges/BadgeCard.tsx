@@ -46,7 +46,7 @@ export const BadgeCard = memo(function BadgeCard({ badge, competitionTitle, earn
       : `🏆 I earned the "${name}" badge ${competitionTitle ? `at ${competitionTitle}` : ""} on Altoha!`;
 
     if (navigator.share) {
-      navigator.share({ title: name, text, url }).catch(() => {});
+      navigator.share({ title: name, text, url }).then(null, () => {});
     } else {
       navigator.clipboard.writeText(`${text}\n${url}`);
     }

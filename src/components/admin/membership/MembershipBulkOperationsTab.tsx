@@ -181,7 +181,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
               user_id: userId,
               data: { new_tier: bulkTier, previous_tier: prevTier },
             },
-          }).catch(() => {});
+          }).then(null, () => {});
 
         } else if (bulkAction === "extend") {
           const current = member.membership_expires_at ? new Date(member.membership_expires_at) : new Date();
@@ -214,7 +214,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
 
           supabase.functions.invoke("send-membership-email", {
             body: { type: "expiry_warning", user_id: userId, data: { tier: member.membership_tier, days_left: 7 } },
-          }).catch(() => {});
+          }).then(null, () => {});
 
         } else if (bulkAction === "send_email") {
           await supabase.from("notifications").insert({
@@ -232,14 +232,14 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
 
           supabase.functions.invoke("send-membership-email", {
             body: { type: "suspended", user_id: userId, data: { tier: member.membership_tier } },
-          }).catch(() => {});
+          }).then(null, () => {});
 
         } else if (bulkAction === "reactivate") {
           await supabase.from("profiles").update({ membership_status: "active" }).eq("user_id", userId);
 
           supabase.functions.invoke("send-membership-email", {
             body: { type: "reactivated", user_id: userId, data: { tier: member.membership_tier } },
-          }).catch(() => {});
+          }).then(null, () => {});
 
         } else if (bulkAction === "generate_invoices") {
           const tier = member.membership_tier || "basic";

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +34,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
   const isAr = language === "ar";
   const [isLive, setIsLive] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
+  const liveInterval = useVisibleRefetchInterval(5000);
 
   const { data: scores, refetch } = useQuery({
     queryKey: ["live-scores", competitionId],
@@ -52,7 +54,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex nested join query
       return data as any[];
     },
-    refetchInterval: isLive ? 5000 : false,
+    refetchInterval: isLive ? liveInterval : false,
   });
 
   const { data: judges } = useQuery({

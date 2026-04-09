@@ -937,7 +937,7 @@ export async function notifyMembershipUpgraded(params: {
   // Send branded email via edge function
   supabase.functions.invoke("send-membership-email", {
     body: { type: "upgraded", user_id: params.userId, data: { previous_tier: params.previousTier, new_tier: params.newTier, tier: params.newTier } },
-  }).catch(() => {});
+  }).then(null, () => {});
 
   return sendNotification({
     userId: params.userId,
@@ -962,7 +962,7 @@ export async function notifyMembershipDowngraded(params: {
 
   supabase.functions.invoke("send-membership-email", {
     body: { type: "downgraded", user_id: params.userId, data: { previous_tier: params.previousTier, new_tier: params.newTier, tier: params.newTier, prorated_credit: params.proratedCredit } },
-  }).catch(() => {});
+  }).then(null, () => {});
 
   return sendNotification({
     userId: params.userId,
@@ -988,7 +988,7 @@ export async function notifyMembershipRenewed(params: {
 
   supabase.functions.invoke("send-membership-email", {
     body: { type: "renewed", user_id: params.userId, data: { tier: params.tier, expires_at: params.expiresAt } },
-  }).catch(() => {});
+  }).then(null, () => {});
 
   return sendNotification({
     userId: params.userId,
@@ -1013,7 +1013,7 @@ export async function notifyMembershipExpiringSoon(params: {
   // Send branded email for expiry warning
   supabase.functions.invoke("send-membership-email", {
     body: { type: "expiry_warning", user_id: params.userId, data: { tier: params.tier, days_left: params.daysLeft } },
-  }).catch(() => {});
+  }).then(null, () => {});
 
   return sendNotification({
     userId: params.userId,
@@ -1036,7 +1036,7 @@ export async function notifyMembershipExpired(params: {
   // Send branded email for expired membership
   supabase.functions.invoke("send-membership-email", {
     body: { type: "expired", user_id: params.userId, data: { tier: params.tier } },
-  }).catch(() => {});
+  }).then(null, () => {});
 
   return sendNotification({
     userId: params.userId,
@@ -1074,7 +1074,7 @@ export async function notifyMembershipTrialEnding(params: {
   // Send branded email for trial ending
   supabase.functions.invoke("send-membership-email", {
     body: { type: "trial_ending", user_id: params.userId, data: { days_left: params.daysLeft, tier: "professional" } },
-  }).catch(() => {});
+  }).then(null, () => {});
 
   return sendNotification({
     userId: params.userId,

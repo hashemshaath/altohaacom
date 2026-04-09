@@ -68,7 +68,7 @@ export function usePrefetchRoute() {
         // Prefetch module
         routeModules[matchKey]().catch(() => prefetched.delete(path));
         // Prefetch data (fire-and-forget)
-        dataPrefetchers[matchKey]?.().catch(() => {});
+        dataPrefetchers[matchKey]?.().then(null, () => {});
       });
     }, 150);
   }, []);

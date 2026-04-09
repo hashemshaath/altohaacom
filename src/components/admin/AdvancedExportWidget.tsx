@@ -10,6 +10,7 @@ import { Download, FileSpreadsheet, FileText, Database, Users, Building2, Trophy
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 interface ExportModule {
   key: string;
@@ -37,6 +38,8 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
   const { toast } = useToast();
 
   // Get record counts for all modules
+  const visibleInterval = useVisibleRefetchInterval(120000);
+
   const { data: counts } = useQuery({
     queryKey: ["exportModuleCounts"],
     queryFn: async () => {
@@ -49,7 +52,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
       );
       return results;
     },
-    refetchInterval: 120000,
+    refetchInterval: visibleInterval,
   });
 
   const chartData = EXPORT_MODULES.map(m => ({

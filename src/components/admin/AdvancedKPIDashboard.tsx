@@ -15,10 +15,13 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   CHART_COLORS, TOOLTIP_STYLE, AXIS_TICK, X_AXIS_PROPS, Y_AXIS_PROPS, GRID_PROPS, getNoDataText,
 } from "@/lib/chartConfig";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  const visibleInterval = useVisibleRefetchInterval(120000);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-advanced-kpi"],
@@ -107,7 +110,7 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
 
       return { kpis, trend, radarData };
     },
-    refetchInterval: 120000,
+    refetchInterval: visibleInterval,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

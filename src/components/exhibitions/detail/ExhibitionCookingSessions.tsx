@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -75,6 +76,7 @@ function useCookingData(exhibitionId: string, userId?: string) {
 
 function useSessionInteractions(sessionId: string | null) {
   const queryClient = useQueryClient();
+  const chatInterval = useVisibleRefetchInterval(5000);
 
   const { data: interactions = [] } = useQuery({
     queryKey: ["cs-interactions", sessionId],
@@ -89,7 +91,7 @@ function useSessionInteractions(sessionId: string | null) {
       return data || [];
     },
     enabled: !!sessionId,
-    refetchInterval: sessionId ? 5000 : false,
+    refetchInterval: sessionId ? chatInterval : false,
   });
 
   useEffect(() => {
