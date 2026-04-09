@@ -404,7 +404,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                   onClick={() => { setPreviewSlide(getSlide(rawSlide)); }}
                 >
                   {slide.image_url && (
-                    <img src={slide.image_url} alt={slide.title} className="h-full w-full object-cover" />
+                    <img loading="lazy" decoding="async" src={slide.image_url} alt={slide.title} className="h-full w-full object-cover" />
                   )}
                   <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/60 flex items-center justify-center"

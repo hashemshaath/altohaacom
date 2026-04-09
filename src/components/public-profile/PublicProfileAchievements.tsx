@@ -208,7 +208,7 @@ export const PublicProfileAchievements = memo(function PublicProfileAchievements
                       <TooltipTrigger asChild>
                         <div className="flex items-center gap-2 bg-chart-3/5 border border-chart-3/15 rounded-xl px-3 py-2 hover:bg-chart-3/10 transition-colors cursor-default">
                           {award?.logo_url ? (
-                            <img src={award.logo_url} alt={award.name} className="h-5 w-5 object-contain" />
+                            <img loading="lazy" decoding="async" src={award.logo_url} alt={award.name} className="h-5 w-5 object-contain" />
                           ) : (
                             <Star className="h-4 w-4 text-chart-3" />
                           )}

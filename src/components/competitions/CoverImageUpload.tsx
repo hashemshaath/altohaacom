@@ -63,7 +63,7 @@ export const CoverImageUpload = memo(function CoverImageUpload({ currentUrl, onU
 
       {preview ? (
         <div className="relative">
-          <img src={preview} alt="Cover" className="h-48 w-full rounded-xl object-cover" />
+          <img loading="lazy" decoding="async" src={preview} alt="Cover" className="h-48 w-full rounded-xl object-cover" />
           <Button type="button" variant="destructive" size="icon" className="absolute end-2 top-2" onClick={remove} disabled={uploading}>
             <X className="h-4 w-4" />
           </Button>

@@ -245,7 +245,7 @@ export const SupplierCatalogManager = memo(function SupplierCatalogManager() {
           <Card key={p.id} className={`rounded-xl overflow-hidden ${!p.is_active ? "opacity-60" : ""}`}>
             {p.image_url ? (
               <div className="h-32 bg-muted">
-                <img src={p.image_url} className="h-full w-full object-cover" alt={p.name} />
+                <img loading="lazy" decoding="async" src={p.image_url} className="h-full w-full object-cover" alt={p.name} />
               </div>
             ) : (
               <div className="h-32 bg-muted/50 flex items-center justify-center">

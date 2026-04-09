@@ -626,7 +626,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
               <ChevronLeft className="h-4 w-4" />
             </Button>
             {form.logo_url ? (
-              <img src={form.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0 border shadow-sm" />
+              <img loading="lazy" decoding="async" src={form.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover shrink-0 border shadow-sm" />
             ) : (
               <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
                 <Building2 className="h-5 w-5 text-primary" />
@@ -757,7 +757,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
                         {form.logo_url ? (
-                          <img src={form.logo_url} alt="" className="h-14 w-14 rounded-2xl object-cover border shadow-sm" />
+                          <img loading="lazy" decoding="async" src={form.logo_url} alt="" className="h-14 w-14 rounded-2xl object-cover border shadow-sm" />
                         ) : (
                           <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center">
                             <Building2 className="h-6 w-6 text-primary" />
@@ -1379,7 +1379,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                                   className="w-full p-3 flex items-center gap-3 hover:bg-muted/30 transition-colors text-start"
                                 >
                                   {group.coverImage ? (
-                                    <img src={group.coverImage} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
+                                    <img loading="lazy" decoding="async" src={group.coverImage} alt="" className="h-14 w-20 rounded-xl object-cover shrink-0" />
                                   ) : (
                                     <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
                                       <Building2 className="h-5 w-5 text-muted-foreground" />
@@ -1412,7 +1412,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                                         <Link key={ed.id} to={`/admin/exhibitions?edit=${ed.id}`} className="block">
                                           <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-background border border-transparent hover:border-border/50 transition-all group/ed cursor-pointer">
                                             {ed.cover_image_url ? (
-                                              <img src={ed.cover_image_url} alt="" className="h-10 w-14 rounded-lg object-cover shrink-0" />
+                                              <img loading="lazy" decoding="async" src={ed.cover_image_url} alt="" className="h-10 w-14 rounded-lg object-cover shrink-0" />
                                             ) : (
                                               <div className="h-10 w-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
                                                 <Calendar className="h-3.5 w-3.5 text-muted-foreground" />

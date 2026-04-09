@@ -59,7 +59,7 @@ export const CatalogTable = memo(function CatalogTable({ items, isLoading, langu
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {item.image_url ? (
-                          <img src={item.image_url} alt={item.name} className="h-10 w-10 rounded-md object-cover" />
+                          <img loading="lazy" decoding="async" src={item.image_url} alt={item.name} className="h-10 w-10 rounded-md object-cover" />
                         ) : (
                           <div className="flex h-10 w-10 items-center justify-center rounded-md bg-muted">
                             <Package className="h-5 w-5 text-muted-foreground" />

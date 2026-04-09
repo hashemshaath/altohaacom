@@ -312,7 +312,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
       {value ? (
         <div className="flex items-center gap-2.5 rounded-xl border p-2.5 bg-muted/30">
           {value.logoUrl ? (
-            <img src={value.logoUrl} alt="" className="h-9 w-9 rounded-md object-cover shrink-0" />
+            <img loading="lazy" decoding="async" src={value.logoUrl} alt="" className="h-9 w-9 rounded-md object-cover shrink-0" />
           ) : (
             <div className="flex h-9 w-9 items-center justify-center rounded-md bg-primary/10 shrink-0">
               {sourceIcon(value.type)}
@@ -402,7 +402,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
                       className="w-full flex items-center gap-2 rounded-md p-2 text-start hover:bg-accent/50 transition-colors text-sm"
                     >
                       {item.logoUrl ? (
-                        <img src={item.logoUrl} alt="" className="h-7 w-7 rounded-md object-cover shrink-0" />
+                        <img loading="lazy" decoding="async" src={item.logoUrl} alt="" className="h-7 w-7 rounded-md object-cover shrink-0" />
                       ) : (
                         <div className="flex h-7 w-7 items-center justify-center rounded-md bg-muted shrink-0">
                           {sourceIcon(item.source)}

@@ -80,7 +80,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
         </Label>
         <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/[0.03] to-transparent p-3">
           {value.logoUrl ? (
-            <img src={value.logoUrl} alt="" className="h-11 w-11 rounded-xl object-contain bg-background p-1 shrink-0 border" />
+            <img loading="lazy" decoding="async" src={value.logoUrl} alt="" className="h-11 w-11 rounded-xl object-contain bg-background p-1 shrink-0 border" />
           ) : (
             <div className="h-11 w-11 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
               <Building2 className="h-5 w-5 text-primary" />
@@ -140,7 +140,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
               venues.map((v: any) => (
                 <button key={v.id} className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-start hover:bg-muted/50 transition-colors" onClick={() => selectVenue(v)}>
                   {v.logo_url ? (
-                    <img src={v.logo_url} alt="" className="h-8 w-8 rounded object-contain bg-muted p-0.5 shrink-0" />
+                    <img loading="lazy" decoding="async" src={v.logo_url} alt="" className="h-8 w-8 rounded object-contain bg-muted p-0.5 shrink-0" />
                   ) : (
                     <div className="h-8 w-8 rounded bg-muted flex items-center justify-center shrink-0">
                       <Building2 className="h-4 w-4 text-muted-foreground" />

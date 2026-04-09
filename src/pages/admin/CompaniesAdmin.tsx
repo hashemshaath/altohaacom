@@ -1928,7 +1928,7 @@ export default function CompaniesAdmin() {
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-3">
-                          {company.logo_url ? <img src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-xl object-cover" /> : <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
+                          {company.logo_url ? <img loading="lazy" decoding="async" src={company.logo_url} alt={company.name} className="h-10 w-10 rounded-xl object-cover" /> : <div className="h-10 w-10 rounded-xl bg-muted flex items-center justify-center"><Building2 className="h-5 w-5 text-muted-foreground" /></div>}
                           <div>
                             <p className="font-medium">{isAr && company.name_ar ? company.name_ar : company.name}</p>
                             {company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}

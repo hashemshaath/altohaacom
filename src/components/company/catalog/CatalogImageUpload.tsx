@@ -65,7 +65,7 @@ export const CatalogImageUpload = memo(function CatalogImageUpload({ imageUrl, o
       <Label>{language === "ar" ? "صورة المنتج" : "Product Image"}</Label>
       {imageUrl ? (
         <div className="relative w-32 h-32 rounded-xl overflow-hidden border">
-          <img src={imageUrl} alt="Product" className="h-full w-full object-cover" />
+          <img loading="lazy" decoding="async" src={imageUrl} alt="Product" className="h-full w-full object-cover" />
           <Button
             type="button"
             variant="destructive"

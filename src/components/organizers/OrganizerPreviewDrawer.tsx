@@ -32,7 +32,7 @@ export const OrganizerPreviewDrawer = memo(function OrganizerPreviewDrawer({ org
         {/* Cover */}
         <div className="relative h-36 bg-gradient-to-br from-primary/10 to-primary/5">
           {org.cover_image_url && (
-            <img src={org.cover_image_url} alt={name} className="w-full h-full object-cover" />
+            <img loading="lazy" decoding="async" src={org.cover_image_url} alt={name} className="w-full h-full object-cover" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
         </div>

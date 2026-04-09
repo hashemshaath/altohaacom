@@ -101,7 +101,7 @@ export const AdminSupplierControls = memo(function AdminSupplierControls() {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {c.logo_url ? (
-                        <img src={c.logo_url} className="h-8 w-8 rounded-md object-contain" alt="" />
+                        <img loading="lazy" decoding="async" src={c.logo_url} className="h-8 w-8 rounded-md object-contain" alt="" />
                       ) : (
                         <div className="h-8 w-8 rounded-md bg-muted flex items-center justify-center">
                           <Factory className="h-4 w-4 text-muted-foreground" />

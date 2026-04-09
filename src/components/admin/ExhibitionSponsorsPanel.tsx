@@ -178,7 +178,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
               <div className="mt-1 rounded-lg border bg-popover max-h-28 overflow-y-auto">
                 {companies.map(c => (
                   <button key={c.id} className="w-full flex items-center gap-2 px-3 py-1.5 text-xs hover:bg-accent text-start" onClick={() => selectCompany(c)}>
-                    {c.logo_url && <img src={c.logo_url} className="h-5 w-5 rounded object-contain" />}
+                    {c.logo_url && <img loading="lazy" decoding="async" src={c.logo_url} className="h-5 w-5 rounded object-contain" />}
                     <span>{isAr && c.name_ar ? c.name_ar : c.name}</span>
                   </button>
                 ))}
@@ -221,7 +221,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
                 isDeleting ? "border-destructive/30 bg-destructive/5" : "border-border/50 hover:border-border hover:shadow-sm"
               )}>
                 {s.logo_url ? (
-                  <img src={s.logo_url} className="h-9 w-9 rounded-lg object-contain bg-muted p-0.5 shrink-0" />
+                  <img loading="lazy" decoding="async" src={s.logo_url} className="h-9 w-9 rounded-lg object-contain bg-muted p-0.5 shrink-0" />
                 ) : (
                   <div className="h-9 w-9 rounded-lg bg-muted flex items-center justify-center shrink-0">
                     <Building className="h-4 w-4 text-muted-foreground" />

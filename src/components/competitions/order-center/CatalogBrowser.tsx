@@ -169,7 +169,7 @@ export const CatalogBrowser = memo(function CatalogBrowser({ competitionId, isOr
                   <Card key={item.id} className="border-border/60 overflow-hidden">
                     <CardContent className="flex items-start gap-3 p-3">
                       {item.image_url ? (
-                        <img src={item.image_url} alt="" className="h-12 w-12 rounded-xl object-cover shrink-0" />
+                        <img loading="lazy" decoding="async" src={item.image_url} alt="" className="h-12 w-12 rounded-xl object-cover shrink-0" />
                       ) : (
                         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted shrink-0">
                           <ImageIcon className="h-5 w-5 text-muted-foreground/30" />

@@ -619,7 +619,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
             {details.sponsors.map((s, i) => (
               <div key={i} className="p-3 rounded-xl border flex items-center gap-3">
                 {s.logo_url ? (
-                  <img src={s.logo_url} alt={s.name} className="h-10 w-10 object-contain rounded" />
+                  <img loading="lazy" decoding="async" src={s.logo_url} alt={s.name} className="h-10 w-10 object-contain rounded" />
                 ) : (
                   <div className="h-10 w-10 rounded bg-accent/50 flex items-center justify-center text-xs font-bold text-muted-foreground">{s.name.charAt(0)}</div>
                 )}
@@ -651,7 +651,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
             {details.speakers.map((s, i) => (
               <div key={i} className="p-3 rounded-xl border text-center">
                 {s.photo_url ? (
-                  <img src={s.photo_url} alt={s.name} className="h-12 w-12 rounded-full mx-auto object-cover mb-2" />
+                  <img loading="lazy" decoding="async" src={s.photo_url} alt={s.name} className="h-12 w-12 rounded-full mx-auto object-cover mb-2" />
                 ) : (
                   <div className="h-12 w-12 rounded-full bg-accent/50 flex items-center justify-center mx-auto mb-2 text-sm font-bold text-muted-foreground">{s.name.charAt(0)}</div>
                 )}
@@ -894,7 +894,7 @@ const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: Ta
               {details.judging_committee.map((j, i) => (
                 <div key={i} className="p-3 rounded-xl border text-center">
                   {j.photo_url ? (
-                    <img src={j.photo_url} alt={j.name} className="h-12 w-12 rounded-full mx-auto object-cover mb-2" />
+                    <img loading="lazy" decoding="async" src={j.photo_url} alt={j.name} className="h-12 w-12 rounded-full mx-auto object-cover mb-2" />
                   ) : (
                     <div className="h-12 w-12 rounded-full bg-accent/50 flex items-center justify-center mx-auto mb-2 text-sm font-bold text-muted-foreground">{j.name.charAt(0)}</div>
                   )}

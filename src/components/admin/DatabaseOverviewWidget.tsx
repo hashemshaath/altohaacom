@@ -28,11 +28,14 @@ export const DatabaseOverviewWidget = memo(function DatabaseOverviewWidget() {
         { key: "companies", table: "companies" },
       ] as const;
 
+      const queries = tables.map(t =>
+        supabase.from(t.table).select("id", { count: "exact", head: true })
+      );
+      const responses = await Promise.all(queries);
       const results: Record<string, number> = {};
-      for (const t of tables) {
-        const { count } = await (supabase.from(t.table).select("id", { count: "exact", head: true }) as any);
-        results[t.key] = count ?? 0;
-      }
+      tables.forEach((t, i) => {
+        results[t.key] = responses[i].count ?? 0;
+      });
       return results;
     },
     staleTime: 1000 * 60 * 5,

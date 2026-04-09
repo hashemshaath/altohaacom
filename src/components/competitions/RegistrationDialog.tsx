@@ -523,7 +523,7 @@ export const RegistrationForm = memo(function RegistrationForm({
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" disabled={uploading} />
             {imagePreview ? (
               <div className="relative">
-                <img src={imagePreview} alt="Dish preview" className="h-48 w-full rounded-xl object-cover" />
+                <img loading="lazy" decoding="async" src={imagePreview} alt="Dish preview" className="h-48 w-full rounded-xl object-cover" />
                 <Button type="button" variant="destructive" size="icon" className="absolute end-2 top-2" onClick={removeImage} disabled={uploading}>
                   <X className="h-4 w-4" />
                 </Button>

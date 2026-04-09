@@ -159,7 +159,7 @@ export const CompanySupplierScorecard = memo(function CompanySupplierScorecard()
                       <TableCell>
                         <div className="flex items-center gap-2">
                           {company.logo_url ? (
-                            <img src={company.logo_url} alt="" className="h-7 w-7 rounded object-cover" />
+                            <img loading="lazy" decoding="async" src={company.logo_url} alt="" className="h-7 w-7 rounded object-cover" />
                           ) : (
                             <div className="h-7 w-7 rounded bg-muted flex items-center justify-center">
                               <Building2 className="h-3.5 w-3.5 text-muted-foreground" />

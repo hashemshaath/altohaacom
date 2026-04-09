@@ -446,7 +446,7 @@ export default function CompanyCampaignDetail() {
                     {/* Image preview */}
                     {c.image_url ? (
                       <div className="relative h-40 bg-muted overflow-hidden">
-                        <img src={c.image_url} alt={c.title || "Creative"} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
+                        <img loading="lazy" decoding="async" src={c.image_url} alt={c.title || "Creative"} className="h-full w-full object-cover transition-transform group-hover:scale-105" />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                         <Badge className={`absolute top-2 end-2 text-[12px] ${statusColors[c.status] || ""}`}>
                           <StatusIcon status={c.status} />

@@ -449,7 +449,7 @@ export default function EstablishmentsAdmin() {
                         <TableCell>
                           <div className="flex items-center gap-2.5">
                             {entity.logo_url ? (
-                              <img src={entity.logo_url} alt="" className="h-8 w-8 rounded-lg object-cover border shrink-0" />
+                              <img loading="lazy" decoding="async" src={entity.logo_url} alt="" className="h-8 w-8 rounded-lg object-cover border shrink-0" />
                             ) : (
                               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
                                 <Building2 className="h-3.5 w-3.5 text-muted-foreground" />

@@ -31,7 +31,7 @@ export const ProductQuickView = memo(function ProductQuickView({ product, open, 
           {/* Image */}
           {product.image_url ? (
             <div className="h-56 rounded-xl bg-muted overflow-hidden">
-              <img src={product.image_url} className="h-full w-full object-cover" alt={product.name} />
+              <img loading="lazy" decoding="async" src={product.image_url} className="h-full w-full object-cover" alt={product.name} />
             </div>
           ) : (
             <div className="h-56 rounded-xl bg-muted/50 flex items-center justify-center">

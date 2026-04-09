@@ -346,7 +346,7 @@ export default function ChefsTableAdmin() {
                               <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
                                 {(req.product_images as string[]).map((url: string, i: number) => (
                                   <div key={i} className="aspect-square rounded-xl overflow-hidden border border-border/30 bg-background">
-                                    <img src={url} alt="" className="h-full w-full object-cover hover:scale-105 transition-transform" />
+                                    <img loading="lazy" decoding="async" src={url} alt="" className="h-full w-full object-cover hover:scale-105 transition-transform" />
                                   </div>
                                 ))}
                               </div>

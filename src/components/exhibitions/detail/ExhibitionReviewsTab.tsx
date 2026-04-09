@@ -440,7 +440,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
                     <div className="flex gap-2 flex-wrap">
                       {photoUrls.map((url, i) => (
                         <div key={i} className="relative h-16 w-16 rounded-xl overflow-hidden border border-border/50">
-                          <img src={url} alt={`Review photo ${i + 1}`} className="h-full w-full object-cover" />
+                          <img loading="lazy" decoding="async" src={url} alt={`Review photo ${i + 1}`} className="h-full w-full object-cover" />
                           <button onClick={() => setPhotoUrls(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-0.5 end-0.5 h-4 w-4 rounded-full bg-destructive/80 flex items-center justify-center">
                             <X className="h-2.5 w-2.5 text-destructive-foreground" />
                           </button>

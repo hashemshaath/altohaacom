@@ -179,7 +179,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
             <CollapsibleContent>
               <div className="flex gap-2 mt-2 overflow-x-auto pb-2">
                 {refImages.map((img, i) => (
-                  <img key={i} src={img} alt={`ref-${i}`} className="h-20 w-20 rounded-xl object-cover border" />
+                  <img loading="lazy" decoding="async" key={i} src={img} alt={`ref-${i}`} className="h-20 w-20 rounded-xl object-cover border" />
                 ))}
               </div>
             </CollapsibleContent>
@@ -255,7 +255,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
             className="gap-1.5"
           >
             {(e as any).images?.[0] && (
-              <img src={(e as any).images[0]} alt="" className="h-5 w-5 rounded object-cover" />
+              <img loading="lazy" decoding="async" src={(e as any).images[0]} alt="" className="h-5 w-5 rounded object-cover" />
             )}
             {isBlind ? `#${e.entry_number || i + 1}` : (isAr && e.dish_name_ar ? e.dish_name_ar : e.dish_name)}
           </Button>
@@ -270,7 +270,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
             {(entry as any).images?.length > 0 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {((entry as any).images as string[]).map((img, i) => (
-                  <img key={i} src={img} alt={entry.dish_name} className="h-32 w-32 rounded-xl object-cover border" />
+                  <img loading="lazy" decoding="async" key={i} src={img} alt={entry.dish_name} className="h-32 w-32 rounded-xl object-cover border" />
                 ))}
               </div>
             )}

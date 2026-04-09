@@ -464,7 +464,7 @@ export const ChatArea = memo(function ChatArea({
                 <div key={i} className="relative group/file shrink-0">
                   {isImage ? (
                     <div className="relative h-16 w-16 rounded-xl overflow-hidden border border-border/30 shadow-sm">
-                      <img src={URL.createObjectURL(f)} alt={f.name} className="h-full w-full object-cover" />
+                      <img loading="lazy" decoding="async" src={URL.createObjectURL(f)} alt={f.name} className="h-full w-full object-cover" />
                       <button
                         type="button"
                         onClick={() => setPendingFiles((prev) => prev.filter((_, j) => j !== i))}

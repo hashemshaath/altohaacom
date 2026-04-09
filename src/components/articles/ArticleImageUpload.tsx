@@ -77,7 +77,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
       {value ? (
         <div className="space-y-2">
           <div className="relative group rounded-2xl overflow-hidden border border-border/40">
-            <img src={value} alt={altText || ""} className="w-full h-48 object-cover" />
+            <img loading="lazy" decoding="async" src={value} alt={altText || ""} className="w-full h-48 object-cover" />
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
               <label className="cursor-pointer">
                 <Button variant="secondary" size="sm" className="rounded-xl pointer-events-none">

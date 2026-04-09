@@ -222,7 +222,7 @@ export const LogoUploader = memo(forwardRef<HTMLDivElement, Props>(function Logo
           </DialogHeader>
           <div className={cn("rounded-xl p-6 flex items-center justify-center min-h-[200px]", bgClass)}>
             {value && (
-              <img src={value} alt={label} className="max-h-64 max-w-full object-contain" />
+              <img loading="lazy" decoding="async" src={value} alt={label} className="max-h-64 max-w-full object-contain" />
             )}
           </div>
           <p className="text-[12px] text-muted-foreground break-all font-mono">{value}</p>

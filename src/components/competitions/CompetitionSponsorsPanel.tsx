@@ -209,7 +209,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
               return (
                 <div key={sponsor.id} className="flex items-center gap-3 rounded-xl border border-chart-4/30 bg-chart-4/5 p-3">
                   {sponsor.companies?.logo_url ? (
-                    <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-xl object-contain" />
+                    <img loading="lazy" decoding="async" src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-xl object-contain" />
                   ) : (
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                       <Building className="h-5 w-5 text-muted-foreground" />
@@ -295,7 +295,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
                 return (
                   <div key={sponsor.id} className={`flex items-center gap-3 rounded-xl border p-3 ${config.bg}`}>
                     {sponsor.companies?.logo_url ? (
-                      <img src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-xl object-contain" />
+                      <img loading="lazy" decoding="async" src={sponsor.companies.logo_url} alt={companyName} className="h-10 w-10 rounded-xl object-contain" />
                     ) : (
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                         <Building className="h-5 w-5 text-muted-foreground" />

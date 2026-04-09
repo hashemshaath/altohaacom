@@ -65,7 +65,7 @@ export const CompetitionSponsorBadges = memo(function CompetitionSponsorBadges({
             className={`${tier.color} gap-1 text-[12px] font-bold uppercase tracking-wider py-0.5 px-2 backdrop-blur-sm`}
           >
             {showLogo && company?.logo_url ? (
-              <img src={company.logo_url} alt={name} className="h-3 w-3 rounded-sm object-contain" />
+              <img loading="lazy" decoding="async" src={company.logo_url} alt={name} className="h-3 w-3 rounded-sm object-contain" />
             ) : (
               <Crown className="h-2.5 w-2.5" />
             )}

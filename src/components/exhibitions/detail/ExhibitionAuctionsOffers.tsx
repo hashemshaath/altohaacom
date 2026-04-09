@@ -120,7 +120,7 @@ export const ExhibitionAuctionsOffers = memo(function ExhibitionAuctionsOffers({
               <CardContent className="p-4">
                 <div className="flex flex-col sm:flex-row gap-4">
                   {auction.image_url && (
-                    <img src={auction.image_url} alt={auction.title} className="w-full sm:w-32 h-32 object-cover rounded-xl" />
+                    <img loading="lazy" decoding="async" src={auction.image_url} alt={auction.title} className="w-full sm:w-32 h-32 object-cover rounded-xl" />
                   )}
                   <div className="flex-1 space-y-2">
                     <div className="flex items-start justify-between">
@@ -216,7 +216,7 @@ export const ExhibitionAuctionsOffers = memo(function ExhibitionAuctionsOffers({
                 <Card key={offer.id} className="border-orange-200/50 overflow-hidden">
                   <CardContent className="p-0">
                     {offer.image_url && (
-                      <img src={offer.image_url} alt={offer.title} className="w-full h-32 object-cover" />
+                      <img loading="lazy" decoding="async" src={offer.image_url} alt={offer.title} className="w-full h-32 object-cover" />
                     )}
                     <div className="p-3 space-y-2">
                       <div className="flex items-start justify-between">
