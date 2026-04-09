@@ -167,6 +167,9 @@ export default function Dashboard() {
       {/* Profile Completion Nudge */}
       {user && profile && !profile.profile_completed && <ProfileNudge isAr={isAr} />}
 
+      {/* Status Strip - Active orders, notifications, competitions, invoices */}
+      {user && <DashboardStatusStrip />}
+
       {/* Quick Navigation */}
       <QuickAccessGrid sections={sections} isAr={isAr} />
 
