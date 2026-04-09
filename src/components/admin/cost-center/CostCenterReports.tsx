@@ -217,7 +217,7 @@ export const CostCenterReports = memo(function CostCenterReports({ isAr, estimat
                   </TableCell>
                   <TableCell className="py-2">
                     <Badge variant="secondary" className="text-[12px]">
-                      {isAr ? (ESTIMATE_STATUS_CONFIG as any)[est.status]?.ar : (ESTIMATE_STATUS_CONFIG as any)[est.status]?.en}
+                      {isAr ? ESTIMATE_STATUS_CONFIG[est.status as keyof typeof ESTIMATE_STATUS_CONFIG]?.ar : ESTIMATE_STATUS_CONFIG[est.status as keyof typeof ESTIMATE_STATUS_CONFIG]?.en}
                     </Badge>
                   </TableCell>
                   <TableCell className="py-2 text-end tabular-nums"><AnimatedCounter value={Math.round(est.subtotal)} /></TableCell>

@@ -710,7 +710,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 src={slide.image_url}
                                 alt="preview"
                                 className="h-full w-full"
-                                style={{ objectFit: slide.object_fit as any, objectPosition: slide.object_position }}
+                                style={{ objectFit: slide.object_fit as React.CSSProperties["objectFit"], objectPosition: slide.object_position }}
                               />
                               <div className="absolute top-2 end-2 rounded-md bg-background/70 backdrop-blur-sm px-2 py-1 text-[12px] font-mono">
                                 {slide.object_fit} · {slide.object_position}

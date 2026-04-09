@@ -466,7 +466,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
                 {ALL_ROLES.map((role) => (
                   <div key={role} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm active:scale-[0.98] touch-manipulation ${editRoles.includes(role) ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/40"}`}>
                     <Checkbox checked={editRoles.includes(role)} onCheckedChange={() => toggleRole(role)} />
-                    <span className="text-sm capitalize">{t(role as any)}</span>
+                    <span className="text-sm capitalize">{t(role)}</span>
                   </div>
                 ))}
               </div>

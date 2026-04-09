@@ -210,7 +210,7 @@ export const UsersTable = memo(function UsersTable({
                           </Avatar>
                           <div className="min-w-0">
                             <div className="flex items-center gap-1.5">
-                              <p className="font-medium text-sm truncate">{(profile as any).display_name || profile.full_name || "—"}</p>
+                              <p className="font-medium text-sm truncate">{profile.display_name || profile.full_name || "—"}</p>
                               {profile.is_verified && <span className="text-primary text-[12px]">✓</span>}
                             </div>
                             <p className="text-xs text-muted-foreground truncate">
@@ -232,7 +232,7 @@ export const UsersTable = memo(function UsersTable({
                       {visibleColumns.roles && (
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
-                            {profile.roles?.slice(0, 3).map((r) => <Badge key={r.role} variant="outline" className="text-[12px]">{t(r.role as any)}</Badge>)}
+                            {profile.roles?.slice(0, 3).map((r) => <Badge key={r.role} variant="outline" className="text-[12px]">{t(r.role)}</Badge>)}
                             {(profile.roles?.length || 0) > 3 && <Badge variant="outline" className="text-[12px]">+{(profile.roles?.length || 0) - 3}</Badge>}
                             {(!profile.roles || profile.roles.length === 0) && <span className="text-xs text-muted-foreground">—</span>}
                           </div>
