@@ -22,7 +22,7 @@ interface Props {
   isOrganizer?: boolean;
 }
 
-const ICON_MAP: Record<string, React.ComponentType<any>> = {
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   plus: Plus,
   minus: Minus,
   refresh: RefreshCw,

@@ -163,7 +163,7 @@ export default function RecipeDetail() {
               {/* Title & meta */}
               <div>
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  {(recipe as any).recipe_number && <Badge variant="secondary" className="text-[12px] font-mono h-5">{(recipe as any).recipe_number}</Badge>}
+                  {'recipe_number' in recipe && (recipe as Record<string, unknown>).recipe_number && <Badge variant="secondary" className="text-[12px] font-mono h-5">{String((recipe as Record<string, unknown>).recipe_number)}</Badge>}
                   {recipe.cuisine && <Badge variant="secondary"><ChefHat className="h-3 w-3 me-1" />{recipe.cuisine}</Badge>}
                   {recipe.difficulty && <Badge variant="outline" className={difficultyColor(recipe.difficulty)}>{recipe.difficulty}</Badge>}
                   {recipe.category && <Badge variant="outline">{recipe.category.replace("_", " ")}</Badge>}
@@ -231,7 +231,7 @@ export default function RecipeDetail() {
                           <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
                             <Check className="h-3 w-3 text-primary" />
                           </div>
-                          {typeof ing === "string" ? ing : (ing as any)?.text || JSON.stringify(ing)}
+                          {typeof ing === "string" ? ing : (ing as { text?: string })?.text || JSON.stringify(ing)}
                         </li>
                       ))}
                     </ul>
@@ -252,7 +252,7 @@ export default function RecipeDetail() {
                 )}
                 <div className="space-y-3">
                   {steps.map((step, i) => {
-                    const text = typeof step === "string" ? step : (step as any)?.text || JSON.stringify(step);
+                    const text = typeof step === "string" ? step : (step as { text?: string })?.text || JSON.stringify(step);
                     const done = checkedSteps.has(i);
                     return (
                       <Card
@@ -392,8 +392,8 @@ export default function RecipeDetail() {
               {/* Save & Share */}
               <RecipeActionBar
                 recipeId={recipe.id}
-                saveCount={(recipe as any).save_count || 0}
-                shareCount={(recipe as any).share_count || 0}
+                saveCount={'save_count' in recipe ? Number((recipe as Record<string, unknown>).save_count) || 0 : 0}
+                shareCount={'share_count' in recipe ? Number((recipe as Record<string, unknown>).share_count) || 0 : 0}
               />
             </div>
           </div>
