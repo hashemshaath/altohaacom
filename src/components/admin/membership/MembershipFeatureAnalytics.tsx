@@ -13,6 +13,18 @@ import { format, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
 
+interface FeatureUsageRow {
+  access_count: number;
+  blocked_count: number;
+  tier: string;
+  membership_features: {
+    name: string;
+    name_ar: string | null;
+    code: string;
+    category: string;
+  };
+}
+
 const TIER_COLORS: Record<string, string> = {
   basic: "hsl(var(--muted-foreground))",
   professional: "hsl(var(--primary))",
@@ -41,7 +53,7 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
         .gte("usage_date", startDate)
         .order("access_count", { ascending: false });
       if (error) throw error;
-      return (data || []) as unknown as Record<string, unknown>[];
+      return (data || []) as unknown as FeatureUsageRow[];
     },
   });
 
