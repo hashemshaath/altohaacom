@@ -4,6 +4,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import type { QREntityType } from "@/lib/qrCode";
 import { CODE_PREFIXES } from "@/lib/qrCode";
 
+export interface QRVerifyResult {
+  entity_type: string;
+  entity_id: string;
+  code?: string;
+  is_active?: boolean;
+  [key: string]: unknown;
+}
+
 /** Fetch or create a QR code for a given entity */
 export function useEntityQRCode(entityType: QREntityType, entityId: string | undefined, category?: string) {
   const { user } = useAuth();
