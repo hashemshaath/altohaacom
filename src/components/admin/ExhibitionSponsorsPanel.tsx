@@ -45,7 +45,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
     queryFn: async () => {
       const { data, error } = await supabase
         .from("exhibition_sponsors")
-        .select("id, exhibition_id, company_id, name, name_ar, tier, logo_url, website_url, sort_order, is_active, booth_ids, created_at")
+        .select("*")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order", { ascending: true });
       if (error) throw error;
