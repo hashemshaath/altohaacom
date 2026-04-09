@@ -472,12 +472,41 @@ export default function CompetitionDetail() {
   const canRegister = competition.status === "registration_open" && user && !myRegistration;
   const hasWinners = competition.status === "completed";
 
+  // SEO: Build optimized meta
+  const competitionSlug = competition.slug || competitionId;
+  const canonicalPath = `/competitions/${competitionSlug}`;
+  const canonicalUrl = buildPublicUrl(canonicalPath);
+
+  const seoTitle = isAr
+    ? `${title} | مسابقة طهي احترافية — الطهاة`
+    : `${title} | Professional Culinary Competition — AlToha`;
+
+  const locationMeta = [competition.city, competition.country].filter(Boolean).join(", ");
+  const dateMeta = competition.competition_start ? format(new Date(competition.competition_start), "MMM yyyy") : "";
+  const seoDescription = description
+    ? description.slice(0, 145) + (description.length > 145 ? "…" : "")
+    : isAr
+      ? `مسابقة ${title} للطهي${locationMeta ? ` في ${locationMeta}` : ""}${dateMeta ? ` — ${dateMeta}` : ""}. سجّل الآن وشارك مع أفضل الطهاة.`
+      : `${title} culinary competition${locationMeta ? ` in ${locationMeta}` : ""}${dateMeta ? ` — ${dateMeta}` : ""}. Register now and compete with top chefs.`;
+
+  const seoKeywords = [
+    title,
+    baseTitle,
+    "culinary competition",
+    "مسابقة طهي",
+    competition.city,
+    competition.country,
+    "chef competition",
+    competition.edition_year ? `${competition.edition_year}` : "",
+    competition.is_virtual ? "virtual competition" : "live competition",
+  ].filter(Boolean).join(", ");
+
   const breadcrumbLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": isAr ? "الرئيسية" : "Home", "item": window.location.origin },
-      { "@type": "ListItem", "position": 2, "name": isAr ? "المسابقات" : "Competitions", "item": `${window.location.origin}/competitions` },
+      { "@type": "ListItem", "position": 1, "name": isAr ? "الرئيسية" : "Home", "item": buildPublicUrl("/") },
+      { "@type": "ListItem", "position": 2, "name": isAr ? "المسابقات" : "Competitions", "item": buildPublicUrl("/competitions") },
       { "@type": "ListItem", "position": 3, "name": title },
     ],
   };
@@ -486,9 +515,10 @@ export default function CompetitionDetail() {
     "@context": "https://schema.org",
     "@type": "Event",
     name: title,
-    description: description || undefined,
+    description: seoDescription,
     startDate: competition.competition_start,
     endDate: competition.competition_end,
+    url: canonicalUrl,
     eventAttendanceMode: competition.is_virtual
       ? "https://schema.org/OnlineEventAttendanceMode"
       : "https://schema.org/OfflineEventAttendanceMode",
@@ -499,9 +529,15 @@ export default function CompetitionDetail() {
       ? { "@type": "VirtualLocation" }
       : { "@type": "Place", name: venue || undefined, address: { "@type": "PostalAddress", addressLocality: competition.city, addressCountry: competition.country } },
     image: competition.cover_image_url || undefined,
-    organizer: { "@type": "Organization", name: "Altoha", url: window.location.origin },
+    organizer: { "@type": "Organization", name: "Altoha", url: buildPublicUrl("/") },
     ...(competition.max_participants ? { maximumAttendeeCapacity: competition.max_participants } : {}),
   };
+
+  const breadcrumbItems = [
+    { label: "Home", labelAr: "الرئيسية", href: "/" },
+    { label: "Competitions", labelAr: "المسابقات", href: "/competitions" },
+    { label: title },
+  ];
 
   const daysUntilStart = competition.competition_start
     ? Math.max(0, Math.ceil((new Date(competition.competition_start).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
@@ -520,15 +556,13 @@ export default function CompetitionDetail() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <SEOHead
-        title={isAr
-          ? `${title} — مسابقة الطهي | الطهاة`
-          : `${title} — Culinary Competition | AlToha`}
-        description={(description || `${title} - Culinary competition`).slice(0, 155)}
+        title={seoTitle}
+        description={seoDescription}
         ogImage={competition.cover_image_url || undefined}
         ogType="article"
-        canonical={`https://altoha.com/competitions/${competition.slug || competitionId}`}
+        canonical={canonicalUrl}
         lang={language}
-        keywords={`${title}, culinary competition, ${competition.city || ""}, ${competition.country || ""}, chef competition`}
+        keywords={seoKeywords}
         jsonLd={eventLd}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
