@@ -46,14 +46,15 @@ export function useOfflineSync() {
 
       const tasks: Promise<void>[] = [];
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- cacheItems accepts generic cacheable items
       if (compRes.status === "fulfilled" && compRes.value.data) {
-        tasks.push(cacheItems("competitions", compRes.value.data as unknown as Record<string, unknown>[]));
+        tasks.push(cacheItems("competitions", compRes.value.data as any));
       }
       if (artRes.status === "fulfilled" && artRes.value.data) {
-        tasks.push(cacheItems("articles", artRes.value.data as unknown as Record<string, unknown>[]));
+        tasks.push(cacheItems("articles", artRes.value.data as any));
       }
       if (recRes.status === "fulfilled" && recRes.value.data) {
-        tasks.push(cacheItems("recipes", recRes.value.data as unknown as Record<string, unknown>[]));
+        tasks.push(cacheItems("recipes", recRes.value.data as any));
       }
 
       await Promise.all(tasks);
@@ -72,12 +73,13 @@ export function useOfflineSync() {
     let succeeded = 0;
     for (const action of actions) {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table from offline queue
         if (action.type === "insert") {
-          await (supabase.from(action.table as "abandoned_carts") as ReturnType<typeof supabase.from>).insert(action.payload);
+          await (supabase.from(action.table as any) as any).insert(action.payload);
           succeeded++;
         } else if (action.type === "update" && action.payload.id) {
           const { id, ...rest } = action.payload;
-          await (supabase.from(action.table as "abandoned_carts") as ReturnType<typeof supabase.from>).update(rest).eq("id", id);
+          await (supabase.from(action.table as any) as any).update(rest).eq("id", id);
           succeeded++;
         }
       } catch {
