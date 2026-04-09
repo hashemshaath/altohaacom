@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, lazy, Suspense, useEffect, useRef } fro
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { AnimatedCounter as SharedAnimatedCounter } from "@/components/ui/animated-counter";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -210,7 +210,8 @@ function LiveCountdownStrip({ targetDate, label, labelAr, isAr }: { targetDate: 
 }
 
 export default function CompetitionDetail() {
-  const { slug } = useParams<{ slug: string }>();
+  const { slug: urlParam } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const isAdmin = useIsAdmin();
@@ -221,6 +222,7 @@ export default function CompetitionDetail() {
   }, []);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const isAr = language === "ar";
+  const slug = urlParam;
 
   const { data: competition, isLoading } = useQuery({
     queryKey: ["competition", slug],
@@ -236,6 +238,14 @@ export default function CompetitionDetail() {
     enabled: !!slug,
     staleTime: 1000 * 60 * 3,
   });
+
+  // SEO: Redirect UUID URLs to slug-based canonical URL
+  const isUuidParam = urlParam && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(urlParam);
+  useEffect(() => {
+    if (competition?.slug && isUuidParam && competition.slug !== urlParam) {
+      navigate(`/competitions/${competition.slug}`, { replace: true });
+    }
+  }, [competition?.slug, isUuidParam, urlParam, navigate]);
 
   const competitionId = competition?.id;
   const { data: qrCode } = useEntityQRCode("competition", competitionId, "competition");
