@@ -51,7 +51,7 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
   if ((isSponsors ? logos : [...logos, ...entities]).length === 0) return null;
 
   return (
-    <section dir={isAr ? "rtl" : "ltr"} className="py-10 sm:py-14 border-y border-border/30">
+    <section dir={isAr ? "rtl" : "ltr"} className="py-8 sm:py-12 md:py-16 border-y border-border/30">
       <p className="text-sm text-center text-muted-foreground font-medium mb-8">{heading}</p>
 
       <div className="relative w-full overflow-hidden group/marquee">
