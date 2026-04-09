@@ -17,6 +17,9 @@ export const ArticleLiveReaders = memo(function ArticleLiveReaders({ articleId, 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    let cancelled = false;
+    let visTimer: ReturnType<typeof setTimeout>;
+
     async function fetchRecentReaders() {
       const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
       
@@ -27,9 +30,10 @@ export const ArticleLiveReaders = memo(function ArticleLiveReaders({ articleId, 
         .like("page_url", `%${articleId}%`)
         .gte("created_at", fiveMinAgo);
 
+      if (cancelled) return;
       if (readerCount && readerCount > 0) {
         setCount(readerCount);
-        setTimeout(() => setVisible(true), 1000);
+        visTimer = setTimeout(() => { if (!cancelled) setVisible(true); }, 1000);
       }
     }
 
@@ -37,7 +41,11 @@ export const ArticleLiveReaders = memo(function ArticleLiveReaders({ articleId, 
 
     // Refresh every 60 seconds
     const interval = setInterval(fetchRecentReaders, 60000);
-    return () => clearInterval(interval);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+      clearTimeout(visTimer);
+    };
   }, [articleId]);
 
   if (count === null || count === 0) return null;

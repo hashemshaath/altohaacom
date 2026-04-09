@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOnlineStatus } from "@/hooks/usePWA";
@@ -320,7 +320,7 @@ export function useOfflineJudging() {
     return getCachedItem<OfflineScore>("offline_scores", `${registrationId}_${user.id}`);
   }, [user]);
 
-  const lastSync = localStorage.getItem(JUDGING_SYNC_KEY);
+  const lastSync = useMemo(() => localStorage.getItem(JUDGING_SYNC_KEY), [pendingCount]);
 
   return {
     cachedCompetitions,

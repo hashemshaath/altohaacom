@@ -156,16 +156,17 @@ export function useWebVitalsTracking() {
       }
     };
 
-    document.addEventListener("visibilitychange", () => {
+    const onVisChange = () => {
       if (document.visibilityState === "hidden") sendVitals();
-    });
+    };
+    document.addEventListener("visibilitychange", onVisChange);
 
     // Also send after 30s as a safety net (user stays on page)
     const safetyTimer = setTimeout(sendVitals, 30000);
 
     return () => {
       clearTimeout(safetyTimer);
-      document.removeEventListener("visibilitychange", sendVitals);
+      document.removeEventListener("visibilitychange", onVisChange);
       observersRef.current.forEach(o => { try { o.disconnect(); } catch {} });
       observersRef.current = [];
     };
