@@ -63,7 +63,7 @@ const CollapsibleBioSection = memo(function CollapsibleBioSection({ icon: Icon, 
         <ChevronDown className="h-3.5 w-3.5 transition-transform duration-300"
           style={{ color: theme.textMuted, transform: open ? "rotate(180deg)" : "rotate(0)" }} />
       </button>
-      <div className="grid transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]"
+      <div className="grid transition-all duration-400 ease-out-expo"
         style={{ gridTemplateRows: open ? "1fr" : "0fr", opacity: open ? 1 : 0 }}>
         <div className="overflow-hidden">{children}</div>
       </div>

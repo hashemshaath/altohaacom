@@ -114,7 +114,7 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
           {/* Right: Actions */}
           <div className="flex items-center gap-1 ms-auto shrink-0">
             {headerCfg.showSearch !== false && (
-              <Button variant="ghost" size="icon" asChild className="rounded-full h-10 w-10 text-[var(--color-muted)] hover:text-[var(--color-heading)] hover:bg-[var(--bg-surface)] touch-manipulation transition-colors duration-[var(--transition-fast)]">
+              <Button variant="ghost" size="icon" asChild className="rounded-full h-10 w-10 text-[var(--color-muted)] hover:text-[var(--color-heading)] hover:bg-[var(--bg-surface)] touch-manipulation transition-colors duration-150">
                 <Link to="/search" aria-label={isAr ? "البحث" : "Search"}>
                   <Search className="h-[18px] w-[18px]" aria-hidden="true" />
                 </Link>

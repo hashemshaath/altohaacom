@@ -169,7 +169,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
       {/* Drawer */}
       <div
         className={cn(
-          "fixed top-0 z-[100] h-[100dvh] bg-[var(--bg-white)] transition-transform duration-[280ms]",
+          "fixed top-0 z-[100] h-[100dvh] bg-[var(--bg-white)] transition-transform duration-280",
           isAr ? "right-0" : "left-0",
           open
             ? "translate-x-0"

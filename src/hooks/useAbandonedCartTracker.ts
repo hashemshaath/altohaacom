@@ -125,11 +125,15 @@ export function useAbandonedCartTracker(
         // silent
       }
     };
-    window.addEventListener("beforeunload", handleUnload);
-    document.addEventListener("visibilitychange", () => {
+    const handleVisibility = () => {
       if (document.visibilityState === "hidden") handleUnload();
-    });
-    return () => window.removeEventListener("beforeunload", handleUnload);
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items, totalAmount, user?.id, isCheckoutComplete]);
 

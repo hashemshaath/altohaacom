@@ -61,7 +61,7 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
             key={link.to}
             to={link.to}
             className={cn(
-              "relative text-[14px] font-medium transition-colors duration-[150ms] whitespace-nowrap",
+              "relative text-[14px] font-medium transition-colors duration-150 whitespace-nowrap",
               active
                 ? "text-[var(--color-primary)] font-semibold"
                 : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
@@ -76,7 +76,7 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
       <Link
         to="/chefs-table"
         className={cn(
-          "relative text-[14px] font-medium transition-colors duration-[150ms] whitespace-nowrap",
+          "relative text-[14px] font-medium transition-colors duration-150 whitespace-nowrap",
           isActive("/chefs-table")
             ? "text-[var(--color-primary)] font-semibold"
             : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
@@ -93,7 +93,7 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
       >
         <button
           className={cn(
-            "flex items-center gap-1.5 text-[14px] font-medium transition-colors duration-[150ms] whitespace-nowrap",
+            "flex items-center gap-1.5 text-[14px] font-medium transition-colors duration-150 whitespace-nowrap",
             anyMoreActive || megaOpen
               ? "text-[var(--color-primary)]"
               : "text-[var(--color-body)] hover:text-[var(--color-primary)]"
@@ -143,7 +143,7 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
                         key={link.to}
                         to={link.to}
                         className={cn(
-                          "flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 transition-all duration-[var(--transition-fast)] group/item",
+                          "flex items-center gap-3 rounded-[var(--radius-sm)] px-3 py-2.5 transition-all duration-150 group/item",
                           active
                             ? "bg-[var(--bg-purple-wash)]"
                             : "hover:bg-[var(--bg-surface)]"

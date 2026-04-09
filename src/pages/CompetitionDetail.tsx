@@ -169,7 +169,7 @@ function Section({
               {badge && <div className="mt-0.5">{badge}</div>}
             </div>
           </div>
-          <ChevronDown className={`h-5 w-5 text-muted-foreground/60 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${open ? "rotate-180" : ""}`} />
+          <ChevronDown className={`h-5 w-5 text-muted-foreground/60 transition-transform duration-300 ease-out-expo ${open ? "rotate-180" : ""}`} />
         </CollapsibleTrigger>
         <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
           <div className="mx-4 sm:mx-6 mb-0.5">
