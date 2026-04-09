@@ -48,7 +48,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
 
       const challenges = challengesRes.data || [];
       const progress = progressRes.data || [];
-      const badges = (badgesRes.data || []) as any[];
+      const badges = (badgesRes.data || []) as Array<{ badge_type: string; earned_at: string }>;
       const streak = streakRes.data;
 
       const activeChallenges = challenges.map((c) => {

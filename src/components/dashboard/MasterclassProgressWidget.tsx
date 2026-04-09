@@ -69,7 +69,7 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
         {enrollments && enrollments.length > 0 ? (
           <div className="space-y-3">
             {enrollments.map((enrollment) => {
-              const mc = enrollment.masterclasses as any;
+              const mc = enrollment.masterclasses as unknown as Record<string, string | number | null> | null;
               if (!mc) return null;
               const title = isAr && mc.title_ar ? mc.title_ar : mc.title;
               const progress = enrollment.progress_percent || 0;

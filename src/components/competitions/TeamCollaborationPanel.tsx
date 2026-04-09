@@ -113,9 +113,9 @@ export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ com
   });
 
   const workspace = workspaces?.[0]; // Use first workspace
-  const tasks: TaskItem[] = Array.isArray(workspace?.task_board) ? (workspace.task_board as any[]) : [];
-  const recipes: RecipeItem[] = Array.isArray(workspace?.recipe_plan) ? (workspace.recipe_plan as any[]) : [];
-  const schedule: ScheduleItem[] = Array.isArray(workspace?.practice_schedule) ? (workspace.practice_schedule as any[]) : [];
+  const tasks: TaskItem[] = Array.isArray(workspace?.task_board) ? (workspace.task_board as unknown as TaskItem[]) : [];
+  const recipes: RecipeItem[] = Array.isArray(workspace?.recipe_plan) ? (workspace.recipe_plan as unknown as RecipeItem[]) : [];
+  const schedule: ScheduleItem[] = Array.isArray(workspace?.practice_schedule) ? (workspace.practice_schedule as unknown as ScheduleItem[]) : [];
   const completedTasks = useMemo(() => tasks.filter(t => t.done).length, [tasks]);
 
   if (isLoading) {

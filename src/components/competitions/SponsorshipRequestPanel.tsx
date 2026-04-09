@@ -232,7 +232,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
       ) : (
         <div className="space-y-3">
           {requests.map((req) => {
-            const company = req.companies as any;
+            const company = req.companies as unknown as Record<string, string | null> | null;
             return (
               <Card key={req.id}>
                 <CardContent className="flex items-center justify-between p-4">

@@ -275,7 +275,7 @@ export const RegistrationForm = memo(function RegistrationForm({
           event_category: "engagement",
           user_id: user?.id || null,
           session_id: sessionStorage.getItem("ad_session_id") || null,
-          metadata: { competition_id: competitionId } as any,
+          metadata: { competition_id: competitionId } as unknown as Json,
         }]).then(null, () => {});
       } catch {}
 

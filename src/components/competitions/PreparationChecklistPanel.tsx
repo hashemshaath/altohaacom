@@ -86,7 +86,7 @@ export const PreparationChecklistPanel = memo(function PreparationChecklistPanel
       const { error } = await supabase.from("preparation_checklists").upsert({
         competition_id: competitionId,
         user_id: user.id,
-        items: updatedItems as any,
+        items: updatedItems as unknown as Json,
         progress_percentage: progress,
       }, { onConflict: "competition_id,user_id" });
       if (error) throw error;
