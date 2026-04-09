@@ -138,6 +138,7 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
               <div className="relative">
                 <Input
                   type={showNew ? "text" : "password"}
+                  autoComplete="new-password"
                   value={newPassword}
                   onChange={(e) => { setNewPassword(e.target.value); setError(""); }}
                   placeholder="••••••••"
@@ -154,6 +155,7 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
               <Label className="text-xs">{isAr ? "تأكيد كلمة المرور الجديدة" : "Confirm New Password"}</Label>
               <Input
                 type="password"
+                autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => { setConfirmPassword(e.target.value); setError(""); }}
                 placeholder="••••••••"

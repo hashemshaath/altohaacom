@@ -372,6 +372,7 @@ export default function CompanyLogin() {
               <Label className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
               <Input
                 type="password"
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"

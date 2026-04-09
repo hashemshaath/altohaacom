@@ -196,6 +196,7 @@ export const MoyasarPaymentForm = memo(function MoyasarPaymentForm({
                 className="text-sm text-center font-mono"
                 maxLength={4}
                 type="password"
+                autoComplete="cc-csc"
                 required
               />
             </div>

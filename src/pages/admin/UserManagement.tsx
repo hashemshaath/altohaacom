@@ -503,7 +503,7 @@ export default function UserManagement() {
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "بيانات الحساب" : "Account Details"}</h4>
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1.5"><Label className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label><Input type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} dir="ltr" placeholder="user@example.com" /></div>
-              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label><Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} dir="ltr" placeholder="••••••••" /></div>
+              <div className="space-y-1.5"><Label className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label><Input type="password" autoComplete="new-password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} dir="ltr" placeholder="••••••••" /></div>
               <div className="space-y-1.5"><Label className="text-xs">{isAr ? "اسم المستخدم" : "Username"}</Label><Input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} dir="ltr" placeholder="username" /></div>
               <div className="space-y-1.5"><Label className="text-xs">{isAr ? "رقم الهاتف" : "Phone"}</Label><Input value={newPhone} onChange={(e) => setNewPhone(e.target.value)} dir="ltr" placeholder="+966..." /></div>
             </div>
@@ -566,7 +566,7 @@ export default function UserManagement() {
       <InlinePanel open={resetOpen} onClose={() => setResetOpen(false)} title={isAr ? "إعادة تعيين كلمة المرور" : "Reset Password"} description={resetUserName} icon={<KeyRound className="h-4 w-4 text-primary" />} size="md"
         footer={<><Button variant="outline" onClick={() => setResetOpen(false)}>{isAr ? "إلغاء" : "Cancel"}</Button><Button onClick={() => resetPasswordMutation.mutate()} disabled={!resetNewPassword || resetPasswordMutation.isPending} className="gap-2">{resetPasswordMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}{isAr ? "إعادة التعيين" : "Reset Password"}</Button></>}
       >
-        <div className="space-y-2" dir={isAr ? "rtl" : "ltr"}><Label>{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label><Input type="password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} dir="ltr" /></div>
+        <div className="space-y-2" dir={isAr ? "rtl" : "ltr"}><Label>{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label><Input type="password" autoComplete="new-password" value={resetNewPassword} onChange={(e) => setResetNewPassword(e.target.value)} dir="ltr" /></div>
       </InlinePanel>
 
       <InlineConfirm

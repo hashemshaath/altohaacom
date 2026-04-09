@@ -246,7 +246,7 @@ export default function SocialLinks() {
           <div className="mx-auto rounded-full p-5" style={{ background: theme.card, border: `1px solid ${theme.border}` }}><Lock className="h-8 w-8 mx-auto" style={{ color: theme.accent }} /></div>
           <div><h1 className="text-lg font-bold mb-1" style={{ color: theme.text }}>{tl("passwordProtected", lang)}</h1><p className="text-xs" style={{ color: theme.textMuted }}>{displayName}</p></div>
           <div className="space-y-3">
-            <input type="password" value={passwordInput} onChange={e => { setPasswordInput(e.target.value); setPasswordError(false); }} onKeyDown={e => e.key === "Enter" && handlePasswordSubmit()}
+            <input type="password" autoComplete="off" value={passwordInput} onChange={e => { setPasswordInput(e.target.value); setPasswordError(false); }} onKeyDown={e => e.key === "Enter" && handlePasswordSubmit()}
               placeholder={tl("enterPassword", lang)} className="w-full rounded-xl px-4 py-3 text-sm text-center outline-none transition-all"
               style={{ background: theme.btnBg, border: `1px solid ${passwordError ? "#ef4444" : theme.border}`, color: theme.text }} />
             {passwordError && <p className="text-xs" style={{ color: "#ef4444" }}>{tl("wrongPassword", lang)}</p>}

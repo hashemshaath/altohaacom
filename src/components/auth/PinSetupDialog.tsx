@@ -120,6 +120,7 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
               <Label className="text-xs">{isAr ? "رمز PIN (6 أرقام)" : "PIN Code (6 digits)"}</Label>
               <Input
                 type="password"
+                autoComplete="off"
                 inputMode="numeric"
                 maxLength={6}
                 value={pin}
@@ -151,6 +152,7 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
               <Label className="text-xs">{isAr ? "تأكيد الرمز" : "Confirm PIN"}</Label>
               <Input
                 type="password"
+                autoComplete="off"
                 inputMode="numeric"
                 maxLength={6}
                 value={confirmPin}
