@@ -76,6 +76,7 @@ function useCookingData(exhibitionId: string, userId?: string) {
 
 function useSessionInteractions(sessionId: string | null) {
   const queryClient = useQueryClient();
+  const chatInterval = useVisibleRefetchInterval(5000);
 
   const { data: interactions = [] } = useQuery({
     queryKey: ["cs-interactions", sessionId],
@@ -90,7 +91,7 @@ function useSessionInteractions(sessionId: string | null) {
       return data || [];
     },
     enabled: !!sessionId,
-    refetchInterval: sessionId ? 5000 : false,
+    refetchInterval: sessionId ? chatInterval : false,
   });
 
   useEffect(() => {
