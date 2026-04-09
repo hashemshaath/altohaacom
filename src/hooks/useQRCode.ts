@@ -62,14 +62,15 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
 
 /** Verify a QR code (public, no auth needed) */
 export function useVerifyQRCode(code: string | null) {
-  return useQuery({
+  return useQuery<QRVerifyResult | null>({
     queryKey: ["verify-qr", code],
     queryFn: async () => {
       if (!code) return null;
       const { data, error } = await supabase.rpc("verify_qr_code", { p_code: code.toUpperCase() });
       if (error) throw error;
       if (!data || (Array.isArray(data) && data.length === 0)) return null;
-      return Array.isArray(data) ? data[0] : data;
+      const row = Array.isArray(data) ? data[0] : data;
+      return row as unknown as QRVerifyResult;
     },
     enabled: !!code,
   });
