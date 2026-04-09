@@ -15,11 +15,11 @@ import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 import { ImageWithFallback } from "@/components/home/ImageWithFallback";
 
 const TYPE_COLORS: Record<string, string> = {
-  news: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
-  article: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
-  blog: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
-  interview: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
-  event: "bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300",
+  news: "bg-semantic-info-bg text-semantic-info dark:bg-semantic-info/20 dark:text-semantic-info",
+  article: "bg-semantic-success-bg text-semantic-success dark:bg-semantic-success/20 dark:text-semantic-success",
+  blog: "bg-semantic-warning-bg text-semantic-warning dark:bg-semantic-warning/20 dark:text-semantic-warning",
+  interview: "bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary",
+  event: "bg-semantic-error-bg text-semantic-error dark:bg-semantic-error/20 dark:text-semantic-error",
 };
 
 const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
@@ -90,7 +90,7 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
                 to={ROUTES.article(article.slug)}
                 className="group block snap-start shrink-0 w-[75vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] touch-manipulation"
               >
-                <div className="overflow-hidden rounded-2xl border border-border/30 bg-card h-full transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.98] shadow-sm">
+                <div className="overflow-hidden rounded-2xl border border-border/30 bg-card h-full transition-all duration-200 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 active:scale-[0.98] shadow-sm">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <ImageWithFallback
                       src={article.featured_image_url}

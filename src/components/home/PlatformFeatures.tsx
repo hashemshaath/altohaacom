@@ -65,7 +65,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
         <HorizontalScrollRow isAr={isAr}>
           {services.map((s) => (
             <Link key={s.title} to={s.href} className="group block snap-start shrink-0 w-[56vw] sm:w-[38vw] md:w-[28vw] lg:w-[22vw] xl:w-[18vw] touch-manipulation">
-              <Card className="h-full border-border/30 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/20 active:scale-[0.98] group-hover:ring-1 group-hover:ring-primary/10">
+              <Card className="h-full border-border/30 transition-all duration-200 hover:shadow-xl hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98] group-hover:ring-1 group-hover:ring-primary/10">
                 <CardContent className="flex flex-col p-4 sm:p-5">
                   <div className={cn("mb-3.5 flex h-12 w-12 sm:h-11 sm:w-11 items-center justify-center rounded-xl ring-1 ring-border/10 transition-all duration-300 group-hover:scale-110 group-hover:shadow-md", s.bg)}>
                     <s.icon className={cn("h-[22px] w-[22px] sm:h-5 sm:w-5 transition-colors", s.color)} />

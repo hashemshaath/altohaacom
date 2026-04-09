@@ -16,10 +16,10 @@ import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 import { ImageWithFallback } from "@/components/home/ImageWithFallback";
 
 const STATUS_STYLES: Record<string, { en: string; ar: string; dot: string }> = {
-  registration_open: { en: "Open", ar: "مفتوح", dot: "bg-emerald-500" },
-  upcoming: { en: "Upcoming", ar: "قادم", dot: "bg-blue-500" },
-  in_progress: { en: "Live", ar: "مباشر", dot: "bg-red-500" },
-  active: { en: "Active", ar: "نشط", dot: "bg-emerald-500" },
+  registration_open: { en: "Open", ar: "مفتوح", dot: "bg-semantic-success" },
+  upcoming: { en: "Upcoming", ar: "قادم", dot: "bg-semantic-info" },
+  in_progress: { en: "Live", ar: "مباشر", dot: "bg-semantic-error" },
+  active: { en: "Active", ar: "نشط", dot: "bg-semantic-success" },
   completed: { en: "Completed", ar: "منتهي", dot: "bg-muted-foreground" },
 };
 
