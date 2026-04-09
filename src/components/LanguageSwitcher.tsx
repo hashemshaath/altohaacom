@@ -9,12 +9,13 @@ export const LanguageSwitcher = memo(function LanguageSwitcher() {
   return (
     <Button
       variant="ghost"
-      size="sm"
+      size="icon"
       onClick={() => setLanguage(language === "en" ? "ar" : "en")}
-      className="gap-1.5"
+      className="h-9 w-9 lg:h-auto lg:w-auto lg:gap-1.5 lg:px-3"
+      aria-label={language === "en" ? "التبديل إلى العربية" : "Switch to English"}
     >
       <Globe className="h-4 w-4" />
-      <span className="text-sm font-medium">
+      <span className="hidden lg:inline text-sm font-medium">
         {language === "en" ? "العربية" : "English"}
       </span>
     </Button>
