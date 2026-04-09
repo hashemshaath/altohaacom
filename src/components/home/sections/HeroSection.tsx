@@ -97,7 +97,7 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
               </Link>
             </div>
             <div className="flex justify-center lg:justify-start gap-5 flex-wrap mt-7">
-              {(isAr ? ["مجاني تماماً", "+30,000 طاهٍ", "بدون بطاقة ائتمان"] : ["Completely Free", "30,000+ Chefs", "No Credit Card"]).map((item) => (
+              {(isAr ? ["مجاني تماماً", "مجتمع عالمي", "بدون بطاقة ائتمان"] : ["Completely Free", "Global Community", "No Credit Card"]).map((item) => (
                 <span key={item} className="flex items-center gap-1.5 text-sm text-muted-foreground">
                   <Check className="h-4 w-4 text-emerald-500" />
                   {item}
@@ -112,16 +112,16 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
               <div className="flex flex-col items-center gap-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                  {isAr ? "متصل الآن" : "Live Now"}
+                  {isAr ? "جاري التحميل..." : "Loading..."}
                 </div>
                 <div className="grid grid-cols-3 gap-3 w-full">
                   {[
-                    { n: "30K+", l: isAr ? "طاهٍ" : "Chefs" },
-                    { n: "500+", l: isAr ? "مسابقة" : "Events" },
-                    { n: "50+", l: isAr ? "دولة" : "Countries" },
+                    { l: isAr ? "الأعضاء" : "Members" },
+                    { l: isAr ? "الفعاليات" : "Events" },
+                    { l: isAr ? "المنظمون" : "Organizers" },
                   ].map((s) => (
                     <div key={s.l} className="text-center">
-                      <p className="text-lg font-bold text-primary">{s.n}</p>
+                      <div className="h-6 w-12 mx-auto rounded bg-muted/50 animate-pulse mb-1" />
                       <p className="text-[11px] text-muted-foreground">{s.l}</p>
                     </div>
                   ))}
