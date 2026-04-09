@@ -1143,7 +1143,7 @@ export default function CompetitionDetail() {
                 {activeSection === "judges" && <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
                 {activeSection === "live-scoring" && <LiveScoringDashboard competitionId={competition.id} isOrganizer={!!isOrganizer} />}
                 {activeSection === "schedule" && <CompetitionSchedulePanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-                {activeSection === "stations" && <KitchenStationsPanel competitionId={competition.id} />}
+                {activeSection === "stations" && <KitchenStationsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
                 {activeSection === "deliberation" && canSeeKnowledge && <JudgeDeliberationPanel competitionId={competition.id} />}
                 {activeSection === "feedback" && <CompetitionFeedbackPanel competitionId={competition.id} />}
                 {activeSection === "checklist" && <PreparationChecklistPanel competitionId={competition.id} />}
