@@ -26,7 +26,7 @@ import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProv
 import { PageTracker } from "@/components/tracking/PageTracker";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
 import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
-import { NetworkStatus } from "@/components/NetworkStatus";
+import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
 import { RouteLoadingBar } from "@/components/RouteLoadingBar";
 
 import { publicRoutes } from "@/routes/publicRoutes";
@@ -128,7 +128,7 @@ function AppContent() {
   return (
     <>
       <AppBootMarker />
-      <NetworkStatus />
+      <OfflineIndicator />
       <RouteLoadingBar />
       <ScrollToTop />
       <RouteAnnouncer />
