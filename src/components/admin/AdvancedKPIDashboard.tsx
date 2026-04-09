@@ -111,6 +111,7 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
       return { kpis, trend, radarData };
     },
     refetchInterval: visibleInterval,
+    staleTime: 1000 * 60 * 2,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

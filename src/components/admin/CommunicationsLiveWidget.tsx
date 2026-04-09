@@ -73,6 +73,7 @@ export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget()
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (!data) return null;

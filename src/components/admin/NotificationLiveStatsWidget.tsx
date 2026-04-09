@@ -63,6 +63,7 @@ export const NotificationLiveStatsWidget = memo(function NotificationLiveStatsWi
       return { total, readCount, readRate, activeRules, typeData, trendData, channelData };
     },
     refetchInterval: visibleInterval,
+    staleTime: 1000 * 60 * 2,
   });
 
   if (!data) return null;

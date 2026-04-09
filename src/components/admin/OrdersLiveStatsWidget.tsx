@@ -73,6 +73,7 @@ export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (!data) return null;

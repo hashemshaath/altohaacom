@@ -62,6 +62,7 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (!data) return null;
