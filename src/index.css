@@ -87,14 +87,15 @@
     --space-24:  96px;
     --space-32:  128px;
 
-    /* Section Padding */
-    --section-y-mobile:   48px;
-    --section-y-tablet:   64px;
+    /* Section Padding — responsive scale */
+    --section-y-mobile:   32px;
+    --section-y-tablet:   48px;
     --section-y-desktop:  96px;
 
     /* Container */
-    --container-max:      1200px;
-    --container-px:       24px;
+    --container-max:      1280px;
+    --container-px:       32px;
+    --container-px-tablet: 24px;
     --container-px-mobile: 16px;
 
     /* ── BORDER RADIUS ────────────────────────────── */
@@ -123,7 +124,7 @@
     /* ═══ SHADCN/TAILWIND SEMANTIC TOKENS ═══════════
        These map to the new palette so existing components
        using hsl(var(--primary)) etc. keep working.         */
-    --background: 0 0% 98%;          /* --bg-surface #F8F9FB */
+    --background: 0 0% 100%;          /* #FFFFFF — clean white */
     --foreground: 0 0% 24%;          /* --color-body #3D3D3D */
 
     --card: 0 0% 100%;

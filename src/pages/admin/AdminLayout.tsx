@@ -51,7 +51,7 @@ export default function AdminLayout() {
         </aside>
 
         <main className="min-w-0 flex-1 overflow-x-hidden">
-          <div className="container space-y-4 py-5">
+          <div className="container space-y-4 px-4 sm:px-6 lg:px-8 py-5">
             <AdminPendingBanner />
             <AdminBreadcrumb />
             <WidgetErrorBoundary name="admin-page">
