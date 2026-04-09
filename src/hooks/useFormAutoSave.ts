@@ -61,12 +61,12 @@ export function useFormAutoSave<T>({
   }, [values, delay, enabled, storageKey]);
 
   const clearDraft = useCallback(() => {
-    localStorage.removeItem(storageKey);
+    try { localStorage.removeItem(storageKey); } catch { /* restricted */ }
     setLastSaved(null);
   }, [storageKey]);
 
   const hasDraft = useCallback(() => {
-    return !!localStorage.getItem(storageKey);
+    try { return !!localStorage.getItem(storageKey); } catch { return false; }
   }, [storageKey]);
 
   return { loadDraft, clearDraft, hasDraft, lastSaved };
