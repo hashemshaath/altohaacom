@@ -33,7 +33,8 @@ export const CountryBreakdownChart = memo(function CountryBreakdownChart({ metri
       if (!data) return [];
 
       const counts: Record<string, number> = {};
-      (data as { country_code: string }[]).forEach((row) => { const code = row.country_code; if (code) counts[code] = (counts[code] || 0) + 1; });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table query
+      (data as any[]).forEach((row: { country_code: string }) => { const code = row.country_code; if (code) counts[code] = (counts[code] || 0) + 1; });
 
       const countryMap = new Map((countries || []).map((c) => [c.code, c]));
       return Object.entries(counts)

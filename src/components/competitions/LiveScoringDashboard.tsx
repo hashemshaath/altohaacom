@@ -50,7 +50,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
         .eq("competition_registrations.competition_id", competitionId);
       if (error) throw error;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex nested join query
-      return data as Record<string, unknown>[];
+      return data as any[];
     },
     refetchInterval: isLive ? 5000 : false,
   });
