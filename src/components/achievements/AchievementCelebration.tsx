@@ -42,14 +42,14 @@ export const AchievementCelebration = forwardRef<HTMLDivElement>(function Achiev
       <div className="relative pointer-events-auto animate-scale-in z-10 mx-4 max-w-sm w-full">
         <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card shadow-2xl shadow-primary/10">
           <div className="absolute inset-0 overflow-hidden">
-            {Array.from({ length: 12 }).map((_, i) => (
+            {PARTICLE_POSITIONS.map((p, i) => (
               <div
                 key={i}
                 className="absolute h-1.5 w-1.5 rounded-full bg-primary/40 animate-bounce"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 2}s`,
+                  left: p.left,
+                  top: p.top,
+                  animationDelay: p.delay,
                   animationDuration: `${1.5 + Math.random()}s`,
                 }}
               />
