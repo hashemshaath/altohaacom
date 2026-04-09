@@ -152,7 +152,7 @@ export default function MyJobApplications() {
                             {format(new Date(app.created_at), "MMM d, yyyy")}
                           </span>
                           {app.cover_letter && (
-                            <FileText className="h-3 w-3 text-muted-foreground/30" title={isAr ? "رسالة تعريفية مرفقة" : "Cover letter attached"} />
+                            <FileText className="h-3 w-3 text-muted-foreground/30" aria-label={isAr ? "رسالة تعريفية مرفقة" : "Cover letter attached"} />
                           )}
                         </div>
                       </div>
