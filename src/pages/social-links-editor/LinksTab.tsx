@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { detectLinkType } from "@/lib/socialLinksConstants";
 import type { ExtraSettings } from "@/lib/socialLinksConstants";
-import type { LinkItem } from "./types";
+import type { LinkItem, PageForm, ItemMutation } from "./types";
 
 interface Props {
   items: LinkItem[];
@@ -27,12 +27,12 @@ interface Props {
   pageId: string | undefined;
   userId: string | undefined;
   isAr: boolean;
-  addItem: any;
-  updateItem: any;
-  deleteItem: any;
-  reorderItems: any;
-  upsertPage: any;
-  form: any;
+  addItem: ItemMutation;
+  updateItem: ItemMutation;
+  deleteItem: ItemMutation;
+  reorderItems: ItemMutation;
+  upsertPage: ItemMutation;
+  form: PageForm;
   handleExportLinks: () => void;
   handleExportCSV: () => void;
   handleImportLinks: (file: File) => void;

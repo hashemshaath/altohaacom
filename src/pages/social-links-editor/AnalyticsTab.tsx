@@ -9,14 +9,14 @@ import {
 } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
-import type { LinkItem } from "./types";
+import type { LinkItem, VisitorStats, ClickAnalytics, BioNotification } from "./types";
 
 interface Props {
   items: LinkItem[];
   isAr: boolean;
-  visitorStats: any;
-  clickAnalytics: any;
-  bioNotifications: any[] | undefined;
+  visitorStats: VisitorStats | null | undefined;
+  clickAnalytics: ClickAnalytics | null | undefined;
+  bioNotifications: BioNotification[] | undefined;
   pageId: string | undefined;
 }
 
@@ -332,7 +332,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
               <div>
                 <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
                 <div className="flex flex-wrap gap-1.5">
-                  {Object.entries(visitorStats.devices).sort((a: any, b: any) => b[1] - a[1]).map(([device, count]: any) => (
+                  {Object.entries(visitorStats.devices).sort((a, b) => (b[1] as number) - (a[1] as number)).map(([device, count]) => (
                     <Badge key={device} variant="outline" className="text-[12px] gap-1">
                       <Smartphone className="h-2.5 w-2.5" />{device} <span className="font-bold">{count}</span>
                     </Badge>
@@ -344,8 +344,8 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
               <div>
                 <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الدول" : "Countries"}</p>
                 <div className="space-y-1">
-                  {Object.entries(visitorStats.countries).sort((a: any, b: any) => b[1] - a[1]).slice(0, 5).map(([country, count]: any) => {
-                    const pct = Math.round((count / visitorStats.total) * 100);
+                  {Object.entries(visitorStats.countries).sort((a, b) => (b[1] as number) - (a[1] as number)).slice(0, 5).map(([country, count]) => {
+                    const pct = Math.round(((count as number) / visitorStats.total) * 100);
                     return (
                       <div key={country} className="flex items-center gap-2">
                         <span className="text-xs w-16 truncate">{country}</span>
@@ -369,11 +369,11 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                 return "other";
               };
               const cats: Record<string, { count: number; sources: Record<string, number> }> = {};
-              Object.entries(visitorStats.referrers).forEach(([ref, count]: any) => {
+              Object.entries(visitorStats.referrers).forEach(([ref, count]) => {
                 const cat = categorize(ref);
                 if (!cats[cat]) cats[cat] = { count: 0, sources: {} };
-                cats[cat].count += count;
-                cats[cat].sources[ref] = count;
+                cats[cat].count += count as number;
+                cats[cat].sources[ref] = count as number;
               });
               const catLabels: Record<string, { en: string; ar: string; emoji: string; color: string }> = {
                 direct: { en: "Direct", ar: "مباشر", emoji: "🔗", color: "bg-chart-1/60" },
@@ -404,7 +404,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                           </div>
                           {Object.keys(sources).length > 1 && (
                             <div className="ps-5 space-y-0.5">
-                              {Object.entries(sources).sort((a: any, b: any) => b[1] - a[1]).slice(0, 4).map(([src, cnt]: any) => (
+                              {Object.entries(sources).sort((a, b) => (b[1] as number) - (a[1] as number)).slice(0, 4).map(([src, cnt]) => (
                                 <div key={src} className="flex items-center justify-between text-[12px] text-muted-foreground">
                                   <span className="truncate max-w-[70%]">{src}</span>
                                   <span className="tabular-nums font-medium">{cnt}</span>
@@ -521,7 +521,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
             <Button variant="ghost" size="sm" className="w-full mt-3 text-xs text-muted-foreground" onClick={async () => {
               const unreadIds = bioNotifications.filter(n => !n.is_read).map(n => n.id);
               if (unreadIds.length === 0) return;
-              await supabase.from("notifications").update({ is_read: true } as any).in("id", unreadIds);
+              await supabase.from("notifications").update({ is_read: true }).in("id", unreadIds);
             }}>
               {isAr ? "تحديد الكل كمقروء" : "Mark all as read"}
             </Button>
