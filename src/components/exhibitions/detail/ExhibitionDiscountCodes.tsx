@@ -75,7 +75,7 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
   });
 
   const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
+    navigator.clipboard.writeText(code).then(null, () => {});
     toast({ title: t("Copied! 📋", "تم النسخ! 📋") });
   };
 

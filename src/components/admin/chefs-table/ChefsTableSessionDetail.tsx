@@ -103,7 +103,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
               variant="outline"
               className="gap-1 shrink-0"
               onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/evaluation-report/${(session as unknown as Record<string, unknown>).report_token}`);
+                navigator.clipboard.writeText(`${window.location.origin}/evaluation-report/${(session as unknown as Record<string, unknown>).report_token}`).then(null, () => {});
                 toast.success(isAr ? "تم نسخ الرابط" : "Link copied!");
               }}
             >

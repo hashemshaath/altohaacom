@@ -80,7 +80,7 @@ export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
 
   const handleCopy = () => {
     if (!qrCode) return;
-    navigator.clipboard.writeText(qrCode.code);
+    navigator.clipboard.writeText(qrCode.code).then(null, () => {});
     toast({ title: isAr ? "تم النسخ" : "Copied", description: qrCode.code });
   };
 

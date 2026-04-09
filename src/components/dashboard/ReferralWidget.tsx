@@ -43,7 +43,7 @@ export const ReferralWidget = memo(function ReferralWidget() {
     : "";
 
   const copyLink = () => {
-    navigator.clipboard.writeText(referralLink);
+    navigator.clipboard.writeText(referralLink).then(null, () => {});
     toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
   };
 

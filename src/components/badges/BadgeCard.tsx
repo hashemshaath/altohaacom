@@ -48,7 +48,7 @@ export const BadgeCard = memo(function BadgeCard({ badge, competitionTitle, earn
     if (navigator.share) {
       navigator.share({ title: name, text, url }).then(null, () => {});
     } else {
-      navigator.clipboard.writeText(`${text}\n${url}`);
+      navigator.clipboard.writeText(`${text}\n${url}`).then(null, () => {});
     }
   };
 

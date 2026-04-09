@@ -176,7 +176,7 @@ export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId
                           size="sm"
                           className="h-7 w-7 p-0"
                           onClick={() => {
-                            navigator.clipboard.writeText(code.blind_code);
+                            navigator.clipboard.writeText(code.blind_code).then(null, () => {});
                             toast({ title: isAr ? "تم النسخ" : "Copied" });
                           }}
                         >
