@@ -35,10 +35,11 @@ const dataPrefetchers: Record<string, () => Promise<unknown>> = {
     await supabase.from("exhibitions").select("id,title,slug,start_date,end_date,venue,city,featured_image_url,status").in("status", ["active", "upcoming"]).order("start_date", { ascending: false }).limit(10);
   },
   "/recipes": async () => {
-    await (supabase.from("recipes").select("id,title,slug,featured_image_url") as unknown as ReturnType<typeof supabase.from>).eq("status", "published").order("created_at", { ascending: false }).limit(12);
+    // recipes/shop_products may not be in generated types yet — safe cast
+    await (supabase.from("recipes") as any).select("id,title,slug,featured_image_url").eq("status", "published").order("created_at", { ascending: false }).limit(12);
   },
   "/shop": async () => {
-    await (supabase.from("shop_products").select("id,name,slug,price,currency,images,status") as unknown as ReturnType<typeof supabase.from>).eq("status", "active").order("created_at", { ascending: false }).limit(12);
+    await (supabase.from("shop_products") as any).select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12);
   },
 };
 
