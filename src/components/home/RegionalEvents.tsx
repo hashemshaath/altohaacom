@@ -98,7 +98,7 @@ export function RegionalEvents() {
                 <ArrowRight className="h-4 w-4" />
               </button>
 
-              <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as any} dir={isAr ? "rtl" : "ltr"}>
+              <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties} dir={isAr ? "rtl" : "ltr"}>
                 {filteredComps.map((item) => (
                   <EventCard key={item.id} item={item} isAr={isAr} />
                 ))}
