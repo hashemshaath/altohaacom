@@ -86,6 +86,20 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      transitionDuration: {
+        "150": "150ms",
+        "280": "280ms",
+        "350": "350ms",
+        "400": "400ms",
+        "500": "500ms",
+        "600": "600ms",
+        "1200": "1200ms",
+        "2000": "2000ms",
+      },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "out-quint": "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
       fontFamily: {
         sans: ["IBM Plex Arabic", "IBM Plex Sans", "system-ui", "sans-serif"],
         serif: ["IBM Plex Arabic", "system-ui", "sans-serif"],
