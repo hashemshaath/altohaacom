@@ -1,11 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, forwardRef, memo } from "react";
 import { useLocation } from "react-router-dom";
 
 /**
  * Announces route changes to screen readers via a live region.
- * Also manages focus: moves focus to the main content area on navigation.
  */
-export function RouteAnnouncer() {
+export const RouteAnnouncer = memo(forwardRef<HTMLDivElement>(function RouteAnnouncer(_props, _ref) {
   const location = useLocation();
   const announcerRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
@@ -16,20 +15,16 @@ export function RouteAnnouncer() {
       return;
     }
 
-    // Derive page title from document or path
     const title = document.title || location.pathname.replace(/\//g, " ").trim() || "Page";
 
-    // Announce to screen readers
     if (announcerRef.current) {
       announcerRef.current.textContent = `Navigated to ${title}`;
     }
 
-    // Move focus to main content for keyboard users
     const main = document.getElementById("main-content");
     if (main) {
       main.setAttribute("tabindex", "-1");
       main.focus({ preventScroll: true });
-      // Remove tabindex after focus so it doesn't interfere with natural tab order
       const cleanup = () => main.removeAttribute("tabindex");
       main.addEventListener("blur", cleanup, { once: true });
     }
@@ -44,4 +39,4 @@ export function RouteAnnouncer() {
       className="sr-only"
     />
   );
-}
+}));

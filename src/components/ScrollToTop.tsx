@@ -1,7 +1,7 @@
-import { useEffect, memo } from "react";
+import { useEffect, memo, forwardRef } from "react";
 import { useLocation } from "react-router-dom";
 
-export const ScrollToTop = memo(function ScrollToTop() {
+export const ScrollToTop = memo(forwardRef<HTMLDivElement>(function ScrollToTop(_props, _ref) {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -9,4 +9,4 @@ export const ScrollToTop = memo(function ScrollToTop() {
   }, [pathname]);
 
   return null;
-});
+}));

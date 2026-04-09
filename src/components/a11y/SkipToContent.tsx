@@ -1,7 +1,7 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
-export const SkipToContent = memo(function SkipToContent() {
+export const SkipToContent = memo(forwardRef<HTMLDivElement>(function SkipToContent(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -21,4 +21,4 @@ export const SkipToContent = memo(function SkipToContent() {
       </a>
     </>
   );
-});
+}));
