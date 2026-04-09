@@ -766,14 +766,14 @@ export default function Auth() {
 
                 <div className="space-y-1.5">
                   <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
-                  <Input type="password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
+                  <Input type="password" autoComplete="new-password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
                   <PasswordStrengthMeter password={resetPassword} />
                   {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
                 </div>
 
                 <div className="space-y-1.5">
                   <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-                  <Input type="password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
+                  <Input type="password" autoComplete="new-password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
                   {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
                 </div>
 
