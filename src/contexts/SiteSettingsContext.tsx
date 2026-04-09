@@ -19,7 +19,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
         .select("key, value");
       const map: SiteSettings = {};
       (data || []).forEach((row) => {
-        try { map[row.key] = typeof row.value === "string" ? JSON.parse(row.value) : row.value; } catch { map[row.key] = row.value; }
+        try { map[row.key] = typeof row.value === "string" ? JSON.parse(row.value) : row.value; } catch { map[row.key] = row.value as unknown as Record<string, any>; }
       });
       return map;
     },
