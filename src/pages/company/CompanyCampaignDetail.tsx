@@ -440,7 +440,7 @@ export default function CompanyCampaignDetail() {
                 return (
                   <Card
                     key={c.id}
-                    className="group overflow-hidden animate-fade-in border-border/50 transition-all hover:shadow-lg hover:-translate-y-1"
+                    className="group overflow-hidden animate-fade-in border-border/50 transition-all hover:shadow-lg hover:-translate-y-0.5"
                     style={{ animationDelay: `${idx * 0.05}s` }}
                   >
                     {/* Image preview */}

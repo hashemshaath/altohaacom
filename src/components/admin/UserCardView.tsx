@@ -36,7 +36,7 @@ export const UserCard = memo(function UserCard({ user, onView }: UserCardProps) 
     : "bg-muted text-muted-foreground border-border/30";
 
   return (
-    <Card className="group relative overflow-hidden border-border/40 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 hover:border-primary/20 rounded-2xl">
+    <Card className="group relative overflow-hidden border-border/40 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 hover:border-primary/20 rounded-2xl">
       {/* Accent top bar */}
       <div className={`absolute inset-x-0 top-0 h-1 rounded-t-2xl ${
         user.account_status === "active" ? "bg-chart-2" : 

@@ -96,7 +96,7 @@ export const ChefsTableBenefits = memo(function ChefsTableBenefits({ isAr }: Che
           {benefits.map((b, i) => (
             <div
               key={i}
-              className="group rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]"
+              className="group rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]"
             >
               <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${b.color} mb-4 transition-transform duration-300 group-hover:scale-110`}>
                 <b.icon className="h-5.5 w-5.5" />

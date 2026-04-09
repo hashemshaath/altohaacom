@@ -421,7 +421,7 @@ export default function OrganizersAdmin() {
                 {pagination.paginated.map((org: any) => {
                   const pct = getProfileCompleteness(org);
                   return (
-                    <Card key={org.id} className="rounded-2xl border-border/40 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                    <Card key={org.id} className="rounded-2xl border-border/40 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                       <div className="relative h-24 bg-gradient-to-br from-primary/20 to-primary/5">
                         {org.cover_image_url && <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />}
                         <div className="absolute top-2 end-2 flex gap-1">

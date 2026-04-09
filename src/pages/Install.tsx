@@ -146,7 +146,7 @@ export default function Install() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             {features.map((f, i) => (
-              <Card key={i} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20">
+              <Card key={i} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20">
                 <CardContent className="flex items-start gap-3 pt-6">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 ring-1 ring-primary/10">
                     <f.icon className="h-5 w-5 text-primary" />

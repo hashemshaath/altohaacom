@@ -720,7 +720,7 @@ export default function KnowledgeAdmin() {
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {references?.map(ref => (
-              <Card key={ref.id} className="overflow-hidden rounded-2xl border-border/40 hover:shadow-lg hover:-translate-y-1 transition-all group">
+              <Card key={ref.id} className="overflow-hidden rounded-2xl border-border/40 hover:shadow-lg hover:-translate-y-0.5 transition-all group">
                 <div className="aspect-video relative overflow-hidden">
                   <img
                     src={ref.image_url}

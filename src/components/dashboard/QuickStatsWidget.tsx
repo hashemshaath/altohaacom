@@ -20,7 +20,7 @@ interface StatCardProps {
 
 function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColor = "text-primary", accent = "border-primary/20" }: StatCardProps) {
   return (
-    <Card className={`group relative overflow-hidden border-s-4 ${accent} bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:bg-card`}>
+    <Card className={`group relative overflow-hidden border-s-4 ${accent} bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 hover:bg-card`}>
       <div className="pointer-events-none absolute -end-6 -top-6 h-12 w-12 rounded-full bg-primary/5 blur-xl transition-all duration-500 group-hover:h-24 group-hover:w-24 group-hover:bg-primary/10" />
       <CardContent className="flex items-center gap-2.5 sm:gap-4 p-3 sm:p-4">
         <div className={`flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl sm:rounded-2xl ${iconBg} shadow-inner transition-all duration-500 group-hover:scale-110 group-hover:rotate-3`}>

@@ -38,7 +38,7 @@ export const ChefsTableCategories = memo(function ChefsTableCategories({ isAr }:
           {categories.map((cat, i) => (
             <div
               key={i}
-              className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]"
+              className="group flex flex-col items-center gap-3 rounded-2xl border border-border/40 bg-card p-6 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]"
             >
               <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${cat.color} transition-transform duration-300 group-hover:scale-110`}>
                 <cat.icon className="h-6 w-6" />

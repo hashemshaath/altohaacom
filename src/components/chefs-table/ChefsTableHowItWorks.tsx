@@ -80,7 +80,7 @@ export const ChefsTableHowItWorks = memo(function ChefsTableHowItWorks({ isAr }:
           {steps.map((step, i) => (
             <div
               key={i}
-              className="group relative rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]"
+              className="group relative rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]"
             >
               {/* Step number */}
               <div className="absolute top-5 end-5 text-4xl font-black text-muted-foreground/10 select-none">

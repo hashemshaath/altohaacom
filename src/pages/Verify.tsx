@@ -311,7 +311,7 @@ export default function Verify() {
                 { icon: Shield, color: "text-chart-3", bg: "bg-chart-3/10", title: isAr ? "تحقق فوري" : "Instant Verification", desc: isAr ? "تحقق فوري ومتابعة لعدد مرات المسح" : "Instant verification with scan count tracking" },
                 { icon: UserPlus, color: "text-chart-4", bg: "bg-chart-4/10", title: isAr ? "حفظ جهات الاتصال" : "Save Contacts", desc: isAr ? "حفظ بيانات الحساب في دليل الهاتف" : "Save account details to phone contacts" },
               ].map((item) => (
-                <Card key={item.title} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <Card key={item.title} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
                   <CardContent className="pt-6 text-center">
                     <div className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg}`}>
                       <item.icon className={`h-7 w-7 ${item.color}`} />

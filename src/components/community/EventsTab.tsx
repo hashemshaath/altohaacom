@@ -316,7 +316,7 @@ export const EventsTab = memo(function EventsTab() {
         <TabsContent value="events">
           <div className="grid gap-3 sm:grid-cols-2">
             {events.map((event) => (
-              <Card key={event.id} className="group border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 h-full">
+              <Card key={event.id} className="group border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 h-full">
                 <CardContent className="p-4 flex flex-col h-full">
                   <div className="mb-2 flex items-start justify-between gap-2">
                     <h3 className="text-sm font-bold leading-tight">{event.title}</h3>

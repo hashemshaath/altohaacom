@@ -106,7 +106,7 @@ export default function Referrals() {
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-8">
           {statCards.map((s) => (
-            <Card key={s.label} className="border-border/50 group transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+            <Card key={s.label} className="border-border/50 group transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20">
               <CardContent className="flex items-center gap-3 p-4 sm:p-5">
                 <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${s.bg} transition-all duration-300 group-hover:scale-110 group-hover:shadow-md`}>
                   <s.icon className={`h-5 w-5 ${s.color}`} />
@@ -306,7 +306,7 @@ export default function Referrals() {
                 return (
                   <Card
                     key={milestone.id}
-                    className={`group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+                    className={`group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${
                       achieved
                         ? "border-chart-2/40 bg-gradient-to-br from-chart-2/8 to-background shadow-sm shadow-chart-2/10"
                         : isNext

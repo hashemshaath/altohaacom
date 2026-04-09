@@ -296,7 +296,7 @@ export default function Entities() {
                   const followerCount = (entity as unknown as Record<string, unknown[]>).entity_followers?.length || 0;
 
                   return (
-                    <Card key={entity.id} className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20">
+                    <Card key={entity.id} className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 hover:border-primary/20">
                       {/* Cover / Logo Header */}
                       <div className="relative h-36 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5">
                         {entity.cover_image_url ? (

@@ -414,7 +414,7 @@ const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sect
         <div className="flex gap-2.5 overflow-x-auto pb-2 sm:pb-0 sm:grid sm:grid-cols-5 lg:grid-cols-11 sm:overflow-visible scrollbar-none touch-manipulation" dir={isAr ? "rtl" : "ltr"}>
           {sections.map((s) => (
             <Link key={s.title} to={s.href} className="group shrink-0 sm:shrink" {...prefetchProps(s.href)}>
-              <div className={`flex flex-col items-center gap-2 p-3.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 active:scale-[0.95] w-[78px] sm:w-auto ${s.glow}`}>
+              <div className={`flex flex-col items-center gap-2 p-3.5 rounded-2xl border border-border/30 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-0.5 active:scale-[0.95] w-[78px] sm:w-auto ${s.glow}`}>
                 <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg} ring-1 ${s.ring} transition-all duration-300 group-hover:scale-110 group-hover:rotate-3`}>
                   <s.icon className={`h-5 w-5 ${s.color}`} />
                 </div>

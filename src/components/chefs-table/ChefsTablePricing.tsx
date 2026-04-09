@@ -93,7 +93,7 @@ export const ChefsTablePricing = memo(function ChefsTablePricing({ isAr, onReque
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`relative flex flex-col rounded-2xl border-2 bg-card p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${plan.color}`}
+              className={`relative flex flex-col rounded-2xl border-2 bg-card p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 ${plan.color}`}
             >
               {/* Badge */}
               {plan.badge && (

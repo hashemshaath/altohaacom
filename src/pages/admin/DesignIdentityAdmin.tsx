@@ -271,7 +271,7 @@ export default function DesignIdentityAdmin() {
           const isConfigured = !!settings[section.settingsKey] && Object.keys(settings[section.settingsKey]).length > 0;
           return (
             <Link key={section.to} to={section.to} className="group" style={getStyle(i + 4)}>
-              <Card className="h-full rounded-2xl border-border/40 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30 overflow-hidden">
+              <Card className="h-full rounded-2xl border-border/40 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/30 overflow-hidden">
                 <div className={`h-1 bg-gradient-to-r ${section.accent}`} />
                 <CardContent className="p-4">
                   <div className="flex items-start justify-between mb-2">

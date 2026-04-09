@@ -47,7 +47,7 @@ export const ChefsTableClients = memo(function ChefsTableClients({ isAr }: Props
           {CLIENTS.map((client, i) => (
             <div
               key={i}
-              className="group flex flex-col items-center gap-3 rounded-2xl border border-border/50 bg-background p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20"
+              className="group flex flex-col items-center gap-3 rounded-2xl border border-border/50 bg-background p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20"
             >
               <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${client.color} transition-transform duration-300 group-hover:scale-110`}>
                 <span className="text-xl font-black">{(isAr ? client.name_ar : client.name).charAt(0)}</span>

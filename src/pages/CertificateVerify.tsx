@@ -324,7 +324,7 @@ export default function CertificateVerify() {
                 { icon: CheckCircle, color: "text-chart-3", bg: "bg-chart-3/10", title: language === "ar" ? "تحقق فوري" : "Instant Verification", desc: language === "ar" ? "احصل على نتائج التحقق فوراً" : "Get verification results instantly" },
                 { icon: Award, color: "text-chart-4", bg: "bg-chart-4/10", title: language === "ar" ? "معتمد رسمياً" : "Officially Certified", desc: language === "ar" ? "شهادات صادرة من جهات معتمدة" : "Certificates issued by authorized bodies" },
               ].map((item) => (
-                <Card key={item.title} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <Card key={item.title} className="border-border/50 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
                   <CardContent className="pt-6 text-center">
                     <div className={`mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl ${item.bg}`}>
                       <item.icon className={`h-7 w-7 ${item.color}`} />
