@@ -53,7 +53,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
         setCounts(reactionCounts);
 
         // Get user's own reactions
-        const sessionId = getSessionId();
+       const sessionId = getReactionSessionId();
 
         let userQuery = supabase
           .from("article_reactions")
@@ -84,7 +84,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
 
   const handleReaction = useCallback(async (key: string) => {
     const isActive = !!selected[key];
-    const sessionId = getSessionId();
+    const sessionId = getReactionSessionId();
 
     // Optimistic update
     setSelected(prev => ({ ...prev, [key]: !isActive }));
