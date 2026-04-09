@@ -16,7 +16,7 @@ export function useLoginStreak() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("user_streaks")
-        .select("*")
+        .select("id, user_id, current_streak, longest_streak, last_activity_date, streak_type, updated_at")
         .eq("user_id", user!.id)
         .eq("streak_type", "login")
         .maybeSingle();
@@ -35,7 +35,7 @@ export function useLoginStreak() {
       // Check existing streak
       const { data: existing } = await supabase
         .from("user_streaks")
-        .select("*")
+        .select("id, current_streak, longest_streak, last_activity_date")
         .eq("user_id", user.id)
         .eq("streak_type", "login")
         .maybeSingle();

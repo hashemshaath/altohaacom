@@ -20,7 +20,7 @@ export function useContentReviews(entityType: string, entityId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("content_reviews")
-        .select("*")
+        .select("id, user_id, entity_type, entity_id, rating, content, is_visible, helpful_count, created_at, updated_at")
         .eq("entity_type", entityType)
         .eq("entity_id", entityId)
         .eq("is_visible", true)

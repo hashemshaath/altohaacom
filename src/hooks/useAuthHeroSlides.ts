@@ -19,7 +19,7 @@ export function useAuthHeroSlides(pageType: "individual" | "company" = "individu
     queryFn: async () => {
       const { data, error } = await supabase
         .from("auth_hero_slides")
-        .select("*")
+        .select("id, title, title_ar, subtitle, subtitle_ar, image_url, page_type, sort_order, is_active")
         .eq("is_active", true)
         .in("page_type", [pageType, "both"])
         .order("sort_order", { ascending: true });

@@ -46,6 +46,7 @@ export function useOfflineSync() {
 
       const tasks: Promise<void>[] = [];
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- cacheItems accepts generic cacheable items
       if (compRes.status === "fulfilled" && compRes.value.data) {
         tasks.push(cacheItems("competitions", compRes.value.data as any));
       }
@@ -72,6 +73,7 @@ export function useOfflineSync() {
     let succeeded = 0;
     for (const action of actions) {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table from offline queue
         if (action.type === "insert") {
           await (supabase.from(action.table as any) as any).insert(action.payload);
           succeeded++;
