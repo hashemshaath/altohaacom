@@ -1,4 +1,4 @@
-import { useState, memo, useCallback, useMemo } from "react";
+import { useState, memo, useCallback, useMemo, lazy, Suspense } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,13 +20,15 @@ import {
   Heart, Share2, TrendingUp, Award, Zap, Eye,
   Search, SlidersHorizontal, Grid3X3, LayoutList, ArrowUpDown,
 } from "lucide-react";
-import { SupplierContactForm } from "@/components/supplier/SupplierContactForm";
-import { SupplierShareButtons } from "@/components/supplier/SupplierShareButtons";
-import { SupplierReviews } from "@/components/supplier/SupplierReviews";
-import { SupplierWishlistButton } from "@/components/supplier/SupplierWishlistButton";
-import { SupplierBadges } from "@/components/supplier/SupplierBadges";
-import { SupplierProductCard } from "@/components/supplier/SupplierProductCard";
-import { SupplierProductDetail } from "@/components/supplier/SupplierProductDetail";
+import { safeLazy } from "@/lib/safeLazy";
+
+const SupplierContactForm = safeLazy(() => import("@/components/supplier/SupplierContactForm").then(m => ({ default: m.SupplierContactForm })));
+const SupplierShareButtons = safeLazy(() => import("@/components/supplier/SupplierShareButtons").then(m => ({ default: m.SupplierShareButtons })));
+const SupplierReviews = safeLazy(() => import("@/components/supplier/SupplierReviews").then(m => ({ default: m.SupplierReviews })));
+const SupplierWishlistButton = safeLazy(() => import("@/components/supplier/SupplierWishlistButton").then(m => ({ default: m.SupplierWishlistButton })));
+const SupplierBadges = safeLazy(() => import("@/components/supplier/SupplierBadges").then(m => ({ default: m.SupplierBadges })));
+const SupplierProductCard = safeLazy(() => import("@/components/supplier/SupplierProductCard").then(m => ({ default: m.SupplierProductCard })));
+const SupplierProductDetail = safeLazy(() => import("@/components/supplier/SupplierProductDetail").then(m => ({ default: m.SupplierProductDetail })));
 import { useSupplierViewTracker } from "@/hooks/useSupplierViewTracker";
 import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "@/components/shop/CartSheet";
