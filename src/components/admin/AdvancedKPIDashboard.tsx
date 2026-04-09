@@ -13,9 +13,9 @@ import { Activity, Users, Trophy, FileText, DollarSign, TrendingUp, Ticket } fro
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
-import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
   CHART_COLORS, TOOLTIP_STYLE, AXIS_TICK, X_AXIS_PROPS, Y_AXIS_PROPS, GRID_PROPS, getNoDataText,
 } from "@/lib/chartConfig";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
   const { language } = useLanguage();
