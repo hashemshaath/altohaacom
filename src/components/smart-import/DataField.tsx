@@ -25,7 +25,7 @@ export const DataField = React.memo(({ label, value, copyable, multiline }: Data
         {copyable && (
           <Button
             variant="ghost" size="icon" className="h-6 w-6 shrink-0"
-            onClick={() => { navigator.clipboard.writeText(value); toast({ title: "Copied!" }); }}
+            onClick={() => { navigator.clipboard.writeText(value).then(null, () => {}); toast({ title: "Copied!" }); }}
           >
             <Copy className="h-3 w-3" />
           </Button>

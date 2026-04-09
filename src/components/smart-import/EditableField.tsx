@@ -130,7 +130,7 @@ export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, cop
             {copyable && value && (
               <Button
                 variant="ghost" size="icon" className="h-6 w-6 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                onClick={() => { navigator.clipboard.writeText(value); toast({ title: "Copied!" }); }}
+                onClick={() => { navigator.clipboard.writeText(value).then(null, () => {}); toast({ title: "Copied!" }); }}
               >
                 <Copy className="h-3 w-3" />
               </Button>

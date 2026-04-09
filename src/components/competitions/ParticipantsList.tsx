@@ -252,7 +252,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
 
   const copyRegistrationLink = () => {
     const url = `${window.location.origin}/competitions/${competitionId}`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url).then(null, () => {});
     toast({ title: isAr ? "تم نسخ رابط التسجيل!" : "Registration link copied!" });
   };
 

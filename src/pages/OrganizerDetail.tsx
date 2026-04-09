@@ -166,7 +166,7 @@ export default function OrganizerDetail() {
     if (navigator.share) {
       navigator.share({ title: org?.name || "", url });
     } else {
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(url).then(null, () => {});
       setCopied(true);
       toast.success(isAr ? "تم نسخ الرابط" : "Link copied");
       setTimeout(() => setCopied(false), 2000);

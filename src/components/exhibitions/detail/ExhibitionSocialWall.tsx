@@ -118,7 +118,7 @@ export const ExhibitionSocialWall = memo(function ExhibitionSocialWall({ exhibit
     if (navigator.share) {
       navigator.share({ text, title: exhibitionTitle });
     } else {
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(text).then(null, () => {});
       toast({ title: isAr ? "تم النسخ" : "Copied to clipboard" });
     }
   };

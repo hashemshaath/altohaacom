@@ -31,7 +31,7 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
   const [showQR, setShowQR] = useState(false);
 
   const copyLink = () => {
-    navigator.clipboard.writeText(referralLink);
+    navigator.clipboard.writeText(referralLink).then(null, () => {});
     toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
   };
 
@@ -148,7 +148,7 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
           </span>
           <Button
             onClick={() => {
-              navigator.clipboard.writeText(referralCode);
+              navigator.clipboard.writeText(referralCode).then(null, () => {});
               toast({ title: isAr ? "تم نسخ الكود!" : "Code copied!" });
             }}
             variant="ghost"

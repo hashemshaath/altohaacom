@@ -32,13 +32,13 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
     : "";
 
   const copyLink = useCallback(() => {
-    navigator.clipboard.writeText(referralLink);
+    navigator.clipboard.writeText(referralLink).then(null, () => {});
     toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
   }, [referralLink, isAr, toast]);
 
   const copyCode = useCallback(() => {
     if (referralCode?.code) {
-      navigator.clipboard.writeText(referralCode.code);
+      navigator.clipboard.writeText(referralCode.code).then(null, () => {});
       toast({ title: isAr ? "تم نسخ الكود!" : "Code copied!" });
     }
   }, [referralCode?.code, isAr, toast]);

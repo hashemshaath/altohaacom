@@ -44,7 +44,7 @@ export const QRCodeDisplay = React.forwardRef<HTMLDivElement, QRCodeDisplayProps
   const verificationUrl = getVerificationUrl(code);
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(code);
+    navigator.clipboard.writeText(code).then(null, () => {});
     toast({
       title: isAr ? "تم النسخ" : "Copied",
       description: isAr ? "تم نسخ الكود" : "Code copied to clipboard",

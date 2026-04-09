@@ -75,7 +75,7 @@ export const GenericSettingsEditor = memo(function GenericSettingsEditor({
   };
 
   const copyValue = (key: string) => {
-    navigator.clipboard.writeText(JSON.stringify(settings[key], null, 2));
+    navigator.clipboard.writeText(JSON.stringify(settings[key], null, 2)).then(null, () => {});
   };
 
   return (

@@ -531,7 +531,7 @@ export default function CertificatesAdmin() {
                               <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setViewCertificate(cert)} title={language === "ar" ? "عرض" : "View"}>
                                 <Eye className="h-3.5 w-3.5" />
                               </Button>
-                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { navigator.clipboard.writeText(cert.verification_code); toast({ title: language === "ar" ? "تم النسخ" : "Copied" }); }}>
+                              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => { navigator.clipboard.writeText(cert.verification_code).then(null, () => {}); toast({ title: language === "ar" ? "تم النسخ" : "Copied" }); }}>
                                 <Copy className="h-3.5 w-3.5" />
                               </Button>
                             </div>

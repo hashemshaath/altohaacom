@@ -102,13 +102,13 @@ export default function MembershipGift() {
   });
 
   const copyCode = () => {
-    navigator.clipboard.writeText(giftCode);
+    navigator.clipboard.writeText(giftCode).then(null, () => {});
     toast.success(isAr ? "تم نسخ الكود" : "Code copied!");
   };
 
   const copyLink = () => {
     const link = `${window.location.origin}/membership/redeem?code=${giftCode}`;
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(link).then(null, () => {});
     toast.success(isAr ? "تم نسخ الرابط" : "Link copied!");
   };
 

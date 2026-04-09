@@ -1071,8 +1071,10 @@ export default function SmartImportAdmin() {
   // Copy all details as JSON
   const copyAllData = useCallback(() => {
     if (details) {
-      navigator.clipboard.writeText(JSON.stringify(details, null, 2));
-      toast({ title: isAr ? "تم نسخ البيانات" : "Data copied to clipboard" });
+      navigator.clipboard.writeText(JSON.stringify(details, null, 2)).then(
+        () => toast({ title: isAr ? "تم نسخ البيانات" : "Data copied to clipboard" }),
+        () => toast({ title: isAr ? "فشل النسخ" : "Copy failed", variant: "destructive" })
+      );
     }
   }, [details, isAr]);
 

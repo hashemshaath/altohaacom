@@ -68,7 +68,7 @@ export default function MembershipReferral() {
     : "";
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(referralLink);
+    navigator.clipboard.writeText(referralLink).then(null, () => {});
     setCopied(true);
     toast.success(isAr ? "تم نسخ الرابط!" : "Link copied!");
     setTimeout(() => setCopied(false), 2000);

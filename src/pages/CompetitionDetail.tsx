@@ -687,7 +687,7 @@ export default function CompetitionDetail() {
                       <Linkedin className="h-3.5 w-3.5" /> LinkedIn
                     </DropdownMenuItem>
                     <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
-                      navigator.clipboard.writeText(window.location.href);
+                      navigator.clipboard.writeText(window.location.href).then(null, () => {});
                       toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
                     }}>
                       <Link2 className="h-3.5 w-3.5" /> {isAr ? "نسخ الرابط" : "Copy Link"}

@@ -85,7 +85,7 @@ export default function MediaAdmin() {
   };
 
   const copyUrl = (url: string) => {
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url).then(null, () => {});
     toast({
       title: language === "ar" ? "تم النسخ" : "Copied",
       description: language === "ar" ? "تم نسخ الرابط" : "URL copied to clipboard",

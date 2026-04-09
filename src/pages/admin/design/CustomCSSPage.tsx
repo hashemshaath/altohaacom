@@ -95,7 +95,7 @@ export default function CustomCSSPage() {
   };
 
   const copySnippet = (code: string, id: string) => {
-    navigator.clipboard.writeText(code);
+    navigator.clipboard.writeText(code).then(null, () => {});
     setCopied(id);
     setTimeout(() => setCopied(null), 2000);
   };

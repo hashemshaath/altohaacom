@@ -179,12 +179,12 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
   ].filter(Boolean) as { label: string; value: string; icon: any }[];
 
   const handleShare = async () => {
-    try { await navigator.share({ title, url: window.location.href }); } catch { await navigator.clipboard.writeText(window.location.href); }
+    try { await navigator.share({ title, url: window.location.href }); } catch { await navigator.clipboard.writeText(window.location.href).then(null, () => {}); }
   };
 
   const copyCoupon = () => {
     if (!couponCode) return;
-    navigator.clipboard.writeText(couponCode);
+    navigator.clipboard.writeText(couponCode).then(null, () => {});
     setCouponCopied(true);
     setTimeout(() => setCouponCopied(false), 2000);
   };

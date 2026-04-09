@@ -100,7 +100,7 @@ export default function QRCodesAdmin() {
   });
 
   const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code);
+    navigator.clipboard.writeText(code).then(null, () => {});
     toast({ title: isAr ? "تم النسخ" : "Copied", description: code });
   };
 

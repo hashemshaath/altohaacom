@@ -57,7 +57,7 @@ export const UserQuickActions = memo(function UserQuickActions({
 
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const copyId = () => {
-    navigator.clipboard.writeText(userId);
+    navigator.clipboard.writeText(userId).then(null, () => {});
     setCopied(true);
     clearTimeout(copyTimeoutRef.current);
     copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);

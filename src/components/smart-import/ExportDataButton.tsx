@@ -59,8 +59,10 @@ export const ExportDataButton = React.memo(({ data, isAr }: ExportDataButtonProp
   }, [data, isAr]);
 
   const copyToClipboard = useCallback(() => {
-    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-    toast({ title: isAr ? "تم النسخ" : "Copied to clipboard" });
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(
+      () => toast({ title: isAr ? "تم النسخ" : "Copied to clipboard" }),
+      () => toast({ title: isAr ? "فشل النسخ" : "Copy failed", variant: "destructive" })
+    );
   }, [data, isAr]);
 
   return (
