@@ -113,7 +113,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
               size="sm"
               variant="outline"
               className="gap-1 shrink-0"
-              onClick={() => window.open(`/evaluation-report/${(session as unknown as Record<string, unknown>).report_token}`, "_blank")}
+              onClick={() => window.open(`/evaluation-report/${(session as unknown as Record<string, unknown>).report_token}`, "_blank", "noopener")}
             >
               <ExternalLink className="h-3 w-3" />
             </Button>
