@@ -43,7 +43,7 @@ export const GroupsTab = memo(function GroupsTab() {
     is_private: false,
   });
 
-  const fetchGroups = async () => {
+  const fetchGroups = useCallback(async () => {
     const { data: groupsData, error } = await supabase
       .from("groups")
       .select("id, name, name_ar, description, description_ar, cover_image_url, is_private, category, created_by, created_at")
@@ -82,11 +82,11 @@ export const GroupsTab = memo(function GroupsTab() {
 
     setGroups(enriched);
     setLoading(false);
-  };
+  }, [user?.id]);
 
   useEffect(() => {
     fetchGroups();
-  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [fetchGroups]);
 
   const handleCreate = async () => {
     if (!user || !form.name.trim()) return;
