@@ -69,7 +69,7 @@ export function useDashboardLayout() {
   const toggleWidget = useCallback((id: string) => {
     setWidgets((prev) => {
       const next = prev.map((w) => (w.id === id ? { ...w, visible: !w.visible } : w));
-      localStorage.setItem(LAYOUT_KEY, JSON.stringify(next));
+      try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(next)); } catch {}
       return next;
     });
   }, []);
@@ -82,7 +82,7 @@ export function useDashboardLayout() {
       if (swapIdx < 0 || swapIdx >= prev.length) return prev;
       const next = [...prev];
       [next[idx], next[swapIdx]] = [next[swapIdx], next[idx]];
-      localStorage.setItem(LAYOUT_KEY, JSON.stringify(next));
+      try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(next)); } catch {}
       return next;
     });
   }, []);

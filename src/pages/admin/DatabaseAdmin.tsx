@@ -219,7 +219,7 @@ export default function DatabaseAdmin() {
                   </div>
                 </div>
                 <div className="mt-3 pt-3 border-t">
-                  <Progress value={Math.random() * 100} className="h-2" />
+                  <Progress value={bucket.files > 0 ? Math.min((bucket.files / 100) * 100, 100) : 0} className="h-2" />
                   <p className="text-xs text-muted-foreground mt-1">
                     {language === "ar" ? "استخدام التخزين" : "Storage usage"}
                   </p>

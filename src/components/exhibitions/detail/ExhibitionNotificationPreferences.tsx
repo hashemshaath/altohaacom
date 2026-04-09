@@ -50,7 +50,7 @@ export const ExhibitionNotificationPreferences = memo(function ExhibitionNotific
   const updatePref = (key: keyof NotifPrefs, value: boolean) => {
     const updated = { ...prefs, [key]: value };
     setPrefs(updated);
-    localStorage.setItem(STORAGE_KEY(exhibitionId), JSON.stringify(updated));
+    try { localStorage.setItem(STORAGE_KEY(exhibitionId), JSON.stringify(updated)); } catch {}
     toast.success(t("Preferences saved", "تم حفظ التفضيلات"));
   };
 
@@ -58,7 +58,7 @@ export const ExhibitionNotificationPreferences = memo(function ExhibitionNotific
     setAllEnabled(enabled);
     const updated = Object.fromEntries(Object.keys(prefs).map(k => [k, enabled])) as unknown as NotifPrefs;
     setPrefs(updated);
-    localStorage.setItem(STORAGE_KEY(exhibitionId), JSON.stringify(updated));
+    try { localStorage.setItem(STORAGE_KEY(exhibitionId), JSON.stringify(updated)); } catch {}
     toast.success(enabled ? t("All notifications enabled", "تم تفعيل جميع الإشعارات") : t("All notifications disabled", "تم تعطيل جميع الإشعارات"));
   };
 

@@ -33,7 +33,7 @@ function loadStats(): ReadingStats {
 }
 
 function saveStats(stats: ReadingStats) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch {}
+  try { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)); } catch {} } catch {}
 }
 
 function getLevel(articles: number): { level: number; title: string; titleAr: string; next: number; progress: number } {

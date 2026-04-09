@@ -11,7 +11,7 @@ export function getSessionId(): string {
     let id = sessionStorage.getItem(SESSION_KEY);
     if (!id) {
       id = crypto.randomUUID();
-      sessionStorage.setItem(SESSION_KEY, id);
+      try { sessionStorage.setItem(SESSION_KEY, id); } catch {}
     }
     return id;
   } catch {

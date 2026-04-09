@@ -111,7 +111,7 @@ export const NotificationPreferences = memo(function NotificationPreferences() {
   };
 
   const save = async () => {
-    localStorage.setItem("altoha_notification_sound", String(soundEnabled));
+    try { localStorage.setItem("altoha_notification_sound", String(soundEnabled)); } catch {}
 
     if (!user) {
       toast({ title: isAr ? "تم حفظ التفضيلات" : "Preferences saved" });

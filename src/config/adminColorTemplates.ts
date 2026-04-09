@@ -182,5 +182,5 @@ export function applyAdminColorTemplate(templateId: string | null) {
   root.style.setProperty("--sidebar-border", colors.border);
   root.style.setProperty("--sidebar-ring", colors.primary);
 
-  localStorage.setItem(ADMIN_COLOR_STORAGE_KEY, templateId);
+  try { localStorage.setItem(ADMIN_COLOR_STORAGE_KEY, templateId); } catch {}
 }

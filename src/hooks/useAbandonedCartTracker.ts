@@ -74,7 +74,7 @@ export function useAbandonedCartTracker(
         .single();
       if (data?.id) {
         abandonedCartIdRef.current = data.id;
-        sessionStorage.setItem("abandoned_cart_id", data.id);
+        try { sessionStorage.setItem("abandoned_cart_id", data.id); } catch {}
       }
     }
   };

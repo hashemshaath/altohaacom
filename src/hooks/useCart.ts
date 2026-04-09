@@ -28,7 +28,7 @@ function loadCart(): CartItem[] {
 }
 
 function saveCart(items: CartItem[]) {
-  try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch { /* restricted */ }
+  try { try { localStorage.setItem(CART_KEY, JSON.stringify(items)); } catch { /* restricted */ } } catch {}
 }
 
 export function useCart() {

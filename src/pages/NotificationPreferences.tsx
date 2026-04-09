@@ -209,12 +209,12 @@ export default function NotificationPreferences() {
 
   const toggleSound = (v: boolean) => {
     setSoundEnabled(v);
-    localStorage.setItem("altoha_sound_enabled", String(v));
+    try { localStorage.setItem("altoha_sound_enabled", String(v)); } catch {}
   };
 
   const toggleDnd = (v: boolean) => {
     setDndMode(v);
-    localStorage.setItem("altoha_dnd", String(v));
+    try { localStorage.setItem("altoha_dnd", String(v)); } catch {}
   };
 
   const { enabledCount, activeCategories, completionScore } = useMemo(() => {

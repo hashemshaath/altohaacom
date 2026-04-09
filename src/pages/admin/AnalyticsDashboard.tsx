@@ -152,7 +152,7 @@ export default memo(function AnalyticsDashboard() {
     const report: SavedReport = { id: crypto.randomUUID(), name: reportName, tab: activeTab, createdAt: new Date().toISOString() };
     const updated = [...savedReports, report];
     setSavedReports(updated);
-    localStorage.setItem("altoha_saved_reports", JSON.stringify(updated));
+    try { localStorage.setItem("altoha_saved_reports", JSON.stringify(updated)); } catch {}
     setSaveReportOpen(false);
     setReportName("");
     toast({ title: isAr ? "تم حفظ التقرير" : "Report saved" });
@@ -161,7 +161,7 @@ export default memo(function AnalyticsDashboard() {
   const handleDeleteReport = (id: string) => {
     const updated = savedReports.filter(r => r.id !== id);
     setSavedReports(updated);
-    localStorage.setItem("altoha_saved_reports", JSON.stringify(updated));
+    try { localStorage.setItem("altoha_saved_reports", JSON.stringify(updated)); } catch {}
   };
 
   const allTabs = TAB_GROUPS.flatMap(g => g.tabs);

@@ -23,7 +23,7 @@ function getReactionSessionId(): string {
   let sid = sessionStorage.getItem("reaction_session_id");
   if (!sid) {
     sid = crypto.randomUUID();
-    sessionStorage.setItem("reaction_session_id", sid);
+    try { sessionStorage.setItem("reaction_session_id", sid); } catch {}
   }
   return sid;
 }

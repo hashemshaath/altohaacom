@@ -74,7 +74,7 @@ function addRecentSearch(q: string) {
   if (!q.trim()) return;
   const list = getRecentSearches().filter(s => s !== q);
   list.unshift(q);
-  localStorage.setItem("job-recent-searches", JSON.stringify(list.slice(0, 5)));
+  try { localStorage.setItem("job-recent-searches", JSON.stringify(list.slice(0, 5))); } catch {}
 }
 
 export default function JobSearch() {
@@ -142,7 +142,7 @@ export default function JobSearch() {
       const next = new Set(prev);
       if (next.has(jobId)) { next.delete(jobId); toast(isAr ? "تمت إزالة الوظيفة" : "Job removed"); }
       else { next.add(jobId); toast(isAr ? "تم حفظ الوظيفة" : "Job saved"); }
-      localStorage.setItem("saved-jobs", JSON.stringify([...next]));
+      try { localStorage.setItem("saved-jobs", JSON.stringify([...next])); } catch {}
       return next;
     });
   }, [isAr]);
