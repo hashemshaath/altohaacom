@@ -107,10 +107,9 @@ export default function Jobs() {
         {/* ═══════ CINEMATIC HERO ═══════ */}
         <section className="relative min-h-[520px] md:min-h-[600px] flex items-center overflow-hidden">
           {/* Background image */}
-          <img loading="lazy" src={heroImage}
-            alt=""
+          <img loading="eager" src={heroImage}
+            alt={isAr ? "بوابة التوظيف في عالم الطهي" : "Culinary jobs portal"}
             className="absolute inset-0 w-full h-full object-cover"
-           
             fetchPriority="high"
           />
           {/* Triple gradient overlay */}
