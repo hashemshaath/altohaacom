@@ -31,7 +31,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [selectedBooth, setSelectedBooth] = useState<any>(null);
+  const [selectedBooth, setSelectedBooth] = useState<(typeof booths)[number] | null>(null);
 
   const { data: booths = [], isLoading } = useQuery({
     queryKey: ["interactive-booths", exhibitionId],

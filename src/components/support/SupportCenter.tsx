@@ -21,7 +21,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
-const STATUS_CONFIG: Record<string, { color: string; icon: any; label: string; labelAr: string }> = {
+const STATUS_CONFIG: Record<string, { color: string; icon: typeof AlertCircle; label: string; labelAr: string }> = {
   open: { color: "bg-blue-100 text-blue-700", icon: AlertCircle, label: "Open", labelAr: "مفتوح" },
   in_progress: { color: "bg-amber-100 text-amber-700", icon: Clock, label: "In Progress", labelAr: "قيد المعالجة" },
   resolved: { color: "bg-green-100 text-green-700", icon: CheckCircle, label: "Resolved", labelAr: "تم الحل" },
@@ -45,7 +45,7 @@ export const SupportCenter = memo(function SupportCenter() {
   const [newTicketOpen, setNewTicketOpen] = useState(false);
   const [form, setForm] = useState({ subject: "", description: "", priority: "normal", category: "general" });
   const [searchFaq, setSearchFaq] = useState("");
-  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [selectedTicket, setSelectedTicket] = useState<(typeof tickets)[number] | null>(null);
   const [replyText, setReplyText] = useState("");
 
   const { data: tickets = [], isLoading } = useQuery({
