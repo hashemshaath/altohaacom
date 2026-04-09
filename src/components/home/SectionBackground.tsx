@@ -13,7 +13,7 @@ export type SectionTheme = {
  * Clean backgrounds with subtle color accents per section.
  */
 export const SECTION_THEMES: Record<string, SectionTheme> = {
-  /* White sections */
+  /* Primary (white) sections */
   search: { bg: "bg-background" },
   stats: { bg: "bg-[#F8F8F8] dark:bg-muted/10" },
   events_by_category: { bg: "bg-background", topBorder: true },
@@ -21,8 +21,8 @@ export const SECTION_THEMES: Record<string, SectionTheme> = {
   events_calendar: { bg: "bg-background", topBorder: true },
   featured_chefs: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
   newly_joined: { bg: "bg-background", topBorder: true },
-  sponsors: { bg: "bg-[#F8F8F8] dark:bg-muted/10" },
-  partners: { bg: "bg-background" },
+  sponsors: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
+  partners: { bg: "bg-background", topBorder: true },
   pro_suppliers: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
   masterclasses: { bg: "bg-background", topBorder: true },
   articles: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
