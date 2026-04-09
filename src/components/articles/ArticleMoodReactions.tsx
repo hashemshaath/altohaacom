@@ -1,4 +1,4 @@
-import { useState, useEffect, memo, useCallback } from "react";
+import { useState, useEffect, useRef, memo, useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,17 +33,20 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const [counts, setCounts] = useState<Record<string, number>>({});
   const [animating, setAnimating] = useState<string | null>(null);
+  const animTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const [loading, setLoading] = useState(true);
 
   // Fetch real reaction counts and user's own reactions from DB
   useEffect(() => {
+    let cancelled = false;
     async function fetchReactions() {
       try {
-        // Get all reaction counts for this article
         const { data: allReactions } = await supabase
           .from("article_reactions")
           .select("reaction_type")
           .eq("article_id", articleId);
+
+        if (cancelled) return;
 
         const reactionCounts: Record<string, number> = {};
         REACTIONS.forEach(r => { reactionCounts[r.key] = 0; });
@@ -52,9 +55,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
         });
         setCounts(reactionCounts);
 
-        // Get user's own reactions
-       const sessionId = getReactionSessionId();
-
+        const sessionId = getReactionSessionId();
         let userQuery = supabase
           .from("article_reactions")
           .select("reaction_type")
@@ -67,6 +68,7 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
         }
         
         const { data: userReactions } = await userQuery;
+        if (cancelled) return;
 
         const userSelected: Record<string, boolean> = {};
         (userReactions || []).forEach((r) => {
@@ -76,10 +78,11 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
       } catch (err: unknown) {
         console.error("Failed to fetch reactions:", err);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
     fetchReactions();
+    return () => { cancelled = true; };
   }, [articleId, user?.id]);
 
   const handleReaction = useCallback(async (key: string) => {
@@ -90,7 +93,8 @@ export const ArticleMoodReactions = memo(function ArticleMoodReactions({ article
     setSelected(prev => ({ ...prev, [key]: !isActive }));
     setCounts(prev => ({ ...prev, [key]: Math.max(0, (prev[key] || 0) + (isActive ? -1 : 1)) }));
     setAnimating(key);
-    setTimeout(() => setAnimating(null), 600);
+    clearTimeout(animTimerRef.current);
+    animTimerRef.current = setTimeout(() => setAnimating(null), 600);
 
     try {
       if (isActive) {

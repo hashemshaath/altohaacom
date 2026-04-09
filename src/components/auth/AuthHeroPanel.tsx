@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { Trophy, Globe, GraduationCap, Award, CheckCircle } from "lucide-react";
 import { useAuthHeroSlides, type AuthHeroSlide } from "@/hooks/useAuthHeroSlides";
 import authHeroFallback from "@/assets/auth-hero.jpg";
@@ -68,6 +68,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
   const { data: slides = [] } = useAuthHeroSlides(pageType);
   const [activeSlide, setActiveSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const transitionTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const isSignUpFlow = ["register", "verify", "details", "credentials"].includes(stage);
 
@@ -75,7 +76,8 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
   const nextSlide = useCallback(() => {
     if (slides.length <= 1) return;
     setIsTransitioning(true);
-    setTimeout(() => {
+    clearTimeout(transitionTimerRef.current);
+    transitionTimerRef.current = setTimeout(() => {
       setActiveSlide((prev) => (prev + 1) % slides.length);
       setIsTransitioning(false);
     }, 500);
@@ -84,13 +86,17 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
   useEffect(() => {
     if (slides.length <= 1) return;
     const interval = setInterval(nextSlide, 6000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(transitionTimerRef.current);
+    };
   }, [nextSlide, slides.length]);
 
   const handleDotSelect = (i: number) => {
     if (i === activeSlide) return;
     setIsTransitioning(true);
-    setTimeout(() => {
+    clearTimeout(transitionTimerRef.current);
+    transitionTimerRef.current = setTimeout(() => {
       setActiveSlide(i);
       setIsTransitioning(false);
     }, 400);

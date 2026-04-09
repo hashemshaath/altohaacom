@@ -92,7 +92,8 @@ export const CommunityFeed = memo(function CommunityFeed() {
           filter: "reply_to_post_id=is.null",
         },
         (payload) => {
-          if (payload.new && (payload.new as any).author_id !== user?.id) {
+          const newPost = payload.new as Record<string, unknown>;
+          if (newPost?.author_id !== user?.id) {
             setNewPostsCount((prev) => prev + 1);
           }
         }
