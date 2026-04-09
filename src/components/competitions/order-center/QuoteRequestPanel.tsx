@@ -18,7 +18,7 @@ import {
   Send, Building2, FileText, CheckCircle, Clock,
   XCircle, Mail,
 } from "lucide-react";
-import { notifyQuoteRequestSent } from "@/lib/notificationTriggers";
+
 import { QUOTE_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
 
 interface Props {
@@ -125,13 +125,15 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
       queryClient.invalidateQueries({ queryKey: ["req-sponsorship-requests", competitionId] });
       const companyName = companies?.find(c => c.id === selectedCompanyId);
       if (user) {
-        notifyQuoteRequestSent({
-          userId: user.id,
-          companyName: companyName ? (isAr && companyName.name_ar ? companyName.name_ar : companyName.name) : "",
-          requestTitle: title,
-          competitionId,
-          itemCount: selectedItems.length,
-        });
+        import("@/lib/notificationTriggers").then(({ notifyQuoteRequestSent }) => {
+          notifyQuoteRequestSent({
+            userId: user.id,
+            companyName: companyName ? (isAr && companyName.name_ar ? companyName.name_ar : companyName.name) : "",
+            requestTitle: title,
+            competitionId,
+            itemCount: selectedItems.length,
+          });
+        }).then(null, () => {});
       }
       setSelectedItems([]);
       setMessage("");

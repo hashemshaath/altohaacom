@@ -3,7 +3,7 @@ import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import { notifyInvoiceSent, notifyInvoicePaid } from "@/lib/notificationTriggers";
+
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
@@ -177,21 +177,23 @@ export default function InvoicesAdmin() {
       // Send notifications for status changes
       if (invoiceDetails?.user_id && (result.status === "sent" || result.status === "paid")) {
         const inv = invoiceDetails;
-        if (result.status === "sent") {
-          notifyInvoiceSent({
-            userId: inv.user_id,
-            invoiceNumber: inv.invoice_number,
-            amount: Number(inv.amount),
-            currency: inv.currency,
-          });
-        } else if (result.status === "paid") {
-          notifyInvoicePaid({
-            userId: inv.user_id,
-            invoiceNumber: inv.invoice_number,
-            amount: Number(inv.amount),
-            currency: inv.currency,
-          });
-        }
+        import("@/lib/notificationTriggers").then(({ notifyInvoiceSent, notifyInvoicePaid }) => {
+          if (result.status === "sent") {
+            notifyInvoiceSent({
+              userId: inv.user_id,
+              invoiceNumber: inv.invoice_number,
+              amount: Number(inv.amount),
+              currency: inv.currency,
+            });
+          } else if (result.status === "paid") {
+            notifyInvoicePaid({
+              userId: inv.user_id,
+              invoiceNumber: inv.invoice_number,
+              amount: Number(inv.amount),
+              currency: inv.currency,
+            });
+          }
+        }).then(null, () => {});
       }
     },
   });

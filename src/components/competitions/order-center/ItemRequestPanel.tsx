@@ -18,7 +18,7 @@ import {
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { DISH_TEMPLATES } from "@/data/dishTemplates";
 import { downloadCSV } from "@/lib/exportUtils";
-import { notifyItemRequestSubmitted, notifyItemRequestReviewed } from "@/lib/notificationTriggers";
+
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string; labelEn: string; labelAr: string }> = {
   pending: { icon: Clock, color: "bg-chart-4/15 text-chart-4", labelEn: "Pending", labelAr: "قيد الانتظار" },
@@ -104,13 +104,15 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       resetForm();
       toast({ title: isAr ? "تم إرسال الطلب للمراجعة" : "Request submitted for review" });
       if (user && competition) {
-        notifyItemRequestSubmitted({
-          competitionId,
-          competitionTitle: competition.title,
-          competitionTitleAr: competition.title_ar || undefined,
-          requesterName: user.user_metadata?.full_name || user.email || "",
-          itemName: form.item_name,
-        });
+        import("@/lib/notificationTriggers").then(({ notifyItemRequestSubmitted }) => {
+          notifyItemRequestSubmitted({
+            competitionId,
+            competitionTitle: competition.title,
+            competitionTitleAr: competition.title_ar || undefined,
+            requesterName: user.user_metadata?.full_name || user.email || "",
+            itemName: form.item_name,
+          });
+        }).then(null, () => {});
       }
     },
     onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
@@ -139,13 +141,15 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       resetForm();
       toast({ title: isAr ? "تم إعادة إرسال الطلب" : "Request resubmitted for review" });
       if (user && competition) {
-        notifyItemRequestSubmitted({
-          competitionId,
-          competitionTitle: competition.title,
-          competitionTitleAr: competition.title_ar || undefined,
-          requesterName: user.user_metadata?.full_name || user.email || "",
-          itemName: form.item_name,
-        });
+        import("@/lib/notificationTriggers").then(({ notifyItemRequestSubmitted }) => {
+          notifyItemRequestSubmitted({
+            competitionId,
+            competitionTitle: competition.title,
+            competitionTitleAr: competition.title_ar || undefined,
+            requesterName: user.user_metadata?.full_name || user.email || "",
+            itemName: form.item_name,
+          });
+        }).then(null, () => {});
       }
     },
     onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
@@ -167,14 +171,16 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       toast({ title: isAr ? "تم تحديث الطلب" : "Request updated" });
       const req = requests?.find(r => r.id === variables.id);
       if (req && competition) {
-        notifyItemRequestReviewed({
-          userId: req.requester_id,
-          itemName: req.item_name,
-          status: variables.status as "approved" | "rejected",
-          reason: variables.reason,
-          competitionTitle: competition.title,
-          competitionTitleAr: competition.title_ar || undefined,
-        });
+        import("@/lib/notificationTriggers").then(({ notifyItemRequestReviewed }) => {
+          notifyItemRequestReviewed({
+            userId: req.requester_id,
+            itemName: req.item_name,
+            status: variables.status as "approved" | "rejected",
+            reason: variables.reason,
+            competitionTitle: competition.title,
+            competitionTitleAr: competition.title_ar || undefined,
+          });
+        }).then(null, () => {});
       }
     },
   });
@@ -251,13 +257,15 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
         title: isAr ? `تم إضافة ${t.ingredients.length} عنصر من قالب "${t.nameAr}"` : `Added ${t.ingredients.length} items from "${t.name}" template`,
       });
       if (user && competition) {
-        notifyItemRequestSubmitted({
-          competitionId,
-          competitionTitle: competition.title,
-          competitionTitleAr: competition.title_ar || undefined,
-          requesterName: user.user_metadata?.full_name || user.email || "",
-          itemName: `${t.name} (${t.ingredients.length} items)`,
-        });
+        import("@/lib/notificationTriggers").then(({ notifyItemRequestSubmitted }) => {
+          notifyItemRequestSubmitted({
+            competitionId,
+            competitionTitle: competition.title,
+            competitionTitleAr: competition.title_ar || undefined,
+            requesterName: user.user_metadata?.full_name || user.email || "",
+            itemName: `${t.name} (${t.ingredients.length} items)`,
+          });
+        }).then(null, () => {});
       }
     });
   };
