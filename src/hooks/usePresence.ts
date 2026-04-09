@@ -10,15 +10,15 @@ export function usePresence() {
     if (!user) return;
 
     const channel = supabase
-      .channel("online-users")
+      .channel(`online-users-${user.id}`)
       .on("presence", { event: "sync" }, () => {
         const state = channel.presenceState();
         const ids = new Set<string>();
-        Object.values(state).forEach((presences) => {
-          (presences as Array<{ user_id?: string }>).forEach((p) => {
+        for (const presences of Object.values(state)) {
+          for (const p of presences as Array<{ user_id?: string }>) {
             if (p.user_id) ids.add(p.user_id);
-          });
-        });
+          }
+        }
         setOnlineUsers(ids);
       })
       .subscribe(async (status) => {
@@ -28,7 +28,7 @@ export function usePresence() {
       });
 
     return () => {
-      supabase.removeChannel(channel);
+      void supabase.removeChannel(channel);
     };
   }, [user?.id]);
 

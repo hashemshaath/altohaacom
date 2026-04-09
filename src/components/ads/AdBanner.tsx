@@ -45,37 +45,32 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBan
     staleTime: 1000 * 60 * 5,
   });
 
-  // Log impression
+  // Log impression (fire-and-forget, no chaining)
   useEffect(() => {
     if (creative && !impressionLogged.current) {
       impressionLogged.current = true;
+      const deviceType = window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop";
       supabase.from("ad_impressions").insert({
         creative_id: creative.id,
         campaign_id: creative.campaign_id,
         placement_id: creative.placement_id,
         page_url: window.location.pathname,
-        device_type: window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop",
-      }).then(() => {
-        // Update creative impression count
-        supabase.from("ad_creatives").update({ impressions: (creative.impressions || 0) + 1 }).eq("id", creative.id);
-      });
+        device_type: deviceType,
+      }).then(null, () => { /* fire-and-forget */ });
     }
   }, [creative]);
 
   const handleClick = useCallback(() => {
     if (!creative) return;
-    // Log click
+    const deviceType = window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop";
     supabase.from("ad_clicks").insert({
       creative_id: creative.id,
       campaign_id: creative.campaign_id,
       placement_id: creative.placement_id,
       destination_url: creative.destination_url,
       page_url: window.location.pathname,
-      device_type: window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop",
-    }).then(() => {
-      supabase.from("ad_creatives").update({ clicks: (creative.clicks || 0) + 1 }).eq("id", creative.id);
-    });
-    // Open destination
+      device_type: deviceType,
+    }).then(null, () => { /* fire-and-forget */ });
     window.open(creative.destination_url, "_blank", "noopener");
   }, [creative]);
 
