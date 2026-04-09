@@ -50,7 +50,6 @@ export const ExhibitionDocuments = forwardRef<HTMLDivElement, Props>(function Ex
               key={i}
               href={doc.url}
               target="_blank" rel="noopener noreferrer"
-              rel="noopener noreferrer"
               className="flex items-center gap-3 rounded-xl border border-border/40 bg-muted/20 px-3 py-2.5 text-sm font-medium transition-all hover:bg-muted/50 hover:shadow-sm group"
             >
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-chart-2/10 shrink-0">

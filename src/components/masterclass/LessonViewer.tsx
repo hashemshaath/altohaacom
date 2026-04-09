@@ -81,7 +81,6 @@ export const LessonViewer = memo(function LessonViewer({ lesson, isCompleted, is
             <a
               href={lesson.video_url}
               target="_blank" rel="noopener noreferrer"
-              rel="noopener noreferrer"
               className="text-primary underline"
             >
               {language === "ar" ? "شاهد الفيديو" : "Watch Video"}

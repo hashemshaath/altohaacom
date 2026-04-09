@@ -233,7 +233,6 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                   key={social.label}
                   href={social.href}
                   target="_blank" rel="noopener noreferrer"
-                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-[hsl(220_9%_55%)] hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
                 >
