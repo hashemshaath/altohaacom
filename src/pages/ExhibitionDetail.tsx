@@ -424,9 +424,7 @@ export default function ExhibitionDetail() {
           )}
 
           {/* Stats Bar */}
-
-          {/* Interactive Stats */}
-          <div className="mt-4">
+          <div className="mt-5">
             <ExhibitionInteractiveStats
               viewCount={exhibition.view_count || 0}
               followerCount={followerCount || 0}
