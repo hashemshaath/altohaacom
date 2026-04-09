@@ -21,6 +21,6 @@ export function useSupplierViewTracker(companyId: string | undefined) {
         session_id: sessionId,
         referrer: document.referrer || null,
       })
-      .then(() => {}); // fire and forget
+      .then(null, () => { /* fire-and-forget */ });
   }, [companyId, user?.id]);
 }
