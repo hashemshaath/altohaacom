@@ -24510,7 +24510,6 @@ export type Database = {
       profiles_safe: {
         Row: {
           account_number: string | null
-          account_type: Database["public"]["Enums"]["account_type"] | null
           avatar_url: string | null
           bio: string | null
           bio_ar: string | null
@@ -24520,42 +24519,33 @@ export type Database = {
           created_at: string | null
           display_name: string | null
           display_name_ar: string | null
-          facebook: string | null
+          favorite_cuisines: string[] | null
           full_name: string | null
           full_name_ar: string | null
-          id: string | null
-          instagram: string | null
+          interests: string[] | null
           is_chef_visible: boolean | null
           is_open_to_work: boolean | null
           is_verified: boolean | null
-          job_availability_visibility: string | null
           job_title: string | null
           job_title_ar: string | null
-          linkedin: string | null
-          location: string | null
-          membership_status:
-            | Database["public"]["Enums"]["membership_status"]
-            | null
-          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
           nationality: string | null
+          offers_services: boolean | null
           preferred_language: string | null
           profile_visibility: string | null
-          snapchat: string | null
+          section_visibility: Json | null
+          services_description: string | null
+          services_description_ar: string | null
+          show_nationality: boolean | null
           specialization: string | null
           specialization_ar: string | null
-          tiktok: string | null
-          twitter: string | null
-          updated_at: string | null
           user_id: string | null
           username: string | null
           view_count: number | null
           website: string | null
           years_of_experience: number | null
-          youtube: string | null
         }
         Insert: {
           account_number?: string | null
-          account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
@@ -24565,44 +24555,33 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           display_name_ar?: string | null
-          facebook?: string | null
+          favorite_cuisines?: string[] | null
           full_name?: string | null
           full_name_ar?: string | null
-          id?: string | null
-          instagram?: string | null
+          interests?: string[] | null
           is_chef_visible?: boolean | null
           is_open_to_work?: boolean | null
           is_verified?: boolean | null
-          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
-          linkedin?: string | null
-          location?: string | null
-          membership_status?:
-            | Database["public"]["Enums"]["membership_status"]
-            | null
-          membership_tier?:
-            | Database["public"]["Enums"]["membership_tier"]
-            | null
           nationality?: string | null
+          offers_services?: boolean | null
           preferred_language?: string | null
           profile_visibility?: string | null
-          snapchat?: string | null
+          section_visibility?: Json | null
+          services_description?: string | null
+          services_description_ar?: string | null
+          show_nationality?: boolean | null
           specialization?: string | null
           specialization_ar?: string | null
-          tiktok?: string | null
-          twitter?: string | null
-          updated_at?: string | null
           user_id?: string | null
           username?: string | null
           view_count?: number | null
           website?: string | null
           years_of_experience?: number | null
-          youtube?: string | null
         }
         Update: {
           account_number?: string | null
-          account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
           bio_ar?: string | null
@@ -24612,40 +24591,30 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           display_name_ar?: string | null
-          facebook?: string | null
+          favorite_cuisines?: string[] | null
           full_name?: string | null
           full_name_ar?: string | null
-          id?: string | null
-          instagram?: string | null
+          interests?: string[] | null
           is_chef_visible?: boolean | null
           is_open_to_work?: boolean | null
           is_verified?: boolean | null
-          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
-          linkedin?: string | null
-          location?: string | null
-          membership_status?:
-            | Database["public"]["Enums"]["membership_status"]
-            | null
-          membership_tier?:
-            | Database["public"]["Enums"]["membership_tier"]
-            | null
           nationality?: string | null
+          offers_services?: boolean | null
           preferred_language?: string | null
           profile_visibility?: string | null
-          snapchat?: string | null
+          section_visibility?: Json | null
+          services_description?: string | null
+          services_description_ar?: string | null
+          show_nationality?: boolean | null
           specialization?: string | null
           specialization_ar?: string | null
-          tiktok?: string | null
-          twitter?: string | null
-          updated_at?: string | null
           user_id?: string | null
           username?: string | null
           view_count?: number | null
           website?: string | null
           years_of_experience?: number | null
-          youtube?: string | null
         }
         Relationships: []
       }
