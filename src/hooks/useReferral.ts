@@ -40,6 +40,7 @@ export function useReferralCode() {
       return data;
     },
     enabled: !!user,
+    staleTime: 1000 * 60 * 2,
   });
 }
 

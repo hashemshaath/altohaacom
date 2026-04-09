@@ -119,6 +119,7 @@ export function useEvaluationCriteriaCategories(domainId?: string, productCatego
       return (data || []) as unknown as EvaluationCriteriaCategory[];
     },
     enabled: !!domainId,
+    staleTime: 1000 * 60 * 2,
   });
 }
 

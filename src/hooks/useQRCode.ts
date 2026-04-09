@@ -57,6 +57,7 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
       return newQR;
     },
     enabled: !!entityId,
+    staleTime: 1000 * 60 * 2,
   });
 }
 

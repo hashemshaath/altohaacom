@@ -141,6 +141,7 @@ export function useChefScheduleEvents(chefId?: string, dateRange?: { start: stri
       return (data || []) as ChefScheduleEvent[];
     },
     enabled: !!chefId || !dateRange,
+    staleTime: 1000 * 60 * 2,
   });
 }
 
