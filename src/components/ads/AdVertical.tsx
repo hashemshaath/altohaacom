@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getDeviceType } from "@/lib/deviceType";
 
 interface AdVerticalProps {
   placementSlug?: string;
@@ -51,8 +52,8 @@ export const AdVertical = memo(function AdVertical({ placementSlug = "sidebar-ve
         campaign_id: creative.campaign_id,
         placement_id: creative.placement_id,
         page_url: window.location.pathname,
-        device_type: window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop",
-      });
+        device_type: getDeviceType(),
+      }).then(null, () => { /* fire-and-forget */ });
     }
   }, [creative]);
 
@@ -64,8 +65,8 @@ export const AdVertical = memo(function AdVertical({ placementSlug = "sidebar-ve
       placement_id: creative.placement_id,
       destination_url: creative.destination_url,
       page_url: window.location.pathname,
-      device_type: window.innerWidth < 768 ? "mobile" : "desktop",
-    });
+      device_type: getDeviceType(),
+    }).then(null, () => { /* fire-and-forget */ });
     window.open(creative.destination_url, "_blank", "noopener");
   }, [creative]);
 
