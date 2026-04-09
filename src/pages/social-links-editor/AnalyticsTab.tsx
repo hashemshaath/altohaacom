@@ -9,14 +9,14 @@ import {
 } from "lucide-react";
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
-import type { LinkItem } from "./types";
+import type { LinkItem, VisitorStats, ClickAnalytics, BioNotification } from "./types";
 
 interface Props {
   items: LinkItem[];
   isAr: boolean;
-  visitorStats: any;
-  clickAnalytics: any;
-  bioNotifications: any[] | undefined;
+  visitorStats: VisitorStats | null | undefined;
+  clickAnalytics: ClickAnalytics | null | undefined;
+  bioNotifications: BioNotification[] | undefined;
   pageId: string | undefined;
 }
 

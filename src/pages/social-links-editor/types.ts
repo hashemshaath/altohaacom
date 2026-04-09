@@ -1,4 +1,5 @@
 import type { ExtraSettings } from "@/lib/socialLinksConstants";
+import type { UseMutationResult } from "@tanstack/react-query";
 
 export interface PageForm {
   page_title: string;
@@ -71,3 +72,42 @@ export interface EditorSharedProps {
   profile: EditorProfile | null | undefined;
   isAr: boolean;
 }
+
+/** Typed visitor stats returned from the analytics query */
+export interface VisitorStats {
+  countries: Record<string, number>;
+  devices: Record<string, number>;
+  browsers: Record<string, number>;
+  referrers: Record<string, number>;
+  total: number;
+  recent7d: number;
+  dailyVisits: { date: string; visits: number }[];
+}
+
+/** Typed click analytics returned from the analytics query */
+export interface ClickAnalytics {
+  heatmap: number[][];
+  bestHour: number;
+  bestDay: number;
+  dailyClicks: { date: string; clicks: number }[];
+  hourlyAgg: number[];
+  total: number;
+  linkDaily: Record<string, Record<string, number>>;
+}
+
+/** Bio notification shape */
+export interface BioNotification {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  body: string | null;
+  body_ar: string | null;
+  type: string;
+  is_read: boolean;
+  created_at: string;
+  metadata: Record<string, unknown> | null;
+}
+
+/** Generic mutation result used in LinksTab props */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ItemMutation<TInput = any, TResult = any> = UseMutationResult<TResult, Error, TInput>;
