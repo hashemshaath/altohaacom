@@ -238,19 +238,19 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
                       <AlertTriangle className="h-3 w-3" />
                       {t("Delete?", "حذف؟")}
                     </span>
-                    <Button size="icon" variant="destructive" className="h-7 w-7 rounded-lg" onClick={() => deleteMutation.mutate(s.id)} disabled={deleteMutation.isPending}>
+                    <Button size="icon" variant="destructive" className="h-7 w-7 rounded-lg" onClick={() => deleteMutation.mutate(s.id)} disabled={deleteMutation.isPending} aria-label="Confirm delete">
                       <Check className="h-3.5 w-3.5" />
                     </Button>
-                    <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => setDeleteConfirmId(null)}>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => setDeleteConfirmId(null)} aria-label="Cancel">
                       <X className="h-3.5 w-3.5" />
                     </Button>
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => startEdit(s)}>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg" onClick={() => startEdit(s)} aria-label="Edit">
                       <Pencil className="h-3.5 w-3.5" />
                     </Button>
-                    <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg text-destructive hover:text-destructive" onClick={() => setDeleteConfirmId(s.id)}>
+                    <Button size="icon" variant="ghost" className="h-7 w-7 rounded-lg text-destructive hover:text-destructive" onClick={() => setDeleteConfirmId(s.id)} aria-label="Delete">
                       <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                   </div>
