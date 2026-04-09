@@ -44,7 +44,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
   const [replies, setReplies] = useState<ThreadReply[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchThread = async () => {
+  const fetchThread = useCallback(async () => {
     // Fetch parent post
     const { data: post } = await supabase.from("posts").select("id, content, author_id, image_url, image_urls, video_url, link_url, link_preview, visibility, replies_count, reposts_count, is_pinned, reply_to_post_id, created_at, updated_at").eq("id", postId).single();
     if (!post) return;
@@ -99,9 +99,9 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
       );
     }
     setLoading(false);
-  };
+  }, [postId, user?.id]);
 
-  useEffect(() => { fetchThread(); }, [postId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchThread(); }, [fetchThread]);
 
   const handleLikeReply = async (replyId: string, isLiked: boolean) => {
     if (!user) return;
