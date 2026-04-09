@@ -403,7 +403,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollo
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
           {featured && (
             <div className="absolute top-2.5 end-2.5">
-              <Badge className="text-[12px] gap-1 bg-amber-500 text-white border-0 shadow-sm">
+              <Badge className="text-[12px] gap-1 bg-primary text-primary-foreground border-0 shadow-sm">
                 <Star className="h-2.5 w-2.5 fill-current" />{isAr ? "مميز" : "Featured"}
               </Badge>
             </div>
