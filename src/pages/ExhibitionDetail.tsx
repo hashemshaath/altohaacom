@@ -442,8 +442,8 @@ export default function ExhibitionDetail() {
             <div className="min-w-0">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 {/* Sticky Tab Navigation */}
-                <div className="sticky top-14 z-30 -mx-4 mb-6 border-b border-border/40 bg-background/95 px-4 py-2 backdrop-blur-lg sm:mx-0 sm:rounded-xl sm:border sm:px-3 sm:py-2">
-                  <TabsList className="flex h-auto w-max min-w-full gap-1 overflow-x-auto bg-transparent p-0 scrollbar-none">
+                <div className="sticky top-14 z-30 -mx-4 mb-6 overflow-hidden border-b border-border/40 bg-background/95 px-4 py-2 backdrop-blur-lg sm:mx-0 sm:rounded-xl sm:border sm:px-3 sm:py-2">
+                  <TabsList className="flex h-auto w-max gap-1 overflow-x-auto bg-transparent p-0 scrollbar-none">
                     <TabsTrigger
                       value="overview"
                       className="rounded-lg px-3 py-2 text-xs font-semibold transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md sm:px-4 sm:py-2.5 sm:text-sm whitespace-nowrap touch-manipulation"
