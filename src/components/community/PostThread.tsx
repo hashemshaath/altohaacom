@@ -85,7 +85,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
           return {
             id: r.id,
             content: r.content,
-            image_urls: (r as any).image_urls || [],
+            image_urls: (r.image_urls as string[] | null) || [],
             image_url: r.image_url,
             created_at: r.created_at,
             author_id: r.author_id,
