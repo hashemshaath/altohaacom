@@ -370,9 +370,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       services: (orgData.services as string[] || []).join(", "),
       targeted_sectors: (orgData.targeted_sectors as string[] || []).join(", "),
       founded_year: orgData.founded_year?.toString() || "",
-      registration_number: (orgData as any).registration_number || "",
-      license_number: (orgData as any).license_number || "",
-      vat_number: (orgData as any).vat_number || "",
+      registration_number: String(org.registration_number || ""),
+      license_number: String(org.license_number || ""),
+      vat_number: String(org.vat_number || ""),
       social_twitter: social.twitter || "", social_facebook: social.facebook || "",
       social_linkedin: social.linkedin || "", social_instagram: social.instagram || "",
       social_youtube: social.youtube || "", social_tiktok: social.tiktok || "",
@@ -499,13 +499,13 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         vat_number: f.vat_number || null,
         social_links: Object.keys(socialLinks).length > 0 ? socialLinks : null,
         gallery_urls: f.gallery_urls.length > 0 ? f.gallery_urls : null,
-        key_contacts: f.key_contacts.length > 0 ? (f.key_contacts as unknown as any) : null,
+        key_contacts: f.key_contacts.length > 0 ? (f.key_contacts as unknown as Record<string, unknown>[]) : null,
       };
       if (organizerId) {
         const { error } = await supabase.from("organizers").update(payload).eq("id", organizerId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("organizers").insert(payload as any);
+        const { error } = await supabase.from("organizers").insert(payload as never);
         if (error) throw error;
       }
     },

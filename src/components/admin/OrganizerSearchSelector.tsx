@@ -90,7 +90,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
   const { data: companies = [] } = useQuery({
     queryKey: ["organizer-companies"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("companies")
         .select("id, name, name_ar, type, country_code, city, logo_url, website, email, phone")
         .eq("is_active", true)
@@ -267,11 +267,11 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         name: newName,
         name_ar: newNameAr || null,
         country: newCountry || null,
-        type: newType as any,
+        type: newType as Database["public"]["Enums"]["entity_type"],
         slug,
         entity_number: "",
-        status: "pending" as any,
-        scope: "local" as any,
+        status: "pending" as Database["public"]["Enums"]["entity_status"],
+        scope: "local" as Database["public"]["Enums"]["entity_scope"],
         is_visible: false,
       }).select("id, name, name_ar, country").single();
 

@@ -1,6 +1,8 @@
 import { memo, useState, forwardRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
+import type { Json } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,7 +100,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
         admin_id: admin!.id,
         target_user_id: userId!,
         action_type: `${status}_user`,
-        details: {} as any,
+        details: {} as Json,
       }]);
     },
     onSuccess: () => {
@@ -113,15 +115,15 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
   const roleMutation = useMutation({
     mutationFn: async ({ role, action }: { role: string; action: "add" | "remove" }) => {
       if (action === "add") {
-        await supabase.from("user_roles").insert({ user_id: userId!, role: role as any });
+        await supabase.from("user_roles").insert({ user_id: userId!, role: role as Database["public"]["Enums"]["app_role"] });
       } else {
-        await supabase.from("user_roles").delete().eq("user_id", userId!).eq("role", role as any);
+        await supabase.from("user_roles").delete().eq("user_id", userId!).eq("role", role as Database["public"]["Enums"]["app_role"]);
       }
       await supabase.from("admin_actions").insert([{
         admin_id: admin!.id,
         target_user_id: userId!,
         action_type: action === "add" ? "add_role" : "remove_role",
-        details: { role } as any,
+        details: { role } as Json,
       }]);
     },
     onSuccess: () => {
@@ -198,7 +200,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                       {currentStatus.label}
                     </Badge>
                     {data.roles.slice(0, 3).map((role) => (
-                      <Badge key={role} variant="outline" className="text-[12px]">{t(role as any)}</Badge>
+                      <Badge key={role} variant="outline" className="text-[12px]">{role}</Badge>
                     ))}
                     {data.roles.length > 3 && <Badge variant="outline" className="text-[12px]">+{data.roles.length - 3}</Badge>}
                   </div>
@@ -320,7 +322,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
                       )}>
                         <div className="flex items-center gap-2">
                           {hasRole ? <ShieldCheck className="h-3.5 w-3.5 text-primary" /> : <ShieldOff className="h-3.5 w-3.5 text-muted-foreground" />}
-                          <span className="text-xs font-medium">{t(role as any)}</span>
+                          <span className="text-xs font-medium">{role}</span>
                         </div>
                         <Button
                           variant={hasRole ? "outline" : "default"}

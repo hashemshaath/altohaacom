@@ -37,7 +37,7 @@ export const StoreQuickNav = memo(function StoreQuickNav() {
     <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
       {NAV_ITEMS.map((item) => {
         const isActive = location.pathname === item.href;
-        const count = item.countKey && counts ? (counts as any)[item.countKey] : 0;
+        const count = item.countKey && counts ? counts[item.countKey as keyof typeof counts] ?? 0 : 0;
         const Icon = item.icon;
 
         return (
