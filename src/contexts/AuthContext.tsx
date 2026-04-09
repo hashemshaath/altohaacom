@@ -41,7 +41,7 @@ async function createLoginSession(loginMethod = "email") {
       sessionStorage.setItem(SESSION_CREATED_KEY, "true");
     }
   } catch (err: unknown) {
-    console.warn("Session creation failed:", e);
+    console.warn("Session creation failed:", err instanceof Error ? err.message : err);
   }
 }
 

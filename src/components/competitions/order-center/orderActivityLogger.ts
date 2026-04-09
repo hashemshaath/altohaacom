@@ -38,7 +38,7 @@ export async function logOrderActivity(params: LogParams) {
       details: params.details || {},
     });
   } catch (err: unknown) {
-    console.error("Failed to log order activity:", e);
+    console.error("Failed to log order activity:", err instanceof Error ? err.message : err);
   }
 }
 
