@@ -26,7 +26,7 @@ export function usePushNotifications() {
     if (!("serviceWorker" in navigator) || !("PushManager" in window)) return false;
     try {
       const reg = await navigator.serviceWorker.ready;
-      const sub = await (reg as any).pushManager.getSubscription();
+      const sub = await reg.pushManager.getSubscription();
       setIsSubscribed(!!sub);
       return !!sub;
     } catch {
@@ -50,7 +50,7 @@ export function usePushNotifications() {
       }
 
       const reg = await navigator.serviceWorker.ready;
-      const sub = await (reg as any).pushManager.subscribe({
+      const sub = await reg.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       });
@@ -79,7 +79,7 @@ export function usePushNotifications() {
   const unsubscribe = useCallback(async () => {
     try {
       const reg = await navigator.serviceWorker.ready;
-      const sub = await (reg as any).pushManager.getSubscription();
+      const sub = await reg.pushManager.getSubscription();
       if (sub) {
         await sub.unsubscribe();
         await supabase.from("push_subscriptions").delete().eq("endpoint", sub.endpoint);
