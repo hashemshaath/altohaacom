@@ -78,7 +78,6 @@ export default function CertificateVerify() {
       seoProps={{ keywords: language === "ar" ? "تحقق, شهادة, التحقق من الشهادة" : "verify, certificate, authentication" }}
       container={false}
     >
-    >
       
       <main className="flex-1">
         {/* Hero Section */}
