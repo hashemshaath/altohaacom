@@ -125,7 +125,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
   const { data: managers } = useQuery({
     queryKey: ["admin-users-for-manager"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("id, full_name").order("full_name");
+      const { data, error } = await supabase.from("profiles").select("id, full_name").order("full_name").limit(500);
       if (error) throw error;
       return data;
     },
