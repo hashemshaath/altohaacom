@@ -88,7 +88,7 @@ export const ChefsTab = memo(function ChefsTab() {
         if (a.is_verified !== b.is_verified) return a.is_verified ? -1 : 1;
       }
       if (sortBy === "newest") {
-        return new Date((b as Record<string, unknown>).created_at as string).getTime() - new Date((a as Record<string, unknown>).created_at as string).getTime();
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
       const nameA = (isAr ? a.full_name_ar : null) || a.full_name || "";
       const nameB = (isAr ? b.full_name_ar : null) || b.full_name || "";
