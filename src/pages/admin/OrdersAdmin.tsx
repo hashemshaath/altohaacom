@@ -8,13 +8,16 @@ import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
-import { RevenueAnalyticsWidget } from "@/components/admin/RevenueAnalyticsWidget";
-import { PaymentTrackerWidget } from "@/components/admin/PaymentTrackerWidget";
-import { WalletOverviewWidget } from "@/components/admin/WalletOverviewWidget";
-import { OrdersRevenueWidget } from "@/components/admin/OrdersRevenueWidget";
-import { OrdersLiveStatsWidget } from "@/components/admin/OrdersLiveStatsWidget";
-import { InvoiceTrackerWidget } from "@/components/admin/InvoiceTrackerWidget";
-import { FinancialSummaryWidget } from "@/components/admin/FinancialSummaryWidget";
+import { safeLazy } from "@/lib/safeLazy";
+
+// Lazy-load heavy financial widgets
+const RevenueAnalyticsWidget = safeLazy(() => import("@/components/admin/RevenueAnalyticsWidget").then(m => ({ default: m.RevenueAnalyticsWidget })));
+const PaymentTrackerWidget = safeLazy(() => import("@/components/admin/PaymentTrackerWidget").then(m => ({ default: m.PaymentTrackerWidget })));
+const WalletOverviewWidget = safeLazy(() => import("@/components/admin/WalletOverviewWidget").then(m => ({ default: m.WalletOverviewWidget })));
+const OrdersRevenueWidget = safeLazy(() => import("@/components/admin/OrdersRevenueWidget").then(m => ({ default: m.OrdersRevenueWidget })));
+const OrdersLiveStatsWidget = safeLazy(() => import("@/components/admin/OrdersLiveStatsWidget").then(m => ({ default: m.OrdersLiveStatsWidget })));
+const InvoiceTrackerWidget = safeLazy(() => import("@/components/admin/InvoiceTrackerWidget").then(m => ({ default: m.InvoiceTrackerWidget })));
+const FinancialSummaryWidget = safeLazy(() => import("@/components/admin/FinancialSummaryWidget").then(m => ({ default: m.FinancialSummaryWidget })));
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { FinanceQuickNav } from "@/components/admin/FinanceQuickNav";

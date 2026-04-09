@@ -12,16 +12,20 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { GoogleMapEmbed } from "@/components/smart-import/GoogleMapEmbed";
-import { DetailTabs } from "@/components/smart-import/DetailTabs";
-import { AddRecordForm } from "@/components/smart-import/AddRecordForm";
-import { ImportHistory } from "@/components/smart-import/ImportHistory";
+import { safeLazy } from "@/lib/safeLazy";
 import { DataQualityIndicator } from "@/components/smart-import/DataQualityIndicator";
 import { ExportDataButton } from "@/components/smart-import/ExportDataButton";
 import { ImportStats } from "@/components/smart-import/ImportStats";
-import { BulkUrlImport } from "@/components/smart-import/BulkUrlImport";
 import { EditableField } from "@/components/smart-import/EditableField";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
+
+// Lazy-load heavy sub-panels
+const GoogleMapEmbed = safeLazy(() => import("@/components/smart-import/GoogleMapEmbed").then(m => ({ default: m.GoogleMapEmbed })));
+const DetailTabs = safeLazy(() => import("@/components/smart-import/DetailTabs").then(m => ({ default: m.DetailTabs })));
+const AddRecordForm = safeLazy(() => import("@/components/smart-import/AddRecordForm").then(m => ({ default: m.AddRecordForm })));
+const ImportHistory = safeLazy(() => import("@/components/smart-import/ImportHistory").then(m => ({ default: m.ImportHistory })));
+const BulkUrlImport = safeLazy(() => import("@/components/smart-import/BulkUrlImport").then(m => ({ default: m.BulkUrlImport })));
+const CVImportSection = safeLazy(() => import("@/components/cv-import/CVImportSection").then(m => ({ default: m.CVImportSection })));
 import {
   type SearchResultItem, type ExistingRecord, type Step,
   type TargetTable, type EntityType, type CompanyType, type ExhibitionType,
@@ -37,7 +41,6 @@ import {
   Phone, Link2, Zap, BarChart3, Layers, Edit3,
   Copy, ExternalLink, FileText,
 } from "lucide-react";
-import { CVImportSection } from "@/components/cv-import/CVImportSection";
 
 // ─── Payload builders ───
 const buildEntityPayload = (d: ImportedData) => {
