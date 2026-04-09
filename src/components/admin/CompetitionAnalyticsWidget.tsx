@@ -69,6 +69,7 @@ export const CompetitionAnalyticsWidget = memo(function CompetitionAnalyticsWidg
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

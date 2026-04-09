@@ -58,6 +58,7 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (isLoading) return <Skeleton className="h-44 w-full rounded-xl" />;

@@ -81,6 +81,7 @@ export const CRMLiveStatsWidget = memo(function CRMLiveStatsWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (!data) return null;

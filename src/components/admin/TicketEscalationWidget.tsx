@@ -87,6 +87,7 @@ export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
       };
     },
     refetchInterval: visibleInterval,
+    staleTime: 1000 * 60 * 2,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

@@ -82,6 +82,7 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

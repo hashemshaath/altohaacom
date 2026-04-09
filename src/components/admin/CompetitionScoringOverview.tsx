@@ -76,6 +76,7 @@ export const CompetitionScoringOverview = memo(function CompetitionScoringOvervi
       return { totalScores, totalJudges, activeComps, avgScore, scoreRanges, compProgress };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: 1000 * 60 * 2,
   });
 
   if (!data) return null;
