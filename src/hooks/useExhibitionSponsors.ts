@@ -22,7 +22,7 @@ export function useExhibitionSponsors(exhibitionIds: string[]) {
 
       const map = new Map<string, ExhibitionSponsor[]>();
       for (const row of data || []) {
-        const sectionId = (row as any).section_id as string;
+        const sectionId = row.section_id as string;
         const existing = map.get(sectionId) || [];
         existing.push(row as unknown as ExhibitionSponsor);
         map.set(sectionId, existing);

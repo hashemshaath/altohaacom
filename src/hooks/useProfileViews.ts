@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { getDeviceType } from "@/lib/deviceType";
+import { getBrowser } from "@/lib/analyticsUtils";
 
 /**
  * Records a profile view and provides analytics data for the profile owner.
@@ -9,17 +11,18 @@ import { useAuth } from "@/contexts/AuthContext";
 export function useRecordProfileView(profileUserId: string | undefined) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const tracked = useRef(false);
 
   useEffect(() => {
-    if (!profileUserId) return;
+    if (!profileUserId || tracked.current) return;
     // Don't record if viewing own profile
     if (user?.id === profileUserId) return;
+    tracked.current = true;
 
     const record = async () => {
       try {
-        const ua = navigator.userAgent;
-        const isMobile = /Mobi|Android/i.test(ua);
-        const browser = /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : /Firefox/i.test(ua) ? "Firefox" : "Other";
+        const deviceType = getDeviceType();
+        const browser = getBrowser();
         
         // Determine viewer type
         let viewerType = "individual";
@@ -39,9 +42,9 @@ export function useRecordProfileView(profileUserId: string | undefined) {
         await supabase.from("profile_views").insert({
           profile_user_id: profileUserId,
           viewer_user_id: user?.id || null,
-          viewer_user_agent: ua,
+          viewer_user_agent: navigator.userAgent,
           referrer: document.referrer || null,
-          device_type: isMobile ? "mobile" : "desktop",
+          device_type: deviceType,
           browser,
           viewer_type: viewerType,
           company_id: companyId,

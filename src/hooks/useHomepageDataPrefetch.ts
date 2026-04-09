@@ -156,8 +156,8 @@ export function useHomepageDataPrefetch() {
 
         // Exhibitions — prioritize active/upcoming, then recent completed
         if (exhibitions.data) {
-          const active = exhibitions.data.filter(e => (e as any).status !== "completed");
-          const completed = exhibitions.data.filter(e => (e as any).status === "completed").reverse().slice(0, 4);
+          const active = exhibitions.data.filter(e => e.status !== "completed");
+          const completed = exhibitions.data.filter(e => e.status === "completed").reverse().slice(0, 4);
           qc.setQueryData(["home-exhibitions-minimal"], [...active, ...completed].slice(0, 12));
         }
 
@@ -220,7 +220,7 @@ export function useHomepageDataPrefetch() {
         }
 
         // Stats
-        const getCount = (r) => r?.count ?? 0;
+        const getCount = (r: { count: number | null }) => r?.count ?? 0;
         qc.setQueryData(["home-stats"], {
           members: getCount(stats[0]),
           competitions: getCount(stats[1]),
