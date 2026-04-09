@@ -52,17 +52,17 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
         query = query.or(`name.ilike.%${search}%,name_ar.ilike.%${search}%,city.ilike.%${search}%`);
       }
       const { data } = await query;
-      return (data || []) as any[];
+      return (data || []);
     },
     enabled: showResults,
     staleTime: 30_000,
   });
 
-  const selectVenue = useCallback((v: any) => {
+  const selectVenue = useCallback((v: { id: string; name: string; name_ar?: string | null; city?: string | null; country?: string | null; address?: string | null; capacity?: number | null; logo_url?: string | null; map_url?: string | null }) => {
     const venue: VenueValue = {
-      id: v.id, name: v.name, nameAr: v.name_ar,
-      city: v.city, country: v.country, address: v.address,
-      capacity: v.capacity, logoUrl: v.logo_url, mapUrl: v.map_url,
+      id: v.id, name: v.name, nameAr: v.name_ar ?? null,
+      city: v.city ?? null, country: v.country ?? null, address: v.address ?? null,
+      capacity: v.capacity ?? null, logoUrl: v.logo_url ?? null, mapUrl: v.map_url ?? null,
     };
     onChange(venue);
     onVenueSelected?.(venue);

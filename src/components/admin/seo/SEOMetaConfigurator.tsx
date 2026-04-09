@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,7 +54,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
       const { path, ...value } = meta;
       const { error } = await supabase
         .from("site_settings")
-        .upsert({ key, value: value as any }, { onConflict: "key" });
+        .upsert({ key, value: value as unknown as Json }, { onConflict: "key" });
       if (error) throw error;
     },
     onSuccess: () => {

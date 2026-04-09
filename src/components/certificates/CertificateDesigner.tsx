@@ -173,7 +173,7 @@ export const CertificateDesigner = memo(function CertificateDesigner({
                 <TabsContent value="layout" className="p-4 space-y-4 mt-0">
                   <div className="space-y-3">
                     <Label>{language === "ar" ? "حجم الورق" : "Paper Size"}</Label>
-                    <Select value={design.paperSize} onValueChange={v => updateDesign({ paperSize: v as any })}>
+                    <Select value={design.paperSize} onValueChange={v => updateDesign({ paperSize: v as CertificateDesign["paperSize"] })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="a4">A4 (210 × 297 mm)</SelectItem>
@@ -184,7 +184,7 @@ export const CertificateDesigner = memo(function CertificateDesigner({
                   </div>
                   <div className="space-y-3">
                     <Label>{language === "ar" ? "الاتجاه" : "Orientation"}</Label>
-                    <Select value={design.orientation} onValueChange={v => updateDesign({ orientation: v as any })}>
+                    <Select value={design.orientation} onValueChange={v => updateDesign({ orientation: v as CertificateDesign["orientation"] })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="landscape">{language === "ar" ? "أفقي" : "Landscape"}</SelectItem>
@@ -229,7 +229,7 @@ export const CertificateDesigner = memo(function CertificateDesigner({
 
                   <div className="space-y-2">
                     <Label className="text-xs">{language === "ar" ? "نمط الخلفية" : "Background Pattern"}</Label>
-                    <Select value={design.backgroundPattern} onValueChange={v => updateDesign({ backgroundPattern: v as any })}>
+                    <Select value={design.backgroundPattern} onValueChange={v => updateDesign({ backgroundPattern: v as CertificateDesign["backgroundPattern"] })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">{language === "ar" ? "بدون" : "None"}</SelectItem>
@@ -246,7 +246,7 @@ export const CertificateDesigner = memo(function CertificateDesigner({
 
                   <div className="space-y-2">
                     <Label className="text-xs">{language === "ar" ? "نمط الإطار" : "Frame Style"}</Label>
-                    <Select value={design.borderStyle} onValueChange={v => updateDesign({ borderStyle: v as any })}>
+                    <Select value={design.borderStyle} onValueChange={v => updateDesign({ borderStyle: v as CertificateDesign["borderStyle"] })}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">{language === "ar" ? "بدون" : "None"}</SelectItem>

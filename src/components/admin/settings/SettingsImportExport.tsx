@@ -100,7 +100,7 @@ export const SettingsImportExport = memo(function SettingsImportExport() {
         for (const section of importData.homepage_sections) {
           const { id, updated_at, ...rest } = section;
           await supabase.from("homepage_sections").upsert(
-            { id, ...rest, updated_at: new Date().toISOString() } as any,
+            { id, ...rest, updated_at: new Date().toISOString() } as never,
             { onConflict: "id" }
           );
         }

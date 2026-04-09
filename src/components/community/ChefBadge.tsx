@@ -44,7 +44,8 @@ export const ChefBadge = memo(function ChefBadge({ userId, className, showToolti
       }
 
       try {
-        const { data: regData } = await supabase.rpc("get_user_competition_role", { p_user_id: userId, p_competition_id: "00000000-0000-0000-0000-000000000000" }) as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC with dynamic return
+        const { data: regData } = await supabase.rpc("get_user_competition_role", { p_user_id: userId, p_competition_id: "00000000-0000-0000-0000-000000000000" }) as { data: unknown };
         const { data: rankings } = await supabase.from("chef_rankings").select("id").eq("user_id", userId).limit(1);
         if (rankings && rankings.length > 0) result.push("champion");
       } catch {
