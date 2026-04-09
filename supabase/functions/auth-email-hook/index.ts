@@ -308,7 +308,7 @@ Deno.serve(async (req) => {
     return await handleWebhook(req)
   } catch (error: unknown) {
     console.error('Webhook handler error:', error)
-    const message = error instanceof Error ? error instanceof Error ? error.message : String(error) : 'Unknown error'
+    const message = error instanceof Error ? error.message : 'Unknown error'
     return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

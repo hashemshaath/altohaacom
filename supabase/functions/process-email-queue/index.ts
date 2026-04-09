@@ -287,7 +287,7 @@ Deno.serve(async (req) => {
         }
         totalProcessed++
       } catch (error: unknown) {
-        const errorMsg = error instanceof Error ? error instanceof Error ? error.message : String(error) : String(error)
+        const errorMsg = error instanceof Error ? error.message : String(error)
         console.error('Email send failed', {
           queue,
           msg_id: msg.msg_id,
