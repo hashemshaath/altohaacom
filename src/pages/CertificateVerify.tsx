@@ -72,8 +72,12 @@ export default function CertificateVerify() {
   const notFound = searchedCode && !certificate && !isLoading;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Header />
+    <PageShell
+      title={isAr ? "التحقق من الشهادة" : "Verify Certificate"}
+      description={isAr ? "تحقق من صحة شهادة صادرة عن منصة الطهاة" : "Verify the authenticity of a certificate issued by Altoha"}
+      seoProps={{ keywords: isAr ? "تحقق, شهادة, التحقق من الشهادة" : "verify, certificate, authentication" }}
+      container={false}
+    >
       
       <main className="flex-1">
         {/* Hero Section */}
