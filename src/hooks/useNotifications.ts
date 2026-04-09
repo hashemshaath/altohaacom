@@ -12,19 +12,19 @@ const DND_KEY = "altoha_dnd_mode";
 
 export function useNotificationPrefs() {
   const [soundEnabled, setSoundEnabledState] = useState(() => {
-    return localStorage.getItem(SOUND_KEY) !== "false";
+    try { return localStorage.getItem(SOUND_KEY) !== "false"; } catch { return true; }
   });
   const [dndMode, setDndModeState] = useState(() => {
-    return localStorage.getItem(DND_KEY) === "true";
+    try { return localStorage.getItem(DND_KEY) === "true"; } catch { return false; }
   });
 
   const setSoundEnabled = (v: boolean) => {
-    localStorage.setItem(SOUND_KEY, String(v));
+    try { localStorage.setItem(SOUND_KEY, String(v)); } catch { /* restricted */ }
     setSoundEnabledState(v);
   };
 
   const setDndMode = (v: boolean) => {
-    localStorage.setItem(DND_KEY, String(v));
+    try { localStorage.setItem(DND_KEY, String(v)); } catch { /* restricted */ }
     setDndModeState(v);
   };
 
