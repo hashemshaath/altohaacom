@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,11 +55,15 @@ export const UserQuickActions = memo(function UserQuickActions({
     }
   };
 
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const copyId = () => {
     navigator.clipboard.writeText(userId);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    clearTimeout(copyTimeoutRef.current);
+    copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
   };
+
+  useEffect(() => () => clearTimeout(copyTimeoutRef.current), []);
 
   return (
     <TooltipProvider>
