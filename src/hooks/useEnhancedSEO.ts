@@ -122,7 +122,7 @@ export function useEnhancedSEO(language: string) {
       document.head.appendChild(script);
     }
     
-    const jsonLdItems: any[] = [];
+    const jsonLdItems: Record<string, unknown>[] = [];
 
     // Related links for this page (SEO relatedLink signal)
     const relatedLinks: Record<string, string[]> = {
@@ -142,7 +142,7 @@ export function useEnhancedSEO(language: string) {
     };
 
     // Primary page schema with relatedLink
-    const pageSchema: any = {
+    const pageSchema: Record<string, unknown> = {
       "@context": "https://schema.org",
       "@type": meta.type || "WebPage",
       name: title,

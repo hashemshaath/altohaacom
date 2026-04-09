@@ -26,8 +26,8 @@ export const SecuritySettings = memo(function SecuritySettings() {
     listSessions, revokeSession, revokeAllSessions,
   } = useSessionManager();
 
-  const [pinStatus, setPinStatus] = useState<any>(null);
-  const [devices, setDevices] = useState<any[]>([]);
+  const [pinStatus, setPinStatus] = useState<{ has_pin: boolean; created_at?: string; is_expired?: boolean; days_until_expiry?: number; is_locked?: boolean } | null>(null);
+  const [devices, setDevices] = useState<Array<{ id: string; device_name?: string; last_used_at?: string; browser?: string; os?: string }>>([]);
   const [loadingPin, setLoadingPin] = useState(true);
   const [loadingDevices, setLoadingDevices] = useState(true);
   const [disablingPin, setDisablingPin] = useState(false);

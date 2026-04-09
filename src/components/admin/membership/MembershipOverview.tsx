@@ -25,7 +25,7 @@ const MembershipOverview = memo(function MembershipOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
-  const [lastRunResult, setLastRunResult] = useState<any>(null);
+  const [lastRunResult, setLastRunResult] = useState<{ auto_downgraded?: number; notifications_created?: number; expired?: number; warning?: number } | null>(null);
 
   const runExpiryCheck = useMutation({
     mutationFn: async () => {

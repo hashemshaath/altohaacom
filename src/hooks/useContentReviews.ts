@@ -57,7 +57,7 @@ export function useSubmitReview() {
             rating: review.rating,
             content: review.content || null,
             updated_at: new Date().toISOString(),
-          } as any,
+          } as unknown as import("@/integrations/supabase/types").Database["public"]["Tables"]["content_reviews"]["Insert"],
           { onConflict: "user_id,entity_type,entity_id" }
         );
       if (error) throw error;
