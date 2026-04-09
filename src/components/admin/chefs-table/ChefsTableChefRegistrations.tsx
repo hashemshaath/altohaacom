@@ -55,7 +55,7 @@ export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrat
         const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
         regs.forEach(r => {
           const p = profileMap.get(r.chef_id);
-          if (p) (r as Record<string, unknown>).profile = p;
+          if (p) (r as unknown as Record<string, unknown>).profile = p;
         });
       }
       
