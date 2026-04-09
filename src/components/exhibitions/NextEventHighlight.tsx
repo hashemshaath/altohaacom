@@ -23,7 +23,7 @@ export const NextEventHighlight = memo(forwardRef<HTMLDivElement, Props>(functio
   const hoursLeft = differenceInHours(start, now) % 24;
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4 sm:p-5 backdrop-blur-sm shadow-sm">
+    <div ref={ref} className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-background to-accent/5 p-4 sm:p-5 backdrop-blur-sm shadow-sm">
       <div className="flex items-start gap-1.5 mb-3">
         <Badge className="bg-primary/15 text-primary border-0 text-[12px] font-black uppercase tracking-wider">
           {isAr ? "الفعالية القادمة" : "Next Event"}
@@ -68,4 +68,4 @@ export const NextEventHighlight = memo(forwardRef<HTMLDivElement, Props>(functio
       </Button>
     </div>
   );
-});
+}));
