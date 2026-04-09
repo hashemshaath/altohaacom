@@ -104,13 +104,15 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       resetForm();
       toast({ title: isAr ? "تم إرسال الطلب للمراجعة" : "Request submitted for review" });
       if (user && competition) {
-        notifyItemRequestSubmitted({
-          competitionId,
-          competitionTitle: competition.title,
-          competitionTitleAr: competition.title_ar || undefined,
-          requesterName: user.user_metadata?.full_name || user.email || "",
-          itemName: form.item_name,
-        });
+        import("@/lib/notificationTriggers").then(({ notifyItemRequestSubmitted }) => {
+          notifyItemRequestSubmitted({
+            competitionId,
+            competitionTitle: competition.title,
+            competitionTitleAr: competition.title_ar || undefined,
+            requesterName: user.user_metadata?.full_name || user.email || "",
+            itemName: form.item_name,
+          });
+        }).then(null, () => {});
       }
     },
     onError: (e: Error) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
