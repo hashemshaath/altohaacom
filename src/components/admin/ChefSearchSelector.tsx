@@ -60,7 +60,7 @@ export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valu
         <User className="h-4 w-4 text-muted-foreground shrink-0" />
         <span className="text-sm flex-1 truncate">{selectedName}</span>
         {onClear && !disabled && (
-          <button type="button" onClick={() => { onClear(); setSelectedName(""); }} className="text-muted-foreground hover:text-destructive">
+          <button type="button" aria-label="Clear selection" onClick={() => { onClear(); setSelectedName(""); }} className="text-muted-foreground hover:text-destructive">
             <X className="h-4 w-4" />
           </button>
         )}
