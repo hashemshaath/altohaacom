@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -64,7 +64,7 @@ export const EventsTab = memo(function EventsTab() {
   });
   const [pollForm, setPollForm] = useState({ question: "", options: ["", ""] });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const [eventsRes, pollsRes] = await Promise.all([
       supabase.from("community_events").select("id, title, title_ar, description, description_ar, event_date, event_end_date, event_type, location, location_ar, is_virtual, max_attendees, organizer_id, status, image_url, created_at").order("event_date", { ascending: true }),
       supabase.from("community_polls").select("id, question, question_ar, options, author_id, is_active, expires_at, created_at").eq("is_active", true).order("created_at", { ascending: false }),
@@ -120,9 +120,9 @@ export const EventsTab = memo(function EventsTab() {
     }));
 
     setLoading(false);
-  };
+  }, [user?.id]);
 
-  useEffect(() => { fetchData(); }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const handleCreateEvent = async () => {
     if (!user || !eventForm.title.trim()) return;

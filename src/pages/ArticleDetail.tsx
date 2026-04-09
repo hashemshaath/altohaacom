@@ -323,7 +323,7 @@ export default function ArticleDetail() {
         <section className="relative w-full overflow-hidden bg-card">
           {hasHeroImage ? (
             <div className="relative w-full aspect-[2/1] sm:aspect-[2.4/1] max-h-[600px]">
-              <img loading="lazy" decoding="async" src={article.featured_image_url!}
+              <img src={article.featured_image_url!}
                 alt={title}
                 className="absolute inset-0 w-full h-full object-cover will-change-transform"
                 onError={() => setImageFailed(true)}
