@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -77,6 +78,7 @@ export function useMessagesData() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
+  const messagesRefetchInterval = useVisibleRefetchInterval(30000);
   const initialUserId = searchParams.get("user");
 
   const [selectedPartner, setSelectedPartner] = useState<ConversationPartner | null>(null);
@@ -153,7 +155,7 @@ export function useMessagesData() {
         .sort((a, b) => new Date(b.last_message_at || 0).getTime() - new Date(a.last_message_at || 0).getTime());
     },
     enabled: !!user,
-    refetchInterval: 30000,
+    refetchInterval: messagesRefetchInterval,
     staleTime: 1000 * 60 * 1,
   });
 

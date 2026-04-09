@@ -77,7 +77,7 @@ export function useSocialLinkPageByUsername(username?: string) {
     },
     enabled: !!username,
     staleTime: 30_000,
-    refetchInterval: 30_000,
+    refetchInterval: false, // static page, no need to poll
     gcTime: 10 * 60_000,
   });
 }
