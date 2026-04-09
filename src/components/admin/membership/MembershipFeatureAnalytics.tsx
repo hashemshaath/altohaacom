@@ -41,7 +41,7 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
         .gte("usage_date", startDate)
         .order("access_count", { ascending: false });
       if (error) throw error;
-      return data as any[];
+      return (data || []) as unknown as Record<string, unknown>[];
     },
   });
 

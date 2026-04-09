@@ -159,10 +159,11 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
         metric: `Revenue (${m.month})`, value: m.revenue, unit: "SAR",
       })),
     ];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic export columns
     exportData(rows as any, [
-      { key: "metric" as any, label: "Metric" },
-      { key: "value" as any, label: "Value" },
-      { key: "unit" as any, label: "Unit" },
+      { key: "metric" as keyof typeof rows[0], label: "Metric" },
+      { key: "value" as keyof typeof rows[0], label: "Value" },
+      { key: "unit" as keyof typeof rows[0], label: "Unit" },
     ], { filename: "membership-revenue", format: fmt });
   }, [revenueData, exportData]);
 
