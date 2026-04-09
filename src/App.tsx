@@ -1,4 +1,4 @@
-import { Suspense, lazy, useLayoutEffect } from "react";
+import { Suspense, lazy, useLayoutEffect, memo } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -98,7 +98,7 @@ function AppRoutes() {
 }
 
 /** Non-critical overlays and global widgets */
-function AppOverlays({ isHome }: { isHome: boolean }) {
+const AppOverlays = memo(function AppOverlays({ isHome }: { isHome: boolean }) {
   return (
     <ErrorBoundary fallback={null}>
       <MobileBottomNav />
@@ -111,7 +111,7 @@ function AppOverlays({ isHome }: { isHome: boolean }) {
       )}
     </ErrorBoundary>
   );
-}
+});
 
 /** Root content inside the router */
 function AppContent() {
