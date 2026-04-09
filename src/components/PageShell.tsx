@@ -29,6 +29,10 @@ interface PageShellProps {
   padding?: "none" | "sm" | "md" | "lg";
   /** Whether to show related pages section for internal linking (default: true) */
   relatedPages?: boolean;
+  /** Whether to show breadcrumbs (default: true) */
+  breadcrumbs?: boolean;
+  /** Override breadcrumb label for current page */
+  breadcrumbLabel?: string;
 }
 
 const paddingMap = {
