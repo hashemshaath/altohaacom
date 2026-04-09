@@ -61,11 +61,13 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
     queryKey: ["requirement-templates", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
         .from("requirement_templates" as any)
         .select("id, name, name_ar, description, description_ar, category, items, is_public, usage_count, created_by, created_at")
         .or(`created_by.eq.${user!.id},is_public.eq.true`)
         .order("usage_count", { ascending: false });
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return data as any[];
     },
     enabled: !!user,
@@ -81,6 +83,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
         .eq("id", competitionId)
         .single();
       if (error) throw error;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- nested join
       return data as any;
     },
   });

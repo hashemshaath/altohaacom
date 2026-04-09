@@ -495,7 +495,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
             imported_by: currentUser.id,
             status: "completed",
             sections_imported: sectionsImported,
-            extracted_data: data as any,
+            extracted_data: data as unknown as Json,
             records_created: recordsCreated,
             input_method: "paste",
           });
