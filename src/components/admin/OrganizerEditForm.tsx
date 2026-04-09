@@ -1599,7 +1599,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                             <div className="flex items-center gap-1 mt-0.5">
                               <p className="text-xs font-medium font-mono truncate">{m.value}</p>
                               {"copyable" in m && m.copyable && (
-                                <button type="button" onClick={() => { navigator.clipboard.writeText(m.copyable as string); toast.info("Copied!"); }}
+                                <button type="button" onClick={() => { navigator.clipboard.writeText(m.copyable as string).then(null, () => {}); toast.info("Copied!"); }}
                                   className="opacity-0 group-hover:opacity-100 transition-opacity">
                                   <Copy className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                                 </button>

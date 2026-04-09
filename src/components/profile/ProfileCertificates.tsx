@@ -121,7 +121,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
 
   const handleCopyLink = (cert) => {
     const url = `${window.location.origin}/verify?code=${cert.verification_code}`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(url).then(null, () => {});
     toast({ title: isAr ? "تم نسخ الرابط ✓" : "Link copied ✓" });
   };
 

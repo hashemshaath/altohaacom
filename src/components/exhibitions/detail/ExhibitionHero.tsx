@@ -286,7 +286,7 @@ function ShareDropdown({ isAr, title, shareUrl }: { isAr: boolean; title: string
         <DropdownMenuItem
           className="cursor-pointer gap-2.5 rounded-md py-2.5 text-sm"
           onClick={() => {
-            navigator.clipboard.writeText(shareUrl);
+            navigator.clipboard.writeText(shareUrl).then(null, () => {});
             toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
           }}
         >
