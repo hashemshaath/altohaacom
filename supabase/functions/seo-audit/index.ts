@@ -89,7 +89,7 @@ Deno.serve(async (req) => {
             pagesAudited++;
             return auditHtml(path, await resp.text());
           } catch (e: any) {
-            return [{ page_path: path, issue_type: "fetch_error", severity: "error" as const, message: `Failed to fetch: ${e.message}`, message_ar: `فشل في الجلب: ${e.message}`, details: { error: e.message } }];
+            return [{ page_path: path, issue_type: "fetch_error", severity: "error" as const, message: `Failed to fetch: ${e instanceof Error ? e.message : String(e)}`, message_ar: `فشل في الجلب: ${e instanceof Error ? e.message : String(e)}`, details: { error: e instanceof Error ? e.message : String(e) } }];
           }
         })
       );

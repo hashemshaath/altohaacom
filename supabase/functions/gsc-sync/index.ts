@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
             inspections.push({ url, verdict: indexStatus?.verdict || "unknown", coverageState: indexStatus?.coverageState || "unknown", lastCrawlTime: indexStatus?.lastCrawlTime, pageFetchState: indexStatus?.pageFetchState });
             const path = new URL(url).pathname;
             await userClient.from("seo_indexing_status").upsert({ url, path, status: indexStatus?.verdict === "PASS" ? "indexed" : indexStatus?.verdict === "FAIL" ? "error" : "unknown", last_indexed_at: indexStatus?.lastCrawlTime || null, coverage_state: indexStatus?.coverageState || null, updated_at: new Date().toISOString() }, { onConflict: "url" });
-          } catch (e: any) { inspections.push({ url, error: e.message }); }
+          } catch (e: unknown) { inspections.push({ url, error: e instanceof Error ? e.message : String(e) }); }
         }
         result = { inspections };
         break;
@@ -109,7 +109,7 @@ Deno.serve(async (req) => {
             submissions.push({ url, success: true, notification: await res.json() });
             const path = new URL(url).pathname;
             await userClient.from("seo_indexing_status").upsert({ url, path, status: "submitted", last_submitted_at: new Date().toISOString(), submitted_to: ["google"], updated_at: new Date().toISOString() }, { onConflict: "url" });
-          } catch (e: any) { submissions.push({ url, success: false, error: e.message }); }
+          } catch (e: unknown) { submissions.push({ url, success: false, error: e instanceof Error ? e.message : String(e) }); }
         }
         result = { submissions };
         break;
@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
     }
 
     return jsonResponse(result);
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error("gsc-sync error:", e);
     return errorResponse(e);
   }
