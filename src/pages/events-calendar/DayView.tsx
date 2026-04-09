@@ -8,8 +8,8 @@ import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { localizeCity } from "@/lib/localizeLocation";
 import { Link } from "react-router-dom";
-import { ICONS } from "./constants";
-import { getCountdown, getEventsForDay } from "./utils";
+import { ICONS } from "@/lib/eventsCalendarConstants";
+import { getCountdown, getEventsForDay } from "@/lib/eventsCalendarUtils";
 
 export function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; currentDate: Date; isAr: boolean }) {
   const dayEvents = useMemo(() => getEventsForDay(events, currentDate), [events, currentDate]);

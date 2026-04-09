@@ -7,8 +7,8 @@ import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { localizeCity, localizeCountry } from "@/lib/localizeLocation";
 import { Link } from "react-router-dom";
-import { ICONS } from "./constants";
-import { getCountdown } from "./utils";
+import { ICONS } from "@/lib/eventsCalendarConstants";
+import { getCountdown } from "@/lib/eventsCalendarUtils";
 
 function EventTooltipContent({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
   const label = GLOBAL_EVENT_LABELS[event.type];

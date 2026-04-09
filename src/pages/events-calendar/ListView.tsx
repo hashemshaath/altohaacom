@@ -7,8 +7,8 @@ import { format, parseISO } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import { ICONS } from "./constants";
-import { getCountdown } from "./utils";
+import { ICONS } from "@/lib/eventsCalendarConstants";
+import { getCountdown } from "@/lib/eventsCalendarUtils";
 import { localizeCity, localizeCountry } from "@/lib/localizeLocation";
 
 export function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
