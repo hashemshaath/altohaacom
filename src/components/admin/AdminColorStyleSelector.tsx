@@ -26,9 +26,9 @@ const COLOR_LABELS_AR = [
 export const AdminColorStyleSelector = memo(function AdminColorStyleSelector() {
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const [activeId, setActiveId] = useState<string | null>(
-    localStorage.getItem(ADMIN_COLOR_STORAGE_KEY)
-  );
+  const [activeId, setActiveId] = useState<string | null>(() => {
+    try { return localStorage.getItem(ADMIN_COLOR_STORAGE_KEY); } catch { return null; }
+  });
 
   useEffect(() => {
     if (activeId) {
