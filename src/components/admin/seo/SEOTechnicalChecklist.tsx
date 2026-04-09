@@ -244,24 +244,29 @@ export const SEOTechnicalChecklist = memo(function SEOTechnicalChecklist({ isAr 
   const [checks, setChecks] = useState<CheckItem[]>(createChecks);
   const [running, setRunning] = useState(false);
 
-  const runAllChecks = async () => {
+  const runAllChecks = async (signal?: { cancelled: boolean }) => {
     setRunning(true);
     const updated = [...checks];
     for (let i = 0; i < updated.length; i++) {
+      if (signal?.cancelled) return;
       if (updated[i].autoCheck) {
         try {
           updated[i] = { ...updated[i], status: await updated[i].autoCheck!() };
         } catch {
           updated[i] = { ...updated[i], status: "fail" };
         }
-        setChecks([...updated]);
+        if (!signal?.cancelled) setChecks([...updated]);
       }
     }
-    setRunning(false);
+    if (!signal?.cancelled) setRunning(false);
   };
 
   // Auto-run on mount
-  useEffect(() => { runAllChecks(); }, []);
+  useEffect(() => {
+    const signal = { cancelled: false };
+    runAllChecks(signal);
+    return () => { signal.cancelled = true; };
+  }, []);
 
   const stats = useMemo(() => {
     const total = checks.length;
