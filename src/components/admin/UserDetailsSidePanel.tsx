@@ -160,7 +160,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
             <User className="h-4 w-4 text-primary" />
             {isAr ? "تفاصيل المستخدم" : "User Details"}
           </CardTitle>
-          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl" onClick={onClose}>
+          <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl" onClick={onClose} aria-label={isAr ? "إغلاق" : "Close"}>
             <X className="h-3.5 w-3.5" />
           </Button>
         </div>

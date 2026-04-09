@@ -162,7 +162,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
               {editingId ? <Pencil className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
               {editingId ? t("Edit Sponsor", "تعديل الراعي") : t("Add New Sponsor", "إضافة راعي جديد")}
             </p>
-            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={resetForm}>
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={resetForm} aria-label="Close">
               <X className="h-3.5 w-3.5" />
             </Button>
           </div>
