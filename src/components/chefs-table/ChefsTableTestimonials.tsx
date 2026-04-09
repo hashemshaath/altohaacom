@@ -57,7 +57,7 @@ export const ChefsTableTestimonials = memo(function ChefsTableTestimonials({ isA
           {testimonials.map((t, i) => (
             <div
               key={i}
-              className="group relative rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20"
+              className="group relative rounded-2xl border border-border/40 bg-card p-6 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20"
             >
               {/* Quote icon */}
               <div className="mb-4">

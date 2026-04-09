@@ -41,7 +41,7 @@ export const RecipeCardCompact = memo(function RecipeCardCompact({ recipe, isAr,
 
   return (
     <Link to={`/recipes/${recipe.slug || recipe.id}`}>
-      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/30 active:scale-[0.98] touch-manipulation">
+      <Card className="group h-full overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/30 active:scale-[0.98] touch-manipulation">
         <div className="aspect-video overflow-hidden bg-muted relative">
           {recipe.image_url ? (
             <img

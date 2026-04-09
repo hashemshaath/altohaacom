@@ -57,7 +57,7 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
       ref={ref}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-2xl border-border/20 bg-card transition-all duration-300",
-        "hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/20",
+        "hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-0.5 hover:border-primary/20",
         !isInStock && "opacity-70"
       )}
     >

@@ -37,7 +37,7 @@ function useCountUp(target: number, inView: boolean, duration = 2000) {
 function MetricCard({ metric, isAr, inView }: { metric: typeof metrics[0]; isAr: boolean; inView: boolean }) {
   const count = useCountUp(metric.target, inView);
   return (
-    <div className="flex flex-col items-center gap-2 rounded-2xl border border-border/40 bg-card p-5 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+    <div className="flex flex-col items-center gap-2 rounded-2xl border border-border/40 bg-card p-5 text-center transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
       <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-muted ${metric.color}`}>
         <metric.icon className="h-5 w-5" />
       </div>

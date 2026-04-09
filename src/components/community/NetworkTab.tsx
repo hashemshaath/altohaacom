@@ -135,7 +135,7 @@ export const NetworkTab = memo(function NetworkTab() {
             <ScrollArea className="w-full">
               <div className="flex gap-3 pb-2">
                 {newFollowers.map((f) => (
-                  <div key={f.user_id} className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 min-w-[130px] w-[130px]">
+                  <div key={f.user_id} className="group flex flex-col items-center gap-2 p-3 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 min-w-[130px] w-[130px]">
                     <Link to={`/${f.username || f.user_id}`}>
                       <Avatar className="h-14 w-14 ring-2 ring-chart-2/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-chart-2/30">
                         <AvatarImage src={f.avatar_url} />
@@ -187,7 +187,7 @@ export const NetworkTab = memo(function NetworkTab() {
           ) : (
             <div className="grid gap-2.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
               {recommendations.map((rec) => (
-                <div key={rec.user_id} className="group flex flex-col items-center text-center gap-2 p-3 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 h-full">
+                <div key={rec.user_id} className="group flex flex-col items-center text-center gap-2 p-3 rounded-xl border border-border/30 bg-card/60 backdrop-blur-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 h-full">
                   <Link to={`/${rec.username || rec.user_id}`}>
                     <Avatar className="h-14 w-14 sm:h-16 sm:w-16 ring-2 ring-primary/15 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-primary/30">
                       <AvatarImage src={rec.avatar_url} />

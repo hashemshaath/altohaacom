@@ -53,7 +53,7 @@ export const BadgeCard = memo(function BadgeCard({ badge, competitionTitle, earn
   };
 
   return (
-    <Card className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20">
+    <Card className="group overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20">
       <CardContent className="flex flex-col items-center p-5 text-center">
         <div
           className="mb-3 flex h-18 w-18 items-center justify-center rounded-2xl ring-4 ring-border/20 shadow-lg transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl"

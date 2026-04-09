@@ -175,7 +175,7 @@ export const ProductEvaluationTemplates = memo(function ProductEvaluationTemplat
           return (
             <Card
               key={t.id}
-              className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-border/50"
+              className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 border-border/50"
               onClick={() => onSelect(t)}
             >
               <CardContent className="p-4 text-center">
