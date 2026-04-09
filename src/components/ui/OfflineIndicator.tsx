@@ -1,13 +1,12 @@
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Wifi, WifiOff } from "lucide-react";
-import { useEffect, useState, memo } from "react";
+import { useEffect, useState, memo, forwardRef } from "react";
 
 /**
  * A subtle toast-like banner that shows when the user goes offline.
- * Auto-hides when connectivity is restored.
  */
-export const OfflineIndicator = memo(function OfflineIndicator() {
+export const OfflineIndicator = memo(forwardRef<HTMLDivElement>(function OfflineIndicator(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [offline, setOffline] = useState(!navigator.onLine);
@@ -51,4 +50,4 @@ export const OfflineIndicator = memo(function OfflineIndicator() {
       )}
     </div>
   );
-});
+}));
