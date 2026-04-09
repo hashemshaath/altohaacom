@@ -39,7 +39,9 @@ interface UserProfile {
   id: string;
   user_id: string;
   full_name: string | null;
-  display_name: string | null;
+  full_name_ar?: string | null;
+  display_name?: string | null;
+  display_name_ar?: string | null;
   username: string | null;
   account_number: string | null;
   account_status: AccountStatus | null;
@@ -50,12 +52,18 @@ interface UserProfile {
   created_at: string;
   location: string | null;
   country_code: string | null;
-  city: string | null;
+  city?: string | null;
   specialization: string | null;
+  specialization_ar?: string | null;
+  bio?: string | null;
+  bio_ar?: string | null;
   is_verified: boolean | null;
   email: string | null;
   phone?: string | null;
-  bio?: string | null;
+  date_of_birth?: string | null;
+  gender?: string | null;
+  preferred_language?: string | null;
+  nationality?: string | null;
   roles?: { role: AppRole }[];
 }
 
