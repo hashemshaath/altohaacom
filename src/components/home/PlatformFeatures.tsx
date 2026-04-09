@@ -99,7 +99,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
           <HorizontalScrollRow isAr={isAr}>
             {roles.map((role) => {
               const content = (
-                <Card className="h-full text-center border-border/40 transition-all hover:shadow-md hover:-translate-y-1 hover:border-primary/20 active:scale-[0.98]">
+                <Card className="h-full text-center border-border/40 transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
                   <CardContent className="p-4">
                     <div className="mx-auto mb-2.5 flex h-11 w-11 sm:h-10 sm:w-10 items-center justify-center rounded-full bg-primary/10 group-hover:bg-primary/15 transition-colors">
                       <role.icon className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
@@ -144,7 +144,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
         <HorizontalScrollRow isAr={isAr}>
           {whyUs.map((item) => (
             <div key={item.title} className="snap-start shrink-0 w-[56vw] sm:w-[38vw] md:w-[24vw] lg:w-[22vw]">
-              <Card className="h-full border-border/40 text-center transition-all hover:shadow-md hover:-translate-y-1 active:scale-[0.98]">
+              <Card className="h-full border-border/40 text-center transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">
                 <CardContent className="flex flex-col items-center p-5">
                   <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
                     <item.icon className="h-6 w-6 text-primary" />

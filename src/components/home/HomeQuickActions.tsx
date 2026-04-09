@@ -34,7 +34,7 @@ export const HomeQuickActions = memo(function HomeQuickActions() {
               "flex flex-col items-center gap-2.5 rounded-2xl p-4 sm:p-3.5 snap-start",
               "min-w-[5rem] shrink-0 sm:min-w-0 sm:shrink",
               "bg-card border border-border/20 hover:border-primary/20",
-              "transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 active:scale-[0.95]",
+              "transition-all duration-200 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5 active:scale-[0.98]",
               "group touch-manipulation"
             )}
           >
