@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { AdminCatalogExtended } from "@/components/admin/AdminCatalogExtended";
+import { useState, lazy, Suspense } from "react";
+import { safeLazy } from "@/lib/safeLazy";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
