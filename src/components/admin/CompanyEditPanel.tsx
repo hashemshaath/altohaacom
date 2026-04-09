@@ -343,7 +343,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <div className="relative h-24 w-24 shrink-0 rounded-xl border-2 border-dashed border-muted-foreground/30 flex items-center justify-center overflow-hidden bg-muted">
               {form.logo_url ? (
-                <img src={form.logo_url} alt="Logo" className="h-full w-full object-cover" />
+                <img loading="lazy" decoding="async" src={form.logo_url} alt="Logo" className="h-full w-full object-cover" />
               ) : (
                 <Building2 className="h-10 w-10 text-muted-foreground/40" />
               )}
@@ -377,7 +377,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
                   {mediaItems.filter((m) => m.file_type?.startsWith("image")).map((m) => (
                     <button key={m.id} className="rounded-xl border-2 border-transparent hover:border-primary overflow-hidden aspect-square"
                       onClick={() => { setForm(prev => ({ ...prev, logo_url: m.file_url })); setShowMediaPicker(false); }}>
-                      <img src={m.file_url} alt={m.filename} className="h-full w-full object-cover" />
+                      <img loading="lazy" decoding="async" src={m.file_url} alt={m.filename} className="h-full w-full object-cover" />
                     </button>
                   ))}
                 </div>

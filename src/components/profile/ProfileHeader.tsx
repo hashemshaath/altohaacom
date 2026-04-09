@@ -172,7 +172,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
         <div className="pointer-events-none absolute top-1/2 start-1/2 -translate-x-1/2 -translate-y-1/2 h-40 w-40 rounded-full bg-primary/4 blur-[80px]" />
         
         {profile?.cover_image_url && (
-          <img 
+          <img loading="lazy" decoding="async" 
             src={profile.cover_image_url} 
             alt="" 
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.02]" 

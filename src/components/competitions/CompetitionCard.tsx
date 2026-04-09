@@ -294,7 +294,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
           {/* Image */}
           <div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-auto md:w-2/5 lg:w-1/2">
             {competition.cover_image_url ? (
-              <img src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]" />
+              <img loading="lazy" decoding="async" src={competition.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-[1.03]" />
             ) : (
               <div className="flex h-full min-h-[220px] items-center justify-center bg-gradient-to-br from-primary/8 via-muted/20 to-accent/8">
                 <Trophy className="h-20 w-20 text-primary/8" />

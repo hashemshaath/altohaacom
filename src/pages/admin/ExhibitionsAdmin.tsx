@@ -481,7 +481,7 @@ export default function ExhibitionsAdmin() {
                         <TableCell>
                           <div className="flex items-center gap-3">
                             {ex.cover_image_url ? (
-                              <img src={ex.cover_image_url} alt="" className="h-9 w-13 rounded-lg object-cover shrink-0 ring-1 ring-border/30" />
+                              <img loading="lazy" decoding="async" src={ex.cover_image_url} alt="" className="h-9 w-13 rounded-lg object-cover shrink-0 ring-1 ring-border/30" />
                             ) : (
                               <div className="h-9 w-13 rounded-lg bg-muted/50 flex items-center justify-center shrink-0">
                                 <Landmark className="h-3.5 w-3.5 text-muted-foreground/40" />
@@ -513,7 +513,7 @@ export default function ExhibitionsAdmin() {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             {orgLogoUrl ? (
-                              <img src={orgLogoUrl} alt="" className="h-5 w-5 rounded object-contain shrink-0 bg-muted p-0.5" />
+                              <img loading="lazy" decoding="async" src={orgLogoUrl} alt="" className="h-5 w-5 rounded object-contain shrink-0 bg-muted p-0.5" />
                             ) : ex.organizer_name ? (
                               <div className="h-5 w-5 rounded bg-muted flex items-center justify-center shrink-0">
                                 <Building className="h-2.5 w-2.5 text-muted-foreground" />

@@ -169,14 +169,14 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
             <div className="relative">
               {exh.cover_image_url && (
                 <div className="h-32 w-full overflow-hidden">
-                  <img src={exh.cover_image_url} alt="" className="h-full w-full object-cover" />
+                  <img loading="lazy" decoding="async" src={exh.cover_image_url} alt="" className="h-full w-full object-cover" />
                   <div className="absolute inset-0 h-32 bg-gradient-to-t from-background/90 to-transparent" />
                 </div>
               )}
               <SheetHeader className={`px-6 ${exh.cover_image_url ? "-mt-12 relative z-10" : "pt-6"}`}>
                 <div className="flex items-start gap-3">
                   {exh.logo_url && (
-                    <img src={exh.logo_url} alt="" className="h-12 w-12 rounded-xl border border-border object-contain bg-card shadow-sm" />
+                    <img loading="lazy" decoding="async" src={exh.logo_url} alt="" className="h-12 w-12 rounded-xl border border-border object-contain bg-card shadow-sm" />
                   )}
                   <div className="min-w-0 flex-1">
                     <SheetTitle className="text-lg leading-tight truncate">
@@ -253,7 +253,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                           <Separator />
                           <div className="flex items-center gap-3">
                             {(exh as any).organizer_logo_url ? (
-                              <img src={(exh as any).organizer_logo_url} alt="" className="h-8 w-8 rounded-lg object-contain bg-muted p-0.5" />
+                              <img loading="lazy" decoding="async" src={(exh as any).organizer_logo_url} alt="" className="h-8 w-8 rounded-lg object-contain bg-muted p-0.5" />
                             ) : (
                               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
                                 <Building className="h-4 w-4 text-primary" />
@@ -310,7 +310,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                         <div className="space-y-1.5">
                           {analytics.sponsors.slice(0, 5).map((sp) => (
                             <div key={sp.id} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/30">
-                              {sp.logo_url && <img src={sp.logo_url} alt="" className="h-6 w-6 rounded object-contain" />}
+                              {sp.logo_url && <img loading="lazy" decoding="async" src={sp.logo_url} alt="" className="h-6 w-6 rounded object-contain" />}
                               <span className="truncate flex-1">{isAr && sp.name_ar ? sp.name_ar : sp.name}</span>
                               <Badge variant="outline" className="text-[12px] h-4">{sp.tier}</Badge>
                             </div>

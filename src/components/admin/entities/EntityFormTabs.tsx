@@ -237,7 +237,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
         <Label>{type === "logo" ? (isAr ? "الشعار" : "Logo") : (isAr ? "صورة الغلاف" : "Cover Image")}</Label>
         {url && (
           <div className="relative inline-block">
-            <img src={url} alt="" className={`rounded-xl border object-cover ${type === "logo" ? "h-20 w-20" : "h-32 w-full max-w-md"}`} />
+            <img loading="lazy" decoding="async" src={url} alt="" className={`rounded-xl border object-cover ${type === "logo" ? "h-20 w-20" : "h-32 w-full max-w-md"}`} />
             <Button size="icon" variant="destructive" className="absolute -top-2 -end-2 h-6 w-6" onClick={() => onUpdate(fieldKey, "")}>
               <X className="h-3 w-3" />
             </Button>
@@ -358,7 +358,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
                       {mediaFiles.map(f => (
                         <button key={f.name} className="group relative overflow-hidden rounded border hover:ring-2 hover:ring-primary"
                           onClick={() => { onUpdate(showMediaPicker === "logo" ? "logo_url" : "cover_image_url", f.url); setShowMediaPicker(null); }}>
-                          <img src={f.url} alt={f.name} className="h-16 w-full object-cover" />
+                          <img loading="lazy" decoding="async" src={f.url} alt={f.name} className="h-16 w-full object-cover" />
                         </button>
                       ))}
                     </div>

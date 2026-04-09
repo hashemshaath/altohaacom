@@ -248,7 +248,7 @@ export default function Checkout() {
                       <Card key={item.product_id} className="border-border/50">
                         <CardContent className="flex items-center gap-3 p-4">
                           <div className="h-16 w-16 rounded-xl overflow-hidden bg-muted shrink-0">
-                            {item.image_url ? <img src={item.image_url} alt={title} className="h-full w-full object-cover" /> : <div className="h-full w-full flex items-center justify-center"><ShoppingBag className="h-6 w-6 text-muted-foreground/30" /></div>}
+                            {item.image_url ? <img loading="lazy" decoding="async" src={item.image_url} alt={title} className="h-full w-full object-cover" /> : <div className="h-full w-full flex items-center justify-center"><ShoppingBag className="h-6 w-6 text-muted-foreground/30" /></div>}
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium truncate">{title}</p>

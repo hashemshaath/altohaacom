@@ -28,7 +28,7 @@ export const AdminHeader = memo(function AdminHeader() {
           <AdminMobileNavDrawer />
           <Link to="/admin" className="flex items-center gap-2.5 group">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary transition-all duration-200 group-hover:scale-105">
-              <img src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-5 w-auto brightness-0 invert" />
+              <img loading="lazy" decoding="async" src={brandCfg.logoUrl || "/altoha-logo.png"} alt={brandCfg.siteName || "Altoha"} className="h-5 w-auto brightness-0 invert" />
             </div>
             <span className={`text-base font-bold text-foreground ${isAr ? "" : "font-serif"}`}>
               {isAr ? (brandCfg.siteNameAr || "الطهاة") : (brandCfg.siteName || "Altoha")}

@@ -492,7 +492,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
           {/* Cover thumbnail */}
           {form.cover_image_url && (
             <div className="hidden sm:block h-9 w-14 rounded-lg overflow-hidden border border-border/40 shrink-0">
-              <img src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
+              <img loading="lazy" decoding="async" src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
             </div>
           )}
 
@@ -610,7 +610,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
           {/* Cover image preview in sidebar */}
           {form.cover_image_url && (
             <div className="relative h-28 w-full overflow-hidden border-b">
-              <img src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
+              <img loading="lazy" decoding="async" src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-2 start-2.5 end-2.5">
                 <p className="text-[12px] text-white/90 font-medium truncate">{form.title || t("Untitled", "بدون عنوان")}</p>
@@ -901,7 +901,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   </FieldGroup>
                   {form.cover_image_url ? (
                     <div className="relative h-32 rounded-xl overflow-hidden border border-border/40 group">
-                      <img src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
+                      <img loading="lazy" decoding="async" src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
                         <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => updateField("cover_image_url", "")}>
                           <X className="h-3.5 w-3.5" />
@@ -924,7 +924,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   </FieldGroup>
                   {logoUrl ? (
                     <div className="relative h-32 rounded-xl overflow-hidden border border-border/40 bg-muted/10 flex items-center justify-center group">
-                      <img src={logoUrl} alt="" className="max-h-24 max-w-full object-contain" />
+                      <img loading="lazy" decoding="async" src={logoUrl} alt="" className="max-h-24 max-w-full object-contain" />
                       <Button variant="ghost" size="icon" className="absolute top-1.5 end-1.5 h-6 w-6 rounded-lg bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => setLogoUrl("")}>
                         <X className="h-3 w-3" />
                       </Button>
@@ -1322,7 +1322,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                         >
                           <div className="h-12 w-16 rounded-lg overflow-hidden border border-border/30 shrink-0 bg-muted/20">
                             {ed.cover_image_url ? (
-                              <img src={ed.cover_image_url} alt="" className="h-full w-full object-cover" />
+                              <img loading="lazy" decoding="async" src={ed.cover_image_url} alt="" className="h-full w-full object-cover" />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center"><Image className="h-4 w-4 text-muted-foreground/30" /></div>
                             )}

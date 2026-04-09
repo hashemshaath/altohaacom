@@ -204,7 +204,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
                     <div className="flex items-center gap-3 min-w-0">
                       <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${ratingBg} shrink-0`}>
                         {vendor.logoUrl ? (
-                          <img src={vendor.logoUrl} alt="" className="h-8 w-8 rounded object-cover" />
+                          <img loading="lazy" decoding="async" src={vendor.logoUrl} alt="" className="h-8 w-8 rounded object-cover" />
                         ) : (
                           <Building2 className={`h-5 w-5 ${ratingColor}`} />
                         )}

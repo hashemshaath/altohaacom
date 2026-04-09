@@ -187,7 +187,7 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
       {/* Cover preview */}
       {coverImageUrl && (
         <div className="flex items-center gap-3 rounded-xl border border-border/50 bg-muted/20 p-3">
-          <img src={coverImageUrl} alt="Cover" className="h-16 w-24 rounded-lg object-cover border" />
+          <img loading="lazy" decoding="async" src={coverImageUrl} alt="Cover" className="h-16 w-24 rounded-lg object-cover border" />
           <div>
             <p className="text-xs font-medium">{t("Current Cover", "الغلاف الحالي")}</p>
             <p className="text-[12px] text-muted-foreground truncate max-w-[200px]">{coverImageUrl}</p>
@@ -220,7 +220,7 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
               return (
                 <div key={item.id} className={cn("group relative rounded-xl border overflow-hidden bg-muted/20 transition-all", selected && "ring-2 ring-primary border-primary")}>
                   {item.file_type === "image" ? (
-                    <img src={item.file_url} alt={item.title || ""} className="h-24 w-full object-cover" />
+                    <img loading="lazy" decoding="async" src={item.file_url} alt={item.title || ""} className="h-24 w-full object-cover" />
                   ) : (
                     <div className="h-24 w-full flex items-center justify-center bg-muted/40">
                       <FileText className="h-8 w-8 text-muted-foreground/50" />
@@ -260,7 +260,7 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
                     {selected ? <CheckSquare className="h-4 w-4 text-primary" /> : <Square className="h-4 w-4 text-muted-foreground/40" />}
                   </button>
                   {item.file_type === "image" ? (
-                    <img src={item.file_url} alt="" className="h-10 w-14 rounded-lg object-cover border shrink-0" />
+                    <img loading="lazy" decoding="async" src={item.file_url} alt="" className="h-10 w-14 rounded-lg object-cover border shrink-0" />
                   ) : (
                     <div className="h-10 w-14 rounded-lg bg-muted/40 flex items-center justify-center shrink-0">
                       <FileText className="h-4 w-4 text-muted-foreground/50" />

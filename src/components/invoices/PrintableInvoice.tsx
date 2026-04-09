@@ -202,7 +202,7 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
         {/* Watermark */}
         {cfg.watermark_url && (
           <div className="watermark" style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", pointerEvents: "none", zIndex: 0 }}>
-            <img src={cfg.watermark_url} alt="" style={{ opacity: (cfg.watermark_opacity ?? 30) / 100, maxWidth: "400px", maxHeight: "400px" }} />
+            <img loading="lazy" decoding="async" src={cfg.watermark_url} alt="" style={{ opacity: (cfg.watermark_opacity ?? 30) / 100, maxWidth: "400px", maxHeight: "400px" }} />
           </div>
         )}
 
@@ -210,7 +210,7 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
         <div className="header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "40px" }}>
           <div style={{ order: logoPos === "right" ? 2 : logoPos === "left" ? 0 : 1 }}>
             {cfg.logo_url ? (
-              <img src={cfg.logo_url} alt="Logo" style={{ height: `${logoSize * 0.8}px`, maxWidth: "200px", objectFit: "contain" }} />
+              <img loading="lazy" decoding="async" src={cfg.logo_url} alt="Logo" style={{ height: `${logoSize * 0.8}px`, maxWidth: "200px", objectFit: "contain" }} />
             ) : (
               <>
                 <div className="brand" style={{ fontSize: "24px", fontWeight: mainFW, color: primaryColor }}>Altoha</div>
@@ -289,7 +289,7 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
                   <td style={{ padding: "10px 12px", borderBottom: "1px solid #f3f4f6" }}>{idx + 1}</td>
                   {cfg.show_product_image && (
                     <td style={{ padding: "10px 12px", borderBottom: "1px solid #f3f4f6" }}>
-                      {item.image_url && <img src={item.image_url} alt="" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "4px" }} />}
+                      {item.image_url && <img loading="lazy" decoding="async" src={item.image_url} alt="" style={{ width: "40px", height: "40px", objectFit: "cover", borderRadius: "4px" }} />}
                     </td>
                   )}
                   <td style={{ padding: "10px 12px", borderBottom: "1px solid #f3f4f6" }}>
@@ -374,7 +374,7 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
             ...(cfg.stamp_position === "center" ? { left: "50%", transform: "translateX(-50%)" } :
                 cfg.stamp_position === "left" ? { left: "40px" } : { right: "40px" }),
           }}>
-            <img src={cfg.stamp_url} alt="" style={{ width: "100px", height: "100px", objectFit: "contain", opacity: (cfg.stamp_opacity ?? 30) / 100 }} />
+            <img loading="lazy" decoding="async" src={cfg.stamp_url} alt="" style={{ width: "100px", height: "100px", objectFit: "contain", opacity: (cfg.stamp_opacity ?? 30) / 100 }} />
           </div>
         )}
 

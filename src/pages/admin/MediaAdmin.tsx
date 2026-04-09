@@ -280,7 +280,7 @@ export default function MediaAdmin() {
                     </div>
                     {file.file_type.startsWith("image") ? (
                       <div className="aspect-square">
-                        <img 
+                        <img loading="lazy" decoding="async" 
                           src={file.file_url} 
                           alt={file.alt_text || file.filename}
                           className="h-full w-full object-cover"
@@ -343,7 +343,7 @@ export default function MediaAdmin() {
                       <Checkbox checked={bulk.isSelected(file.id)} onCheckedChange={() => bulk.toggleOne(file.id)} />
                     </div>
                     {file.file_type.startsWith("image") ? (
-                      <img 
+                      <img loading="lazy" decoding="async" 
                         src={file.file_url} 
                         alt=""
                         className="h-12 w-12 rounded object-cover"
@@ -396,7 +396,7 @@ export default function MediaAdmin() {
           {selectedMedia && (
             <div className="space-y-4">
               {selectedMedia.file_type.startsWith("image") && (
-                <img 
+                <img loading="lazy" decoding="async" 
                   src={selectedMedia.file_url}
                   alt={selectedMedia.alt_text || ""}
                   className="w-full rounded-xl"

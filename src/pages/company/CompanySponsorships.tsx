@@ -260,7 +260,7 @@ export default function CompanySponsorships() {
                     <div className="flex">
                       <div className="relative w-32 shrink-0 bg-muted">
                         {comp.cover_image_url ? (
-                          <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover" />
+                          <img loading="lazy" decoding="async" src={comp.cover_image_url} alt={title} className="h-full w-full object-cover" />
                         ) : (
                           <div className="flex h-full items-center justify-center">
                             <Trophy className="h-8 w-8 text-muted-foreground/20" />

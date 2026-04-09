@@ -130,7 +130,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
       {/* Logo */}
       <div className="relative z-10 p-8 xl:p-12">
         <div className="flex items-center gap-3 group cursor-pointer">
-          <img src="/altoha-logo.png" alt="Altoha" className="h-12 w-auto drop-shadow-2xl transition-transform group-hover:scale-110" />
+          <img loading="lazy" decoding="async" src="/altoha-logo.png" alt="Altoha" className="h-12 w-auto drop-shadow-2xl transition-transform group-hover:scale-110" />
           <span className="font-serif text-2xl font-black text-white tracking-tighter drop-shadow-lg">Altoha</span>
         </div>
       </div>

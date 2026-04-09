@@ -149,7 +149,7 @@ export function AuthSlidesAdmin() {
               <Label className="text-xs">{isAr ? "رابط الصورة" : "Image URL"}</Label>
               <Input value={form.image_url || ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="/auth-hero-1.jpg" dir="ltr" />
               {form.image_url && (
-                <img src={form.image_url} alt="Preview" className="h-32 w-full object-cover rounded-xl mt-2" />
+                <img loading="lazy" decoding="async" src={form.image_url} alt="Preview" className="h-32 w-full object-cover rounded-xl mt-2" />
               )}
             </div>
 
@@ -198,7 +198,7 @@ export function AuthSlidesAdmin() {
               <CardContent className="flex items-center gap-3 p-3">
                 <GripVertical className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div className="h-14 w-20 rounded-lg overflow-hidden shrink-0 bg-muted">
-                  <img src={slide.image_url} alt="" className="h-full w-full object-cover" />
+                  <img loading="lazy" decoding="async" src={slide.image_url} alt="" className="h-full w-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{isAr ? slide.title_ar || slide.title : slide.title || "—"}</p>

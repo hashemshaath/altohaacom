@@ -207,7 +207,7 @@ export const SupplierOnboardingWizard = memo(function SupplierOnboardingWizard({
               </div>
               {coverImageUrl && (
                 <div className="relative rounded-xl overflow-hidden h-40 bg-muted">
-                  <img src={coverImageUrl} className="h-full w-full object-cover" alt="Cover preview" />
+                  <img loading="lazy" decoding="async" src={coverImageUrl} className="h-full w-full object-cover" alt="Cover preview" />
                 </div>
               )}
               <p className="text-xs text-muted-foreground">

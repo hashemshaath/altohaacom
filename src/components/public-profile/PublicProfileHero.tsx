@@ -88,7 +88,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
       {/* Cover */}
       <div className="h-36 sm:h-56 md:h-72 relative overflow-hidden">
         {profile.cover_image_url ? (
-          <img src={profile.cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-2000 hover:scale-105" />
+          <img loading="lazy" decoding="async" src={profile.cover_image_url} alt="Cover" className="w-full h-full object-cover transition-transform duration-2000 hover:scale-105" />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/20 via-primary/5 to-chart-3/12 relative">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_25%_40%,hsl(var(--primary)/0.12),transparent_65%)]" />
@@ -113,7 +113,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                   <div className="absolute -inset-1 rounded-2xl bg-gradient-to-br from-primary/40 via-primary/20 to-chart-3/30 blur-sm opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
                   <div className="relative h-20 w-20 sm:h-28 sm:w-28 md:h-36 md:w-36 rounded-2xl ring-3 sm:ring-4 ring-background shadow-2xl overflow-hidden border-2 border-border/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-primary/15">
                     {profile.avatar_url ? (
-                      <img src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
+                      <img loading="lazy" decoding="async" src={profile.avatar_url} alt={displayName} className="h-full w-full object-cover" />
                     ) : (
                       <div className="h-full w-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5 text-primary text-3xl sm:text-4xl md:text-5xl font-bold font-serif">
                         {displayName[0]?.toUpperCase()}
@@ -170,7 +170,7 @@ export const PublicProfileHero = memo(function PublicProfileHero({
                     return (
                       <Tooltip key={ua.id}>
                         <TooltipTrigger asChild>
-                          <img src={award.logo_url} alt={isAr ? (award.name_ar || award.name) : award.name}
+                          <img loading="lazy" decoding="async" src={award.logo_url} alt={isAr ? (award.name_ar || award.name) : award.name}
                             className="h-5 w-5 object-contain cursor-pointer hover:scale-110 transition-transform" />
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="text-xs">{isAr ? (award.name_ar || award.name) : award.name}</TooltipContent>

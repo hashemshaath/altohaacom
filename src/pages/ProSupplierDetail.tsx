@@ -807,7 +807,7 @@ export default function ProSupplierDetail() {
                           {/* Cover Image */}
                           <div className="relative h-28 overflow-hidden bg-gradient-to-br from-primary/10 via-muted to-accent/10">
                             {coverImg ? (
-                              <img src={coverImg} alt={title || ""} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                              <img loading="lazy" decoding="async" src={coverImg} alt={title || ""} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                             ) : (
                               <div className="flex h-full w-full items-center justify-center">
                                 <Crown className="h-8 w-8 text-muted-foreground/15" />

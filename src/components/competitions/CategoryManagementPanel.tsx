@@ -421,7 +421,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
               <Label>{isAr ? "رابط صورة الغلاف" : "Cover Image URL"}</Label>
               <Input value={form.cover_image_url} onChange={(e) => setForm({ ...form, cover_image_url: e.target.value })} placeholder="https://..." />
               {form.cover_image_url && (
-                <img src={form.cover_image_url} alt="Preview" className="mt-2 h-32 w-full rounded-xl object-cover" />
+                <img loading="lazy" decoding="async" src={form.cover_image_url} alt="Preview" className="mt-2 h-32 w-full rounded-xl object-cover" />
               )}
             </div>
             <div className="flex gap-2 pt-2">

@@ -343,7 +343,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
           }
         </style>
       </head><body>
-        <img class="card-img" src="${imgDataUrl}" alt="Membership Card" />
+        <img loading="lazy" decoding="async" class="card-img" src="${imgDataUrl}" alt="Membership Card" />
       </body></html>`);
       printWindow.document.close();
 
@@ -567,7 +567,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       : { background: "hsl(var(--primary) / 0.08)", border: "1.5px solid hsl(var(--primary) / 0.2)" }
                     }
                   >
-                    <img src="/altoha-logo.png" alt="Altoha" className="h-9 w-9 sm:h-11 sm:w-11 object-contain" style={cardTheme === "classic" ? { filter: "brightness(1.8)" } : {}} />
+                    <img loading="lazy" decoding="async" src="/altoha-logo.png" alt="Altoha" className="h-9 w-9 sm:h-11 sm:w-11 object-contain" style={cardTheme === "classic" ? { filter: "brightness(1.8)" } : {}} />
                   </div>
                   <div>
                     <p

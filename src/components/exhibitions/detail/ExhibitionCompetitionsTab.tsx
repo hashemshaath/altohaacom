@@ -114,7 +114,7 @@ function CompetitionClassifiedCard({ comp, isAr, now }: { comp: any; isAr: boole
       <div className="flex flex-col sm:flex-row">
         {comp.cover_image_url && (
           <div className="sm:w-48 shrink-0">
-            <img src={comp.cover_image_url} alt={compTitle} className="h-40 w-full object-cover sm:h-full" />
+            <img loading="lazy" decoding="async" src={comp.cover_image_url} alt={compTitle} className="h-40 w-full object-cover sm:h-full" />
           </div>
         )}
         <div className="flex-1 p-5">

@@ -68,14 +68,14 @@ export default function CompanyProfile() {
       <div className="relative overflow-hidden rounded-[2.5rem] border border-border/40 bg-card shadow-2xl shadow-black/5">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
         {company.cover_image_url && (
-          <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-20 grayscale" alt="" />
+          <img loading="lazy" decoding="async" src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-20 grayscale" alt="" />
         )}
         <div className="absolute -end-24 -top-24 h-64 w-64 rounded-full bg-primary/10 blur-[100px] animate-pulse" />
         
         <div className="relative flex flex-col gap-8 p-8 md:flex-row md:items-center md:p-12">
           <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-[2rem] bg-gradient-to-br from-primary to-primary-variant text-primary-foreground shadow-2xl shadow-primary/20 transition-transform hover:scale-105 duration-500">
             {company.logo_url ? (
-              <img src={company.logo_url} className="h-16 w-16 object-contain brightness-0 invert" alt={company.name} />
+              <img loading="lazy" decoding="async" src={company.logo_url} className="h-16 w-16 object-contain brightness-0 invert" alt={company.name} />
             ) : (
               <Building2 className="h-12 w-12" />
             )}
