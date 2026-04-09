@@ -20,25 +20,30 @@ export const DashboardStatusStrip = memo(function DashboardStatusStrip() {
     queryKey: ["dashboard-status-strip", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const notifRes = await supabase
+      const uid = user.id;
+
+      const notifRes = await (supabase as any)
         .from("notifications")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
+        .eq("user_id", uid)
         .eq("is_read", false);
-      const ordersRes = await supabase
+
+      const ordersRes = await (supabase as any)
         .from("shop_orders")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .in("status", ["pending", "processing", "shipped"] as const);
-      const compRes = await supabase
+        .eq("user_id", uid)
+        .in("status", ["pending", "processing", "shipped"]);
+
+      const compRes = await (supabase as any)
         .from("competition_registrations")
         .select("id", { count: "exact", head: true })
-        .eq("participant_id", user.id)
+        .eq("participant_id", uid)
         .eq("status", "approved");
-      const invoiceRes = await supabase
+
+      const invoiceRes = await (supabase as any)
         .from("invoices")
         .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
+        .eq("user_id", uid)
         .eq("status", "pending");
       return {
         unreadNotifications: notifRes.count || 0,
