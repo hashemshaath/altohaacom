@@ -105,7 +105,7 @@ export interface BioNotification {
   type: string;
   is_read: boolean;
   created_at: string;
-  metadata: Record<string, unknown> | null;
+  metadata: unknown;
 }
 
 /** Generic mutation result used in LinksTab props */
