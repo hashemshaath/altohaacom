@@ -67,7 +67,7 @@ export default function EditExhibition() {
         city: exhibition.city || "",
         country: exhibition.country || "",
         mapUrl: exhibition.map_url || "",
-        organizerId: (exhibition as any).organizer_id || "",
+        organizerId: (exhibition as unknown as Record<string, string>).organizer_id || "",
         organizerName: exhibition.organizer_name || "",
         organizerNameAr: exhibition.organizer_name_ar || "",
         organizerEmail: exhibition.organizer_email || "",
@@ -82,8 +82,8 @@ export default function EditExhibition() {
         tags: (exhibition.tags || []).join(", "),
         targetAudience: (exhibition.target_audience || []).join(", "),
         isFeatured: exhibition.is_featured || false,
-        seriesId: (exhibition as any).series_id || "",
-        editionYear: (exhibition as any).edition_year?.toString() || "",
+        seriesId: (exhibition as unknown as Record<string, string>).series_id || "",
+        editionYear: (exhibition as unknown as Record<string, string | number>).edition_year?.toString() || "",
       });
     }
   }, [exhibition]);
@@ -99,7 +99,7 @@ export default function EditExhibition() {
           title_ar: data.titleAr || null,
           description: data.description || null,
           description_ar: data.descriptionAr || null,
-          type: data.type as any,
+          type: data.type as Database["public"]["Enums"]["exhibition_type"],
           start_date: data.startDate,
           end_date: data.endDate,
           registration_deadline: data.registrationDeadline || null,
@@ -132,7 +132,7 @@ export default function EditExhibition() {
             : [],
           series_id: data.seriesId || null,
           edition_year: data.editionYear ? parseInt(data.editionYear) : null,
-        } as any)
+        } as never)
         .eq("id", exhibition.id);
 
       if (error) throw error;

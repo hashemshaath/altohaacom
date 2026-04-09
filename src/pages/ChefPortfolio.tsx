@@ -61,7 +61,7 @@ export default function ChefPortfolio() {
         .in("registration_id", regIds);
       return (scoreData || []).map(s => ({
         ...s,
-        compTitle: (regMap[s.registration_id] as any)?.competitions?.title || "Unknown",
+        compTitle: (regMap[s.registration_id] as unknown as Record<string, Record<string, string>>)?.competitions?.title || "Unknown",
       }));
     },
     enabled: !!targetUserId,
@@ -207,7 +207,7 @@ export default function ChefPortfolio() {
                   {registrations?.length ? (
                     <div className="space-y-3">
                       {registrations.map((reg) => {
-                        const comp = reg.competitions as any;
+                        const comp = reg.competitions as unknown as Record<string, string> | null;
                         return (
                           <div key={reg.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 hover:bg-muted/30 transition-colors">
                             <div className="h-12 w-16 rounded-xl overflow-hidden bg-muted shrink-0">

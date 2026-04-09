@@ -43,9 +43,9 @@ export default function CertificateVerify() {
         .rpc("verify_certificate", { p_code: searchedCode.toUpperCase() });
       
       if (error) throw error;
-      if (!data || (data as any[]).length === 0) return null;
+      if (!data || (data as Record<string, unknown>[]).length === 0) return null;
       
-      return (data as any[])[0];
+      return (data as Record<string, unknown>[])[0];
     },
     enabled: !!searchedCode,
   });
