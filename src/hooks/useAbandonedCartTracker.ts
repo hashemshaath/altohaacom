@@ -54,7 +54,7 @@ export function useAbandonedCartTracker(
         price: i.price,
         quantity: i.quantity,
         image_url: i.image_url,
-      })) as any,
+      })) as unknown as import("@/integrations/supabase/types").Json,
       total_amount: total,
       currency: cartItems[0]?.currency || "SAR",
       cart_source: "web",

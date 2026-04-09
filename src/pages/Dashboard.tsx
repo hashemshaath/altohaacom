@@ -99,7 +99,8 @@ export default function Dashboard() {
       dailyLoginAwarded.current = true;
       awardPoints.mutate({ actionType: "daily_login", silent: true });
     }
-  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    // awardPoints is a stable mutation object — safe to omit
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const hour = new Date().getHours();
   const timeGreeting = isAr

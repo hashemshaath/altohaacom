@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
  */
 const prefetched = new Set<string>();
 
-const routeModules: Record<string, () => Promise<any>> = {
+const routeModules: Record<string, () => Promise<unknown>> = {
   "/competitions": () => import("@/pages/Competitions"),
   "/shop": () => import("@/pages/Shop"),
   "/community": () => import("@/pages/Community"),
@@ -24,7 +24,7 @@ const routeModules: Record<string, () => Promise<any>> = {
 };
 
 /** Warm the Supabase query cache alongside module prefetch */
-const dataPrefetchers: Record<string, () => Promise<any>> = {
+const dataPrefetchers: Record<string, () => Promise<unknown>> = {
   "/competitions": async () => {
     await supabase.from("competitions").select("id,title,slug,status,start_date,featured_image_url").in("status", ["registration_open", "upcoming"]).order("start_date", { ascending: false }).limit(12);
   },
@@ -35,10 +35,11 @@ const dataPrefetchers: Record<string, () => Promise<any>> = {
     await supabase.from("exhibitions").select("id,title,slug,start_date,end_date,venue,city,featured_image_url,status").in("status", ["active", "upcoming"]).order("start_date", { ascending: false }).limit(10);
   },
   "/recipes": async () => {
-    await (supabase.from("recipes").select("id,title,slug,featured_image_url") as any).eq("status", "published").order("created_at", { ascending: false }).limit(12);
+    // recipes/shop_products may not be in generated types yet — safe cast
+    await (supabase.from("recipes") as any).select("id,title,slug,featured_image_url").eq("status", "published").order("created_at", { ascending: false }).limit(12);
   },
   "/shop": async () => {
-    await (supabase.from("shop_products").select("id,name,slug,price,currency,images,status") as any).eq("status", "active").order("created_at", { ascending: false }).limit(12);
+    await (supabase.from("shop_products") as any).select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12);
   },
 };
 

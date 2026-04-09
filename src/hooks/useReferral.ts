@@ -132,8 +132,9 @@ export function useSendInvitation() {
       }
 
       // Update counter
+      const { count } = await supabase.from("referral_invitations").select("id", { count: "exact", head: true }).eq("referrer_id", user.id);
       await supabase.from("referral_codes").update({
-        total_invites_sent: (await supabase.from("referral_invitations").select("id", { count: "exact", head: true }).eq("referrer_id", user.id)).count || 0,
+        total_invites_sent: count || 0,
       }).eq("user_id", user.id);
     },
     onSuccess: (_, variables) => {
