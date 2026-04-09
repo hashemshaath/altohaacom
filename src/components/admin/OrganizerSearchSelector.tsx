@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef, useCallback, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllCountries } from "@/hooks/useCountries";
 import { Input } from "@/components/ui/input";
@@ -90,13 +91,14 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
   const { data: companies = [] } = useQuery({
     queryKey: ["organizer-companies"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- deep type instantiation workaround
+      const { data, error } = await (supabase
         .from("companies")
-        .select("id, name, name_ar, type, country_code, city, logo_url, website, email, phone")
+        .select("id, name, name_ar, type, country_code, city, logo_url, website, email, phone") as any)
         .eq("is_active", true)
         .order("name");
       if (error) throw error;
-      return (data || []) as Array<{id:string; name:string; name_ar:string|null; type:string; country_code:string|null; city:string|null; logo_url:string|null; website:string|null; email:string|null; phone:string|null}>;
+      return data || [];
     },
     staleTime: 1000 * 60 * 5,
   });
@@ -267,11 +269,11 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         name: newName,
         name_ar: newNameAr || null,
         country: newCountry || null,
-        type: newType as any,
+        type: newType as Database["public"]["Enums"]["entity_type"],
         slug,
         entity_number: "",
-        status: "pending" as any,
-        scope: "local" as any,
+        status: "pending" as Database["public"]["Enums"]["entity_status"],
+        scope: "local" as Database["public"]["Enums"]["entity_scope"],
         is_visible: false,
       }).select("id, name, name_ar, country").single();
 
