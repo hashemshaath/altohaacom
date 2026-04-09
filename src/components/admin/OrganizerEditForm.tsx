@@ -342,12 +342,12 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     const social = (orgData.social_links as Record<string, string>) || {};
     const contacts = (orgData.key_contacts as unknown as KeyContact[]) || [];
     const gallery = (orgData.gallery_urls as string[]) || [];
+    const org = orgData as Record<string, unknown>;
     const populated: OrganizerForm = {
       name: orgData.name || "", name_ar: orgData.name_ar || "", slug: orgData.slug || "",
       description: orgData.description || "", description_ar: orgData.description_ar || "",
       logo_url: orgData.logo_url || "", cover_image_url: orgData.cover_image_url || "",
       email: orgData.email || "", phone: orgData.phone || "",
-      const org = orgData as Record<string, unknown>;
       fax: String(org.fax || ""), website: orgData.website || "",
       address: orgData.address || "", address_ar: orgData.address_ar || "",
       city: orgData.city || "", city_ar: orgData.city_ar || "",
