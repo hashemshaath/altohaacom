@@ -128,6 +128,8 @@ function AppContent() {
   return (
     <>
       <AppBootMarker />
+      <NetworkStatus />
+      <RouteLoadingBar />
       <ScrollToTop />
       <RouteAnnouncer />
       <SkipToContent />
