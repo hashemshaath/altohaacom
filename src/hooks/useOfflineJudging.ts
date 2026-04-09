@@ -320,7 +320,7 @@ export function useOfflineJudging() {
     return getCachedItem<OfflineScore>("offline_scores", `${registrationId}_${user.id}`);
   }, [user]);
 
-  const lastSync = localStorage.getItem(JUDGING_SYNC_KEY);
+  const lastSync = useMemo(() => localStorage.getItem(JUDGING_SYNC_KEY), [pendingCount]);
 
   return {
     cachedCompetitions,
