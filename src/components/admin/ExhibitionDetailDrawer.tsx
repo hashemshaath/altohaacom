@@ -61,7 +61,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
     queryKey: ["admin-exhibition-detail-analytics", exhibitionId],
     queryFn: async () => {
       const [ticketsRes, reviewsRes, followersRes, boothsRes, sponsorsRes] = await Promise.all([
-        supabase.from("exhibition_tickets").select("id, status, created_at, checked_in_at, ticket_type, attendee_name").eq("exhibition_id", exhibitionId!) as any,
+        supabase.from("exhibition_tickets").select("id, status, created_at, checked_in_at, ticket_type, attendee_name").eq("exhibition_id", exhibitionId!),
         supabase.from("exhibition_reviews").select("id, rating, content, created_at, user_id, is_verified_attendee, helpful_count").eq("exhibition_id", exhibitionId!).order("created_at", { ascending: false }),
         supabase.from("exhibition_followers").select("id, created_at").eq("exhibition_id", exhibitionId!),
         supabase.from("exhibition_booths").select("id, booth_number, status, assigned_to, price, size").eq("exhibition_id", exhibitionId!),
@@ -183,8 +183,8 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                       {isAr && exh.title_ar ? exh.title_ar : exh.title}
                     </SheetTitle>
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      {(exh as any).exhibition_number && (
-                        <Badge variant="outline" className="font-mono text-[12px] h-5">{(exh as any).exhibition_number}</Badge>
+                      {(exh as Record<string, unknown>).exhibition_number && (
+                        <Badge variant="outline" className="font-mono text-[12px] h-5">{String((exh as Record<string, unknown>).exhibition_number)}</Badge>
                       )}
                       {derived && (
                         <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium ${derived.color}`}>
@@ -206,14 +206,14 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                   { icon: Ticket, label: t("Tickets", "تذاكر"), value: analytics?.totalTickets || 0, color: "text-primary" },
                   { icon: CheckCircle2, label: t("Check-ins", "حضور"), value: analytics?.checkedIn || 0, color: "text-chart-2" },
                   { icon: Users, label: t("Followers", "متابعون"), value: analytics?.totalFollowers || 0, color: "text-chart-3" },
-                  { icon: Star, label: t("Rating", "تقييم"), value: analytics?.avgRating || "0", color: "text-chart-4", isText: true },
+                  { icon: Star, label: t("Rating", "تقييم"), value: analytics?.avgRating || "0", color: "text-chart-4", isText: true as const },
                   { icon: Building, label: t("Booths", "أجنحة"), value: analytics?.totalBooths || 0, color: "text-chart-5" },
                   { icon: Eye, label: t("Views", "مشاهدات"), value: exh.view_count || 0, color: "text-chart-1" },
                 ].map((kpi) => (
                   <div key={kpi.label} className="text-center p-2 rounded-xl bg-muted/40 group hover:bg-muted/60 transition-colors">
                     <kpi.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${kpi.color}`} />
                     <p className="text-sm font-bold">
-                      {(kpi as any).isText ? kpi.value : <AnimatedCounter value={kpi.value as number} />}
+                      {"isText" in kpi && kpi.isText ? kpi.value : <AnimatedCounter value={kpi.value as number} />}
                     </p>
                     <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
                   </div>
@@ -252,8 +252,8 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                         <>
                           <Separator />
                           <div className="flex items-center gap-3">
-                            {(exh as any).organizer_logo_url ? (
-                              <img loading="lazy" decoding="async" src={(exh as any).organizer_logo_url} alt="" className="h-8 w-8 rounded-lg object-contain bg-muted p-0.5" />
+                            {(exh as Record<string, unknown>).organizer_logo_url ? (
+                              <img loading="lazy" decoding="async" src={String((exh as Record<string, unknown>).organizer_logo_url)} alt="" className="h-8 w-8 rounded-lg object-contain bg-muted p-0.5" />
                             ) : (
                               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
                                 <Building className="h-4 w-4 text-primary" />
@@ -462,12 +462,12 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                     {[
                       { label: t("Reviews", "تقييمات"), value: analytics?.totalReviews || 0, icon: Star, color: "text-chart-4" },
                       { label: t("Followers", "متابعون"), value: analytics?.totalFollowers || 0, icon: Users, color: "text-chart-3" },
-                      { label: t("Avg Rating", "متوسط"), value: analytics?.avgRating || "0", icon: TrendingUp, color: "text-chart-5", isText: true },
+                      { label: t("Avg Rating", "متوسط"), value: analytics?.avgRating || "0", icon: TrendingUp, color: "text-chart-5", isText: true as const },
                     ].map(k => (
                       <div key={k.label} className="text-center p-3 rounded-xl bg-muted/40">
                         <k.icon className={`h-4 w-4 mx-auto mb-1 ${k.color}`} />
                         <p className="text-lg font-bold">
-                          {(k as any).isText ? k.value : <AnimatedCounter value={k.value as number} />}
+                          {"isText" in k && k.isText ? k.value : <AnimatedCounter value={k.value as number} />}
                         </p>
                         <p className="text-[12px] text-muted-foreground">{k.label}</p>
                       </div>

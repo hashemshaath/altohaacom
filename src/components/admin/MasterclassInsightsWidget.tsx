@@ -17,9 +17,12 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
     queryKey: ["admin-masterclass-insights"],
     queryFn: async () => {
       const r1 = await supabase.from("masterclasses").select("*", { count: "exact", head: true });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema columns
       const r2 = await (supabase.from("masterclasses").select("*", { count: "exact", head: true }) as any).eq("is_published", true) as { count: number | null };
       const r3 = await supabase.from("masterclass_modules").select("*", { count: "exact", head: true });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
       const r4 = await (supabase as any).from("masterclass_enrollments").select("progress_percentage, completed_at") as { data: { progress_percentage: number; completed_at: string | null }[] | null };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema columns
       const r5 = await (supabase as any).from("masterclasses").select("id, title, title_ar, enrollment_count, average_rating")
         .eq("is_published", true).order("enrollment_count", { ascending: false }).limit(5) as { data: { id: string; title: string; title_ar: string | null; enrollment_count: number; average_rating: number }[] | null };
 

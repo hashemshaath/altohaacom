@@ -58,7 +58,7 @@ export const NotificationInsightsWidget = memo(function NotificationInsightsWidg
       // Top failure reasons
       const failReasons: Record<string, number> = {};
       queue.filter(q => q.status === "failed").forEach(q => {
-        const reason = (q as any).error_message?.substring(0, 30) || "Unknown";
+        const reason = ((q as Record<string, unknown>).error_message as string)?.substring(0, 30) || "Unknown";
         failReasons[reason] = (failReasons[reason] || 0) + 1;
       });
 
