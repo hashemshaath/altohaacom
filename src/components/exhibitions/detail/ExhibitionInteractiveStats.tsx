@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Eye, Users, Star, Ticket, Building, Heart } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
@@ -26,17 +25,18 @@ export const ExhibitionInteractiveStats = memo(function ExhibitionInteractiveSta
   ];
 
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2.5 sm:gap-3">
+    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6 sm:gap-4">
       {stats.map((s, i) => (
-        <Card key={i} className="border-border/30 hover:border-primary/20 transition-all hover:shadow-sm group cursor-default">
-          <CardContent className="p-3 sm:p-4 text-center">
-            <s.icon className={`h-4.5 w-4.5 sm:h-5 sm:w-5 mx-auto mb-1.5 ${s.color} group-hover:scale-110 transition-transform`} />
-            <p className={`text-sm sm:text-base font-bold ${s.color}`}>
-              {typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}
-            </p>
-            <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">{s.label}</p>
-          </CardContent>
-        </Card>
+        <div
+          key={i}
+          className="group flex flex-col items-center gap-1.5 rounded-xl border border-border/30 bg-card/80 px-3 py-4 text-center transition-all duration-200 hover:border-primary/20 hover:shadow-sm hover:-translate-y-0.5 cursor-default"
+        >
+          <s.icon className={`h-5 w-5 ${s.color} transition-transform duration-200 group-hover:scale-110`} />
+          <p className={`text-base font-bold tabular-nums ${s.color} sm:text-lg`}>
+            {typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}
+          </p>
+          <p className="text-[11px] font-medium text-muted-foreground sm:text-xs">{s.label}</p>
+        </div>
       ))}
     </div>
   );
