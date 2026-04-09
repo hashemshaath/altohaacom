@@ -77,7 +77,7 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
           id: n.id,
           type: n.type || "general",
           title: isAr && n.title_ar ? n.title_ar : n.title,
-          icon: iconType as any,
+          icon: iconType as ActivityItem["icon"],
           timestamp: n.created_at,
           link: n.link || undefined,
         });
@@ -97,13 +97,13 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
     const channel = supabase
       .channel("activity-feed")
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, (payload) => {
-        const n = payload.new as any;
+        const n = payload.new as Record<string, string | null>;
         const iconType = n.type === "follow" ? "follow" : n.type === "reaction" ? "reaction" : "general";
         setRealtimeItems((prev) => [{
           id: n.id,
           type: n.type || "general",
           title: isAr && n.title_ar ? n.title_ar : n.title,
-          icon: iconType as any,
+          icon: iconType as ActivityItem["icon"],
           timestamp: n.created_at,
           link: n.link || undefined,
         }, ...prev].slice(0, 3));
