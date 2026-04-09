@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState, forwardRef } from "react";
 import { cn } from "@/lib/utils";
 import { useSectionConfig, useSectionKey } from "./SectionKeyContext";
 import { SectionBackgroundWrapper } from "./SectionBackground";
@@ -10,7 +10,7 @@ const SPACING: Record<string, string> = {
   relaxed: "py-12 sm:py-16 md:py-20 lg:py-24",
 };
 
-export function HomepageSectionShell({ children }: { children: ReactNode }) {
+export const HomepageSectionShell = forwardRef<HTMLDivElement, { children: ReactNode }>(function HomepageSectionShell({ children }, ref) {
   const config = useSectionConfig();
   const sectionKey = useSectionKey();
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -54,4 +54,4 @@ export function HomepageSectionShell({ children }: { children: ReactNode }) {
       </section>
     </SectionBackgroundWrapper>
   );
-}
+});

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { type ReactNode } from "react";
+import { type ReactNode, forwardRef } from "react";
 
 export type SectionTheme = {
   bg: string;
@@ -43,19 +43,15 @@ export function getSectionTheme(sectionKey: string): SectionTheme {
   return SECTION_THEMES[sectionKey] || { bg: "bg-background" };
 }
 
-export function SectionBackgroundWrapper({
-  sectionKey,
-  children,
-  className,
-}: {
+export const SectionBackgroundWrapper = forwardRef<HTMLDivElement, {
   sectionKey: string;
   children: ReactNode;
   className?: string;
-}) {
+}>(function SectionBackgroundWrapper({ sectionKey, children, className }, ref) {
   const theme = getSectionTheme(sectionKey);
 
   return (
-    <div className={cn(theme.bg, theme.className, className)}>
+    <div ref={ref} className={cn(theme.bg, theme.className, className)}>
       {theme.topBorder && (
         <div className="h-px bg-border/40" aria-hidden="true" />
       )}
@@ -63,4 +59,4 @@ export function SectionBackgroundWrapper({
       <div className="relative">{children}</div>
     </div>
   );
-}
+});
