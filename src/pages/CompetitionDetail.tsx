@@ -34,6 +34,8 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SEOHead } from "@/components/SEOHead";
+import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
+import { buildPublicUrl } from "@/lib/publicAppUrl";
 import { format, formatDistanceToNow, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from "date-fns";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { useEntityQRCode } from "@/hooks/useQRCode";
