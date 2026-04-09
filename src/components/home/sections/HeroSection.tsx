@@ -111,7 +111,7 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
               <p className="text-xl font-bold text-foreground">{isAr ? "منصة الطهاة الأولى" : "The #1 Culinary Platform"}</p>
               <div className="flex flex-col items-center gap-3">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="inline-block h-2 w-2 rounded-full bg-semantic-success animate-pulse" />
                   {isAr ? "جاري التحميل..." : "Loading..."}
                 </div>
                 <div className="grid grid-cols-3 gap-3 w-full">
