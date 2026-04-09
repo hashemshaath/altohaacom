@@ -59,7 +59,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
   const end = new Date(exhibition.end_date);
 
   return (
-    <div className="hidden space-y-5 lg:block">
+    <div className="space-y-5">
       {(isUpcoming || isHappening) && (
         <Card className="relative overflow-hidden shadow-md border-primary/15">
           <div className="absolute -top-12 -end-12 h-32 w-32 rounded-full bg-primary/5 blur-[40px]" />
