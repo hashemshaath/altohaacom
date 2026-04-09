@@ -143,6 +143,7 @@ export function useTastingSession(id: string | undefined) {
       return data as unknown as TastingSession;
     },
     enabled: !!id,
+    staleTime: 1000 * 60 * 2,
   });
 }
 

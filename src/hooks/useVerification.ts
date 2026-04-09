@@ -8,6 +8,7 @@ export function useVerificationStatus() {
   return useQuery({
     queryKey: ["verification-status", user?.id],
     enabled: !!user?.id,
+    staleTime: 1000 * 60 * 2,
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")

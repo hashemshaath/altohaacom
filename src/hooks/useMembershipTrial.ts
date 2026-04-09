@@ -39,6 +39,7 @@ export function useTrialInfo() {
       };
     },
     enabled: !!user,
+    staleTime: 1000 * 60 * 2,
   });
 }
 

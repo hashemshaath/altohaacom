@@ -26,6 +26,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
       throw new Error("Profile not found");
     },
     enabled: !!username,
+    staleTime: 1000 * 60 * 2,
   });
 
   useRecordProfileView(profile?.user_id);

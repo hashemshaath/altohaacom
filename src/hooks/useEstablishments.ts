@@ -37,6 +37,7 @@ export function useEstablishment(id?: string) {
       return data;
     },
     enabled: !!id,
+    staleTime: 1000 * 60 * 2,
   });
 }
 

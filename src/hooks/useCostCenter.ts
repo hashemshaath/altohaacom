@@ -173,6 +173,7 @@ export function useCostEstimate(id: string | undefined) {
       return data as unknown as CostEstimate;
     },
     enabled: !!id,
+    staleTime: 1000 * 60 * 2,
   });
 }
 
