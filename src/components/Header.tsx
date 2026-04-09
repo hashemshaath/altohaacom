@@ -49,7 +49,7 @@ export const Header = forwardRef<HTMLElement>(function Header(_, ref) {
   const siteSettings = useSiteSettingsContext();
   const headerCfg = siteSettings.header || {};
   const brandCfg = siteSettings.branding || {};
-  const identityLogos = (siteSettings.brand_identity as any)?.logos || {};
+  const identityLogos = (siteSettings.brand_identity as Record<string, Record<string, string>> | undefined)?.logos || {};
   const logoUrl = identityLogos.natural || identityLogos.variation2 || brandCfg.logoUrl || "/altoha-logo.png";
 
   const [scrolled, setScrolled] = useState(false);

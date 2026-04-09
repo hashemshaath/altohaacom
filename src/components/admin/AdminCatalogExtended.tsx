@@ -22,7 +22,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const { toast } = useToast();
   const qc = useQueryClient();
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<any>({});
+  const [editForm, setEditForm] = useState<Record<string, unknown>>({});
   const [qaForm, setQaForm] = useState({ catalog_item_id: "", question: "", question_ar: "", answer: "", answer_ar: "", answered_by: "", answered_by_ar: "" });
   const [showQaForm, setShowQaForm] = useState(false);
   const [badgeForm, setBadgeForm] = useState({ label: "", label_ar: "", badge_type: "custom", icon_name: "ShieldCheck", color_class: "text-primary" });

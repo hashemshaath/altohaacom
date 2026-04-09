@@ -43,7 +43,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
       const results: Record<string, number> = {};
       await Promise.all(
         EXPORT_MODULES.map(async (m) => {
-          const { count } = await supabase.from(m.table as any).select("*", { count: "exact", head: true });
+          const { count } = await supabase.from(m.table as never).select("*", { count: "exact", head: true });
           results[m.key] = count || 0;
         })
       );
@@ -61,7 +61,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
     setExporting(true);
     try {
       const mod = EXPORT_MODULES.find(m => m.key === moduleKey)!;
-      const { data } = await supabase.from(mod.table as any).select(mod.columns);
+      const { data } = await supabase.from(mod.table as never).select(mod.columns);
       if (!data || data.length === 0) {
         setExporting(false);
         return;
@@ -69,7 +69,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
 
       if (fmt === "csv") {
         const headers = Object.keys(data[0] as object);
-        const csvContent = "\uFEFF" + headers.join(",") + "\n" + data.map(row => headers.map(h => `"${String((row as any)[h] ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+        const csvContent = "\uFEFF" + headers.join(",") + "\n" + data.map(row => headers.map(h => `"${String((row as Record<string, unknown>)[h] ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
         const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");

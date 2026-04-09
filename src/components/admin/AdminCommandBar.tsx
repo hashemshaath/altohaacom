@@ -34,11 +34,11 @@ export const AdminCommandBar = memo(function AdminCommandBar() {
     queryKey: ["adminCommandBarStats"],
     queryFn: async () => {
       const rReports = await supabase.from("content_reports").select("id", { count: "exact", head: true }).eq("status", "pending");
-      const rUsers = await (supabase.from("profiles").select("user_id", { count: "exact", head: true }) as any).eq("status", "pending");
+      const rUsers = await supabase.from("profiles").select("user_id", { count: "exact", head: true }).eq("status" as never, "pending");
       const rTickets = await supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "in_progress"]);
       return {
         pendingReports: rReports.count ?? 0,
-        pendingUsers: (rUsers as any).count ?? 0,
+        pendingUsers: rUsers.count ?? 0,
         openTickets: rTickets.count ?? 0,
       };
     },
