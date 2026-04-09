@@ -39,7 +39,7 @@ const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ enti
     queryFn: async () => {
       const { count, error } = await supabase
         .from("entity_followers")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("entity_id", entityId!);
       if (error) throw error;
       return count || 0;

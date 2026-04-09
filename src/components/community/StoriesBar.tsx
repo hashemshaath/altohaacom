@@ -207,7 +207,7 @@ export const StoriesBar = memo(function StoriesBar() {
     if (user && user.id === group.user_id) {
       const { count } = await supabase
         .from("story_views")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("story_id", group.stories[0].id);
       setViewCount(count || 0);
     }
@@ -247,7 +247,7 @@ export const StoriesBar = memo(function StoriesBar() {
       if (user && user.id === viewing.user_id) {
         const { count } = await supabase
           .from("story_views")
-          .select("*", { count: "exact", head: true })
+          .select("id", { count: "exact", head: true })
           .eq("story_id", viewing.stories[next].id);
         setViewCount(count || 0);
       }

@@ -33,7 +33,7 @@ import {
   ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot, Award,
   Clock, Star, Sparkles, ExternalLink, Hash, AlertTriangle, ArrowUpRight,
   ImageIcon, History, Activity, Camera, Upload, Palette, StickyNote,
-  BarChart3, Copy, Pencil,
+  BarChart3, Copy, Pencil, type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
@@ -51,7 +51,7 @@ const statusOptions: { value: ExhibitionStatus; en: string; ar: string; color: s
   { value: "cancelled", en: "Cancelled", ar: "ملغاة", color: "bg-destructive" },
 ];
 
-const typeOptions: { value: ExhibitionType; en: string; ar: string; icon: any }[] = [
+const typeOptions: { value: ExhibitionType; en: string; ar: string; icon: LucideIcon }[] = [
   { value: "exhibition", en: "Exhibition", ar: "معرض", icon: Landmark },
   { value: "conference", en: "Conference", ar: "مؤتمر", icon: Mic },
   { value: "summit", en: "Summit", ar: "قمة", icon: Star },
@@ -77,7 +77,7 @@ const emptyForm: Partial<ExhibitionInsert> = {
 
 interface SectionDef {
   id: string;
-  icon: any;
+  icon: LucideIcon;
   en: string;
   ar: string;
   descEn: string;
@@ -1434,7 +1434,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
 
 /* ─── Helper Components ─── */
 
-function SectionHeader({ icon: Icon, title, desc, status, badge }: { icon: any; title: string; desc?: string; status: string; badge?: string }) {
+function SectionHeader({ icon: Icon, title, desc, status, badge }: { icon: LucideIcon; title: string; desc?: string; status: string; badge?: string }) {
   const dotColor = status === "complete" ? "bg-chart-2" : status === "partial" ? "bg-chart-4" : "bg-muted-foreground/30";
   return (
     <div className="flex items-center gap-3 pb-2">
@@ -1469,7 +1469,7 @@ function FieldGroup({ label, required, aiSlot, hint, children }: { label: string
   );
 }
 
-function EmptyHint({ icon: Icon, text }: { icon: any; text: string }) {
+function EmptyHint({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   return (
     <div className="flex flex-col items-center justify-center py-8 text-center">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/40 mb-2">

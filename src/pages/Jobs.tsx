@@ -64,8 +64,8 @@ export default function Jobs() {
     queryKey: ["jobs-stats"],
     queryFn: async () => {
       const [{ count: jobCount }, { count: chefCount }, { count: companyCount }] = await Promise.all([
-        supabase.from("job_postings").select("*", { count: "exact", head: true }).eq("status", "active"),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).eq("is_open_to_work", true).eq("job_availability_visibility", "public").eq("is_chef_visible", true),
+        supabase.from("job_postings").select("id", { count: "exact", head: true }).eq("status", "active"),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_open_to_work", true).eq("job_availability_visibility", "public").eq("is_chef_visible", true),
         supabase.from("job_postings").select("company_id", { count: "exact", head: true }).eq("status", "active"),
       ]);
       return { jobs: jobCount || 0, chefs: chefCount || 0, companies: companyCount || 0 };

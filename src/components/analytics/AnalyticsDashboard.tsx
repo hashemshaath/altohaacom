@@ -42,8 +42,8 @@ export const AnalyticsDashboard = memo(function AnalyticsDashboard() {
     queryKey: ["analytics-engagement", user?.id, period],
     queryFn: async () => {
       const [reactions, comments] = await Promise.all([
-        supabase.from("post_reactions").select("*", { count: "exact", head: true }).eq("user_id", user!.id),
-        supabase.from("post_comments").select("*", { count: "exact", head: true }).eq("author_id", user!.id),
+        supabase.from("post_reactions").select("id", { count: "exact", head: true }).eq("user_id", user!.id),
+        supabase.from("post_comments").select("id", { count: "exact", head: true }).eq("author_id", user!.id),
       ]);
       return { likes: reactions.count || 0, comments: comments.count || 0 };
     },

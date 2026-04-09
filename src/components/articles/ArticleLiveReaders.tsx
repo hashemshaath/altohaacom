@@ -25,7 +25,7 @@ export const ArticleLiveReaders = memo(function ArticleLiveReaders({ articleId, 
       
       const { count: readerCount } = await supabase
         .from("ad_user_behaviors")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("event_type", "page_view")
         .like("page_url", `%${articleId}%`)
         .gte("created_at", fiveMinAgo);

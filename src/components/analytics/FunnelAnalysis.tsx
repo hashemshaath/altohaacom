@@ -29,10 +29,10 @@ export const FunnelAnalysis = memo(function FunnelAnalysis() {
       const since = new Date(now.getTime() - days * 86400000).toISOString();
 
       const [profilesRes, regsRes, ordersRes, totalUsersRes] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", since),
-        supabase.from("competition_registrations").select("*", { count: "exact", head: true }).gte("registered_at", since),
-        supabase.from("shop_orders").select("*", { count: "exact", head: true }).gte("created_at", since),
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", since),
+        supabase.from("competition_registrations").select("id", { count: "exact", head: true }).gte("registered_at", since),
+        supabase.from("shop_orders").select("id", { count: "exact", head: true }).gte("created_at", since),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
       ]);
 
       const signups = profilesRes.count || 0;

@@ -17,34 +17,34 @@ export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
       // Chat stats
       const { count: totalChats } = await supabase
         .from("chat_sessions")
-        .select("*", { count: "exact", head: true });
+        .select("id", { count: "exact", head: true });
 
       const { count: activeChats } = await supabase
         .from("chat_sessions")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .in("status", ["active", "waiting"]);
 
       // Group chats
       const { count: totalGroups } = await supabase
         .from("chat_groups")
-        .select("*", { count: "exact", head: true });
+        .select("id", { count: "exact", head: true });
 
       // Support tickets
       const { count: openTickets } = await supabase
         .from("support_tickets")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .in("status", ["open", "in_progress"]);
 
       const { count: urgentTickets } = await supabase
         .from("support_tickets")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("priority", "urgent")
         .not("status", "in", '("resolved","closed")');
 
       // Notifications
       const { count: unreadNotifs } = await supabase
         .from("notifications")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("is_read", false);
 
       // Messages today
@@ -52,7 +52,7 @@ export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
       todayStart.setHours(0, 0, 0, 0);
       const { count: messagesToday } = await supabase
         .from("chat_session_messages")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .gte("created_at", todayStart.toISOString());
 
       return {

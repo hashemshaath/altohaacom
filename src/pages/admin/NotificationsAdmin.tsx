@@ -109,9 +109,9 @@ export default function NotificationsAdmin() {
     queryKey: ["notification-queue-stats"],
     queryFn: async () => {
       const [pending, sent, failed] = await Promise.all([
-        supabase.from("notification_queue").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("notification_queue").select("*", { count: "exact", head: true }).eq("status", "sent"),
-        supabase.from("notification_queue").select("*", { count: "exact", head: true }).eq("status", "failed"),
+        supabase.from("notification_queue").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("notification_queue").select("id", { count: "exact", head: true }).eq("status", "sent"),
+        supabase.from("notification_queue").select("id", { count: "exact", head: true }).eq("status", "failed"),
       ]);
       return {
         pending: pending.count || 0, sent: sent.count || 0, failed: failed.count || 0,

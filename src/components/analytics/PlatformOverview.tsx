@@ -31,12 +31,12 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
     queryKey: ["analyticsOverview", fromISO, toISO],
     queryFn: async () => {
       const baseQueries = [
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("competitions").select("*", { count: "exact", head: true }),
-        supabase.from("articles").select("*", { count: "exact", head: true }),
-        supabase.from("masterclasses").select("*", { count: "exact", head: true }),
-        supabase.from("certificates").select("*", { count: "exact", head: true }),
-        supabase.from("messages").select("*", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("competitions").select("id", { count: "exact", head: true }),
+        supabase.from("articles").select("id", { count: "exact", head: true }),
+        supabase.from("masterclasses").select("id", { count: "exact", head: true }),
+        supabase.from("certificates").select("id", { count: "exact", head: true }),
+        supabase.from("messages").select("id", { count: "exact", head: true }),
         supabase.from("user_roles").select("role"),
         supabase.from("competitions").select("status"),
         supabase.from("profiles").select("created_at").order("created_at", { ascending: true }),
@@ -44,11 +44,11 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
       ] as const;
 
       const rangeQueries = fromISO && toISO ? [
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
-        supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
-        supabase.from("articles").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
-        supabase.from("certificates").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
-        supabase.from("messages").select("*", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("competitions").select("id", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("certificates").select("id", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
+        supabase.from("messages").select("id", { count: "exact", head: true }).gte("created_at", fromISO).lte("created_at", toISO),
       ] : [];
 
       const [

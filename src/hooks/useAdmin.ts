@@ -30,16 +30,16 @@ export function useAdminStats() {
     queryFn: async () => {
       const { count: totalUsers } = await supabase
         .from("profiles")
-        .select("*", { count: "exact", head: true });
+        .select("id", { count: "exact", head: true });
 
       const { count: activeMembers } = await supabase
         .from("profiles")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("account_status", "active");
 
       const { count: pendingReports } = await supabase
         .from("content_reports")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("status", "pending");
 
       return {

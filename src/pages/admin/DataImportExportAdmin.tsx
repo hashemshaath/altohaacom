@@ -221,7 +221,7 @@ const ExportTab = memo(function ExportTab() {
   const { data: recordCount } = useQuery({
     queryKey: ["export-count", selectedModule],
     queryFn: async () => {
-      const { count } = await supabase.from(currentModule.table as any).select("*", { count: "exact", head: true });
+      const { count } = await supabase.from(currentModule.table as any).select("id", { count: "exact", head: true });
       return count || 0;
     },
   });

@@ -44,10 +44,10 @@ export const RealTimeDashboard = memo(function RealTimeDashboard() {
     ] = await Promise.all([
       // Real active users: distinct sessions in ad_user_behaviors in last 5 minutes
       supabase.from("ad_user_behaviors").select("session_id", { count: "exact", head: true }).gte("created_at", fiveMinAgo),
-      supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
-      supabase.from("messages").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
-      supabase.from("competitions").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
-      supabase.from("certificates").select("*", { count: "exact", head: true }).gte("created_at", todayISO),
+      supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
+      supabase.from("messages").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
+      supabase.from("competitions").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
+      supabase.from("certificates").select("id", { count: "exact", head: true }).gte("created_at", todayISO),
     ]);
 
     const values = [activeUsers || 0, todaySignups || 0, todayMessages || 0, todayComps || 0, todayCerts || 0];

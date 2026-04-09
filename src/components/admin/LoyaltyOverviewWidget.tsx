@@ -24,12 +24,12 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
         { data: recentPoints },
         { count: referralCodes },
       ] = await Promise.all([
-        supabase.from("membership_cards").select("*", { count: "exact", head: true }).eq("card_status", "active"),
+        supabase.from("membership_cards").select("id", { count: "exact", head: true }).eq("card_status", "active"),
         supabase.from("membership_cards").select("tier").eq("card_status", "active") as unknown as Promise<{ data: { tier: string }[] | null }>,
-        supabase.from("challenges").select("*", { count: "exact", head: true }).eq("is_active", true),
-        supabase.from("rewards_catalog").select("*", { count: "exact", head: true }).eq("is_active", true),
+        supabase.from("challenges").select("id", { count: "exact", head: true }).eq("is_active", true),
+        supabase.from("rewards_catalog").select("id", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("points_ledger").select("points, action_type").order("created_at", { ascending: false }).limit(100),
-        supabase.from("referral_codes").select("*", { count: "exact", head: true }),
+        supabase.from("referral_codes").select("id", { count: "exact", head: true }),
       ]);
 
       // Tier distribution

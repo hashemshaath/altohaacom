@@ -40,7 +40,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
       // Check for critical security events (last 24h)
       const { count: criticalEvents } = await supabase
         .from("security_events")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("severity", "critical")
         .gte("created_at", new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString());
 
@@ -60,7 +60,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
       // Check for failed notification queue items
       const { count: failedNotifs } = await supabase
         .from("notification_queue")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("status", "failed");
 
       if ((failedNotifs || 0) > 5) {
@@ -79,7 +79,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
       // Check for suspended users in last 7 days
       const { count: newSuspended } = await supabase
         .from("profiles")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("account_status", "suspended")
         .gte("suspended_at", new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString());
 
@@ -99,7 +99,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
       // Check for expiring memberships (next 7 days)
       const { count: expiringCards } = await supabase
         .from("membership_cards")
-        .select("*", { count: "exact", head: true })
+        .select("id", { count: "exact", head: true })
         .eq("card_status", "active")
         .lte("expires_at", new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString())
         .gte("expires_at", now.toISOString());

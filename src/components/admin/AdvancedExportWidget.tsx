@@ -43,7 +43,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
       const results: Record<string, number> = {};
       await Promise.all(
         EXPORT_MODULES.map(async (m) => {
-          const { count } = await supabase.from(m.table as never).select("*", { count: "exact", head: true });
+          const { count } = await supabase.from(m.table as never).select("id", { count: "exact", head: true });
           results[m.key] = count || 0;
         })
       );

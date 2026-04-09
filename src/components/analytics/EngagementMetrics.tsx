@@ -59,19 +59,19 @@ const EngagementMetrics = memo(function EngagementMetrics() {
         { count: recentArticles },
         { count: prevArticles },
       ] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
-        supabase.from("profiles").select("*", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
+        supabase.from("profiles").select("id", { count: "exact", head: true }),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
         supabase.from("competition_registrations").select("created_at").gte("created_at", thirtyDaysAgo),
         supabase.from("competition_registrations").select("created_at").gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
-        supabase.from("messages").select("*", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
-        supabase.from("messages").select("*", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
-        supabase.from("certificates").select("*", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
-        supabase.from("certificates").select("*", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
+        supabase.from("messages").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
+        supabase.from("messages").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
+        supabase.from("certificates").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
+        supabase.from("certificates").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
         supabase.from("competition_scores").select("score, created_at").gte("created_at", thirtyDaysAgo),
         supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(500),
-        supabase.from("articles").select("*", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
-        supabase.from("articles").select("*", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
+        supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
+        supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
       ]);
 
       // Calculate trends (percentage change)

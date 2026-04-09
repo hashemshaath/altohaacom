@@ -16,10 +16,10 @@ export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWi
     queryKey: ["notification-analytics-widget"],
     queryFn: async () => {
       const [totalRes, readRes, queuePending, queueFailed, recentNotifs] = await Promise.all([
-        supabase.from("notifications").select("*", { count: "exact", head: true }),
-        supabase.from("notifications").select("*", { count: "exact", head: true }).eq("is_read", true),
-        supabase.from("notification_queue").select("*", { count: "exact", head: true }).eq("status", "pending"),
-        supabase.from("notification_queue").select("*", { count: "exact", head: true }).eq("status", "failed"),
+        supabase.from("notifications").select("id", { count: "exact", head: true }),
+        supabase.from("notifications").select("id", { count: "exact", head: true }).eq("is_read", true),
+        supabase.from("notification_queue").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        supabase.from("notification_queue").select("id", { count: "exact", head: true }).eq("status", "failed"),
         supabase.from("notifications").select("type, created_at").order("created_at", { ascending: false }).limit(200),
       ]);
 
