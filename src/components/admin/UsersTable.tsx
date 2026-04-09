@@ -232,7 +232,8 @@ export const UsersTable = memo(function UsersTable({
                       {visibleColumns.roles && (
                         <TableCell>
                           <div className="flex flex-wrap gap-1">
-                            {profile.roles?.slice(0, 3).map((r) => <Badge key={r.role} variant="outline" className="text-[12px]">{t(r.role)}</Badge>)}
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- role enum not in i18n keys */}
+                            {profile.roles?.slice(0, 3).map((r) => <Badge key={r.role} variant="outline" className="text-[12px]">{t(r.role as any)}</Badge>)}
                             {(profile.roles?.length || 0) > 3 && <Badge variant="outline" className="text-[12px]">+{(profile.roles?.length || 0) - 3}</Badge>}
                             {(!profile.roles || profile.roles.length === 0) && <span className="text-xs text-muted-foreground">—</span>}
                           </div>
