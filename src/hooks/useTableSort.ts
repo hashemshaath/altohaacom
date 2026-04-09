@@ -30,8 +30,8 @@ export function useTableSort<T>(data: T[], defaultColumn?: string, defaultDir: S
     if (!sort.column || !sort.direction || !data) return data;
 
     return [...data].sort((a, b) => {
-      const aVal = (a as any)[sort.column];
-      const bVal = (b as any)[sort.column];
+      const aVal = (a as Record<string, unknown>)[sort.column];
+      const bVal = (b as Record<string, unknown>)[sort.column];
 
       if (aVal == null && bVal == null) return 0;
       if (aVal == null) return 1;

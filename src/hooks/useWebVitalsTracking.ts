@@ -23,8 +23,8 @@ function getDeviceType(): string {
 }
 
 function getConnectionType(): string | null {
-  const nav = navigator as any;
-  return nav?.connection?.effectiveType || null;
+  const conn = (navigator as unknown as { connection?: { effectiveType?: string } }).connection;
+  return conn?.effectiveType || null;
 }
 
 function getSessionId(): string {
