@@ -43,6 +43,7 @@ const Tastings = lazy(() => import("@/pages/Tastings"));
 const TastingDetail = lazy(() => import("@/pages/TastingDetail"));
 const CreateTasting = lazy(() => import("@/pages/CreateTasting"));
 const Verification = lazy(() => import("@/pages/Verification"));
+const MyJobApplications = lazy(() => import("@/pages/MyJobApplications"));
 
 export const protectedRoutes = (
   <>
@@ -85,5 +86,6 @@ export const protectedRoutes = (
     <Route path="/tastings/create" element={<ProtectedRoute><FanRouteGuard><CreateTasting /></FanRouteGuard></ProtectedRoute>} />
     <Route path="/tastings/:id" element={<ProtectedRoute><TastingDetail /></ProtectedRoute>} />
     <Route path="/verification" element={<ProtectedRoute><Verification /></ProtectedRoute>} />
+    <Route path="/jobs/my-applications" element={<ProtectedRoute><MyJobApplications /></ProtectedRoute>} />
   </>
 );
