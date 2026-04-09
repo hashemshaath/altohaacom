@@ -579,11 +579,13 @@ export default function CompetitionDetail() {
       <Header />
 
       <main className="flex-1">
-        {/* ─── Hero Section — Cinematic ─── */}
+        {/* ─── Hero ─── */}
         <section className="relative overflow-hidden" aria-label={isAr ? "صورة المسابقة" : "Competition hero"}>
-          <div className="relative h-52 w-full sm:h-72 md:h-[26rem] lg:h-[30rem]">
+          <div className="relative h-48 sm:h-64 md:h-80 lg:h-[22rem]">
             {competition.cover_image_url ? (
-              <img loading="eager" src={competition.cover_image_url}
+              <img
+                loading="eager"
+                src={competition.cover_image_url}
                 alt={`${title}${locationMeta ? ` — ${locationMeta}` : ""}`}
                 className="h-full w-full object-cover"
                 decoding="async"
@@ -591,81 +593,70 @@ export default function CompetitionDetail() {
                 onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-muted/30 to-background">
-                <Trophy className="h-24 w-24 sm:h-36 sm:w-36 text-primary/[0.06]" />
+              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 via-muted/20 to-background">
+                <Trophy className="h-20 w-20 text-primary/[0.06]" />
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-transparent to-transparent" style={{ top: "40%" }} />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
           </div>
 
+          {/* Hero overlay content */}
           <div className="absolute inset-x-0 bottom-0">
-             <div className="container pb-6 sm:pb-8 md:pb-12">
-                <div className="max-w-4xl space-y-3 sm:space-y-4 animate-fade-in">
+            <div className="container max-w-6xl pb-5 sm:pb-6 md:pb-8">
+              <div className="max-w-3xl space-y-2.5 sm:space-y-3 animate-fade-in">
+                <Breadcrumbs items={breadcrumbItems} className="text-foreground/50" />
 
-                {/* Breadcrumbs */}
-                <Breadcrumbs items={breadcrumbItems} className="text-foreground/60" />
-
-                {/* Badges row */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge className={`${statusCfg.bg} px-3.5 py-1.5 font-bold uppercase tracking-wider text-xs shadow-sm`}>
+                  <Badge className={`${statusCfg.bg} px-3 py-1 font-bold uppercase tracking-wider text-[11px]`}>
                     {statusCfg.glow ? (
-                      <span className="relative me-2 flex h-2 w-2">
+                      <span className="relative me-1.5 flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
                         <span className="relative inline-flex h-2 w-2 rounded-full bg-current" />
                       </span>
                     ) : (
-                      <span className={`me-2 inline-block h-2 w-2 rounded-full ${statusCfg.dot}`} />
+                      <span className={`me-1.5 inline-block h-1.5 w-1.5 rounded-full ${statusCfg.dot}`} />
                     )}
                     {isAr ? statusCfg.labelAr : statusCfg.label}
                   </Badge>
                   {competition.edition_year && (
-                    <Badge variant="outline" className="bg-muted/60 border-border/60 font-bold text-xs px-3 py-1">{competition.edition_year}</Badge>
+                    <Badge variant="outline" className="bg-muted/50 border-border/50 font-bold text-[11px] px-2.5 py-0.5">{competition.edition_year}</Badge>
                   )}
                   {competition.competition_number && (
-                    <Badge variant="outline" className="font-mono text-xs font-bold bg-muted/60 border-border/60 px-3 py-1 uppercase tracking-[0.15em]">{competition.competition_number}</Badge>
+                    <Badge variant="outline" className="font-mono text-[11px] font-bold bg-muted/50 border-border/50 px-2.5 py-0.5 uppercase tracking-wider">{competition.competition_number}</Badge>
                   )}
                   {competition.registration_fee_type === "free" && (
-                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-xs px-3 py-1 font-bold">
-                      <Ticket className="h-3.5 w-3.5 me-1" />{isAr ? "مجاني" : "Free Entry"}
+                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[11px] px-2.5 py-0.5 font-bold">
+                      <Ticket className="h-3 w-3 me-1" />{isAr ? "مجاني" : "Free"}
                     </Badge>
                   )}
                   {competition.blind_judging_enabled && (
-                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-xs px-3 py-1 font-bold">
-                      <Shield className="h-3.5 w-3.5 me-1" />{isAr ? "تحكيم مخفي" : "Blind Judging"}
+                    <Badge variant="outline" className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-[11px] px-2.5 py-0.5 font-bold">
+                      <Shield className="h-3 w-3 me-1" />{isAr ? "تحكيم مخفي" : "Blind"}
                     </Badge>
                   )}
                 </div>
 
-                {/* Title — single H1 */}
-                <h1 className="font-serif text-2xl font-extrabold leading-[1.15] tracking-tight sm:text-3xl md:text-[2.75rem] lg:text-5xl text-foreground drop-shadow-sm">
+                <h1 className="font-serif text-xl font-extrabold leading-tight tracking-tight sm:text-2xl md:text-3xl lg:text-4xl text-foreground">
                   {title}
                 </h1>
 
-                {/* Meta info */}
-                <div className="flex items-center gap-3 sm:gap-5 text-sm text-foreground/70 flex-wrap">
-                  <div className="flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4 text-primary/80" />
+                <div className="flex items-center gap-4 text-xs sm:text-sm text-foreground/70 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar className="h-3.5 w-3.5 text-primary/70" />
                     <time dateTime={competition.competition_start} className="font-medium">{format(new Date(competition.competition_start), "MMM d")}</time>
-                    <span>–</span>
+                    <span className="text-foreground/40">–</span>
                     <time dateTime={competition.competition_end} className="font-medium">{format(new Date(competition.competition_end), "MMM d, yyyy")}</time>
-                  </div>
+                  </span>
                   {competition.is_virtual ? (
-                    <div className="flex items-center gap-1.5">
-                      <Globe className="h-4 w-4 text-primary/80" />
+                    <span className="inline-flex items-center gap-1.5">
+                      <Globe className="h-3.5 w-3.5 text-primary/70" />
                       <span className="font-medium">{isAr ? "افتراضية" : "Virtual"}</span>
-                    </div>
+                    </span>
                   ) : (venue || competition.city) && (
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4 text-primary/80" />
+                    <span className="inline-flex items-center gap-1.5">
+                      <MapPin className="h-3.5 w-3.5 text-primary/70" />
                       <span className="font-medium">{competition.country_code ? `${countryFlag(competition.country_code)} ` : ""}{venue || competition.city}</span>
-                    </div>
-                  )}
-                  {competition.allowed_entry_types && competition.allowed_entry_types.length > 0 && (
-                    <div className="flex items-center gap-1.5">
-                      <UsersRound className="h-4 w-4 text-primary/80" />
-                      <span className="font-medium">{competition.allowed_entry_types.join(" / ")}</span>
-                    </div>
+                    </span>
                   )}
                 </div>
               </div>
@@ -673,643 +664,549 @@ export default function CompetitionDetail() {
           </div>
         </section>
 
-        {/* ─── KPI Stats Strip ─── */}
-        <div className="border-y border-border/20 bg-gradient-to-r from-card/80 via-card to-card/80 backdrop-blur-md">
-          <div className="container py-4 sm:py-5">
-            <div className="flex flex-wrap items-center justify-between gap-4 sm:gap-6">
-              <div className="flex items-center gap-5 sm:gap-8">
+        {/* ─── Action Bar ─── */}
+        <div className="border-y border-border/30 bg-card/80 backdrop-blur-md">
+          <div className="container max-w-6xl py-3 sm:py-3.5">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              {/* KPIs */}
+              <div className="flex items-center gap-4 sm:gap-6">
                 {kpiStats.map((stat, i) => (
                   <button
                     key={i}
                     onClick={stat.onClick}
                     aria-label={`${stat.label}: ${stat.value}`}
-                    className="text-center group cursor-pointer hover:scale-110 transition-all duration-300 active:scale-95 touch-manipulation relative"
+                    className="flex items-center gap-2 group cursor-pointer hover:scale-105 transition-transform duration-200 active:scale-95 touch-manipulation"
                   >
-                    <div className="flex items-center justify-center gap-2 mb-1.5">
-                      <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${stat.color.replace('text-', 'bg-')}/10`}>
-                        <stat.icon className={`h-4 w-4 ${stat.color}`} />
-                      </div>
-                      <p className="text-2xl sm:text-3xl font-extrabold text-foreground tabular-nums"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
+                    <stat.icon className={`h-4 w-4 ${stat.color} opacity-60`} />
+                    <div className="text-start">
+                      <p className="text-lg sm:text-xl font-extrabold text-foreground tabular-nums leading-none"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 mt-0.5">{stat.label}</p>
                     </div>
-                    <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground/70 group-hover:text-foreground transition-colors">{stat.label}</p>
                   </button>
                 ))}
               </div>
 
-              <div className="flex items-center gap-2.5">
+              {/* Actions */}
+              <div className="flex items-center gap-2">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40 hover:border-primary/30 hover:bg-primary/5 transition-all" aria-label={isAr ? "مشاركة" : "Share"} onClick={async (e) => {
+                    <Button variant="outline" size="sm" className="h-9 rounded-xl px-3 text-xs font-semibold border-border/40" aria-label={isAr ? "مشاركة" : "Share"} onClick={async (e) => {
                       if (navigator.share) {
                         e.preventDefault();
-                        try {
-                          await navigator.share({ title, text: description || title, url: window.location.href });
-                        } catch { /* user cancelled */ }
+                        try { await navigator.share({ title, text: description || title, url: window.location.href }); } catch {}
                       }
                     }}>
                       <Share2 className="me-1.5 h-3.5 w-3.5" />{isAr ? "مشاركة" : "Share"}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5">
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
-                      const text = encodeURIComponent(`${title}`);
-                      const url = encodeURIComponent(window.location.href);
-                      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "noopener,width=600,height=400");
-                    }}>
-                      <Twitter className="h-3.5 w-3.5" /> Twitter / X
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
+                  <DropdownMenuContent align="end" className="w-48 rounded-xl p-1">
+                    <DropdownMenuItem className="cursor-pointer gap-2 rounded-lg py-2 text-xs" onClick={() => {
+                      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(window.location.href)}`, "_blank", "noopener,width=600,height=400");
+                    }}><Twitter className="h-3.5 w-3.5" /> Twitter / X</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-2 rounded-lg py-2 text-xs" onClick={() => {
                       window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, "_blank", "noopener,width=600,height=400");
-                    }}>
-                      <Facebook className="h-3.5 w-3.5" /> Facebook
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
+                    }}><Facebook className="h-3.5 w-3.5" /> Facebook</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-2 rounded-lg py-2 text-xs" onClick={() => {
                       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, "_blank", "noopener,width=600,height=400");
-                    }}>
-                      <Linkedin className="h-3.5 w-3.5" /> LinkedIn
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer gap-2.5 rounded-xl py-2.5 text-xs font-medium hover:bg-primary/5" onClick={() => {
+                    }}><Linkedin className="h-3.5 w-3.5" /> LinkedIn</DropdownMenuItem>
+                    <DropdownMenuItem className="cursor-pointer gap-2 rounded-lg py-2 text-xs" onClick={() => {
                       navigator.clipboard.writeText(window.location.href).then(null, () => {});
                       toast({ title: isAr ? "تم نسخ الرابط!" : "Link copied!" });
-                    }}>
-                      <Link2 className="h-3.5 w-3.5" /> {isAr ? "نسخ الرابط" : "Copy Link"}
-                    </DropdownMenuItem>
+                    }}><Link2 className="h-3.5 w-3.5" /> {isAr ? "نسخ الرابط" : "Copy Link"}</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
 
                 {user && (
-                  <Button variant={isWatched ? "default" : "outline"} size="sm" className={`h-10 rounded-xl px-4 text-xs font-semibold transition-all ${isWatched ? "shadow-md shadow-primary/20" : "border-border/40 hover:border-primary/30 hover:bg-primary/5"}`} onClick={toggleWatchlist}>
+                  <Button variant={isWatched ? "default" : "outline"} size="sm" className={`h-9 rounded-xl px-3 text-xs font-semibold ${isWatched ? "shadow-sm" : "border-border/40"}`} onClick={toggleWatchlist}>
                     {isWatched ? <BookmarkCheck className="me-1.5 h-3.5 w-3.5" /> : <Bookmark className="me-1.5 h-3.5 w-3.5" />}
-                    {isWatched ? (isAr ? "في القائمة" : "Saved") : (isAr ? "أضف للقائمة" : "Watchlist")}
+                    {isWatched ? (isAr ? "محفوظ" : "Saved") : (isAr ? "حفظ" : "Save")}
                   </Button>
                 )}
 
                 {competition.status === "completed" && (
-                  <Button asChild size="sm" className="h-10 rounded-xl px-5 text-xs font-bold bg-gradient-to-r from-chart-5 to-chart-4 text-white shadow-md">
+                  <Button asChild size="sm" className="h-9 rounded-xl px-4 text-xs font-bold bg-gradient-to-r from-chart-5 to-chart-4 text-white shadow-sm">
                     <Link to={`/competitions/${competition.slug || competitionId}/results`}><Award className="me-1.5 h-3.5 w-3.5" />{isAr ? "النتائج" : "Results"}</Link>
                   </Button>
                 )}
                 {isOrganizer && (
-                  <Button asChild variant="outline" size="sm" className="h-10 rounded-xl px-4 text-xs font-semibold border-border/40">
+                  <Button asChild variant="outline" size="sm" className="h-9 rounded-xl px-3 text-xs font-semibold border-border/40">
                     <Link to={`/competitions/${competition.slug || competitionId}/edit`}><Pencil className="me-1.5 h-3.5 w-3.5" />{isAr ? "تعديل" : "Edit"}</Link>
                   </Button>
                 )}
                 {canRegister && !showRegistrationForm && (
-                  <Button className="h-10 rounded-xl px-6 text-xs font-bold shadow-lg shadow-primary/25 bg-gradient-to-r from-primary to-primary/80 hover:shadow-xl hover:shadow-primary/30 transition-all" onClick={() => setShowRegistrationForm(true)}>
+                  <Button className="h-9 rounded-xl px-5 text-xs font-bold shadow-md shadow-primary/20" onClick={() => setShowRegistrationForm(true)}>
                     <Sparkles className="me-1.5 h-3.5 w-3.5" />{t("registerNow")}
                   </Button>
                 )}
               </div>
             </div>
 
-            {/* Competition Progress Bar (for in_progress and judging) */}
+            {/* Progress Bar */}
             {["in_progress", "judging"].includes(competition.status) && completionPercent > 0 && (
-              <div className="mt-4 pt-4 border-t border-border/15">
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground mb-2">
-                  <span className="font-bold uppercase tracking-wider">{isAr ? "تقدم المسابقة" : "Competition Progress"}</span>
-                  <span className="font-extrabold text-primary text-sm">{completionPercent}%</span>
+              <div className="mt-3 pt-3 border-t border-border/20">
+                <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1.5">
+                  <span className="font-bold uppercase tracking-wider">{isAr ? "تقدم المسابقة" : "Progress"}</span>
+                  <span className="font-extrabold text-primary text-xs">{completionPercent}%</span>
                 </div>
-                <div className="relative h-2 overflow-hidden rounded-full bg-muted/30">
-                  <div
-                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary via-primary to-chart-3 transition-all duration-1000 ease-out"
-                    style={{ width: `${completionPercent}%` }}
-                  />
-                  <div
-                    className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary/50 to-chart-3/50 blur-sm transition-all duration-1000"
-                    style={{ width: `${completionPercent}%` }}
-                  />
+                <div className="relative h-1.5 overflow-hidden rounded-full bg-muted/30">
+                  <div className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-primary to-chart-3 transition-all duration-1000" style={{ width: `${completionPercent}%` }} />
                 </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* ─── Grouped Navigation Pills ─── */}
-        <div className="sticky top-14 z-30 border-b border-border/20 bg-background/90 backdrop-blur-2xl shadow-sm">
-          <div className="container">
+        {/* ─── Navigation ─── */}
+        <div className="sticky top-14 z-30 border-b border-border/20 bg-background/95 backdrop-blur-xl">
+          <div className="container max-w-6xl">
             <ScrollArea className="w-full">
-              <div className="flex items-stretch gap-0.5 min-w-max py-2">
+              <div className="flex items-center gap-0.5 min-w-max py-1.5">
                 {NAV_GROUPS.map((group, gi) => (
-                  <div key={group.labelEn} className="flex flex-col">
-                    <div className={`px-2.5 pt-1 pb-1 ${gi > 0 ? "border-s border-border/20 ms-1 ps-3" : ""}`}>
-                      <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-[0.18em] text-muted-foreground/40">
-                        {isAr ? group.labelAr : group.labelEn}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1 px-1.5 pb-2">
-                      {group.tabs.map((tab) => {
-                        const Icon = tab.icon;
-                        const isActive = activeSection === tab.id;
-                        return (
-                          <button
-                            key={tab.id}
-                            onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(tab.id); }}
-                            className={`
-                              inline-flex shrink-0 items-center gap-1.5 rounded-xl px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-[0.98] touch-manipulation select-none
-                              ${isActive
-                                ? "bg-primary text-primary-foreground shadow-md shadow-primary/25"
-                                : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
-                            `}
-                          >
-                            <Icon className={`h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0 ${isActive ? "" : "opacity-50"}`} />
-                            <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
+                  <div key={group.labelEn} className={`flex items-center ${gi > 0 ? "border-s border-border/15 ms-1 ps-2" : ""}`}>
+                    <span className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-muted-foreground/30 px-1.5 hidden sm:block">
+                      {isAr ? group.labelAr : group.labelEn}
+                    </span>
+                    {group.tabs.map((tab) => {
+                      const Icon = tab.icon;
+                      const isActive = activeSection === tab.id;
+                      return (
+                        <button
+                          key={tab.id}
+                          onClick={() => { try { if ("vibrate" in navigator) navigator.vibrate(8); } catch {} setActiveTab(tab.id); }}
+                          className={`
+                            inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition-all duration-200 active:scale-[0.97] touch-manipulation select-none
+                            ${isActive ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}
+                          `}
+                        >
+                          <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "" : "opacity-40"}`} />
+                          <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 ))}
               </div>
-              <ScrollBar orientation="horizontal" className="h-1.5" />
+              <ScrollBar orientation="horizontal" className="h-1" />
             </ScrollArea>
           </div>
         </div>
 
-
-        {/* ─── Inline Registration ─── */}
+        {/* ─── Registration Form (inline) ─── */}
         {showRegistrationForm && (
-          <div className="container py-6">
+          <div className="container max-w-6xl py-6">
             <Suspense fallback={<div className="flex justify-center py-8"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
-            <RegistrationForm
-              competitionId={competition.id}
-              competitionTitle={title}
-              categories={categories || []}
-              onCancel={() => setShowRegistrationForm(false)}
-              onSuccess={() => setShowRegistrationForm(false)}
-            />
+              <RegistrationForm
+                competitionId={competition.id}
+                competitionTitle={title}
+                categories={categories || []}
+                onCancel={() => setShowRegistrationForm(false)}
+                onSuccess={() => setShowRegistrationForm(false)}
+              />
             </Suspense>
           </div>
         )}
 
-        <div className="container py-5 pb-20 sm:py-8 sm:pb-10 lg:pb-10">
-          {/* ─── Registration banners ─── */}
+        {/* ─── Main Content ─── */}
+        <div className="container max-w-6xl py-6 sm:py-8 pb-16 sm:pb-12">
+          {/* Registration banners */}
           {canRegister && !showRegistrationForm && (
-            <div className="mb-8 rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.04] via-transparent to-accent/[0.04] p-5 sm:p-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 shrink-0">
-                    <Sparkles className="h-5 w-5 text-primary" />
+            <div className="mb-6 rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/[0.03] to-transparent p-4 sm:p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 shrink-0">
+                    <Sparkles className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <p className="font-bold text-[15px]">{isAr ? "التسجيل مفتوح الآن!" : "Registration is open!"}</p>
-                    <p className="text-sm text-muted-foreground">{isAr ? "سجّل الآن لتأمين مكانك في المسابقة" : "Secure your spot in this competition today"}</p>
+                    <p className="font-bold text-sm">{isAr ? "التسجيل مفتوح الآن!" : "Registration is open!"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "سجّل الآن لتأمين مكانك" : "Secure your spot today"}</p>
                   </div>
                 </div>
-                <Button onClick={() => setShowRegistrationForm(true)} className="shadow-md shadow-primary/15 rounded-xl h-10 px-6 font-bold">
+                <Button onClick={() => setShowRegistrationForm(true)} size="sm" className="rounded-xl h-9 px-5 font-bold shadow-sm">
                   {t("registerNow")}
                 </Button>
               </div>
             </div>
           )}
           {myRegistration && (
-            <div className="mb-8">
-              <RegistrationStatusBanner
-                registration={myRegistration}
-                competitionStatus={competition.status}
-              />
+            <div className="mb-6">
+              <RegistrationStatusBanner registration={myRegistration} competitionStatus={competition.status} />
             </div>
           )}
 
-          <div className="grid gap-8 lg:grid-cols-3">
-            {/* ─── Main Content ─── */}
-            <div className="lg:col-span-2 space-y-5">
-            <TabTransition activeKey={activeSection}>
-              {activeSection === "overview" && (
-                <>
-                  {description && (
-                    <Section icon={<BookOpen className="h-4 w-4" />} title={isAr ? "نبذة عن المسابقة" : "About this Competition"}>
-                      <p className="whitespace-pre-wrap text-sm leading-[1.8] text-muted-foreground">{description}</p>
-                    </Section>
-                  )}
+          <div className="grid gap-6 lg:gap-8 lg:grid-cols-[1fr_320px]">
+            {/* ─── Left Column ─── */}
+            <div className="min-w-0 space-y-5">
+              <TabTransition activeKey={activeSection}>
+                {activeSection === "overview" && (
+                  <>
+                    {/* Description */}
+                    {description && (
+                      <Section icon={<BookOpen className="h-4 w-4" />} title={isAr ? "نبذة عن المسابقة" : "About"}>
+                        <p className="whitespace-pre-wrap text-sm leading-[1.85] text-muted-foreground">{description}</p>
+                      </Section>
+                    )}
 
-                  {/* Quick Stats Overview Cards */}
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    {/* Registration Progress */}
-                    <div className="relative overflow-hidden rounded-2xl border border-chart-3/20 bg-gradient-to-br from-chart-3/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-chart-3/5 transition-all duration-300 group">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-chart-3/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-3/15 shadow-sm"><Users className="h-4 w-4 text-chart-3" /></div>
-                          <span className="text-sm font-bold">{isAr ? "التسجيل" : "Registration"}</span>
+                    {/* Overview Stats */}
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {/* Registration Progress */}
+                      <div className="rounded-2xl border border-chart-3/15 bg-chart-3/[0.03] p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-3/10"><Users className="h-3.5 w-3.5 text-chart-3" /></div>
+                          <span className="text-xs font-bold text-muted-foreground">{isAr ? "التسجيل" : "Registration"}</span>
                         </div>
-                        <div className="relative">
-                          <ProgressRing value={registrationStats?.approved || 0} max={competition.max_participants || 100} size={44} strokeWidth={3.5} color="text-chart-3" />
-                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-extrabold">{competition.max_participants ? `${Math.round(((registrationStats?.approved || 0) / competition.max_participants) * 100)}%` : registrationStats?.approved || 0}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span><span className="font-bold text-chart-5">{registrationStats?.approved || 0}</span></div>
-                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span><span className="font-bold text-chart-4">{registrationStats?.pending || 0}</span></div>
-                        {competition.max_participants && <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "السعة" : "Capacity"}</span><span className="font-extrabold">{competition.max_participants}</span></div>}
-                      </div>
-                    </div>
-
-                    {/* Judging Overview */}
-                    <div className="relative overflow-hidden rounded-2xl border border-chart-5/20 bg-gradient-to-br from-chart-5/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-chart-5/5 transition-all duration-300 group">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-chart-5/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/15 shadow-sm"><Scale className="h-4 w-4 text-chart-5" /></div>
-                          <span className="text-sm font-bold">{isAr ? "التحكيم" : "Judging"}</span>
-                        </div>
-                        <div className="relative">
-                          <ProgressRing value={judgesCount || 0} max={10} size={44} strokeWidth={3.5} color="text-chart-5" />
-                          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-extrabold">{judgesCount || 0}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "الحكام" : "Judges"}</span><span className="font-bold">{judgesCount || 0}</span></div>
-                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold text-chart-4">{criteria?.length || 0}</span></div>
-                        {totalScore > 0 && <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "مجموع النقاط" : "Total Score"}</span><span className="font-extrabold text-primary">{totalScore}</span></div>}
-                      </div>
-                    </div>
-
-                    {/* Competition Status */}
-                    <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/[0.06] to-transparent p-5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-primary/[0.04] rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-500" />
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/15 shadow-sm"><Activity className="h-4 w-4 text-primary" /></div>
-                          <span className="text-sm font-bold">{isAr ? "الحالة" : "Status"}</span>
-                        </div>
-                        <Badge className={`${statusCfg.bg} text-[11px] px-2.5 py-1 font-bold shadow-sm`}>
-                          {isAr ? statusCfg.labelAr : statusCfg.label}
-                        </Badge>
-                      </div>
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "الفئات" : "Categories"}</span><span className="font-bold">{categories?.length || 0}</span></div>
-                        <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "المعايير" : "Criteria"}</span><span className="font-bold">{criteria?.length || 0}</span></div>
-                        {daysUntilStart !== null && daysUntilStart > 0 && (
-                          <div className="flex justify-between text-[12px]"><span className="text-muted-foreground">{isAr ? "أيام للبدء" : "Days to Start"}</span><span className="font-extrabold text-chart-4">{daysUntilStart}</span></div>
+                        <p className="text-2xl font-extrabold tabular-nums">{registrationStats?.approved || 0}</p>
+                        <p className="text-[11px] text-muted-foreground mt-1">{isAr ? "مقبول" : "Approved"}</p>
+                        {competition.max_participants && (
+                          <div className="mt-3">
+                            <Progress value={((registrationStats?.approved || 0) / competition.max_participants) * 100} className="h-1.5" />
+                            <p className="text-[10px] text-muted-foreground mt-1">{registrationStats?.approved || 0}/{competition.max_participants}</p>
+                          </div>
                         )}
                       </div>
-                    </div>
-                  </div>
 
-                  {/* Entry & Fee Info */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="rounded-2xl border border-border/30 bg-gradient-to-br from-card to-muted/10 p-5 hover:shadow-md transition-all duration-300">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 shadow-sm"><UsersRound className="h-4 w-4 text-accent-foreground" /></div>
-                        <h4 className="font-bold text-sm">{isAr ? "أنواع المشاركة" : "Entry Types"}</h4>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {competition.allowed_entry_types?.map((t: string) => (
-                          <Badge key={t} variant="outline" className="rounded-xl text-xs px-3.5 py-1.5 font-medium border-accent/20 bg-accent/5">{t}</Badge>
-                        )) || <span className="text-xs text-muted-foreground">{isAr ? "فردي" : "Individual"}</span>}
-                      </div>
-                      {(competition.min_team_size || competition.max_team_size) && (
-                        <p className="text-[12px] text-muted-foreground mt-3 flex items-center gap-1.5">
-                          <Users className="h-3 w-3 opacity-50" />
-                          {isAr ? "حجم الفريق:" : "Team size:"} {competition.min_team_size || 1} – {competition.max_team_size || "∞"}
-                        </p>
-                      )}
-                    </div>
-                    <div className="rounded-2xl border border-border/30 bg-gradient-to-br from-card to-muted/10 p-5 hover:shadow-md transition-all duration-300">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-chart-5/10 shadow-sm"><Ticket className="h-4 w-4 text-chart-5" /></div>
-                        <h4 className="font-bold text-sm">{isAr ? "رسوم التسجيل" : "Registration Fee"}</h4>
-                      </div>
-                      {competition.registration_fee_type === "paid" ? (
-                        <div>
-                          <p className="text-3xl font-extrabold tabular-nums">{competition.registration_fee} <span className="text-sm font-medium text-muted-foreground">{competition.registration_currency}</span></p>
-                          {competition.registration_tax_rate && (
-                            <p className="text-[12px] text-muted-foreground mt-1.5">
-                              + {(Number(competition.registration_tax_rate) * 100).toFixed(0)}% {isAr && competition.registration_tax_name_ar ? competition.registration_tax_name_ar : competition.registration_tax_name || "Tax"}
-                            </p>
-                          )}
+                      {/* Judging */}
+                      <div className="rounded-2xl border border-chart-4/15 bg-chart-4/[0.03] p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-4/10"><Scale className="h-3.5 w-3.5 text-chart-4" /></div>
+                          <span className="text-xs font-bold text-muted-foreground">{isAr ? "التحكيم" : "Judging"}</span>
                         </div>
-                      ) : (
-                        <div className="flex items-center gap-3">
-                          <span className="text-3xl">🎉</span>
-                          <p className="text-xl font-extrabold text-chart-5">{isAr ? "مجاني" : "Free"}</p>
+                        <p className="text-2xl font-extrabold tabular-nums">{judgesCount || 0}</p>
+                        <p className="text-[11px] text-muted-foreground mt-1">{isAr ? "الحكام" : "Judges"}</p>
+                        {criteria && criteria.length > 0 && (
+                          <p className="text-[10px] text-muted-foreground mt-3">{criteria.length} {isAr ? "معايير" : "criteria"} · {totalScore} {isAr ? "نقطة" : "pts"}</p>
+                        )}
+                      </div>
+
+                      {/* Status */}
+                      <div className="rounded-2xl border border-primary/15 bg-primary/[0.03] p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Activity className="h-3.5 w-3.5 text-primary" /></div>
+                          <span className="text-xs font-bold text-muted-foreground">{isAr ? "الحالة" : "Status"}</span>
                         </div>
-                      )}
+                        <p className="text-sm font-bold">{isAr ? statusCfg.labelAr : statusCfg.label}</p>
+                        <p className="text-[11px] text-muted-foreground mt-1">{categories?.length || 0} {isAr ? "فئات" : "categories"}</p>
+                        <p className="text-[10px] text-muted-foreground mt-3">{criteria?.length || 0} {isAr ? "المعايير" : "criteria"}</p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Competition specialty */}
-                  {competitionTypes && competitionTypes.length > 0 && (
-                    <Section icon={<Flame className="h-4 w-4" />} title={isAr ? "تخصص المسابقة" : "Competition Specialty"} badge={<Badge variant="secondary" className="text-[12px]">{competitionTypes.length}</Badge>}>
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {competitionTypes.map((type) => (
-                          <div key={type.id} className="group relative overflow-hidden rounded-2xl border border-border/40 bg-muted/20 hover:bg-muted/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5">
-                            {type.cover_image_url ? (
-                              <div className="relative h-32">
-                                <img src={type.cover_image_url} alt={type.name} className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-                                <div className="absolute bottom-0 inset-x-0 p-4">
-                                  <p className="text-sm font-bold text-foreground">{isAr && type.name_ar ? type.name_ar : type.name}</p>
-                                  <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "تخصص" : "Specialty"}</p>
-                                </div>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-4 p-4">
-                                <div className="h-14 w-14 rounded-2xl bg-primary/8 flex items-center justify-center shrink-0">
-                                  <Flame className="h-6 w-6 text-primary/60" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-bold">{isAr && type.name_ar ? type.name_ar : type.name}</p>
-                                  <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "تخصص" : "Specialty"}</p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                    {/* Entry Types & Fee */}
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-2xl border border-border/30 bg-card p-4">
+                        <div className="flex items-center gap-2.5 mb-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10"><UsersRound className="h-3.5 w-3.5 text-accent-foreground" /></div>
+                          <h4 className="font-bold text-xs">{isAr ? "أنواع المشاركة" : "Entry Types"}</h4>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {competition.allowed_entry_types?.map((t: string) => (
+                            <Badge key={t} variant="outline" className="rounded-lg text-[11px] px-2.5 py-1 font-medium">{t}</Badge>
+                          )) || <span className="text-xs text-muted-foreground">{isAr ? "فردي" : "Individual"}</span>}
+                        </div>
+                        {(competition.min_team_size || competition.max_team_size) && (
+                          <p className="text-[11px] text-muted-foreground mt-2.5 flex items-center gap-1">
+                            <Users className="h-3 w-3 opacity-40" />
+                            {isAr ? "حجم الفريق:" : "Team:"} {competition.min_team_size || 1}–{competition.max_team_size || "∞"}
+                          </p>
+                        )}
                       </div>
-                    </Section>
-                  )}
-
-                  {/* Supervising Bodies */}
-                  {supervisors.length > 0 && (
-                    <Section icon={<Building2 className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[12px]">{supervisors.length}</Badge>}>
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {supervisors.map((entity) => (
-                          <div key={entity.id} className="flex items-center gap-4 rounded-2xl border border-border/40 bg-muted/20 p-4 transition-all hover:bg-muted/40 hover:shadow-sm">
-                            {entity.logo_url ? (
-                              <img src={entity.logo_url} alt="" className="h-12 w-12 rounded-xl object-contain shrink-0 bg-background p-1" loading="lazy" />
-                            ) : (
-                              <div className="h-12 w-12 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">
-                                <Building2 className="h-5 w-5 text-primary/40" />
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold truncate">
-                                {isAr && entity.name_ar ? entity.name_ar : entity.name}
-                                {entity.abbreviation && <span className="text-muted-foreground font-normal"> ({entity.abbreviation})</span>}
-                              </p>
-                              <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "جهة مشرفة" : "Supervising Body"}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </Section>
-                  )}
-
-                  {/* Accrediting Bodies */}
-                  {accreditors.length > 0 && (
-                    <Section icon={<Award className="h-4 w-4" />} title={isAr ? "جهات الاعتماد" : "Accrediting Bodies"} badge={<Badge variant="secondary" className="text-[12px]">{accreditors.length}</Badge>} accent>
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {accreditors.map((entity) => (
-                          <div key={entity.id} className="flex items-center gap-4 rounded-2xl border border-primary/15 bg-primary/[0.03] p-4 transition-all hover:bg-primary/[0.06] hover:shadow-sm">
-                            {entity.logo_url ? (
-                              <img src={entity.logo_url} alt="" className="h-12 w-12 rounded-xl object-contain shrink-0 bg-background p-1" loading="lazy" />
-                            ) : (
-                              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                <Award className="h-5 w-5 text-primary/50" />
-                              </div>
-                            )}
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold truncate">
-                                {isAr && entity.name_ar ? entity.name_ar : entity.name}
-                                {entity.abbreviation && <span className="text-muted-foreground font-normal"> ({entity.abbreviation})</span>}
-                              </p>
-                              <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "جهة اعتماد" : "Accrediting Body"}</p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </Section>
-                  )}
-
-                  {/* Judging Panel Preview */}
-                  <Suspense fallback={null}>
-                    <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />
-                  </Suspense>
-
-                  {/* Timeline */}
-                  <CompetitionTimeline
-                    registrationStart={competition.registration_start}
-                    registrationEnd={competition.registration_end}
-                    competitionStart={competition.competition_start}
-                    competitionEnd={competition.competition_end}
-                  />
-
-                  {/* Venue & Instructions */}
-                  {!competition.is_virtual && (venue || competition.city) && (
-                    <Section icon={<DoorOpen className="h-4 w-4" />} title={isAr ? "معلومات الموقع والدخول" : "Venue & Entry Information"}>
-                      <div className="space-y-4">
-                        <div className="flex items-start gap-3.5">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/8 shrink-0 mt-0.5">
-                            <MapPin className="h-4 w-4 text-primary" />
-                          </div>
+                      <div className="rounded-2xl border border-border/30 bg-card p-4">
+                        <div className="flex items-center gap-2.5 mb-3">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-chart-5/10"><Ticket className="h-3.5 w-3.5 text-chart-5" /></div>
+                          <h4 className="font-bold text-xs">{isAr ? "رسوم التسجيل" : "Registration Fee"}</h4>
+                        </div>
+                        {competition.registration_fee_type === "paid" ? (
                           <div>
-                            <p className="text-sm font-semibold">{venue}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{competition.city}, {competition.country}</p>
+                            <p className="text-2xl font-extrabold tabular-nums">{competition.registration_fee} <span className="text-xs font-medium text-muted-foreground">{competition.registration_currency}</span></p>
+                            {competition.registration_tax_rate && (
+                              <p className="text-[11px] text-muted-foreground mt-1">
+                                + {(Number(competition.registration_tax_rate) * 100).toFixed(0)}% {isAr && competition.registration_tax_name_ar ? competition.registration_tax_name_ar : competition.registration_tax_name || "Tax"}
+                              </p>
+                            )}
                           </div>
-                        </div>
-                        {competition.competition_start && (
-                          <div className="flex items-start gap-3.5">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/8 shrink-0 mt-0.5">
-                              <Clock className="h-4 w-4 text-primary" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-semibold">{isAr ? "وقت الدخول" : "Entry Time"}</p>
-                              <p className="text-xs text-muted-foreground mt-0.5">{format(new Date(competition.competition_start), "h:mm a")}</p>
-                            </div>
-                          </div>
+                        ) : (
+                          <p className="text-xl font-extrabold text-chart-5">🎉 {isAr ? "مجاني" : "Free"}</p>
                         )}
-                        <div className="rounded-2xl bg-muted/30 border border-border/30 p-4">
-                          <div className="flex items-center gap-2 mb-3">
-                            <Info className="h-4 w-4 text-primary" />
-                            <p className="text-sm font-semibold">{isAr ? "تعليمات للمتسابقين" : "Instructions for Contestants"}</p>
-                          </div>
-                          <ul className="text-[13px] text-muted-foreground space-y-2 list-none">
-                            {[
-                              isAr ? "يرجى الحضور قبل 30 دقيقة من الموعد" : "Please arrive 30 minutes before the scheduled time",
-                              isAr ? "إحضار بطاقة الهوية أو التسجيل" : "Bring your ID or registration confirmation",
-                              isAr ? "الالتزام بزي المسابقة المطلوب" : "Wear the required competition uniform",
-                              isAr ? "الأدوات الشخصية مسموح بها وفق القواعد" : "Personal tools are allowed per the rules",
-                            ].map((text, i) => (
-                              <li key={i} className="flex items-start gap-2.5">
-                                <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary/40 shrink-0" />
-                                {text}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
                       </div>
-                    </Section>
-                  )}
+                    </div>
 
-                  {/* Rules */}
-                  {(competition.rules_summary || competition.rules_summary_ar) && (
-                    <Section icon={<BookOpen className="h-4 w-4" />} title={isAr ? "القواعد والشروط" : "Rules & Regulations"} defaultOpen={false}>
-                      <p className="whitespace-pre-wrap text-sm leading-[1.8] text-muted-foreground">
-                        {isAr && competition.rules_summary_ar ? competition.rules_summary_ar : competition.rules_summary}
-                      </p>
-                    </Section>
-                  )}
-
-                  {/* Scoring Notes */}
-                  {(competition.scoring_notes || competition.scoring_notes_ar) && (
-                    <Section icon={<BarChart3 className="h-4 w-4" />} title={isAr ? "منهجية التقييم" : "Scoring Methodology"} defaultOpen={false}>
-                      <p className="text-sm whitespace-pre-wrap leading-[1.8] text-muted-foreground mb-5">
-                        {isAr && competition.scoring_notes_ar ? competition.scoring_notes_ar : competition.scoring_notes}
-                      </p>
-                      {criteria && criteria.length > 0 && (
-                        <div className="space-y-2.5">
-                          {criteria.map((crit) => (
-                            <div key={crit.id} className="flex items-center gap-3.5 rounded-2xl bg-muted/30 border border-border/30 px-4 py-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-xs font-bold text-primary shrink-0">
-                                {(Number(crit.weight) * 100).toFixed(0)}%
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <p className="text-sm font-semibold">{isAr && crit.name_ar ? crit.name_ar : crit.name}</p>
-                                <p className="text-[12px] text-muted-foreground truncate mt-0.5">{isAr && crit.description_ar ? crit.description_ar : crit.description}</p>
-                              </div>
-                              <Badge variant="outline" className="shrink-0 text-[12px] rounded-xl">{isAr ? "الأقصى" : "Max"}: {crit.max_score}</Badge>
+                    {/* Competition specialty */}
+                    {competitionTypes && competitionTypes.length > 0 && (
+                      <Section icon={<Flame className="h-4 w-4" />} title={isAr ? "تخصص المسابقة" : "Specialty"} badge={<Badge variant="secondary" className="text-[11px]">{competitionTypes.length}</Badge>}>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {competitionTypes.map((type) => (
+                            <div key={type.id} className="group overflow-hidden rounded-xl border border-border/30 bg-muted/10 hover:bg-muted/30 transition-all duration-200">
+                              {type.cover_image_url ? (
+                                <div className="relative h-28">
+                                  <img src={type.cover_image_url} alt={type.name} className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-300" loading="lazy" />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                                  <div className="absolute bottom-0 inset-x-0 p-3">
+                                    <p className="text-sm font-bold">{isAr && type.name_ar ? type.name_ar : type.name}</p>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-3 p-3.5">
+                                  <div className="h-10 w-10 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">
+                                    <Flame className="h-4 w-4 text-primary/50" />
+                                  </div>
+                                  <p className="text-sm font-bold">{isAr && type.name_ar ? type.name_ar : type.name}</p>
+                                </div>
+                              )}
                             </div>
                           ))}
                         </div>
-                      )}
-                    </Section>
-                  )}
+                      </Section>
+                    )}
 
-                  {/* Categories */}
-                  {categories && categories.length > 0 && (
-                    <Section
-                      icon={<Target className="h-4 w-4" />}
-                      title={isAr ? "الفئات" : "Categories"}
-                      badge={<Badge variant="secondary" className="text-[12px]">{categories.length}</Badge>}
-                    >
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {categories.slice(0, 6).map((cat) => (
-                          <div
-                            key={cat.id}
-                            className="group relative overflow-hidden rounded-2xl border border-border/40 bg-muted/20 hover:bg-muted/40 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 cursor-pointer"
-                            onClick={() => setActiveTab("categories")}
-                          >
-                            {cat.cover_image_url ? (
-                              <div className="relative h-28">
-                                <img src={cat.cover_image_url} alt={cat.name} className="h-full w-full object-cover group-hover:scale-[1.03] transition-transform duration-500" loading="lazy" decoding="async" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
-                                <div className="absolute bottom-0 inset-x-0 p-3.5">
-                                  <p className="text-sm font-bold text-foreground">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
-                                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-0.5">
-                                    {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                    <Badge variant="outline" className="text-[12px] h-4 px-1.5 bg-background/60 rounded-md">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                    {/* Supervising Bodies */}
+                    {supervisors.length > 0 && (
+                      <Section icon={<Building2 className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[11px]">{supervisors.length}</Badge>}>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {supervisors.map((entity) => (
+                            <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-border/30 bg-muted/10 p-3.5 hover:bg-muted/30 transition-colors">
+                              {entity.logo_url ? (
+                                <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-contain shrink-0 bg-background p-0.5" loading="lazy" />
+                              ) : (
+                                <div className="h-10 w-10 rounded-lg bg-primary/8 flex items-center justify-center shrink-0"><Building2 className="h-4 w-4 text-primary/40" /></div>
+                              )}
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold truncate">{isAr && entity.name_ar ? entity.name_ar : entity.name}{entity.abbreviation && <span className="text-muted-foreground font-normal"> ({entity.abbreviation})</span>}</p>
+                                <p className="text-[11px] text-muted-foreground">{isAr ? "جهة مشرفة" : "Supervisor"}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </Section>
+                    )}
+
+                    {/* Accrediting Bodies */}
+                    {accreditors.length > 0 && (
+                      <Section icon={<Award className="h-4 w-4" />} title={isAr ? "جهات الاعتماد" : "Accrediting Bodies"} badge={<Badge variant="secondary" className="text-[11px]">{accreditors.length}</Badge>} accent>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {accreditors.map((entity) => (
+                            <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-primary/15 bg-primary/[0.02] p-3.5 hover:bg-primary/[0.05] transition-colors">
+                              {entity.logo_url ? (
+                                <img src={entity.logo_url} alt="" className="h-10 w-10 rounded-lg object-contain shrink-0 bg-background p-0.5" loading="lazy" />
+                              ) : (
+                                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><Award className="h-4 w-4 text-primary/50" /></div>
+                              )}
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold truncate">{isAr && entity.name_ar ? entity.name_ar : entity.name}{entity.abbreviation && <span className="text-muted-foreground font-normal"> ({entity.abbreviation})</span>}</p>
+                                <p className="text-[11px] text-muted-foreground">{isAr ? "جهة اعتماد" : "Accreditor"}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </Section>
+                    )}
+
+                    {/* Judges Preview */}
+                    <Suspense fallback={null}>
+                      <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />
+                    </Suspense>
+
+                    {/* Timeline */}
+                    <CompetitionTimeline
+                      registrationStart={competition.registration_start}
+                      registrationEnd={competition.registration_end}
+                      competitionStart={competition.competition_start}
+                      competitionEnd={competition.competition_end}
+                    />
+
+                    {/* Venue */}
+                    {!competition.is_virtual && (venue || competition.city) && (
+                      <Section icon={<DoorOpen className="h-4 w-4" />} title={isAr ? "الموقع والدخول" : "Venue & Entry"}>
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/8 shrink-0 mt-0.5"><MapPin className="h-3.5 w-3.5 text-primary" /></div>
+                            <div>
+                              <p className="text-sm font-semibold">{venue}</p>
+                              <p className="text-xs text-muted-foreground">{competition.city}, {competition.country}</p>
+                            </div>
+                          </div>
+                          {competition.competition_start && (
+                            <div className="flex items-start gap-3">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/8 shrink-0 mt-0.5"><Clock className="h-3.5 w-3.5 text-primary" /></div>
+                              <div>
+                                <p className="text-sm font-semibold">{isAr ? "وقت الدخول" : "Entry Time"}</p>
+                                <p className="text-xs text-muted-foreground">{format(new Date(competition.competition_start), "h:mm a")}</p>
+                              </div>
+                            </div>
+                          )}
+                          <div className="rounded-xl bg-muted/20 border border-border/20 p-3.5">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Info className="h-3.5 w-3.5 text-primary" />
+                              <p className="text-xs font-semibold">{isAr ? "تعليمات" : "Instructions"}</p>
+                            </div>
+                            <ul className="text-[12px] text-muted-foreground space-y-1.5 list-none">
+                              {[
+                                isAr ? "الحضور قبل 30 دقيقة" : "Arrive 30 minutes early",
+                                isAr ? "إحضار بطاقة الهوية" : "Bring your ID",
+                                isAr ? "الالتزام بالزي المطلوب" : "Wear required uniform",
+                                isAr ? "الأدوات الشخصية وفق القواعد" : "Personal tools per rules",
+                              ].map((text, i) => (
+                                <li key={i} className="flex items-start gap-2">
+                                  <span className="mt-1.5 h-1 w-1 rounded-full bg-primary/30 shrink-0" />
+                                  {text}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </Section>
+                    )}
+
+                    {/* Rules */}
+                    {(competition.rules_summary || competition.rules_summary_ar) && (
+                      <Section icon={<BookOpen className="h-4 w-4" />} title={isAr ? "القواعد والشروط" : "Rules"} defaultOpen={false}>
+                        <p className="whitespace-pre-wrap text-sm leading-[1.8] text-muted-foreground">
+                          {isAr && competition.rules_summary_ar ? competition.rules_summary_ar : competition.rules_summary}
+                        </p>
+                      </Section>
+                    )}
+
+                    {/* Scoring */}
+                    {(competition.scoring_notes || competition.scoring_notes_ar) && (
+                      <Section icon={<BarChart3 className="h-4 w-4" />} title={isAr ? "منهجية التقييم" : "Scoring"} defaultOpen={false}>
+                        <p className="text-sm whitespace-pre-wrap leading-[1.8] text-muted-foreground mb-4">
+                          {isAr && competition.scoring_notes_ar ? competition.scoring_notes_ar : competition.scoring_notes}
+                        </p>
+                        {criteria && criteria.length > 0 && (
+                          <div className="space-y-2">
+                            {criteria.map((crit) => (
+                              <div key={crit.id} className="flex items-center gap-3 rounded-xl bg-muted/20 border border-border/20 px-3.5 py-2.5">
+                                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-[11px] font-bold text-primary shrink-0">
+                                  {(Number(crit.weight) * 100).toFixed(0)}%
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-sm font-semibold">{isAr && crit.name_ar ? crit.name_ar : crit.name}</p>
+                                  <p className="text-[11px] text-muted-foreground truncate">{isAr && crit.description_ar ? crit.description_ar : crit.description}</p>
+                                </div>
+                                <Badge variant="outline" className="shrink-0 text-[11px] rounded-lg">{isAr ? "الأقصى" : "Max"}: {crit.max_score}</Badge>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </Section>
+                    )}
+
+                    {/* Categories */}
+                    {categories && categories.length > 0 && (
+                      <Section icon={<Target className="h-4 w-4" />} title={isAr ? "الفئات" : "Categories"} badge={<Badge variant="secondary" className="text-[11px]">{categories.length}</Badge>}>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {categories.slice(0, 6).map((cat) => (
+                            <div key={cat.id} className="group overflow-hidden rounded-xl border border-border/30 bg-muted/10 hover:bg-muted/30 transition-all duration-200 cursor-pointer" onClick={() => setActiveTab("categories")}>
+                              {cat.cover_image_url ? (
+                                <div className="relative h-24">
+                                  <img src={cat.cover_image_url} alt={cat.name} className="h-full w-full object-cover group-hover:scale-[1.02] transition-transform duration-300" loading="lazy" />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                                  <div className="absolute bottom-0 inset-x-0 p-3">
+                                    <p className="text-sm font-bold">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
+                                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mt-0.5">
+                                      {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
+                                      <Badge variant="outline" className="text-[10px] h-4 px-1.5 bg-background/60 rounded">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-4 p-4">
-                                <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary/8 to-accent/8 flex items-center justify-center shrink-0">
-                                  <Trophy className="h-6 w-6 text-primary/40" />
+                              ) : (
+                                <div className="flex items-center gap-3 p-3.5">
+                                  <div className="h-10 w-10 rounded-xl bg-primary/8 flex items-center justify-center shrink-0">
+                                    <Trophy className="h-4 w-4 text-primary/40" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <p className="text-sm font-bold">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                      <Badge variant="outline" className="text-[10px] h-4 px-1.5 rounded">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                                    </div>
+                                  </div>
                                 </div>
-                                <div className="min-w-0">
-                                  <p className="text-sm font-bold truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
-                                  {cat.description && (
-                                    <p className="text-[12px] text-muted-foreground truncate mt-0.5">{isAr && cat.description_ar ? cat.description_ar : cat.description}</p>
-                                  )}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                      {categories.length > 6 && (
-                        <Button variant="ghost" size="sm" className="mt-4 w-full text-xs rounded-xl" onClick={() => setActiveTab("categories")}>
-                          {isAr ? `عرض جميع الفئات (${categories.length})` : `View all categories (${categories.length})`}
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                        {categories.length > 6 && (
+                          <Button variant="ghost" size="sm" className="mt-3 w-full rounded-xl text-xs" onClick={() => setActiveTab("categories")}>
+                            {isAr ? `عرض الكل (${categories.length})` : `View All (${categories.length})`}
+                            <ChevronRight className="ms-1 h-3 w-3 rtl:rotate-180" />
+                          </Button>
+                        )}
+                      </Section>
+                    )}
+                  </>
+                )}
+
+                <Suspense fallback={<div className="flex justify-center py-12"><div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" /></div>}>
+                {activeSection === "categories" && <CategoryManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+                {activeSection === "criteria" && <CriteriaManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+                {activeSection === "rubrics" && <RubricTemplatesPanel competitionId={competition.id} />}
+                {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={isOrganizer} />}
+                {activeSection === "rounds" && <TournamentRoundsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "stages" && <EvaluationStagesPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "judges" && <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "live-scoring" && <LiveScoringDashboard competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "schedule" && <CompetitionSchedulePanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "stations" && <KitchenStationsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "deliberation" && canSeeKnowledge && <JudgeDeliberationPanel competitionId={competition.id} />}
+                {activeSection === "feedback" && <CompetitionFeedbackPanel competitionId={competition.id} />}
+                {activeSection === "checklist" && <PreparationChecklistPanel competitionId={competition.id} />}
+                {activeSection === "sponsors" && <CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+                {activeSection === "winners" && (
+                  hasWinners ? (
+                    <CompetitionLeaderboard competitionId={competition.id} />
+                  ) : (
+                    <div className="py-12 text-center">
+                      <Medal className="h-12 w-12 mx-auto text-muted-foreground/20 mb-3" />
+                      <p className="text-sm font-semibold text-muted-foreground">
+                        {isAr ? "لم يتم الإعلان عن الفائزين بعد" : "Winners haven't been announced yet"}
+                      </p>
+                      <p className="text-xs text-muted-foreground/70 mt-1">
+                        {isAr ? "سيتم الإعلان بعد انتهاء التحكيم" : "Results will be announced after judging"}
+                      </p>
+                      {canRegister && (
+                        <Button className="mt-4 rounded-xl shadow-sm" size="sm" onClick={() => { setShowRegistrationForm(true); setActiveTab("overview"); }}>
+                          <Sparkles className="me-1.5 h-3.5 w-3.5" />{isAr ? "سجّل الآن" : "Register Now"}
                         </Button>
                       )}
-                    </Section>
-                  )}
-
-                  {/* Sponsors */}
-                  <Suspense fallback={null}><CompetitionSponsorsPanel competitionId={competition.id} isOrganizer={isOrganizer} /></Suspense>
-                </>
-              )}
-
-              <Suspense fallback={<div className="space-y-4 animate-pulse"><Skeleton className="h-10 w-48 rounded-xl" /><Skeleton className="h-64 w-full rounded-2xl" /><Skeleton className="h-40 w-full rounded-2xl" /></div>}>
-              {activeSection === "rounds" && <TournamentRoundsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "judges" && <JudgesList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "contestants" && <ParticipantsList competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "categories" && <CategoryManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} competitionStatus={competition.status} />}
-              {activeSection === "criteria" && <CriteriaManagementPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
-              {activeSection === "stages" && <EvaluationStagesPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "live-scoring" && <LiveScoringDashboard competitionId={competition.id} isOrganizer={isOrganizer} />}
-              {activeSection === "schedule" && <CompetitionSchedulePanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "stations" && <KitchenStationsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "feedback" && <CompetitionFeedbackPanel competitionId={competition.id} />}
-              {activeSection === "checklist" && <PreparationChecklistPanel competitionId={competition.id} />}
-              {activeSection === "deliberation" && canSeeKnowledge && <JudgeDeliberationPanel competitionId={competition.id} />}
-              {activeSection === "winners" && (
-                hasWinners ? (
-                  <CompetitionLeaderboard competitionId={competition.id} />
-                ) : (
-                  <div className="rounded-2xl border border-primary/15 bg-primary/[0.02] p-12 text-center">
-                    <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary/10 to-chart-4/10">
-                      <Medal className="h-10 w-10 text-primary" />
                     </div>
-                    <h3 className="font-serif text-xl font-bold mb-2">
-                      {isAr ? "لم يتم إعلان الفائزين بعد" : "Winners Not Announced Yet"}
-                    </h3>
-                    <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
-                      {isAr
-                        ? "شارك لتكون من الفائزين بالميدالية الذهبية 🏅 سيتم الإعلان عن النتائج بعد انتهاء المسابقة والتحكيم."
-                        : "Participate to be among the Gold Medal winners 🏅 Results will be announced after the competition and judging conclude."}
-                    </p>
-                    {canRegister && (
-                      <Button className="mt-6 shadow-md shadow-primary/15 rounded-xl" onClick={() => { setShowRegistrationForm(true); setActiveTab("overview"); }}>
-                        <Sparkles className="me-1.5 h-4 w-4" />
-                        {isAr ? "سجّل الآن" : "Register Now"}
-                      </Button>
-                    )}
-                  </div>
-                )
-              )}
-              {activeSection === "team" && <CompetitionTeamPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
-              {activeSection === "collaboration" && <TeamCollaborationPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "judge-analytics" && canSeeKnowledge && <JudgeAnalyticsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {activeSection === "knowledge" && canSeeKnowledge && <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />}
-              {activeSection === "gallery" && <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />}
-              {activeSection === "analytics" && isOrganizer && <CompetitionAnalyticsDashboard competitionId={competition.id} language={language} />}
-              {activeSection === "adv-schedule" && isOrganizer && <AdvancedSchedulingPanel competitionId={competition.id} language={language} isOrganizer={true} />}
-              {activeSection === "notifications" && isOrganizer && <NotificationHub competitionId={competition.id} language={language} isOrganizer={true} />}
-              {activeSection === "requirements" && user && <OrderCenterHub competitionId={competition.id} isOrganizer={!!isOrganizer} />}
-              {isOrganizer && activeSection === "manage" && (
-                <div className="space-y-5">
-                  <CompetitionStatusManager competitionId={competition.id} currentStatus={competition.status} competitionTitle={title} />
-                  <BlindJudgingPanel competitionId={competition.id} isOrganizer={true} blindJudgingEnabled={competition.blind_judging_enabled} blindCodePrefix={competition.blind_code_prefix || "ENTRY"} />
-                  <JudgeAssignmentPanel competitionId={competition.id} />
-                  <RegistrationApprovalPanel competitionId={competition.id} />
-                  {competition.status === "completed" && <AutoIssueCertificates competitionId={competition.id} />}
-
-                  <Section icon={<FileSpreadsheet className="h-4 w-4" />} title={isAr ? "استيراد جماعي من ملف إكسل" : "Bulk Import from Excel"} defaultOpen={false}>
-                    <div className="space-y-3">
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {isAr
-                          ? "قم بتنزيل القالب، واملأه، ثم ارفعه لاستيراد المشاركين أو المحكمين أو الفائزين أو المتطوعين أو الرعاة. رقم المسابقة سيُملأ تلقائياً."
-                          : "Download the template, fill it out, then upload to import participants, judges, winners, volunteers, or sponsors. The competition number is auto-filled."}
-                      </p>
+                  )
+                )}
+                {activeSection === "team" && <CompetitionTeamPanel competitionId={competition.id} isOrganizer={isOrganizer} />}
+                {activeSection === "collaboration" && <TeamCollaborationPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "judge-analytics" && canSeeKnowledge && <JudgeAnalyticsPanel competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {activeSection === "knowledge" && canSeeKnowledge && <CompetitionKnowledgeTab competitionId={competition.id} isOrganizer={isOrganizer} />}
+                {activeSection === "gallery" && <ReferenceGalleryPanel competitionId={competition.id} isAdmin={isOrganizer} />}
+                {activeSection === "analytics" && isOrganizer && <CompetitionAnalyticsDashboard competitionId={competition.id} language={language} />}
+                {activeSection === "adv-schedule" && isOrganizer && <AdvancedSchedulingPanel competitionId={competition.id} language={language} isOrganizer={true} />}
+                {activeSection === "notifications" && isOrganizer && <NotificationHub competitionId={competition.id} language={language} isOrganizer={true} />}
+                {activeSection === "requirements" && user && <OrderCenterHub competitionId={competition.id} isOrganizer={!!isOrganizer} />}
+                {isOrganizer && activeSection === "manage" && (
+                  <div className="space-y-5">
+                    <CompetitionStatusManager competitionId={competition.id} currentStatus={competition.status} competitionTitle={title} />
+                    <BlindJudgingPanel competitionId={competition.id} isOrganizer={true} blindJudgingEnabled={competition.blind_judging_enabled} blindCodePrefix={competition.blind_code_prefix || "ENTRY"} />
+                    <JudgeAssignmentPanel competitionId={competition.id} />
+                    <RegistrationApprovalPanel competitionId={competition.id} />
+                    {competition.status === "completed" && <AutoIssueCertificates competitionId={competition.id} />}
+                    <Section icon={<FileSpreadsheet className="h-4 w-4" />} title={isAr ? "استيراد جماعي" : "Bulk Import"} defaultOpen={false}>
                       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         {(["participant", "judge", "winner", "volunteer", "sponsor"] as const).map(type => (
-                          <BulkImportPanel
-                            key={type}
-                            entityType={type}
-                            competitionNumber={competition.competition_number || ""}
-                            onImportComplete={() => {}}
-                          />
+                          <BulkImportPanel key={type} entityType={type} competitionNumber={competition.competition_number || ""} onImportComplete={() => {}} />
                         ))}
                       </div>
-                    </div>
-                  </Section>
-                </div>
-              )}
-              </Suspense>
+                    </Section>
+                  </div>
+                )}
+                </Suspense>
               </TabTransition>
-              {/* Comments Section */}
+
+              {/* Comments */}
               <Suspense fallback={null}>
-              <Card className="p-5">
-                <EventComments eventType="competition" eventId={competition.id} />
-              </Card>
+                <Card className="p-4 sm:p-5">
+                  <EventComments eventType="competition" eventId={competition.id} />
+                </Card>
               </Suspense>
             </div>
 
             {/* ─── Sidebar ─── */}
-            <div className="space-y-5 lg:sticky lg:top-[120px] lg:self-start">
-              {/* Live Countdown */}
+            <aside className="space-y-4 lg:sticky lg:top-[110px] lg:self-start">
+              {/* Countdowns */}
               {competition.status === "registration_open" && competition.registration_end && (
                 <LiveCountdownStrip targetDate={competition.registration_end} label="Registration Closes In" labelAr="ينتهي التسجيل خلال" isAr={isAr} />
               )}
@@ -1318,58 +1215,53 @@ export default function CompetitionDetail() {
               )}
 
               {/* Registration Card */}
-              <div className="overflow-hidden rounded-2xl border border-border/30 bg-card shadow-sm">
-                <div className="border-b border-border/20 bg-gradient-to-r from-primary/[0.06] via-primary/[0.02] to-transparent px-5 py-4">
-                  <h3 className="flex items-center gap-2.5 font-bold text-[15px]">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15"><Trophy className="h-4 w-4 text-primary" /></div>
+              <div className="rounded-2xl border border-border/30 bg-card overflow-hidden">
+                <div className="border-b border-border/15 bg-primary/[0.04] px-4 py-3">
+                  <h3 className="flex items-center gap-2 font-bold text-sm">
+                    <Trophy className="h-4 w-4 text-primary" />
                     {isAr ? "التسجيل" : "Registration"}
                   </h3>
                 </div>
-                <div className="p-5 space-y-3">
+                <div className="p-4 space-y-3">
                   {myRegistration ? (
-                    <div className="flex items-center gap-2.5 rounded-xl bg-primary/8 p-3.5">
+                    <div className="flex items-center gap-2 rounded-lg bg-primary/8 p-3">
                       <CheckCircle className="h-4 w-4 text-primary shrink-0" />
-                      <span className="text-sm font-semibold text-primary">
+                      <span className="text-xs font-semibold text-primary">
                         {myRegistration.status === "approved" ? t("alreadyRegistered") : t("registrationPending")}
                       </span>
                     </div>
                   ) : canRegister ? (
-                    <Button className="w-full shadow-md shadow-primary/15 rounded-xl h-10 font-bold" onClick={() => setShowRegistrationForm(true)} disabled={showRegistrationForm}>
+                    <Button className="w-full rounded-xl h-9 font-bold text-xs" onClick={() => setShowRegistrationForm(true)} disabled={showRegistrationForm}>
                       {t("registerNow")}
                     </Button>
                   ) : !user ? (
-                    <Button asChild className="w-full rounded-xl h-10" variant="outline">
-                      <Link to="/login">{isAr ? "سجل الدخول للتسجيل" : "Sign in to Register"}</Link>
+                    <Button asChild className="w-full rounded-xl h-9 text-xs" variant="outline">
+                      <Link to="/login">{isAr ? "سجل الدخول" : "Sign in to Register"}</Link>
                     </Button>
                   ) : (
-                    <p className="text-xs text-muted-foreground text-center py-2">{isAr ? "التسجيل مغلق حالياً" : "Registration is currently closed."}</p>
+                    <p className="text-[11px] text-muted-foreground text-center py-1">{isAr ? "التسجيل مغلق" : "Registration closed"}</p>
                   )}
                   {competition.registration_end && (
-                    <p className="text-[12px] text-center text-muted-foreground">
-                      {isAr ? "ينتهي التسجيل:" : "Deadline:"}{" "}
+                    <p className="text-[11px] text-center text-muted-foreground">
+                      {isAr ? "الموعد النهائي:" : "Deadline:"}{" "}
                       <span className="font-semibold text-foreground">{format(new Date(competition.registration_end), "MMM d, yyyy")}</span>
                     </p>
                   )}
-                  {/* Registration breakdown */}
                   {registrationStats && registrationStats.total > 0 && (
-                    <div className="border-t border-border/30 pt-3 space-y-1.5">
-                      <div className="flex justify-between text-xs">
+                    <div className="border-t border-border/20 pt-2.5 space-y-1.5">
+                      <div className="flex justify-between text-[11px]">
                         <span className="text-muted-foreground">{isAr ? "مقبول" : "Approved"}</span>
                         <span className="font-semibold text-chart-5">{registrationStats.approved}</span>
                       </div>
-                      <div className="flex justify-between text-xs">
+                      <div className="flex justify-between text-[11px]">
                         <span className="text-muted-foreground">{isAr ? "قيد المراجعة" : "Pending"}</span>
                         <span className="font-semibold text-chart-4">{registrationStats.pending}</span>
                       </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-muted-foreground">{isAr ? "الإجمالي" : "Total"}</span>
-                        <span className="font-bold">{registrationStats.total}</span>
-                      </div>
                       {competition.max_participants && (
                         <div className="pt-1">
-                          <Progress value={(registrationStats.approved / competition.max_participants) * 100} className="h-1.5" />
+                          <Progress value={(registrationStats.approved / competition.max_participants) * 100} className="h-1" />
                           <p className="text-[10px] text-muted-foreground mt-1 text-center">
-                            {registrationStats.approved}/{competition.max_participants} {isAr ? "مقاعد مشغولة" : "spots filled"}
+                            {registrationStats.approved}/{competition.max_participants} {isAr ? "مقاعد" : "spots"}
                           </p>
                         </div>
                       )}
@@ -1378,63 +1270,54 @@ export default function CompetitionDetail() {
                 </div>
               </div>
 
-              {/* Participant Stats */}
               <ParticipantStatsCard competitionId={competition.id} maxParticipants={competition.max_participants} />
 
-              {/* Quick Info Card */}
-              <div className="overflow-hidden rounded-2xl border border-border/30 bg-card shadow-sm">
-                <div className="border-b border-border/20 bg-gradient-to-r from-accent/[0.06] via-accent/[0.02] to-transparent px-5 py-4">
-                  <h3 className="flex items-center gap-2.5 font-bold text-[15px]">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15"><BookOpen className="h-4 w-4 text-primary" /></div>
+              {/* Quick Info */}
+              <div className="rounded-2xl border border-border/30 bg-card overflow-hidden">
+                <div className="border-b border-border/15 bg-accent/[0.04] px-4 py-3">
+                  <h3 className="flex items-center gap-2 font-bold text-sm">
+                    <BookOpen className="h-4 w-4 text-primary" />
                     {isAr ? "معلومات سريعة" : "Quick Info"}
                   </h3>
                 </div>
-                <div className="p-5 space-y-4">
+                <div className="p-4 space-y-2.5">
                   {[
                     competition.country_code && { icon: MapPin, label: isAr ? "الدولة" : "Country", value: `${countryFlag(competition.country_code)} ${competition.country}` },
                     competition.edition_year && { icon: Hash, label: isAr ? "النسخة" : "Edition", value: competition.edition_year },
                     competition.max_participants && { icon: Users, label: isAr ? "السعة" : "Capacity", value: competition.max_participants },
                     competition.is_virtual !== null && { icon: Globe, label: isAr ? "النوع" : "Format", value: competition.is_virtual ? (isAr ? "افتراضية" : "Virtual") : (isAr ? "حضورية" : "In-Person"), badge: true },
-                    competition.registration_fee_type === "paid" && { icon: Ticket, label: isAr ? "رسوم التسجيل" : "Entry Fee", value: `${competition.registration_fee} ${competition.registration_currency}` },
+                    competition.registration_fee_type === "paid" && { icon: Ticket, label: isAr ? "الرسوم" : "Fee", value: `${competition.registration_fee} ${competition.registration_currency}` },
                     daysUntilStart !== null && daysUntilStart > 0 && { icon: Timer, label: isAr ? "أيام للبدء" : "Days to Start", value: daysUntilStart },
-                    competition.blind_judging_enabled && { icon: Shield, label: isAr ? "التحكيم" : "Judging", value: isAr ? "مخفي الهوية" : "Blind", badge: true },
-                    competition.series_id && { icon: Layers, label: isAr ? "السلسلة" : "Series", value: isAr ? "جزء من سلسلة" : "Part of Series", badge: true },
+                    competition.blind_judging_enabled && { icon: Shield, label: isAr ? "التحكيم" : "Judging", value: isAr ? "مخفي" : "Blind", badge: true },
                   ].filter(Boolean).map((item: any, i) => (
-                    <div key={i} className="flex items-center justify-between text-sm py-1 group/item hover:bg-muted/20 rounded-lg px-2 -mx-2 transition-colors">
-                      <div className="flex items-center gap-2.5 text-muted-foreground">
-                        <item.icon className="h-4 w-4 opacity-40 group-hover/item:opacity-70 transition-opacity" />
-                        <span className="text-[13px]">{item.label}</span>
-                      </div>
+                    <div key={i} className="flex items-center justify-between text-xs py-1">
+                      <span className="flex items-center gap-2 text-muted-foreground">
+                        <item.icon className="h-3.5 w-3.5 opacity-40" />
+                        {item.label}
+                      </span>
                       {item.badge ? (
-                        <Badge variant="outline" className="text-[12px] rounded-xl font-medium">{item.value}</Badge>
+                        <Badge variant="outline" className="text-[10px] rounded-lg font-medium">{item.value}</Badge>
                       ) : (
-                        <span className="font-bold text-[13px]">{item.value}</span>
+                        <span className="font-bold text-xs">{item.value}</span>
                       )}
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* QR Code */}
+              {/* QR */}
               {qrCode && (
                 <Suspense fallback={null}>
-                  <QRCodeDisplay
-                    code={qrCode.code}
-                    label={isAr ? "رمز QR للمسابقة" : "Competition QR Code"}
-                    size={140}
-                    compact={false}
-                  />
+                  <QRCodeDisplay code={qrCode.code} label={isAr ? "رمز QR" : "QR Code"} size={120} compact={false} />
                 </Suspense>
               )}
 
-              {/* Organizer */}
               <OrganizerCard organizerId={competition.organizer_id} exhibitionId={competition.exhibition_id} />
 
-              {/* Activity Feed */}
               <Suspense fallback={null}>
                 <CompetitionActivityFeed competitionId={competition.id} isOrganizer={!!isOrganizer} />
               </Suspense>
-            </div>
+            </aside>
           </div>
         </div>
       </main>
