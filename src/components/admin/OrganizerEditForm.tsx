@@ -307,7 +307,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     queryKey: ["organizer-competitions", organizerId],
     queryFn: async () => {
       if (!organizerId) return [];
-      const { data } = await (supabase as any).from("competitions")
+      const { data } = await supabase.from("competitions")
         .select("id, title, title_ar, status, competition_start, competition_end, edition_year, competition_number, cover_image_url, country_code, slug")
         .eq("organizer_id", organizerId)
         .order("edition_year", { ascending: false }).limit(50);
@@ -347,23 +347,24 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       description: orgData.description || "", description_ar: orgData.description_ar || "",
       logo_url: orgData.logo_url || "", cover_image_url: orgData.cover_image_url || "",
       email: orgData.email || "", phone: orgData.phone || "",
-      fax: (orgData as any).fax || "", website: orgData.website || "",
+      const org = orgData as Record<string, unknown>;
+      fax: String(org.fax || ""), website: orgData.website || "",
       address: orgData.address || "", address_ar: orgData.address_ar || "",
       city: orgData.city || "", city_ar: orgData.city_ar || "",
       country: orgData.country || "", country_ar: orgData.country_ar || "",
       country_code: orgData.country_code || "",
-      district: (orgData as any).district || "", district_ar: (orgData as any).district_ar || "",
-      street: (orgData as any).street || "", street_ar: (orgData as any).street_ar || "",
-      postal_code: (orgData as any).postal_code || "",
-      building_number: (orgData as any).building_number || "",
-      additional_number: (orgData as any).additional_number || "",
-      unit_number: (orgData as any).unit_number || "",
-      short_address: (orgData as any).short_address || "",
-      national_address: (orgData as any).national_address || "",
-      national_address_ar: (orgData as any).national_address_ar || "",
-      latitude: (orgData as any).latitude?.toString() || "",
-      longitude: (orgData as any).longitude?.toString() || "",
-      google_maps_url: (orgData as any).google_maps_url || "",
+      district: String(org.district || ""), district_ar: String(org.district_ar || ""),
+      street: String(org.street || ""), street_ar: String(org.street_ar || ""),
+      postal_code: String(org.postal_code || ""),
+      building_number: String(org.building_number || ""),
+      additional_number: String(org.additional_number || ""),
+      unit_number: String(org.unit_number || ""),
+      short_address: String(org.short_address || ""),
+      national_address: String(org.national_address || ""),
+      national_address_ar: String(org.national_address_ar || ""),
+      latitude: org.latitude ? String(org.latitude) : "",
+      longitude: org.longitude ? String(org.longitude) : "",
+      google_maps_url: String(org.google_maps_url || ""),
       status: orgData.status || "active",
       is_verified: orgData.is_verified || false, is_featured: orgData.is_featured || false,
       services: (orgData.services as string[] || []).join(", "),

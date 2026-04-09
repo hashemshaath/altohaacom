@@ -69,10 +69,11 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
 
       // Tier distribution (from wallets points)
       const tierDist = tiers.map(t => {
-        const minPts = (t as any).min_points || 0;
-        const maxPts = (t as any).max_points || Infinity;
+        const tierRecord = t as Record<string, unknown>;
+        const minPts = (tierRecord.min_points as number) || 0;
+        const maxPts = (tierRecord.max_points as number) || Infinity;
         const count = wallets.filter(w => (w.points_balance || 0) >= minPts && (w.points_balance || 0) < maxPts).length;
-        return { name: isAr ? ((t as any).name_ar || t.name) : t.name, count };
+        return { name: isAr ? (String(tierRecord.name_ar || t.name)) : t.name, count };
       });
 
       return {
