@@ -26,7 +26,6 @@ const AddRecordForm = safeLazy(() => import("@/components/smart-import/AddRecord
 const ImportHistory = safeLazy(() => import("@/components/smart-import/ImportHistory").then(m => ({ default: m.ImportHistory })));
 const BulkUrlImport = safeLazy(() => import("@/components/smart-import/BulkUrlImport").then(m => ({ default: m.BulkUrlImport })));
 const CVImportSection = safeLazy(() => import("@/components/cv-import/CVImportSection").then(m => ({ default: m.CVImportSection })));
-import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import {
   type SearchResultItem, type ExistingRecord, type Step,
   type TargetTable, type EntityType, type CompanyType, type ExhibitionType,
@@ -42,7 +41,6 @@ import {
   Phone, Link2, Zap, BarChart3, Layers, Edit3,
   Copy, ExternalLink, FileText,
 } from "lucide-react";
-import { CVImportSection } from "@/components/cv-import/CVImportSection";
 
 // ─── Payload builders ───
 const buildEntityPayload = (d: ImportedData) => {
