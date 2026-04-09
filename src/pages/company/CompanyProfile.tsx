@@ -151,7 +151,7 @@ export default function CompanyProfile() {
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {/* Contact Information */}
-        <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1">
+        <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-0.5">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-3 text-lg font-bold">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -173,7 +173,7 @@ export default function CompanyProfile() {
         </Card>
 
         {/* Financial */}
-        <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.05s" }}>
+        <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-0.5" style={{ animationDelay: "0.05s" }}>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-3 text-lg font-bold">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -205,7 +205,7 @@ export default function CompanyProfile() {
 
         {/* Address */}
         {(company.address || company.city || company.country) && (
-          <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.1s" }}>
+          <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-0.5" style={{ animationDelay: "0.1s" }}>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-3 text-lg font-bold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -229,7 +229,7 @@ export default function CompanyProfile() {
 
         {/* Registration */}
         {(company.registration_number || company.tax_number) && (
-          <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-1" style={{ animationDelay: "0.15s" }}>
+          <Card className="animate-fade-in group rounded-[2rem] border-border/40 shadow-lg transition-all hover:shadow-2xl hover:-translate-y-0.5" style={{ animationDelay: "0.15s" }}>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-3 text-lg font-bold">
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">

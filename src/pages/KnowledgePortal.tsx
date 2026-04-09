@@ -218,7 +218,7 @@ export default function KnowledgePortal() {
                 ) : filteredResources && filteredResources.length > 0 ? (
                   <div className="space-y-3">
                     {filteredResources.map(resource => (
-                      <Card key={resource.id} className="overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm hover:border-primary/30 hover:shadow-lg hover:-translate-y-1 transition-all duration-500">
+                      <Card key={resource.id} className="overflow-hidden border-border/40 bg-card/60 backdrop-blur-sm hover:border-primary/30 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-500">
                         <CardContent className="flex items-start gap-4 p-4">
                           <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/10">
                             {resourceTypeIcon(resource.resource_type)}

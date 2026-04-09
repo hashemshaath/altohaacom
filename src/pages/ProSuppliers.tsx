@@ -277,7 +277,7 @@ export default function ProSuppliers() {
                   <Card
                     key={company.id}
                     interactive
-                    className="group cursor-pointer overflow-hidden rounded-2xl border-chart-4/20 bg-gradient-to-br from-chart-4/5 via-background to-background transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-chart-4/40"
+                    className="group cursor-pointer overflow-hidden rounded-2xl border-chart-4/20 bg-gradient-to-br from-chart-4/5 via-background to-background transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5 hover:border-chart-4/40"
                     onClick={() => navigate(`/pro-suppliers/${company.id}`)}
                   >
                     <div className="relative h-28 bg-gradient-to-br from-chart-4/15 to-primary/10">
@@ -370,7 +370,7 @@ export default function ProSuppliers() {
                   <React.Fragment key={company.id}>
                     <Card
                       interactive
-                      className="group cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 active:scale-[0.98]"
+                      className="group cursor-pointer overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98]"
                       onClick={() => navigate(`/pro-suppliers/${company.id}`)}
                     >
                       <div className="relative h-32 bg-gradient-to-br from-primary/15 via-primary/5 to-accent/10">

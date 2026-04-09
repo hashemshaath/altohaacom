@@ -295,7 +295,7 @@ export default function CompanyTeam() {
                 return (
                   <Card
                     key={contact.id}
-                    className="group animate-fade-in overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/20"
+                    className="group animate-fade-in overflow-hidden border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20"
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
                     <div className={`h-1 transition-all ${contact.is_primary ? "bg-primary" : "bg-transparent group-hover:bg-primary/30"}`} />
