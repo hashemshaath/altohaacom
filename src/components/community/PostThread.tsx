@@ -171,12 +171,12 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                 </div>
 
                 {/* Images */}
-                {((parentPost as any).image_urls?.length > 0 || parentPost.image_url) && (
+                {(parentPost.image_urls?.length ? true : parentPost.image_url) && (
                   <div className={cn(
                     "mt-3 overflow-hidden rounded-2xl border border-border",
-                    ((parentPost as any).image_urls?.length || 0) >= 2 && "grid grid-cols-2 gap-0.5"
+                    (parentPost.image_urls?.length || 0) >= 2 && "grid grid-cols-2 gap-0.5"
                   )}>
-                    {(((parentPost as any).image_urls?.length > 0 ? (parentPost as any).image_urls : [parentPost.image_url]) as string[])
+                    {((parentPost.image_urls?.length ? parentPost.image_urls : [parentPost.image_url].filter(Boolean)) as string[])
                       .slice(0, 4)
                       .map((url: string, idx: number) => (
                         <img key={idx} src={url} alt="" className="w-full max-h-[400px] object-cover" loading="lazy" />
@@ -184,7 +184,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                   </div>
                 )}
 
-                <p className="mt-3 text-xs text-muted-foreground">{formatDate(parentPost.created_at)}</p>
+                <p className="mt-3 text-xs text-muted-foreground">{formatDate(parentPost.created_at as string)}</p>
               </div>
 
               {/* Reply composer */}
