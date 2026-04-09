@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getDeviceType } from "@/lib/deviceType";
 
 interface AdBannerProps {
   placementSlug: string;
@@ -49,7 +50,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBan
   useEffect(() => {
     if (creative && !impressionLogged.current) {
       impressionLogged.current = true;
-      const deviceType = window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop";
+      const deviceType = getDeviceType();
       supabase.from("ad_impressions").insert({
         creative_id: creative.id,
         campaign_id: creative.campaign_id,
@@ -62,7 +63,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBan
 
   const handleClick = useCallback(() => {
     if (!creative) return;
-    const deviceType = window.innerWidth < 768 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop";
+    const deviceType = getDeviceType();
     supabase.from("ad_clicks").insert({
       creative_id: creative.id,
       campaign_id: creative.campaign_id,
