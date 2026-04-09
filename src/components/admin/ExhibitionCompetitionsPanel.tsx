@@ -207,7 +207,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
                   <p className="text-sm font-medium truncate">{comp ? (isAr && comp.title_ar ? comp.title_ar : comp.title) : "-"}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     {l.edition_year && <Badge variant="secondary" className="text-[12px] h-4">{l.edition_year}</Badge>}
-                    <Badge variant={comp?.status === "active" ? "default" : "secondary"} className="text-[12px] h-4">{comp?.status || "-"}</Badge>
+                    <Badge variant={comp?.status === "registration_open" ? "default" : "secondary"} className="text-[12px] h-4">{comp?.status || "-"}</Badge>
                   </div>
                 </div>
 
