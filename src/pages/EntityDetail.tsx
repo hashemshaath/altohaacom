@@ -541,7 +541,7 @@ export default function EntityDetail() {
                   </Button>
                 )}
                 <Button variant="ghost" size="sm" className="w-full" onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
+                  navigator.clipboard.writeText(window.location.href).then(null, () => {});
                   toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
                 }}>
                   <Share2 className="me-2 h-4 w-4" />{isAr ? "مشاركة" : "Share"}

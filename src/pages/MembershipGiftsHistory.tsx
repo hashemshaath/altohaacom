@@ -29,13 +29,13 @@ function GiftCard({ gift, type, isAr }: { gift: any; type: "sent" | "received"; 
   const tierName = TIER_NAMES[gift.tier]?.[isAr ? "ar" : "en"] || gift.tier;
 
   const copyCode = () => {
-    navigator.clipboard.writeText(gift.gift_code);
+    navigator.clipboard.writeText(gift.gift_code).then(null, () => {});
     toast.success(isAr ? "تم نسخ الكود" : "Code copied!");
   };
 
   const copyRedeemLink = () => {
     const link = `${window.location.origin}/membership/redeem?code=${gift.gift_code}`;
-    navigator.clipboard.writeText(link);
+    navigator.clipboard.writeText(link).then(null, () => {});
     toast.success(isAr ? "تم نسخ رابط الاسترداد" : "Redeem link copied!");
   };
 

@@ -112,7 +112,7 @@ export default function JobDetail() {
     if (navigator.share) {
       navigator.share({ title: job?.title || "Job", url: window.location.href });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(window.location.href).then(null, () => {});
       toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
     }
   };
