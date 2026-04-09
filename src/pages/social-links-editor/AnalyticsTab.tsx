@@ -521,7 +521,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
             <Button variant="ghost" size="sm" className="w-full mt-3 text-xs text-muted-foreground" onClick={async () => {
               const unreadIds = bioNotifications.filter(n => !n.is_read).map(n => n.id);
               if (unreadIds.length === 0) return;
-              await supabase.from("notifications").update({ is_read: true } as any).in("id", unreadIds);
+              await supabase.from("notifications").update({ is_read: true }).in("id", unreadIds);
             }}>
               {isAr ? "تحديد الكل كمقروء" : "Mark all as read"}
             </Button>

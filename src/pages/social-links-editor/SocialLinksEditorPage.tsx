@@ -426,7 +426,7 @@ export default function SocialLinksEditorPage() {
                     <SettingsTab form={form} updateForm={updateForm} extra={extra} updateExtra={updateExtra} profile={profile} isAr={isAr} />
                   </TabsContent>
                   <TabsContent value="links">
-                    <LinksTab items={items as any} itemsLoading={itemsLoading} extra={extra} pageId={page?.id} userId={user?.id} isAr={isAr} addItem={addItem} updateItem={updateItem} deleteItem={deleteItem} reorderItems={reorderItems} upsertPage={upsertPage} form={form} handleExportLinks={handleExportLinks} handleExportCSV={handleExportCSV} handleImportLinks={handleImportLinks} profileUsername={profile?.username} />
+                    <LinksTab items={items} itemsLoading={itemsLoading} extra={extra} pageId={page?.id} userId={user?.id} isAr={isAr} addItem={addItem} updateItem={updateItem} deleteItem={deleteItem} reorderItems={reorderItems} upsertPage={upsertPage} form={form} handleExportLinks={handleExportLinks} handleExportCSV={handleExportCSV} handleImportLinks={handleImportLinks} profileUsername={profile?.username} />
                   </TabsContent>
                   <TabsContent value="appearance">
                     <AppearanceTab form={form} updateForm={updateForm} extra={extra} updateExtra={updateExtra} profile={profile} isAr={isAr} uploading={uploading} handleBgUpload={handleBgUpload} />
@@ -435,7 +435,7 @@ export default function SocialLinksEditorPage() {
                     <VisibilityTab form={form} updateForm={updateForm} extra={extra} updateExtra={updateExtra} profile={profile} isAr={isAr} userId={user?.id} socials={socials} setSocials={setSocials} contacts={contacts} setContacts={setContacts} setHasUnsavedChanges={setHasUnsavedChanges} setForm={setForm} setExtra={setExtra} items={items} />
                   </TabsContent>
                   <TabsContent value="analytics">
-                    <AnalyticsTab items={items as any} isAr={isAr} visitorStats={visitorStats} clickAnalytics={clickAnalytics} bioNotifications={bioNotifications} pageId={page?.id} />
+                    <AnalyticsTab items={items} isAr={isAr} visitorStats={visitorStats} clickAnalytics={clickAnalytics} bioNotifications={bioNotifications as BioNotification[] | undefined} pageId={page?.id} />
                   </TabsContent>
                 </Tabs>
               </div>
