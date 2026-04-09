@@ -27,7 +27,7 @@ interface EditionRow {
   start_date: string;
   end_date: string;
   edition_year: number | null;
-  edition_stats: any;
+  edition_stats: unknown;
   status: string;
   city: string | null;
   country: string | null;
@@ -40,15 +40,23 @@ interface EditionRow {
   includes_competitions: boolean | null;
 }
 
-function parseStats(raw: any): { visitors?: number; exhibitors?: number; countries?: number; area?: number } {
+interface EditionStats { visitors?: number; exhibitors?: number; countries?: number; area?: number }
+
+function parseStats(raw: unknown): EditionStats {
   if (!raw) return {};
-  const s = typeof raw === "string" ? JSON.parse(raw) : raw;
-  return {
-    visitors: s.visitors ? Number(s.visitors) : undefined,
-    exhibitors: s.exhibitors ? Number(s.exhibitors) : undefined,
-    countries: s.countries ? Number(s.countries) : undefined,
-    area: s.area ? Number(s.area) : undefined,
-  };
+  try {
+    const s = typeof raw === "string" ? JSON.parse(raw) : raw;
+    if (!s || typeof s !== "object") return {};
+    const obj = s as Record<string, unknown>;
+    return {
+      visitors: obj.visitors ? Number(obj.visitors) : undefined,
+      exhibitors: obj.exhibitors ? Number(obj.exhibitors) : undefined,
+      countries: obj.countries ? Number(obj.countries) : undefined,
+      area: obj.area ? Number(obj.area) : undefined,
+    };
+  } catch {
+    return {};
+  }
 }
 
 const GrowthBadge = memo(function GrowthBadge({ current, previous }: { current?: number; previous?: number }) {
