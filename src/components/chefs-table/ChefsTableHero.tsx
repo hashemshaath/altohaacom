@@ -26,7 +26,7 @@ export const ChefsTableHero = memo(function ChefsTableHero({ isAr, user, onReque
     <section className="relative overflow-hidden bg-background">
       {/* Background */}
       <div className="absolute inset-0">
-        <img src={heroImage} alt="Chef's Table" className="h-full w-full object-cover" loading="eager" />
+        <img src={heroImage} alt="Chef's Table" className="h-full w-full object-cover" loading="eager" fetchPriority="high" decoding="async" />
         {gradientOverlay ? (
           <div className="absolute inset-0" style={{ background: gradientOverlay }} />
         ) : (
