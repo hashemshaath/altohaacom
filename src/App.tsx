@@ -133,6 +133,7 @@ function AppContent() {
       <GoogleTrackingProvider />
       <PageTracker />
       {!isHome && <AnnouncementBanner />}
+      <CommandPalette />
       <AppRoutes />
       <AppOverlays isHome={isHome} />
     </>
