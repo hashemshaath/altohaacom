@@ -108,7 +108,7 @@ export const MetaPixelPanel = memo(function MetaPixelPanel() {
       if (!cfg) return;
       const { error } = await supabase.from("integration_settings").upsert({
         integration_type: type,
-        config: cfg.config as any,
+        config: cfg.config as unknown as Json,
         is_active: cfg.is_active,
         updated_at: new Date().toISOString(),
       }, { onConflict: "integration_type" });

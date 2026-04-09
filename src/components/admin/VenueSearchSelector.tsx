@@ -52,7 +52,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
         query = query.or(`name.ilike.%${search}%,name_ar.ilike.%${search}%,city.ilike.%${search}%`);
       }
       const { data } = await query;
-      return (data || []) as any[];
+      return (data || []) as Array<Record<string, string | number | boolean | null>>;
     },
     enabled: showResults,
     staleTime: 30_000,

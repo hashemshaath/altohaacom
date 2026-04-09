@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import type { Database } from "@/integrations/supabase/types";
 import type { SectionConfig, CareerRecord } from "./constants";
 
 interface MutationDeps {
@@ -36,7 +37,7 @@ export function useCareerMutations(deps: MutationDeps) {
         is_current: careerForm.is_current, description: careerForm.description || null,
         description_ar: careerForm.description_ar || null, location: careerForm.location || null,
         country_code: careerForm.country_code || null,
-      } as any;
+      } as never;
       if (editingId) {
         const { error } = await supabase.from("user_career_records").update(payload).eq("id", editingId);
         if (error) throw error;
@@ -67,7 +68,7 @@ export function useCareerMutations(deps: MutationDeps) {
 
   const addManualCompetitionMutation = useMutation({
     mutationFn: async () => {
-      const payload = { user_id: userId, record_type: "competitions", entity_id: careerForm.entity_id || null, entity_name: careerForm.entity_name || null, title: careerForm.title, title_ar: careerForm.title_ar || null, description: careerForm.description || null, description_ar: careerForm.description_ar || null, start_date: careerForm.start_date || null, end_date: careerForm.is_current ? null : (careerForm.end_date || null), is_current: careerForm.is_current, location: careerForm.location || null, employment_type: careerForm.employment_type || null, grade: careerForm.grade || null, country_code: careerForm.country_code || null } as any;
+      const payload = { user_id: userId, record_type: "competitions", entity_id: careerForm.entity_id || null, entity_name: careerForm.entity_name || null, title: careerForm.title, title_ar: careerForm.title_ar || null, description: careerForm.description || null, description_ar: careerForm.description_ar || null, start_date: careerForm.start_date || null, end_date: careerForm.is_current ? null : (careerForm.end_date || null), is_current: careerForm.is_current, location: careerForm.location || null, employment_type: careerForm.employment_type || null, grade: careerForm.grade || null, country_code: careerForm.country_code || null } as never;
       if (editingId) { const { error } = await supabase.from("user_career_records").update(payload).eq("id", editingId); if (error) throw error; }
       else { const { error } = await supabase.from("user_career_records").insert(payload); if (error) throw error; }
     },
@@ -80,7 +81,7 @@ export function useCareerMutations(deps: MutationDeps) {
       const { data: templates } = await supabase.from("certificate_templates").select("id").limit(1);
       const templateId = templates?.[0]?.id;
       if (!templateId) throw new Error("No certificate template found");
-      const { error } = await supabase.from("certificates").insert({ recipient_id: userId, recipient_name: "User", template_id: templateId, type: awardForm.type as any, event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null, achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null, event_date: awardForm.event_date || null, status: "issued", verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(), issued_at: new Date().toISOString() });
+      const { error } = await supabase.from("certificates").insert({ recipient_id: userId, recipient_name: "User", template_id: templateId, type: awardForm.type as Database["public"]["Enums"]["certificate_type"], event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null, achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null, event_date: awardForm.event_date || null, status: "issued", verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(), issued_at: new Date().toISOString() });
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] }); toast({ title: isAr ? "تمت إضافة الجائزة" : "Award added" }); closeForm(); },
@@ -90,7 +91,7 @@ export function useCareerMutations(deps: MutationDeps) {
   const saveAwardMutation = useMutation({
     mutationFn: async () => {
       if (!editingAwardId) return;
-      const { error } = await supabase.from("certificates").update({ event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null, achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null, event_date: awardForm.event_date || null, type: awardForm.type as any }).eq("id", editingAwardId);
+      const { error } = await supabase.from("certificates").update({ event_name: awardForm.event_name, event_name_ar: awardForm.event_name_ar || null, achievement: awardForm.achievement || null, achievement_ar: awardForm.achievement_ar || null, event_date: awardForm.event_date || null, type: awardForm.type as Database["public"]["Enums"]["certificate_type"] }).eq("id", editingAwardId);
       if (error) throw error;
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["user-certificates-awards", userId] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); closeForm(); },
@@ -124,11 +125,12 @@ export function useCareerMutations(deps: MutationDeps) {
   const persistSectionsOrder = useCallback(async (newSections: SectionConfig[]) => {
     for (let i = 0; i < newSections.length; i++) {
       const s = newSections[i];
-      await supabase.from("user_career_sections" as any).upsert({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
+      await (supabase.from as any)("user_career_sections").upsert({
         user_id: userId, section_key: s.key, icon: s.icon,
         name_en: s.en, name_ar: s.ar, color: s.color,
         sort_order: i, is_custom: s.isCustom,
-      } as any, { onConflict: "user_id,section_key" });
+      }, { onConflict: "user_id,section_key" });
     }
     queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
   }, [userId, queryClient]);

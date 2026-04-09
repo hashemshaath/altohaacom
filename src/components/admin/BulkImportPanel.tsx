@@ -229,8 +229,8 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
           total_rows: rows.length,
           processed_rows: rows.filter(r => !r._has_errors).length,
           failed_rows: rows.filter(r => r._has_errors).length,
-          imported_data: rows as any,
-          errors: errors as any,
+          imported_data: rows as unknown as Json,
+          errors: errors as unknown as Json,
           created_by: user?.id,
         })
         .select("id")
@@ -283,8 +283,8 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
         total_rows: rows.length,
         processed_rows: insertedCount,
         failed_rows: rows.length - insertedCount,
-        imported_data: rows as any,
-        errors: errors as any,
+        imported_data: rows as unknown as Json,
+        errors: errors as unknown as Json,
         created_by: user?.id,
       });
 

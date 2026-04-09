@@ -53,7 +53,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
       const { path, ...value } = meta;
       const { error } = await supabase
         .from("site_settings")
-        .upsert({ key, value: value as any }, { onConflict: "key" });
+        .upsert({ key, value: value as unknown as Json }, { onConflict: "key" });
       if (error) throw error;
     },
     onSuccess: () => {

@@ -42,7 +42,7 @@ export const HomepageTemplateSwitcher = memo(function HomepageTemplateSwitcher()
       const newVal = { ...existing, template: templateId };
       const { error } = await supabase
         .from("site_settings")
-        .update({ value: newVal as any })
+        .update({ value: newVal as unknown as Json })
         .eq("key", "homepage");
       if (error) throw error;
     },
