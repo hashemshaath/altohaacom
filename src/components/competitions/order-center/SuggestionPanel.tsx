@@ -93,12 +93,14 @@ export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, is
       // Find the suggestion to notify the submitter
       const suggestion = suggestions?.find(s => s.id === variables.id);
       if (suggestion?.suggested_by) {
-        notifySuggestionReviewed({
-          userId: suggestion.suggested_by,
-          itemName: suggestion.item_name,
-          status: variables.status,
-          competitionId,
-        });
+        import("@/lib/notificationTriggers").then(({ notifySuggestionReviewed }) => {
+          notifySuggestionReviewed({
+            userId: suggestion.suggested_by,
+            itemName: suggestion.item_name,
+            status: variables.status,
+            competitionId,
+          });
+        }).then(null, () => {});
       }
       toast({ title: isAr ? "تم تحديث الاقتراح" : "Suggestion updated" });
     },

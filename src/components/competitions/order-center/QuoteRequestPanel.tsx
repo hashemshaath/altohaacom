@@ -125,13 +125,15 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
       queryClient.invalidateQueries({ queryKey: ["req-sponsorship-requests", competitionId] });
       const companyName = companies?.find(c => c.id === selectedCompanyId);
       if (user) {
-        notifyQuoteRequestSent({
-          userId: user.id,
-          companyName: companyName ? (isAr && companyName.name_ar ? companyName.name_ar : companyName.name) : "",
-          requestTitle: title,
-          competitionId,
-          itemCount: selectedItems.length,
-        });
+        import("@/lib/notificationTriggers").then(({ notifyQuoteRequestSent }) => {
+          notifyQuoteRequestSent({
+            userId: user.id,
+            companyName: companyName ? (isAr && companyName.name_ar ? companyName.name_ar : companyName.name) : "",
+            requestTitle: title,
+            competitionId,
+            itemCount: selectedItems.length,
+          });
+        }).then(null, () => {});
       }
       setSelectedItems([]);
       setMessage("");

@@ -183,6 +183,7 @@ export default function CommunicationTemplatesAdmin() {
   const sendMutation = useMutation({
     mutationFn: async () => {
       if (!editingTemplate || !sendUserId) throw new Error("Missing data");
+      const { notifyFromTemplate } = await import("@/lib/notificationTriggers");
       await notifyFromTemplate({
         userId: sendUserId, templateSlug: editingTemplate.slug,
         variables: sendVars, channels: [editingTemplate.channel],
