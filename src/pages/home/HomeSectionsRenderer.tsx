@@ -17,7 +17,7 @@ interface SectionEntry {
 }
 
 /** Suspense fallback with a built-in timeout to prevent infinite loading */
-function TimedSkeleton({ index }: { index: number }) {
+const TimedSkeleton = forwardRef<HTMLDivElement, { index: number }>(function TimedSkeleton({ index }, ref) {
   const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
@@ -26,11 +26,11 @@ function TimedSkeleton({ index }: { index: number }) {
   }, []);
 
   if (timedOut) {
-    return <div className="container py-4"><div className="min-h-[40px]" /></div>;
+    return <div ref={ref} className="container py-4"><div className="min-h-[40px]" /></div>;
   }
 
-  return <HomeSectionSkeleton index={index} />;
-}
+  return <HomeSectionSkeleton ref={ref} index={index} />;
+});
 
 const SECTION_ERROR_FALLBACK = (
   <div className="container py-4">
@@ -42,12 +42,12 @@ const SECTION_ERROR_FALLBACK = (
 const EAGER_SECTION_COUNT = 3;
 
 /** Wrapper that defers rendering until near viewport */
-function DeferredSection({ children, index }: { children: React.ReactNode; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
+const DeferredSection = forwardRef<HTMLDivElement, { children: React.ReactNode; index: number }>(function DeferredSection({ children, index }, outerRef) {
+  const innerRef = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
+    const el = innerRef.current;
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => {
@@ -62,16 +62,14 @@ function DeferredSection({ children, index }: { children: React.ReactNode; index
     return () => obs.disconnect();
   }, []);
 
-
-
   if (inView) return <>{children}</>;
 
   return (
-    <div ref={ref}>
+    <div ref={innerRef}>
       <HomeSectionSkeleton index={index} />
     </div>
   );
-}
+});
 
 function normalizeEntries(entries: SectionEntry[]) {
   const deduped = new Map<string, SectionEntry>();
