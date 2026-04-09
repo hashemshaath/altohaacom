@@ -113,14 +113,14 @@ Deno.serve(async (req) => {
           body: finalBody || displayBody, body_ar: finalBodyAr || displayBody,
           type, link, channel: "in_app", status: "sent",
         }).select().single();
-        results.in_app = error ? { success: false, error: error.message } : { success: true, id: notification.id };
+        results.in_app = error ? { success: false, error: error instanceof Error ? error.message : String(error) } : { success: true, id: notification.id };
       } else {
         const queuePayload: any = { title: displayTitle, title_ar: finalTitleAr, body: displayBody, body_ar: finalBodyAr, type, link, variables, user_language: userLang };
         if (channel === "email") { queuePayload.subject = userLang === "ar" ? (emailSubjectAr || emailSubject || displayTitle) : (emailSubject || emailSubjectAr || displayTitle); }
         if ((channel === "sms" || channel === "whatsapp") && phone) queuePayload.phone = phone;
 
         const { data: queueItem, error } = await supabase.from("notification_queue").insert({ user_id: userId, channel, payload: queuePayload, status: "pending" }).select().single();
-        results[channel] = error ? { success: false, error: error.message } : { success: true, queued: true, id: queueItem.id };
+        results[channel] = error ? { success: false, error: error instanceof Error ? error.message : String(error) } : { success: true, queued: true, id: queueItem.id };
       }
     }
 
