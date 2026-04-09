@@ -65,7 +65,7 @@ const EntityTableRow = memo(function EntityTableRow({ entity, typeLabel, scopeLa
   const isAr = language === "ar";
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const displayName = isAr && entity.name_ar ? entity.name_ar : entity.name;
-  const followers = (entity as any).entity_followers?.length || 0;
+  const followers = entity.entity_followers?.length || 0;
   const sc = statusConfig[entity.status] || statusConfig.pending;
 
   const completeness = useMemo(() => {
@@ -173,7 +173,7 @@ const EntityTableRow = memo(function EntityTableRow({ entity, typeLabel, scopeLa
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onEdit(entity as any)}>
+                <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => onEdit(entity)}>
                   <Pencil className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>

@@ -245,7 +245,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
               {org.key_contacts && Array.isArray(org.key_contacts) && org.key_contacts.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "جهات الاتصال" : "Key Contacts"}</p>
-                  {(org.key_contacts as any[]).map((c, i) => (
+                  {(org.key_contacts as Record<string, string>[]).map((c, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
                       <UserCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
                       <span className="font-medium">{c.name}</span>

@@ -582,7 +582,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
                 <s.icon className={`h-4 w-4 ${s.color}`} />
                 <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">{s.label}</span>
               </div>
-              <p className="text-lg font-black tabular-nums">{typeof s.value === "number" ? <><AnimatedCounter value={s.value} />{(s as any).suffix || ""}</> : s.value}</p>
+              <p className="text-lg font-black tabular-nums">{typeof s.value === "number" ? <><AnimatedCounter value={s.value} />{"suffix" in s ? (s as { suffix: string }).suffix : ""}</> : s.value}</p>
             </CardContent>
           </Card>
         ))}

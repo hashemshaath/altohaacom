@@ -133,20 +133,23 @@ const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ enti
           <TabsContent value="chefs" className="mt-4 space-y-3">
             {!associations?.length ? (
               <p className="text-sm text-muted-foreground text-center py-8">{isAr ? "لا يوجد طهاة مرتبطين" : "No associated chefs"}</p>
-            ) : associations.map((a) => (
+            ) : associations.map((a) => {
+              const profile = (a as unknown as Record<string, Record<string, string>>).profiles;
+              return (
               <Card key={a.id} className="border-border/50">
                 <CardContent className="p-3 flex items-center gap-3">
                   <Avatar className="h-9 w-9">
-                    <AvatarImage src={(a as any).profiles?.avatar_url || ""} />
-                    <AvatarFallback>{((a as any).profiles?.full_name || "?")[0]}</AvatarFallback>
+                    <AvatarImage src={profile?.avatar_url || ""} />
+                    <AvatarFallback>{(profile?.full_name || "?")[0]}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium truncate">{isAr && (a as any).profiles?.full_name_ar ? (a as any).profiles.full_name_ar : (a as any).profiles?.full_name || "—"}</p>
+                    <p className="text-sm font-medium truncate">{isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—"}</p>
                     <p className="text-xs text-muted-foreground">{a.role_title || a.association_type} {a.is_current && <Badge variant="outline" className="text-[12px] ms-1">{isAr ? "حالي" : "Current"}</Badge>}</p>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+              );
+            })}
           </TabsContent>
 
           <TabsContent value="activity" className="mt-4 space-y-3">
