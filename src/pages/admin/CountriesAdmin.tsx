@@ -37,11 +37,14 @@ import {
   Zap, Shield, Phone, Mail, Building, Clock, DollarSign, Languages,
   ArrowLeftRight, Upload, History,
 } from "lucide-react";
-import { CountryOverviewDashboard } from "@/components/admin/CountryOverviewDashboard";
+import { safeLazy } from "@/lib/safeLazy";
 import { CountryCompletenessScore, getCompletenessScore } from "@/components/admin/countries/CountryCompletenessScore";
-import { CountryComparisonTool } from "@/components/admin/countries/CountryComparisonTool";
-import { CountryCSVImport } from "@/components/admin/countries/CountryCSVImport";
-import { CountryAuditLog } from "@/components/admin/countries/CountryAuditLog";
+
+// Lazy-load heavy country widgets
+const CountryOverviewDashboard = safeLazy(() => import("@/components/admin/CountryOverviewDashboard").then(m => ({ default: m.CountryOverviewDashboard })));
+const CountryComparisonTool = safeLazy(() => import("@/components/admin/countries/CountryComparisonTool").then(m => ({ default: m.CountryComparisonTool })));
+const CountryCSVImport = safeLazy(() => import("@/components/admin/countries/CountryCSVImport").then(m => ({ default: m.CountryCSVImport })));
+const CountryAuditLog = safeLazy(() => import("@/components/admin/countries/CountryAuditLog").then(m => ({ default: m.CountryAuditLog })));
 
 interface Country {
   id: string;
