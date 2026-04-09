@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { getDeviceType } from "@/lib/deviceType";
 
 /**
  * Tracks Core Web Vitals (LCP, INP, CLS, FCP, TTFB) per route
@@ -13,13 +14,6 @@ interface VitalsData {
   cls: number | null;
   fcp: number | null;
   ttfb: number | null;
-}
-
-function getDeviceType(): string {
-  const w = window.innerWidth;
-  if (w < 768) return "mobile";
-  if (w < 1024) return "tablet";
-  return "desktop";
 }
 
 function getConnectionType(): string | null {

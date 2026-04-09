@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { getDeviceType } from "@/lib/deviceType";
 
 const SESSION_KEY = "altoha_seo_session";
 
@@ -11,13 +12,6 @@ function getSessionId(): string {
     sessionStorage.setItem(SESSION_KEY, sid);
   }
   return sid;
-}
-
-function getDeviceType(): string {
-  const w = window.innerWidth;
-  if (w < 768) return "mobile";
-  if (w < 1024) return "tablet";
-  return "desktop";
 }
 
 // Known crawler user-agent patterns

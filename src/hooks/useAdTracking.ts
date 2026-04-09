@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { getDeviceType } from "@/lib/deviceType";
 
 let sessionId: string | null = null;
 
@@ -15,11 +16,6 @@ function getSessionId() {
   return sessionId;
 }
 
-function getDeviceType() {
-  const w = window.innerWidth;
-  return w < 768 ? "mobile" : w < 1024 ? "tablet" : "desktop";
-}
-
 function getBrowser() {
   const ua = navigator.userAgent;
   if (ua.includes("Chrome") && !ua.includes("Edg")) return "chrome";
@@ -28,6 +24,7 @@ function getBrowser() {
   if (ua.includes("Edg")) return "edge";
   return "other";
 }
+
 
 function getPageCategory(url: string) {
   if (url.includes("/competitions")) return "competitions";
