@@ -75,12 +75,7 @@ export default function NotificationPreferences() {
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem("altoha_sound_enabled") !== "false");
   const [dndMode, setDndMode] = useState(() => localStorage.getItem("altoha_dnd") === "true");
 
-  useEffect(() => {
-    if (!user) return;
-    fetchPreferences();
-  }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchPreferences = async () => {
+  const fetchPreferences = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("notification_preferences")
@@ -120,7 +115,12 @@ export default function NotificationPreferences() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id, toast, t]);
+
+  useEffect(() => {
+    if (!user) return;
+    fetchPreferences();
+  }, [user, fetchPreferences]);
 
   const handleToggle = async (channel: NotificationChannel, enabled: boolean) => {
     setSaving(channel);
