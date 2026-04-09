@@ -24202,10 +24202,11 @@ export type Database = {
           facebook: string | null
           full_name: string | null
           full_name_ar: string | null
-          id: string | null
           instagram: string | null
           is_chef_visible: boolean | null
+          is_open_to_work: boolean | null
           is_verified: boolean | null
+          job_availability_visibility: string | null
           job_title: string | null
           job_title_ar: string | null
           linkedin: string | null
@@ -24222,6 +24223,7 @@ export type Database = {
           specialization_ar: string | null
           tiktok: string | null
           twitter: string | null
+          updated_at: string | null
           user_id: string | null
           username: string | null
           view_count: number | null
@@ -24244,10 +24246,11 @@ export type Database = {
           facebook?: string | null
           full_name?: string | null
           full_name_ar?: string | null
-          id?: string | null
           instagram?: string | null
           is_chef_visible?: boolean | null
+          is_open_to_work?: boolean | null
           is_verified?: boolean | null
+          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
@@ -24266,6 +24269,7 @@ export type Database = {
           specialization_ar?: string | null
           tiktok?: string | null
           twitter?: string | null
+          updated_at?: string | null
           user_id?: string | null
           username?: string | null
           view_count?: number | null
@@ -24288,10 +24292,11 @@ export type Database = {
           facebook?: string | null
           full_name?: string | null
           full_name_ar?: string | null
-          id?: string | null
           instagram?: string | null
           is_chef_visible?: boolean | null
+          is_open_to_work?: boolean | null
           is_verified?: boolean | null
+          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
@@ -24310,6 +24315,7 @@ export type Database = {
           specialization_ar?: string | null
           tiktok?: string | null
           twitter?: string | null
+          updated_at?: string | null
           user_id?: string | null
           username?: string | null
           view_count?: number | null
