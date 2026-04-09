@@ -58,7 +58,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
     staleTime: 30_000,
   });
 
-  const selectVenue = useCallback((v: any) => {
+  const selectVenue = useCallback((v: Record<string, string | number | boolean | null>) => {
     const venue: VenueValue = {
       id: v.id, name: v.name, nameAr: v.name_ar,
       city: v.city, country: v.country, address: v.address,
