@@ -171,7 +171,7 @@ export function useReviewVerification() {
       notes?: string;
       rejection_reason?: string;
     }) => {
-      const updateData: any = {
+      const updateData: Record<string, unknown> = {
         status: payload.action,
         reviewed_by: user!.id,
         reviewed_at: new Date().toISOString(),
