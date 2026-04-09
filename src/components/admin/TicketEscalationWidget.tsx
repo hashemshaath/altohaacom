@@ -10,10 +10,13 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 
 import { AlertTriangle, Clock, CheckCircle2, TrendingDown, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInHours, differenceInMinutes, subDays, format } from "date-fns";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  const visibleInterval = useVisibleRefetchInterval(60000);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-ticket-escalation"],
@@ -83,7 +86,7 @@ export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
         escalated,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: visibleInterval,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

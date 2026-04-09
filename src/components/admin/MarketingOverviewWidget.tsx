@@ -9,12 +9,15 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Zap, Users, Target, Activity, CheckCircle2, Clock } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
 export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  const visibleInterval = useVisibleRefetchInterval(60000);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-marketing-overview-widget"],
@@ -81,7 +84,7 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
         channelDist,
       };
     },
-    refetchInterval: 60000,
+    refetchInterval: visibleInterval,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

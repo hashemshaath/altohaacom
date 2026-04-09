@@ -7,12 +7,15 @@ import { Badge } from "@/components/ui/badge";
 import { Bell, Send, CheckCircle, XCircle, Clock, Mail, Smartphone, Megaphone, TrendingUp } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from "recharts";
 import { format, subDays } from "date-fns";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
 export const NotificationLiveStatsWidget = memo(function NotificationLiveStatsWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
+
+  const visibleInterval = useVisibleRefetchInterval(60000);
 
   const { data } = useQuery({
     queryKey: ["notificationLiveStats"],
@@ -59,7 +62,7 @@ export const NotificationLiveStatsWidget = memo(function NotificationLiveStatsWi
 
       return { total, readCount, readRate, activeRules, typeData, trendData, channelData };
     },
-    refetchInterval: 60000,
+    refetchInterval: visibleInterval,
   });
 
   if (!data) return null;

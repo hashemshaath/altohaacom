@@ -11,6 +11,7 @@ import { Bell, BellOff, CheckCheck, Clock, AlertTriangle, Info, Trash2 } from "l
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { toast } from "sonner";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 const TYPE_ICONS: Record<string, typeof Bell> = {
   warning: AlertTriangle,
@@ -23,6 +24,8 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
   const isAr = language === "ar";
   const queryClient = useQueryClient();
   const [typeFilter, setTypeFilter] = useState("all");
+
+  const visibleInterval = useVisibleRefetchInterval(60000);
 
   const { data: notifications = [], isLoading } = useQuery({
     queryKey: ["admin-notifications", typeFilter],
@@ -41,7 +44,7 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: 60000,
+    refetchInterval: visibleInterval,
   });
 
   const markAllReadMutation = useMutation({

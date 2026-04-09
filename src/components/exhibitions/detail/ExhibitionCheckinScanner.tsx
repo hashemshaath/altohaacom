@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { ScanLine, CheckCircle2, XCircle, Search, Users, Ticket, Clock, AlertTriangle, RefreshCw, QrCode } from "lucide-react";
 import { format } from "date-fns";
+import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 
 interface Props {
   exhibitionId: string;
@@ -23,6 +24,8 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
   const [result, setResult] = useState<{ type: "success" | "error" | "warning"; message: string; ticket?: any } | null>(null);
 
   // Real-time attendance stats
+  const visibleInterval = useVisibleRefetchInterval(30000);
+
   const { data: stats } = useQuery({
     queryKey: ["checkin-stats", exhibitionId],
     queryFn: async () => {
@@ -37,7 +40,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
         recent: recent.data || [],
       };
     },
-    refetchInterval: 30000,
+    refetchInterval: visibleInterval,
   });
 
   const checkinMutation = useMutation({
