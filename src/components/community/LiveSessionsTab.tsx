@@ -45,9 +45,7 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState({ title: "", titleAr: "", description: "", descriptionAr: "", scheduledAt: "", duration: "60" });
 
-  useEffect(() => { fetchSessions(); }, [user?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchSessions = async () => {
+  const fetchSessions = useCallback(async () => {
     const now = new Date().toISOString();
 
     const sessionFields = "id, host_id, title, title_ar, description, description_ar, scheduled_at, duration_minutes, status, max_attendees, cover_image_url";
@@ -81,7 +79,9 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
     setSessions((upcomingRes.data || []).map(enrich));
     setPastSessions((pastRes.data || []).map(enrich));
     setLoading(false);
-  };
+  }, [user?.id]);
+
+  useEffect(() => { fetchSessions(); }, [fetchSessions]);
 
   const handleRegister = async (sessionId: string, isRegistered: boolean) => {
     if (!user) return;
