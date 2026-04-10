@@ -10,7 +10,7 @@ const SPACING: Record<string, string> = {
   relaxed: "py-10 sm:py-14 md:py-18 lg:py-22",
 };
 
-export const HomepageSectionShell = forwardRef<HTMLDivElement, { children: ReactNode }>(function HomepageSectionShell({ children }, ref) {
+export const HomepageSectionShell = forwardRef<HTMLDivElement, { children: ReactNode; visibleIndex?: number }>(function HomepageSectionShell({ children, visibleIndex }, ref) {
   const config = useSectionConfig();
   const sectionKey = useSectionKey();
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -40,7 +40,7 @@ export const HomepageSectionShell = forwardRef<HTMLDivElement, { children: React
   const spacing = noShellSpacing ? SPACING.none : SPACING[config?.spacing || "normal"];
 
   return (
-    <SectionBackgroundWrapper sectionKey={sectionKey || ""}>
+    <SectionBackgroundWrapper sectionKey={sectionKey || ""} visibleIndex={visibleIndex}>
       <section
         ref={sectionRef}
         className={cn(
