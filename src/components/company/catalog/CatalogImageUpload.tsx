@@ -1,5 +1,6 @@
 import { useState, useRef, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadAndGetUrl } from "@/lib/storageUrl";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
