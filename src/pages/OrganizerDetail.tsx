@@ -345,6 +345,16 @@ export default function OrganizerDetail() {
         title={`${orgName} — ${isAr ? "منظم الفعاليات" : "Event Organizer"}`}
         description={`${orgName} — ${totalExhibitions} ${isAr ? "فعالية في" : "events across"} ${countries.length} ${isAr ? "دولة" : "countries"}`}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        name: orgName,
+        description: computed?.orgDescription || undefined,
+        logo: orgLogo || undefined,
+        image: coverImage || undefined,
+        url: typeof window !== "undefined" ? window.location.href : undefined,
+        numberOfEmployees: computed?.orgKeyContacts?.length || undefined,
+      }) }} />
       <Header />
 
       <main className="flex-1">
