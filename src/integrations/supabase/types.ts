@@ -24716,6 +24716,10 @@ export type Database = {
       generate_wallet_number: { Args: never; Returns: string }
       generate_wallet_txn_number: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
+      get_company_invitation_token: {
+        Args: { p_contact_id: string }
+        Returns: string
+      }
       get_profile_safe: { Args: { p_profile_user_id: string }; Returns: Json }
       get_user_by_phone: {
         Args: { p_phone: string }
