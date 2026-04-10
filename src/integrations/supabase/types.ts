@@ -22724,6 +22724,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "tasting_scores_entry_id_fkey"
+            columns: ["entry_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_entries_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "tasting_scores_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
@@ -25977,6 +25984,36 @@ export type Database = {
           years_of_experience?: number | null
         }
         Relationships: []
+      }
+      tasting_entries_public: {
+        Row: {
+          category: string | null
+          chef_id: string | null
+          chef_name: string | null
+          chef_name_ar: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          dish_name: string | null
+          dish_name_ar: string | null
+          entry_number: number | null
+          id: string | null
+          images: string[] | null
+          is_active: boolean | null
+          photo_url: string | null
+          session_id: string | null
+          sort_order: number | null
+          stage: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasting_entries_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "tasting_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
