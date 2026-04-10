@@ -6118,6 +6118,13 @@ export type Database = {
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "competition_supervising_bodies_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       competition_team_members: {
@@ -8165,6 +8172,13 @@ export type Database = {
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "entity_competition_participations_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       entity_degrees: {
@@ -8243,6 +8257,13 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_degrees_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
           {
@@ -8381,6 +8402,13 @@ export type Database = {
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "entity_events_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       entity_followers: {
@@ -8408,6 +8436,13 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_followers_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
         ]
@@ -8475,6 +8510,13 @@ export type Database = {
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "entity_memberships_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       entity_positions: {
@@ -8529,6 +8571,13 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_positions_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
           {
@@ -8708,6 +8757,13 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_programs_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
         ]
@@ -10976,6 +11032,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "exhibition_organizers_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "exhibition_organizers_exhibition_id_fkey"
             columns: ["exhibition_id"]
             isOneToOne: false
@@ -11659,6 +11722,13 @@ export type Database = {
             columns: ["entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_sponsors_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
           {
@@ -12453,6 +12523,13 @@ export type Database = {
             columns: ["organizer_entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibitions_organizer_entity_id_fkey"
+            columns: ["organizer_entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
           {
@@ -17170,6 +17247,13 @@ export type Database = {
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "organizers_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       partner_logos: {
@@ -18634,6 +18718,13 @@ export type Database = {
             columns: ["education_entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_education_entity_id_fkey"
+            columns: ["education_entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
         ]
@@ -23275,6 +23366,13 @@ export type Database = {
             referencedRelation: "culinary_entities"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_career_records_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       user_career_sections: {
@@ -24090,6 +24188,13 @@ export type Database = {
             columns: ["culinary_entity_id"]
             isOneToOne: false
             referencedRelation: "culinary_entities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "verification_requests_culinary_entity_id_fkey"
+            columns: ["culinary_entity_id"]
+            isOneToOne: false
+            referencedRelation: "culinary_entities_public"
             referencedColumns: ["id"]
           },
         ]
@@ -24955,6 +25060,171 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      culinary_entities_public: {
+        Row: {
+          abbreviation: string | null
+          abbreviation_ar: string | null
+          address: string | null
+          address_ar: string | null
+          affiliated_organizations: string[] | null
+          city: string | null
+          country: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          description_ar: string | null
+          email: string | null
+          entity_number: string | null
+          fax: string | null
+          founded_year: number | null
+          gallery_urls: string[] | null
+          id: string | null
+          is_verified: boolean | null
+          is_visible: boolean | null
+          latitude: number | null
+          license_expires_at: string | null
+          license_number: string | null
+          logo_url: string | null
+          longitude: number | null
+          member_count: number | null
+          mission: string | null
+          mission_ar: string | null
+          name: string | null
+          name_ar: string | null
+          phone: string | null
+          postal_code: string | null
+          president_name: string | null
+          president_name_ar: string | null
+          registered_at: string | null
+          registration_number: string | null
+          scope: Database["public"]["Enums"]["entity_scope"] | null
+          secretary_name: string | null
+          secretary_name_ar: string | null
+          services: string[] | null
+          slug: string | null
+          social_links: Json | null
+          specializations: string[] | null
+          status: Database["public"]["Enums"]["entity_status"] | null
+          tags: string[] | null
+          type: Database["public"]["Enums"]["entity_type"] | null
+          updated_at: string | null
+          username: string | null
+          verification_level: string | null
+          verified_at: string | null
+          view_count: number | null
+          website: string | null
+        }
+        Insert: {
+          abbreviation?: string | null
+          abbreviation_ar?: string | null
+          address?: string | null
+          address_ar?: string | null
+          affiliated_organizations?: string[] | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          entity_number?: string | null
+          fax?: string | null
+          founded_year?: number | null
+          gallery_urls?: string[] | null
+          id?: string | null
+          is_verified?: boolean | null
+          is_visible?: boolean | null
+          latitude?: number | null
+          license_expires_at?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          longitude?: number | null
+          member_count?: number | null
+          mission?: string | null
+          mission_ar?: string | null
+          name?: string | null
+          name_ar?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          president_name?: string | null
+          president_name_ar?: string | null
+          registered_at?: string | null
+          registration_number?: string | null
+          scope?: Database["public"]["Enums"]["entity_scope"] | null
+          secretary_name?: string | null
+          secretary_name_ar?: string | null
+          services?: string[] | null
+          slug?: string | null
+          social_links?: Json | null
+          specializations?: string[] | null
+          status?: Database["public"]["Enums"]["entity_status"] | null
+          tags?: string[] | null
+          type?: Database["public"]["Enums"]["entity_type"] | null
+          updated_at?: string | null
+          username?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
+          view_count?: number | null
+          website?: string | null
+        }
+        Update: {
+          abbreviation?: string | null
+          abbreviation_ar?: string | null
+          address?: string | null
+          address_ar?: string | null
+          affiliated_organizations?: string[] | null
+          city?: string | null
+          country?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          description_ar?: string | null
+          email?: string | null
+          entity_number?: string | null
+          fax?: string | null
+          founded_year?: number | null
+          gallery_urls?: string[] | null
+          id?: string | null
+          is_verified?: boolean | null
+          is_visible?: boolean | null
+          latitude?: number | null
+          license_expires_at?: string | null
+          license_number?: string | null
+          logo_url?: string | null
+          longitude?: number | null
+          member_count?: number | null
+          mission?: string | null
+          mission_ar?: string | null
+          name?: string | null
+          name_ar?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          president_name?: string | null
+          president_name_ar?: string | null
+          registered_at?: string | null
+          registration_number?: string | null
+          scope?: Database["public"]["Enums"]["entity_scope"] | null
+          secretary_name?: string | null
+          secretary_name_ar?: string | null
+          services?: string[] | null
+          slug?: string | null
+          social_links?: Json | null
+          specializations?: string[] | null
+          status?: Database["public"]["Enums"]["entity_status"] | null
+          tags?: string[] | null
+          type?: Database["public"]["Enums"]["entity_type"] | null
+          updated_at?: string | null
+          username?: string | null
+          verification_level?: string | null
+          verified_at?: string | null
+          view_count?: number | null
+          website?: string | null
+        }
+        Relationships: []
       }
       exhibition_booths_public: {
         Row: {
