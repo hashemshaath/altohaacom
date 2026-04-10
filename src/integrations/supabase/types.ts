@@ -24741,6 +24741,10 @@ export type Database = {
         Args: { p_company_id: string }
         Returns: string
       }
+      get_company_sensitive_fields: {
+        Args: { p_company_id: string }
+        Returns: Json
+      }
       get_profile_safe: { Args: { p_profile_user_id: string }; Returns: Json }
       get_public_tracking_config: {
         Args: never
