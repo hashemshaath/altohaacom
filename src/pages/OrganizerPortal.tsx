@@ -48,9 +48,9 @@ export default function OrganizerPortal() {
       const [total, checkedIn, perEventData, boothsData, followersData] = await Promise.all([
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", ids),
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", ids).not("checked_in_at", "is", null),
-        supabase.from("exhibition_tickets").select("exhibition_id").in("exhibition_id", ids),
-        supabase.from("exhibition_booths").select("id, exhibition_id, status, assigned_to").in("exhibition_id", ids),
-        supabase.from("exhibition_followers").select("exhibition_id").in("exhibition_id", ids),
+        supabase.from("exhibition_tickets").select("exhibition_id").in("exhibition_id", ids).limit(5000),
+        supabase.from("exhibition_booths").select("id, exhibition_id, status, assigned_to").in("exhibition_id", ids).limit(5000),
+        supabase.from("exhibition_followers").select("exhibition_id").in("exhibition_id", ids).limit(5000),
       ]);
       const perEvent = new Map<string, number>();
       for (const t of perEventData.data || []) {

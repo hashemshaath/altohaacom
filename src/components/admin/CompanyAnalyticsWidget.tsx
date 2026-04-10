@@ -19,7 +19,7 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "active"),
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "suspended"),
-        supabase.from("companies").select("type"),
+        supabase.from("companies").select("type").limit(5000),
         supabase.from("company_orders").select("id, total_amount, status").order("created_at", { ascending: false }).limit(100),
       ]);
 

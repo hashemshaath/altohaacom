@@ -258,7 +258,7 @@ const SessionsTab = memo(function SessionsTab() {
     queryFn: async () => {
       const [sessionsRes, blockedRes] = await Promise.all([
         supabase.from("user_sessions").select("id, user_id, device_info, ip_address, is_active, created_at, last_active_at").order("last_active_at", { ascending: false }).limit(100),
-        supabase.from("ip_blocklist").select("id, ip_address, reason, is_active, created_at").eq("is_active", true),
+        supabase.from("ip_blocklist").select("id, ip_address, reason, is_active, created_at").eq("is_active", true).limit(5000),
       ]);
       const sessions = sessionsRes.data || [];
       const blocked = blockedRes.data || [];

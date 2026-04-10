@@ -18,8 +18,8 @@ export const CompetitionPipelineTracker = memo(function CompetitionPipelineTrack
     queryKey: ["competition-pipeline"],
     queryFn: async () => {
       const [comps, regs] = await Promise.all([
-        supabase.from("competitions").select("id, status, title, title_ar, competition_start, max_participants"),
-        supabase.from("competition_registrations").select("competition_id, status"),
+        supabase.from("competitions").select("id, status, title, title_ar, competition_start, max_participants").limit(5000),
+        supabase.from("competition_registrations").select("competition_id, status").limit(5000),
       ]);
 
       const competitions = comps.data || [];

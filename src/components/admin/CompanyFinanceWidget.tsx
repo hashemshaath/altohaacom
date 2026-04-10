@@ -25,9 +25,9 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
 
       const [companies, invoices, transactions, orders] = await Promise.all([
         supabase.from("companies").select("id, status, type").limit(1000),
-        supabase.from("invoices").select("id, status, amount, currency, created_at").gte("created_at", thirtyDaysAgo),
-        supabase.from("company_transactions").select("id, type, amount, created_at").gte("created_at", thirtyDaysAgo),
-        supabase.from("company_orders").select("id, status, total_amount, created_at").gte("created_at", thirtyDaysAgo),
+        supabase.from("invoices").select("id, status, amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
+        supabase.from("company_transactions").select("id, type, amount, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
+        supabase.from("company_orders").select("id, status, total_amount, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
       ]);
 
       const allCompanies = companies.data || [];

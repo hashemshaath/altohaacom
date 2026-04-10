@@ -53,8 +53,8 @@ export default function HelpCenter() {
     const fetchData = async () => {
       setLoading(true);
       const [faqsRes, articlesRes] = await Promise.all([
-        supabase.from("faqs").select("id, question, question_ar, answer, answer_ar, category, sort_order, is_featured").order("sort_order"),
-        supabase.from("knowledge_articles").select("id, title, title_ar, content, content_ar, category, status, tags, view_count, helpful_count, created_at, updated_at").eq("status", "published").order("created_at", { ascending: false }),
+        supabase.from("faqs").select("id, question, question_ar, answer, answer_ar, category, sort_order, is_featured").order("sort_order").limit(5000),
+        supabase.from("knowledge_articles").select("id, title, title_ar, content, content_ar, category, status, tags, view_count, helpful_count, created_at, updated_at").eq("status", "published").order("created_at", { ascending: false }).limit(5000),
       ]);
 
       if (faqsRes.data) setFaqs(faqsRes.data);

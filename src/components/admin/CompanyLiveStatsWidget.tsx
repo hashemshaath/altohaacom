@@ -20,10 +20,10 @@ export const CompanyLiveStatsWidget = memo(function CompanyLiveStatsWidget() {
     queryKey: ["companyLiveStats"],
     queryFn: async () => {
       const [companiesRes, establishmentsRes, entitiesRes, contactsRes] = await Promise.all([
-        supabase.from("companies").select("id, status, type, country_code, is_verified, created_at, total_reviews, rating"),
-        supabase.from("establishments").select("id, type, country_code, created_at, is_active"),
-        supabase.from("culinary_entities").select("id, status, entity_type, country_code, created_at"),
-        supabase.from("company_contacts").select("id, company_id, role"),
+        supabase.from("companies").select("id, status, type, country_code, is_verified, created_at, total_reviews, rating").limit(5000),
+        supabase.from("establishments").select("id, type, country_code, created_at, is_active").limit(5000),
+        supabase.from("culinary_entities").select("id, status, entity_type, country_code, created_at").limit(5000),
+        supabase.from("company_contacts").select("id, company_id, role").limit(5000),
       ]);
 
       const companies = companiesRes.data || [];

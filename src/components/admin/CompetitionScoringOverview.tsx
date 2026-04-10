@@ -20,7 +20,7 @@ export const CompetitionScoringOverview = memo(function CompetitionScoringOvervi
     queryFn: async () => {
       const [scoresRes, judgesRes, regsRes, compsRes] = await Promise.all([
         supabase.from("competition_scores").select("id, score, judge_id, registration_id").limit(1000),
-        supabase.from("competition_roles").select("id, user_id, competition_id, role, status").eq("role", "judge").eq("status", "active"),
+        supabase.from("competition_roles").select("id, user_id, competition_id, role, status").eq("role", "judge").eq("status", "active").limit(5000),
         supabase.from("competition_registrations").select("id, competition_id, status").limit(1000),
         supabase.from("competitions").select("id, title, title_ar, status").in("status", ["in_progress", "judging", "registration_closed", "completed"]).limit(50),
       ]);

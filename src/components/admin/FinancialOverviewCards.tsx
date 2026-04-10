@@ -20,9 +20,9 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
       const thirtyDaysAgo = subDays(new Date(), 30).toISOString();
 
       const [invoicesRes, ordersRes, transactionsRes] = await Promise.all([
-        supabase.from("invoices").select("status, amount, currency, created_at"),
-        supabase.from("company_orders").select("status, total_amount, currency, created_at").gte("created_at", thirtyDaysAgo),
-        supabase.from("company_transactions").select("type, amount, currency, created_at").gte("created_at", thirtyDaysAgo),
+        supabase.from("invoices").select("status, amount, currency, created_at").limit(5000),
+        supabase.from("company_orders").select("status, total_amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
+        supabase.from("company_transactions").select("type, amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
       ]);
 
       const invoices = invoicesRes.data || [];

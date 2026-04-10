@@ -48,10 +48,10 @@ export default function CompanyPortalDashboard() {
       if (!companyId) return null;
 
       const [ordersRes, invitationsRes, transactionsRes, contactsRes] = await Promise.all([
-        supabase.from("company_orders").select("id, status").eq("company_id", companyId),
-        supabase.from("company_invitations").select("id, status").eq("company_id", companyId),
-        supabase.from("company_transactions").select("id, amount, type").eq("company_id", companyId),
-        supabase.from("company_contacts").select("id").eq("company_id", companyId),
+        supabase.from("company_orders").select("id, status").eq("company_id", companyId).limit(5000),
+        supabase.from("company_invitations").select("id, status").eq("company_id", companyId).limit(5000),
+        supabase.from("company_transactions").select("id, amount, type").eq("company_id", companyId).limit(5000),
+        supabase.from("company_contacts").select("id").eq("company_id", companyId).limit(5000),
       ]);
 
       return {

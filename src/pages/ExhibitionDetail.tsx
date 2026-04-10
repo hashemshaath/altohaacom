@@ -266,7 +266,7 @@ export default function ExhibitionDetail() {
         supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_schedule_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id).eq("status", "confirmed"),
-        supabase.from("exhibition_reviews").select("rating").eq("exhibition_id", exhibition!.id),
+        supabase.from("exhibition_reviews").select("rating").eq("exhibition_id", exhibition!.id).limit(5000),
       ]);
       const ratings = reviewRatings.data || [];
       const avgRating = ratings.length > 0 ? ratings.reduce((s, r) => s + ((r as unknown as Record<string, number>).rating || 0), 0) / ratings.length : 0;
