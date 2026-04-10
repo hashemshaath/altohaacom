@@ -16,19 +16,19 @@ interface AdminSidebarNavProps {
 
 /** Filter nav sections & items based on admin role */
 function useFilteredNav(): NavSection[] {
-  const { isFullAdmin } = useAdminRole();
+  const { isSuperAdmin, isFullAdmin } = useAdminRole();
 
   return useMemo(() => {
-    if (isFullAdmin) return adminNavSections;
+    if (isSuperAdmin) return adminNavSections;
 
     return adminNavSections
-      .filter((section) => !section.fullAdminOnly)
+      .filter((section) => !section.superAdminOnly && (!section.fullAdminOnly || isFullAdmin))
       .map((section) => ({
         ...section,
-        items: section.items.filter((item) => !item.fullAdminOnly),
+        items: section.items.filter((item) => !item.superAdminOnly && (!item.fullAdminOnly || isFullAdmin)),
       }))
       .filter((section) => section.items.length > 0);
-  }, [isFullAdmin]);
+  }, [isSuperAdmin, isFullAdmin]);
 }
 
 export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false, isMobile = false, onItemClick }: AdminSidebarNavProps) {
