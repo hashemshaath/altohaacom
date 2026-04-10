@@ -25,7 +25,7 @@ export const CommunityInsights = memo(function CommunityInsights() {
           .gte("created_at", weekAgo).is("reply_to_post_id", null),
         supabase.from("posts").select("id", { count: "exact", head: true })
           .gte("created_at", weekAgo).not("reply_to_post_id", "is", null),
-        supabase.from("posts").select("author_id")
+        supabase.from("posts").select("author_id").limit(5000)
           .gte("created_at", todayISO).eq("moderation_status", "approved"),
       ]);
 
