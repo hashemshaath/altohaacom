@@ -137,10 +137,10 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
     queryFn: async () => {
       const { data, error } = await supabase.storage.from("company-media").list("entities", { limit: 100 });
       if (error) return [];
-      return data?.map(f => ({
+      return await Promise.all(data?.map(async (f) => ({
         name: f.name,
-        url: supabase.storage.from("company-media").getPublicUrl(`entities/${f.name}`).data.publicUrl,
-      })) || [];
+        url: await getStorageUrl("company-media", `entities/${f.name}`) || "",
+      })) || []);
     },
     enabled: showMediaPicker !== null,
   });

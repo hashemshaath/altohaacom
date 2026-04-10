@@ -189,13 +189,12 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
     try {
       const ext = file.name.split(".").pop();
       const path = `${companyId}/logo/${Date.now()}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("company-media").upload(path, file);
+      const { url: logoUrl, error: uploadError } = await uploadAndGetUrl("company-media", path, file);
       if (uploadError) throw uploadError;
-      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
-      setForm(prev => ({ ...prev, logo_url: urlData.publicUrl }));
+      setForm(prev => ({ ...prev, logo_url: logoUrl }));
       const user = (await supabase.auth.getUser()).data.user;
       await supabase.from("company_media").insert({
-        company_id: companyId, category: "logo", file_url: urlData.publicUrl,
+        company_id: companyId, category: "logo", file_url: logoUrl,
         filename: file.name, file_type: file.type, file_size: file.size, uploaded_by: user?.id || null,
       });
       toast({ title: isAr ? "تم رفع الشعار" : "Logo uploaded" });

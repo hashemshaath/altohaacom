@@ -106,7 +106,7 @@ export default function CompanyMedia() {
         const { error: dbError } = await supabase.from("company_media").insert({
           company_id: companyId,
           filename: file.name,
-          file_url: urlData.publicUrl,
+          file_url: fileUrl,
           file_type: file.type,
           file_size: file.size,
           category: file.type.startsWith("image") ? "product" : "document",

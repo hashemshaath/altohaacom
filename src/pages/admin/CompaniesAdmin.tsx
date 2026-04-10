@@ -553,7 +553,7 @@ export default function CompaniesAdmin() {
       if (!selectedCompany) throw new Error("No company");
       const ext = file.name.split(".").pop();
       const path = `${selectedCompany}/${mediaCategory}/${Date.now()}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("company-media").upload(path, file);
+      const { url: fileUrl, error: uploadError } = await uploadAndGetUrl("company-media", path, file);
       if (uploadError) {
         // Bucket might not exist yet, try ad-creatives as fallback
         const { error: err2 } = await supabase.storage.from("ad-creatives").upload(path, file);
@@ -561,8 +561,7 @@ export default function CompaniesAdmin() {
         const { data: urlData } = supabase.storage.from("ad-creatives").getPublicUrl(path);
         return { url: urlData.publicUrl, file };
       }
-      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
-      return { url: urlData.publicUrl, file };
+      return { url: fileUrl, file };
     },
     onSuccess: async ({ url, file }) => {
       const user = (await supabase.auth.getUser()).data.user;
