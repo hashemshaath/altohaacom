@@ -1,28 +1,35 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, MutationCache } from "@tanstack/react-query";
 
 /**
- * Centralized React Query defaults.
- * All queries inherit these unless overridden.
+ * Centralized React Query factory with production-grade defaults.
+ * Used in App.tsx and available for test environments.
+ *
+ * Defaults:
+ * - staleTime: 3 min (avoids redundant refetches)
+ * - gcTime: 30 min (keeps inactive data warm)
+ * - refetchOnWindowFocus: false (saves bandwidth)
+ * - Smart retry: skips 4xx errors, retries once for others
  */
 export function createQueryClient(): QueryClient {
   return new QueryClient({
+    mutationCache: new MutationCache({
+      onError: (error) => {
+        console.error("[Mutation Error]", error instanceof Error ? error.message : error);
+      },
+    }),
     defaultOptions: {
       queries: {
-        // Default stale time: 2 minutes
-        staleTime: 1000 * 60 * 2,
-        // Keep unused data in cache for 30 minutes
+        staleTime: 1000 * 60 * 3,
         gcTime: 1000 * 60 * 30,
-        // Don't refetch on window focus by default — saves bandwidth
+        retry: (failureCount, error) => {
+          const status = (error as { status?: number })?.status;
+          if (status && status >= 400 && status < 500) return false;
+          return failureCount < 1;
+        },
         refetchOnWindowFocus: false,
-        // Don't refetch on reconnect — staleTime handles freshness
         refetchOnReconnect: "always",
-        // Retry once on failure
-        retry: 1,
-        retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
       },
-      mutations: {
-        retry: 0,
-      },
+      mutations: { retry: 0 },
     },
   });
 }
