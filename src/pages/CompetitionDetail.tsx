@@ -663,13 +663,11 @@ export default function CompetitionDetail() {
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto scrollbar-none pe-4">
                 {kpiStats.map((stat, i) => (
-                  <button key={i} onClick={stat.onClick} className="flex items-center gap-2.5 shrink-0 hover:scale-105 transition-transform duration-200 active:scale-95 touch-manipulation min-w-0 py-1">
-                    <div className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-lg ${stat.color} bg-current/8 shrink-0`}>
-                      <stat.icon className="h-4 w-4 text-current" />
-                    </div>
+                  <button key={i} onClick={stat.onClick} className="flex items-center gap-2 shrink-0 hover:scale-105 transition-transform duration-200 active:scale-95 touch-manipulation min-w-0 py-1">
+                    <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.color} opacity-70 shrink-0`} />
                     <div className="text-start min-w-0">
                       <p className="text-lg sm:text-xl font-extrabold text-foreground tabular-nums leading-none"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
-                      <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground/70 mt-0.5 truncate">{stat.label}</p>
+                      <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground/70 mt-0.5 whitespace-nowrap">{stat.label}</p>
                     </div>
                   </button>
                 ))}
