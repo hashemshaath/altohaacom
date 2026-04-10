@@ -72,7 +72,6 @@ function normalizeGlobalEventType(value: unknown): GlobalEventType {
   if (typeof value === "string" && Object.prototype.hasOwnProperty.call(GLOBAL_EVENT_COLORS, value)) {
     return value as GlobalEventType;
   }
-
   return "other";
 }
 
@@ -85,155 +84,118 @@ export function useGlobalEventsCalendar(filters?: {
   return useQuery({
     queryKey: ["global-events-calendar", filters],
     queryFn: async () => {
-      const events: GlobalEvent[] = [];
-
-      // 1. Fetch competitions
+      // Run all 4 queries in parallel with Promise.allSettled for resilience
       let compQuery = supabase
         .from("competitions")
         .select("id, title, title_ar, competition_start, competition_end, country_code, city, venue, venue_ar, status, cover_image_url")
         .neq("status", "draft");
-
       if (filters?.country) compQuery = compQuery.eq("country_code", filters.country);
 
-      const { data: competitions } = await compQuery;
-      if (competitions) {
-        for (const c of competitions) {
-          if (!c.competition_start) continue;
-          events.push({
-            id: c.id,
-            type: "competition",
-            title: c.title,
-            title_ar: c.title_ar,
-            start_date: c.competition_start,
-            end_date: c.competition_end,
-            all_day: true,
-            city: c.city,
-            country_code: c.country_code,
-            venue: c.venue,
-            venue_ar: c.venue_ar,
-            status: c.status || "upcoming",
-            is_international: false,
-            is_recurring: false,
-            link: ROUTES.competition(c.id),
-            color: "chart-1",
-            icon: "Trophy",
-            source: "competition",
-            cover_image_url: c.cover_image_url,
-          });
-        }
-      }
-
-      // 2. Fetch exhibitions
       let exhQuery = supabase
         .from("exhibitions")
         .select("id, title, title_ar, start_date, end_date, country, city, venue, venue_ar, status, slug, cover_image_url, logo_url, organizer_name, organizer_name_ar");
-
       if (filters?.country) exhQuery = exhQuery.eq("country", filters.country);
 
-      const { data: exhibitions } = await exhQuery;
-      if (exhibitions) {
-        for (const e of exhibitions) {
-          if (!e.start_date) continue;
-          events.push({
-            id: e.id,
-            type: "exhibition",
-            title: e.title,
-            title_ar: e.title_ar,
-            start_date: e.start_date,
-            end_date: e.end_date,
-            all_day: true,
-            city: e.city,
-            country_code: e.country as string | null,
-            venue: e.venue,
-            venue_ar: e.venue_ar,
-            status: e.status || "upcoming",
-            is_international: false,
-            is_recurring: false,
-            link: e.slug ? ROUTES.exhibition(e.slug) : null,
-            color: "chart-3",
-            icon: "Landmark",
-            source: "exhibition",
-            cover_image_url: e.cover_image_url,
-            logo_url: e.logo_url,
-            organizer_name: e.organizer_name,
-            organizer_name_ar: e.organizer_name_ar,
-          });
-        }
-      }
-
-      // 3. Fetch public chef schedule events
-      const { data: chefEvents } = await (supabase as any)
+      const chefQuery = (supabase as any)
         .from("chef_schedule_events")
         .select("id, event_type, title, title_ar, start_date, end_date, all_day, city, country_code, venue, venue_ar, status, participation_type, channel_name, program_name, broadcast_type, is_recurring")
         .eq("visibility", "public")
         .neq("status", "cancelled");
 
-      if (chefEvents) {
-        for (const ce of chefEvents) {
-          if (!ce.start_date) continue;
-          const eventType = normalizeGlobalEventType(ce.event_type);
-
-          events.push({
-            id: ce.id,
-            type: eventType,
-            title: ce.title,
-            title_ar: ce.title_ar,
-            start_date: ce.start_date,
-            end_date: ce.end_date,
-            all_day: ce.all_day ?? true,
-            city: ce.city,
-            country_code: ce.country_code,
-            venue: ce.venue,
-            venue_ar: ce.venue_ar,
-            status: ce.status || "confirmed",
-            is_international: false,
-            is_recurring: ce.is_recurring ?? false,
-            link: null,
-            color: "chart-4",
-            icon: GLOBAL_EVENT_LABELS[eventType]?.icon || "MoreHorizontal",
-            source: "chef_schedule",
-            participation_type: ce.participation_type,
-            channel_name: ce.channel_name,
-            program_name: ce.program_name,
-            broadcast_type: ce.broadcast_type,
-          });
-        }
-      }
-
-      // 4. Fetch admin-managed global events
-      const { data: globalEvents } = await (supabase as any)
+      const globalQuery = (supabase as any)
         .from("global_events")
         .select("id, title, title_ar, type, start_date, end_date, all_day, city, country_code, venue, venue_ar, status, is_international, is_recurring, link, image_url, organizer, organizer_ar")
         .eq("status", "active");
 
-      if (globalEvents) {
-        for (const ge of globalEvents) {
-          if (!ge.start_date) continue;
-          const geType = normalizeGlobalEventType(ge.type);
+      const [compResult, exhResult, chefResult, globalResult] = await Promise.allSettled([
+        compQuery, exhQuery, chefQuery, globalQuery,
+      ]);
 
-          events.push({
-            id: ge.id,
-            type: geType,
-            title: ge.title,
-            title_ar: ge.title_ar,
-            start_date: ge.start_date,
-            end_date: ge.end_date,
-            all_day: ge.all_day ?? true,
-            city: ge.city,
-            country_code: ge.country_code,
-            venue: ge.venue,
-            venue_ar: ge.venue_ar,
-            status: "upcoming",
-            is_international: ge.is_international ?? false,
-            is_recurring: ge.is_recurring ?? false,
-            link: ge.link,
-            color: GLOBAL_EVENT_LABELS[geType]?.icon ? `chart-${(EVENT_TYPES_ORDER.indexOf(geType) % 5) + 1}` : "chart-4",
-            icon: GLOBAL_EVENT_LABELS[geType]?.icon || "MoreHorizontal",
-            source: "global_event",
-            cover_image_url: ge.image_url,
-            organizer_name: ge.organizer,
-            organizer_name_ar: ge.organizer_ar,
-          });
+      const events: GlobalEvent[] = [];
+
+      // 1. Competitions
+      if (compResult.status === "fulfilled") {
+        const competitions = compResult.value.data;
+        if (competitions) {
+          for (const c of competitions) {
+            if (!c.competition_start) continue;
+            events.push({
+              id: c.id, type: "competition", title: c.title, title_ar: c.title_ar,
+              start_date: c.competition_start, end_date: c.competition_end,
+              all_day: true, city: c.city, country_code: c.country_code,
+              venue: c.venue, venue_ar: c.venue_ar, status: c.status || "upcoming",
+              is_international: false, is_recurring: false,
+              link: ROUTES.competition(c.id), color: "chart-1", icon: "Trophy",
+              source: "competition", cover_image_url: c.cover_image_url,
+            });
+          }
+        }
+      }
+
+      // 2. Exhibitions
+      if (exhResult.status === "fulfilled") {
+        const exhibitions = exhResult.value.data;
+        if (exhibitions) {
+          for (const e of exhibitions) {
+            if (!e.start_date) continue;
+            events.push({
+              id: e.id, type: "exhibition", title: e.title, title_ar: e.title_ar,
+              start_date: e.start_date, end_date: e.end_date, all_day: true,
+              city: e.city, country_code: e.country as string | null,
+              venue: e.venue, venue_ar: e.venue_ar, status: e.status || "upcoming",
+              is_international: false, is_recurring: false,
+              link: e.slug ? ROUTES.exhibition(e.slug) : null,
+              color: "chart-3", icon: "Landmark", source: "exhibition",
+              cover_image_url: e.cover_image_url, logo_url: e.logo_url,
+              organizer_name: e.organizer_name, organizer_name_ar: e.organizer_name_ar,
+            });
+          }
+        }
+      }
+
+      // 3. Chef schedule events
+      if (chefResult.status === "fulfilled") {
+        const chefEvents = chefResult.value.data;
+        if (chefEvents) {
+          for (const ce of chefEvents) {
+            if (!ce.start_date) continue;
+            const eventType = normalizeGlobalEventType(ce.event_type);
+            events.push({
+              id: ce.id, type: eventType, title: ce.title, title_ar: ce.title_ar,
+              start_date: ce.start_date, end_date: ce.end_date,
+              all_day: ce.all_day ?? true, city: ce.city, country_code: ce.country_code,
+              venue: ce.venue, venue_ar: ce.venue_ar, status: ce.status || "confirmed",
+              is_international: false, is_recurring: ce.is_recurring ?? false,
+              link: null, color: "chart-4",
+              icon: GLOBAL_EVENT_LABELS[eventType]?.icon || "MoreHorizontal",
+              source: "chef_schedule", participation_type: ce.participation_type,
+              channel_name: ce.channel_name, program_name: ce.program_name,
+              broadcast_type: ce.broadcast_type,
+            });
+          }
+        }
+      }
+
+      // 4. Global events
+      if (globalResult.status === "fulfilled") {
+        const globalEvents = globalResult.value.data;
+        if (globalEvents) {
+          for (const ge of globalEvents) {
+            if (!ge.start_date) continue;
+            const geType = normalizeGlobalEventType(ge.type);
+            events.push({
+              id: ge.id, type: geType, title: ge.title, title_ar: ge.title_ar,
+              start_date: ge.start_date, end_date: ge.end_date,
+              all_day: ge.all_day ?? true, city: ge.city, country_code: ge.country_code,
+              venue: ge.venue, venue_ar: ge.venue_ar, status: "upcoming",
+              is_international: ge.is_international ?? false,
+              is_recurring: ge.is_recurring ?? false, link: ge.link,
+              color: GLOBAL_EVENT_LABELS[geType]?.icon ? `chart-${(EVENT_TYPES_ORDER.indexOf(geType) % 5) + 1}` : "chart-4",
+              icon: GLOBAL_EVENT_LABELS[geType]?.icon || "MoreHorizontal",
+              source: "global_event", cover_image_url: ge.image_url,
+              organizer_name: ge.organizer, organizer_name_ar: ge.organizer_ar,
+            });
+          }
         }
       }
 
@@ -243,9 +205,7 @@ export function useGlobalEventsCalendar(filters?: {
         filtered = filtered.filter((event) => filters.types!.includes(event.type));
       }
 
-      // Sort by start_date
       filtered.sort((a, b) => Date.parse(a.start_date) - Date.parse(b.start_date));
-
       return filtered;
     },
     staleTime: 1000 * 60 * 5,
