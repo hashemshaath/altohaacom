@@ -10,6 +10,7 @@ import { localizeCity } from "@/lib/localizeLocation";
 import { Link } from "react-router-dom";
 import { ICONS } from "@/lib/eventsCalendarConstants";
 import { getCountdown, getEventsForDay } from "@/lib/eventsCalendarUtils";
+import { EventActions } from "./EventActions";
 
 export function DayView({ events, currentDate, isAr }: { events: GlobalEvent[]; currentDate: Date; isAr: boolean }) {
   const dayEvents = useMemo(() => getEventsForDay(events, currentDate), [events, currentDate]);
@@ -108,11 +109,12 @@ export function DayEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolea
           {event.organizer_name && <span className="flex items-center gap-1"><Building2 className="h-3 w-3" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
         </div>
       </div>
-      {event.link && (
-        <div className="hidden sm:flex items-center">
+      <div className="hidden sm:flex items-center gap-1">
+        <EventActions event={event} isAr={isAr} />
+        {event.link && (
           <ArrowRight className="h-4 w-4 text-muted-foreground/30 group-hover:text-primary transition-colors" />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 
