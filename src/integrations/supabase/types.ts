@@ -25982,6 +25982,47 @@ export type Database = {
         }
         Relationships: []
       }
+      round_participants_safe: {
+        Row: {
+          advanced_to_round_id: string | null
+          created_at: string | null
+          id: string | null
+          registration_id: string | null
+          round_id: string | null
+          status: string | null
+          total_score: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "round_participants_advanced_to_round_id_fkey"
+            columns: ["advanced_to_round_id"]
+            isOneToOne: false
+            referencedRelation: "competition_rounds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "round_participants_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "round_participants_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "competition_registrations_judge"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "round_participants_round_id_fkey"
+            columns: ["round_id"]
+            isOneToOne: false
+            referencedRelation: "competition_rounds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasting_entries_public: {
         Row: {
           category: string | null
