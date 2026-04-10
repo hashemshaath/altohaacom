@@ -360,7 +360,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
                 <div key={idx} className="relative group">
                   <img
                     src={img.preview}
-                    alt=""
+                    alt={`Upload preview ${idx + 1}`}
                     className={cn("w-full object-cover", images.length === 1 ? "max-h-[300px]" : "aspect-square")}
                   />
                   <button

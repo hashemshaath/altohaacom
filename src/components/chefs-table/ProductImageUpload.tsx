@@ -77,7 +77,7 @@ export const ProductImageUpload = memo(function ProductImageUpload({ images, onI
         <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
           {images.map((url, i) => (
             <div key={i} className="relative group aspect-square rounded-xl overflow-hidden border border-border/40">
-              <img loading="lazy" decoding="async" src={url} alt="" className="h-full w-full object-cover" />
+              <img loading="lazy" decoding="async" src={url} alt={`Product image ${i + 1}`} className="h-full w-full object-cover" />
               <button
                 onClick={() => handleRemove(i)}
                 className="absolute top-1 end-1 flex h-6 w-6 items-center justify-center rounded-full bg-destructive text-destructive-foreground opacity-0 group-hover:opacity-100 transition-opacity"

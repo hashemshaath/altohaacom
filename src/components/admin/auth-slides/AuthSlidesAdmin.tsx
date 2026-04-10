@@ -198,7 +198,7 @@ export const AuthSlidesAdmin = memo(function AuthSlidesAdmin() {
               <CardContent className="flex items-center gap-3 p-3">
                 <GripVertical className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div className="h-14 w-20 rounded-lg overflow-hidden shrink-0 bg-muted">
-                  <img loading="lazy" decoding="async" src={slide.image_url} alt="" className="h-full w-full object-cover" />
+                  <img loading="lazy" decoding="async" src={slide.image_url} alt={slide.title || "Auth slide"} className="h-full w-full object-cover" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{isAr ? slide.title_ar || slide.title : slide.title || "—"}</p>

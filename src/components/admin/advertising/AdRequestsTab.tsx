@@ -111,7 +111,7 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
                       <TableCell>
                         <div className="flex items-center gap-2">
                           {req.companies?.logo_url && (
-                            <img loading="lazy" decoding="async" src={req.companies.logo_url} alt="" className="h-6 w-6 rounded-lg object-cover" />
+                            <img loading="lazy" decoding="async" src={req.companies.logo_url} alt={req.companies?.name || "Company"} className="h-6 w-6 rounded-lg object-cover" />
                           )}
                           <span className="font-medium text-xs">{isAr ? req.companies?.name_ar : req.companies?.name}</span>
                         </div>

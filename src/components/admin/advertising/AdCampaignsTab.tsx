@@ -114,7 +114,7 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
                       <TableCell><Checkbox checked={bulkActions.isSelected(c.id)} onCheckedChange={() => bulkActions.toggleOne(c.id)} /></TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {c.companies?.logo_url && <img loading="lazy" decoding="async" src={c.companies.logo_url} alt="" className="h-6 w-6 rounded-lg object-cover" />}
+                          {c.companies?.logo_url && <img loading="lazy" decoding="async" src={c.companies.logo_url} alt={c.companies?.name || "Company"} className="h-6 w-6 rounded-lg object-cover" />}
                           <span className="text-xs">{isAr ? c.companies?.name_ar : c.companies?.name}</span>
                         </div>
                       </TableCell>
