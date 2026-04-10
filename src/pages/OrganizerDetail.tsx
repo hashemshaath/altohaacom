@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
+import { safeJsonLd } from "@/lib/safeJsonLd";
 import { Header } from "@/components/Header";
 import { safeLazy } from "@/lib/safeLazy";
 
@@ -345,7 +346,7 @@ export default function OrganizerDetail() {
         title={`${orgName} — ${isAr ? "منظم الفعاليات" : "Event Organizer"}`}
         description={`${orgName} — ${totalExhibitions} ${isAr ? "فعالية في" : "events across"} ${countries.length} ${isAr ? "دولة" : "countries"}`}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd({
         "@context": "https://schema.org",
         "@type": "Organization",
         name: orgName,

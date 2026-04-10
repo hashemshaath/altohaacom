@@ -1,4 +1,5 @@
 import { memo, useMemo, useState, forwardRef } from "react";
+import { safeJsonLd } from "@/lib/safeJsonLd";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -177,7 +178,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
   return (
     <section className="mt-10 sm:mt-14" aria-labelledby="editions-heading" itemScope itemType="https://schema.org/EventSeries">
       {/* JSON-LD */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
 
       {/* ═══ Section Header ═══ */}
       <div className="flex items-end justify-between mb-6 gap-4">
