@@ -206,7 +206,8 @@ export function HeroSection() {
   // Preload next slide image during idle time
   useEffect(() => {
     if (slides.length <= 1) return;
-    const nextIdx = (safeCurrent + 1) % slides.length;
+    const cur = ((current % slides.length) + slides.length) % slides.length;
+    const nextIdx = (cur + 1) % slides.length;
     const nextUrl = slides[nextIdx]?.image_url;
     if (!nextUrl) return;
 
@@ -222,7 +223,7 @@ export function HeroSection() {
       const timer = setTimeout(preload, 1000);
       return () => clearTimeout(timer);
     }
-  }, [slides, safeCurrent]);
+  }, [slides, current]);
 
   if (!slides.length) return <FallbackHero isAr={isAr} />;
 
