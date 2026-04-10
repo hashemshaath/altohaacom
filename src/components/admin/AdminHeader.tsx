@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
+import { useAdminRole } from "@/hooks/useAdminRole";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AdminColorStyleSelector } from "./AdminColorStyleSelector";
@@ -10,7 +11,8 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { AdminSearchCommand } from "./AdminSearchCommand";
 import { AdminMobileNavDrawer } from "./AdminMobileNavDrawer";
 import { Button } from "@/components/ui/button";
-import { Home, LogOut } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Home, LogOut, ShieldCheck, Shield } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const AdminHeader = memo(function AdminHeader() {
