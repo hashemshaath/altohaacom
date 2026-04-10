@@ -192,9 +192,9 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const now = new Date().toISOString();
       const [{ data: exh }, { data: comp }] = await Promise.all([
-        supabase.from("exhibitions").select("id, title, title_ar, start_date, end_date, city, country, status, slug, edition_year")
+        supabase.from("exhibitions").select("id, title, title_ar, start_date, end_date, city, country, status, slug, edition_year").limit(5000)
           .gte("start_date", now).in("status", ["upcoming", "active"]).order("start_date").limit(6),
-        supabase.from("competitions").select("id, title, title_ar, competition_start, competition_end, city, country, status, edition_year")
+        supabase.from("competitions").select("id, title, title_ar, competition_start, competition_end, city, country, status, edition_year").limit(5000)
           .gte("competition_start", now).in("status", ["upcoming", "registration_open", "in_progress"]).order("competition_start").limit(6),
       ]);
       return [

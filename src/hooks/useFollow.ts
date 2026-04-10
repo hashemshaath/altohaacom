@@ -212,7 +212,7 @@ export function useFollowRecommendations() {
 
       // Get current user's following list + their own profile
       const [followingRes, profileRes] = await Promise.all([
-        supabase.from("user_follows").select("following_id").eq("follower_id", user.id),
+        supabase.from("user_follows").select("following_id").eq("follower_id", user.id).limit(5000),
         supabase.from("profiles").select("specialization, country_code").eq("user_id", user.id).single(),
       ]);
 
