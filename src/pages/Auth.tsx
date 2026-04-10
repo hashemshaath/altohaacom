@@ -1004,7 +1004,7 @@ export default function Auth() {
             {/* Password */}
             <div className="space-y-1.5">
               <Label htmlFor="password" className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
+              <Input id="password" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
               <PasswordStrengthMeter password={password} />
               {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
             </div>
@@ -1012,7 +1012,7 @@ export default function Auth() {
             {/* Confirm Password */}
             <div className="space-y-1.5">
               <Label htmlFor="confirmPassword" className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-              <Input id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
+              <Input id="confirmPassword" type="password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
               {confirmPassword && password !== confirmPassword && (
                 <p className="text-xs text-destructive">{isAr ? "غير متطابقة" : "Passwords don't match"}</p>
               )}
@@ -1119,7 +1119,7 @@ export default function Auth() {
               <Label className="text-xs">{isAr ? "رمز الدخول السريع (PIN)" : "Quick Login PIN"}</Label>
               <Input
                 type="password"
-                inputMode="numeric"
+                autoComplete="off"
                 maxLength={6}
                 value={signInPin}
                 onChange={(e) => { setSignInPin(e.target.value.replace(/\D/g, "").slice(0, 6)); setPinError(""); }}
