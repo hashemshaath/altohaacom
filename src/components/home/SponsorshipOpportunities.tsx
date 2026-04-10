@@ -22,7 +22,6 @@ const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   bronze: { en: "Bronze", ar: "برونزي", color: "bg-chart-2/10 text-chart-2 border-chart-2/30" },
 };
 
-import { forwardRef } from "react";
 
 export const SponsorshipOpportunities = forwardRef<HTMLElement>(function SponsorshipOpportunities(_props, _ref) {
   const { language } = useLanguage();
