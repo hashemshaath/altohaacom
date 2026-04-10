@@ -128,7 +128,7 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
                   onChange={(e) => { setCurrentPassword(e.target.value); setError(""); }}
                   placeholder="••••••••"
                 />
-                <button type="button" className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                <button type="button" aria-label={isAr ? (showCurrent ? "إخفاء كلمة المرور" : "إظهار كلمة المرور") : (showCurrent ? "Hide password" : "Show password")} className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   onClick={() => setShowCurrent(!showCurrent)}>
                   {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -146,7 +146,7 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
                   onChange={(e) => { setNewPassword(e.target.value); setError(""); }}
                   placeholder="••••••••"
                 />
-                <button type="button" className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                <button type="button" aria-label={isAr ? (showNew ? "إخفاء كلمة المرور" : "إظهار كلمة المرور") : (showNew ? "Hide password" : "Show password")} className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                   onClick={() => setShowNew(!showNew)}>
                   {showNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
