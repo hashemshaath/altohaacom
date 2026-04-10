@@ -48,7 +48,8 @@ export const translations = {
     volunteer: "Volunteer",
     sponsor: "Sponsor",
     assistant: "Assistant",
-    supervisor: "Supervisor",
+    supervisor: "Super Admin",
+    admin: "Admin",
 
     // Profile
     editProfile: "Edit Profile",
@@ -353,7 +354,8 @@ export const translations = {
     volunteer: "متطوع",
     sponsor: "راعٍ",
     assistant: "مساعد",
-    supervisor: "مشرف",
+    supervisor: "مسؤول أعلى",
+    admin: "مسؤول",
 
     // Profile
     editProfile: "تعديل الملف الشخصي",

@@ -15,15 +15,15 @@ export const AdminSearchCommand = memo(function AdminSearchCommand() {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const navigate = useNavigate();
-  const { isFullAdmin } = useAdminRole();
+  const { isSuperAdmin, isFullAdmin } = useAdminRole();
 
   const filteredSections = useMemo(() => {
-    if (isFullAdmin) return adminNavSections;
+    if (isSuperAdmin) return adminNavSections;
     return adminNavSections
-      .filter((s) => !s.fullAdminOnly)
-      .map((s) => ({ ...s, items: s.items.filter((i) => !i.fullAdminOnly) }))
+      .filter((s) => !s.superAdminOnly && (!s.fullAdminOnly || isFullAdmin))
+      .map((s) => ({ ...s, items: s.items.filter((i) => !i.superAdminOnly && (!i.fullAdminOnly || isFullAdmin)) }))
       .filter((s) => s.items.length > 0);
-  }, [isFullAdmin]);
+  }, [isSuperAdmin, isFullAdmin]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {

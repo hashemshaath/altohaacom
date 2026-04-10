@@ -16,15 +16,15 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
   const [search, setSearch] = useState("");
   const { language } = useLanguage();
   const isAr = language === "ar";
-  const { isFullAdmin } = useAdminRole();
+  const { isSuperAdmin, isFullAdmin } = useAdminRole();
 
   const roleSections = useMemo(() => {
-    if (isFullAdmin) return adminNavSections;
+    if (isSuperAdmin) return adminNavSections;
     return adminNavSections
-      .filter((s) => !s.fullAdminOnly)
-      .map((s) => ({ ...s, items: s.items.filter((i) => !i.fullAdminOnly) }))
+      .filter((s) => !s.superAdminOnly && (!s.fullAdminOnly || isFullAdmin))
+      .map((s) => ({ ...s, items: s.items.filter((i) => !i.superAdminOnly && (!i.fullAdminOnly || isFullAdmin)) }))
       .filter((s) => s.items.length > 0);
-  }, [isFullAdmin]);
+  }, [isSuperAdmin, isFullAdmin]);
 
   const filteredSections = roleSections
     .map((section) => ({

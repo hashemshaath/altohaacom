@@ -24786,7 +24786,7 @@ export type Database = {
         Args: { p_organizer_id: string }
         Returns: undefined
       }
-      is_admin: { Args: { p_user_id: string }; Returns: boolean }
+      is_admin: { Args: { p_user_id?: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
       is_competition_organizer: {
         Args: { p_competition_id: string }
@@ -24798,6 +24798,7 @@ export type Database = {
         Returns: boolean
       }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
+      is_super_admin: { Args: { p_user_id?: string }; Returns: boolean }
       is_valid_chef: { Args: { p_user_id: string }; Returns: boolean }
       log_audit_event: {
         Args: {

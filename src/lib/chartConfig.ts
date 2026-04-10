@@ -85,12 +85,12 @@ export function getNoDataText(isAr: boolean): string {
 
 /** Translate platform role keys to display labels */
 const ROLE_TRANSLATIONS: Record<string, { en: string; ar: string }> = {
-  admin: { en: "Admin", ar: "مدير" },
+  admin: { en: "Admin", ar: "مسؤول" },
   moderator: { en: "Moderator", ar: "مشرف" },
   user: { en: "User", ar: "مستخدم" },
   judge: { en: "Judge", ar: "حَكَم" },
   chef: { en: "Chef", ar: "طاهٍ" },
-  supervisor: { en: "Supervisor", ar: "مشرف" },
+  supervisor: { en: "Super Admin", ar: "مسؤول أعلى" },
   viewer: { en: "Viewer", ar: "مشاهد" },
   editor: { en: "Editor", ar: "محرر" },
   manager: { en: "Manager", ar: "مدير" },

@@ -33,7 +33,7 @@ type AccountType = Database["public"]["Enums"]["account_type"];
 type AppRole = Database["public"]["Enums"]["app_role"];
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
-const ALL_ROLES: AppRole[] = ["chef", "judge", "student", "organizer", "content_writer", "volunteer", "sponsor", "assistant", "supervisor"];
+const ALL_ROLES: AppRole[] = ["chef", "judge", "student", "organizer", "content_writer", "volunteer", "sponsor", "assistant", "supervisor", "admin" as unknown as AppRole];
 
 interface UserProfile {
   id: string;
