@@ -18,6 +18,8 @@ export function useHomepageDataPrefetch() {
     if (didPrefetch.current) return;
     didPrefetch.current = true;
 
+    let cancelled = false;
+
     const prefetch = async () => {
       try {
         const [
@@ -132,6 +134,8 @@ export function useHomepageDataPrefetch() {
           ]),
         ]);
 
+        if (cancelled) return;
+
         // Seed React Query cache with exact keys each component uses
 
         // CompetitionsSection
@@ -236,5 +240,7 @@ export function useHomepageDataPrefetch() {
     };
 
     prefetch();
+
+    return () => { cancelled = true; };
   }, [qc]);
 }
