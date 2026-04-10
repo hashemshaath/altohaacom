@@ -64,6 +64,8 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
       return (profiles || []).map((p) => ({ ...p, total_points: 0, gold_medals: 0, silver_medals: 0, bronze_medals: 0, show_nationality: true }));
     },
     staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   // Deduplicate by user_id

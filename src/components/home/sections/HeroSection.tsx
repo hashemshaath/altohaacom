@@ -157,6 +157,8 @@ export function HeroSection() {
       return (data || []) as HeroSlide[];
     },
     staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

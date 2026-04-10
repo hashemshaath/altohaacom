@@ -63,6 +63,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
     },
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   const categories = useMemo(() => {

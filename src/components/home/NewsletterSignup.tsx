@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Sparkles, Shield, Send } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
+import { SectionReveal } from "@/components/ui/section-reveal";
 
 export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignup(_props, _ref) {
   const { language } = useLanguage();
@@ -15,7 +15,6 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const { ref: scrollRef, isVisible } = useScrollReveal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,13 +42,11 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
   };
 
   return (
-    <section ref={scrollRef} className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
+    <section className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
       <div className="container relative">
+        <SectionReveal>
         <div
-          className={cn(
-            "mx-auto max-w-3xl text-center transition-all duration-700",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          )}
+          className="mx-auto max-w-3xl text-center"
         >
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/5">
             <Mail className="h-7 w-7 text-primary" />
@@ -85,6 +82,7 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
             {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
           </div>
         </div>
+        </SectionReveal>
       </div>
     </section>
   );

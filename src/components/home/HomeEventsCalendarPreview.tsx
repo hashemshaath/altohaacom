@@ -74,7 +74,7 @@ export const HomeEventsCalendarPreview = memo(function HomeEventsCalendarPreview
   const itemCount = sectionConfig?.item_count || 6;
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const now = Date.now();
+  const now = useMemo(() => Date.now(), []);
 
   const upcomingAll = useMemo(
     () =>

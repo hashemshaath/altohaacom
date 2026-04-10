@@ -31,6 +31,8 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
       return (data || []).map((p) => ({ id: p.id, name: isAr ? p.name_ar || p.name : p.name, logo_url: p.logo_url, website_url: p.website_url })) as LogoItem[];
     },
     staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   const { data: entities = [] } = useQuery({
@@ -41,6 +43,8 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
       return (data || []).map((e) => ({ id: e.id, name: isAr ? e.name_ar || e.name : e.name, logo_url: e.logo_url, website_url: null })) as LogoItem[];
     },
     staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   const allLogos = useMemo(() => {
