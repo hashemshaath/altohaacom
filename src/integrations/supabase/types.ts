@@ -24173,9 +24173,6 @@ export type Database = {
       chef_schedule_events_public: {
         Row: {
           all_day: boolean | null
-          broadcast_type: string | null
-          channel_name: string | null
-          channel_name_ar: string | null
           chef_id: string | null
           city: string | null
           color: string | null
@@ -24188,18 +24185,10 @@ export type Database = {
           id: string | null
           location: string | null
           location_ar: string | null
-          media_url: string | null
-          organizer: string | null
-          organizer_ar: string | null
-          participation_type: string | null
-          participation_type_ar: string | null
           priority: string | null
-          program_name: string | null
-          program_name_ar: string | null
-          show_details_publicly: boolean | null
           start_date: string | null
           status: string | null
-          tags: string[] | null
+          timezone: string | null
           title: string | null
           title_ar: string | null
           updated_at: string | null
@@ -24209,9 +24198,6 @@ export type Database = {
         }
         Insert: {
           all_day?: boolean | null
-          broadcast_type?: string | null
-          channel_name?: string | null
-          channel_name_ar?: string | null
           chef_id?: string | null
           city?: string | null
           color?: string | null
@@ -24224,18 +24210,10 @@ export type Database = {
           id?: string | null
           location?: string | null
           location_ar?: string | null
-          media_url?: string | null
-          organizer?: string | null
-          organizer_ar?: string | null
-          participation_type?: string | null
-          participation_type_ar?: string | null
           priority?: string | null
-          program_name?: string | null
-          program_name_ar?: string | null
-          show_details_publicly?: boolean | null
           start_date?: string | null
           status?: string | null
-          tags?: string[] | null
+          timezone?: string | null
           title?: string | null
           title_ar?: string | null
           updated_at?: string | null
@@ -24245,9 +24223,6 @@ export type Database = {
         }
         Update: {
           all_day?: boolean | null
-          broadcast_type?: string | null
-          channel_name?: string | null
-          channel_name_ar?: string | null
           chef_id?: string | null
           city?: string | null
           color?: string | null
@@ -24260,18 +24235,10 @@ export type Database = {
           id?: string | null
           location?: string | null
           location_ar?: string | null
-          media_url?: string | null
-          organizer?: string | null
-          organizer_ar?: string | null
-          participation_type?: string | null
-          participation_type_ar?: string | null
           priority?: string | null
-          program_name?: string | null
-          program_name_ar?: string | null
-          show_details_publicly?: boolean | null
           start_date?: string | null
           status?: string | null
-          tags?: string[] | null
+          timezone?: string | null
           title?: string | null
           title_ar?: string | null
           updated_at?: string | null
