@@ -158,7 +158,7 @@ export default function JobSearch() {
       setCopiedShare(true);
       toast(isAr ? "تم نسخ رابط البحث" : "Search link copied");
       setTimeout(() => setCopiedShare(false), 2000);
-    });
+    }, () => {});
   }, [search, selectedCategory, jobTypeFilter, tab, isAr]);
 
   const { data: jobPostings = [], isLoading: loadingPostings } = useQuery({

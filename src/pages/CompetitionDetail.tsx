@@ -630,11 +630,11 @@ export default function CompetitionDetail() {
                 )}
               </div>
 
-              <h1 className="font-serif text-xl font-extrabold leading-tight tracking-tight sm:text-2xl md:text-3xl lg:text-4xl text-foreground mb-2">
+              <h1 className="font-serif text-2xl font-extrabold leading-tight tracking-tight sm:text-3xl md:text-4xl lg:text-5xl text-foreground mb-2.5">
                 {title}
               </h1>
 
-              <div className="flex items-center gap-4 text-xs sm:text-sm text-foreground/70 flex-wrap">
+              <div className="flex items-center gap-4 text-sm sm:text-base text-foreground/70 flex-wrap">
                 <span className="inline-flex items-center gap-1.5">
                   <Calendar className="h-3.5 w-3.5 text-primary/70" />
                   <time dateTime={competition.competition_start} className="font-medium">{format(new Date(competition.competition_start), "MMM d")}</time>
@@ -661,13 +661,13 @@ export default function CompetitionDetail() {
         <div className="border-y border-border/30 bg-card/80 backdrop-blur-md">
           <div className="mx-auto max-w-5xl px-4 sm:px-6 py-3">
             <div className="flex items-center justify-between gap-4 flex-wrap">
-              <div className="flex items-center gap-5 sm:gap-6 overflow-x-auto scrollbar-none">
+              <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto scrollbar-none pe-4">
                 {kpiStats.map((stat, i) => (
-                  <button key={i} onClick={stat.onClick} className="flex items-center gap-2 shrink-0 hover:scale-105 transition-transform duration-200 active:scale-95 touch-manipulation">
-                    <stat.icon className={`h-4 w-4 ${stat.color} opacity-60`} />
-                    <div className="text-start">
-                      <p className="text-lg font-extrabold text-foreground tabular-nums leading-none"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground/60 mt-0.5">{stat.label}</p>
+                  <button key={i} onClick={stat.onClick} className="flex items-center gap-2 shrink-0 hover:scale-105 transition-transform duration-200 active:scale-95 touch-manipulation min-w-0 py-1">
+                    <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.color} opacity-70 shrink-0`} />
+                    <div className="text-start min-w-0">
+                      <p className="text-lg sm:text-xl font-extrabold text-foreground tabular-nums leading-none"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
+                      <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground/70 mt-0.5 whitespace-nowrap">{stat.label}</p>
                     </div>
                   </button>
                 ))}
@@ -817,13 +817,13 @@ export default function CompetitionDetail() {
                     )}
 
                     {/* Overview Stats */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                       <div className="rounded-2xl border border-border/30 bg-card p-5">
                         <div className="flex items-center gap-2.5 mb-4">
                           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-3/10"><Users className="h-4 w-4 text-chart-3" /></div>
                           <span className="text-xs font-bold text-muted-foreground">{isAr ? "التسجيل" : "Registration"}</span>
                         </div>
-                        <p className="text-3xl font-extrabold tabular-nums leading-none">{registrationStats?.approved || 0}</p>
+                        <p className="text-2xl sm:text-3xl font-extrabold tabular-nums leading-none">{registrationStats?.approved || 0}</p>
                         <p className="text-xs text-muted-foreground mt-1.5">{isAr ? "مقبول" : "Approved"}</p>
                         {competition.max_participants && (
                           <div className="mt-4">
@@ -838,7 +838,7 @@ export default function CompetitionDetail() {
                           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-chart-4/10"><Scale className="h-4 w-4 text-chart-4" /></div>
                           <span className="text-xs font-bold text-muted-foreground">{isAr ? "التحكيم" : "Judging"}</span>
                         </div>
-                        <p className="text-3xl font-extrabold tabular-nums leading-none">{judgesCount || 0}</p>
+                        <p className="text-2xl sm:text-3xl font-extrabold tabular-nums leading-none">{judgesCount || 0}</p>
                         <p className="text-xs text-muted-foreground mt-1.5">{isAr ? "الحكام" : "Judges"}</p>
                         {criteria && criteria.length > 0 && (
                           <p className="text-[11px] text-muted-foreground mt-4">{criteria.length} {isAr ? "معايير" : "criteria"} · {totalScore} {isAr ? "نقطة" : "pts"}</p>

@@ -343,11 +343,11 @@ export const PostCard = memo(function PostCard({
                       if (navigator.share) {
                         await navigator.share({ title: post.content?.slice(0, 60), url });
                       } else {
-                        await navigator.clipboard.writeText(url);
+                        await navigator.clipboard.writeText(url).then(null, () => {});
                       }
                       toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
                     } catch {
-                      await navigator.clipboard.writeText(url);
+                      await navigator.clipboard.writeText(url).then(null, () => {});
                       toast({ title: isAr ? "تم نسخ الرابط" : "Link copied" });
                     }
                   }}

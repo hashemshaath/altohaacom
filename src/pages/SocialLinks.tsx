@@ -101,7 +101,7 @@ export default function SocialLinks() {
 
   const copyLink = useCallback(async () => {
     if (!username) return;
-    await navigator.clipboard.writeText(buildSocialLinksUrl(username));
+    await navigator.clipboard.writeText(buildSocialLinksUrl(username)).then(null, () => {});
     setCopied(true); toast({ title: tl("linkCopied", lang) }); setTimeout(() => setCopied(false), 2000);
   }, [username, lang, toast]);
 
