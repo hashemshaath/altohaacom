@@ -137,7 +137,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
                 <CardContent className="p-0 flex">
                   {article.featured_image_url ? (
                     <div className="w-28 sm:w-36 relative overflow-hidden shrink-0">
-                      <img loading="lazy"
+                      <img
                         src={article.featured_image_url}
                         alt={t}
                         className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"

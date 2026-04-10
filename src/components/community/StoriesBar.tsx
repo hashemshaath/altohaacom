@@ -460,7 +460,7 @@ export const StoriesBar = memo(function StoriesBar() {
                     playsInline
                   />
                 ) : (
-                  <img loading="lazy"
+                  <img
                     src={viewing.stories[storyIndex]?.media_url}
                     alt={viewing.stories[storyIndex]?.caption || "Story"}
                     className="w-full h-full object-cover"

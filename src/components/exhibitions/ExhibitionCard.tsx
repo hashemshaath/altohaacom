@@ -125,7 +125,7 @@ export const ExhibitionCard = memo(
             {/* Image */}
             <div className={`relative shrink-0 overflow-hidden bg-muted ${isFeaturedVariant ? "aspect-[16/9]" : "aspect-[16/10]"}`}>
               {exhibition.cover_image_url ? (
-                <img loading="lazy"
+                <img
                   src={exhibition.cover_image_url}
                   alt={title}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"

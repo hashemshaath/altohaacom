@@ -65,7 +65,7 @@ export const ProfilePortfolioGallery = memo(function ProfilePortfolioGallery({ u
               i === 0 ? "col-span-2 row-span-2 aspect-[4/3]" : "aspect-square"
             }`}
           >
-            <img loading="lazy"
+            <img
               src={file.url}
               alt={file.name}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"

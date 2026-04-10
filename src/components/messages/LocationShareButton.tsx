@@ -50,7 +50,7 @@ export const LocationBubble = memo(function LocationBubble({ lat, lng, label, is
   return (
     <a href={mapUrl} target="_blank" rel="noopener noreferrer" className="block">
       <div className={`rounded-xl overflow-hidden border ${isMine ? "border-primary-foreground/20" : "border-border/40"}`}>
-        <img loading="lazy"
+        <img
           src={`https://staticmap.openstreetmap.de/staticmap.php?center=${lat},${lng}&zoom=14&size=280x150&markers=${lat},${lng},lightblue`}
           alt="Location"
           className="w-full h-[120px] object-cover"

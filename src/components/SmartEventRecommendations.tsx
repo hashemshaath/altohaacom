@@ -168,7 +168,7 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
             <Card className="overflow-hidden transition-all duration-200 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] rounded-xl">
               <div className="flex gap-3 p-3">
                 {event.cover_image_url && (
-                  <img loading="lazy"
+                  <img
                     src={event.cover_image_url}
                     alt={event.title}
                     className="h-16 w-20 shrink-0 rounded-lg object-cover"
