@@ -296,12 +296,15 @@ export default defineConfig(({ mode }) => ({
             id.includes("@radix-ui/react-progress") ||
             id.includes("@radix-ui/react-radio-group") ||
             id.includes("@radix-ui/react-scroll-area") ||
-            id.includes("@radix-ui/react-select") ||
             id.includes("@radix-ui/react-slider") ||
             id.includes("@radix-ui/react-switch") ||
             id.includes("@radix-ui/react-toggle-group")
           ) {
             return "vendor-ui-forms";
+          }
+          // Select uses popover internally — keep in core to avoid circular
+          if (id.includes("@radix-ui/react-select")) {
+            return "vendor-ui-core";
           }
           // ── Vendor: Charts (admin/analytics only) ──
           if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-")) {
