@@ -570,6 +570,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                     src={slide.image_url || "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&q=60"}
                                     alt={tpl.label}
                                     className="h-full w-full object-cover"
+                                    loading="lazy"
                                     onError={e => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&q=60"; }}
                                   />
                                   <div className="absolute inset-0" style={{ background: tpl.previewGradient }}>
