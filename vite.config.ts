@@ -331,7 +331,7 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("node_modules/embla-carousel")) return "vendor-embla";
           if (id.includes("node_modules/react-resizable-panels")) return "vendor-panels";
           if (id.includes("node_modules/react-day-picker")) return "vendor-datepicker";
-          if (id.includes("node_modules/cmdk")) return "vendor-cmdk";
+          // cmdk is already in vendor-ui-core above
           if (id.includes("node_modules/vaul")) return "vendor-drawer";
           if (id.includes("node_modules/input-otp")) return "vendor-otp";
           if (id.includes("node_modules/dompurify")) return "vendor-sanitize";
