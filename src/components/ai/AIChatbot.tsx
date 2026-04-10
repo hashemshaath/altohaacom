@@ -232,6 +232,7 @@ const AIChatbot = memo(function AIChatbot() {
             onClick={sendMessage}
             disabled={!input.trim() || loading}
             className="h-8 w-8 rounded-xl shrink-0"
+            aria-label={isAr ? "إرسال" : "Send"}
           >
             <Send className="h-3.5 w-3.5" />
           </Button>

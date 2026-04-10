@@ -445,6 +445,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
             size="icon"
             className="h-8 w-8 ms-auto rounded-full"
             onClick={() => navigate("/community")}
+            aria-label={isAr ? "مسح الفلتر" : "Clear filter"}
           >
             <X className="h-4 w-4" />
           </Button>
