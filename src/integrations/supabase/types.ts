@@ -25373,7 +25373,6 @@ export type Database = {
       }
       profiles_public: {
         Row: {
-          account_number: string | null
           account_type: Database["public"]["Enums"]["account_type"] | null
           avatar_url: string | null
           bio: string | null
@@ -25389,35 +25388,27 @@ export type Database = {
           full_name_ar: string | null
           instagram: string | null
           is_chef_visible: boolean | null
-          is_open_to_work: boolean | null
           is_verified: boolean | null
-          job_availability_visibility: string | null
           job_title: string | null
           job_title_ar: string | null
           linkedin: string | null
-          location: string | null
-          membership_status:
-            | Database["public"]["Enums"]["membership_status"]
-            | null
           membership_tier: Database["public"]["Enums"]["membership_tier"] | null
           nationality: string | null
-          preferred_language: string | null
           profile_visibility: string | null
           snapchat: string | null
           specialization: string | null
           specialization_ar: string | null
           tiktok: string | null
           twitter: string | null
-          updated_at: string | null
           user_id: string | null
           username: string | null
+          verification_level: string | null
           view_count: number | null
           website: string | null
           years_of_experience: number | null
           youtube: string | null
         }
         Insert: {
-          account_number?: string | null
           account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
@@ -25433,37 +25424,29 @@ export type Database = {
           full_name_ar?: string | null
           instagram?: string | null
           is_chef_visible?: boolean | null
-          is_open_to_work?: boolean | null
           is_verified?: boolean | null
-          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
-          location?: string | null
-          membership_status?:
-            | Database["public"]["Enums"]["membership_status"]
-            | null
           membership_tier?:
             | Database["public"]["Enums"]["membership_tier"]
             | null
           nationality?: string | null
-          preferred_language?: string | null
           profile_visibility?: string | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
           tiktok?: string | null
           twitter?: string | null
-          updated_at?: string | null
           user_id?: string | null
           username?: string | null
+          verification_level?: string | null
           view_count?: number | null
           website?: string | null
           years_of_experience?: number | null
           youtube?: string | null
         }
         Update: {
-          account_number?: string | null
           account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
@@ -25479,30 +25462,23 @@ export type Database = {
           full_name_ar?: string | null
           instagram?: string | null
           is_chef_visible?: boolean | null
-          is_open_to_work?: boolean | null
           is_verified?: boolean | null
-          job_availability_visibility?: string | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
-          location?: string | null
-          membership_status?:
-            | Database["public"]["Enums"]["membership_status"]
-            | null
           membership_tier?:
             | Database["public"]["Enums"]["membership_tier"]
             | null
           nationality?: string | null
-          preferred_language?: string | null
           profile_visibility?: string | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
           tiktok?: string | null
           twitter?: string | null
-          updated_at?: string | null
           user_id?: string | null
           username?: string | null
+          verification_level?: string | null
           view_count?: number | null
           website?: string | null
           years_of_experience?: number | null
