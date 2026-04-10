@@ -20,12 +20,16 @@ const REACTIONS = [
 
 // Session ID for anonymous reaction deduplication
 function getReactionSessionId(): string {
-  let sid = sessionStorage.getItem("reaction_session_id");
-  if (!sid) {
-    sid = crypto.randomUUID();
-    try { sessionStorage.setItem("reaction_session_id", sid); } catch {}
+  try {
+    let sid = sessionStorage.getItem("reaction_session_id");
+    if (!sid) {
+      sid = crypto.randomUUID();
+      try { sessionStorage.setItem("reaction_session_id", sid); } catch {}
+    }
+    return sid;
+  } catch {
+    return crypto.randomUUID();
   }
-  return sid;
 }
 
 export const ArticleMoodReactions = memo(function ArticleMoodReactions({ articleId, isAr }: Props) {

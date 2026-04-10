@@ -63,11 +63,13 @@ export const DashboardPersonalizationWidget = memo(function DashboardPersonaliza
   };
 
   const handleReset = () => {
-    localStorage.removeItem(THEME_KEY);
-    localStorage.removeItem(FONT_KEY);
-    localStorage.removeItem(HEADING_FONT_KEY);
-    localStorage.removeItem(FONT_SIZE_KEY);
-    localStorage.removeItem(COMPACT_KEY);
+    try {
+      localStorage.removeItem(THEME_KEY);
+      localStorage.removeItem(FONT_KEY);
+      localStorage.removeItem(HEADING_FONT_KEY);
+      localStorage.removeItem(FONT_SIZE_KEY);
+      localStorage.removeItem(COMPACT_KEY);
+    } catch { /* restricted storage */ }
     setSelectedTheme("");
     setBodyFont("");
     setHeadingFont("");
