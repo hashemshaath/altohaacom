@@ -6,19 +6,55 @@ import type { Database } from "@/integrations/supabase/types";
 type AppRole = Database["public"]["Enums"]["app_role"];
 
 /**
+ * ── SUPER ADMIN ONLY PAGES ──
+ * These pages are strictly restricted to the supervisor role.
+ * No other role (admin, organizer, content_writer) can access them.
+ */
+const SUPER_ADMIN_ONLY_PAGES = new Set([
+  // Users & Identity
+  "/admin/users",
+  "/admin/roles",
+  "/admin/verification",
+  "/admin/memberships",
+  "/admin/loyalty",
+  "/admin/organizers",
+  "/admin/mentorship",
+  // Finance
+  "/admin/orders",
+  "/admin/invoices",
+  "/admin/cost-center",
+  // System
+  "/admin/settings",
+  "/admin/security",
+  "/admin/localization",
+  "/admin/countries",
+  "/admin/integrations",
+  // Tools
+  "/admin/smart-import",
+  "/admin/deduplication",
+  "/admin/ai",
+  "/admin/audit",
+  "/admin/database",
+  "/admin/data-import-export",
+]);
+
+/**
  * Pages the admin (non-super) role can access.
  * Super Admin (supervisor) gets "*" (all pages).
  */
 const ADMIN_PAGES = new Set([
   "/admin",
   "/admin/analytics",
+  // Organizations
   "/admin/companies",
   "/admin/establishments",
+  // CRM & Marketing
   "/admin/crm",
   "/admin/leads",
   "/admin/audience-segments",
   "/admin/advertising",
   "/admin/marketing-automation",
+  // Events & Competitions
   "/admin/exhibitions",
   "/admin/exhibition-stats",
   "/admin/competitions",
@@ -27,6 +63,7 @@ const ADMIN_PAGES = new Set([
   "/admin/chefs-table",
   "/admin/chef-schedule",
   "/admin/global-events",
+  // Content & SEO
   "/admin/articles",
   "/admin/design/homepage",
   "/admin/hero-slides",
@@ -38,18 +75,19 @@ const ADMIN_PAGES = new Set([
   "/admin/media",
   "/admin/moderation",
   "/admin/qr-codes",
+  // Communications
   "/admin/support-tickets",
   "/admin/live-chat",
   "/admin/communications",
   "/admin/templates",
   "/admin/notifications",
+  // Design & Branding
   "/admin/design",
   "/admin/design/theme",
   "/admin/design/brand-identity",
   "/admin/design/header-footer",
   "/admin/design/layout",
   "/admin/design/custom-css",
-  "/admin/localization",
 ]);
 
 /**
@@ -69,7 +107,6 @@ const CONTENT_WRITER_PAGES = new Set([
   "/admin/qr-codes",
   "/admin/companies",
   "/admin/establishments",
-  "/admin/localization",
 ]);
 
 const ORGANIZER_PAGES = new Set([
@@ -95,8 +132,19 @@ export interface AdminAccess {
   isContentManager: boolean;
   /** Check if a given admin path is accessible */
   canAccessPage: (path: string) => boolean;
+  /** Check if a page is super-admin-only */
+  isSuperAdminOnlyPage: (path: string) => boolean;
   /** Loading state */
   isLoading: boolean;
+}
+
+/** Check if path matches any page in set (exact or sub-path) */
+function matchesSet(path: string, pages: Set<string>): boolean {
+  if (pages.has(path)) return true;
+  for (const allowed of pages) {
+    if (path.startsWith(allowed + "/")) return true;
+  }
+  return false;
 }
 
 export function useAdminRole(): AdminAccess {
@@ -132,21 +180,14 @@ export function useAdminRole(): AdminAccess {
   const isContentManager = isSuperAdmin || adminRoleStr === "admin" || adminRoleStr === "content_writer";
   const hasAdminAccess = adminRole !== null;
 
-  /** Check if path matches any page in set (exact or sub-path) */
-  const matchesSet = (path: string, pages: Set<string>): boolean => {
-    if (pages.has(path)) return true;
-    for (const allowed of pages) {
-      if (path.startsWith(allowed + "/")) return true;
-    }
-    return false;
-  };
+  const isSuperAdminOnlyPage = (path: string): boolean => matchesSet(path, SUPER_ADMIN_ONLY_PAGES);
 
   const canAccessPage = (path: string): boolean => {
     if (!hasAdminAccess) return false;
     if (isSuperAdmin) return true;
 
     // Block super-admin-only pages for ALL non-supervisor roles
-    if (matchesSet(path, SUPER_ADMIN_ONLY_PAGES)) return false;
+    if (isSuperAdminOnlyPage(path)) return false;
 
     // Admin role: whitelist check
     if (adminRoleStr === "admin") return matchesSet(path, ADMIN_PAGES);
@@ -158,5 +199,5 @@ export function useAdminRole(): AdminAccess {
     return matchesSet(path, CONTENT_WRITER_PAGES);
   };
 
-  return { adminRole, isSuperAdmin, isFullAdmin, isOrganizer, isContentManager, hasAdminAccess, canAccessPage, isLoading };
+  return { adminRole, isSuperAdmin, isFullAdmin, isOrganizer, isContentManager, hasAdminAccess, canAccessPage, isSuperAdminOnlyPage, isLoading };
 }
