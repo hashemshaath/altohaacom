@@ -123,7 +123,7 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
                 <Card className="h-full overflow-hidden border-border/40 rounded-2xl transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:border-primary/20 active:scale-[0.98]">
                   <div className="relative aspect-[16/10] overflow-hidden bg-muted">
                     {comp.cover_image_url ? (
-                      <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                      <img src={comp.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
                     ) : (
                       <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
                         <Trophy className="h-10 w-10 text-primary/30" />

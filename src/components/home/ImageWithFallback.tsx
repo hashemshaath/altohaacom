@@ -7,16 +7,19 @@ interface ImageWithFallbackProps extends ImgHTMLAttributes<HTMLImageElement> {
 
 /**
  * Image component with automatic fallback on error or missing src.
- * Shows a neutral placeholder instead of broken image icons.
+ * Optimized with lazy loading, async decoding, and fade-in transition.
  */
 export const ImageWithFallback = forwardRef<HTMLImageElement, ImageWithFallbackProps>(function ImageWithFallback({
   src,
   alt,
   className,
   fallbackIcon,
+  loading = "lazy",
+  decoding = "async",
   ...props
 }, ref) {
   const [hasError, setHasError] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   const isValidUrl =
     src &&
@@ -47,7 +50,14 @@ export const ImageWithFallback = forwardRef<HTMLImageElement, ImageWithFallbackP
       ref={ref}
       src={src}
       alt={alt}
-      className={className}
+      loading={loading}
+      decoding={decoding as any}
+      className={cn(
+        className,
+        "transition-opacity duration-300",
+        loaded ? "opacity-100" : "opacity-0"
+      )}
+      onLoad={() => setLoaded(true)}
       onError={() => setHasError(true)}
       {...props}
     />
