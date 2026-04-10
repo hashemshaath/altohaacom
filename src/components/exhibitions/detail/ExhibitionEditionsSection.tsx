@@ -265,7 +265,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                     {/* Cover */}
                     {edition.cover_image_url && (
                       <Link to={`/exhibitions/${edition.slug}`} className="relative sm:w-48 h-32 sm:h-auto shrink-0 overflow-hidden block" aria-label={`${edTitle} - ${isAr ? "عرض التفاصيل" : "View details"}`}>
-                        <img
+                        <img loading="lazy"
                           src={edition.cover_image_url}
                           alt={`${edTitle} ${edition.edition_year || ""}`}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -379,7 +379,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
                           </p>
                           <div className="flex gap-2 overflow-x-auto scrollbar-none pb-1">
                             {(edition.gallery_urls || []).slice(0, 5).map((url, i) => (
-                              <img
+                              <img loading="lazy"
                                 key={i}
                                 src={url}
                                 alt={`${edTitle} - ${isAr ? "صورة" : "Photo"} ${i + 1}`}

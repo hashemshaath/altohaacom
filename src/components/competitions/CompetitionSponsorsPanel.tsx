@@ -342,7 +342,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
                             className={`group flex items-center gap-4 rounded-xl border p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${config.bg} ${isPlatinum ? "border-chart-4/30" : "border-border/50"}`}
                           >
                             {sponsor.companies?.logo_url || sponsor.logo_url ? (
-                              <img
+                              <img loading="lazy"
                                 src={sponsor.logo_url || sponsor.companies?.logo_url}
                                 alt={companyName}
                                 className={`rounded-xl object-contain transition-transform group-hover:scale-110 ${isPlatinum ? "h-16 w-16" : "h-12 w-12"}`}

@@ -77,7 +77,7 @@ export const ExhibitionGalleryLightbox = memo(function ExhibitionGalleryLightbox
       )}
 
       <div className="max-w-[90vw] max-h-[85vh]" onClick={e => e.stopPropagation()}>
-        <img
+        <img loading="lazy"
           src={images[index]}
           alt={`${title} ${index + 1}`}
           className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"

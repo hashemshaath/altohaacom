@@ -65,7 +65,7 @@ export const ArticleImageLightbox = memo(function ArticleImageLightbox({
       </div>
 
       {/* Image */}
-      <img
+      <img loading="lazy"
         src={images[currentIndex]}
         alt={title ? `${title} - ${currentIndex + 1}` : `Image ${currentIndex + 1}`}
         className="max-h-[85vh] max-w-[92vw] object-contain rounded-lg select-none"

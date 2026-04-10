@@ -161,7 +161,7 @@ export const ExhibitionBasicInfoStep = memo(function ExhibitionBasicInfoStep({ d
           />
           {data.coverImageUrl && (
             <div className="overflow-hidden rounded-xl border">
-              <img
+              <img loading="lazy"
                 src={data.coverImageUrl}
                 alt="Cover preview"
                 className="aspect-[21/9] w-full object-cover"

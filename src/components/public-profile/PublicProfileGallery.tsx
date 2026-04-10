@@ -141,7 +141,7 @@ export const PublicProfileGallery = memo(function PublicProfileGallery({ mediaFi
         <DialogContent className="max-w-5xl p-0 bg-background/95 backdrop-blur-xl border-border/15 rounded-2xl overflow-hidden">
           {lightboxIdx !== null && allFiles[lightboxIdx] && (
             <div className="relative">
-              <img
+              <img loading="lazy"
                 src={allFiles[lightboxIdx].url}
                 alt={allFiles[lightboxIdx].name}
                 className="w-full max-h-[80vh] object-contain"

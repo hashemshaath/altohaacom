@@ -67,7 +67,7 @@ export const ImageLightbox = memo(function ImageLightbox({ images, currentIndex,
 
       {/* Image */}
       <div className="max-h-[90vh] max-w-[90vw] flex flex-col items-center gap-3" onClick={(e) => e.stopPropagation()}>
-        <img
+        <img loading="lazy"
           src={current.url}
           alt={current.title || ""}
           className="max-h-[85vh] max-w-[90vw] object-contain rounded-xl shadow-2xl"

@@ -715,7 +715,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                       <div className="flex gap-3 p-4">
                         <div className="relative shrink-0">
                           {participant.dish_image_url ? (
-                            <img
+                            <img loading="lazy"
                               src={participant.dish_image_url}
                               alt={participant.dish_name || "Dish"}
                               className="h-16 w-16 rounded-xl object-cover"

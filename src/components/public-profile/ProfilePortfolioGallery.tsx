@@ -65,7 +65,7 @@ export const ProfilePortfolioGallery = memo(function ProfilePortfolioGallery({ u
               i === 0 ? "col-span-2 row-span-2 aspect-[4/3]" : "aspect-square"
             }`}
           >
-            <img
+            <img loading="lazy"
               src={file.url}
               alt={file.name}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -86,7 +86,7 @@ export const ProfilePortfolioGallery = memo(function ProfilePortfolioGallery({ u
         <DialogContent className="max-w-4xl p-0 rounded-2xl overflow-hidden border-0 bg-foreground/95 backdrop-blur-xl">
           {selectedIndex !== null && mediaFiles[selectedIndex] && (
             <div className="relative">
-              <img
+              <img loading="lazy"
                 src={mediaFiles[selectedIndex].url}
                 alt={mediaFiles[selectedIndex].name}
                 className="w-full max-h-[80vh] object-contain"
