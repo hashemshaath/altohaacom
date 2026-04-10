@@ -46,7 +46,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
     queryFn: async () => {
       const { data } = await supabase
         .from("notifications")
-        .select("is_read, type".limit(5000))
+        .select("is_read, type")
         .or("type.eq.membership,type.eq.membership_upgrade,type.eq.membership_trial,type.eq.membership_expired,type.like.membership_email_%");
 
       const total = data?.length || 0;
@@ -62,7 +62,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
     queryFn: async () => {
       let query = supabase
         .from("notifications")
-        .select("id, user_id, title, title_ar, body, body_ar, type, is_read, link, created_at, metadata".limit(5000))
+        .select("id, user_id, title, title_ar, body, body_ar, type, is_read, link, created_at, metadata")
         .order("created_at", { ascending: false })
         .limit(100);
 
@@ -121,7 +121,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
     mutationFn: async () => {
       if (!broadcastTitle && !broadcastTitleAr) throw new Error("Title required");
 
-      let query = supabase.from("profiles").select("user_id").limit(5000);
+      let query = supabase.from("profiles").select("user_id");
       if (broadcastTarget === "professional") query = query.eq("membership_tier", "professional");
       else if (broadcastTarget === "enterprise") query = query.eq("membership_tier", "enterprise");
       else if (broadcastTarget === "paid") query = query.in("membership_tier", ["professional", "enterprise"]);

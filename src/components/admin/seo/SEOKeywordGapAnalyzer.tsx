@@ -54,7 +54,7 @@ export const SEOKeywordGapAnalyzer = memo(function SEOKeywordGapAnalyzer({ isAr 
   const { data: keywords = [] } = useQuery({
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
-      const { data } = await supabase.from("seo_tracked_keywords").select("*").order("current_position", { ascending: true }).limit(5000);
+      const { data } = await supabase.from("seo_tracked_keywords").select("*").order("current_position", { ascending: true });
       return (data || []) as unknown as TrackedKeyword[];
     },
   });

@@ -26,9 +26,9 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
       const sevenDaysAgo = subDays(now, 7).toISOString();
 
       const [segments, runs, rules] = await Promise.all([
-        supabase.from("audience_segments").select("id, name, estimated_reach, is_active, last_used_at".limit(5000)),
+        supabase.from("audience_segments").select("id, name, estimated_reach, is_active, last_used_at"),
         supabase.from("automation_runs").select("id, action, status, started_at, completed_at").order("started_at", { ascending: false }).limit(200),
-        supabase.from("notification_rules").select("id, is_active, channels, trigger_event".limit(5000)),
+        supabase.from("notification_rules").select("id, is_active, channels, trigger_event"),
       ]);
 
       const allSegments = segments.data || [];

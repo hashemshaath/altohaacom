@@ -46,8 +46,8 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
         supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", prevThirtyStart).lt("created_at", thirtyDaysAgo),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).gte("created_at", prevThirtyStart).lt("created_at", thirtyDaysAgo),
-        supabase.from("company_orders").select("total_amount").gte("created_at", thirtyDaysAgo.limit(5000)),
-        supabase.from("profiles").select("created_at").gte("created_at", thirtyDaysAgo).order("created_at".limit(5000)),
+        supabase.from("company_orders").select("total_amount").gte("created_at", thirtyDaysAgo),
+        supabase.from("profiles").select("created_at").gte("created_at", thirtyDaysAgo).order("created_at"),
       ]);
 
       const calcGrowth = (current: number, prev: number) => {

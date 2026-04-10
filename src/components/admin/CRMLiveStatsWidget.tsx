@@ -21,7 +21,7 @@ export const CRMLiveStatsWidget = memo(function CRMLiveStatsWidget() {
       const [ticketsRes, leadsRes, segmentsRes, commsRes] = await Promise.all([
         supabase.from("support_tickets").select("id, status, priority, created_at, resolved_at").order("created_at", { ascending: false }).limit(500),
         supabase.from("leads").select("id, status, created_at, source").order("created_at", { ascending: false }).limit(500),
-        supabase.from("audience_segments").select("id, is_active, estimated_reach".limit(5000)),
+        supabase.from("audience_segments").select("id, is_active, estimated_reach"),
         supabase.from("company_communications").select("id, direction, created_at").order("created_at", { ascending: false }).limit(500),
       ]);
 

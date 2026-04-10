@@ -20,7 +20,7 @@ export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget()
       const [commsRes, notifRes, templatesRes] = await Promise.all([
         supabase.from("company_communications").select("id, direction, priority, created_at, status").order("created_at", { ascending: false }).limit(500),
         supabase.from("notifications").select("id, type, is_read, channel, created_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("communication_templates").select("id, is_active".limit(5000)),
+        supabase.from("communication_templates").select("id, is_active"),
       ]);
 
       const comms = commsRes.data || [];

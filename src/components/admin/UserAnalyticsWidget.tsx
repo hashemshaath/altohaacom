@@ -29,10 +29,10 @@ export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
       const sevenDaysAgo = subDays(new Date(), 7).toISOString();
 
       const [recentUsers, roles, countries, weekUsers] = await Promise.all([
-        supabase.from("profiles").select("created_at").gte("created_at", thirtyDaysAgo).order("created_at".limit(5000)),
-        supabase.from("user_roles").select("role".limit(5000)),
-        supabase.from("profiles").select("country_code").not("country_code", "is", null).limit(5000),
-        supabase.from("profiles").select("created_at").gte("created_at", sevenDaysAgo.limit(5000)),
+        supabase.from("profiles").select("created_at").gte("created_at", thirtyDaysAgo).order("created_at"),
+        supabase.from("user_roles").select("role"),
+        supabase.from("profiles").select("country_code").not("country_code", "is", null),
+        supabase.from("profiles").select("created_at").gte("created_at", sevenDaysAgo),
       ]);
 
       // Daily registrations (last 14 days)

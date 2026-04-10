@@ -28,8 +28,8 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
       const thirtyDaysAgo = subDays(now, 30).toISOString();
 
       const [recent, all30d] = await Promise.all([
-        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", sevenDaysAgo.limit(5000)),
-        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", thirtyDaysAgo.limit(5000)),
+        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", sevenDaysAgo),
+        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", thirtyDaysAgo),
       ]);
 
       const recentData = recent.data || [];
