@@ -56,7 +56,7 @@ export default function CompanyAdvertising() {
     queryKey: ["company-ad-requests", companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const { data, error } = await supabase.from("ad_requests").select("id, title, title_ar, status, request_type, budget, currency, desired_start_date, desired_end_date, admin_notes, reviewed_at, created_at").eq("company_id", companyId).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("ad_requests").select("id, title, title_ar, status, request_type, budget, currency, desired_start_date, desired_end_date, admin_notes, reviewed_at, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(200);
       if (error) throw error;
       return data;
     },
@@ -66,7 +66,7 @@ export default function CompanyAdvertising() {
   const { data: packages = [] } = useQuery({
     queryKey: ["ad-packages"],
     queryFn: async () => {
-      const { data } = await supabase.from("ad_packages").select("id, name, name_ar, tier, price, currency, duration_days, description, description_ar, features, max_impressions, max_clicks, max_campaigns, sort_order").eq("is_active", true).order("sort_order");
+      const { data } = await supabase.from("ad_packages").select("id, name, name_ar, tier, price, currency, duration_days, description, description_ar, features, max_impressions, max_clicks, max_campaigns, sort_order").eq("is_active", true).order("sort_order").limit(50);
       return data || [];
     },
   });
