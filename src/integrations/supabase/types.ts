@@ -2745,6 +2745,13 @@ export type Database = {
             referencedRelation: "chef_schedule_events"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "chef_schedule_events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "chef_schedule_events_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chef_schedule_settings: {
@@ -24093,6 +24100,117 @@ export type Database = {
       }
     }
     Views: {
+      chef_schedule_events_public: {
+        Row: {
+          all_day: boolean | null
+          broadcast_type: string | null
+          channel_name: string | null
+          channel_name_ar: string | null
+          chef_id: string | null
+          city: string | null
+          color: string | null
+          country_code: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          end_date: string | null
+          event_type: string | null
+          id: string | null
+          location: string | null
+          location_ar: string | null
+          media_url: string | null
+          organizer: string | null
+          organizer_ar: string | null
+          participation_type: string | null
+          participation_type_ar: string | null
+          priority: string | null
+          program_name: string | null
+          program_name_ar: string | null
+          show_details_publicly: boolean | null
+          start_date: string | null
+          status: string | null
+          tags: string[] | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          venue: string | null
+          venue_ar: string | null
+          visibility: string | null
+        }
+        Insert: {
+          all_day?: boolean | null
+          broadcast_type?: string | null
+          channel_name?: string | null
+          channel_name_ar?: string | null
+          chef_id?: string | null
+          city?: string | null
+          color?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          event_type?: string | null
+          id?: string | null
+          location?: string | null
+          location_ar?: string | null
+          media_url?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          participation_type?: string | null
+          participation_type_ar?: string | null
+          priority?: string | null
+          program_name?: string | null
+          program_name_ar?: string | null
+          show_details_publicly?: boolean | null
+          start_date?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+          visibility?: string | null
+        }
+        Update: {
+          all_day?: boolean | null
+          broadcast_type?: string | null
+          channel_name?: string | null
+          channel_name_ar?: string | null
+          chef_id?: string | null
+          city?: string | null
+          color?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          end_date?: string | null
+          event_type?: string | null
+          id?: string | null
+          location?: string | null
+          location_ar?: string | null
+          media_url?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          participation_type?: string | null
+          participation_type_ar?: string | null
+          priority?: string | null
+          program_name?: string | null
+          program_name_ar?: string | null
+          show_details_publicly?: boolean | null
+          start_date?: string | null
+          status?: string | null
+          tags?: string[] | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+          visibility?: string | null
+        }
+        Relationships: []
+      }
       companies_public: {
         Row: {
           additional_number: string | null
