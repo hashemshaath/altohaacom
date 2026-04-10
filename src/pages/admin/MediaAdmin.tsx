@@ -311,7 +311,7 @@ export default function MediaAdmin() {
                           {language === "ar" ? "نسخ الرابط" : "Copy URL"}
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <a href={file.file_url} download target="_blank" rel="noopener">
+                          <a href={file.file_url} download target="_blank" rel="noopener noreferrer">
                             <Download className="me-2 h-4 w-4" />
                             {language === "ar" ? "تحميل" : "Download"}
                           </a>
@@ -422,7 +422,7 @@ export default function MediaAdmin() {
                   {language === "ar" ? "نسخ الرابط" : "Copy URL"}
                 </Button>
                 <Button variant="outline" asChild>
-                  <a href={selectedMedia.file_url} download target="_blank" rel="noopener">
+                  <a href={selectedMedia.file_url} download target="_blank" rel="noopener noreferrer">
                     <Download className="me-2 h-4 w-4" />
                     {language === "ar" ? "تحميل" : "Download"}
                   </a>

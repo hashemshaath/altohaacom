@@ -295,7 +295,7 @@ export const SEOBacklinkMonitor = memo(function SEOBacklinkMonitor({ isAr }: { i
                         <td className="p-3 text-end">
                           <div className="flex items-center gap-1 justify-end">
                             <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                              <a href={bl.source_url} target="_blank" rel="noopener"><ExternalLink className="h-3 w-3" /></a>
+                              <a href={bl.source_url} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3" /></a>
                             </Button>
                             <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(bl.id)}>
                               <Trash2 className="h-3 w-3" />
