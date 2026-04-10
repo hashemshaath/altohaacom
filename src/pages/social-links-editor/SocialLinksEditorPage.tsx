@@ -278,7 +278,7 @@ export default function SocialLinksEditorPage() {
 
   const copyLink = useCallback(async () => {
     if (!profile?.username) return;
-    await navigator.clipboard.writeText(buildSocialLinksUrl(profile.username));
+    await navigator.clipboard.writeText(buildSocialLinksUrl(profile.username)).then(null, () => {});
     setCopied(true);
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     setTimeout(() => setCopied(false), 2000);
