@@ -8,6 +8,40 @@ import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
+export interface PublicProfileData {
+  user_id: string;
+  full_name: string | null;
+  full_name_ar: string | null;
+  display_name: string | null;
+  display_name_ar: string | null;
+  username: string | null;
+  avatar_url: string | null;
+  cover_image_url: string | null;
+  bio: string | null;
+  bio_ar: string | null;
+  city: string | null;
+  country_code: string | null;
+  nationality: string | null;
+  account_type: string | null;
+  specialization: string | null;
+  specialization_ar: string | null;
+  job_title: string | null;
+  job_title_ar: string | null;
+  years_of_experience: number | null;
+  is_verified: boolean | null;
+  membership_tier: string | null;
+  view_count: number | null;
+  instagram: string | null;
+  twitter: string | null;
+  facebook: string | null;
+  linkedin: string | null;
+  youtube: string | null;
+  website: string | null;
+  snapchat: string | null;
+  tiktok: string | null;
+  created_at: string | null;
+}
+
 export function usePublicProfileData(username: string | undefined, followListOpen: "followers" | "following" | null) {
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["publicProfile", username],
