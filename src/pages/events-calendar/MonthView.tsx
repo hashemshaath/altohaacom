@@ -1,13 +1,15 @@
-import { useMemo } from "react";
+import { useMemo, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { isSameMonth, isSameDay } from "date-fns";
 import { cn } from "@/lib/utils";
 import { getDaysInMonth } from "@/hooks/useChefSchedule";
 import type { GlobalEvent } from "@/hooks/useGlobalEventsCalendar";
+import { GLOBAL_EVENT_COLORS } from "@/hooks/useGlobalEventsCalendar";
 import { EventChip } from "./EventChip";
 import { getEventsForDay } from "@/lib/eventsCalendarUtils";
-export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr }: {
+
+export const MonthView = memo(function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr }: {
   events: GlobalEvent[]; currentDate: Date;
   selectedDay: Date | null; onSelectDay: (d: Date) => void; isAr: boolean;
 }) {
@@ -16,46 +18,73 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
     ? ["أحد", "إثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"]
     : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const getDayEvents = (day: Date) => getEventsForDay(events, day);
+  // Pre-compute events for all days once
+  const dayEventsMap = useMemo(() => {
+    const map = new Map<string, GlobalEvent[]>();
+    days.forEach(day => {
+      map.set(day.toISOString(), getEventsForDay(events, day));
+    });
+    return map;
+  }, [days, events]);
 
   return (
-    <Card className="overflow-hidden border-border/40 shadow-sm">
+    <Card className="overflow-hidden border-border/30 shadow-sm rounded-2xl">
       <CardContent className="p-0">
-        <div className="grid grid-cols-7 bg-muted/30">
+        {/* Day headers */}
+        <div className="grid grid-cols-7 bg-muted/20">
           {dayNames.map(d => (
-            <div key={d} className="py-2.5 text-center text-[12px] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/30">{d}</div>
+            <div key={d} className="py-3 text-center text-[11px] font-bold text-muted-foreground/70 uppercase tracking-widest border-b border-border/20">{d}</div>
           ))}
         </div>
+        {/* Calendar grid */}
         <div className="grid grid-cols-7">
           {days.map((day, i) => {
-            const dayEvents = getDayEvents(day);
+            const dayEvents = dayEventsMap.get(day.toISOString()) || [];
             const isCurrentMonth = isSameMonth(day, currentDate);
             const isToday = isSameDay(day, new Date());
             const isSelected = selectedDay && isSameDay(day, selectedDay);
             const hasEvents = dayEvents.length > 0;
+            // Event density color intensity
+            const density = Math.min(dayEvents.length, 5);
             return (
               <div
                 key={i}
                 onClick={() => onSelectDay(day)}
                 className={cn(
-                  "min-h-[90px] md:min-h-[115px] p-1.5 border-b border-e border-border/15 transition-all cursor-pointer relative",
-                  !isCurrentMonth && "opacity-25 bg-muted/10",
-                  isSelected && "bg-primary/8 ring-1 ring-inset ring-primary/20",
-                  !isSelected && hasEvents && isCurrentMonth && "hover:bg-primary/5",
-                  !isSelected && !hasEvents && isCurrentMonth && "hover:bg-muted/20"
+                  "min-h-[90px] md:min-h-[110px] p-1.5 border-b border-e border-border/10 transition-all duration-200 cursor-pointer relative group",
+                  !isCurrentMonth && "opacity-20",
+                  isSelected && "bg-primary/8 ring-2 ring-inset ring-primary/25 shadow-inner",
+                  !isSelected && hasEvents && isCurrentMonth && "hover:bg-primary/4",
+                  !isSelected && !hasEvents && isCurrentMonth && "hover:bg-muted/15",
                 )}
               >
+                {/* Density indicator bar */}
+                {hasEvents && isCurrentMonth && density > 1 && (
+                  <div
+                    className="absolute top-0 inset-x-0 h-0.5 rounded-b-full transition-all"
+                    style={{ opacity: density * 0.2, background: `hsl(var(--primary))` }}
+                  />
+                )}
                 <div className="flex items-start justify-between mb-1">
                   <span className={cn(
-                    "flex items-center justify-center h-6 w-6 rounded-full text-xs tabular-nums transition-colors",
-                    isToday && "bg-primary text-primary-foreground font-bold shadow-sm shadow-primary/20",
-                    !isToday && isCurrentMonth && "font-medium text-foreground",
-                    !isToday && hasEvents && isCurrentMonth && "text-primary font-semibold",
+                    "flex items-center justify-center h-7 w-7 rounded-lg text-xs tabular-nums transition-all duration-200",
+                    isToday && "bg-primary text-primary-foreground font-bold shadow-md shadow-primary/25 scale-105",
+                    !isToday && isCurrentMonth && hasEvents && "font-bold text-primary",
+                    !isToday && isCurrentMonth && !hasEvents && "font-medium text-foreground/70",
+                    "group-hover:scale-105"
                   )}>
                     {day.getDate()}
                   </span>
-                  {hasEvents && isCurrentMonth && dayEvents.length > 2 && (
-                    <Badge variant="secondary" className="h-4 text-[12px] px-1 tabular-nums">{dayEvents.length}</Badge>
+                  {hasEvents && isCurrentMonth && (
+                    <div className="flex items-center gap-0.5 mt-0.5">
+                      {dayEvents.length > 2 && (
+                        <Badge variant="secondary" className="h-4 text-[10px] px-1.5 tabular-nums rounded-md">{dayEvents.length}</Badge>
+                      )}
+                      {dayEvents.length <= 2 && dayEvents.map(ev => {
+                        const c = GLOBAL_EVENT_COLORS[ev.type];
+                        return <div key={ev.id} className={cn("h-1.5 w-1.5 rounded-full", c.dot)} />;
+                      })}
+                    </div>
                   )}
                 </div>
                 {hasEvents && isCurrentMonth && (
@@ -64,7 +93,7 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
                       <EventChip key={`${ev.id}-${day.toISOString()}`} event={ev} isAr={isAr} compact />
                     ))}
                     {dayEvents.length > 3 && (
-                      <p className="text-[12px] text-center text-primary font-semibold mt-0.5">
+                      <p className="text-[10px] text-center text-primary font-bold mt-0.5 opacity-70">
                         +{dayEvents.length - 3} {isAr ? "المزيد" : "more"}
                       </p>
                     )}
@@ -77,4 +106,4 @@ export function MonthView({ events, currentDate, selectedDay, onSelectDay, isAr 
       </CardContent>
     </Card>
   );
-}
+});

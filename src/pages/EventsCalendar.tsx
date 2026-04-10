@@ -12,21 +12,39 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   Calendar, List, Clock, ChevronLeft, ChevronRight, Globe,
   X, Search, CalendarDays, SlidersHorizontal, Sparkles, MoreHorizontal,
+  TrendingUp, Zap,
 } from "lucide-react";
 import { format, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, startOfWeek, endOfWeek, addDays } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
 import { EVENT_TYPES, COUNTRIES, ICONS, type ViewMode } from "@/lib/eventsCalendarConstants";
-import { StatPill } from "./events-calendar/StatPill";
 import { MonthView } from "./events-calendar/MonthView";
 
-// Lazy-load non-default views for smaller initial bundle
 const WeekView = lazy(() => import("./events-calendar/WeekView").then(m => ({ default: m.WeekView })));
 const DayView = lazy(() => import("./events-calendar/DayView").then(m => ({ default: m.DayView })));
 const YearView = lazy(() => import("./events-calendar/YearView").then(m => ({ default: m.YearView })));
 const ListView = lazy(() => import("./events-calendar/ListView").then(m => ({ default: m.ListView })));
 const SelectedDayPanel = lazy(() => import("./events-calendar/SelectedDayPanel").then(m => ({ default: m.SelectedDayPanel })));
+
+/* ─── Animated stat card ─── */
+function AnimatedStat({ icon: Icon, value, label, accent }: { icon: any; value: number; label: string; accent: string }) {
+  return (
+    <div className={cn(
+      "group relative flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200",
+      "bg-background/60 backdrop-blur-xl shadow-sm hover:shadow-md hover:-translate-y-0.5",
+      "border-border/40 hover:border-primary/30"
+    )}>
+      <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105", accent)}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <p className="text-2xl font-bold tabular-nums leading-none tracking-tight">{value}</p>
+        <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">{label}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function EventsCalendar() {
   const { language } = useLanguage();
@@ -66,7 +84,8 @@ export default function EventsCalendar() {
     const now = new Date();
     const upcoming = events.filter(e => new Date(e.start_date) >= now).length;
     const thisMonth = events.filter(e => isSameMonth(new Date(e.start_date), now)).length;
-    return { total: events.length, upcoming, thisMonth };
+    const typesCount = new Set(events.map(e => e.type)).size;
+    return { total: events.length, upcoming, thisMonth, typesCount };
   }, [events]);
 
   const navigatePrev = useCallback(() => {
@@ -87,7 +106,6 @@ export default function EventsCalendar() {
 
   const goToday = useCallback(() => { setCurrentDate(new Date()); setSelectedDay(null); }, []);
 
-  // Keyboard navigation — deps array prevents re-registering every render
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -129,27 +147,31 @@ export default function EventsCalendar() {
         container={false}
         padding="none"
       >
-        {/* ─── Hero Section ─── */}
-        <section className="relative border-b overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/8 via-primary/3 to-accent/5" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,hsl(var(--primary)/0.06),transparent_60%)]" />
-          <div className="container relative py-4 sm:py-8 md:py-12">
-            <div className="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-end lg:justify-between">
-              <div className="flex items-start gap-3 sm:gap-4">
-                <div className="flex h-11 w-11 sm:h-14 sm:w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/20 shadow-lg shadow-primary/10 shrink-0">
-                  <CalendarDays className="h-5 w-5 sm:h-7 sm:w-7 text-primary" />
+        {/* ─── Premium Hero ─── */}
+        <section className="relative overflow-hidden border-b border-border/30">
+          {/* Layered gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/6 via-transparent to-accent/4" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_20%_0%,hsl(var(--primary)/0.08),transparent)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,hsl(var(--chart-3)/0.05),transparent)]" />
+          
+          <div className="container relative py-6 sm:py-10 md:py-12">
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              {/* Title area */}
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 ring-1 ring-primary/20 shadow-lg shadow-primary/10 shrink-0 backdrop-blur-sm">
+                  <CalendarDays className="h-7 w-7 text-primary" />
                 </div>
-                <div>
-                  <div className="mb-1 sm:mb-1.5 inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/5 px-2.5 py-0.5 sm:px-3 sm:py-1">
-                    <Sparkles className="h-3 w-3 text-primary" />
-                    <span className="text-[12px] sm:text-[12px] font-semibold text-primary">
+                <div className="space-y-2">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 backdrop-blur-sm">
+                    <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+                    <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
                       {isAr ? "تقويم تفاعلي" : "Interactive Calendar"}
                     </span>
                   </div>
-                  <h1 className="font-serif text-xl sm:text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
+                  <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight md:text-4xl bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
                     {isAr ? "تقويم الفعاليات" : "Events Calendar"}
                   </h1>
-                  <p className="mt-1 max-w-lg text-xs sm:text-sm text-muted-foreground leading-relaxed hidden sm:block">
+                  <p className="max-w-lg text-sm text-muted-foreground leading-relaxed hidden sm:block">
                     {isAr
                       ? "اكتشف المسابقات والمعارض والفعاليات الطهوية من جميع أنحاء العالم"
                       : "Discover competitions, exhibitions & culinary events from around the world"}
@@ -157,149 +179,160 @@ export default function EventsCalendar() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <StatPill icon={Calendar} value={stats.total} label={isAr ? "إجمالي" : "Total"} color="primary" />
-                <StatPill icon={Clock} value={stats.upcoming} label={isAr ? "قادمة" : "Upcoming"} color="chart-2" />
-                <StatPill icon={CalendarDays} value={stats.thisMonth} label={isAr ? "هذا الشهر" : "This Month"} color="chart-5" />
+              {/* Stats */}
+              <div className="grid grid-cols-2 sm:flex items-center gap-2.5">
+                <AnimatedStat icon={Calendar} value={stats.total} label={isAr ? "إجمالي الفعاليات" : "Total Events"} accent="bg-primary/10 text-primary" />
+                <AnimatedStat icon={TrendingUp} value={stats.upcoming} label={isAr ? "فعاليات قادمة" : "Upcoming"} accent="bg-chart-2/10 text-chart-2" />
+                <AnimatedStat icon={Zap} value={stats.thisMonth} label={isAr ? "هذا الشهر" : "This Month"} accent="bg-chart-5/10 text-chart-5" />
               </div>
             </div>
 
             {/* ─── Search + Filter Bar ─── */}
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
-                <Input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={isAr ? "ابحث عن فعالية، مدينة، أو جهة..." : "Search events, cities, organizers..."}
-                  className="ps-9 h-10 bg-background/80 backdrop-blur-sm"
-                />
-                {searchQuery && (
-                  <Button
-                    variant="ghost" size="icon"
-                    className="absolute end-1 top-1/2 -translate-y-1/2 h-7 w-7"
-                    onClick={() => setSearchQuery("")}
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </Button>
-                )}
-              </div>
-
-              <Select value={selectedCountry} onValueChange={(v) => setSelectedCountry(v === "all" ? "" : v)}>
-                <SelectTrigger className="w-auto min-w-[140px] h-10 bg-background/80 backdrop-blur-sm">
-                  <Globe className="h-3.5 w-3.5 me-1.5 text-muted-foreground" />
-                  <SelectValue placeholder={isAr ? "كل الدول" : "All Countries"} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{isAr ? "كل الدول" : "All Countries"}</SelectItem>
-                  {COUNTRIES.map(c => (
-                    <SelectItem key={c.code} value={c.code}>{isAr ? c.ar : c.en}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Button
-                variant={showFilters ? "default" : "outline"}
-                size="sm"
-                className="h-10 gap-1.5"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                {isAr ? "تصفية" : "Filters"}
-                {activeFiltersCount > 0 && (
-                  <Badge variant="secondary" className="h-5 w-5 p-0 justify-center text-[12px] rounded-full">
-                    {activeFiltersCount}
-                  </Badge>
-                )}
-              </Button>
-            </div>
-
-            {/* ─── Collapsible Type Filters ─── */}
-            {showFilters && (
-              <div className="mt-3 flex flex-wrap gap-1.5 animate-in slide-in-from-top-2 duration-200">
-                <Button
-                  variant={selectedTypes.length === 0 ? "default" : "outline"}
-                  size="sm"
-                  className="h-7 rounded-full text-[12px] px-3"
-                  onClick={() => setSelectedTypes([])}
-                >
-                  {isAr ? "الكل" : "All"}
-                </Button>
-                {EVENT_TYPES.filter(t => (typeCounts[t] || 0) > 0).map(type => {
-                  const label = GLOBAL_EVENT_LABELS[type];
-                  const colors = GLOBAL_EVENT_COLORS[type];
-                  const active = selectedTypes.includes(type);
-                  const count = typeCounts[type] || 0;
-                  const IconComp = ICONS[label?.icon] || MoreHorizontal;
-                  return (
-                    <Button
-                      key={type}
-                      variant={active ? "default" : "outline"}
-                      size="sm"
-                      className="h-7 rounded-full text-[12px] px-3 gap-1"
-                      onClick={() => toggleType(type)}
-                    >
-                      <IconComp className="h-3 w-3" />
-                      {isAr ? label.ar : label.en}
-                      <span className="opacity-50 text-[12px]">({count})</span>
+            <div className="mt-8 rounded-2xl border border-border/30 bg-background/60 backdrop-blur-xl p-3 shadow-sm">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="relative flex-1">
+                  <Search className="absolute start-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/40" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={isAr ? "ابحث عن فعالية، مدينة، أو جهة..." : "Search events, cities, organizers..."}
+                    className="ps-10 h-11 bg-muted/30 border-0 rounded-xl focus-visible:ring-primary/20 text-sm"
+                  />
+                  {searchQuery && (
+                    <Button variant="ghost" size="icon" className="absolute end-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-lg" onClick={() => setSearchQuery("")}>
+                      <X className="h-3.5 w-3.5" />
                     </Button>
-                  );
-                })}
-                {selectedTypes.length > 0 && (
-                  <Button variant="ghost" size="sm" className="h-7 text-[12px] text-destructive hover:text-destructive" onClick={() => setSelectedTypes([])}>
-                    <X className="h-3 w-3 me-0.5" />{isAr ? "مسح" : "Clear"}
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Select value={selectedCountry} onValueChange={(v) => setSelectedCountry(v === "all" ? "" : v)}>
+                    <SelectTrigger className="w-auto min-w-[140px] h-11 bg-muted/30 border-0 rounded-xl">
+                      <Globe className="h-3.5 w-3.5 me-1.5 text-muted-foreground/60" />
+                      <SelectValue placeholder={isAr ? "كل الدول" : "All Countries"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">{isAr ? "كل الدول" : "All Countries"}</SelectItem>
+                      {COUNTRIES.map(c => (
+                        <SelectItem key={c.code} value={c.code}>{isAr ? c.ar : c.en}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Button
+                    variant={showFilters ? "default" : "ghost"}
+                    size="sm"
+                    className={cn(
+                      "h-11 gap-1.5 rounded-xl px-4 transition-all",
+                      showFilters ? "shadow-sm" : "bg-muted/30 hover:bg-muted/50"
+                    )}
+                    onClick={() => setShowFilters(!showFilters)}
+                  >
+                    <SlidersHorizontal className="h-3.5 w-3.5" />
+                    {isAr ? "تصفية" : "Filters"}
+                    {activeFiltersCount > 0 && (
+                      <Badge variant="destructive" className="h-5 min-w-5 p-0 justify-center text-[10px] rounded-full">
+                        {activeFiltersCount}
+                      </Badge>
+                    )}
                   </Button>
-                )}
+                </div>
               </div>
-            )}
+
+              {/* ─── Type Filters ─── */}
+              {showFilters && (
+                <div className="mt-3 pt-3 border-t border-border/20 flex flex-wrap gap-1.5 animate-in slide-in-from-top-2 fade-in-0 duration-300">
+                  <Button
+                    variant={selectedTypes.length === 0 ? "default" : "outline"}
+                    size="sm"
+                    className="h-8 rounded-full text-xs px-4 active:scale-[0.98]"
+                    onClick={() => setSelectedTypes([])}
+                  >
+                    {isAr ? "الكل" : "All"}
+                  </Button>
+                  {EVENT_TYPES.filter(t => (typeCounts[t] || 0) > 0).map(type => {
+                    const label = GLOBAL_EVENT_LABELS[type];
+                    const colors = GLOBAL_EVENT_COLORS[type];
+                    const active = selectedTypes.includes(type);
+                    const count = typeCounts[type] || 0;
+                    const IconComp = ICONS[label?.icon] || MoreHorizontal;
+                    return (
+                      <Button
+                        key={type}
+                        variant={active ? "default" : "outline"}
+                        size="sm"
+                        className={cn(
+                          "h-8 rounded-full text-xs px-3.5 gap-1.5 active:scale-[0.98] transition-all",
+                          !active && "hover:border-primary/30"
+                        )}
+                        onClick={() => toggleType(type)}
+                      >
+                        <IconComp className="h-3 w-3" />
+                        {isAr ? label.ar : label.en}
+                        <span className="opacity-50 text-[10px] tabular-nums">({count})</span>
+                      </Button>
+                    );
+                  })}
+                  {selectedTypes.length > 0 && (
+                    <Button variant="ghost" size="sm" className="h-8 text-xs text-destructive hover:text-destructive rounded-full" onClick={() => setSelectedTypes([])}>
+                      <X className="h-3 w-3 me-0.5" />{isAr ? "مسح الكل" : "Clear all"}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </section>
 
-        {/* ─── Calendar Controls ─── */}
-        <div className="sticky top-0 z-30 border-b bg-background/95 backdrop-blur-md">
-          <div className="container flex items-center justify-between py-2.5 gap-3">
+        {/* ─── Calendar Controls (sticky) ─── */}
+        <div className="sticky top-0 z-30 border-b border-border/30 bg-background/90 backdrop-blur-xl">
+          <div className="container flex items-center justify-between py-2 gap-3">
             <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
-              <TabsList className="h-9 bg-muted/50 p-0.5">
-                <TabsTrigger value="month" className="h-8 px-3 text-xs gap-1 data-[state=active]:shadow-sm">
-                  <Calendar className="h-3 w-3" />
+              <TabsList className="h-9 bg-muted/40 p-0.5 rounded-xl">
+                <TabsTrigger value="month" className="h-8 px-3 text-xs gap-1.5 rounded-lg data-[state=active]:shadow-sm">
+                  <Calendar className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">{isAr ? "شهر" : "Month"}</span>
                 </TabsTrigger>
-                <TabsTrigger value="week" className="h-8 px-3 text-xs gap-1 data-[state=active]:shadow-sm">
+                <TabsTrigger value="week" className="h-8 px-3 text-xs gap-1.5 rounded-lg data-[state=active]:shadow-sm">
                   <span className="hidden sm:inline">{isAr ? "أسبوع" : "Week"}</span>
-                  <span className="sm:hidden">W</span>
+                  <span className="sm:hidden text-xs">W</span>
                 </TabsTrigger>
-                <TabsTrigger value="day" className="h-8 px-3 text-xs gap-1 data-[state=active]:shadow-sm">
+                <TabsTrigger value="day" className="h-8 px-3 text-xs gap-1.5 rounded-lg data-[state=active]:shadow-sm">
                   <span className="hidden sm:inline">{isAr ? "يوم" : "Day"}</span>
-                  <span className="sm:hidden">D</span>
+                  <span className="sm:hidden text-xs">D</span>
                 </TabsTrigger>
-                <TabsTrigger value="year" className="h-8 px-3 text-xs gap-1 data-[state=active]:shadow-sm">
+                <TabsTrigger value="year" className="h-8 px-3 text-xs gap-1.5 rounded-lg data-[state=active]:shadow-sm">
                   <span className="hidden sm:inline">{isAr ? "سنة" : "Year"}</span>
-                  <span className="sm:hidden">Y</span>
+                  <span className="sm:hidden text-xs">Y</span>
                 </TabsTrigger>
-                <TabsTrigger value="list" className="h-8 px-3 text-xs gap-1 data-[state=active]:shadow-sm">
-                  <List className="h-3 w-3" />
+                <TabsTrigger value="list" className="h-8 px-3 text-xs gap-1.5 rounded-lg data-[state=active]:shadow-sm">
+                  <List className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">{isAr ? "قائمة" : "List"}</span>
                 </TabsTrigger>
               </TabsList>
             </Tabs>
 
             {viewMode !== "list" && (
-              <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={navigatePrev}>
+              <div className="flex items-center gap-1.5">
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl hover:bg-muted/50 active:scale-[0.95]" onClick={navigatePrev}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="ghost" size="sm"
-                  className="h-8 text-sm font-semibold min-w-[140px] sm:min-w-[180px] justify-center tracking-tight"
+                <button
+                  className="h-8 text-sm font-bold min-w-[150px] sm:min-w-[200px] text-center tracking-tight hover:text-primary transition-colors"
                   onClick={goToday}
                 >
                   {headerLabel}
-                </Button>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full" onClick={navigateNext}>
+                </button>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl hover:bg-muted/50 active:scale-[0.95]" onClick={navigateNext}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
                 {!isSameDay(currentDate, new Date()) && (
-                  <Button variant="outline" size="sm" className="h-7 text-[12px] ms-1 rounded-full px-3" onClick={goToday}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-[11px] ms-1 rounded-full px-3.5 font-bold border-primary/20 text-primary hover:bg-primary/5 active:scale-[0.98]"
+                    onClick={goToday}
+                  >
                     {isAr ? "اليوم" : "Today"}
                   </Button>
                 )}
@@ -309,13 +342,11 @@ export default function EventsCalendar() {
         </div>
 
         {/* ─── Content ─── */}
-        <div className="container py-5 space-y-4">
+        <div className="container py-6 space-y-5">
           {isLoading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
-            </div>
+            <CalendarSkeleton viewMode={viewMode} />
           ) : (
-            <Suspense fallback={<div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}</div>}>
+            <Suspense fallback={<CalendarSkeleton viewMode={viewMode} />}>
               {viewMode === "month" && <MonthView events={events} currentDate={currentDate} selectedDay={selectedDay} onSelectDay={setSelectedDay} isAr={isAr} />}
               {viewMode === "week" && <WeekView events={events} currentDate={currentDate} isAr={isAr} />}
               {viewMode === "day" && <DayView events={events} currentDate={currentDate} isAr={isAr} />}
@@ -333,39 +364,73 @@ export default function EventsCalendar() {
             </Suspense>
           )}
 
-          {/* ─── Legend ─── */}
+          {/* ─── Interactive Legend ─── */}
           {!isLoading && viewMode !== "list" && (
-            <div className="flex flex-wrap gap-x-4 gap-y-1.5 pt-3 pb-4 border-t border-border/20">
-              <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider me-2">
-                {isAr ? "دليل الألوان" : "Legend"}
-              </span>
-              {EVENT_TYPES.filter(t => (typeCounts[t] || 0) > 0).map(type => {
-                const label = GLOBAL_EVENT_LABELS[type];
-                const colors = GLOBAL_EVENT_COLORS[type];
-                return (
-                  <button
-                    key={type}
-                    onClick={() => toggleType(type)}
-                    className={cn(
-                      "flex items-center gap-1.5 text-[12px] transition-all rounded-full px-2 py-0.5 -mx-2",
-                      selectedTypes.includes(type) ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:text-foreground"
-                    )}
-                  >
-                    <div className={cn("h-2 w-2 rounded-full", colors.dot)} />
-                    {isAr ? label.ar : label.en}
-                  </button>
-                );
-              })}
+            <div className="rounded-2xl border border-border/20 bg-muted/10 px-4 py-3">
+              <div className="flex items-center flex-wrap gap-x-3 gap-y-2">
+                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest me-1">
+                  {isAr ? "الأنواع" : "Types"}
+                </span>
+                {EVENT_TYPES.filter(t => (typeCounts[t] || 0) > 0).map(type => {
+                  const label = GLOBAL_EVENT_LABELS[type];
+                  const colors = GLOBAL_EVENT_COLORS[type];
+                  const isActive = selectedTypes.includes(type);
+                  return (
+                    <button
+                      key={type}
+                      onClick={() => toggleType(type)}
+                      className={cn(
+                        "flex items-center gap-1.5 text-[11px] transition-all rounded-full px-2.5 py-1 active:scale-[0.97]",
+                        isActive
+                          ? "bg-primary/15 text-primary font-bold ring-1 ring-primary/20"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
+                      )}
+                    >
+                      <div className={cn("h-2 w-2 rounded-full ring-1 ring-inset ring-border/20", colors.dot)} />
+                      {isAr ? label.ar : label.en}
+                      <span className="text-[10px] opacity-40 tabular-nums">{typeCounts[type]}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           )}
 
-          {/* Keyboard shortcuts hint */}
-          <div className="hidden lg:flex items-center justify-center gap-4 py-2 text-[12px] text-muted-foreground/50">
-            <span>← → {isAr ? "للتنقل" : "Navigate"}</span>
-            <span>T = {isAr ? "اليوم" : "Today"}</span>
+          {/* Keyboard shortcuts */}
+          <div className="hidden lg:flex items-center justify-center gap-6 py-2">
+            {[
+              { keys: "← →", label: isAr ? "تنقل" : "Navigate" },
+              { keys: "T", label: isAr ? "اليوم" : "Today" },
+            ].map(({ keys, label }) => (
+              <span key={keys} className="flex items-center gap-1.5 text-[11px] text-muted-foreground/40">
+                <kbd className="px-1.5 py-0.5 rounded-md bg-muted/40 border border-border/30 font-mono text-[10px]">{keys}</kbd>
+                {label}
+              </span>
+            ))}
           </div>
         </div>
       </PageShell>
     </TooltipProvider>
+  );
+}
+
+/* ─── Skeleton loader per view mode ─── */
+function CalendarSkeleton({ viewMode }: { viewMode: ViewMode }) {
+  if (viewMode === "month") {
+    return (
+      <div className="rounded-2xl border border-border/30 overflow-hidden">
+        <div className="grid grid-cols-7 gap-px bg-muted/20">
+          {Array.from({ length: 7 }).map((_, i) => <Skeleton key={i} className="h-8 rounded-none" />)}
+        </div>
+        <div className="grid grid-cols-7 gap-px">
+          {Array.from({ length: 35 }).map((_, i) => <Skeleton key={i} className="h-24 rounded-none" />)}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-3">
+      {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-28 w-full rounded-2xl" />)}
+    </div>
   );
 }
