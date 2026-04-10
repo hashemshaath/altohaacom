@@ -59,7 +59,7 @@ export const PostEditDialog = memo(function PostEditDialog({ post, onClose, onSa
     <div className="border-y border-border bg-muted/30 px-4 py-3 space-y-3">
       <div className="flex items-center justify-between">
         <p className="text-sm font-bold">{isAr ? "تعديل المنشور" : "Edit Post"}</p>
-        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={onClose} disabled={saving}>
+        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-full" onClick={onClose} disabled={saving} aria-label={isAr ? "إغلاق" : "Close"}>
           <X className="h-4 w-4" />
         </Button>
       </div>

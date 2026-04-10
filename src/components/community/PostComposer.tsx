@@ -418,6 +418,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
                 className="h-8 w-8 rounded-full text-primary"
                 onClick={() => fileRef.current?.click()}
                 disabled={images.length >= MAX_IMAGES || !!video}
+                aria-label={isAr ? "إضافة صورة" : "Add image"}
               >
                 <ImageIcon className="h-4 w-4" />
               </Button>

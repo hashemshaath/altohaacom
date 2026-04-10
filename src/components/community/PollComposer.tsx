@@ -69,7 +69,7 @@ export const PollComposer = memo(function PollComposer({ onPollChange }: PollCom
           <BarChart3 className="h-3.5 w-3.5" />
           {isAr ? "استطلاع رأي" : "Poll"}
         </span>
-        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={handleToggle}>
+        <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={handleToggle} aria-label={isAr ? "إزالة الاستطلاع" : "Remove poll"}>
           <X className="h-3.5 w-3.5" />
         </Button>
       </div>
@@ -83,7 +83,7 @@ export const PollComposer = memo(function PollComposer({ onPollChange }: PollCom
             maxLength={80}
           />
           {options.length > 2 && (
-            <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 rounded-full" onClick={() => removeOption(idx)}>
+            <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 rounded-full" onClick={() => removeOption(idx)} aria-label={isAr ? "حذف الخيار" : "Remove option"}>
               <X className="h-3 w-3" />
             </Button>
           )}
