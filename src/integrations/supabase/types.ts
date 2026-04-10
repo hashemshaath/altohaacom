@@ -25808,6 +25808,10 @@ export type Database = {
       }
       is_admin: { Args: { p_user_id?: string }; Returns: boolean }
       is_admin_user: { Args: never; Returns: boolean }
+      is_blind_judging_competition: {
+        Args: { p_competition_id: string }
+        Returns: boolean
+      }
       is_competition_organizer: {
         Args: { p_competition_id: string }
         Returns: boolean
