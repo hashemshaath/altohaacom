@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadAndGetUrl } from "@/lib/storageUrl";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -309,10 +310,9 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
       for (const file of Array.from(files).slice(0, 4 - photoUrls.length)) {
         const ext = file.name.split(".").pop();
         const path = `reviews/${exhibitionId}/${user.id}/${Date.now()}.${ext}`;
-        const { error } = await supabase.storage.from("exhibition-files").upload(path, file);
+        const { url, error } = await uploadAndGetUrl("exhibition-files", path, file);
         if (error) throw error;
-        const { data: urlData } = supabase.storage.from("exhibition-files").getPublicUrl(path);
-        urls.push(urlData.publicUrl);
+        urls.push(url);
       }
       setPhotoUrls(prev => [...prev, ...urls]);
     } catch {

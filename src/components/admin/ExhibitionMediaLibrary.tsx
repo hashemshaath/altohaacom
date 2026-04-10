@@ -1,6 +1,7 @@
 import { useState, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadAndGetUrl } from "@/lib/storageUrl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,18 +71,17 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
       for (const file of Array.from(files)) {
         const ext = file.name.split(".").pop();
         const path = `exhibitions/${exhibitionId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-        const { error: uploadError } = await supabase.storage.from("exhibition-files").upload(path, file);
+        const { url: fileUrl, error: uploadError } = await uploadAndGetUrl("exhibition-files", path, file);
         if (uploadError) throw uploadError;
-        const { data: { publicUrl } } = supabase.storage.from("exhibition-files").getPublicUrl(path);
         const { error: dbError } = await supabase.from("exhibition_media").insert({
           exhibition_id: exhibitionId,
-          file_url: publicUrl,
+          file_url: fileUrl,
           file_type: file.type.startsWith("image") ? "image" : file.type.startsWith("video") ? "video" : "file",
           title: file.name,
           category,
         });
         if (dbError) throw dbError;
-        if (category === "cover" && onCoverChange) onCoverChange(publicUrl);
+        if (category === "cover" && onCoverChange) onCoverChange(fileUrl);
       }
       queryClient.invalidateQueries({ queryKey: ["exhibition-media", exhibitionId] });
       toast({ title: t("Uploaded successfully", "تم الرفع بنجاح") });

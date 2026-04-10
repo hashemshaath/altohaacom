@@ -1,6 +1,7 @@
 import { useState, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadAndGetUrl } from "@/lib/storageUrl";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,15 +59,13 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
       for (const file of Array.from(files)) {
         const ext = file.name.split(".").pop();
         const path = `exhibitions/${exhibitionId}/docs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-        const { error: uploadError } = await supabase.storage.from("exhibition-files").upload(path, file);
+        const { url: fileUrl, error: uploadError } = await uploadAndGetUrl("exhibition-files", path, file);
         if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage.from("exhibition-files").getPublicUrl(path);
 
         const { error: dbError } = await supabase.from("exhibition_documents").insert({
           exhibition_id: exhibitionId,
           title: file.name,
-          file_url: publicUrl,
+          file_url: fileUrl,
           file_type: ext || "unknown",
           file_size: file.size,
           category,

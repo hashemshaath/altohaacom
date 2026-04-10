@@ -2,6 +2,7 @@ import { useRef, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadAndGetUrl, getStorageUrl } from "@/lib/storageUrl";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -136,10 +137,10 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
     queryFn: async () => {
       const { data, error } = await supabase.storage.from("company-media").list("entities", { limit: 100 });
       if (error) return [];
-      return data?.map(f => ({
+      return await Promise.all(data?.map(async (f) => ({
         name: f.name,
-        url: supabase.storage.from("company-media").getPublicUrl(`entities/${f.name}`).data.publicUrl,
-      })) || [];
+        url: await getStorageUrl("company-media", `entities/${f.name}`) || "",
+      })) || []);
     },
     enabled: showMediaPicker !== null,
   });
@@ -191,11 +192,10 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
     try {
       const ext = file.name.split(".").pop();
       const path = `entities/${Date.now()}-${type}.${ext}`;
-      const { error: uploadErr } = await supabase.storage.from("company-media").upload(path, file);
+      const { url: uploadedUrl, error: uploadErr } = await uploadAndGetUrl("company-media", path, file);
       if (uploadErr) throw uploadErr;
-      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
       const field = type === "logo" ? "logo_url" : "cover_image_url";
-      onUpdate(field, urlData.publicUrl);
+      onUpdate(field, uploadedUrl);
       toast({ title: isAr ? "تم الرفع" : "Upload successful" });
     } catch (err: unknown) {
       toast({ title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });

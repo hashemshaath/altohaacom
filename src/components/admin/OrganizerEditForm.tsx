@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect, memo, useMemo, type ReactNode } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { uploadAndGetUrl } from "@/lib/storageUrl";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAutoTranslate } from "@/hooks/useAutoTranslate";
 import { useEntityDedup } from "@/hooks/useEntityDedup";
@@ -418,13 +419,12 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
     try {
       const ext = file.name.split(".").pop() || "jpg";
       const path = `organizers/${type}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error: uploadError } = await supabase.storage.from("company-media").upload(path, file, { contentType: file.type });
+      const { url: uploadedUrl, error: uploadError } = await uploadAndGetUrl("company-media", path, file);
       if (uploadError) throw uploadError;
-      const { data: urlData } = supabase.storage.from("company-media").getPublicUrl(path);
       if (type === "gallery") {
-        setForm(f => ({ ...f, gallery_urls: [...f.gallery_urls, urlData.publicUrl] }));
+        setForm(f => ({ ...f, gallery_urls: [...f.gallery_urls, uploadedUrl] }));
       } else {
-        setForm(f => ({ ...f, [type === "logo" ? "logo_url" : "cover_image_url"]: urlData.publicUrl }));
+        setForm(f => ({ ...f, [type === "logo" ? "logo_url" : "cover_image_url"]: uploadedUrl }));
       }
       toast.success(isAr ? "تم الرفع بنجاح" : "Uploaded successfully");
     } catch (err: unknown) {
