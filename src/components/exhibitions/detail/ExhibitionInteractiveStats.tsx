@@ -25,17 +25,17 @@ export const ExhibitionInteractiveStats = memo(function ExhibitionInteractiveSta
   ];
 
   return (
-    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6 sm:gap-4">
+    <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-6 sm:gap-3">
       {stats.map((s, i) => (
         <div
           key={i}
-          className="group flex flex-col items-center gap-1.5 rounded-xl border border-border/30 bg-card/80 px-3 py-4 text-center transition-all duration-200 hover:border-primary/20 hover:shadow-sm hover:-translate-y-0.5 cursor-default"
+          className="group flex flex-col items-center gap-1 rounded-xl border border-border/30 bg-card/80 px-2 py-3 sm:px-3 sm:py-4 text-center transition-all duration-200 hover:border-primary/20 hover:shadow-sm hover:-translate-y-0.5 cursor-default"
         >
-          <s.icon className={`h-5 w-5 ${s.color} transition-transform duration-200 group-hover:scale-110`} />
-          <p className={`text-base font-bold tabular-nums ${s.color} sm:text-lg`}>
+          <s.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${s.color} transition-transform duration-200 group-hover:scale-110`} />
+          <p className={`text-sm font-bold tabular-nums ${s.color} sm:text-lg`}>
             {typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}
           </p>
-          <p className="text-[11px] font-medium text-muted-foreground sm:text-xs">{s.label}</p>
+          <p className="text-[10px] font-medium text-muted-foreground sm:text-xs leading-tight">{s.label}</p>
         </div>
       ))}
     </div>
