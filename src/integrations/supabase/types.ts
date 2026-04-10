@@ -2904,6 +2904,13 @@ export type Database = {
             referencedRelation: "chefs_table_sessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "chef_travel_records_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chefs_table_criteria_presets: {
@@ -3060,6 +3067,13 @@ export type Database = {
             referencedRelation: "chefs_table_sessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "chefs_table_evaluations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chefs_table_invitations: {
@@ -3131,6 +3145,13 @@ export type Database = {
             referencedRelation: "chefs_table_sessions"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "chefs_table_invitations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chefs_table_media: {
@@ -3195,6 +3216,13 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "chefs_table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chefs_table_media_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chefs_table_sessions_public"
             referencedColumns: ["id"]
           },
         ]
@@ -24210,6 +24238,121 @@ export type Database = {
           visibility?: string | null
         }
         Relationships: []
+      }
+      chefs_table_sessions_public: {
+        Row: {
+          chef_selection_method: string | null
+          city: string | null
+          company_id: string | null
+          country_code: string | null
+          cover_image_url: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          experience_type: string | null
+          id: string | null
+          is_published: boolean | null
+          max_chefs: number | null
+          organizer_id: string | null
+          product_category: string | null
+          product_name: string | null
+          product_name_ar: string | null
+          published_at: string | null
+          report_published: boolean | null
+          report_published_at: string | null
+          session_date: string | null
+          session_end: string | null
+          session_number: string | null
+          status: string | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          venue: string | null
+          venue_ar: string | null
+        }
+        Insert: {
+          chef_selection_method?: string | null
+          city?: string | null
+          company_id?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          experience_type?: string | null
+          id?: string | null
+          is_published?: boolean | null
+          max_chefs?: number | null
+          organizer_id?: string | null
+          product_category?: string | null
+          product_name?: string | null
+          product_name_ar?: string | null
+          published_at?: string | null
+          report_published?: boolean | null
+          report_published_at?: string | null
+          session_date?: string | null
+          session_end?: string | null
+          session_number?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Update: {
+          chef_selection_method?: string | null
+          city?: string | null
+          company_id?: string | null
+          country_code?: string | null
+          cover_image_url?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          experience_type?: string | null
+          id?: string | null
+          is_published?: boolean | null
+          max_chefs?: number | null
+          organizer_id?: string | null
+          product_category?: string | null
+          product_name?: string | null
+          product_name_ar?: string | null
+          published_at?: string | null
+          report_published?: boolean | null
+          report_published_at?: string | null
+          session_date?: string | null
+          session_end?: string | null
+          session_number?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          venue?: string | null
+          venue_ar?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chefs_table_sessions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chefs_table_sessions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chefs_table_sessions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public_safe"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       companies_public: {
         Row: {
