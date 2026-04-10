@@ -111,7 +111,7 @@ export default function ExhibitionsAdmin() {
   const { data: seriesList } = useQuery({
     queryKey: ["event-series-select"],
     queryFn: async () => {
-      const { data } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name");
+      const { data } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(500);
       return data as any[] || [];
     },
   });

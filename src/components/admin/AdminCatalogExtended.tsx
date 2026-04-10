@@ -45,7 +45,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
     queryFn: async () => {
       const itemIds = items.map(i => i.id);
       if (!itemIds.length) return [];
-      const { data } = await supabase.from("product_qa").select("*").in("catalog_item_id", itemIds).order("created_at", { ascending: false });
+      const { data } = await supabase.from("product_qa").select("*").in("catalog_item_id", itemIds).order("created_at", { ascending: false }).limit(5000);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_qa select("*") returns dynamic columns
       return (data || []) as Record<string, unknown>[];
     },
@@ -56,7 +56,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const { data: badges = [] } = useQuery({
     queryKey: ["admin-trust-badges", companyId],
     queryFn: async () => {
-      const { data } = await supabase.from("product_trust_badges").select("*").eq("company_id", companyId).order("sort_order");
+      const { data } = await supabase.from("product_trust_badges").select("*").eq("company_id", companyId).order("sort_order").limit(500);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_trust_badges select("*") returns dynamic columns
       return (data || []) as Record<string, unknown>[];
     },

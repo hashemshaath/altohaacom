@@ -46,7 +46,7 @@ export const EntityEventsTab = memo(function EntityEventsTab({ entityId, onDelet
   const { data: events } = useQuery({
     queryKey: ["admin-entity-events", entityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("entity_events").select("id, entity_id, title, title_ar, description, event_type, start_date, end_date, location, is_virtual, max_attendees, status, created_at").eq("entity_id", entityId).order("start_date", { ascending: false });
+      const { data, error } = await supabase.from("entity_events").select("id, entity_id, title, title_ar, description, event_type, start_date, end_date, location, is_virtual, max_attendees, status, created_at").eq("entity_id", entityId).order("start_date", { ascending: false }).limit(500);
       if (error) throw error;
       return data;
     },

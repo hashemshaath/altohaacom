@@ -132,7 +132,7 @@ export default function CompetitionsAdmin() {
   const { data: seriesList } = useQuery({
     queryKey: ["event-series-comp-filter"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name");
+      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(500);
       if (error) throw error;
       return data as { id: string; name: string; name_ar: string | null }[];
     },

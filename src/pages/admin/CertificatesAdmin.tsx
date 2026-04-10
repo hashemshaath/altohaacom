@@ -126,7 +126,7 @@ export default function CertificatesAdmin() {
   const { data: templates = [] } = useQuery({
     queryKey: ["certificate-templates"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").eq("is_active", true).order("name");
+      const { data, error } = await supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").eq("is_active", true).order("name").limit(500);
       if (error) throw error;
       return data;
     },
