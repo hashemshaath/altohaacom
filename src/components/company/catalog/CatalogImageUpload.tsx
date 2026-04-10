@@ -36,17 +36,10 @@ export const CatalogImageUpload = memo(function CatalogImageUpload({ imageUrl, o
       const ext = file.name.split(".").pop();
       const path = `${companyId}/catalog/${Date.now()}.${ext}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from("company-media")
-        .upload(path, file, { upsert: true });
-
+      const { url, error: uploadError } = await uploadAndGetUrl("company-media", path, file, { upsert: true });
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from("company-media")
-        .getPublicUrl(path);
-
-      onImageChange(publicUrl);
+      onImageChange(url);
       toast({ title: language === "ar" ? "تم رفع الصورة" : "Image uploaded" });
     } catch {
       toast({ title: language === "ar" ? "فشل الرفع" : "Upload failed", variant: "destructive" });

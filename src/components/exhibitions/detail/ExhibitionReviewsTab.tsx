@@ -309,10 +309,9 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
       for (const file of Array.from(files).slice(0, 4 - photoUrls.length)) {
         const ext = file.name.split(".").pop();
         const path = `reviews/${exhibitionId}/${user.id}/${Date.now()}.${ext}`;
-        const { error } = await supabase.storage.from("exhibition-files").upload(path, file);
+        const { url, error } = await uploadAndGetUrl("exhibition-files", path, file);
         if (error) throw error;
-        const { data: urlData } = supabase.storage.from("exhibition-files").getPublicUrl(path);
-        urls.push(urlData.publicUrl);
+        urls.push(url);
       }
       setPhotoUrls(prev => [...prev, ...urls]);
     } catch {
