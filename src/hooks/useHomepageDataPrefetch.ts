@@ -131,12 +131,19 @@ export function useHomepageDataPrefetch() {
         return val?.data ?? null;
       };
 
+      // Set updatedAt so staleTime works correctly with prefetched data
+      const now = Date.now();
+
+      // Seed helper – sets data with proper updatedAt timestamp
+      const seed = (key: unknown[], data: unknown) =>
+        qc.setQueryData(key, data, { updatedAt: now });
+
       // 0. Competitions
       const compsData = getData<any[]>(0);
       if (compsData) {
-        qc.setQueryData(["home-competitions-minimal", 6], compsData.slice(0, 6));
-        qc.setQueryData(["home-regional-comps"], compsData);
-        qc.setQueryData(["home-sponsorship-opportunities"], compsData.map((c) => ({
+        seed(["home-competitions-minimal", 6], compsData.slice(0, 6));
+        seed(["home-regional-comps"], compsData);
+        seed(["home-sponsorship-opportunities"], compsData.map((c) => ({
           ...c,
           currentSponsors: c.competition_sponsors?.length || 0,
           packages: [],
