@@ -88,4 +88,4 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
       </div>
     </section>
   );
-};
+});
