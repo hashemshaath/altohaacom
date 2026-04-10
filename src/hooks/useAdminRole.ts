@@ -110,7 +110,7 @@ export function useAdminRole(): AdminAccess {
         .from("user_roles")
         .select("role")
         .eq("user_id", user.id)
-        .in("role", ["supervisor", "admin", "organizer", "content_writer"]);
+        .in("role", ["supervisor", "admin" as unknown as AppRole, "organizer", "content_writer"]);
       if (error) throw error;
       const roleList = (roles?.map((r) => r.role) || []) as string[];
       // Priority: supervisor > admin > organizer > content_writer
@@ -137,7 +137,7 @@ export function useAdminRole(): AdminAccess {
     if (isSuperAdmin) return true;
 
     // Admin role: access ADMIN_PAGES but not super-admin-only pages
-    if (adminRole === "admin") {
+    if (adminRoleStr === "admin") {
       if (ADMIN_PAGES.has(path)) return true;
       for (const allowed of ADMIN_PAGES) {
         if (path.startsWith(allowed + "/")) return true;
