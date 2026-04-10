@@ -107,7 +107,7 @@ export default function CompanyPortalDashboard() {
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
               <div className="flex items-center gap-3">
                 {company?.logo_url ? (
-                  <img loading="lazy" decoding="async" src={company.logo_url} alt="" className="h-14 w-14 rounded-xl object-cover border-2 border-primary-foreground/20" />
+                  <img loading="lazy" decoding="async" src={company.logo_url} alt={company.name || "Company logo"} className="h-14 w-14 rounded-xl object-cover border-2 border-primary-foreground/20" />
                 ) : (
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary-foreground/20 backdrop-blur-sm">
                     <Building2 className="h-7 w-7" />

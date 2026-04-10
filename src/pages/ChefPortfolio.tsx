@@ -146,7 +146,7 @@ export default function ChefPortfolio() {
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
               <div className="h-24 w-24 rounded-2xl overflow-hidden bg-muted ring-4 ring-primary/10 shrink-0">
                 {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="" loading="lazy" className="h-full w-full object-cover" />
+                  <img src={profile.avatar_url} alt={profile?.full_name || "Chef"} loading="lazy" className="h-full w-full object-cover" />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center"><ChefHat className="h-10 w-10 text-muted-foreground/20" /></div>
                 )}
@@ -212,7 +212,7 @@ export default function ChefPortfolio() {
                           <div key={reg.id} className="flex items-center gap-3 rounded-xl border border-border/60 p-3 hover:bg-muted/30 transition-colors">
                             <div className="h-12 w-16 rounded-xl overflow-hidden bg-muted shrink-0">
                               {comp?.cover_image_url ? (
-                                <img src={comp.cover_image_url} alt="" loading="lazy" className="h-full w-full object-cover" />
+                                <img src={comp.cover_image_url} alt={comp.title || "Competition"} loading="lazy" className="h-full w-full object-cover" />
                               ) : (
                                 <div className="h-full w-full flex items-center justify-center"><Trophy className="h-4 w-4 text-muted-foreground/20" /></div>
                               )}

@@ -333,7 +333,7 @@ export const LinksTab = memo(function LinksTab({
                         )}
                         {item.thumbnail_url && (
                           <div className="flex items-center gap-2">
-                            <img loading="lazy" src={item.thumbnail_url} alt="" className="h-8 w-8 rounded-md object-cover" />
+                            <img loading="lazy" src={item.thumbnail_url} alt={item.title || "Link"} className="h-8 w-8 rounded-md object-cover" />
                             <Button size="sm" variant="ghost" className="h-6 text-[12px] text-destructive" onClick={() => updateItem.mutate({ id: item.id, thumbnail_url: null })}>
                               {isAr ? "إزالة الصورة" : "Remove thumbnail"}
                             </Button>

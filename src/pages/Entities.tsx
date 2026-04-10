@@ -150,7 +150,7 @@ export default function Entities() {
       <section className="relative overflow-hidden border-b border-border/40">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img src={entitiesHero} alt="" loading="lazy" className="h-full w-full object-cover scale-105 blur-[2px] opacity-20 pointer-events-none" />
+          <img src={entitiesHero} alt="Culinary entities" loading="lazy" className="h-full w-full object-cover scale-105 blur-[2px] opacity-20 pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-transparent to-transparent" />
         </div>
@@ -300,7 +300,7 @@ export default function Entities() {
                       {/* Cover / Logo Header */}
                       <div className="relative h-36 bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5">
                         {entity.cover_image_url ? (
-                          <img src={entity.cover_image_url} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          <img src={entity.cover_image_url} alt={entity.name || "Entity"} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <Building2 className="h-12 w-12 text-primary/15" />

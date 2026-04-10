@@ -204,7 +204,7 @@ export default function ShopProduct() {
                       i === selectedImage ? "border-primary ring-2 ring-primary/20 scale-105" : "border-transparent hover:border-muted-foreground/30"
                     }`}
                   >
-                    <img src={img} alt="" loading="lazy" className="h-full w-full object-cover" />
+                    <img src={img} alt="Product image" loading="lazy" className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>

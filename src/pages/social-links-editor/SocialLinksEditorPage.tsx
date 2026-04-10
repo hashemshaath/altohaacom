@@ -460,7 +460,7 @@ export default function SocialLinksEditorPage() {
                         <div className="p-4 min-h-[500px] rounded-b-lg" dir={extra.text_direction === "auto" ? undefined : extra.text_direction} style={{ background: form.background_image_url ? `url(${form.background_image_url}) center/cover` : pt.bg, fontFamily: FONT_FAMILIES.find(f => f.id === form.font_family)?.css || "inherit", color: pt.text }}>
                           {extra.cover_image_url && (
                             <div className="relative -mx-4 -mt-4 mb-4 h-32 overflow-hidden rounded-t-lg">
-                              <img src={extra.cover_image_url} alt="" className="w-full h-full object-cover object-center" loading="eager" />
+                              <img src={extra.cover_image_url} alt="Bio page cover" className="w-full h-full object-cover object-center" loading="eager" />
                             </div>
                           )}
                           <div className="relative z-10 flex flex-col items-center gap-3">
