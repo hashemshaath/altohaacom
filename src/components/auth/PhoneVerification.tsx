@@ -183,6 +183,7 @@ export const PhoneVerification = memo(function PhoneVerification({ onVerified, o
             <Input
               id="phone"
               type="tel"
+              autoComplete="tel"
               placeholder="+966 5XX XXX XXXX"
               value={phone}
               onChange={(e) => setPhone(normalizePhoneInput(e.target.value))}
