@@ -31,7 +31,7 @@ export const CountryOverviewDashboard = memo(function CountryOverviewDashboard()
       // Fetch active countries
       const { data: countries } = await supabase
         .from("countries")
-        .select("code, name, name_ar, is_active").limit(5000)
+        .select("code, name, name_ar, is_active")
         .eq("is_active", true)
         .order("name");
 
@@ -44,7 +44,7 @@ export const CountryOverviewDashboard = memo(function CountryOverviewDashboard()
         supabase.from("profiles").select("country_code").in("country_code", codes),
         supabase.from("competitions").select("country_code").in("country_code", codes),
         supabase.from("companies").select("country_code").not("country_code", "is", null).in("country_code", codes),
-        supabase.from("certificates").select("id").limit(5000),
+        supabase.from("certificates").select("id"),
       ]);
 
       const countBy = (data: { country_code: string | null }[] | null, code: string) =>

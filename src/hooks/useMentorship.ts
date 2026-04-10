@@ -545,11 +545,11 @@ export function useMentorshipAnalytics() {
     queryKey: ["mentorshipAnalytics"],
     queryFn: async () => {
       const [programs, matches, applications, sessions, enrollments] = await Promise.all([
-        supabase.from("mentorship_programs").select("id, status, created_at").limit(5000),
-        supabase.from("mentorship_matches").select("id, status, matched_at, completed_at").limit(5000),
-        supabase.from("mentor_applications").select("id, status, created_at").limit(5000),
-        supabase.from("mentorship_sessions").select("id, status, mentor_rating, mentee_rating").limit(5000),
-        supabase.from("mentee_enrollments").select("id, status, created_at").limit(5000),
+        supabase.from("mentorship_programs").select("id, status, created_at"),
+        supabase.from("mentorship_matches").select("id, status, matched_at, completed_at"),
+        supabase.from("mentor_applications").select("id, status, created_at"),
+        supabase.from("mentorship_sessions").select("id, status, mentor_rating, mentee_rating"),
+        supabase.from("mentee_enrollments").select("id, status, created_at"),
       ]);
 
       const matchesData = matches.data || [];

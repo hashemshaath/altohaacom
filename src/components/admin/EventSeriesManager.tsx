@@ -91,8 +91,8 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
     queryKey: ["event-series-edition-counts"],
     queryFn: async () => {
       const [exh, comp] = await Promise.all([
-        supabase.from("exhibitions").select("series_id, edition_year").not("series_id", "is", null),
-        supabase.from("competitions").select("series_id, edition_year").not("series_id", "is", null),
+        supabase.from("exhibitions").select("series_id, edition_year").not("series_id", "is", "null"),
+        supabase.from("competitions").select("series_id, edition_year").not("series_id", "is", "null"),
       ]);
       const counts: Record<string, { exhibitions: number; competitions: number; years: number[] }> = {};
       (exh.data || []).forEach((r) => {

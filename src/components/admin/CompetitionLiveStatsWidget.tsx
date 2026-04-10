@@ -18,10 +18,10 @@ export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidg
     queryKey: ["comp-live-stats"],
     queryFn: async () => {
       const [compsRes, regsRes, scoresRes, roundsRes] = await Promise.all([
-        supabase.from("competitions").select("id, status, country_code, competition_start, max_participants, city").limit(5000),
-        supabase.from("competition_registrations").select("competition_id, status, registered_at").limit(5000),
-        supabase.from("competition_scores").select("id, judge_id").limit(5000),
-        supabase.from("competition_rounds").select("id, competition_id, status").limit(5000),
+        supabase.from("competitions").select("id, status, country_code, competition_start, max_participants, city"),
+        supabase.from("competition_registrations").select("competition_id, status, registered_at"),
+        supabase.from("competition_scores").select("id, judge_id"),
+        supabase.from("competition_rounds").select("id, competition_id, status"),
       ]);
 
       const comps = compsRes.data || [];
