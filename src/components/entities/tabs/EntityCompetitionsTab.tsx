@@ -33,7 +33,7 @@ export const EntityCompetitionsTab = memo(function EntityCompetitionsTab({ entit
   const { data: participations } = useQuery({
     queryKey: ["admin-entity-competitions", entityId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("entity_competition_participations").select("*, competitions(title, title_ar, status)").eq("entity_id", entityId).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("entity_competition_participations").select("*, competitions(title, title_ar, status)").eq("entity_id", entityId).order("created_at", { ascending: false }).limit(500);
       if (error) throw error;
       return data;
     },

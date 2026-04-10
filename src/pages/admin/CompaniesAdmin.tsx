@@ -217,7 +217,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-contacts", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_contacts").select("id, company_id, user_id, name, name_ar, role, email, phone, mobile, is_primary, can_login, title, department, created_at").eq("company_id", selectedCompany).order("is_primary", { ascending: false });
+      const { data, error } = await supabase.from("company_contacts").select("id, company_id, user_id, name, name_ar, role, email, phone, mobile, is_primary, can_login, title, department, created_at").eq("company_id", selectedCompany).order("is_primary", { ascending: false }).limit(500);
       if (error) throw error;
       return data;
     },
@@ -228,7 +228,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-branches", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_branches").select("id, company_id, name, name_ar, city, address, phone, email, is_headquarters, is_active, country, manager_name, manager_phone, created_at").eq("company_id", selectedCompany).order("is_headquarters", { ascending: false });
+      const { data, error } = await supabase.from("company_branches").select("id, company_id, name, name_ar, city, address, phone, email, is_headquarters, is_active, country, manager_name, manager_phone, created_at").eq("company_id", selectedCompany).order("is_headquarters", { ascending: false }).limit(500);
       if (error) throw error;
       return data;
     },

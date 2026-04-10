@@ -44,7 +44,7 @@ export default function CompanyAdvertising() {
     queryKey: ["company-ad-campaigns", companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const { data, error } = await supabase.from("ad_campaigns").select("id, name, name_ar, status, budget, spent, start_date, end_date, billing_model, total_impressions, total_clicks, total_views, currency, priority, created_at").eq("company_id", companyId).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("ad_campaigns").select("id, name, name_ar, status, budget, spent, start_date, end_date, billing_model, total_impressions, total_clicks, total_views, currency, priority, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(5000);
       if (error) throw error;
       return data;
     },
