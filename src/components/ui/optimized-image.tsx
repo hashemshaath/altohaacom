@@ -69,8 +69,10 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
       shimmer = true,
       fallback,
       aspectRatio,
+      dominantColor,
+      priority = false,
       className,
-      loading = "lazy",
+      loading: loadingProp,
       sizes,
       onLoad,
       onError,
@@ -78,6 +80,7 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
     },
     ref
   ) {
+    const loading = priority ? "eager" : (loadingProp ?? "lazy");
     const [state, setState] = useState<"loading" | "loaded" | "error">("loading");
 
     const handleLoad = useCallback(
