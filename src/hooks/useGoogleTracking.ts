@@ -31,16 +31,17 @@ export function useGoogleTracking() {
   const { data: configs } = useQuery({
     queryKey: ["integration-settings-tracking-active"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("integration_settings")
-        .select("integration_type, config, is_active")
-        .eq("is_active", true)
-        .in("integration_type", ALL_TRACKING_TYPES);
+      // Use RPC for public access (works without auth)
+      const { data, error } = await supabase.rpc("get_public_tracking_config");
       if (error) {
         console.error("[Tracking] Failed to load integration settings:", error.message);
         return [];
       }
-      return data || [];
+      return (data || []).map((d: { integration_type: string; config: unknown }) => ({
+        integration_type: d.integration_type,
+        config: d.config,
+        is_active: true,
+      }));
     },
     staleTime: 5 * 60 * 1000,
     retry: 2,
