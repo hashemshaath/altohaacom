@@ -45,6 +45,7 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
+  });
 
   const allLogos = useMemo(() => {
     const combined = isSponsors ? logos : [...logos, ...entities].slice(0, itemCount);
