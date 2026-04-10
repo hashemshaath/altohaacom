@@ -127,10 +127,19 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
     const srcSet = tier === "low" ? undefined : buildSrcSet(src, adaptiveQuality);
 
     return (
-      <div className={cn("relative overflow-hidden", aspectRatio)}>
-        {/* Shimmer placeholder */}
-        {shimmer && state === "loading" && (
+      <div
+        className={cn("relative overflow-hidden", aspectRatio)}
+        style={dominantColor && state === "loading" ? { backgroundColor: dominantColor } : undefined}
+      >
+        {/* Shimmer / blur-up placeholder */}
+        {shimmer && state === "loading" && !dominantColor && (
           <div className="absolute inset-0 bg-muted/30 animate-pulse" />
+        )}
+        {dominantColor && state === "loading" && (
+          <div
+            className="absolute inset-0 animate-pulse"
+            style={{ backgroundColor: dominantColor, filter: "blur(20px)", transform: "scale(1.1)" }}
+          />
         )}
         <img
           ref={ref}
@@ -140,6 +149,7 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
           alt={alt}
           loading={loading}
           decoding="async"
+          {...(priority ? { fetchPriority: "high" as const } : {})}
           className={cn(
             "transition-opacity duration-300",
             state === "loaded" ? "opacity-100" : "opacity-0",
