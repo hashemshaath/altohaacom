@@ -268,7 +268,7 @@ export const RecipesTab = memo(function RecipesTab() {
               <div className="flex items-center justify-between pt-2 border-t border-border/10">
                 <div className="flex items-center gap-1.5">
                   <Avatar className="h-5 w-5">
-                    <AvatarFallback className="bg-primary/8 text-primary text-[9px] font-semibold">
+                    <AvatarFallback className="bg-primary/8 text-primary text-[10px] font-semibold">
                       {(recipe.author_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

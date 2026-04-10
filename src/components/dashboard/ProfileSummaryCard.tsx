@@ -151,7 +151,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
                 <div key={s.label} className="flex flex-col items-center gap-0.5 bg-muted/20 rounded-xl py-2 border border-border/20 hover:bg-muted/40 transition-all">
                   <Icon className={`h-3 w-3 ${s.color}`} />
                   <span className="text-xs font-bold tabular-nums">{s.value}</span>
-                  <span className="text-[9px] text-muted-foreground uppercase tracking-wide">{s.label}</span>
+                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{s.label}</span>
                 </div>
               );
             })}
