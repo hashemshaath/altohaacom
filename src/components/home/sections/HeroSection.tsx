@@ -161,6 +161,23 @@ export function HeroSection() {
     refetchOnWindowFocus: false,
   });
 
+  // Preload first hero slide image for faster LCP
+  useEffect(() => {
+    if (!slides.length) return;
+    const firstUrl = slides[0]?.image_url;
+    if (!firstUrl) return;
+    const href = heroImgUrl(firstUrl, 1200, 80);
+    // Avoid duplicate preload links
+    if (document.querySelector(`link[rel="preload"][href="${CSS.escape(href)}"]`)) return;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = href;
+    link.type = "image/webp";
+    document.head.appendChild(link);
+    return () => { link.remove(); };
+  }, [slides]);
+
   useEffect(() => {
     if (!slides.length) { if (current !== 0) setCurrent(0); setProgress(0); return; }
     if (current > slides.length - 1) { setCurrent(0); setProgress(0); startRef.current = performance.now(); }
