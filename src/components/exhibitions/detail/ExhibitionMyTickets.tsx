@@ -46,7 +46,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
     if (navigator.share) {
       try { await navigator.share({ title: exhibitionTitle, text }); } catch {}
     } else {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(text).then(null, () => {});
       toast({ title: t("Copied to clipboard", "تم النسخ") });
     }
   };

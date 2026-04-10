@@ -139,7 +139,7 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
                       if (navigator.share) {
                         try { await navigator.share({ url: window.location.href }); } catch { return; }
                       } else {
-                        await navigator.clipboard.writeText(window.location.href);
+                        await navigator.clipboard.writeText(window.location.href).then(null, () => {});
                       }
                       earnPoints.mutate("share");
                     }}
