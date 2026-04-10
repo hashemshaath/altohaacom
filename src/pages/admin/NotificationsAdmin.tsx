@@ -139,7 +139,7 @@ export default function NotificationsAdmin() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("notification_templates").select("id, name, title, title_ar, body, body_ar, channels, variables, created_at")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false }).limit(5000);
       if (error) throw error;
       return data || [];
     },

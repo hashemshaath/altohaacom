@@ -159,7 +159,7 @@ export default function LeadManagement() {
   const { data: stats } = useQuery({
     queryKey: ["leadStats"],
     queryFn: async () => {
-      const { data: allLeads } = await supabase.from("leads").select("status, type");
+      const { data: allLeads } = await supabase.from("leads").select("status, type").limit(5000);
       const total = allLeads?.length || 0;
       const newLeads = allLeads?.filter(l => l.status === "new").length || 0;
       const qualified = allLeads?.filter(l => l.status === "qualified").length || 0;

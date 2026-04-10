@@ -191,20 +191,20 @@ export default function CompetitionsAdmin() {
 
   const { data: allCategories } = useQuery({
     queryKey: ["adminCompetitionCategories"],
-    queryFn: async () => { const { data } = await supabase.from("competition_categories").select("id, competition_id, name, name_ar"); return data || []; },
+    queryFn: async () => { const { data } = await supabase.from("competition_categories").select("id, competition_id, name, name_ar").limit(5000); return data || []; },
     staleTime: 1000 * 60 * 5,
   });
 
   const { data: typeAssignments } = useQuery({
     queryKey: ["adminCompetitionTypes"],
-    queryFn: async () => { const { data } = await supabase.from("competition_type_assignments").select("competition_id, type:competition_types(id, name, name_ar)"); return data || []; },
+    queryFn: async () => { const { data } = await supabase.from("competition_type_assignments").select("competition_id, type:competition_types(id, name, name_ar)").limit(5000); return data || []; },
     staleTime: 1000 * 60 * 5,
   });
 
   const { data: participantCounts } = useQuery({
     queryKey: ["competitionParticipantCounts"],
     queryFn: async () => {
-      const { data } = await supabase.from("competition_registrations").select("competition_id, status");
+      const { data } = await supabase.from("competition_registrations").select("competition_id, status").limit(5000);
       const counts: Record<string, { approved: number; pending: number }> = {};
       data?.forEach(reg => {
         if (!counts[reg.competition_id]) counts[reg.competition_id] = { approved: 0, pending: 0 };
