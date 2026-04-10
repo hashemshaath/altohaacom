@@ -106,7 +106,13 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
     setLoading(false);
   }, [postId, user?.id]);
 
-  useEffect(() => { fetchThread(); }, [fetchThread]);
+  useEffect(() => {
+    let cancelled = false;
+    fetchThread().then(() => {
+      if (cancelled) return;
+    });
+    return () => { cancelled = true; };
+  }, [fetchThread]);
 
   const handleLikeReply = async (replyId: string, isLiked: boolean) => {
     if (!user) return;

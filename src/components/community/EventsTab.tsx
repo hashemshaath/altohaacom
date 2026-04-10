@@ -122,7 +122,11 @@ export const EventsTab = memo(function EventsTab() {
     setLoading(false);
   }, [user?.id]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    let cancelled = false;
+    fetchData().then(() => { if (cancelled) return; });
+    return () => { cancelled = true; };
+  }, [fetchData]);
 
   const handleCreateEvent = async () => {
     if (!user || !eventForm.title.trim()) return;
