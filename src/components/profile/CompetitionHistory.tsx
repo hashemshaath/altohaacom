@@ -189,7 +189,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
                 {/* Cover */}
                 <div className="relative h-28 bg-gradient-to-br from-primary/15 via-accent/10 to-primary/5 overflow-hidden">
                   {reg.competition?.cover_image_url ? (
-                    <img src={reg.competition.cover_image_url} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
+                    <img src={reg.competition.cover_image_url} alt={reg.competition.title || "Competition"} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                   ) : (
                     <div className="h-full w-full flex items-center justify-center">
                       <Trophy className="h-8 w-8 text-primary/20" />
