@@ -8,65 +8,75 @@ interface SectionRevealProps {
   delay?: number;
 }
 
-export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(function SectionReveal({ children, className, direction = "up", delay = 0 }, forwardedRef) {
+/**
+ * Optimised scroll-reveal wrapper using a single IntersectionObserver.
+ * - Elements already in the viewport on mount → rendered immediately (no animation).
+ * - Elements below the fold → fade/slide in once they enter.
+ */
+export const SectionReveal = forwardRef<HTMLDivElement, SectionRevealProps>(function SectionReveal(
+  { children, className, direction = "up", delay = 0 },
+  _forwardedRef
+) {
   const ref = useRef<HTMLDivElement>(null);
-  const [shouldAnimate, setShouldAnimate] = useState(false);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const [state, setState] = useState<"pending" | "animate" | "visible">("pending");
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
 
-    // Use IntersectionObserver for initial check too — avoids forced reflow from getBoundingClientRect
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          // Element was already in viewport on mount — no animation needed
-          setHasAnimated(true);
-          observer.unobserve(el);
-        } else {
-          // Element is below fold — animate it in when it enters
-          setShouldAnimate(true);
-
-          const revealObserver = new IntersectionObserver(
-            ([e]) => {
-              if (e.isIntersecting) {
-                setHasAnimated(true);
-                revealObserver.unobserve(el);
-              }
-            },
-            { threshold: 0.01, rootMargin: "0px 0px 80px 0px" }
-          );
-          revealObserver.observe(el);
-          observer.unobserve(el);
+        if (!entry.isIntersecting) {
+          // Below fold — switch to animate mode and wait for entry
+          setState("animate");
+          return;
         }
+        // In viewport — show immediately
+        setState("visible");
+        observer.disconnect();
       },
-      { threshold: 0 }
+      { threshold: 0.01, rootMargin: "0px 0px 80px 0px" }
     );
 
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
-  const hiddenTransform =
-    direction === "up"
-      ? "translate-y-4"
-      : direction === "left"
-        ? "-translate-x-4"
-        : "translate-x-4";
+  // Once in "animate" mode, observe for viewport entry
+  useEffect(() => {
+    if (state !== "animate") return;
+    const el = ref.current;
+    if (!el) return;
 
-  const isHidden = shouldAnimate && !hasAnimated;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setState("visible");
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.01, rootMargin: "0px 0px 80px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [state]);
+
+  const hiddenTransform =
+    direction === "up" ? "translate-y-4" : direction === "left" ? "-translate-x-4" : "translate-x-4";
+
+  const isHidden = state === "animate";
 
   return (
     <div
       ref={ref}
       className={cn(
-        // Only animate GPU-composited properties: transform + opacity
-        shouldAnimate && "transition-[transform,opacity] duration-600 ease-out-quint will-change-[transform,opacity]",
+        state === "animate" || state === "visible"
+          ? "transition-[transform,opacity] duration-600 ease-out-quint will-change-[transform,opacity]"
+          : undefined,
         isHidden ? `opacity-0 ${hiddenTransform}` : "opacity-100 translate-y-0 translate-x-0",
         className
       )}
-      style={shouldAnimate && hasAnimated ? { transitionDelay: `${delay}ms` } : undefined}
+      style={state === "visible" && delay > 0 ? { transitionDelay: `${delay}ms` } : undefined}
     >
       {children}
     </div>

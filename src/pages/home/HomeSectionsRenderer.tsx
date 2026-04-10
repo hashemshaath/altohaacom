@@ -39,7 +39,7 @@ const SECTION_ERROR_FALLBACK = (
 );
 
 /** Number of sections to render immediately (above-fold) */
-const EAGER_SECTION_COUNT = 4;
+const EAGER_SECTION_COUNT = 5;
 
 /** Wrapper that defers rendering until near viewport */
 const DeferredSection = forwardRef<HTMLDivElement, { children: React.ReactNode; index: number }>(function DeferredSection({ children, index }, outerRef) {
