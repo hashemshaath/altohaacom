@@ -250,7 +250,7 @@ export const SEOCompetitorTracker = memo(function SEOCompetitorTracker({ isAr }:
                               {analyzing === comp.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
                             </Button>
                             <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                              <a href={`https://${comp.domain}`} target="_blank" rel="noopener"><ExternalLink className="h-3 w-3" /></a>
+                              <a href={`https://${comp.domain}`} target="_blank" rel="noopener noreferrer"><ExternalLink className="h-3 w-3" /></a>
                             </Button>
                             <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(comp.id)}>
                               <Trash2 className="h-3 w-3" />
