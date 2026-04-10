@@ -59,7 +59,7 @@ export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
       if (!user) throw new Error("Not authenticated");
 
       // Get matching user IDs based on segment filters
-      let query = supabase.from("profiles").select("user_id");
+      let query = supabase.from("profiles").select("user_id").limit(5000);
 
       // Apply country filter if set
       if (filters?.countries?.length > 0) {

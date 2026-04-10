@@ -112,7 +112,7 @@ export default function CertificatesAdmin() {
   const { data: certificates = [], isLoading } = useQuery({
     queryKey: ["certificates", searchQuery, statusFilter, typeFilter],
     queryFn: async () => {
-      let query = supabase.from("certificates").select("id, certificate_number, verification_code, recipient_name, recipient_name_ar, recipient_email, recipient_id, type, status, event_name, event_name_ar, event_date, event_location, event_location_ar, achievement, achievement_ar, issued_at, signed_at, signed_by, sent_at, created_at, competition_id").order("created_at", { ascending: false });
+      let query = supabase.from("certificates").select("id, certificate_number, verification_code, recipient_name, recipient_name_ar, recipient_email, recipient_id, type, status, event_name, event_name_ar, event_date, event_location, event_location_ar, achievement, achievement_ar, issued_at, signed_at, signed_by, sent_at, created_at, competition_id").order("created_at", { ascending: false }).limit(5000);
       if (searchQuery) query = query.or(`recipient_name.ilike.%${searchQuery}%,certificate_number.ilike.%${searchQuery}%,verification_code.ilike.%${searchQuery}%`);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as any);
       if (typeFilter !== "all") query = query.eq("type", typeFilter as any);

@@ -267,7 +267,7 @@ export default function SEODashboard() {
   const { data: trackedKeywords, refetch: refetchKeywords, error: trackedKeywordsError } = useQuery({
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_tracked_keywords").select("*").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("seo_tracked_keywords").select("*").order("created_at", { ascending: false }).limit(5000);
       if (error) throw error;
       return data || [];
     },
@@ -276,7 +276,7 @@ export default function SEODashboard() {
   const { data: indexingStatus, refetch: refetchIndexing, error: indexingStatusError } = useQuery({
     queryKey: ["seo-indexing-status"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_indexing_status").select("*").order("updated_at", { ascending: false });
+      const { data, error } = await supabase.from("seo_indexing_status").select("*").order("updated_at", { ascending: false }).limit(5000);
       if (error) throw error;
       return data || [];
     },

@@ -50,7 +50,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { data: campaigns = [] } = useQuery({
     queryKey: ["admin-ad-campaigns"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ad_campaigns").select("*, companies(name, name_ar, logo_url)").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("ad_campaigns").select("*, companies(name, name_ar, logo_url)").order("created_at", { ascending: false }).limit(5000);
       if (error) throw error;
       return data;
     },
@@ -59,7 +59,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { data: requests = [] } = useQuery({
     queryKey: ["admin-ad-requests"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ad_requests").select("*, companies(name, name_ar, logo_url)").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("ad_requests").select("*, companies(name, name_ar, logo_url)").order("created_at", { ascending: false }).limit(5000);
       if (error) throw error;
       return data;
     },
@@ -68,7 +68,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { data: placements = [] } = useQuery({
     queryKey: ["admin-ad-placements"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ad_placements").select("*").order("sort_order");
+      const { data, error } = await supabase.from("ad_placements").select("*").order("sort_order").limit(5000);
       if (error) throw error;
       return data;
     },
@@ -77,7 +77,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { data: packages = [] } = useQuery({
     queryKey: ["admin-ad-packages"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ad_packages").select("*").order("sort_order");
+      const { data, error } = await supabase.from("ad_packages").select("*").order("sort_order").limit(5000);
       if (error) throw error;
       return data;
     },
@@ -86,7 +86,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const { data: creatives = [] } = useQuery({
     queryKey: ["admin-ad-creatives"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("ad_creatives").select("*, ad_campaigns(name, companies(name, name_ar)), ad_placements(name, name_ar)").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("ad_creatives").select("*, ad_campaigns(name, companies(name, name_ar)), ad_placements(name, name_ar)").order("created_at", { ascending: false }).limit(5000);
       if (error) throw error;
       return data;
     },

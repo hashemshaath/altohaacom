@@ -121,7 +121,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
     mutationFn: async () => {
       if (!broadcastTitle && !broadcastTitleAr) throw new Error("Title required");
 
-      let query = supabase.from("profiles").select("user_id");
+      let query = supabase.from("profiles").select("user_id").limit(5000);
       if (broadcastTarget === "professional") query = query.eq("membership_tier", "professional");
       else if (broadcastTarget === "enterprise") query = query.eq("membership_tier", "enterprise");
       else if (broadcastTarget === "paid") query = query.in("membership_tier", ["professional", "enterprise"]);

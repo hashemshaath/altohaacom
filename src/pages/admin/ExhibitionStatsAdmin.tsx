@@ -44,7 +44,7 @@ const ExhibitionKPIStrip = memo(function ExhibitionKPIStrip() {
   const { data, isLoading } = useQuery({
     queryKey: ["exhibition-stats-kpi"],
     queryFn: async () => {
-      const { data: exhibitions } = await supabase.from("exhibitions").select("id, status, start_date, view_count");
+      const { data: exhibitions } = await supabase.from("exhibitions").select("id, status, start_date, view_count").limit(5000);
       const exhs = exhibitions || [];
       const now = new Date();
       const [tickets, booths, followers] = await Promise.all([
