@@ -25926,28 +25926,7 @@ export type Database = {
         Returns: boolean
       }
       validate_username: { Args: { p_username: string }; Returns: boolean }
-      verify_certificate: {
-        Args: { p_code: string }
-        Returns: {
-          achievement: string
-          achievement_ar: string
-          certificate_number: string
-          event_date: string
-          event_location: string
-          event_location_ar: string
-          event_name: string
-          event_name_ar: string
-          id: string
-          issued_at: string
-          logos: Json
-          recipient_name: string
-          recipient_name_ar: string
-          signatures: Json
-          status: string
-          type: string
-          verification_code: string
-        }[]
-      }
+      verify_certificate: { Args: { p_code: string }; Returns: Json }
       verify_qr_code: { Args: { p_code: string }; Returns: Json }
       wallet_credit: {
         Args: {
