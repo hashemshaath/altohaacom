@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback, memo } from "react";
-import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -13,17 +12,17 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "@/hooks/use-toast";
 import {
-  Search, Building2, Globe, MapPin, Users, ShieldCheck, Bell, BellOff,
-  ExternalLink, Mail, GraduationCap, Briefcase, Landmark, Sparkles,
-  TrendingUp, ArrowRight, Filter,
+  Search, Building2, Globe, MapPin, Users, ShieldCheck,
+  GraduationCap, Briefcase, Landmark, Sparkles,
+  TrendingUp, Filter, ArrowUpDown, LayoutGrid, List,
 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
+import { EntityCard, typeLabels, scopeLabels } from "@/pages/entities/EntityCard";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];
@@ -48,33 +47,23 @@ const scopeOptions: { value: EntityScope | "all"; en: string; ar: string }[] = [
   { value: "international", en: "International", ar: "دولي" },
 ];
 
-const typeLabels: Record<EntityType, { en: string; ar: string; icon: typeof Building2 }> = {
-  culinary_association: { en: "Culinary Association", ar: "جمعية طهي", icon: Users },
-  government_entity: { en: "Government Entity", ar: "جهة حكومية", icon: Landmark },
-  private_association: { en: "Private Association", ar: "جمعية خاصة", icon: Briefcase },
-  culinary_academy: { en: "Culinary Academy", ar: "أكاديمية طهي", icon: GraduationCap },
-  industry_body: { en: "Industry Body", ar: "هيئة صناعية", icon: Building2 },
-  university: { en: "University", ar: "جامعة", icon: GraduationCap },
-  college: { en: "College", ar: "كلية", icon: GraduationCap },
-  training_center: { en: "Training Center", ar: "مركز تدريب", icon: GraduationCap },
-};
+type SortKey = "name" | "followers" | "newest";
 
-const scopeLabels: Record<EntityScope, { en: string; ar: string }> = {
-  local: { en: "Local", ar: "محلي" },
-  national: { en: "National", ar: "وطني" },
-  regional: { en: "Regional", ar: "إقليمي" },
-  international: { en: "International", ar: "دولي" },
-};
+const sortOptions: { value: SortKey; en: string; ar: string }[] = [
+  { value: "name", en: "Name", ar: "الاسم" },
+  { value: "followers", en: "Most Followed", ar: "الأكثر متابعة" },
+  { value: "newest", en: "Newest", ar: "الأحدث" },
+];
 
 /* ─── Stat Card ─── */
 const StatCard = memo(function StatCard({ value, label, icon: Icon, accent }: { value: number; label: string; icon: typeof Building2; accent: string }) {
   return (
     <div className={cn(
-      "group relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200",
+      "group/s relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 transition-all duration-200",
       "bg-background/60 backdrop-blur-xl shadow-sm hover:shadow-md hover:-translate-y-0.5",
       "border-border/30 hover:border-primary/20"
     )}>
-      <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-105", accent)}>
+      <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition-transform duration-200 group-hover/s:scale-105", accent)}>
         <Icon className="h-5 w-5" />
       </div>
       <div>
@@ -87,182 +76,36 @@ const StatCard = memo(function StatCard({ value, label, icon: Icon, accent }: { 
   );
 });
 
-/* ─── Entity Card ─── */
-const EntityCard = memo(function EntityCard({
-  entity, isAr, isFollowing, onToggleFollow, canFollow,
+/* ─── Featured Carousel ─── */
+const FeaturedEntities = memo(function FeaturedEntities({
+  entities, isAr, myFollows, onToggleFollow, canFollow,
 }: {
-  entity: any; isAr: boolean; isFollowing: boolean;
-  onToggleFollow: (id: string) => void; canFollow: boolean;
+  entities: any[]; isAr: boolean; myFollows: string[]; onToggleFollow: (id: string) => void; canFollow: boolean;
 }) {
-  const name = isAr && entity.name_ar ? entity.name_ar : entity.name;
-  const description = isAr && entity.description_ar ? entity.description_ar : entity.description;
-  const tLabel = typeLabels[entity.type as EntityType];
-  const sLabel = scopeLabels[entity.scope as EntityScope];
-  const TypeIcon = tLabel?.icon || Building2;
-  const followerCount = (entity as any).entity_followers?.length || 0;
-
+  if (entities.length === 0) return null;
   return (
-    <Card className={cn(
-      "group overflow-hidden border-border/30 transition-all duration-300",
-      "hover:shadow-xl hover:-translate-y-1 hover:border-primary/20",
-      "rounded-2xl"
-    )}>
-      {/* Cover */}
-      <div className="relative h-32 bg-gradient-to-br from-primary/8 via-accent/4 to-primary/4 overflow-hidden">
-        {entity.cover_image_url ? (
-          <img
-            src={entity.cover_image_url}
-            alt={entity.name || "Entity"}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <TypeIcon className="h-10 w-10 text-primary/10" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/20 to-transparent" />
-
-        {/* Logo */}
-        <div className="absolute -bottom-5 start-4">
-          {entity.logo_url ? (
-            <img
-              src={entity.logo_url}
-              alt={name}
-              loading="lazy"
-              decoding="async"
-              className="h-12 w-12 rounded-xl border-2 border-background bg-background object-cover shadow-lg ring-1 ring-border/10"
-            />
-          ) : (
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border-2 border-background bg-background shadow-lg ring-1 ring-border/10">
-              <TypeIcon className="h-6 w-6 text-primary" />
-            </div>
-          )}
+    <section className="space-y-4">
+      <div className="flex items-center gap-2">
+        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
+          <ShieldCheck className="h-4 w-4 text-primary" />
         </div>
-
-        {/* Badges */}
-        <div className="absolute end-2.5 top-2.5 flex gap-1.5">
-          <Badge variant="secondary" className="text-[10px] backdrop-blur-md bg-background/70 border-0 font-bold px-2 py-0.5 rounded-lg shadow-sm">
-            {isAr ? tLabel?.ar : tLabel?.en}
-          </Badge>
-          {entity.is_verified && (
-            <Badge className="bg-chart-3/20 text-chart-3 backdrop-blur-md border-0 text-[10px] px-1.5 py-0.5 rounded-lg shadow-sm">
-              <ShieldCheck className="h-2.5 w-2.5" />
-            </Badge>
-          )}
-        </div>
+        <h2 className="text-sm font-bold">{isAr ? "الجهات المميزة والموثقة" : "Featured & Verified"}</h2>
+        <div className="flex-1 h-px bg-border/20" />
       </div>
-
-      <CardContent className="pt-7 pb-4 px-4 space-y-3">
-        {/* Name + scope */}
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0">
-            <h3 className="text-sm font-bold leading-tight truncate group-hover:text-primary transition-colors">{name}</h3>
-            {entity.abbreviation && (
-              <p className="text-[11px] text-muted-foreground/60 mt-0.5 font-medium">({entity.abbreviation})</p>
-            )}
-          </div>
-          {sLabel && (
-            <Badge variant="outline" className="shrink-0 text-[10px] rounded-lg border-border/30 font-bold px-2 py-0.5">
-              {isAr ? sLabel.ar : sLabel.en}
-            </Badge>
-          )}
-        </div>
-
-        {/* Description */}
-        {description && (
-          <p className="line-clamp-2 text-xs text-muted-foreground leading-relaxed">{description}</p>
-        )}
-
-        {/* Meta info */}
-        <div className="space-y-1">
-          {entity.city && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
-              <span className="truncate">{entity.city}{entity.country ? `, ${entity.country}` : ""}</span>
-            </div>
-          )}
-          {entity.email && (
-            <div className="flex items-center gap-2 text-xs">
-              <Mail className="h-3 w-3 shrink-0 text-primary/50" />
-              <a href={`mailto:${entity.email}`} className="text-primary hover:underline truncate text-[11px]">{entity.email}</a>
-            </div>
-          )}
-          {entity.website && (
-            <div className="flex items-center gap-2 text-xs">
-              <Globe className="h-3 w-3 shrink-0 text-primary/50" />
-              <a href={entity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate text-[11px]">
-                {entity.website.replace(/^https?:\/\//, "")}
-              </a>
-            </div>
-          )}
-        </div>
-
-        {/* Specializations */}
-        {entity.specializations && (entity.specializations as string[]).length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {(entity.specializations as string[]).slice(0, 3).map(s => (
-              <Badge key={s} variant="secondary" className="text-[10px] rounded-md px-1.5 py-0 font-medium">{s}</Badge>
-            ))}
-            {(entity.specializations as string[]).length > 3 && (
-              <Badge variant="secondary" className="text-[10px] rounded-md px-1.5 py-0">
-                +{(entity.specializations as string[]).length - 3}
-              </Badge>
-            )}
-          </div>
-        )}
-
-        {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-border/15">
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
-            <Users className="h-3 w-3" />
-            <span className="font-medium tabular-nums">{followerCount}</span>
-            <span>{isAr ? "متابع" : "followers"}</span>
-            {entity.member_count != null && entity.member_count > 0 && (
-              <>
-                <span className="text-border">•</span>
-                <span className="font-medium tabular-nums">{entity.member_count}</span>
-                <span>{isAr ? "عضو" : "members"}</span>
-              </>
-            )}
-          </div>
-          {entity.founded_year && (
-            <span className="text-[10px] text-muted-foreground/50 font-medium tabular-nums">
-              {isAr ? "تأسست" : "Est."} {entity.founded_year}
-            </span>
-          )}
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2 pt-1">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1 h-9 rounded-xl text-xs font-bold gap-1.5 hover:bg-primary/5 hover:text-primary hover:border-primary/30 active:scale-[0.98] transition-all"
-            asChild
-          >
-            <Link to={`/entities/${entity.slug}`}>
-              {isAr ? "عرض التفاصيل" : "View Details"}
-              <ArrowRight className="h-3 w-3" />
-            </Link>
-          </Button>
-          {canFollow && (
-            <Button
-              variant={isFollowing ? "ghost" : "secondary"}
-              size="icon"
-              className={cn(
-                "h-9 w-9 rounded-xl shrink-0 active:scale-[0.95] transition-all",
-                isFollowing && "text-primary"
-              )}
-              onClick={() => onToggleFollow(entity.id)}
-            >
-              {isFollowing ? <BellOff className="h-4 w-4" /> : <Bell className="h-4 w-4" />}
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {entities.slice(0, 4).map(entity => (
+          <EntityCard
+            key={entity.id}
+            entity={entity}
+            isAr={isAr}
+            isFollowing={myFollows.includes(entity.id)}
+            onToggleFollow={onToggleFollow}
+            canFollow={canFollow}
+            featured
+          />
+        ))}
+      </div>
+    </section>
   );
 });
 
@@ -276,6 +119,8 @@ export default function Entities() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [scopeFilter, setScopeFilter] = useState<string>("all");
   const [activeTab, setActiveTab] = useState("all");
+  const [sortBy, setSortBy] = useState<SortKey>("name");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const { data: entities, isLoading } = useQuery({
     queryKey: ["public-entities"],
@@ -325,29 +170,50 @@ export default function Entities() {
 
   const handleToggleFollow = useCallback((id: string) => toggleFollow.mutate(id), [toggleFollow]);
 
-  const filtered = useMemo(() => entities?.filter(e => {
-    const name = isAr && e.name_ar ? e.name_ar : e.name;
-    const matchesSearch = (name + (e.abbreviation || "")).toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter === "all" || e.type === typeFilter;
-    const matchesScope = scopeFilter === "all" || e.scope === scopeFilter;
+  // Featured entities (verified + has followers)
+  const featuredEntities = useMemo(() => {
+    if (!entities) return [];
+    return entities
+      .filter(e => e.is_verified)
+      .sort((a, b) => (b.entity_followers?.length || 0) - (a.entity_followers?.length || 0))
+      .slice(0, 4);
+  }, [entities]);
 
-    let matchesTab = true;
-    if (activeTab === "education") matchesTab = e.type === "university" || e.type === "college" || e.type === "training_center" || e.type === "culinary_academy";
-    if (activeTab === "local") matchesTab = e.scope === "local" || e.scope === "national";
-    if (activeTab === "international") matchesTab = e.scope === "regional" || e.scope === "international";
-    if (activeTab === "government") matchesTab = e.type === "government_entity";
-    if (activeTab === "private") matchesTab = e.type === "private_association" || e.type === "culinary_association";
+  const filtered = useMemo(() => {
+    let result = entities?.filter(e => {
+      const name = isAr && e.name_ar ? e.name_ar : e.name;
+      const matchesSearch = (name + (e.abbreviation || "")).toLowerCase().includes(search.toLowerCase());
+      const matchesType = typeFilter === "all" || e.type === typeFilter;
+      const matchesScope = scopeFilter === "all" || e.scope === scopeFilter;
 
-    return matchesSearch && matchesType && matchesScope && matchesTab;
-  }), [entities, search, typeFilter, scopeFilter, activeTab, isAr]);
+      let matchesTab = true;
+      if (activeTab === "education") matchesTab = e.type === "university" || e.type === "college" || e.type === "training_center" || e.type === "culinary_academy";
+      if (activeTab === "local") matchesTab = e.scope === "local" || e.scope === "national";
+      if (activeTab === "international") matchesTab = e.scope === "regional" || e.scope === "international";
+      if (activeTab === "government") matchesTab = e.type === "government_entity";
+      if (activeTab === "private") matchesTab = e.type === "private_association" || e.type === "culinary_association";
+
+      return matchesSearch && matchesType && matchesScope && matchesTab;
+    }) || [];
+
+    // Sort
+    if (sortBy === "followers") {
+      result = [...result].sort((a, b) => (b.entity_followers?.length || 0) - (a.entity_followers?.length || 0));
+    } else if (sortBy === "newest") {
+      result = [...result].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
+    // "name" is default from DB order
+
+    return result;
+  }, [entities, search, typeFilter, scopeFilter, activeTab, isAr, sortBy]);
 
   const entityStats = useMemo(() => {
-    if (!entities) return { verified: 0, countries: 0, associations: 0, government: 0 };
+    if (!entities) return { verified: 0, countries: 0, associations: 0, education: 0 };
     return {
       verified: entities.filter(e => e.is_verified).length,
       countries: new Set(entities.map(e => e.country).filter(Boolean)).size,
       associations: entities.filter(e => e.type === "culinary_association" || e.type === "private_association").length,
-      government: entities.filter(e => e.type === "government_entity").length,
+      education: entities.filter(e => e.type === "university" || e.type === "college" || e.type === "culinary_academy" || e.type === "training_center").length,
     };
   }, [entities]);
 
@@ -377,11 +243,11 @@ export default function Entities() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_80%,hsl(var(--chart-3)/0.05),transparent)]" />
         </div>
 
-        <div className="container relative py-12 md:py-20">
-          <div className="max-w-3xl space-y-6">
+        <div className="container relative py-12 md:py-16">
+          <div className="max-w-3xl space-y-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 ring-1 ring-primary/15 shadow-xl backdrop-blur-sm">
-                <Building2 className="h-7 w-7 text-primary" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 ring-1 ring-primary/15 shadow-xl backdrop-blur-sm">
+                <Building2 className="h-6 w-6 text-primary" />
               </div>
               <Badge variant="secondary" className="backdrop-blur-xl bg-background/60 px-3.5 py-1 text-[10px] font-black uppercase tracking-[0.15em] border-0 shadow-sm">
                 <Sparkles className="h-2.5 w-2.5 me-1.5 text-primary" />
@@ -390,27 +256,27 @@ export default function Entities() {
             </div>
 
             <div className="space-y-3">
-              <h1 className="font-serif text-3xl font-black tracking-tight md:text-5xl lg:text-6xl leading-[1.1]">
+              <h1 className="font-serif text-3xl font-black tracking-tight md:text-5xl leading-[1.1]">
                 {isAr ? (
                   <>دليل <span className="text-primary">جهات</span> وجمعيات الطهي</>
                 ) : (
                   <>Culinary <span className="text-primary">Entities</span> Directory</>
                 )}
               </h1>
-              <p className="max-w-xl text-base text-muted-foreground font-medium md:text-lg leading-relaxed">
+              <p className="max-w-xl text-base text-muted-foreground font-medium leading-relaxed">
                 {isAr
                   ? "اكتشف وتابع جمعيات الطهي والجهات الحكومية والخاصة المعنية بالطهي محلياً ودولياً."
                   : "Discover and follow culinary associations, government entities, and private organizations globally."}
               </p>
             </div>
 
-            {/* Stats row */}
+            {/* Stats */}
             {entities && entities.length > 0 && (
-              <div className="grid grid-cols-2 sm:flex items-center gap-2.5 pt-2">
+              <div className="grid grid-cols-2 sm:flex items-center gap-2.5 pt-1">
                 <StatCard icon={Building2} value={entities.length} label={isAr ? "إجمالي الجهات" : "Total Entities"} accent="bg-primary/10 text-primary" />
                 <StatCard icon={ShieldCheck} value={entityStats.verified} label={isAr ? "جهات موثقة" : "Verified"} accent="bg-chart-3/10 text-chart-3" />
                 <StatCard icon={Globe} value={entityStats.countries} label={isAr ? "دولة" : "Countries"} accent="bg-chart-1/10 text-chart-1" />
-                <StatCard icon={TrendingUp} value={entityStats.associations} label={isAr ? "جمعيات" : "Associations"} accent="bg-chart-5/10 text-chart-5" />
+                <StatCard icon={GraduationCap} value={entityStats.education} label={isAr ? "تعليمية" : "Education"} accent="bg-chart-5/10 text-chart-5" />
               </div>
             )}
           </div>
@@ -418,7 +284,18 @@ export default function Entities() {
       </section>
 
       <main className="container flex-1 py-6 md:py-8 space-y-6">
-        {/* ─── Search & Filters ─── */}
+        {/* ─── Featured Section ─── */}
+        {!isLoading && featuredEntities.length > 0 && activeTab === "all" && !search && (
+          <FeaturedEntities
+            entities={featuredEntities}
+            isAr={isAr}
+            myFollows={myFollows || []}
+            onToggleFollow={handleToggleFollow}
+            canFollow={!!user}
+          />
+        )}
+
+        {/* ─── Search, Filters & Sort ─── */}
         <div className="rounded-2xl border border-border/20 bg-background/60 backdrop-blur-xl p-3 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
@@ -435,9 +312,9 @@ export default function Entities() {
                 </Button>
               )}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-auto min-w-[130px] h-11 bg-muted/30 border-0 rounded-xl text-xs">
+                <SelectTrigger className="w-auto min-w-[130px] h-10 bg-muted/30 border-0 rounded-xl text-xs">
                   <Building2 className="h-3.5 w-3.5 me-1.5 text-muted-foreground/50" />
                   <SelectValue />
                 </SelectTrigger>
@@ -446,7 +323,7 @@ export default function Entities() {
                 </SelectContent>
               </Select>
               <Select value={scopeFilter} onValueChange={setScopeFilter}>
-                <SelectTrigger className="w-auto min-w-[110px] h-11 bg-muted/30 border-0 rounded-xl text-xs">
+                <SelectTrigger className="w-auto min-w-[110px] h-10 bg-muted/30 border-0 rounded-xl text-xs">
                   <Globe className="h-3.5 w-3.5 me-1.5 text-muted-foreground/50" />
                   <SelectValue />
                 </SelectTrigger>
@@ -454,6 +331,36 @@ export default function Entities() {
                   {scopeOptions.map(s => <SelectItem key={s.value} value={s.value}>{isAr ? s.ar : s.en}</SelectItem>)}
                 </SelectContent>
               </Select>
+              <Select value={sortBy} onValueChange={v => setSortBy(v as SortKey)}>
+                <SelectTrigger className="w-auto min-w-[120px] h-10 bg-muted/30 border-0 rounded-xl text-xs">
+                  <ArrowUpDown className="h-3.5 w-3.5 me-1.5 text-muted-foreground/50" />
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {sortOptions.map(s => <SelectItem key={s.value} value={s.value}>{isAr ? s.ar : s.en}</SelectItem>)}
+                </SelectContent>
+              </Select>
+
+              {/* View toggle */}
+              <div className="flex rounded-xl bg-muted/30 p-0.5">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn("h-9 w-9 rounded-lg", viewMode === "grid" && "bg-background shadow-sm")}
+                  onClick={() => setViewMode("grid")}
+                >
+                  <LayoutGrid className="h-3.5 w-3.5" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn("h-9 w-9 rounded-lg", viewMode === "list" && "bg-background shadow-sm")}
+                  onClick={() => setViewMode("list")}
+                >
+                  <List className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+
               {activeFiltersCount > 0 && (
                 <Button
                   variant="ghost"
@@ -472,7 +379,7 @@ export default function Entities() {
         </div>
 
         {/* ─── Tabs ─── */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
           <TabsList className="flex-wrap bg-muted/30 p-1 gap-0.5 rounded-xl h-auto">
             {[
               { value: "all", icon: Building2, en: "All", ar: "الكل" },
@@ -485,7 +392,7 @@ export default function Entities() {
               <TabsTrigger
                 key={tab.value}
                 value={tab.value}
-                className="gap-1.5 text-xs sm:text-xs rounded-lg data-[state=active]:shadow-sm px-3 py-2"
+                className="gap-1.5 text-xs rounded-lg data-[state=active]:shadow-sm px-3 py-2"
               >
                 <tab.icon className="h-3.5 w-3.5 hidden sm:inline" />
                 {isAr ? tab.ar : tab.en}
@@ -495,10 +402,14 @@ export default function Entities() {
 
           <TabsContent value={activeTab} className="mt-0">
             {isLoading ? (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 6 }).map((_, i) => (
+              <div className={cn(
+                viewMode === "grid"
+                  ? "grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "space-y-3"
+              )}>
+                {Array.from({ length: 8 }).map((_, i) => (
                   <Card key={i} className="rounded-2xl overflow-hidden">
-                    <Skeleton className="h-32 w-full rounded-none" />
+                    <Skeleton className="h-28 w-full rounded-none" />
                     <CardContent className="pt-8 space-y-3">
                       <Skeleton className="h-4 w-3/4 rounded-lg" />
                       <Skeleton className="h-3 w-1/2 rounded-lg" />
@@ -507,7 +418,7 @@ export default function Entities() {
                   </Card>
                 ))}
               </div>
-            ) : filtered?.length === 0 ? (
+            ) : filtered.length === 0 ? (
               <div className="py-20 text-center">
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/50">
                   <Building2 className="h-8 w-8 text-muted-foreground/30" />
@@ -526,8 +437,12 @@ export default function Entities() {
                 )}
               </div>
             ) : (
-              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {filtered?.map(entity => (
+              <div className={cn(
+                viewMode === "grid"
+                  ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "grid gap-3 grid-cols-1 sm:grid-cols-2"
+              )}>
+                {filtered.map(entity => (
                   <EntityCard
                     key={entity.id}
                     entity={entity}
