@@ -50,6 +50,8 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
       return data || [];
     },
     staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   const { data: exhibitions = [] } = useQuery({
@@ -66,6 +68,8 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
       return [...active, ...completed].slice(0, 12);
     },
     staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   const allEvents = [
