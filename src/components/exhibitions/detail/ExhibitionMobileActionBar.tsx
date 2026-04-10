@@ -53,7 +53,7 @@ export const ExhibitionMobileActionBar = memo(function ExhibitionMobileActionBar
         await navigator.share(shareData);
       } catch { /* user cancelled */ }
     } else {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(window.location.href).then(null, () => {});
       toast({ title: isAr ? "تم نسخ الرابط 📋" : "Link copied 📋" });
     }
   };
