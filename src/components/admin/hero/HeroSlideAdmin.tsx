@@ -570,6 +570,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                     src={slide.image_url || "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&q=60"}
                                     alt={tpl.label}
                                     className="h-full w-full object-cover"
+                                    loading="lazy"
                                     onError={e => { (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&q=60"; }}
                                   />
                                   <div className="absolute inset-0" style={{ background: tpl.previewGradient }}>
@@ -710,6 +711,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                                 src={slide.image_url}
                                 alt={isAr ? "معاينة الشريحة" : "Slide preview"}
                                 className="h-full w-full"
+                                loading="lazy"
                                 style={{ objectFit: slide.object_fit as React.CSSProperties["objectFit"], objectPosition: slide.object_position }}
                               />
                               <div className="absolute top-2 end-2 rounded-md bg-background/70 backdrop-blur-sm px-2 py-1 text-[12px] font-mono">
