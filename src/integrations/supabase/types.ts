@@ -24864,6 +24864,10 @@ export type Database = {
         Returns: Json
       }
       sync_chef_visibility: { Args: { p_user_id: string }; Returns: undefined }
+      update_card_orientation: {
+        Args: { p_orientation: string }
+        Returns: undefined
+      }
       user_has_feature: {
         Args: { p_feature_code: string; p_user_id: string }
         Returns: boolean
