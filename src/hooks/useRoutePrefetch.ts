@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { canPrefetch } from "./useConnectionAwarePrefetch";
 
 /**
  * Prefetches top route chunks during browser idle time.
@@ -16,6 +17,8 @@ export function useRoutePrefetch() {
   useEffect(() => {
     if (done.current) return;
     done.current = true;
+
+    if (!canPrefetch()) return;
 
     const prefetch = () => {
       // Stagger prefetches to avoid contention

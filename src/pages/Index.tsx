@@ -10,6 +10,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
 import { useRoutePrefetch } from "@/hooks/useRoutePrefetch";
+import { useWebVitals } from "@/hooks/useWebVitals";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 
 /* ─── Fallbacks ─── */
@@ -65,6 +66,7 @@ const Index = () => {
 
   useHomepageDataPrefetch();
   useRoutePrefetch();
+  useWebVitals();
 
   const { data: dbSections = [], isError } = useHomepageSections();
 

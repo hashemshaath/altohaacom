@@ -1,6 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { canPrefetch } from "./useConnectionAwarePrefetch";
 
 /**
  * Prefetches ALL homepage data using Promise.allSettled for resilient parallel loading.
@@ -20,6 +21,9 @@ export function useHomepageDataPrefetch() {
     didPrefetch.current = true;
 
     let cancelled = false;
+
+    // Skip heavy prefetching on slow/metered connections
+    if (!canPrefetch()) return;
 
     const prefetch = async () => {
       const results = await Promise.allSettled([
