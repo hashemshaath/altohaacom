@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,7 +37,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
   currentArticleId, articleType, categoryId, tags, isAr,
 }: Props) {
   // Track current article
-  useMemo(() => addToReadingHistory(currentArticleId), [currentArticleId]);
+  useEffect(() => { addToReadingHistory(currentArticleId); }, [currentArticleId]);
 
   const tagIds = tags.map(t => t.id);
 
