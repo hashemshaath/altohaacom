@@ -9881,6 +9881,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "exhibition_attendee_schedule_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "exhibition_attendee_schedule_exhibition_id_fkey"
             columns: ["exhibition_id"]
             isOneToOne: false
@@ -10081,6 +10088,13 @@ export type Database = {
             columns: ["booth_id"]
             isOneToOne: false
             referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_booth_requests_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths_public"
             referencedColumns: ["id"]
           },
           {
@@ -10369,6 +10383,13 @@ export type Database = {
             columns: ["booth_id"]
             isOneToOne: false
             referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_cooking_sessions_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths_public"
             referencedColumns: ["id"]
           },
           {
@@ -10676,6 +10697,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "exhibition_map_waypoints_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "exhibition_map_waypoints_exhibition_id_fkey"
             columns: ["exhibition_id"]
             isOneToOne: false
@@ -10801,6 +10829,13 @@ export type Database = {
             columns: ["booth_id"]
             isOneToOne: false
             referencedRelation: "exhibition_booths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_offers_booth_id_fkey"
+            columns: ["booth_id"]
+            isOneToOne: false
+            referencedRelation: "exhibition_booths_public"
             referencedColumns: ["id"]
           },
           {
@@ -24243,7 +24278,6 @@ export type Database = {
         Row: {
           chef_selection_method: string | null
           city: string | null
-          company_id: string | null
           country_code: string | null
           cover_image_url: string | null
           created_at: string | null
@@ -24258,22 +24292,17 @@ export type Database = {
           product_name: string | null
           product_name_ar: string | null
           published_at: string | null
-          report_published: boolean | null
-          report_published_at: string | null
           session_date: string | null
           session_end: string | null
-          session_number: string | null
           status: string | null
           title: string | null
           title_ar: string | null
-          updated_at: string | null
           venue: string | null
           venue_ar: string | null
         }
         Insert: {
           chef_selection_method?: string | null
           city?: string | null
-          company_id?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
@@ -24288,22 +24317,17 @@ export type Database = {
           product_name?: string | null
           product_name_ar?: string | null
           published_at?: string | null
-          report_published?: boolean | null
-          report_published_at?: string | null
           session_date?: string | null
           session_end?: string | null
-          session_number?: string | null
           status?: string | null
           title?: string | null
           title_ar?: string | null
-          updated_at?: string | null
           venue?: string | null
           venue_ar?: string | null
         }
         Update: {
           chef_selection_method?: string | null
           city?: string | null
-          company_id?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
@@ -24318,41 +24342,15 @@ export type Database = {
           product_name?: string | null
           product_name_ar?: string | null
           published_at?: string | null
-          report_published?: boolean | null
-          report_published_at?: string | null
           session_date?: string | null
           session_end?: string | null
-          session_number?: string | null
           status?: string | null
           title?: string | null
           title_ar?: string | null
-          updated_at?: string | null
           venue?: string | null
           venue_ar?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "chefs_table_sessions_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "chefs_table_sessions_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies_public"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "chefs_table_sessions_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies_public_safe"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       companies_public: {
         Row: {
@@ -25046,6 +25044,122 @@ export type Database = {
             columns: ["series_id"]
             isOneToOne: false
             referencedRelation: "competition_series"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      exhibition_booths_public: {
+        Row: {
+          booking_status: string | null
+          booth_number: string | null
+          category: string | null
+          color_hex: string | null
+          company_id: string | null
+          created_at: string | null
+          currency: string | null
+          description: string | null
+          description_ar: string | null
+          exhibition_id: string | null
+          floor_level: string | null
+          hall: string | null
+          hall_ar: string | null
+          id: string | null
+          is_featured: boolean | null
+          location_x: number | null
+          location_y: number | null
+          logo_url: string | null
+          name: string | null
+          name_ar: string | null
+          price: number | null
+          size: string | null
+          size_sqm: number | null
+          status: string | null
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          booking_status?: string | null
+          booth_number?: string | null
+          category?: string | null
+          color_hex?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id?: string | null
+          floor_level?: string | null
+          hall?: string | null
+          hall_ar?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          location_x?: number | null
+          location_y?: number | null
+          logo_url?: string | null
+          name?: string | null
+          name_ar?: string | null
+          price?: number | null
+          size?: string | null
+          size_sqm?: number | null
+          status?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          booking_status?: string | null
+          booth_number?: string | null
+          category?: string | null
+          color_hex?: string | null
+          company_id?: string | null
+          created_at?: string | null
+          currency?: string | null
+          description?: string | null
+          description_ar?: string | null
+          exhibition_id?: string | null
+          floor_level?: string | null
+          hall?: string | null
+          hall_ar?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          location_x?: number | null
+          location_y?: number | null
+          logo_url?: string | null
+          name?: string | null
+          name_ar?: string | null
+          price?: number | null
+          size?: string | null
+          size_sqm?: number | null
+          status?: string | null
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exhibition_booths_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_booths_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_booths_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public_safe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "exhibition_booths_exhibition_id_fkey"
+            columns: ["exhibition_id"]
+            isOneToOne: false
+            referencedRelation: "exhibitions"
             referencedColumns: ["id"]
           },
         ]
