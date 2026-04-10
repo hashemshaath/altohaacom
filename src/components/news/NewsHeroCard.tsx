@@ -50,7 +50,7 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
       <Card className="h-full overflow-hidden rounded-2xl border-0 transition-all duration-300 hover:shadow-2xl relative">
         <div className="relative aspect-[16/10] overflow-hidden">
           {article.featured_image_url ? (
-            <img loading="lazy"
+            <img
               src={article.featured_image_url}
               alt={title}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
