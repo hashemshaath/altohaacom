@@ -163,7 +163,7 @@ export const ChefsTab = memo(function ChefsTab() {
                   </AvatarFallback>
                 </Avatar>
                 {chef.is_verified && (
-                  <div className="absolute -bottom-0.5 -end-0.5 h-4.5 w-4.5 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] ring-2 ring-card">
+                  <div className="absolute -bottom-0.5 -end-0.5 h-4.5 w-4.5 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] ring-2 ring-card">
                     ✓
                   </div>
                 )}

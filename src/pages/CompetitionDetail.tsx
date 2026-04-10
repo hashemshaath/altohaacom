@@ -736,7 +736,7 @@ export default function CompetitionDetail() {
               <div className="flex items-center gap-0.5 min-w-max py-1.5">
                 {NAV_GROUPS.map((group, gi) => (
                   <div key={group.labelEn} className={`flex items-center ${gi > 0 ? "border-s border-border/15 ms-1 ps-2" : ""}`}>
-                    <span className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-muted-foreground/30 px-1.5 hidden sm:block">
+                    <span className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-muted-foreground/30 px-1.5 hidden sm:block">
                       {isAr ? group.labelAr : group.labelEn}
                     </span>
                     {group.tabs.map((tab) => {

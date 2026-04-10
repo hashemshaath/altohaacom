@@ -230,7 +230,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap({
           {/* Hour labels */}
           <div className="flex items-center gap-0.5 mb-1 ps-14">
             {HOURS.filter(h => h % 3 === 0).map(h => (
-              <span key={h} className="text-[9px] text-muted-foreground tabular-nums" style={{ width: `${(3 / 24) * 100}%` }}>
+              <span key={h} className="text-[10px] text-muted-foreground tabular-nums" style={{ width: `${(3 / 24) * 100}%` }}>
                 {String(h).padStart(2, "0")}
               </span>
             ))}
@@ -262,11 +262,11 @@ export const ActivityHeatmap = memo(function ActivityHeatmap({
           ))}
           {/* Legend */}
           <div className="flex items-center justify-end gap-1.5 mt-2">
-            <span className="text-[9px] text-muted-foreground">{isAr ? "أقل" : "Less"}</span>
+            <span className="text-[10px] text-muted-foreground">{isAr ? "أقل" : "Less"}</span>
             {["bg-muted/30", "bg-primary/15", "bg-primary/30", "bg-primary/50", "bg-primary/80"].map((c, i) => (
               <div key={i} className={cn("h-2.5 w-2.5 rounded-sm", c)} />
             ))}
-            <span className="text-[9px] text-muted-foreground">{isAr ? "أكثر" : "More"}</span>
+            <span className="text-[10px] text-muted-foreground">{isAr ? "أكثر" : "More"}</span>
           </div>
         </div>
       </CardContent>

@@ -426,7 +426,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-bold text-foreground">{isAr ? `ضمان ${warrantyYears} سنوات شامل` : `${warrantyYears}-Year Comprehensive Warranty`}</h3>
-                      <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[9px] font-bold rounded-md gap-0.5 py-0">
+                      <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[10px] font-bold rounded-md gap-0.5 py-0">
                         <CheckCircle className="h-2.5 w-2.5" />{isAr ? "مفعّل" : "Active"}
                       </Badge>
                     </div>
@@ -521,7 +521,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
               )}>
                 <Icon className="h-3.5 w-3.5" />{isAr ? tab.ar : tab.en}
                 {tab.count !== undefined && tab.count > 0 && (
-                  <span className={cn("text-[9px] rounded-full px-1.5 py-0.5 font-bold", isActive ? "bg-primary/10 text-primary" : "bg-muted/60")}>{tab.count}</span>
+                  <span className={cn("text-[10px] rounded-full px-1.5 py-0.5 font-bold", isActive ? "bg-primary/10 text-primary" : "bg-muted/60")}>{tab.count}</span>
                 )}
               </button>
             );
@@ -722,7 +722,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                       <div className="flex items-baseline gap-1 mt-1.5">
                         <span className="text-sm font-bold text-primary tabular-nums">{rpPriceVat.toLocaleString()}</span>
                         <span className="text-[10px] text-muted-foreground">{currencyLabel}</span>
-                        <span className="text-[9px] text-muted-foreground/60 ms-0.5">{isAr ? "شامل الضريبة" : "incl. VAT"}</span>
+                        <span className="text-[10px] text-muted-foreground/60 ms-0.5">{isAr ? "شامل الضريبة" : "incl. VAT"}</span>
                       </div>
                     )}
                   </CardContent>
