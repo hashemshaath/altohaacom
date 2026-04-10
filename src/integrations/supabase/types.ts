@@ -24721,6 +24721,13 @@ export type Database = {
         Returns: string
       }
       get_profile_safe: { Args: { p_profile_user_id: string }; Returns: Json }
+      get_public_tracking_config: {
+        Args: never
+        Returns: {
+          config: Json
+          integration_type: string
+        }[]
+      }
       get_user_by_phone: {
         Args: { p_phone: string }
         Returns: {
