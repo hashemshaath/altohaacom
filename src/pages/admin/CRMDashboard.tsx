@@ -237,7 +237,7 @@ export default function CRMDashboard() {
   const { data: allTicketsForTrend } = useQuery({
     queryKey: ["crmAllTickets"],
     queryFn: async () => {
-      const { data } = await supabase.from("support_tickets").select("id, created_at, status");
+      const { data } = await supabase.from("support_tickets").select("id, created_at, status").limit(5000);
       return data || [];
     },
   });
