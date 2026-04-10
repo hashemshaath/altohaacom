@@ -66,6 +66,8 @@ export interface NavItem {
   end?: boolean;
   /** If true, only full admins (supervisor/organizer) can see this item */
   fullAdminOnly?: boolean;
+  /** If true, only Super Admin (supervisor) can see this item — Admin role cannot */
+  superAdminOnly?: boolean;
 }
 
 export interface NavSection {
@@ -74,6 +76,8 @@ export interface NavSection {
   items: NavItem[];
   /** If true, the entire section is full-admin only */
   fullAdminOnly?: boolean;
+  /** If true, the entire section is Super Admin only */
+  superAdminOnly?: boolean;
 }
 
 export const adminNavSections: NavSection[] = [
@@ -87,11 +91,11 @@ export const adminNavSections: NavSection[] = [
     ],
   },
 
-  /* ── 2. Users ── */
+  /* ── 2. Users (Super Admin only) ── */
   {
     titleEn: "Users",
     titleAr: "المستخدمين",
-    fullAdminOnly: true,
+    superAdminOnly: true,
     items: [
       { to: "/admin/users", icon: Users, labelEn: "All Users", labelAr: "جميع المستخدمين" },
       { to: "/admin/roles", icon: Shield, labelEn: "Roles", labelAr: "الأدوار" },
@@ -108,7 +112,7 @@ export const adminNavSections: NavSection[] = [
     items: [
       { to: "/admin/companies", icon: Building, labelEn: "Companies", labelAr: "الشركات" },
       { to: "/admin/establishments", icon: Building2, labelEn: "Establishments", labelAr: "المنشآت" },
-      { to: "/admin/organizers", icon: Landmark, labelEn: "Organizers", labelAr: "المنظمين", fullAdminOnly: true },
+      { to: "/admin/organizers", icon: Landmark, labelEn: "Organizers", labelAr: "المنظمين", superAdminOnly: true },
     ],
   },
 
@@ -157,18 +161,18 @@ export const adminNavSections: NavSection[] = [
       { to: "/admin/seo", icon: Search, labelEn: "SEO Dashboard", labelAr: "لوحة SEO" },
       { to: "/admin/knowledge", icon: BookOpen, labelEn: "Knowledge", labelAr: "المعرفة" },
       { to: "/admin/masterclasses", icon: GraduationCap, labelEn: "Masterclasses", labelAr: "الدورات" },
-      { to: "/admin/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد", fullAdminOnly: true },
+      { to: "/admin/mentorship", icon: HandHeart, labelEn: "Mentorship", labelAr: "الإرشاد", superAdminOnly: true },
       { to: "/admin/media", icon: Image, labelEn: "Media", labelAr: "الوسائط" },
       { to: "/admin/moderation", icon: Flag, labelEn: "Moderation", labelAr: "الإشراف" },
       { to: "/admin/qr-codes", icon: QrCode, labelEn: "QR Codes", labelAr: "رموز QR" },
     ],
   },
 
-  /* ── 8. Finance ── */
+  /* ── 8. Finance (Super Admin only) ── */
   {
     titleEn: "Finance",
     titleAr: "المالية",
-    fullAdminOnly: true,
+    superAdminOnly: true,
     items: [
       { to: "/admin/orders", icon: Package, labelEn: "Orders", labelAr: "الطلبات" },
       { to: "/admin/invoices", icon: FileText, labelEn: "Invoices", labelAr: "الفواتير" },
@@ -205,24 +209,25 @@ export const adminNavSections: NavSection[] = [
     ],
   },
 
-  /* ── 11. System ── */
+  /* ── 11. System (Super Admin only) ── */
   {
     titleEn: "System",
     titleAr: "النظام",
+    superAdminOnly: true,
     items: [
-      { to: "/admin/settings", icon: Settings, labelEn: "Settings", labelAr: "الإعدادات", fullAdminOnly: true },
-      { to: "/admin/security", icon: ShieldAlert, labelEn: "Security", labelAr: "الأمان", fullAdminOnly: true },
+      { to: "/admin/settings", icon: Settings, labelEn: "Settings", labelAr: "الإعدادات" },
+      { to: "/admin/security", icon: ShieldAlert, labelEn: "Security", labelAr: "الأمان" },
       { to: "/admin/localization", icon: Globe, labelEn: "Languages", labelAr: "اللغات" },
-      { to: "/admin/countries", icon: MapPin, labelEn: "Countries", labelAr: "الدول", fullAdminOnly: true },
-      { to: "/admin/settings?tab=integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات", fullAdminOnly: true },
+      { to: "/admin/countries", icon: MapPin, labelEn: "Countries", labelAr: "الدول" },
+      { to: "/admin/settings?tab=integrations", icon: Plug, labelEn: "Integrations", labelAr: "التكاملات" },
     ],
   },
 
-  /* ── 12. Tools ── */
+  /* ── 12. Tools (Super Admin only) ── */
   {
     titleEn: "Tools",
     titleAr: "الأدوات",
-    fullAdminOnly: true,
+    superAdminOnly: true,
     items: [
       { to: "/admin/smart-import", icon: Upload, labelEn: "Smart Import", labelAr: "استيراد ذكي" },
       { to: "/admin/deduplication", icon: ScanSearch, labelEn: "Deduplication", labelAr: "التكرارات" },
