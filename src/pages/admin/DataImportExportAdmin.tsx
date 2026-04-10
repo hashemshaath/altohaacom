@@ -242,7 +242,7 @@ const ExportTab = memo(function ExportTab() {
     setExporting(true);
     try {
       const cols = Array.from(selectedColumns).join(", ");
-      const { data, error } = await supabase.from(currentModule.table as any).select(cols);
+      const { data, error } = await supabase.from(currentModule.table as any).select(cols).limit(5000);
       if (error) throw error;
       if (!data?.length) {
         toast({ title: t("No data found", "لا توجد بيانات") });

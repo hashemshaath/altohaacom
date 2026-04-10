@@ -154,7 +154,7 @@ export default function News() {
   const { data: categories = [] } = useQuery({
     queryKey: ["news-categories"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug");
+      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").limit(500);
       return (data || []) as Category[];
     },
     staleTime: 1000 * 60 * 10,
@@ -172,7 +172,7 @@ export default function News() {
   const { data: articleTagMap = {} } = useQuery({
     queryKey: ["article-tag-map"],
     queryFn: async () => {
-      const { data } = await supabase.from("article_tags").select("article_id, tag_id");
+      const { data } = await supabase.from("article_tags").select("article_id, tag_id").limit(5000);
       const map: Record<string, string[]> = {};
       (data || []).forEach((row) => {
         if (!map[row.article_id]) map[row.article_id] = [];

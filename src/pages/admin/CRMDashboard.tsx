@@ -66,7 +66,7 @@ export default function CRMDashboard() {
   const { data: ticketStats } = useQuery({
     queryKey: ["crmTicketStats"],
     queryFn: async () => {
-      const { data: all } = await supabase.from("support_tickets").select("id, status, priority, created_at");
+      const { data: all } = await supabase.from("support_tickets").select("id, status, priority, created_at").limit(5000);
       const tickets = all || [];
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -85,7 +85,7 @@ export default function CRMDashboard() {
   const { data: chatStats } = useQuery({
     queryKey: ["crmChatStats"],
     queryFn: async () => {
-      const { data } = await supabase.from("chat_sessions").select("id, status, rating");
+      const { data } = await supabase.from("chat_sessions").select("id, status, rating").limit(5000);
       const sessions = data || [];
       const ratings = sessions.filter(s => s.rating).map(s => s.rating!);
       return {
@@ -102,7 +102,7 @@ export default function CRMDashboard() {
   const { data: segmentStats } = useQuery({
     queryKey: ["crmSegmentStats"],
     queryFn: async () => {
-      const { data } = await supabase.from("audience_segments").select("id, estimated_reach, is_active");
+      const { data } = await supabase.from("audience_segments").select("id, estimated_reach, is_active").limit(5000);
       const segments = data || [];
       return {
         total: segments.length,
@@ -116,7 +116,7 @@ export default function CRMDashboard() {
   const { data: leadStats } = useQuery({
     queryKey: ["crmLeadStats"],
     queryFn: async () => {
-      const { data } = await supabase.from("leads").select("id, status, type");
+      const { data } = await supabase.from("leads").select("id, status, type").limit(5000);
       const leads = data || [];
       return {
         total: leads.length,
@@ -237,7 +237,7 @@ export default function CRMDashboard() {
   const { data: allTicketsForTrend } = useQuery({
     queryKey: ["crmAllTickets"],
     queryFn: async () => {
-      const { data } = await supabase.from("support_tickets").select("id, created_at, status");
+      const { data } = await supabase.from("support_tickets").select("id, created_at, status").limit(5000);
       return data || [];
     },
   });
