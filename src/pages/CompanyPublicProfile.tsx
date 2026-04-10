@@ -124,7 +124,7 @@ export default function CompanyPublicProfile() {
         {/* Hero */}
         <div className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
           {company.cover_image_url && (
-            <img src={company.cover_image_url} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-15" alt="" />
+            <img src={company.cover_image_url} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-15" alt={company.name || "Company cover"} />
           )}
           <div className="container relative py-12 md:py-16">
             <Button variant="ghost" size="sm" className="mb-6" onClick={() => navigate(-1)}>

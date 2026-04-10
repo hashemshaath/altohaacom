@@ -351,7 +351,7 @@ export default function ArticlesAdmin() {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         {article.featured_image_url ? (
-                          <img src={article.featured_image_url} alt="" className="h-10 w-14 rounded-xl object-cover ring-1 ring-border/40 shrink-0" loading="lazy" />
+                          <img src={article.featured_image_url} alt={article.title || "Article"} className="h-10 w-14 rounded-xl object-cover ring-1 ring-border/40 shrink-0" loading="lazy" />
                         ) : (
                           <div className="flex h-10 w-14 items-center justify-center rounded-xl bg-primary/5 shrink-0">
                             <FileText className="h-4 w-4 text-primary/40" />

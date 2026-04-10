@@ -810,7 +810,7 @@ export default function OrdersAdmin() {
                 {orderDetails.companies && (
                   <div className="flex items-center gap-3">
                     {orderDetails.companies.logo_url ? (
-                      <img src={orderDetails.companies.logo_url} alt="" className="h-12 w-12 rounded-xl object-cover" loading="lazy" />
+                      <img src={orderDetails.companies.logo_url} alt="Company logo" className="h-12 w-12 rounded-xl object-cover" loading="lazy" />
                     ) : (
                       <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
                         <Building2 className="h-6 w-6 text-muted-foreground" />
@@ -959,7 +959,7 @@ export default function OrdersAdmin() {
                       <div key={item.id} className="flex items-center gap-3">
                         <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
                           {item.shop_products?.image_url ? (
-                            <img src={item.shop_products.image_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                            <img src={item.shop_products.image_url} alt={item.shop_products.name || "Product"} className="h-full w-full object-cover" loading="lazy" />
                           ) : (
                             <div className="flex h-full items-center justify-center">
                               <ShoppingBag className="h-5 w-5 text-muted-foreground/30" />
@@ -1372,7 +1372,7 @@ export default function OrdersAdmin() {
                               <TableCell>
                                 <div className="flex items-center gap-2">
                                   {order.companies?.logo_url ? (
-                                    <img src={order.companies.logo_url} alt="" className="h-6 w-6 rounded object-cover" loading="lazy" />
+                                    <img src={order.companies.logo_url} alt="Company" className="h-6 w-6 rounded object-cover" loading="lazy" />
                                   ) : (
                                     <Building2 className="h-4 w-4 text-muted-foreground" />
                                   )}

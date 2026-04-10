@@ -178,7 +178,7 @@ export default function SupplierCompare() {
               return (
                 <Badge key={id} variant="secondary" className="gap-2 py-1.5 px-3 text-sm">
                   {s?.logo_url ? (
-                    <img loading="lazy" src={s.logo_url} className="h-4 w-4 rounded object-contain" alt="" />
+                    <img loading="lazy" src={s.logo_url} className="h-4 w-4 rounded object-contain" alt={s.name || "Supplier"} />
                   ) : (
                     <Building2 className="h-3.5 w-3.5" />
                   )}
@@ -220,7 +220,7 @@ export default function SupplierCompare() {
                     >
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-muted">
                         {s.logo_url ? (
-                          <img loading="lazy" src={s.logo_url} className="h-5 w-5 object-contain" alt="" />
+                          <img loading="lazy" src={s.logo_url} className="h-5 w-5 object-contain" alt={s.name || "Supplier"} />
                         ) : (
                           <Building2 className="h-4 w-4 text-muted-foreground" />
                         )}

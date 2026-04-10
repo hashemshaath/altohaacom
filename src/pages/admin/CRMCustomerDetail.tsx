@@ -604,7 +604,7 @@ export default function CRMCustomerDetail() {
                       {wishlist.map((item) => (
                         <div key={item.id} className="flex items-center gap-3 rounded-xl border p-3">
                           {item.item_image_url ? (
-                            <img loading="lazy" decoding="async" src={item.item_image_url} alt="" className="h-12 w-12 rounded-xl object-cover" />
+                            <img loading="lazy" decoding="async" src={item.item_image_url} alt="Order item" className="h-12 w-12 rounded-xl object-cover" />
                           ) : (
                             <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
                               <Heart className="h-5 w-5 text-muted-foreground" />

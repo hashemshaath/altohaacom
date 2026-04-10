@@ -345,7 +345,7 @@ export default function ProSupplierDetail() {
         <section className="relative overflow-hidden bg-gradient-to-br from-primary/8 via-background to-accent/5">
           {/* Cover background */}
           {company.cover_image_url && (
-            <img src={company.cover_image_url} loading="eager" className="absolute inset-0 h-full w-full object-cover opacity-10" alt="" />
+            <img src={company.cover_image_url} loading="eager" className="absolute inset-0 h-full w-full object-cover opacity-10" alt={company.name || "Supplier cover"} />
           )}
           <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-transparent to-background" />
 

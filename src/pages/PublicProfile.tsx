@@ -281,7 +281,7 @@ export default function PublicProfile() {
                         <Card key={m.id} className="rounded-2xl border-border/25 hover:shadow-md transition-all duration-300 hover:border-border/40 hover:-translate-y-0.5 group/card">
                           <CardContent className="p-4 flex items-center gap-3">
                             {m.culinary_entities?.logo_url ? (
-                              <img src={m.culinary_entities.logo_url} alt="" className="h-10 w-10 rounded-xl object-cover border" loading="lazy" />
+                              <img src={m.culinary_entities.logo_url} alt={m.culinary_entities.name || "Entity"} className="h-10 w-10 rounded-xl object-cover border" loading="lazy" />
                             ) : (
                               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">
                                 <Building2 className="h-5 w-5 text-primary" />

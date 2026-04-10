@@ -295,7 +295,7 @@ export default function EntityDetail() {
           {entity.cover_image_url ? (
             <img src={entity.cover_image_url} alt={name} loading="lazy" className="h-full w-full object-cover" />
           ) : (
-            <img src={entitiesHero} alt="" loading="lazy" className="h-full w-full object-cover" />
+            <img src={entitiesHero} alt="Entity background" loading="lazy" className="h-full w-full object-cover" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
           <div className="absolute inset-0 bg-gradient-to-r from-background/50 to-transparent" />

@@ -423,7 +423,7 @@ export default function OrganizersAdmin() {
                   return (
                     <Card key={org.id} className="rounded-2xl border-border/40 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                       <div className="relative h-24 bg-gradient-to-br from-primary/20 to-primary/5">
-                        {org.cover_image_url && <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />}
+                        {org.cover_image_url && <img src={org.cover_image_url} alt={org.name || "Organizer"} className="w-full h-full object-cover" loading="lazy" />}
                         <div className="absolute top-2 end-2 flex gap-1">
                           <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[11px] h-5 capitalize">{org.status}</Badge>
                         </div>

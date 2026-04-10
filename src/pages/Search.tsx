@@ -581,7 +581,7 @@ function CompetitionRow({
         {/* Thumbnail */}
         <div className="w-10 h-10 rounded-xl bg-primary/10 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
           {data.cover_image_url ? (
-            <img loading="lazy" src={data.cover_image_url} alt="" className="w-full h-full object-cover" />
+            <img loading="lazy" src={data.cover_image_url} alt={data.title || "Search result"} className="w-full h-full object-cover" />
           ) : (
             <Trophy className="h-4.5 w-4.5 text-primary/60" />
           )}
@@ -645,7 +645,7 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
       <div className="flex items-start gap-3">
         <div className="w-14 h-14 rounded-xl bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
           {data.featured_image_url ? (
-            <img loading="lazy" src={data.featured_image_url} alt="" className="w-full h-full object-cover" />
+            <img loading="lazy" src={data.featured_image_url} alt={data.title || "Article"} className="w-full h-full object-cover" />
           ) : (
             <FileText className="h-5 w-5 text-muted-foreground/50" />
           )}
@@ -781,7 +781,7 @@ function PostRow({ data, isAr }: { data: any; isAr: boolean }) {
         </div>
         {data.image_url && (
           <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-muted">
-            <img loading="lazy" src={data.image_url} alt="" className="w-full h-full object-cover" />
+            <img loading="lazy" src={data.image_url} alt={data.title || "Result"} className="w-full h-full object-cover" />
           </div>
         )}
       </div>
@@ -803,7 +803,7 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
       <div className="flex items-start gap-3">
         <div className="w-14 h-14 rounded-xl bg-accent/30 shrink-0 overflow-hidden mt-0.5">
           {data.image_url ? (
-            <img loading="lazy" src={data.image_url} alt="" className="w-full h-full object-cover" />
+            <img loading="lazy" src={data.image_url} alt={data.title || "Result"} className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <UtensilsCrossed className="h-5 w-5 text-muted-foreground/50" />
@@ -852,7 +852,7 @@ function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
     <Link to={`/exhibitions/${data.slug || data.id}`} className="group block rounded-xl px-4 py-3 -mx-2 transition-colors hover:bg-accent/40">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-chart-5/10 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
-          {data.cover_image_url ? <img loading="lazy" src={data.cover_image_url} alt="" className="w-full h-full object-cover" /> : <Ticket className="h-4 w-4 text-chart-5/60" />}
+          {data.cover_image_url ? <img loading="lazy" src={data.cover_image_url} alt={data.title || "Event"} className="w-full h-full object-cover" /> : <Ticket className="h-4 w-4 text-chart-5/60" />}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1 text-xs text-muted-foreground mb-0.5">
@@ -885,7 +885,7 @@ function EntityRow({ data, isAr }: { data: any; isAr: boolean }) {
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-accent/30 shrink-0 flex items-center justify-center overflow-hidden mt-0.5">
           {data.logo_url ? (
-            <img loading="lazy" src={data.logo_url} alt="" className="w-full h-full object-cover" />
+            <img loading="lazy" src={data.logo_url} alt={data.name || "Entity"} className="w-full h-full object-cover" />
           ) : (
             <Building2 className="h-4.5 w-4.5 text-muted-foreground/50" />
           )}

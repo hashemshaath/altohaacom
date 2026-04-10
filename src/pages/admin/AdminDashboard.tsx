@@ -552,7 +552,7 @@ export default function AdminDashboard() {
                 <Link key={user.id} to={`/${user.username || user.id}`} className="flex items-center gap-3 p-3 transition-colors hover:bg-accent/5">
                   <div className="h-8 w-8 shrink-0 rounded-full overflow-hidden bg-muted">
                     {user.avatar_url ? (
-                      <img src={user.avatar_url} alt="" className="h-full w-full object-cover" loading="lazy" />
+                      <img src={user.avatar_url} alt="User avatar" className="h-full w-full object-cover" loading="lazy" />
                     ) : (
                       <div className="flex h-full w-full items-center justify-center text-muted-foreground text-xs font-medium">
                         {(user.display_name || user.full_name || "U")[0].toUpperCase()}

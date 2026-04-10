@@ -350,7 +350,7 @@ export const VisibilityTab = memo(function VisibilityTab({
                 </div>
                 {(extra.og_image_url || profile?.avatar_url) && (
                   <div className="h-28 bg-muted/20 overflow-hidden">
-                    <img loading="lazy" src={extra.og_image_url || profile?.avatar_url || ""} alt="" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = "none")} />
+                    <img loading="lazy" src={extra.og_image_url || profile?.avatar_url || ""} alt="OG preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = "none")} />
                   </div>
                 )}
                 <div className="p-2.5 space-y-0.5">
@@ -372,7 +372,7 @@ export const VisibilityTab = memo(function VisibilityTab({
                 <div className="flex gap-2 p-2">
                   {(extra.og_image_url || profile?.avatar_url) && (
                     <div className="w-16 h-16 rounded-md overflow-hidden shrink-0 bg-muted/20">
-                      <img loading="lazy" src={extra.og_image_url || profile?.avatar_url || ""} alt="" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = "none")} />
+                      <img loading="lazy" src={extra.og_image_url || profile?.avatar_url || ""} alt="OG preview" className="w-full h-full object-cover" onError={e => (e.currentTarget.style.display = "none")} />
                     </div>
                   )}
                   <div className="min-w-0 flex-1 space-y-0.5">

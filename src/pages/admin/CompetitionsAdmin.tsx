@@ -591,7 +591,7 @@ export default function CompetitionsAdmin() {
                               {comp.derivedOrganizer ? (
                                 <div className="flex items-center gap-2">
                                   {comp.derivedOrganizer.logo_url ? (
-                                    <img src={comp.derivedOrganizer.logo_url} alt="" className="h-5 w-5 rounded object-contain" loading="lazy" />
+                                    <img src={comp.derivedOrganizer.logo_url} alt="Organizer" className="h-5 w-5 rounded object-contain" loading="lazy" />
                                   ) : (
                                     <div className="h-5 w-5 rounded bg-muted flex items-center justify-center"><Building2 className="h-3 w-3 text-muted-foreground" /></div>
                                   )}
