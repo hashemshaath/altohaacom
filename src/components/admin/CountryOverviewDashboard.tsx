@@ -41,10 +41,10 @@ export const CountryOverviewDashboard = memo(function CountryOverviewDashboard()
 
       // Parallel count queries
       const [usersRes, compsRes, companiesRes, certsRes] = await Promise.all([
-        supabase.from("profiles").select("country_code").in("country_code", codes),
-        supabase.from("competitions").select("country_code").in("country_code", codes),
-        supabase.from("companies").select("country_code").not("country_code", "is", null).in("country_code", codes),
-        supabase.from("certificates").select("id"),
+        supabase.from("profiles").select("country_code").in("country_code", codes).limit(5000),
+        supabase.from("competitions").select("country_code").in("country_code", codes).limit(5000),
+        supabase.from("companies").select("country_code").not("country_code", "is", null).in("country_code", codes).limit(5000),
+        supabase.from("certificates").select("id").limit(5000),
       ]);
 
       const countBy = (data: { country_code: string | null }[] | null, code: string) =>

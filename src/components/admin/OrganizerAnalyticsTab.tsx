@@ -43,7 +43,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
 
       const [ticketsRes, reviewsRes, followersRes] = await Promise.all([
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", exIds),
-        supabase.from("exhibition_reviews").select("id, rating").in("exhibition_id", exIds),
+        supabase.from("exhibition_reviews").select("id, rating").in("exhibition_id", exIds).limit(5000),
         supabase.from("exhibition_followers").select("id", { count: "exact", head: true }).in("exhibition_id", exIds),
       ]);
 

@@ -20,7 +20,7 @@ export const CertificatesLiveWidget = memo(function CertificatesLiveWidget() {
     queryKey: ["certificatesLiveStats"],
     queryFn: async () => {
       const [certsRes, templatesRes, verificationsRes] = await Promise.all([
-        supabase.from("certificates").select("id, type, status, created_at, issued_at, sent_at, downloaded_count, template_id"),
+        supabase.from("certificates").select("id, type, status, created_at, issued_at, sent_at, downloaded_count, template_id").limit(5000),
         supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").limit(500),
         supabase.from("certificate_verifications").select("id, verified_at").order("verified_at", { ascending: false }).limit(200),
       ]);

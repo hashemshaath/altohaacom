@@ -75,7 +75,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
   const { data: mediaItems = [] } = useQuery({
     queryKey: ["company-media-logos", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, category, file_type, created_at")
+      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, category, file_type, created_at").limit(5000)
         .eq("company_id", companyId).in("category", ["logo", "product_images"]).order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];

@@ -29,10 +29,10 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
         { data: history },
         { data: wallets },
       ] = await Promise.all([
-        supabase.from("profiles").select("membership_tier, membership_status, membership_started_at, created_at"),
-        supabase.from("invoices").select("amount, currency, status, created_at, paid_at").order("created_at", { ascending: false }),
+        supabase.from("profiles").select("membership_tier, membership_status, membership_started_at, created_at").limit(5000),
+        supabase.from("invoices").select("amount, currency, status, created_at, paid_at").order("created_at", { ascending: false }).limit(5000),
         supabase.from("membership_history").select("previous_tier, new_tier, created_at, reason").order("created_at", { ascending: false }).limit(500),
-        supabase.from("user_wallets").select("balance, points_balance"),
+        supabase.from("user_wallets").select("balance, points_balance").limit(5000),
       ]);
 
       const now = new Date();

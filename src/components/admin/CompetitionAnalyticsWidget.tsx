@@ -20,10 +20,10 @@ export const CompetitionAnalyticsWidget = memo(function CompetitionAnalyticsWidg
     queryKey: ["admin-competition-analytics-widget"],
     queryFn: async () => {
       const [competitions, registrations, scores, judges] = await Promise.all([
-        supabase.from("competitions").select("id, status, country_code, created_at"),
-        supabase.from("competition_registrations").select("id, competition_id, status, registered_at"),
-        supabase.from("competition_scores").select("id, score"),
-        supabase.from("competition_roles").select("id, role, status").eq("role", "judge").eq("status", "active"),
+        supabase.from("competitions").select("id, status, country_code, created_at").limit(5000),
+        supabase.from("competition_registrations").select("id, competition_id, status, registered_at").limit(5000),
+        supabase.from("competition_scores").select("id, score").limit(5000),
+        supabase.from("competition_roles").select("id, role, status").eq("role", "judge").eq("status", "active").limit(5000),
       ]);
 
       const allComps = competitions.data || [];

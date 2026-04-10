@@ -21,9 +21,9 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
         { count: rewardRedemptions },
       ] = await Promise.all([
         supabase.from("user_wallets").select("balance, points_balance").limit(1000),
-        supabase.from("wallet_transactions").select("type, amount, created_at")
+        supabase.from("wallet_transactions").select("type, amount, created_at").limit(5000)
           .gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()).limit(500),
-        supabase.from("points_ledger").select("points, action_type, created_at")
+        supabase.from("points_ledger").select("points, action_type, created_at").limit(5000)
           .gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()).limit(500),
         supabase.from("points_ledger").select("id", { count: "exact", head: true })
           .lt("points", 0),
