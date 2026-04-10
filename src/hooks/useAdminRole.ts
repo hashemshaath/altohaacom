@@ -132,34 +132,30 @@ export function useAdminRole(): AdminAccess {
   const isContentManager = isSuperAdmin || adminRoleStr === "admin" || adminRoleStr === "content_writer";
   const hasAdminAccess = adminRole !== null;
 
+  /** Check if path matches any page in set (exact or sub-path) */
+  const matchesSet = (path: string, pages: Set<string>): boolean => {
+    if (pages.has(path)) return true;
+    for (const allowed of pages) {
+      if (path.startsWith(allowed + "/")) return true;
+    }
+    return false;
+  };
+
   const canAccessPage = (path: string): boolean => {
     if (!hasAdminAccess) return false;
     if (isSuperAdmin) return true;
 
-    // Admin role: access ADMIN_PAGES but not super-admin-only pages
-    if (adminRoleStr === "admin") {
-      if (ADMIN_PAGES.has(path)) return true;
-      for (const allowed of ADMIN_PAGES) {
-        if (path.startsWith(allowed + "/")) return true;
-      }
-      return false;
-    }
+    // Block super-admin-only pages for ALL non-supervisor roles
+    if (matchesSet(path, SUPER_ADMIN_ONLY_PAGES)) return false;
 
-    // Organizer: competition/exhibition pages only
-    if (isOrganizer) {
-      if (ORGANIZER_PAGES.has(path)) return true;
-      for (const allowed of ORGANIZER_PAGES) {
-        if (path.startsWith(allowed + "/")) return true;
-      }
-      return false;
-    }
+    // Admin role: whitelist check
+    if (adminRoleStr === "admin") return matchesSet(path, ADMIN_PAGES);
 
-    // content_writer: check allowed pages
-    if (CONTENT_WRITER_PAGES.has(path)) return true;
-    for (const allowed of CONTENT_WRITER_PAGES) {
-      if (path.startsWith(allowed + "/")) return true;
-    }
-    return false;
+    // Organizer: scoped pages only
+    if (isOrganizer) return matchesSet(path, ORGANIZER_PAGES);
+
+    // content_writer: scoped pages only
+    return matchesSet(path, CONTENT_WRITER_PAGES);
   };
 
   return { adminRole, isSuperAdmin, isFullAdmin, isOrganizer, isContentManager, hasAdminAccess, canAccessPage, isLoading };
