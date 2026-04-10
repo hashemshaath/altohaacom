@@ -24799,6 +24799,7 @@ export type Database = {
       }
       is_free_preview: { Args: { p_module_id: string }; Returns: boolean }
       is_super_admin: { Args: { p_user_id?: string }; Returns: boolean }
+      is_super_admin_user: { Args: never; Returns: boolean }
       is_valid_chef: { Args: { p_user_id: string }; Returns: boolean }
       log_audit_event: {
         Args: {
