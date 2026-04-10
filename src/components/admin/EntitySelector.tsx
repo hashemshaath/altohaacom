@@ -269,7 +269,7 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
                       className="w-full flex items-center gap-2 rounded-md p-2 text-start hover:bg-accent/50 transition-colors text-sm"
                     >
                       {entity.logo_url ? (
-                        <img loading="lazy" decoding="async" src={entity.logo_url} alt="" className="h-7 w-7 rounded object-cover shrink-0" />
+                        <img loading="lazy" decoding="async" src={entity.logo_url} alt={entity.name || "Entity"} className="h-7 w-7 rounded object-cover shrink-0" />
                       ) : (
                         <div className="flex h-7 w-7 items-center justify-center rounded bg-muted shrink-0">
                           <Building2 className="h-3.5 w-3.5 text-muted-foreground" />
