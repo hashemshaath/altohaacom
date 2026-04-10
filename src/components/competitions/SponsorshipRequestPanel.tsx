@@ -239,7 +239,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted">
                       {company?.logo_url ? (
-                        <img loading="lazy" decoding="async" src={company.logo_url} alt="" className="h-8 w-8 rounded object-contain" />
+                        <img loading="lazy" decoding="async" src={company.logo_url} alt={company.name || "Sponsor"} className="h-8 w-8 rounded object-contain" />
                       ) : (
                         <Building2 className="h-5 w-5 text-muted-foreground" />
                       )}

@@ -91,7 +91,7 @@ export const EntryComparison = memo(function EntryComparison({ competitionId }: 
       <div className="flex items-center gap-3 p-3 rounded-xl border">
         <div className="h-12 w-12 rounded-xl bg-muted overflow-hidden shrink-0">
           {entry.dish_image_url ? (
-            <img loading="lazy" decoding="async" src={entry.dish_image_url} alt="" className="h-full w-full object-cover" />
+            <img loading="lazy" decoding="async" src={entry.dish_image_url} alt={entry.dish_name || "Dish"} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full items-center justify-center"><ChefHat className="h-5 w-5 text-muted-foreground" /></div>
           )}

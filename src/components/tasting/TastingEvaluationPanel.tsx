@@ -255,7 +255,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
             className="gap-1.5"
           >
             {(e as any).images?.[0] && (
-              <img loading="lazy" decoding="async" src={(e as any).images[0]} alt="" className="h-5 w-5 rounded object-cover" />
+              <img loading="lazy" decoding="async" src={(e as any).images[0]} alt={e.dish_name || "Entry"} className="h-5 w-5 rounded object-cover" />
             )}
             {isBlind ? `#${e.entry_number || i + 1}` : (isAr && e.dish_name_ar ? e.dish_name_ar : e.dish_name)}
           </Button>

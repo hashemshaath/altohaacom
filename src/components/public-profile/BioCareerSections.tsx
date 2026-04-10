@@ -160,7 +160,7 @@ const MembershipCard = memo(function MembershipCard({ membership, isAr, theme, i
   return (
     <div className="flex gap-3 px-3.5 py-3 rounded-xl transition-all duration-200 hover:shadow-sm" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
       {entity?.logo_url ? (
-        <img src={entity.logo_url} className="h-8 w-8 rounded-xl object-cover shrink-0" alt="" loading="lazy" />
+        <img src={entity.logo_url} className="h-8 w-8 rounded-xl object-cover shrink-0" alt={entity.name || "Organization"} loading="lazy" />
       ) : (
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl" style={{ background: iconBg }}>
           <Users className="h-3.5 w-3.5" style={{ color: theme.accent }} />

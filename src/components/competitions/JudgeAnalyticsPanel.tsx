@@ -125,7 +125,7 @@ export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competiti
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-full overflow-hidden bg-muted shrink-0">
-                      {profile?.avatar_url ? <img loading="lazy" decoding="async" src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full" />}
+                      {profile?.avatar_url ? <img loading="lazy" decoding="async" src={profile.avatar_url} alt={profile?.full_name || "Judge"} className="h-full w-full object-cover" /> : <div className="h-full w-full" />}
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{profile?.full_name || "—"}</p>

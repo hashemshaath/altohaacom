@@ -95,7 +95,7 @@ export const NewsWeeklyDigest = memo(function NewsWeeklyDigest({
                     <div className="h-14 w-14 rounded-lg overflow-hidden shrink-0 bg-muted">
                       <img
                         src={digest.editorPick.featured_image_url}
-                        alt=""
+                        alt={digest.editorPick.title || "Editor's pick"}
                         className="h-full w-full object-cover group-hover:scale-105 transition-transform"
                         loading="lazy"
                       />
