@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { canPrefetch } from "./useConnectionAwarePrefetch";
 
 /**
  * Prefetches route modules AND data on hover/focus to speed up navigation.
@@ -48,7 +49,7 @@ export function usePrefetchRoute() {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
   const prefetch = useCallback((path: string) => {
-    if (prefetched.has(path)) return;
+    if (prefetched.has(path) || !canPrefetch()) return;
 
     // Find matching route module
     const matchKey = Object.keys(routeModules).find(key => path.startsWith(key));
