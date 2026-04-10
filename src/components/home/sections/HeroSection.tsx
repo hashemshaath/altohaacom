@@ -203,6 +203,27 @@ export function HeroSection() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [slides.length, current, isPaused]);
 
+  // Preload next slide image during idle time
+  useEffect(() => {
+    if (slides.length <= 1) return;
+    const nextIdx = (safeCurrent + 1) % slides.length;
+    const nextUrl = slides[nextIdx]?.image_url;
+    if (!nextUrl) return;
+
+    const preload = () => {
+      const img = new Image();
+      img.src = heroImgUrl(nextUrl, 1200, 80);
+    };
+
+    if ("requestIdleCallback" in window) {
+      const id = (window as any).requestIdleCallback(preload, { timeout: 3000 });
+      return () => (window as any).cancelIdleCallback(id);
+    } else {
+      const timer = setTimeout(preload, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [slides, safeCurrent]);
+
   if (!slides.length) return <FallbackHero isAr={isAr} />;
 
   const safeCurrent = ((current % slides.length) + slides.length) % slides.length;
