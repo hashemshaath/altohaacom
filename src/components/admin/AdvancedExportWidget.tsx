@@ -64,7 +64,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
     setExporting(true);
     try {
       const mod = EXPORT_MODULES.find(m => m.key === moduleKey)!;
-      const { data } = await supabase.from(mod.table as never).select(mod.columns);
+      const { data } = await supabase.from(mod.table as never).select(mod.columns).limit(5000);
       if (!data || data.length === 0) {
         setExporting(false);
         return;
