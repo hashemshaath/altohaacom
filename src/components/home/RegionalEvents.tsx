@@ -135,7 +135,7 @@ const EventCard = forwardRef<HTMLAnchorElement, { item: any; isAr: boolean }>(fu
       <Card interactive className="h-full overflow-hidden border-border/50 rounded-2xl">
         <div className="relative aspect-[16/10] overflow-hidden bg-muted">
           {item.cover_image_url ? (
-            <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+            <img src={item.cover_image_url} alt={title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
           ) : (
             <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
               <Trophy className="h-8 w-8 text-primary/30" />

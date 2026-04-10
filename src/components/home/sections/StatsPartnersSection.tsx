@@ -67,7 +67,7 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
             const linkProps = item.website_url ? { href: item.website_url, target: "_blank" as const, rel: "noopener noreferrer" } : {};
             return (
               <Wrapper key={`${item.id}-${i}`} {...linkProps} className="shrink-0 flex items-center justify-center" title={item.name}>
-                <img loading="lazy" src={item.logo_url} alt={item.name} className="h-8 w-auto max-w-[120px] object-contain grayscale opacity-40 transition-all duration-300 hover:grayscale-0 hover:opacity-100" />
+                <img loading="lazy" decoding="async" src={item.logo_url} alt={item.name} className="h-8 w-auto max-w-[120px] object-contain grayscale opacity-40 transition-all duration-300 hover:grayscale-0 hover:opacity-100" />
               </Wrapper>
             );
           })}
