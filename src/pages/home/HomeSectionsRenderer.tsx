@@ -56,7 +56,7 @@ const DeferredSection = forwardRef<HTMLDivElement, { children: React.ReactNode; 
           obs.disconnect();
         }
       },
-      { rootMargin: "400px 0px", threshold: 0 }
+      { rootMargin: "600px 0px", threshold: 0 }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -65,7 +65,7 @@ const DeferredSection = forwardRef<HTMLDivElement, { children: React.ReactNode; 
   if (inView) return <>{children}</>;
 
   return (
-    <div ref={innerRef}>
+    <div ref={innerRef} className="section-deferred">
       <HomeSectionSkeleton index={index} />
     </div>
   );

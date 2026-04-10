@@ -925,6 +925,12 @@ html:not(.dark) .logo-dark-invert { filter: none; }
   opacity: 1;
 }
 
+/* ── Content-visibility optimization for below-fold sections ── */
+.section-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+}
+
 /* ── Reduced motion — respect user preferences ── */
 @media (prefers-reduced-motion: reduce) {
   .reveal,
@@ -938,5 +944,8 @@ html:not(.dark) .logo-dark-invert { filter: none; }
   .skeleton {
     animation: none;
     background: var(--color-border-light);
+  }
+  .section-deferred {
+    content-visibility: visible;
   }
 }
