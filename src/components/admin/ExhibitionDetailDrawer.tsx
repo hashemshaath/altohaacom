@@ -169,14 +169,14 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
             <div className="relative">
               {exh.cover_image_url && (
                 <div className="h-32 w-full overflow-hidden">
-                  <img loading="lazy" decoding="async" src={exh.cover_image_url} alt="" className="h-full w-full object-cover" />
+                  <img loading="lazy" decoding="async" src={exh.cover_image_url} alt={exh.title || "Exhibition cover"} className="h-full w-full object-cover" />
                   <div className="absolute inset-0 h-32 bg-gradient-to-t from-background/90 to-transparent" />
                 </div>
               )}
               <SheetHeader className={`px-6 ${exh.cover_image_url ? "-mt-12 relative z-10" : "pt-6"}`}>
                 <div className="flex items-start gap-3">
                   {exh.logo_url && (
-                    <img loading="lazy" decoding="async" src={exh.logo_url} alt="" className="h-12 w-12 rounded-xl border border-border object-contain bg-card shadow-sm" />
+                    <img loading="lazy" decoding="async" src={exh.logo_url} alt={`${exh.title || "Exhibition"} logo`} className="h-12 w-12 rounded-xl border border-border object-contain bg-card shadow-sm" />
                   )}
                   <div className="min-w-0 flex-1">
                     <SheetTitle className="text-lg leading-tight truncate">

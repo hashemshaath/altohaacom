@@ -94,7 +94,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
           role="searchbox"
         />
         {query && (
-          <button onClick={() => { setQuery(""); inputRef.current?.focus(); }} className="absolute end-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted transition-colors">
+          <button aria-label="Clear search" onClick={() => { setQuery(""); inputRef.current?.focus(); }} className="absolute end-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-muted transition-colors">
             <X className="h-4 w-4 text-muted-foreground" />
           </button>
         )}
