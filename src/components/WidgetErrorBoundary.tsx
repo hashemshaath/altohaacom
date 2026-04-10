@@ -36,7 +36,9 @@ export class WidgetErrorBoundary extends React.Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      const isAr = document.documentElement.lang === "ar" || localStorage.getItem("altoha-lang") === "ar";
+      let langVal: string | null = null;
+      try { langVal = localStorage.getItem("altoha-lang"); } catch {}
+      const isAr = document.documentElement.lang === "ar" || langVal === "ar";
 
       if (this.props.compact) {
         return (

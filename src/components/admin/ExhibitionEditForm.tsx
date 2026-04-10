@@ -606,11 +606,11 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       {/* ═══ Body: Sidebar + Content ═══ */}
       <div className="flex flex-1 min-h-0">
         {/* ── Sidebar Navigation ── */}
-        <nav className="hidden md:flex w-56 shrink-0 flex-col border-e bg-muted/10">
+        <nav aria-label="Exhibition form sections" className="hidden md:flex w-56 shrink-0 flex-col border-e bg-muted/10">
           {/* Cover image preview in sidebar */}
           {form.cover_image_url && (
             <div className="relative h-28 w-full overflow-hidden border-b">
-              <img loading="lazy" decoding="async" src={form.cover_image_url} alt="" className="h-full w-full object-cover" />
+              <img loading="lazy" decoding="async" src={form.cover_image_url} alt={isAr ? "صورة غلاف المعرض" : "Exhibition cover"} className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-2 start-2.5 end-2.5">
                 <p className="text-[12px] text-white/90 font-medium truncate">{form.title || t("Untitled", "بدون عنوان")}</p>

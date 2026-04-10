@@ -696,7 +696,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
           showSideNav ? "w-48 pe-4 pt-5" : "w-0 pe-0 overflow-hidden"
         )}>
           {showSideNav && (
-            <nav className="sticky top-20 space-y-0.5">
+            <nav aria-label={isAr ? "أقسام النموذج" : "Form sections"} className="sticky top-20 space-y-0.5">
               <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">{isAr ? "الأقسام" : "Sections"}</p>
               {TABS.map(tab => (
                 <QuickNavItem
