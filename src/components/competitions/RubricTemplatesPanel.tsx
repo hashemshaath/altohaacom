@@ -289,7 +289,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
               const isExpanded = expandedId === rubric.id;
               return (
                 <div key={rubric.id} className="rounded-xl border">
-                  <div className="flex items-center justify-between p-3 cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : rubric.id)}>
+                  <div role="button" tabIndex={0} aria-expanded={isExpanded} className="flex items-center justify-between p-3 cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-t-xl" onClick={() => setExpandedId(isExpanded ? null : rubric.id)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setExpandedId(isExpanded ? null : rubric.id); } }}>
                     <div className="flex items-center gap-3 min-w-0">
                       <ClipboardList className="h-4 w-4 text-primary shrink-0" />
                       <div className="min-w-0">
