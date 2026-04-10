@@ -24743,7 +24743,10 @@ export type Database = {
       }
       get_company_sensitive_fields: {
         Args: { p_company_id: string }
-        Returns: Json
+        Returns: {
+          registration_number: string
+          tax_number: string
+        }[]
       }
       get_profile_safe: { Args: { p_profile_user_id: string }; Returns: Json }
       get_public_tracking_config: {
