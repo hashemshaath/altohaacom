@@ -1,6 +1,6 @@
 import { forwardRef, useState, useCallback, useMemo, type ImgHTMLAttributes } from "react";
 import { getAdaptiveQuality, getQualityTier } from "@/lib/networkQuality";
-
+import { cn } from "@/lib/utils";
 interface OptimizedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   /** Supabase storage path or full URL */
   src: string | undefined | null;
