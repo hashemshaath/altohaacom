@@ -113,7 +113,7 @@ export default function CommunicationsAdmin() {
       if (priorityFilter !== "all") query = query.eq("priority", priorityFilter);
       if (tagFilter !== "all") query = query.contains("tags", [tagFilter]);
 
-      const { data, error } = await query;
+      const { data, error } = await query.limit(5000);
       if (error) throw error;
       return (data || []) as Communication[];
     },
