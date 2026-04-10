@@ -25670,7 +25670,10 @@ export type Database = {
           job_title_ar: string | null
           linkedin: string | null
           location: string | null
+          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
+          nationality: string | null
           profile_visibility: string | null
+          show_nationality: boolean | null
           snapchat: string | null
           specialization: string | null
           specialization_ar: string | null
@@ -25713,7 +25716,12 @@ export type Database = {
           job_title_ar?: string | null
           linkedin?: string | null
           location?: string | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
           profile_visibility?: string | null
+          show_nationality?: boolean | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
@@ -25756,7 +25764,12 @@ export type Database = {
           job_title_ar?: string | null
           linkedin?: string | null
           location?: string | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
           profile_visibility?: string | null
+          show_nationality?: boolean | null
           snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
