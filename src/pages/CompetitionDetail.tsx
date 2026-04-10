@@ -576,7 +576,7 @@ export default function CompetitionDetail() {
         keywords={seoKeywords}
         jsonLd={eventLd}
       />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumbLd) }} />
       <Header />
 
       <main className="flex-1">
