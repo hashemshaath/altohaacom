@@ -64,6 +64,8 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
       }));
     },
     staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   if (opportunities.length === 0) return null;

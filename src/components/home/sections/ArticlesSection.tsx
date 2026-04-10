@@ -62,6 +62,8 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
       return data || [];
     },
     staleTime: 1000 * 60 * 10,
+    gcTime: 1000 * 60 * 30,
+    refetchOnWindowFocus: false,
   });
 
   if (articles.length === 0) return null;
