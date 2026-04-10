@@ -3,10 +3,11 @@ import { ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { subscribeScroll } from "@/lib/scrollManager";
 
 /**
  * Floating scroll-to-top button for mobile.
- * Appears after scrolling 400px down, hides near top.
+ * Uses the centralized scroll manager.
  */
 export const ScrollToTopFAB = memo(function ScrollToTopFAB() {
   const isMobile = useIsMobile();
@@ -14,18 +15,9 @@ export const ScrollToTopFAB = memo(function ScrollToTopFAB() {
 
   useEffect(() => {
     if (!isMobile) return;
-    let ticking = false;
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          setVisible(window.scrollY > 400);
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return subscribeScroll((scrollY) => {
+      setVisible(scrollY > 400);
+    });
   }, [isMobile]);
 
   if (!isMobile) return null;
