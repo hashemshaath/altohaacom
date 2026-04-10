@@ -18,11 +18,11 @@ export function useAbandonedCartTracker(
   const { user } = useAuth();
   const savedCartRef = useRef<string>("");
   const abandonedCartIdRef = useRef<string | null>(
-    sessionStorage.getItem("abandoned_cart_id")
+    (() => { try { return sessionStorage.getItem("abandoned_cart_id"); } catch { return null; } })()
   );
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const sessionId = sessionStorage.getItem("ad_session_id") || null;
+  const sessionId = (() => { try { return sessionStorage.getItem("ad_session_id") || null; } catch { return null; } })();
 
   // Upsert cart to DB
   const saveCart = async (cartItems: CartItem[], total: number) => {

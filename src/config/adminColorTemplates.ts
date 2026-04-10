@@ -142,7 +142,7 @@ export function applyAdminColorTemplate(templateId: string | null) {
 
   if (!templateId) {
     // Remove template — let normal theme take over
-    localStorage.removeItem(ADMIN_COLOR_STORAGE_KEY);
+    try { localStorage.removeItem(ADMIN_COLOR_STORAGE_KEY); } catch {}
     window.dispatchEvent(new Event("theme-change"));
     return;
   }

@@ -28,7 +28,7 @@ export const ExhibitionNotificationPrompt = forwardRef<HTMLDivElement, Props>(fu
 
   // Check localStorage dismiss
   const dismissKey = `notif_prompt_dismissed_${exhibitionId}`;
-  if (typeof window !== "undefined" && localStorage.getItem(dismissKey)) return null;
+  if (typeof window !== "undefined" && (() => { try { return localStorage.getItem(dismissKey); } catch { return null; } })()) return null;
 
   const handleDismiss = () => {
     setDismissed(true);
