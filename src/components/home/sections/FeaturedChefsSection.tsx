@@ -66,6 +66,7 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
     staleTime: 1000 * 60 * 10,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
+  });
 
   // Deduplicate by user_id
   const uniqueChefs = chefs.filter(
