@@ -155,7 +155,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
             <Button variant="ghost" size="sm" onClick={handleExportHistory} className="text-xs h-7 gap-1">
               <Download className="h-3 w-3" /> {isAr ? "تصدير" : "Export"}
             </Button>
-            <Button variant="ghost" size="sm" onClick={loadHistory} className="text-xs h-7">
+            <Button variant="ghost" size="sm" onClick={() => loadHistory()} className="text-xs h-7">
               {isAr ? "تحديث" : "Refresh"}
             </Button>
           </div>
