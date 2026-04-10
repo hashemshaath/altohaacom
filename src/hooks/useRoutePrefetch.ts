@@ -5,10 +5,9 @@ import { useEffect, useRef } from "react";
  * This warms the module cache so navigation feels instant.
  */
 const PREFETCH_ROUTES = [
-  () => import("@/pages/competitions/CompetitionsPage"),
-  () => import("@/pages/exhibitions/ExhibitionsPage"),
-  () => import("@/pages/community/CommunityPage"),
-  () => import("@/pages/news/NewsPage"),
+  () => import("@/pages/Competitions"),
+  () => import("@/pages/Exhibitions"),
+  () => import("@/pages/Community"),
 ];
 
 export function useRoutePrefetch() {
