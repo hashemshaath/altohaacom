@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,7 +23,7 @@ const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   interview: { en: "Interview", ar: "مقابلة" },
 };
 
-export const HomeTrendingContent = function HomeTrendingContent() {
+export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrendingContent(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [typeFilter, setTypeFilter] = useState<string | null>(null);
@@ -152,4 +152,4 @@ export const HomeTrendingContent = function HomeTrendingContent() {
       </section>
     </div>
   );
-};
+});

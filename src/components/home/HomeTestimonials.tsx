@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 
-export const HomeTestimonials = function HomeTestimonials() {
+export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimonials(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const [current, setCurrent] = useState(0);
