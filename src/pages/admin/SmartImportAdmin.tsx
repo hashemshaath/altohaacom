@@ -683,12 +683,12 @@ export default function SmartImportAdmin() {
       const titleOrStr = [...new Set(titleOrConditions)].join(",");
 
       const [entRes, compRes, estRes, exhRes, compResComp, orgRes] = await Promise.all([
-        orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }).limit(5000),
-        orStr ? supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }).limit(5000),
-        orStr ? supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr) : Promise.resolve({ data: [] }).limit(5000),
+        orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as any).from("exhibitions").select("id, title, title_ar, type, city, organizer_email, website_url, slug").or(titleOrStr) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as any).from("competitions").select("id, title, title_ar, city, country_code, status, competition_number").or(titleOrStr) : Promise.resolve({ data: [] }),
-        orStr ? supabase.from("organizers").select("id, name, name_ar, organizer_number, city, phone, email, website, status").or(orStr) : Promise.resolve({ data: [] }).limit(5000),
+        orStr ? supabase.from("organizers").select("id, name, name_ar, organizer_number, city, phone, email, website, status").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
       ]);
 
       const records: ExistingRecord[] = [];
