@@ -14,6 +14,10 @@ interface OptimizedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   fallback?: React.ReactNode;
   /** Aspect ratio class e.g. "aspect-video", "aspect-square" */
   aspectRatio?: string;
+  /** Dominant color for blur-up placeholder (CSS color value) */
+  dominantColor?: string;
+  /** Priority loading — sets fetchpriority="high" and loading="eager" */
+  priority?: boolean;
 }
 
 const SUPABASE_STORAGE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1`;
