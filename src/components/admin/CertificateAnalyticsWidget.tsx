@@ -20,9 +20,9 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
     queryKey: ["admin-certificate-analytics-widget"],
     queryFn: async () => {
       const [certificates, templates, verifications] = await Promise.all([
-        supabase.from("certificates").select("id, status, type, issued_at, sent_at, downloaded_count, created_at"),
-        supabase.from("certificate_templates").select("id, name, type, is_active"),
-        supabase.from("certificate_verifications").select("id, verified_at"),
+        supabase.from("certificates").select("id, status, type, issued_at, sent_at, downloaded_count, created_at").limit(5000),
+        supabase.from("certificate_templates").select("id, name, type, is_active").limit(500),
+        supabase.from("certificate_verifications").select("id, verified_at").limit(5000),
       ]);
 
       const allCerts = certificates.data || [];
