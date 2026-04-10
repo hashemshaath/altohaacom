@@ -909,8 +909,8 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                       <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
                         {form.gallery_urls.map((url, i) => (
                           <div key={i} className="relative group aspect-square rounded-xl border overflow-hidden">
-                            <img src={url} alt="" className="w-full h-full object-cover" loading="lazy" />
-                            <button type="button" onClick={() => removeGalleryImage(i)}
+                            <img src={url} alt={`Gallery image ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                            <button type="button" aria-label={`Remove image ${i + 1}`} onClick={() => removeGalleryImage(i)}
                               className="absolute top-1 end-1 h-6 w-6 rounded-full bg-destructive/90 text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                               <X className="h-3 w-3" />
                             </button>
