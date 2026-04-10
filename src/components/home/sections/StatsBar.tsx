@@ -60,8 +60,6 @@ const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
       return { members: getCount(results[0]), competitions: getCount(results[1]), entities: getCount(results[2]), exhibitions: getCount(results[3]), organizers: getCount(results[4]) };
     },
     staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 30,
-    refetchOnWindowFocus: false,
   });
 
   const items = [
