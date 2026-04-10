@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
-const ALL_ROLES: AppRole[] = ["chef", "judge", "student", "organizer", "content_writer", "volunteer", "sponsor", "assistant", "supervisor"];
+const ALL_ROLES: AppRole[] = ["chef", "judge", "student", "organizer", "content_writer", "volunteer", "sponsor", "assistant", "supervisor", "admin" as unknown as AppRole];
 
 interface UserDetailsSidePanelProps {
   userId: string | null;
