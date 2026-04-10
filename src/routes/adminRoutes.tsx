@@ -66,6 +66,7 @@ const CoversThemesPage = lazy(() => import("@/pages/admin/design/CoversThemesPag
 
 const LayoutSpacingPage = lazy(() => import("@/pages/admin/design/LayoutSpacingPage"));
 const CustomCSSPage = lazy(() => import("@/pages/admin/design/CustomCSSPage"));
+const ThemeAppearancePage = lazy(() => import("@/pages/admin/design/ThemeAppearancePage"));
 
 export const adminRoutes = (
   <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
@@ -122,6 +123,7 @@ export const adminRoutes = (
 
     {/* Design & Identity */}
     <Route path="design" element={<DesignIdentityAdmin />} />
+    <Route path="design/theme" element={<ThemeAppearancePage />} />
     <Route path="design/brand-identity" element={<BrandIdentityPage />} />
     <Route path="hero-slides" element={<HeroSlidesAdmin />} />
     <Route path="auth-slides" element={<AuthSlidesAdminPage />} />
