@@ -1,4 +1,5 @@
 import { memo, useMemo, useState, forwardRef } from "react";
+import { safeJsonLd } from "@/lib/safeJsonLd";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
