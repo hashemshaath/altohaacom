@@ -457,7 +457,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
             </Button>
             <Button variant="outline" size="sm" className="text-xs gap-1.5 col-span-2" onClick={async () => {
               if (!pageId) return;
-              const { data } = await supabase.from("bio_subscribers").select("email, name, subscribed_at").eq("page_id", pageId).order("subscribed_at", { ascending: false });
+              const { data } = await supabase.from("bio_subscribers").select("email, name, subscribed_at").eq("page_id", pageId).order("subscribed_at", { ascending: false }).limit(5000);
               if (!data?.length) return;
               const csv = "Email,Name,Subscribed At\n" + data.map(r => `${r.email},"${r.name || ""}",${r.subscribed_at}`).join("\n");
               const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
