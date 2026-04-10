@@ -268,7 +268,7 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("node_modules/lucide-react")) {
             return "vendor-icons";
           }
-          // ── Vendor: Critical UI (nav, tooltips, dialogs) ──
+          // ── Vendor: Critical UI (nav, tooltips, dialogs, cmdk) ──
           if (
             id.includes("@radix-ui/react-dialog") ||
             id.includes("@radix-ui/react-dropdown-menu") ||
@@ -278,7 +278,8 @@ export default defineConfig(({ mode }) => ({
             id.includes("@radix-ui/react-slot") ||
             id.includes("@radix-ui/react-separator") ||
             id.includes("@radix-ui/react-navigation-menu") ||
-            id.includes("@radix-ui/react-tabs")
+            id.includes("@radix-ui/react-tabs") ||
+            id.includes("node_modules/cmdk")
           ) {
             return "vendor-ui-core";
           }
