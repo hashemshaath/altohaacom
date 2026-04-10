@@ -39,7 +39,44 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
   const [statusFilter, setStatusFilter] = useState<"all" | "completed" | "failed">("all");
 
   useEffect(() => {
-    loadHistory();
+    let cancelled = false;
+
+    const load = async () => {
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from("cv_imports")
+          .select("id, chef_id, imported_by, status, file_name, input_method, sections_imported, records_created, created_at, extracted_data")
+          .order("created_at", { ascending: false })
+          .limit(50);
+
+        if (error) throw error;
+        if (cancelled) return;
+        setImports(data || []);
+
+        const chefIds = [...new Set((data || []).map(d => d.chef_id))];
+        if (chefIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("user_id, full_name, full_name_ar")
+            .in("user_id", chefIds);
+
+          if (!cancelled && profiles) {
+            const names: Record<string, string> = {};
+            profiles.forEach(p => {
+              names[p.user_id] = isAr ? (p.full_name_ar || p.full_name || "—") : (p.full_name || "—");
+            });
+            setChefNames(names);
+          }
+        }
+      } catch (err: unknown) {
+        console.error("Failed to load import history:", err);
+      }
+      if (!cancelled) setLoading(false);
+    };
+
+    load();
+    return () => { cancelled = true; };
   }, [refreshTrigger]);
 
   const loadHistory = async () => {
