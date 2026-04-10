@@ -21,9 +21,9 @@ const FinancialReports = memo(function FinancialReports() {
         { data: transactions },
         { data: sponsors },
       ] = await Promise.all([
-        supabase.from("company_orders").select("total_amount, status, created_at, category"),
-        supabase.from("company_transactions").select("amount, type, created_at"),
-        supabase.from("competition_sponsors").select("amount_paid, tier, status"),
+        supabase.from("company_orders").select("total_amount, status, created_at, category").limit(5000),
+        supabase.from("company_transactions").select("amount, type, created_at").limit(5000),
+        supabase.from("competition_sponsors").select("amount_paid, tier, status").limit(5000),
       ]);
 
       // Total order revenue

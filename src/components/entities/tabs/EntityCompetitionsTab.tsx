@@ -42,7 +42,7 @@ export const EntityCompetitionsTab = memo(function EntityCompetitionsTab({ entit
   const { data: competitions } = useQuery({
     queryKey: ["all-competitions-select"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("competitions").select("id, title, title_ar").order("title");
+      const { data, error } = await supabase.from("competitions").select("id, title, title_ar").order("title").limit(5000);
       if (error) throw error;
       return data;
     },

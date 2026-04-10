@@ -22,7 +22,7 @@ export const PipelineFunnelView = memo(function PipelineFunnelView() {
   const { data: leadsByStage } = useQuery({
     queryKey: ["crmPipelineFunnel"],
     queryFn: async () => {
-      const { data } = await supabase.from("leads").select("id, status");
+      const { data } = await supabase.from("leads").select("id, status").limit(5000);
       const leads = data || [];
       const map: Record<string, { count: number; value: number }> = {};
       STAGES.forEach(s => { map[s.key] = { count: 0, value: 0 }; });

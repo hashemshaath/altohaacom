@@ -52,7 +52,7 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const { data: placements = [] } = useQuery({
     queryKey: ["ad-analytics-placements"],
     queryFn: async () => {
-      const { data } = await supabase.from("ad_placements").select("id, name, name_ar, slug");
+      const { data } = await supabase.from("ad_placements").select("id, name, name_ar, slug").limit(500);
       return data || [];
     },
   });
@@ -60,7 +60,7 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const { data: campaigns = [] } = useQuery({
     queryKey: ["ad-analytics-campaigns"],
     queryFn: async () => {
-      const { data } = await supabase.from("ad_campaigns").select("id, name, name_ar, companies(name, name_ar)");
+      const { data } = await supabase.from("ad_campaigns").select("id, name, name_ar, companies(name, name_ar)").limit(5000);
       return data || [];
     },
   });

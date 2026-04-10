@@ -37,8 +37,8 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
         supabase.from("masterclasses").select("id", { count: "exact", head: true }),
         supabase.from("certificates").select("id", { count: "exact", head: true }),
         supabase.from("messages").select("id", { count: "exact", head: true }),
-        supabase.from("user_roles").select("role"),
-        supabase.from("competitions").select("status"),
+        supabase.from("user_roles").select("role").limit(5000),
+        supabase.from("competitions").select("status").limit(5000),
         supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(5000),
         supabase.from("competitions").select("created_at").order("created_at", { ascending: true }).limit(5000),
       ] as const;

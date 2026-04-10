@@ -31,7 +31,7 @@ export default function RoleManagement() {
   const { data: roleStats = [] } = useQuery({
     queryKey: ["roleStats"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("user_roles").select("role");
+      const { data, error } = await supabase.from("user_roles").select("role").limit(5000);
       if (error) throw error;
       const counts: Record<string, number> = {};
       data?.forEach((r) => { counts[r.role] = (counts[r.role] || 0) + 1; });

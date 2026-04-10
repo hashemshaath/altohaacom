@@ -104,7 +104,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
   const { data: categories } = useQuery({
     queryKey: ["content-categories"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").order("name");
+      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").order("name").limit(5000);
       return data || [];
     },
   });
@@ -112,7 +112,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
   const { data: tags } = useQuery({
     queryKey: ["content-tags"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name");
+      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name").limit(5000);
       return data || [];
     },
   });

@@ -31,9 +31,9 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
         { data: transactions },
         { data: wallets },
       ] = await Promise.all([
-        supabase.from("invoices").select("id, amount, currency, status, created_at, due_date, paid_at").order("created_at", { ascending: true }),
-        supabase.from("company_transactions").select("amount, type, created_at"),
-        supabase.from("user_wallets").select("balance, points_balance"),
+        supabase.from("invoices").select("id, amount, currency, status, created_at, due_date, paid_at").order("created_at", { ascending: true }).limit(5000),
+        supabase.from("company_transactions").select("amount, type, created_at").limit(5000),
+        supabase.from("user_wallets").select("balance, points_balance").limit(5000),
       ]);
 
       // Invoice aging buckets

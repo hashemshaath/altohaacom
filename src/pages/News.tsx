@@ -163,7 +163,7 @@ export default function News() {
   const { data: tags = [] } = useQuery({
     queryKey: ["news-tags"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name");
+      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name").limit(5000);
       return (data || []) as ContentTag[];
     },
     staleTime: 1000 * 60 * 10,

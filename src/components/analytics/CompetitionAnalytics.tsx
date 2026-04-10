@@ -33,9 +33,9 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
         supabase.from("competition_registrations").select("id", { count: "exact", head: true }),
         supabase.from("competition_judges").select("id", { count: "exact", head: true }),
         supabase.from("competition_scores").select("id", { count: "exact", head: true }),
-        supabase.from("competitions").select("id, title, status, competition_start, country_code"),
-        supabase.from("competition_scores").select("score"),
-        supabase.from("competition_registrations").select("registered_at"),
+        supabase.from("competitions").select("id, title, status, competition_start, country_code").limit(5000),
+        supabase.from("competition_scores").select("score").limit(5000),
+        supabase.from("competition_registrations").select("registered_at").limit(5000),
       ]);
 
       const scoreBuckets: Record<string, number> = { "0-20": 0, "21-40": 0, "41-60": 0, "61-80": 0, "81-100": 0 };

@@ -35,8 +35,8 @@ export const GeographicDistribution = memo(function GeographicDistribution() {
         { data: companies },
       ] = await Promise.all([
         supabase.from("profiles").select("country_code").not("country_code", "is", null).limit(1000),
-        supabase.from("competitions").select("country_code").not("country_code", "is", null),
-        supabase.from("companies").select("country_code").not("country_code", "is", null),
+        supabase.from("competitions").select("country_code").not("country_code", "is", null).limit(5000),
+        supabase.from("companies").select("country_code").not("country_code", "is", null).limit(5000),
       ]);
 
       // Count users by country
