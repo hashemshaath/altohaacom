@@ -197,6 +197,7 @@ export const adminNavSections: NavSection[] = [
     fullAdminOnly: true,
     items: [
       { to: "/admin/design", icon: Palette, labelEn: "Overview", labelAr: "نظرة عامة", end: true },
+      { to: "/admin/design/theme", icon: Palette, labelEn: "Theme & Appearance", labelAr: "المظهر والثيم" },
       { to: "/admin/design/brand-identity", icon: Sparkles, labelEn: "Branding", labelAr: "الهوية" },
       { to: "/admin/design/header-footer", icon: PanelTop, labelEn: "Header & Footer", labelAr: "الرأس والتذييل" },
       { to: "/admin/design/layout", icon: LayoutGrid, labelEn: "Layout", labelAr: "التخطيط" },

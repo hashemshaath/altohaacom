@@ -75,14 +75,14 @@ export const TypographySettings = memo(function TypographySettings({ settings, o
   // Font settings
   const typoCfg = settings.typography || {};
   const [typo, setTypo] = useState({
-    bodyFont: typoCfg.bodyFont || "dm-sans",
-    headingFont: typoCfg.headingFont || "dm-serif",
+    bodyFont: typoCfg.bodyFont || "ibm-plex",
+    headingFont: typoCfg.headingFont || "ibm-plex-heading",
   });
 
   useEffect(() => {
     setTypo({
-      bodyFont: typoCfg.bodyFont || "dm-sans",
-      headingFont: typoCfg.headingFont || "dm-serif",
+      bodyFont: typoCfg.bodyFont || "ibm-plex",
+      headingFont: typoCfg.headingFont || "ibm-plex-heading",
     });
   }, [JSON.stringify(typoCfg)]);
 
