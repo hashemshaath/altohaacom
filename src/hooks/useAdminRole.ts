@@ -112,10 +112,10 @@ export function useAdminRole(): AdminAccess {
         .eq("user_id", user.id)
         .in("role", ["supervisor", "admin", "organizer", "content_writer"]);
       if (error) throw error;
-      const roleList = roles?.map((r) => r.role) || [];
+      const roleList = (roles?.map((r) => r.role) || []) as string[];
       // Priority: supervisor > admin > organizer > content_writer
       if (roleList.includes("supervisor")) return "supervisor" as AppRole;
-      if (roleList.includes("admin")) return "admin" as AppRole;
+      if (roleList.includes("admin")) return "admin" as unknown as AppRole;
       if (roleList.includes("organizer")) return "organizer" as AppRole;
       if (roleList.includes("content_writer")) return "content_writer" as AppRole;
       return null;
