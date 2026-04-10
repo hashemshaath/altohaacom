@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, forwardRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ title, description, imageUrl, isAr }: Props) {
+export const ExhibitionShareButtons = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionShareButtons({ title, description, imageUrl, isAr }: Props, _ref) {
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const url = window.location.href;
@@ -97,4 +97,4 @@ export const ExhibitionShareButtons = memo(function ExhibitionShareButtons({ tit
       </CardContent>
     </Card>
   );
-});
+}));
