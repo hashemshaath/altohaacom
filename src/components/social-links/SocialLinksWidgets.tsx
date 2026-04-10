@@ -120,7 +120,7 @@ export const ContactFormSection = memo(function ContactFormSection({ theme, lang
   const inputStyle = { background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text };
   return (
     <div className="space-y-3 rounded-2xl p-5" style={{ background: theme.card, border: `1px solid ${theme.border}` }}>
-      <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={tl("contactName", lang)}
+      <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={tl("contactName", lang)} autoComplete="name"
         className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all duration-200" style={inputStyle}
         onFocus={e => (e.target.style.borderColor = theme.accent)} onBlur={e => (e.target.style.borderColor = theme.border)} />
       <input type="email" autoComplete="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder={tl("contactEmail", lang)}
@@ -184,7 +184,7 @@ export const EmailSubscriptionSection = memo(function EmailSubscriptionSection({
         {isRtl ? (extra.email_collection_description_ar || extra.email_collection_description) : (extra.email_collection_description || "Subscribe to get updates")}
       </p>
       <div className="space-y-2">
-        <input value={subName} onChange={e => setSubName(e.target.value)} placeholder={tl("contactName", lang)}
+        <input value={subName} onChange={e => setSubName(e.target.value)} placeholder={tl("contactName", lang)} autoComplete="name"
           className="w-full rounded-xl px-4 py-2.5 text-sm outline-none" style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }} />
         <input type="email" autoComplete="email" value={subEmail} onChange={e => setSubEmail(e.target.value)} placeholder={tl("contactEmail", lang)} dir="ltr"
           className="w-full rounded-xl px-4 py-2.5 text-sm outline-none" style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }} />
