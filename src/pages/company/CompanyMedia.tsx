@@ -100,14 +100,8 @@ export default function CompanyMedia() {
         const ext = file.name.split(".").pop();
         const path = `${companyId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-        const { error: uploadError } = await supabase.storage
-          .from("company-media")
-          .upload(path, file);
+        const { url: fileUrl, error: uploadError } = await uploadAndGetUrl("company-media", path, file);
         if (uploadError) throw uploadError;
-
-        const { data: urlData } = supabase.storage
-          .from("company-media")
-          .getPublicUrl(path);
 
         const { error: dbError } = await supabase.from("company_media").insert({
           company_id: companyId,
