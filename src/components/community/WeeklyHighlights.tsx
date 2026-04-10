@@ -153,7 +153,7 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
                     {(profile?.display_name || profile?.full_name || "C")[0]}
                   </AvatarFallback>
                 </Avatar>
-                <Badge className="absolute -bottom-1 -end-1 h-4 min-w-4 px-1 rounded-full text-[8px] font-bold bg-primary text-primary-foreground border-2 border-background">
+                <Badge className="absolute -bottom-1 -end-1 h-4 min-w-4 px-1 rounded-full text-[10px] font-bold bg-primary text-primary-foreground border-2 border-background">
                   {postCount}
                 </Badge>
               </Link>

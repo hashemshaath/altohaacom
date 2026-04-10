@@ -486,7 +486,7 @@ th{background:#f5f5f5;font-weight:600}
                       {e.criteriaResults.map((c, ci) => (
                         <div key={ci} className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground flex-1 min-w-0 truncate">{c.name}</span>
-                          {c.stage && <Badge variant="outline" className="text-[8px] shrink-0">{c.stage}</Badge>}
+                          {c.stage && <Badge variant="outline" className="text-[10px] shrink-0">{c.stage}</Badge>}
                           <div className="w-28 shrink-0"><Progress value={c.pct} className="h-1.5" /></div>
                           <span className={`text-xs font-bold tabular-nums w-12 text-end ${getScoreColor(c.pct)}`}>
                             {c.avg}/{c.maxVal}
