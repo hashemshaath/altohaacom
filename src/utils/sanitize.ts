@@ -22,7 +22,10 @@ export function sanitizeHtml(dirty: string): string {
 export function sanitizeCss(dirty: string): string {
   if (!dirty || typeof dirty !== "string") return "";
 
-  return dirty
+  // Limit length to prevent ReDoS / abuse
+  const trimmed = dirty.slice(0, 10_000);
+
+  return trimmed
     // Remove anything that could execute JS
     .replace(/expression\s*\(/gi, "/* blocked */")
     .replace(/javascript\s*:/gi, "/* blocked */")
@@ -30,15 +33,23 @@ export function sanitizeCss(dirty: string): string {
     .replace(/-moz-binding\s*:/gi, "/* blocked */")
     .replace(/behavior\s*:/gi, "/* blocked */")
     .replace(/behaviour\s*:/gi, "/* blocked */")
+    // Block -webkit-/-moz- specific XSS vectors
+    .replace(/-webkit-[a-z-]*\s*:\s*[^;]*expression/gi, "/* blocked */")
     // Remove url() to prevent data-uri / remote resource attacks
     .replace(/url\s*\(/gi, "/* blocked-url */")
     // Remove @import which can load external CSS
     .replace(/@import\b/gi, "/* blocked-import */")
+    // Remove @charset which can manipulate encoding
+    .replace(/@charset\b/gi, "/* blocked-charset */")
+    // Remove @namespace for XML-based attacks
+    .replace(/@namespace\b/gi, "/* blocked-namespace */")
     // Remove HTML comments that can break out of <style>
     .replace(/<!--/g, "")
     .replace(/-->/g, "")
-    // Remove closing style tag to prevent injection breakout
-    .replace(/<\/?style[^>]*>/gi, "");
+    // Remove any HTML tags to prevent injection breakout
+    .replace(/<\/?[a-z][^>]*>/gi, "")
+    // Remove null bytes and control characters
+    .replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, "");
 }
 
 /**
