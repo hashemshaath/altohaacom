@@ -26,7 +26,7 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
   const [visible, setVisible] = useState(true);
   const prevY = useRef(0);
   const visRef = useRef(true);
-  const raf = useRef(0);
+  
 
   useEffect(() => {
     return subscribeScroll((y) => {
