@@ -24278,6 +24278,9 @@ export type Database = {
       chef_schedule_events_public: {
         Row: {
           all_day: boolean | null
+          broadcast_type: string | null
+          channel_name: string | null
+          channel_name_ar: string | null
           chef_id: string | null
           city: string | null
           color: string | null
@@ -24288,11 +24291,26 @@ export type Database = {
           end_date: string | null
           event_type: string | null
           id: string | null
+          is_recurring: boolean | null
+          linked_entity_id: string | null
+          linked_entity_type: string | null
           location: string | null
           location_ar: string | null
+          media_url: string | null
+          organizer: string | null
+          organizer_ar: string | null
+          parent_event_id: string | null
+          participation_type: string | null
+          participation_type_ar: string | null
           priority: string | null
+          program_name: string | null
+          program_name_ar: string | null
+          recurrence_end_date: string | null
+          recurrence_rule: string | null
+          show_details_publicly: boolean | null
           start_date: string | null
           status: string | null
+          tags: string[] | null
           timezone: string | null
           title: string | null
           title_ar: string | null
@@ -24303,6 +24321,9 @@ export type Database = {
         }
         Insert: {
           all_day?: boolean | null
+          broadcast_type?: string | null
+          channel_name?: string | null
+          channel_name_ar?: string | null
           chef_id?: string | null
           city?: string | null
           color?: string | null
@@ -24313,11 +24334,26 @@ export type Database = {
           end_date?: string | null
           event_type?: string | null
           id?: string | null
+          is_recurring?: boolean | null
+          linked_entity_id?: string | null
+          linked_entity_type?: string | null
           location?: string | null
           location_ar?: string | null
+          media_url?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          parent_event_id?: string | null
+          participation_type?: string | null
+          participation_type_ar?: string | null
           priority?: string | null
+          program_name?: string | null
+          program_name_ar?: string | null
+          recurrence_end_date?: string | null
+          recurrence_rule?: string | null
+          show_details_publicly?: boolean | null
           start_date?: string | null
           status?: string | null
+          tags?: string[] | null
           timezone?: string | null
           title?: string | null
           title_ar?: string | null
@@ -24328,6 +24364,9 @@ export type Database = {
         }
         Update: {
           all_day?: boolean | null
+          broadcast_type?: string | null
+          channel_name?: string | null
+          channel_name_ar?: string | null
           chef_id?: string | null
           city?: string | null
           color?: string | null
@@ -24338,11 +24377,26 @@ export type Database = {
           end_date?: string | null
           event_type?: string | null
           id?: string | null
+          is_recurring?: boolean | null
+          linked_entity_id?: string | null
+          linked_entity_type?: string | null
           location?: string | null
           location_ar?: string | null
+          media_url?: string | null
+          organizer?: string | null
+          organizer_ar?: string | null
+          parent_event_id?: string | null
+          participation_type?: string | null
+          participation_type_ar?: string | null
           priority?: string | null
+          program_name?: string | null
+          program_name_ar?: string | null
+          recurrence_end_date?: string | null
+          recurrence_rule?: string | null
+          show_details_publicly?: boolean | null
           start_date?: string | null
           status?: string | null
+          tags?: string[] | null
           timezone?: string | null
           title?: string | null
           title_ar?: string | null
@@ -24351,7 +24405,22 @@ export type Database = {
           venue_ar?: string | null
           visibility?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "chef_schedule_events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "chef_schedule_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chef_schedule_events_parent_event_id_fkey"
+            columns: ["parent_event_id"]
+            isOneToOne: false
+            referencedRelation: "chef_schedule_events_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chefs_table_sessions_public: {
         Row: {
