@@ -14,6 +14,10 @@ interface OptimizedImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   fallback?: React.ReactNode;
   /** Aspect ratio class e.g. "aspect-video", "aspect-square" */
   aspectRatio?: string;
+  /** Dominant color for blur-up placeholder (CSS color value) */
+  dominantColor?: string;
+  /** Priority loading — sets fetchpriority="high" and loading="eager" */
+  priority?: boolean;
 }
 
 const SUPABASE_STORAGE = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1`;
@@ -65,8 +69,10 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
       shimmer = true,
       fallback,
       aspectRatio,
+      dominantColor,
+      priority = false,
       className,
-      loading = "lazy",
+      loading: loadingProp,
       sizes,
       onLoad,
       onError,
@@ -74,6 +80,7 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
     },
     ref
   ) {
+    const loading = priority ? "eager" : (loadingProp ?? "lazy");
     const [state, setState] = useState<"loading" | "loaded" | "error">("loading");
 
     const handleLoad = useCallback(
@@ -120,10 +127,19 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
     const srcSet = tier === "low" ? undefined : buildSrcSet(src, adaptiveQuality);
 
     return (
-      <div className={cn("relative overflow-hidden", aspectRatio)}>
-        {/* Shimmer placeholder */}
-        {shimmer && state === "loading" && (
+      <div
+        className={cn("relative overflow-hidden", aspectRatio)}
+        style={dominantColor && state === "loading" ? { backgroundColor: dominantColor } : undefined}
+      >
+        {/* Shimmer / blur-up placeholder */}
+        {shimmer && state === "loading" && !dominantColor && (
           <div className="absolute inset-0 bg-muted/30 animate-pulse" />
+        )}
+        {dominantColor && state === "loading" && (
+          <div
+            className="absolute inset-0 animate-pulse"
+            style={{ backgroundColor: dominantColor, filter: "blur(20px)", transform: "scale(1.1)" }}
+          />
         )}
         <img
           ref={ref}
@@ -133,6 +149,7 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
           alt={alt}
           loading={loading}
           decoding="async"
+          {...(priority ? { fetchPriority: "high" as const } : {})}
           className={cn(
             "transition-opacity duration-300",
             state === "loaded" ? "opacity-100" : "opacity-0",
