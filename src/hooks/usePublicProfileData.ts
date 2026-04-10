@@ -12,16 +12,17 @@ export function usePublicProfileData(username: string | undefined, followListOpe
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["publicProfile", username],
     queryFn: async () => {
-      const selectCols = "user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, cover_image_url, bio, bio_ar, specialization, specialization_ar, country_code, city, nationality, years_of_experience, job_title, job_title_ar, is_verified, account_type, view_count, created_at, instagram, twitter, facebook, linkedin, youtube, website, snapchat, tiktok, membership_tier";
-      const { data, error } = await supabase
-        .from("profiles_public").select(selectCols).eq("username", username?.toLowerCase()).maybeSingle();
+      // Try by username first using secure RPC
+      const { data, error } = await supabase.rpc("get_public_profile", { p_username: username!.toLowerCase() });
       if (error) throw error;
-      if (data) return data;
+      if (data) return data as Record<string, unknown>;
+
+      // Fallback: try by user_id if it looks like a UUID
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(username || "");
       if (isUuid) {
-        const { data: byId, error: err2 } = await supabase.from("profiles_public").select(selectCols).eq("user_id", username).maybeSingle();
+        const { data: byId, error: err2 } = await supabase.rpc("get_public_profile_by_id", { p_user_id: username! });
         if (err2) throw err2;
-        if (byId) return byId;
+        if (byId) return byId as Record<string, unknown>;
       }
       throw new Error("Profile not found");
     },
