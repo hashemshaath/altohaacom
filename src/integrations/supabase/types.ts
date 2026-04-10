@@ -24552,25 +24552,20 @@ export type Database = {
       }
       companies_public_safe: {
         Row: {
-          additional_number: string | null
           address: string | null
           address_ar: string | null
-          building_number: string | null
           city: string | null
           classifications: string[] | null
           country: string | null
           country_code: string | null
           cover_image_url: string | null
           created_at: string | null
-          created_by: string | null
-          currency: string | null
           description: string | null
           description_ar: string | null
           district: string | null
           district_ar: string | null
           email: string | null
           featured_order: number | null
-          floor_number: string | null
           founded_year: number | null
           google_maps_url: string | null
           id: string | null
@@ -24581,58 +24576,39 @@ export type Database = {
           longitude: number | null
           name: string | null
           name_ar: string | null
-          national_address: string | null
-          national_address_ar: string | null
           neighborhood: string | null
           neighborhood_ar: string | null
-          on_time_delivery_rate: number | null
           operating_countries: string[] | null
           phone: string | null
           postal_code: string | null
           rating: number | null
-          region: string | null
-          region_ar: string | null
-          response_time_hours: number | null
-          short_address: string | null
           social_links: Json | null
           specializations: string[] | null
           status: Database["public"]["Enums"]["company_status"] | null
-          street: string | null
-          street_ar: string | null
           supplier_category: string | null
-          supplier_score: number | null
           tagline: string | null
           tagline_ar: string | null
-          total_orders: number | null
           total_reviews: number | null
           type: Database["public"]["Enums"]["company_type"] | null
-          unit_number: string | null
-          updated_at: string | null
           verification_level: string | null
-          verified_at: string | null
           website: string | null
           working_hours: Json | null
         }
         Insert: {
-          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
-          building_number?: string | null
           city?: string | null
           classifications?: string[] | null
           country?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
-          created_by?: string | null
-          currency?: string | null
           description?: string | null
           description_ar?: string | null
           district?: string | null
           district_ar?: string | null
           email?: string | null
           featured_order?: number | null
-          floor_number?: string | null
           founded_year?: number | null
           google_maps_url?: string | null
           id?: string | null
@@ -24643,58 +24619,39 @@ export type Database = {
           longitude?: number | null
           name?: string | null
           name_ar?: string | null
-          national_address?: string | null
-          national_address_ar?: string | null
           neighborhood?: string | null
           neighborhood_ar?: string | null
-          on_time_delivery_rate?: number | null
           operating_countries?: string[] | null
           phone?: string | null
           postal_code?: string | null
           rating?: number | null
-          region?: string | null
-          region_ar?: string | null
-          response_time_hours?: number | null
-          short_address?: string | null
           social_links?: Json | null
           specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
-          street?: string | null
-          street_ar?: string | null
           supplier_category?: string | null
-          supplier_score?: number | null
           tagline?: string | null
           tagline_ar?: string | null
-          total_orders?: number | null
           total_reviews?: number | null
           type?: Database["public"]["Enums"]["company_type"] | null
-          unit_number?: string | null
-          updated_at?: string | null
           verification_level?: string | null
-          verified_at?: string | null
           website?: string | null
           working_hours?: Json | null
         }
         Update: {
-          additional_number?: string | null
           address?: string | null
           address_ar?: string | null
-          building_number?: string | null
           city?: string | null
           classifications?: string[] | null
           country?: string | null
           country_code?: string | null
           cover_image_url?: string | null
           created_at?: string | null
-          created_by?: string | null
-          currency?: string | null
           description?: string | null
           description_ar?: string | null
           district?: string | null
           district_ar?: string | null
           email?: string | null
           featured_order?: number | null
-          floor_number?: string | null
           founded_year?: number | null
           google_maps_url?: string | null
           id?: string | null
@@ -24705,35 +24662,21 @@ export type Database = {
           longitude?: number | null
           name?: string | null
           name_ar?: string | null
-          national_address?: string | null
-          national_address_ar?: string | null
           neighborhood?: string | null
           neighborhood_ar?: string | null
-          on_time_delivery_rate?: number | null
           operating_countries?: string[] | null
           phone?: string | null
           postal_code?: string | null
           rating?: number | null
-          region?: string | null
-          region_ar?: string | null
-          response_time_hours?: number | null
-          short_address?: string | null
           social_links?: Json | null
           specializations?: string[] | null
           status?: Database["public"]["Enums"]["company_status"] | null
-          street?: string | null
-          street_ar?: string | null
           supplier_category?: string | null
-          supplier_score?: number | null
           tagline?: string | null
           tagline_ar?: string | null
-          total_orders?: number | null
           total_reviews?: number | null
           type?: Database["public"]["Enums"]["company_type"] | null
-          unit_number?: string | null
-          updated_at?: string | null
           verification_level?: string | null
-          verified_at?: string | null
           website?: string | null
           working_hours?: Json | null
         }
