@@ -44,5 +44,6 @@ export const roleLabels: Record<string, { en: string; ar: string }> = {
   organizer: { en: "Organizer", ar: "منظم" },
   student: { en: "Student", ar: "طالب" },
   sponsor: { en: "Sponsor", ar: "راعي" },
-  supervisor: { en: "Supervisor", ar: "مشرف" },
+  supervisor: { en: "Super Admin", ar: "مسؤول أعلى" },
+  admin: { en: "Admin", ar: "مسؤول" },
 };
