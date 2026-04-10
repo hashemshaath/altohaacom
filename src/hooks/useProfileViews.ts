@@ -19,6 +19,9 @@ export function useRecordProfileView(profileUserId: string | undefined) {
     if (user?.id === profileUserId) return;
     tracked.current = true;
 
+    let cancelled = false;
+    let timerId: ReturnType<typeof setTimeout> | undefined;
+
     const record = async () => {
       try {
         const deviceType = getDeviceType();
@@ -39,6 +42,8 @@ export function useRecordProfileView(profileUserId: string | undefined) {
           }
         }
 
+        if (cancelled) return;
+
         await supabase.from("profile_views").insert({
           profile_user_id: profileUserId,
           viewer_user_id: user?.id || null,
@@ -51,15 +56,22 @@ export function useRecordProfileView(profileUserId: string | undefined) {
         });
 
         // Refetch the profile to reflect the updated view_count from the trigger
-        const timerId = setTimeout(() => {
-          if (!cancelled) queryClient.invalidateQueries({ queryKey: ["publicProfile"] });
-        }, 500);
+        if (!cancelled) {
+          timerId = setTimeout(() => {
+            queryClient.invalidateQueries({ queryKey: ["publicProfile"] });
+          }, 500);
+        }
       } catch {
         // Non-critical — profile view recording can fail silently
       }
     };
 
     record();
+
+    return () => {
+      cancelled = true;
+      if (timerId) clearTimeout(timerId);
+    };
   }, [profileUserId, user?.id, queryClient]);
 }
 
