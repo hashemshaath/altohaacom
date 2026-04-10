@@ -137,7 +137,7 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
           <ErrorBoundary key={`${sectionKey}-${entry.sort_order}-${index}`} fallback={SECTION_ERROR_FALLBACK}>
             <Suspense fallback={<TimedSkeleton index={index} />}>
               <SectionKeyProvider sectionKey={sectionKey}>
-                <HomepageSectionShell>
+                <HomepageSectionShell visibleIndex={index}>
                   {Component ? <Component /> : <GenericHomepageSection sectionKey={sectionKey} />}
                 </HomepageSectionShell>
               </SectionKeyProvider>
