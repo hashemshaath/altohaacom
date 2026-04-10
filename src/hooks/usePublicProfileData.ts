@@ -45,7 +45,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
   const { data: careerRecords = [] } = useQuery({
     queryKey: ["public-career-records", profile?.user_id],
     queryFn: async () => {
-      const { data } = await supabase.from("user_career_records").select("id, user_id, record_type, title, title_ar, entity_name, entity_name_ar, description, description_ar, start_date, end_date, is_current, location, country_code, sort_order, department, department_ar, employment_type, education_level, field_of_study, field_of_study_ar, grade, entity_id").limit(5000)
+      const { data } = await supabase.from("user_career_records").select("id, user_id, record_type, title, title_ar, entity_name, entity_name_ar, description, description_ar, start_date, end_date, is_current, location, country_code, sort_order, department, department_ar, employment_type, education_level, field_of_study, field_of_study_ar, grade, entity_id")
         .eq("user_id", profile!.user_id)
         .order("is_current", { ascending: false })
         .order("end_date", { ascending: false, nullsFirst: true })
@@ -59,7 +59,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
     queryKey: ["public-memberships", profile?.user_id],
     queryFn: async () => {
       const { data } = await supabase.from("entity_memberships")
-        .select("*, culinary_entities(name, name_ar, logo_url, type)").limit(5000)
+        .select("*, culinary_entities(name, name_ar, logo_url, type)")
         .eq("user_id", profile!.user_id).eq("status", "active");
       return data || [];
     },

@@ -18,9 +18,9 @@ export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget
     queryKey: ["admin-support-satisfaction"],
     queryFn: async () => {
       const [ticketsRes, messagesRes, recentTicketsRes] = await Promise.all([
-        supabase.from("support_tickets").select("id, status, priority, created_at, resolved_at, assigned_to").limit(5000),
-        supabase.from("support_ticket_messages").select("ticket_id, sender_id, created_at, is_internal_note").order("created_at").limit(5000),
-        supabase.from("support_tickets").select("created_at, status, resolved_at").gte("created_at", subDays(new Date(), 14).toISOString()).limit(5000),
+        supabase.from("support_tickets").select("id, status, priority, created_at, resolved_at, assigned_to"),
+        supabase.from("support_ticket_messages").select("ticket_id, sender_id, created_at, is_internal_note").order("created_at"),
+        supabase.from("support_tickets").select("created_at, status, resolved_at").gte("created_at", subDays(new Date(), 14).toISOString()),
       ]);
 
       const tickets = ticketsRes.data || [];

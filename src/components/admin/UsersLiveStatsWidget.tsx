@@ -22,8 +22,8 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
     queryFn: async () => {
       const [profilesRes, rolesRes, membershipsRes] = await Promise.all([
         supabase.from("profiles").select("user_id, account_status, account_type, is_verified, country_code, created_at, membership_tier").order("created_at", { ascending: false }).limit(1000),
-        supabase.from("user_roles").select("user_id, role").limit(5000),
-        supabase.from("membership_cards").select("id, card_status").limit(5000),
+        supabase.from("user_roles").select("user_id, role"),
+        supabase.from("membership_cards").select("id, card_status"),
       ]);
 
       const profiles = profilesRes.data || [];

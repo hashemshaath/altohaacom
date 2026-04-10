@@ -55,22 +55,22 @@ export const CommunitySearch = memo(function CommunitySearch() {
       const searches = await Promise.all([
         // Users
         (activeFilter === "all" || activeFilter === "users") ?
-          supabase.from("profiles").select("user_id, full_name, display_name, display_name_ar, username, avatar_url, specialization").limit(5000)
+          supabase.from("profiles").select("user_id, full_name, display_name, display_name_ar, username, avatar_url, specialization")
             .or(`full_name.ilike.${pattern},username.ilike.${pattern},display_name.ilike.${pattern}`)
             .eq("account_status", "active").limit(5) : { data: [] },
         // Posts
         (activeFilter === "all" || activeFilter === "posts") ?
-          supabase.from("posts").select("id, content, author_id").limit(5000)
+          supabase.from("posts").select("id, content, author_id")
             .ilike("content", pattern).eq("moderation_status", "approved")
             .is("reply_to_post_id", null).order("created_at", { ascending: false }).limit(3) : { data: [] },
         // Recipes
         (activeFilter === "all" || activeFilter === "recipes") ?
-          supabase.from("recipes").select("id, title, title_ar, image_url").limit(5000)
+          supabase.from("recipes").select("id, title, title_ar, image_url")
             .eq("is_published", true)
             .or(`title.ilike.${pattern},title_ar.ilike.${pattern}`).limit(3) : { data: [] },
         // Groups
         (activeFilter === "all" || activeFilter === "groups") ?
-          supabase.from("groups").select("id, name, name_ar, avatar_url").limit(5000)
+          supabase.from("groups").select("id, name, name_ar, avatar_url")
             .or(`name.ilike.${pattern},name_ar.ilike.${pattern}`).limit(3) : { data: [] },
       ]);
 
