@@ -315,7 +315,7 @@ export default function EventsCalendar() {
               {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
             </div>
           ) : (
-            <>
+            <Suspense fallback={<div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}</div>}>
               {viewMode === "month" && <MonthView events={events} currentDate={currentDate} selectedDay={selectedDay} onSelectDay={setSelectedDay} isAr={isAr} />}
               {viewMode === "week" && <WeekView events={events} currentDate={currentDate} isAr={isAr} />}
               {viewMode === "day" && <DayView events={events} currentDate={currentDate} isAr={isAr} />}
@@ -330,7 +330,7 @@ export default function EventsCalendar() {
                   isAr={isAr}
                 />
               )}
-            </>
+            </Suspense>
           )}
 
           {/* ─── Legend ─── */}
