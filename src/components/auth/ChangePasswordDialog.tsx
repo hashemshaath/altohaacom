@@ -118,9 +118,10 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
         {step === "form" && (
           <div className="space-y-4 pt-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "كلمة المرور الحالية" : "Current Password"}</Label>
+              <Label htmlFor="current-pwd" className="text-xs">{isAr ? "كلمة المرور الحالية" : "Current Password"}</Label>
               <div className="relative">
                 <Input
+                  id="current-pwd"
                   type={showCurrent ? "text" : "password"}
                   autoComplete="current-password"
                   value={currentPassword}
@@ -135,9 +136,10 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label>
+              <Label htmlFor="new-pwd" className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label>
               <div className="relative">
                 <Input
+                  id="new-pwd"
                   type={showNew ? "text" : "password"}
                   autoComplete="new-password"
                   value={newPassword}
@@ -153,8 +155,9 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "تأكيد كلمة المرور الجديدة" : "Confirm New Password"}</Label>
+              <Label htmlFor="confirm-pwd" className="text-xs">{isAr ? "تأكيد كلمة المرور الجديدة" : "Confirm New Password"}</Label>
               <Input
+                id="confirm-pwd"
                 type="password"
                 autoComplete="new-password"
                 value={confirmPassword}
