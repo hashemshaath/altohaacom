@@ -32,7 +32,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
           .gte("created_at", thirtyDaysAgo),
         supabase.from("profiles").select("id", { count: "exact", head: true })
           .gte("created_at", sevenDaysAgo),
-        supabase.from("user_roles").select("role"),
+        supabase.from("user_roles").select("role").limit(5000),
         supabase.from("profiles").select("country_code").not("country_code", "is", null).limit(5000),
       ]);
 

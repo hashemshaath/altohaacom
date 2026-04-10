@@ -41,7 +41,7 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
         { data: prevGifts },
         { data: featureUsage },
       ] = await Promise.all([
-        supabase.from("profiles").select("membership_tier, membership_status, membership_expires_at, created_at").limit(5000),
+        supabase.from("profiles").select("membership_tier, membership_status, membership_expires_at, created_at"),
         supabase.from("membership_history").select("new_tier, previous_tier, created_at, reason").gte("created_at", periodStart),
         supabase.from("membership_history").select("new_tier, previous_tier, created_at, reason").gte("created_at", prevPeriodStart).lt("created_at", periodStart),
         supabase.from("membership_cancellation_requests").select("id, created_at").gte("created_at", periodStart),
