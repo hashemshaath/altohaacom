@@ -1,9 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { getDeviceType } from "@/lib/deviceType";
 import { getSessionId } from "@/lib/analyticsUtils";
-
+import { queueAnalyticsInsert } from "@/lib/analyticsBatcher";
 
 // Known crawler user-agent patterns
 const CRAWLER_PATTERNS: { pattern: RegExp; name: string; type: string }[] = [
@@ -51,6 +50,7 @@ function detectCrawler(ua: string): { name: string; type: string } | null {
 
 /**
  * Tracks page views for SEO analytics.
+ * Uses batched writes to reduce network overhead.
  * Detects crawler/bot visits and logs them separately.
  */
 export function useSEOTracking() {
@@ -65,34 +65,31 @@ export function useSEOTracking() {
       return;
     }
 
+    // Avoid duplicate tracking for same path
+    if (lastPath.current === path) return;
+    lastPath.current = path;
+
     const ua = navigator.userAgent;
     const crawler = detectCrawler(ua);
 
-    // If it's a crawler, log to crawler visits table instead
     if (crawler) {
-      const crawlerRecord = {
+      queueAnalyticsInsert("seo_crawler_visits", {
         path,
         crawler_name: crawler.name,
         crawler_type: crawler.type,
         user_agent: ua.slice(0, 500),
         device_type: getDeviceType(),
-      };
-      supabase.from("seo_crawler_visits").insert(crawlerRecord).then(null, () => {});
-      return; // Don't count crawlers as regular page views
+      });
+      return;
     }
 
-    // Record new page view (insert-only, no updates needed for anon tracking)
-    lastPath.current = path;
-
-    const record = {
+    queueAnalyticsInsert("seo_page_views", {
       path,
       title: document.title,
       referrer: document.referrer || null,
       user_agent: ua,
       device_type: getDeviceType(),
       session_id: getSessionId(),
-    };
-
-    supabase.from("seo_page_views").insert(record).then(null, () => {});
+    });
   }, [location.pathname]);
 }
