@@ -26293,6 +26293,27 @@ export type Database = {
         }
         Returns: string
       }
+      log_content_audit: {
+        Args: {
+          p_action: string
+          p_details?: Json
+          p_entity_id: string
+          p_entity_type: string
+          p_user_id: string
+        }
+        Returns: undefined
+      }
+      log_content_moderation: {
+        Args: {
+          p_action: string
+          p_ai_decision?: string
+          p_details?: Json
+          p_entity_id: string
+          p_entity_type: string
+          p_user_id: string
+        }
+        Returns: undefined
+      }
       log_feature_access: {
         Args: {
           p_feature_code: string
@@ -26311,6 +26332,15 @@ export type Database = {
           p_user_id: string
         }
         Returns: string
+      }
+      log_verification_audit: {
+        Args: {
+          p_action: string
+          p_action_by: string
+          p_details?: Json
+          p_request_id: string
+        }
+        Returns: undefined
       }
       move_to_dlq: {
         Args: {
