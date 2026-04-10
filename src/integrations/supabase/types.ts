@@ -24715,6 +24715,16 @@ export type Database = {
       generate_verification_code: { Args: never; Returns: string }
       generate_wallet_number: { Args: never; Returns: string }
       generate_wallet_txn_number: { Args: never; Returns: string }
+      get_chef_event_financials: {
+        Args: { p_event_id: string }
+        Returns: {
+          contract_status: string
+          fee_amount: number
+          fee_currency: string
+          internal_notes: string
+          is_contracted: boolean
+        }[]
+      }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
       get_company_contacts_safe: {
         Args: { p_company_id: string }
