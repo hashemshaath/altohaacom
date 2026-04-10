@@ -30,9 +30,9 @@ export const NotificationPreferencesWidget = memo(function NotificationPreferenc
   const [mutedCats, setMutedCats] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem(MUTED_CATS_KEY) || "[]"); } catch { return []; }
   });
-  const [digest, setDigest] = useState(() => localStorage.getItem(DIGEST_KEY) || "instant");
-  const [quietStart, setQuietStart] = useState(() => localStorage.getItem(QUIET_START_KEY) || "22:00");
-  const [quietEnd, setQuietEnd] = useState(() => localStorage.getItem(QUIET_END_KEY) || "07:00");
+  const [digest, setDigest] = useState(() => { try { return localStorage.getItem(DIGEST_KEY) || "instant"; } catch { return "instant"; } });
+  const [quietStart, setQuietStart] = useState(() => { try { return localStorage.getItem(QUIET_START_KEY) || "22:00"; } catch { return "22:00"; } });
+  const [quietEnd, setQuietEnd] = useState(() => { try { return localStorage.getItem(QUIET_END_KEY) || "07:00"; } catch { return "07:00"; } });
 
   const toggleCategory = (cat: string) => {
     const next = mutedCats.includes(cat) ? mutedCats.filter((c) => c !== cat) : [...mutedCats, cat];
