@@ -122,6 +122,7 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
               <div className="relative">
                 <Input
                   type={showCurrent ? "text" : "password"}
+                  autoComplete="current-password"
                   value={currentPassword}
                   onChange={(e) => { setCurrentPassword(e.target.value); setError(""); }}
                   placeholder="••••••••"

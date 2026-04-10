@@ -132,6 +132,7 @@ export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, o
                 </Label>
                 <Input
                   id="recoveryEmail"
+                  autoComplete="email"
                   type="email"
                   value={emailValue}
                   onChange={(e) => {

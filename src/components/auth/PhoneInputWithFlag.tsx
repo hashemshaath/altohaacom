@@ -93,6 +93,7 @@ export const PhoneInputWithFlag = memo(function PhoneInputWithFlag({
         <Input
           type="tel"
           dir="ltr"
+          autoComplete="tel"
           placeholder="5XX XXX XXXX"
           value={phone}
           onChange={(e) => onPhoneChange(normalizePhoneInput(e.target.value))}
