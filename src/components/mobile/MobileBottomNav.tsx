@@ -5,6 +5,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { cn } from "@/lib/utils";
 import { Home, Compass, Users, Bell, User } from "lucide-react";
 import { memo, useEffect, useRef, useState, useCallback } from "react";
+import { subscribeScroll } from "@/lib/scrollManager";
 
 const navItems = [
   { to: "/", icon: Home, labelEn: "Home", labelAr: "الرئيسية", exact: true },
@@ -28,23 +29,17 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
   const raf = useRef(0);
 
   useEffect(() => {
-    const onScroll = () => {
-      cancelAnimationFrame(raf.current);
-      raf.current = requestAnimationFrame(() => {
-        const y = window.scrollY;
-        let show = visRef.current;
-        if (y < 50) show = true;
-        else if (y > prevY.current + 8) show = false;
-        else if (y < prevY.current - 8) show = true;
-        prevY.current = y;
-        if (show !== visRef.current) {
-          visRef.current = show;
-          setVisible(show);
-        }
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", onScroll); cancelAnimationFrame(raf.current); };
+    return subscribeScroll((y) => {
+      let show = visRef.current;
+      if (y < 50) show = true;
+      else if (y > prevY.current + 8) show = false;
+      else if (y < prevY.current - 8) show = true;
+      prevY.current = y;
+      if (show !== visRef.current) {
+        visRef.current = show;
+        setVisible(show);
+      }
+    });
   }, []);
 
   const vibrate = useCallback(() => {
