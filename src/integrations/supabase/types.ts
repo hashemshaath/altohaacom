@@ -24983,6 +24983,147 @@ export type Database = {
         }
         Relationships: []
       }
+      judge_profiles_safe: {
+        Row: {
+          allergies: string | null
+          blood_type: string | null
+          certifications: string[] | null
+          country_of_residence: string | null
+          created_at: string | null
+          culinary_specialties: string[] | null
+          current_employer: string | null
+          current_position: string | null
+          date_of_birth: string | null
+          dietary_restrictions: string | null
+          education: string | null
+          education_ar: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          frequent_flyer_number: string | null
+          full_name_ar: string | null
+          gender: string | null
+          id: string | null
+          judge_category: string | null
+          judge_level: string | null
+          judge_title: string | null
+          judge_title_ar: string | null
+          languages_spoken: string[] | null
+          marital_status: string | null
+          medical_notes: string | null
+          national_id: string | null
+          nationality: string | null
+          notes: string | null
+          passport_country: string | null
+          passport_expiry_date: string | null
+          passport_issue_date: string | null
+          passport_number: string | null
+          preferred_airline: string | null
+          profile_photo_url: string | null
+          resume_url: string | null
+          second_nationality: string | null
+          shirt_size: string | null
+          spouse_name: string | null
+          spouse_name_ar: string | null
+          spouse_phone: string | null
+          travel_notes: string | null
+          updated_at: string | null
+          user_id: string | null
+          years_of_experience: number | null
+        }
+        Insert: {
+          allergies?: string | null
+          blood_type?: string | null
+          certifications?: string[] | null
+          country_of_residence?: string | null
+          created_at?: string | null
+          culinary_specialties?: string[] | null
+          current_employer?: string | null
+          current_position?: string | null
+          date_of_birth?: string | null
+          dietary_restrictions?: string | null
+          education?: string | null
+          education_ar?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          frequent_flyer_number?: string | null
+          full_name_ar?: string | null
+          gender?: string | null
+          id?: string | null
+          judge_category?: string | null
+          judge_level?: string | null
+          judge_title?: string | null
+          judge_title_ar?: string | null
+          languages_spoken?: string[] | null
+          marital_status?: string | null
+          medical_notes?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          notes?: string | null
+          passport_country?: string | null
+          passport_expiry_date?: string | null
+          passport_issue_date?: string | null
+          passport_number?: string | null
+          preferred_airline?: string | null
+          profile_photo_url?: string | null
+          resume_url?: string | null
+          second_nationality?: string | null
+          shirt_size?: string | null
+          spouse_name?: string | null
+          spouse_name_ar?: string | null
+          spouse_phone?: string | null
+          travel_notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Update: {
+          allergies?: string | null
+          blood_type?: string | null
+          certifications?: string[] | null
+          country_of_residence?: string | null
+          created_at?: string | null
+          culinary_specialties?: string[] | null
+          current_employer?: string | null
+          current_position?: string | null
+          date_of_birth?: string | null
+          dietary_restrictions?: string | null
+          education?: string | null
+          education_ar?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          frequent_flyer_number?: string | null
+          full_name_ar?: string | null
+          gender?: string | null
+          id?: string | null
+          judge_category?: string | null
+          judge_level?: string | null
+          judge_title?: string | null
+          judge_title_ar?: string | null
+          languages_spoken?: string[] | null
+          marital_status?: string | null
+          medical_notes?: string | null
+          national_id?: string | null
+          nationality?: string | null
+          notes?: string | null
+          passport_country?: string | null
+          passport_expiry_date?: string | null
+          passport_issue_date?: string | null
+          passport_number?: string | null
+          preferred_airline?: string | null
+          profile_photo_url?: string | null
+          resume_url?: string | null
+          second_nationality?: string | null
+          shirt_size?: string | null
+          spouse_name?: string | null
+          spouse_name_ar?: string | null
+          spouse_phone?: string | null
+          travel_notes?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
       profiles_public: {
         Row: {
           account_number: string | null
