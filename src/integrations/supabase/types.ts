@@ -25379,17 +25379,34 @@ export type Database = {
           bio_ar: string | null
           city: string | null
           country_code: string | null
+          cover_image_url: string | null
           created_at: string | null
+          display_name: string | null
+          display_name_ar: string | null
+          facebook: string | null
           full_name: string | null
           full_name_ar: string | null
+          instagram: string | null
           is_chef_visible: boolean | null
           is_verified: boolean | null
+          job_title: string | null
+          job_title_ar: string | null
+          linkedin: string | null
+          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
+          nationality: string | null
           profile_visibility: string | null
+          snapchat: string | null
           specialization: string | null
           specialization_ar: string | null
+          tiktok: string | null
+          twitter: string | null
           user_id: string | null
           username: string | null
           verification_level: string | null
+          view_count: number | null
+          website: string | null
+          years_of_experience: number | null
+          youtube: string | null
         }
         Insert: {
           account_type?: Database["public"]["Enums"]["account_type"] | null
@@ -25398,17 +25415,36 @@ export type Database = {
           bio_ar?: string | null
           city?: string | null
           country_code?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
+          display_name?: string | null
+          display_name_ar?: string | null
+          facebook?: string | null
           full_name?: string | null
           full_name_ar?: string | null
+          instagram?: string | null
           is_chef_visible?: boolean | null
           is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          linkedin?: string | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
           profile_visibility?: string | null
+          snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
+          tiktok?: string | null
+          twitter?: string | null
           user_id?: string | null
           username?: string | null
           verification_level?: string | null
+          view_count?: number | null
+          website?: string | null
+          years_of_experience?: number | null
+          youtube?: string | null
         }
         Update: {
           account_type?: Database["public"]["Enums"]["account_type"] | null
@@ -25417,17 +25453,36 @@ export type Database = {
           bio_ar?: string | null
           city?: string | null
           country_code?: string | null
+          cover_image_url?: string | null
           created_at?: string | null
+          display_name?: string | null
+          display_name_ar?: string | null
+          facebook?: string | null
           full_name?: string | null
           full_name_ar?: string | null
+          instagram?: string | null
           is_chef_visible?: boolean | null
           is_verified?: boolean | null
+          job_title?: string | null
+          job_title_ar?: string | null
+          linkedin?: string | null
+          membership_tier?:
+            | Database["public"]["Enums"]["membership_tier"]
+            | null
+          nationality?: string | null
           profile_visibility?: string | null
+          snapchat?: string | null
           specialization?: string | null
           specialization_ar?: string | null
+          tiktok?: string | null
+          twitter?: string | null
           user_id?: string | null
           username?: string | null
           verification_level?: string | null
+          view_count?: number | null
+          website?: string | null
+          years_of_experience?: number | null
+          youtube?: string | null
         }
         Relationships: []
       }
