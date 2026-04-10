@@ -268,43 +268,9 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("node_modules/lucide-react")) {
             return "vendor-icons";
           }
-          // ── Vendor: Critical UI (nav, tooltips, dialogs, cmdk) ──
-          if (
-            id.includes("@radix-ui/react-dialog") ||
-            id.includes("@radix-ui/react-dropdown-menu") ||
-            id.includes("@radix-ui/react-popover") ||
-            id.includes("@radix-ui/react-tooltip") ||
-            id.includes("@radix-ui/react-toast") ||
-            id.includes("@radix-ui/react-slot") ||
-            id.includes("@radix-ui/react-separator") ||
-            id.includes("@radix-ui/react-navigation-menu") ||
-            id.includes("@radix-ui/react-tabs") ||
-            id.includes("node_modules/cmdk")
-          ) {
-            return "vendor-ui-core";
-          }
-          // ── Vendor: Form UI (lazy pages only) ──
-          if (
-            id.includes("@radix-ui/react-accordion") ||
-            id.includes("@radix-ui/react-alert-dialog") ||
-            id.includes("@radix-ui/react-checkbox") ||
-            id.includes("@radix-ui/react-collapsible") ||
-            id.includes("@radix-ui/react-context-menu") ||
-            id.includes("@radix-ui/react-hover-card") ||
-            id.includes("@radix-ui/react-label") ||
-            id.includes("@radix-ui/react-menubar") ||
-            id.includes("@radix-ui/react-progress") ||
-            id.includes("@radix-ui/react-radio-group") ||
-            id.includes("@radix-ui/react-scroll-area") ||
-            id.includes("@radix-ui/react-slider") ||
-            id.includes("@radix-ui/react-switch") ||
-            id.includes("@radix-ui/react-toggle-group")
-          ) {
-            return "vendor-ui-forms";
-          }
-          // Select uses popover internally — keep in core to avoid circular
-          if (id.includes("@radix-ui/react-select")) {
-            return "vendor-ui-core";
+          // ── Vendor: All Radix UI + cmdk (shared primitives prevent splitting) ──
+          if (id.includes("@radix-ui/") || id.includes("node_modules/cmdk")) {
+            return "vendor-ui";
           }
           // ── Vendor: Charts (admin/analytics only) ──
           if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-")) {
