@@ -1406,7 +1406,7 @@ export default function SEODashboard() {
               <button key={d} onClick={() => setRange(d)} className={`px-3 py-1.5 transition-colors ${range === d ? "bg-primary text-primary-foreground" : "hover:bg-muted"}`}>{d}d</button>
             ))}
           </div>
-          <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={() => window.open(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-sitemap`, "_blank", "noopener")}>
+          <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={() => window.open(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-sitemap`, "_blank", "noopener,noreferrer")}>
             <Globe className="h-3.5 w-3.5" />{isAr ? "خريطة الموقع" : "Sitemap"}
           </Button>
           <Button onClick={handlePingSitemap} disabled={pinging} size="sm" className="gap-1.5 rounded-xl">

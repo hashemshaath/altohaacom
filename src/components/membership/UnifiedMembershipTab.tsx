@@ -313,7 +313,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
       const cardH = isVert ? "85.6mm" : "53.98mm";
 
       const imgDataUrl = canvas.toDataURL("image/png");
-      const printWindow = window.open("", "_blank", "noopener");
+      const printWindow = window.open("", "_blank", "noopener,noreferrer");
       if (!printWindow) return;
 
       printWindow.document.write(`<!DOCTYPE html><html dir="${isAr ? "rtl" : "ltr"}"><head>

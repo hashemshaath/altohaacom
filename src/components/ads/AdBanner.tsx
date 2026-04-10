@@ -72,7 +72,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBan
       page_url: window.location.pathname,
       device_type: deviceType,
     }).then(null, () => { /* fire-and-forget */ });
-    window.open(creative.destination_url, "_blank", "noopener");
+    window.open(creative.destination_url, "_blank", "noopener,noreferrer");
   }, [creative]);
 
   if (!creative) return null;
