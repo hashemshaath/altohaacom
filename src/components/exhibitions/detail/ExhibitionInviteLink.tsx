@@ -1,4 +1,4 @@
-import { useState, memo } from "react";
+import { useState, memo, forwardRef } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -14,7 +14,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const ExhibitionInviteLink = memo(function ExhibitionInviteLink({ exhibitionId, exhibitionSlug, isAr }: Props) {
+export const ExhibitionInviteLink = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionInviteLink({ exhibitionId, exhibitionSlug, isAr }: Props, _ref) {
   const { user } = useAuth();
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -86,4 +86,4 @@ export const ExhibitionInviteLink = memo(function ExhibitionInviteLink({ exhibit
       </CardContent>
     </Card>
   );
-});
+}));

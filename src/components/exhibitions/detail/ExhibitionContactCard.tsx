@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, Globe, Building, ExternalLink } from "lucide-react";
@@ -12,7 +12,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const ExhibitionContactCard = memo(function ExhibitionContactCard({ organizerName, organizerLogo, email, phone, website, isAr }: Props) {
+export const ExhibitionContactCard = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionContactCard({ organizerName, organizerLogo, email, phone, website, isAr }: Props, _ref) {
   if (!email && !phone && !website) return null;
 
   return (
@@ -82,4 +82,4 @@ export const ExhibitionContactCard = memo(function ExhibitionContactCard({ organ
       </CardContent>
     </Card>
   );
-});
+}));

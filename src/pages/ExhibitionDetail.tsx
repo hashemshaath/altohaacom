@@ -380,7 +380,7 @@ export default function ExhibitionDetail() {
         jsonLd={{
           "@context": "https://schema.org", "@type": "ExhibitionEvent", name: title,
           description: description || undefined, startDate: exhibition.start_date, endDate: exhibition.end_date,
-          eventStatus: hasEnded ? "https://schema.org/EventPostponed" : "https://schema.org/EventScheduled",
+          eventStatus: hasEnded ? "https://schema.org/EventScheduled" : "https://schema.org/EventScheduled",
           eventAttendanceMode: exhibition.is_virtual ? "https://schema.org/OnlineEventAttendanceMode" : "https://schema.org/OfflineEventAttendanceMode",
           location: exhibition.is_virtual
             ? { "@type": "VirtualLocation", url: exhibition.virtual_link || exhibition.website_url }

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MapPin, ExternalLink, Navigation, Compass } from "lucide-react";
@@ -35,7 +35,7 @@ function buildFallbackEmbedUrl(venue?: string | null, city?: string | null, coun
   return `https://maps.google.com/maps?q=${encodeURIComponent(query)}&z=14&output=embed`;
 }
 
-export const ExhibitionMapEmbed = memo(function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr }: Props) {
+export const ExhibitionMapEmbed = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionMapEmbed({ mapUrl, venue, city, country, address, isAr }: Props, ref) {
   const embedUrl = mapUrl ? extractEmbedUrl(mapUrl) : null;
   const fallbackEmbed = !embedUrl ? buildFallbackEmbedUrl(venue, city, country) : null;
   const finalEmbedUrl = embedUrl || fallbackEmbed;
@@ -107,4 +107,4 @@ export const ExhibitionMapEmbed = memo(function ExhibitionMapEmbed({ mapUrl, ven
       </CardContent>
     </Card>
   );
-});
+}));

@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +10,7 @@ interface Props {
   isAr: boolean;
 }
 
-export const ExhibitionStats = memo(function ExhibitionStats({ exhibitionId, isAr }: Props) {
+export const ExhibitionStats = memo(forwardRef<HTMLDivElement, Props>(function ExhibitionStats({ exhibitionId, isAr }: Props, _ref) {
   const { data: stats } = useQuery({
     queryKey: ["exhibition-stats", exhibitionId],
     queryFn: async () => {
@@ -78,4 +78,4 @@ export const ExhibitionStats = memo(function ExhibitionStats({ exhibitionId, isA
       </CardContent>
     </Card>
   );
-});
+}));
