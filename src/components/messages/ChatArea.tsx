@@ -401,7 +401,7 @@ export const ChatArea = memo(function ChatArea({
                         )}
 
                         {msg.attachment_urls && msg.attachment_urls.length > 0 && msg.message_type !== "audio" && (
-                          <div className={hasImages ? "cursor-pointer" : ""} onClick={() => { if (hasImages) setMediaPreview({ urls: msg.attachment_urls, index: 0 }); }}>
+                          <div role={hasImages ? "button" : undefined} tabIndex={hasImages ? 0 : undefined} aria-label={hasImages ? (isAr ? "عرض الصور" : "View images") : undefined} className={hasImages ? "cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none rounded-lg" : ""} onClick={() => { if (hasImages) setMediaPreview({ urls: msg.attachment_urls, index: 0 }); }} onKeyDown={(e) => { if (hasImages && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); setMediaPreview({ urls: msg.attachment_urls, index: 0 }); } }}>
                             <MessageAttachments urls={msg.attachment_urls} names={msg.attachment_names || []} messageType={msg.message_type} />
                           </div>
                         )}
