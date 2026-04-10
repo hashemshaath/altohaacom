@@ -23,7 +23,7 @@ export const ShareButton = memo(function ShareButton({ title, url, isAr, classNa
         // user cancelled
       }
     } else {
-      await navigator.clipboard.writeText(fullUrl);
+      await navigator.clipboard.writeText(fullUrl).then(null, () => {});
       toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     }
   };

@@ -37,7 +37,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
 
   const copyLinksUrl = async () => {
     if (!linksUrl) return;
-    await navigator.clipboard.writeText(linksUrl);
+    await navigator.clipboard.writeText(linksUrl).then(null, () => {});
     setLinkCopied(true);
     toast({ title: isAr ? "تم نسخ رابط صفحة الروابط" : "Links page URL copied!" });
     setTimeout(() => setLinkCopied(false), 2000);
