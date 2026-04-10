@@ -17,10 +17,10 @@ export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
     queryKey: ["orders-revenue-widget"],
     queryFn: async () => {
       const [ordersRes, shopRes, txRes, invoicesRes] = await Promise.all([
-        supabase.from("company_orders").select("id, status, total_amount, currency, direction, category, created_at, order_date"),
-        supabase.from("shop_orders").select("id, status, total_amount, currency, created_at"),
-        supabase.from("company_transactions").select("id, type, amount, created_at"),
-        supabase.from("invoices").select("id, status, amount, created_at"),
+        supabase.from("company_orders").select("id, status, total_amount, currency, direction, category, created_at, order_date".limit(5000)),
+        supabase.from("shop_orders").select("id, status, total_amount, currency, created_at".limit(5000)),
+        supabase.from("company_transactions").select("id, type, amount, created_at".limit(5000)),
+        supabase.from("invoices").select("id, status, amount, created_at".limit(5000)),
       ]);
 
       const orders = ordersRes.data || [];

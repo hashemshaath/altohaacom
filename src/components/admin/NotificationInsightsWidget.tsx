@@ -20,7 +20,7 @@ export const NotificationInsightsWidget = memo(function NotificationInsightsWidg
       const [notifsRes, queueRes, rulesRes] = await Promise.all([
         supabase.from("notifications").select("id, type, status, channel, created_at").order("created_at", { ascending: false }).limit(500),
         supabase.from("notification_queue").select("id, status, channel, error_message, created_at").limit(500),
-        supabase.from("notification_rules").select("id, is_active"),
+        supabase.from("notification_rules").select("id, is_active".limit(5000)),
       ]);
 
       const notifs = notifsRes.data || [];

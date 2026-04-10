@@ -29,8 +29,8 @@ export const SettingsImportExport = memo(function SettingsImportExport() {
     setIsExporting(true);
     try {
       const [settingsRes, sectionsRes] = await Promise.all([
-        supabase.from("site_settings").select("key, value, category"),
-        supabase.from("homepage_sections").select("id, section_number, section_type, title, title_ar, subtitle, subtitle_ar, content, is_active, sort_order, settings, created_at").order("sort_order"),
+        supabase.from("site_settings").select("key, value, category".limit(5000)),
+        supabase.from("homepage_sections").select("id, section_number, section_type, title, title_ar, subtitle, subtitle_ar, content, is_active, sort_order, settings, created_at").order("sort_order".limit(5000)),
       ]);
 
       if (settingsRes.error) throw settingsRes.error;

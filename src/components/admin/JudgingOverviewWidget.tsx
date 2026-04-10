@@ -16,10 +16,10 @@ export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
     queryKey: ["admin-judging-overview"],
     queryFn: async () => {
       const [judgesRes, regsRes, competitionsRes, roundsRes] = await Promise.all([
-        supabase.from("competition_roles").select("id, competition_id, user_id, role, status").eq("role", "judge"),
-        supabase.from("competition_registrations").select("id, competition_id, status"),
-        supabase.from("competitions").select("id, title, title_ar, status, max_participants").in("status", ["judging", "in_progress"]),
-        supabase.from("competition_rounds").select("id, competition_id, round_number, name, name_ar, status"),
+        supabase.from("competition_roles").select("id, competition_id, user_id, role, status").eq("role", "judge".limit(5000)),
+        supabase.from("competition_registrations").select("id, competition_id, status".limit(5000)),
+        supabase.from("competitions").select("id, title, title_ar, status, max_participants").in("status", ["judging", "in_progress"].limit(5000)),
+        supabase.from("competition_rounds").select("id, competition_id, round_number, name, name_ar, status".limit(5000)),
       ]);
 
       const judges = judgesRes.data || [];

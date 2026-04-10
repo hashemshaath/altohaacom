@@ -18,9 +18,9 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
       const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
       const [walletsRes, txnRes, recentTxnRes, pointsRes] = await Promise.all([
-        supabase.from("user_wallets").select("balance, points_balance"),
+        supabase.from("user_wallets").select("balance, points_balance".limit(5000)),
         supabase.from("wallet_transactions").select("id", { count: "exact", head: true }),
-        supabase.from("wallet_transactions").select("type, amount").gte("created_at", last7d),
+        supabase.from("wallet_transactions").select("type, amount").gte("created_at", last7d.limit(5000)),
         supabase.from("points_ledger").select("id", { count: "exact", head: true }).gte("created_at", last7d),
       ]);
 
