@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, lazy, Suspense } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
 import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
@@ -20,11 +20,13 @@ import { cn } from "@/lib/utils";
 import { EVENT_TYPES, COUNTRIES, ICONS, type ViewMode } from "@/lib/eventsCalendarConstants";
 import { StatPill } from "./events-calendar/StatPill";
 import { MonthView } from "./events-calendar/MonthView";
-import { WeekView } from "./events-calendar/WeekView";
-import { DayView } from "./events-calendar/DayView";
-import { YearView } from "./events-calendar/YearView";
-import { ListView } from "./events-calendar/ListView";
-import { SelectedDayPanel } from "./events-calendar/SelectedDayPanel";
+
+// Lazy-load non-default views for smaller initial bundle
+const WeekView = lazy(() => import("./events-calendar/WeekView").then(m => ({ default: m.WeekView })));
+const DayView = lazy(() => import("./events-calendar/DayView").then(m => ({ default: m.DayView })));
+const YearView = lazy(() => import("./events-calendar/YearView").then(m => ({ default: m.YearView })));
+const ListView = lazy(() => import("./events-calendar/ListView").then(m => ({ default: m.ListView })));
+const SelectedDayPanel = lazy(() => import("./events-calendar/SelectedDayPanel").then(m => ({ default: m.SelectedDayPanel })));
 
 export default function EventsCalendar() {
   const { language } = useLanguage();
@@ -313,7 +315,7 @@ export default function EventsCalendar() {
               {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
             </div>
           ) : (
-            <>
+            <Suspense fallback={<div className="space-y-3">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}</div>}>
               {viewMode === "month" && <MonthView events={events} currentDate={currentDate} selectedDay={selectedDay} onSelectDay={setSelectedDay} isAr={isAr} />}
               {viewMode === "week" && <WeekView events={events} currentDate={currentDate} isAr={isAr} />}
               {viewMode === "day" && <DayView events={events} currentDate={currentDate} isAr={isAr} />}
@@ -328,7 +330,7 @@ export default function EventsCalendar() {
                   isAr={isAr}
                 />
               )}
-            </>
+            </Suspense>
           )}
 
           {/* ─── Legend ─── */}

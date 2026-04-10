@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { ICONS } from "@/lib/eventsCalendarConstants";
 import { getCountdown } from "@/lib/eventsCalendarUtils";
+import { EventActions } from "./EventActions";
 import { localizeCity, localizeCountry } from "@/lib/localizeLocation";
 
 export function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolean }) {
@@ -159,14 +160,15 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
               )}
             </div>
           </div>
-          {event.link && (
-            <div className="flex items-center justify-end mt-2 pt-2 border-t border-border/15">
+          <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/15">
+            <EventActions event={event} isAr={isAr} />
+            {event.link && (
               <span className="text-[12px] text-primary font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
                 {isAr ? "عرض التفاصيل" : "View Details"}
                 <ArrowRight className="h-3 w-3" />
               </span>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </Card>
