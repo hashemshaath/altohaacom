@@ -49,14 +49,14 @@ export function usePublicProfileData(username: string | undefined, followListOpe
       // Try by username first using secure RPC
       const { data, error } = await supabase.rpc("get_public_profile", { p_username: username!.toLowerCase() });
       if (error) throw error;
-      if (data) return data as Record<string, unknown>;
+      if (data) return data as unknown as PublicProfileData;
 
       // Fallback: try by user_id if it looks like a UUID
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(username || "");
       if (isUuid) {
         const { data: byId, error: err2 } = await supabase.rpc("get_public_profile_by_id", { p_user_id: username! });
         if (err2) throw err2;
-        if (byId) return byId as Record<string, unknown>;
+        if (byId) return byId as unknown as PublicProfileData;
       }
       throw new Error("Profile not found");
     },
@@ -64,9 +64,9 @@ export function usePublicProfileData(username: string | undefined, followListOpe
     staleTime: 1000 * 60 * 2,
   });
 
-  useRecordProfileView(profile?.user_id);
+  useRecordProfileView(profile?.user_id as string | undefined);
 
-  const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
+  const { data: qrCode } = useEntityQRCode("user", (profile?.username as string) || undefined, "account");
 
   const { data: roles } = useQuery({
     queryKey: ["publicProfileRoles", profile?.user_id],
