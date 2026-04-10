@@ -124,6 +124,7 @@ export const LogoUploader = memo(forwardRef<HTMLDivElement, Props>(function Logo
               src={value}
               alt={label}
               className="max-h-20 max-w-[80%] object-contain"
+              loading="lazy"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}
