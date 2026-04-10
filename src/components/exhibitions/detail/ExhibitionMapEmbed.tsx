@@ -107,4 +107,4 @@ export const ExhibitionMapEmbed = memo(forwardRef<HTMLDivElement, Props>(functio
       </CardContent>
     </Card>
   );
-});
+}));
