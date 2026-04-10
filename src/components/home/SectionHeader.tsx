@@ -27,48 +27,70 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
 ) {
   return (
     <SectionReveal>
-      <div ref={ref} className={cn("mb-4 sm:mb-5", className)}>
-        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-          <Badge variant="secondary" className="gap-1.5 px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider">
-            <Icon className="h-3 w-3" />
+      <div ref={ref} className={cn("mb-5 sm:mb-6", className)}>
+        {/* Badge row */}
+        <div className="flex items-center gap-2.5 mb-2">
+          <Badge
+            variant="secondary"
+            className="gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-lg bg-primary/8 text-primary border-primary/15"
+          >
+            <Icon className="h-3.5 w-3.5" />
             {badge}
           </Badge>
         </div>
-        <div className="flex items-center justify-between gap-3">
+
+        {/* Title row */}
+        <div className="flex items-end justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h2
               className={cn(
-                "text-[20px] font-bold sm:text-2xl lg:text-3xl text-foreground tracking-tight leading-tight truncate",
+                "text-xl font-bold sm:text-2xl lg:text-[28px] text-foreground tracking-tight leading-tight",
                 !isAr && "font-serif"
               )}
             >
               {title}
             </h2>
+            {subtitle && (
+              <p className="mt-1.5 text-[13px] sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                {subtitle}
+              </p>
+            )}
           </div>
+
           <div className="flex items-center gap-2 shrink-0">
             {actions}
             {viewAllHref && (
-              <Button variant="ghost" size="sm" className="rounded-xl gap-1 text-xs font-semibold text-primary h-8 px-2.5 touch-manipulation" asChild>
-                <Link to={viewAllHref} aria-label={viewAllLabel || (isAr ? `عرض الكل - ${title}` : `View all ${title}`)}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="rounded-xl gap-1.5 text-xs font-semibold text-primary h-9 px-3 hover:bg-primary/5 touch-manipulation"
+                asChild
+              >
+                <Link
+                  to={viewAllHref}
+                  aria-label={viewAllLabel || (isAr ? `عرض الكل - ${title}` : `View all ${title}`)}
+                >
                   {viewAllLabel || (isAr ? "عرض الكل" : "View All")}
-                  <ArrowRight className="h-3 w-3 rtl:rotate-180" aria-hidden="true" />
+                  <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true" />
                 </Link>
               </Button>
             )}
           </div>
         </div>
-        {subtitle && <p className="mt-1 text-[13px] sm:text-sm text-muted-foreground leading-relaxed">{subtitle}</p>}
 
+        {/* Filters row */}
         {filters && (
-          <div className="mt-3 flex items-center gap-1.5 flex-wrap">
-            <Filter className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+          <div className="mt-3.5 flex items-center gap-1.5 flex-wrap">
+            <Filter className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
             {filters}
           </div>
         )}
+
+        {/* Decorative divider */}
+        <div className="mt-4 h-px bg-gradient-to-r from-border/60 via-border/30 to-transparent" />
       </div>
     </SectionReveal>
   );
 });
 
 SectionHeader.displayName = "SectionHeader";
-

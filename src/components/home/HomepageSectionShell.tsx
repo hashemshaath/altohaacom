@@ -5,9 +5,9 @@ import { SectionBackgroundWrapper } from "./SectionBackground";
 
 const SPACING: Record<string, string> = {
   none: "py-0",
-  compact: "py-6 sm:py-8 md:py-12",
-  normal: "py-8 sm:py-12 md:py-16 lg:py-24",
-  relaxed: "py-12 sm:py-16 md:py-20 lg:py-24",
+  compact: "py-5 sm:py-6 md:py-10",
+  normal: "py-6 sm:py-10 md:py-14 lg:py-20",
+  relaxed: "py-10 sm:py-14 md:py-18 lg:py-22",
 };
 
 export const HomepageSectionShell = forwardRef<HTMLDivElement, { children: ReactNode }>(function HomepageSectionShell({ children }, ref) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -9,7 +9,7 @@ import { Mail, Sparkles, Shield, Send } from "lucide-react";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
 
-export const NewsletterSignup = function NewsletterSignup() {
+export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignup(_props, _ref) {
   const { language } = useLanguage();
   const isAr = language === "ar";
   const { toast } = useToast();
@@ -88,4 +88,4 @@ export const NewsletterSignup = function NewsletterSignup() {
       </div>
     </section>
   );
-};
+});
