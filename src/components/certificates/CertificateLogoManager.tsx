@@ -140,7 +140,7 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
             {posLogos.map(logo => (
               <div key={logo.id} className="flex items-center gap-1.5 p-2 border rounded text-xs">
                 {logo.url ? (
-                  <img src={logo.url} alt="" className="w-8 h-8 object-contain rounded shrink-0" loading="lazy" />
+                  <img src={logo.url} alt={logo.name || "Certificate logo"} className="w-8 h-8 object-contain rounded shrink-0" loading="lazy" />
                 ) : (
                   <div className="w-8 h-8 bg-muted rounded flex items-center justify-center shrink-0">
                     <Image className="h-4 w-4 text-muted-foreground" />

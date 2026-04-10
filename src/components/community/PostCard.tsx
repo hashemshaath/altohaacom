@@ -227,7 +227,7 @@ export const PostCard = memo(function PostCard({
                     >
                       <img
                         src={url}
-                        alt=""
+                        alt={`Post image ${idx + 1}`}
                         className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
                         loading="lazy"
                         decoding="async"

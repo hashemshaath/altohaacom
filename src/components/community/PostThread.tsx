@@ -185,7 +185,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                     {((parentPost.image_urls?.length ? parentPost.image_urls : [parentPost.image_url].filter(Boolean)) as string[])
                       .slice(0, 4)
                       .map((url: string, idx: number) => (
-                        <img key={idx} src={url} alt="" className="w-full max-h-[400px] object-cover" loading="lazy" />
+                        <img key={idx} src={url} alt={`Post image ${idx + 1}`} className="w-full max-h-[400px] object-cover" loading="lazy" />
                       ))}
                   </div>
                 )}
@@ -231,7 +231,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                         {(reply.image_urls.length > 0 || reply.image_url) && (
                           <div className="mt-2 overflow-hidden rounded-xl border border-border">
                             {(reply.image_urls.length > 0 ? reply.image_urls : [reply.image_url!]).slice(0, 4).map((url, idx) => (
-                              <img key={idx} src={url} alt="" className="w-full max-h-[300px] object-cover" loading="lazy" />
+                              <img key={idx} src={url} alt={`Reply image ${idx + 1}`} className="w-full max-h-[300px] object-cover" loading="lazy" />
                             ))}
                           </div>
                         )}

@@ -103,7 +103,7 @@ export const ArticleImageLightbox = memo(function ArticleImageLightbox({
                 i === currentIndex ? "border-white scale-110 shadow-lg" : "border-transparent opacity-50 hover:opacity-80"
               )}
             >
-              <img loading="lazy" decoding="async" src={img} alt="" className="w-full h-full object-cover" />
+              <img loading="lazy" decoding="async" src={img} alt={`Image ${i + 1}`} className="w-full h-full object-cover" />
             </button>
           ))}
         </div>

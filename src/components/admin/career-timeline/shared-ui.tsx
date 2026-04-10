@@ -158,7 +158,7 @@ export const CompactRow = memo(function CompactRow({ icon: Icon, color, logoUrl,
   return (
     <div className="flex items-center gap-3 rounded-xl border border-border/50 px-4 py-2.5 hover:bg-muted/50 transition-all hover:border-border/80 group">
       {logoUrl ? (
-        <img loading="lazy" decoding="async" src={logoUrl} className="h-8 w-8 rounded-xl object-cover shrink-0" alt="" />
+        <img loading="lazy" decoding="async" src={logoUrl} className="h-8 w-8 rounded-xl object-cover shrink-0" alt={title || "Timeline entry"} />
       ) : (
         <div className={`flex h-8 w-8 items-center justify-center rounded-xl shrink-0 ${color}`}>
           <Icon className="h-4 w-4" />

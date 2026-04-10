@@ -237,7 +237,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
         <Label>{type === "logo" ? (isAr ? "الشعار" : "Logo") : (isAr ? "صورة الغلاف" : "Cover Image")}</Label>
         {url && (
           <div className="relative inline-block">
-            <img loading="lazy" decoding="async" src={url} alt="" className={`rounded-xl border object-cover ${type === "logo" ? "h-20 w-20" : "h-32 w-full max-w-md"}`} />
+            <img loading="lazy" decoding="async" src={url} alt={type === "logo" ? "Entity logo" : "Entity cover"} className={`rounded-xl border object-cover ${type === "logo" ? "h-20 w-20" : "h-32 w-full max-w-md"}`} />
             <Button size="icon" variant="destructive" className="absolute -top-2 -end-2 h-6 w-6" onClick={() => onUpdate(fieldKey, "")}>
               <X className="h-3 w-3" />
             </Button>

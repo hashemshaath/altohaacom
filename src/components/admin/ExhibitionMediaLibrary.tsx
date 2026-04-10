@@ -260,7 +260,7 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
                     {selected ? <CheckSquare className="h-4 w-4 text-primary" /> : <Square className="h-4 w-4 text-muted-foreground/40" />}
                   </button>
                   {item.file_type === "image" ? (
-                    <img loading="lazy" decoding="async" src={item.file_url} alt="" className="h-10 w-14 rounded-lg object-cover border shrink-0" />
+                    <img loading="lazy" decoding="async" src={item.file_url} alt={item.title || "Media file"} className="h-10 w-14 rounded-lg object-cover border shrink-0" />
                   ) : (
                     <div className="h-10 w-14 rounded-lg bg-muted/40 flex items-center justify-center shrink-0">
                       <FileText className="h-4 w-4 text-muted-foreground/50" />

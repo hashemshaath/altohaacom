@@ -253,7 +253,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                           <Separator />
                           <div className="flex items-center gap-3">
                             {(exh as Record<string, unknown>).organizer_logo_url ? (
-                              <img loading="lazy" decoding="async" src={String((exh as Record<string, unknown>).organizer_logo_url)} alt="" className="h-8 w-8 rounded-lg object-contain bg-muted p-0.5" />
+                              <img loading="lazy" decoding="async" src={String((exh as Record<string, unknown>).organizer_logo_url)} alt="Organizer logo" className="h-8 w-8 rounded-lg object-contain bg-muted p-0.5" />
                             ) : (
                               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
                                 <Building className="h-4 w-4 text-primary" />
@@ -310,7 +310,7 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
                         <div className="space-y-1.5">
                           {analytics.sponsors.slice(0, 5).map((sp) => (
                             <div key={sp.id} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/30">
-                              {sp.logo_url && <img loading="lazy" decoding="async" src={sp.logo_url} alt="" className="h-6 w-6 rounded object-contain" />}
+                              {sp.logo_url && <img loading="lazy" decoding="async" src={sp.logo_url} alt={sp.name || "Sponsor"} className="h-6 w-6 rounded object-contain" />}
                               <span className="truncate flex-1">{isAr && sp.name_ar ? sp.name_ar : sp.name}</span>
                               <Badge variant="outline" className="text-[12px] h-4">{sp.tier}</Badge>
                             </div>
