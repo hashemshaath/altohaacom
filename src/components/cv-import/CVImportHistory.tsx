@@ -38,11 +38,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
   const [searchFilter, setSearchFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "completed" | "failed">("all");
 
-  useEffect(() => {
-    loadHistory();
-  }, [refreshTrigger]);
-
-  const loadHistory = async () => {
+  const loadHistory = async (signal?: { cancelled: boolean }) => {
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -52,6 +48,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
         .limit(50);
 
       if (error) throw error;
+      if (signal?.cancelled) return;
       setImports(data || []);
 
       const chefIds = [...new Set((data || []).map(d => d.chef_id))];
@@ -61,7 +58,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
           .select("user_id, full_name, full_name_ar")
           .in("user_id", chefIds);
 
-        if (profiles) {
+        if (!signal?.cancelled && profiles) {
           const names: Record<string, string> = {};
           profiles.forEach(p => {
             names[p.user_id] = isAr ? (p.full_name_ar || p.full_name || "—") : (p.full_name || "—");
@@ -72,8 +69,14 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
     } catch (err: unknown) {
       console.error("Failed to load import history:", err);
     }
-    setLoading(false);
+    if (!signal?.cancelled) setLoading(false);
   };
+
+  useEffect(() => {
+    const signal = { cancelled: false };
+    loadHistory(signal);
+    return () => { signal.cancelled = true; };
+  }, [refreshTrigger]);
 
   const sectionLabel = (s: string) => {
     const labels: Record<string, { en: string; ar: string }> = {
@@ -152,7 +155,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
             <Button variant="ghost" size="sm" onClick={handleExportHistory} className="text-xs h-7 gap-1">
               <Download className="h-3 w-3" /> {isAr ? "تصدير" : "Export"}
             </Button>
-            <Button variant="ghost" size="sm" onClick={loadHistory} className="text-xs h-7">
+            <Button variant="ghost" size="sm" onClick={() => loadHistory()} className="text-xs h-7">
               {isAr ? "تحديث" : "Refresh"}
             </Button>
           </div>

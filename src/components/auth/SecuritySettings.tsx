@@ -66,11 +66,36 @@ export const SecuritySettings = memo(function SecuritySettings() {
   };
 
   useEffect(() => {
-    if (user) {
-      fetchPinStatus();
-      fetchDevices();
+    if (!user) return;
+    let cancelled = false;
+
+    const load = async () => {
+      setLoadingPin(true);
+      setLoadingDevices(true);
+      try {
+        const [pinRes, devRes] = await Promise.all([
+          supabase.functions.invoke("pin-auth", { body: { action: "check_pin_status" } }),
+          supabase.functions.invoke("pin-auth", { body: { action: "list_devices" } }),
+        ]);
+        if (cancelled) return;
+        setPinStatus(pinRes.data ?? { has_pin: false });
+        setDevices(devRes.data?.devices || []);
+      } catch {
+        if (!cancelled) {
+          setPinStatus({ has_pin: false });
+          setDevices([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingPin(false);
+          setLoadingDevices(false);
+        }
+      }
       listSessions();
-    }
+    };
+
+    load();
+    return () => { cancelled = true; };
   }, [user]);
 
   const handleDisablePin = async () => {
