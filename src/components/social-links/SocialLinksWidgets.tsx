@@ -123,7 +123,7 @@ export const ContactFormSection = memo(function ContactFormSection({ theme, lang
       <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={tl("contactName", lang)}
         className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all duration-200" style={inputStyle}
         onFocus={e => (e.target.style.borderColor = theme.accent)} onBlur={e => (e.target.style.borderColor = theme.border)} />
-      <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder={tl("contactEmail", lang)}
+      <input type="email" autoComplete="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder={tl("contactEmail", lang)}
         className="w-full rounded-xl px-4 py-2.5 text-sm outline-none transition-all duration-200" dir="ltr" style={inputStyle}
         onFocus={e => (e.target.style.borderColor = theme.accent)} onBlur={e => (e.target.style.borderColor = theme.border)} />
       <textarea value={form.message} onChange={e => setForm(f => ({ ...f, message: e.target.value }))} placeholder={tl("contactMessage", lang)}
@@ -186,7 +186,7 @@ export const EmailSubscriptionSection = memo(function EmailSubscriptionSection({
       <div className="space-y-2">
         <input value={subName} onChange={e => setSubName(e.target.value)} placeholder={tl("contactName", lang)}
           className="w-full rounded-xl px-4 py-2.5 text-sm outline-none" style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }} />
-        <input type="email" value={subEmail} onChange={e => setSubEmail(e.target.value)} placeholder={tl("contactEmail", lang)} dir="ltr"
+        <input type="email" autoComplete="email" value={subEmail} onChange={e => setSubEmail(e.target.value)} placeholder={tl("contactEmail", lang)} dir="ltr"
           className="w-full rounded-xl px-4 py-2.5 text-sm outline-none" style={{ background: theme.btnBg, border: `1px solid ${theme.border}`, color: theme.text }} />
         <button onClick={handleSubscribe} disabled={subscribing || !subEmail}
           className="w-full py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
