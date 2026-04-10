@@ -45,7 +45,7 @@ export const FanRecommendationsWidget = memo(function FanRecommendationsWidget()
             >
               {recipe.image_url && (
                 <div className="aspect-[4/3] overflow-hidden bg-muted">
-                  <img
+                  <img loading="lazy"
                     src={recipe.image_url}
                     alt={isAr ? recipe.title_ar || recipe.title : recipe.title}
                     className="h-full w-full object-cover transition-transform group-hover:scale-105"

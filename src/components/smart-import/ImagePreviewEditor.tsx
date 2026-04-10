@@ -33,7 +33,7 @@ export const ImagePreviewEditor = memo(function ImagePreviewEditor({ label, valu
         />
       ) : null}
       {(editing ? url : value) ? (
-        <img
+        <img loading="lazy"
           src={editing ? url : (value || "")}
           alt={label}
           className={`w-full ${imgClass} object-contain rounded-lg border border-border/40 bg-muted/20`}

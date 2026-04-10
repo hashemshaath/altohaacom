@@ -128,7 +128,7 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
             {(post.image_urls?.length > 0 || post.image_url) && (
               <div className="mt-2 flex gap-1 overflow-hidden rounded-xl">
                 {(post.image_urls?.length > 0 ? post.image_urls : [post.image_url!]).slice(0, 3).map((url, i) => (
-                  <img
+                  <img loading="lazy"
                     key={i}
                     src={url}
                     alt={isAr ? "صورة من المنشور" : "Post image"}

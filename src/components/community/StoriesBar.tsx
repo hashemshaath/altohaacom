@@ -351,7 +351,7 @@ export const StoriesBar = memo(function StoriesBar() {
               >
                 {pendingFile.type.startsWith("video/")
                   ? <video src={URL.createObjectURL(pendingFile)} className="w-full h-full object-cover" controls />
-                  : <img
+                  : <img loading="lazy"
                       src={URL.createObjectURL(pendingFile)}
                       className="w-full h-full object-cover pointer-events-none"
                       style={{ objectPosition: `${imagePosition}% 50%` }}
@@ -460,7 +460,7 @@ export const StoriesBar = memo(function StoriesBar() {
                     playsInline
                   />
                 ) : (
-                  <img
+                  <img loading="lazy"
                     src={viewing.stories[storyIndex]?.media_url}
                     alt={viewing.stories[storyIndex]?.caption || "Story"}
                     className="w-full h-full object-cover"

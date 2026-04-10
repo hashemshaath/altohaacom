@@ -299,7 +299,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
                   {/* Dish Image */}
                   <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
                     {registration.dish_image_url ? (
-                      <img
+                      <img loading="lazy"
                         src={registration.dish_image_url}
                         alt={registration.dish_name || "Dish"}
                         className="h-full w-full object-cover"
@@ -420,7 +420,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
             <div className="space-y-4">
               {/* Dish Image */}
               {selectedRegistration.dish_image_url && (
-                <img
+                <img loading="lazy"
                   src={selectedRegistration.dish_image_url}
                   alt={selectedRegistration.dish_name || "Dish"}
                   className="h-48 w-full rounded-xl object-cover"

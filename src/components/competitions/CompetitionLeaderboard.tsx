@@ -270,7 +270,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
               {/* Dish Image */}
               <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-muted ring-2 ring-border/20 transition-all duration-300 group-hover:ring-primary/20">
                 {entry.dish_image_url ? (
-                  <img
+                  <img loading="lazy"
                     src={entry.dish_image_url}
                     alt={entry.dish_name || "Dish"}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"

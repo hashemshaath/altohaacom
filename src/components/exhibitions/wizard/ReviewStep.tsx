@@ -46,7 +46,7 @@ export const ExhibitionReviewStep = memo(function ExhibitionReviewStep({ data }:
       {data.coverImageUrl && (
         <div className="overflow-hidden rounded-2xl border shadow-sm">
           <div className="relative">
-            <img
+            <img loading="lazy"
               src={data.coverImageUrl}
               alt="Cover"
               className="aspect-[21/9] w-full object-cover"

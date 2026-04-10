@@ -602,7 +602,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
               <div className={`flex-1 flex ${isVertical ? "flex-col items-center justify-center gap-3" : "items-center gap-5"} my-3`}>
                 <div className="shrink-0 relative">
                   {profile?.avatar_url ? (
-                    <img
+                    <img loading="lazy"
                       src={profile.avatar_url}
                       alt={profile.full_name || ""}
                       className={`${isVertical ? "h-[90px] w-[90px]" : "h-[82px] w-[82px] sm:h-[92px] sm:w-[92px]"} rounded-xl object-cover`}

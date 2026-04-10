@@ -67,7 +67,7 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
         onClick={handleView}
       >
         {product.image_url ? (
-          <img
+          <img loading="lazy"
             loading="lazy"
             decoding="async"
             src={product.image_url}

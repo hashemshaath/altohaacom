@@ -127,7 +127,7 @@ export const ExhibitionPeopleTab = memo(function ExhibitionPeopleTab({ judgeProf
               <Card key={i} className="overflow-hidden transition-all hover:shadow-md hover:-translate-y-0.5">
                 <CardContent className="flex flex-col items-center p-5 text-center">
                   {speaker.image_url ? (
-                    <img
+                    <img loading="lazy"
                       src={speaker.image_url}
                       alt={speaker.name}
                       className="mb-3 h-16 w-16 rounded-full object-cover ring-2 ring-border"

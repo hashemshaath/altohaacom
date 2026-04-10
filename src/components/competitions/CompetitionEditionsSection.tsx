@@ -114,7 +114,7 @@ export const CompetitionEditionsSection = memo(forwardRef<HTMLElement, Props>(fu
                   {/* Series Image/Icon */}
                   <div className="h-14 w-14 shrink-0 rounded-xl overflow-hidden bg-primary/5 ring-1 ring-border/20">
                     {latest.cover_image_url ? (
-                      <img
+                      <img loading="lazy"
                         src={latest.cover_image_url}
                         alt={group.baseName}
                         className="h-full w-full object-cover"

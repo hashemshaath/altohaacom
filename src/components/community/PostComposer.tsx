@@ -358,7 +358,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
             )}>
               {images.map((img, idx) => (
                 <div key={idx} className="relative group">
-                  <img
+                  <img loading="lazy"
                     src={img.preview}
                     alt={`Upload preview ${idx + 1}`}
                     className={cn("w-full object-cover", images.length === 1 ? "max-h-[300px]" : "aspect-square")}

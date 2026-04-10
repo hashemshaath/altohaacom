@@ -98,7 +98,7 @@ export const NewsRelatedTopics = memo(function NewsRelatedTopics({
                 <CardContent className="p-3.5 flex gap-3">
                   {article.featured_image_url ? (
                     <div className="h-16 w-16 shrink-0 rounded-lg overflow-hidden bg-muted">
-                      <img
+                      <img loading="lazy"
                         src={article.featured_image_url}
                         alt={artTitle}
                         className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"

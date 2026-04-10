@@ -53,7 +53,7 @@ export const TrendingCompetitions = memo(function TrendingCompetitions({ competi
                 {/* Image */}
                 <div className="relative aspect-[16/9] overflow-hidden bg-muted">
                   {comp.cover_image_url ? (
-                    <img
+                    <img loading="lazy"
                       src={comp.cover_image_url}
                       alt={title}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
