@@ -25643,6 +25643,7 @@ export type Database = {
       }
       profiles_public: {
         Row: {
+          account_number: string | null
           account_type: Database["public"]["Enums"]["account_type"] | null
           avatar_url: string | null
           bio: string | null
@@ -25653,17 +25654,22 @@ export type Database = {
           created_at: string | null
           display_name: string | null
           display_name_ar: string | null
+          experience_level:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
           facebook: string | null
+          favorite_cuisines: string[] | null
+          follow_privacy: string | null
           full_name: string | null
           full_name_ar: string | null
           instagram: string | null
+          interests: string[] | null
           is_chef_visible: boolean | null
           is_verified: boolean | null
           job_title: string | null
           job_title_ar: string | null
           linkedin: string | null
-          membership_tier: Database["public"]["Enums"]["membership_tier"] | null
-          nationality: string | null
+          location: string | null
           profile_visibility: string | null
           snapchat: string | null
           specialization: string | null
@@ -25672,6 +25678,7 @@ export type Database = {
           twitter: string | null
           user_id: string | null
           username: string | null
+          verification_badge: string | null
           verification_level: string | null
           view_count: number | null
           website: string | null
@@ -25679,6 +25686,7 @@ export type Database = {
           youtube: string | null
         }
         Insert: {
+          account_number?: string | null
           account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
@@ -25689,19 +25697,22 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           display_name_ar?: string | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
           facebook?: string | null
+          favorite_cuisines?: string[] | null
+          follow_privacy?: string | null
           full_name?: string | null
           full_name_ar?: string | null
           instagram?: string | null
+          interests?: string[] | null
           is_chef_visible?: boolean | null
           is_verified?: boolean | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
-          membership_tier?:
-            | Database["public"]["Enums"]["membership_tier"]
-            | null
-          nationality?: string | null
+          location?: string | null
           profile_visibility?: string | null
           snapchat?: string | null
           specialization?: string | null
@@ -25710,6 +25721,7 @@ export type Database = {
           twitter?: string | null
           user_id?: string | null
           username?: string | null
+          verification_badge?: string | null
           verification_level?: string | null
           view_count?: number | null
           website?: string | null
@@ -25717,6 +25729,7 @@ export type Database = {
           youtube?: string | null
         }
         Update: {
+          account_number?: string | null
           account_type?: Database["public"]["Enums"]["account_type"] | null
           avatar_url?: string | null
           bio?: string | null
@@ -25727,19 +25740,22 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           display_name_ar?: string | null
+          experience_level?:
+            | Database["public"]["Enums"]["experience_level"]
+            | null
           facebook?: string | null
+          favorite_cuisines?: string[] | null
+          follow_privacy?: string | null
           full_name?: string | null
           full_name_ar?: string | null
           instagram?: string | null
+          interests?: string[] | null
           is_chef_visible?: boolean | null
           is_verified?: boolean | null
           job_title?: string | null
           job_title_ar?: string | null
           linkedin?: string | null
-          membership_tier?:
-            | Database["public"]["Enums"]["membership_tier"]
-            | null
-          nationality?: string | null
+          location?: string | null
           profile_visibility?: string | null
           snapchat?: string | null
           specialization?: string | null
@@ -25748,6 +25764,7 @@ export type Database = {
           twitter?: string | null
           user_id?: string | null
           username?: string | null
+          verification_badge?: string | null
           verification_level?: string | null
           view_count?: number | null
           website?: string | null
