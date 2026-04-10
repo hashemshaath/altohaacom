@@ -24716,6 +24716,27 @@ export type Database = {
       generate_wallet_number: { Args: never; Returns: string }
       generate_wallet_txn_number: { Args: never; Returns: string }
       get_company_balance: { Args: { p_company_id: string }; Returns: number }
+      get_company_contacts_safe: {
+        Args: { p_company_id: string }
+        Returns: {
+          company_id: string
+          created_at: string
+          department: string
+          email: string
+          id: string
+          invitation_status: string
+          is_primary: boolean
+          mobile: string
+          name: string
+          name_ar: string
+          phone: string
+          role: string
+          title: string
+          title_ar: string
+          updated_at: string
+          user_id: string
+        }[]
+      }
       get_company_invitation_token: {
         Args: { p_company_id: string }
         Returns: string
