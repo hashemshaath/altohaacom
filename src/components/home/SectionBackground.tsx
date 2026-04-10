@@ -9,51 +9,54 @@ export type SectionTheme = {
 };
 
 /**
- * Vibrant alternating background system.
- * Clean backgrounds with subtle color accents per section.
+ * Hardcoded overrides for special sections that need specific backgrounds.
+ * All other sections get dynamic alternating backgrounds.
  */
-export const SECTION_THEMES: Record<string, SectionTheme> = {
-  /* Primary (white) sections */
-  search: { bg: "bg-background" },
-  stats: { bg: "bg-[#F8F8F8] dark:bg-muted/10" },
-  events_by_category: { bg: "bg-background", topBorder: true },
-  regional_events: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  events_calendar: { bg: "bg-background", topBorder: true },
-  featured_chefs: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  newly_joined: { bg: "bg-background", topBorder: true },
-  sponsors: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  partners: { bg: "bg-background", topBorder: true },
-  pro_suppliers: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  masterclasses: { bg: "bg-background", topBorder: true },
-  articles: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  trending_content: { bg: "bg-background", topBorder: true },
-  testimonials: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  sponsorships: { bg: "bg-background", topBorder: true },
-  features: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  platform_features: { bg: "bg-background", topBorder: true },
-  newsletter: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  quick_actions: { bg: "bg-background", topBorder: true },
+const SECTION_OVERRIDES: Record<string, Partial<SectionTheme>> = {
+  search: { bg: "bg-background", topBorder: false },
+  ad_banner_top: { bg: "bg-transparent", topBorder: false },
+  ad_banner_mid: { bg: "bg-transparent", topBorder: false },
+  ad_banner_bottom: { bg: "bg-transparent", topBorder: false },
   premium_cta: { bg: "bg-[#F8F8F8] dark:bg-muted/10", topBorder: true },
-  ad_banner_top: { bg: "bg-transparent" },
-  ad_banner_mid: { bg: "bg-transparent" },
-  ad_banner_bottom: { bg: "bg-transparent" },
 };
 
-export function getSectionTheme(sectionKey: string): SectionTheme {
-  return SECTION_THEMES[sectionKey] || { bg: "bg-background" };
+const BG_PRIMARY = "bg-background";
+const BG_SECONDARY = "bg-[#F8F8F8] dark:bg-muted/10";
+
+/**
+ * Returns the alternating background for a section based on its visible index.
+ * Even indices → white, Odd indices → light gray.
+ */
+export function getSectionTheme(sectionKey: string, visibleIndex?: number): SectionTheme {
+  const override = SECTION_OVERRIDES[sectionKey];
+  if (override?.bg) {
+    return {
+      bg: override.bg,
+      topBorder: override.topBorder ?? true,
+      className: override.className,
+      overlay: override.overlay,
+    };
+  }
+
+  const isOdd = typeof visibleIndex === "number" ? visibleIndex % 2 === 1 : false;
+  return {
+    bg: isOdd ? BG_SECONDARY : BG_PRIMARY,
+    topBorder: typeof visibleIndex === "number" && visibleIndex > 0,
+  };
 }
 
 export const SectionBackgroundWrapper = forwardRef<HTMLDivElement, {
   sectionKey: string;
   children: ReactNode;
   className?: string;
-}>(function SectionBackgroundWrapper({ sectionKey, children, className }, ref) {
-  const theme = getSectionTheme(sectionKey);
+  visibleIndex?: number;
+}>(function SectionBackgroundWrapper({ sectionKey, children, className, visibleIndex }, ref) {
+  const theme = getSectionTheme(sectionKey, visibleIndex);
 
   return (
     <div ref={ref} className={cn(theme.bg, theme.className, className)}>
       {theme.topBorder && (
-        <div className="h-px bg-border/40" aria-hidden="true" />
+        <div className="h-px bg-border/30" aria-hidden="true" />
       )}
       {theme.overlay}
       <div className="relative">{children}</div>
