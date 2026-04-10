@@ -82,6 +82,7 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
             {isAr ? "بدون إزعاج. يمكنك إلغاء الاشتراك في أي وقت." : "No spam ever. Unsubscribe anytime."}
           </div>
         </div>
+        </SectionReveal>
       </div>
     </section>
   );
