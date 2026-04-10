@@ -251,52 +251,59 @@ export default defineConfig(({ mode }) => ({
         assetFileNames: 'assets/[name].[hash].[ext]',
         chunkFileNames: 'assets/[name].[hash].js',
         entryFileNames: 'assets/[name].[hash].js',
-        manualChunks: {
-          "vendor-react": ["react", "react-dom", "react-router-dom"],
-          "vendor-supabase": ["@supabase/supabase-js"],
-          // Critical UI: used on every page (nav, tooltips, dialogs, dropdowns, toasts)
-          "vendor-ui-core": [
-            "@radix-ui/react-dialog",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-popover",
-            "@radix-ui/react-tooltip",
-            "@radix-ui/react-toast",
-            "@radix-ui/react-slot",
-            "@radix-ui/react-separator",
-            "@radix-ui/react-navigation-menu",
-            "@radix-ui/react-tabs",
-          ],
-          // Non-critical UI: loaded only on pages that use forms, selects, accordions etc.
-          "vendor-ui-forms": [
-            "@radix-ui/react-accordion",
-            "@radix-ui/react-alert-dialog",
-            "@radix-ui/react-checkbox",
-            "@radix-ui/react-collapsible",
-            "@radix-ui/react-context-menu",
-            "@radix-ui/react-hover-card",
-            "@radix-ui/react-label",
-            "@radix-ui/react-menubar",
-            "@radix-ui/react-progress",
-            "@radix-ui/react-radio-group",
-            "@radix-ui/react-scroll-area",
-            "@radix-ui/react-select",
-            "@radix-ui/react-slider",
-            "@radix-ui/react-switch",
-            "@radix-ui/react-toggle-group",
-          ],
-          // Charts: only on admin/analytics pages (lazy-loaded routes)
-          "vendor-charts": ["recharts"],
-          "vendor-form": ["react-hook-form", "@hookform/resolvers", "zod"],
-          "vendor-markdown": ["react-markdown"],
-          "vendor-dates": ["date-fns"],
-          "vendor-qr": ["qrcode.react"],
-          // PDF & doc parsers: dynamically imported at call-site, never in initial bundle
-          "vendor-pdf": ["pdfjs-dist"],
-          "vendor-docparse": ["mammoth"],
-          "vendor-canvas": ["html2canvas"],
-          "vendor-dnd": ["@dnd-kit/core", "@dnd-kit/sortable", "@dnd-kit/utilities"],
-          "vendor-embla": ["embla-carousel-react"],
-          "vendor-panels": ["react-resizable-panels"],
+        manualChunks(id) {
+          // ── Vendor: React core ──
+          if (id.includes("node_modules/react/") || id.includes("node_modules/react-dom/") || id.includes("node_modules/react-router")) {
+            return "vendor-react";
+          }
+          // ── Vendor: Supabase ──
+          if (id.includes("node_modules/@supabase/")) {
+            return "vendor-supabase";
+          }
+          // ── Vendor: React Query ──
+          if (id.includes("node_modules/@tanstack/react-query")) {
+            return "vendor-query";
+          }
+          // ── Vendor: Lucide icons ──
+          if (id.includes("node_modules/lucide-react")) {
+            return "vendor-icons";
+          }
+          // ── Vendor: All Radix UI + cmdk (shared primitives prevent splitting) ──
+          if (id.includes("@radix-ui/") || id.includes("node_modules/cmdk")) {
+            return "vendor-ui";
+          }
+          // ── Vendor: Charts (admin/analytics only) ──
+          if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-")) {
+            return "vendor-charts";
+          }
+          // ── Vendor: Forms ──
+          if (id.includes("node_modules/react-hook-form") || id.includes("node_modules/@hookform/") || id.includes("node_modules/zod")) {
+            return "vendor-form";
+          }
+          // ── Vendor: Utilities (CSS-in-JS helpers) ──
+          if (id.includes("node_modules/class-variance-authority") || id.includes("node_modules/clsx") || id.includes("node_modules/tailwind-merge")) {
+            return "vendor-css-utils";
+          }
+          // ── Vendor: Theme/toast ──
+          if (id.includes("node_modules/next-themes") || id.includes("node_modules/sonner")) {
+            return "vendor-ui-misc";
+          }
+          // ── Heavy vendors: lazy-only ──
+          if (id.includes("node_modules/recharts")) return "vendor-charts";
+          if (id.includes("node_modules/react-markdown")) return "vendor-markdown";
+          if (id.includes("node_modules/date-fns")) return "vendor-dates";
+          if (id.includes("node_modules/qrcode.react")) return "vendor-qr";
+          if (id.includes("node_modules/pdfjs-dist")) return "vendor-pdf";
+          if (id.includes("node_modules/mammoth")) return "vendor-docparse";
+          if (id.includes("node_modules/html2canvas")) return "vendor-canvas";
+          if (id.includes("node_modules/@dnd-kit")) return "vendor-dnd";
+          if (id.includes("node_modules/embla-carousel")) return "vendor-embla";
+          if (id.includes("node_modules/react-resizable-panels")) return "vendor-panels";
+          if (id.includes("node_modules/react-day-picker")) return "vendor-datepicker";
+          // cmdk is already in vendor-ui-core above
+          if (id.includes("node_modules/vaul")) return "vendor-drawer";
+          if (id.includes("node_modules/input-otp")) return "vendor-otp";
+          if (id.includes("node_modules/dompurify")) return "vendor-sanitize";
         },
       },
     },
