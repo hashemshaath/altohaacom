@@ -117,8 +117,9 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
         {step === "create" && (
           <div className="space-y-4 pt-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "رمز PIN (6 أرقام)" : "PIN Code (6 digits)"}</Label>
+              <Label htmlFor="pin-create" className="text-xs">{isAr ? "رمز PIN (6 أرقام)" : "PIN Code (6 digits)"}</Label>
               <Input
+                id="pin-create"
                 type="password"
                 autoComplete="off"
                 inputMode="numeric"
@@ -149,8 +150,9 @@ export const PinSetupDialog = memo(function PinSetupDialog({ open, onOpenChange,
         {step === "confirm" && (
           <div className="space-y-4 pt-2">
             <div className="space-y-1.5">
-              <Label className="text-xs">{isAr ? "تأكيد الرمز" : "Confirm PIN"}</Label>
+              <Label htmlFor="pin-confirm" className="text-xs">{isAr ? "تأكيد الرمز" : "Confirm PIN"}</Label>
               <Input
+                id="pin-confirm"
                 type="password"
                 autoComplete="off"
                 inputMode="numeric"

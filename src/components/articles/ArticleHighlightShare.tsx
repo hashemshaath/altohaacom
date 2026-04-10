@@ -43,7 +43,7 @@ export const ArticleHighlightShare = memo(function ArticleHighlightShare({ artic
 
   if (!selection) return null;
 
-  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${selection.text}"`)} &url=${encodeURIComponent(articleUrl)}`;
+  const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`"${selection.text}"`)}&url=${encodeURIComponent(articleUrl)}`;
 
   const copyQuote = async () => {
     try {
