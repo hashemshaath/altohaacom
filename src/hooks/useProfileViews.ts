@@ -51,8 +51,8 @@ export function useRecordProfileView(profileUserId: string | undefined) {
         });
 
         // Refetch the profile to reflect the updated view_count from the trigger
-        setTimeout(() => {
-          queryClient.invalidateQueries({ queryKey: ["publicProfile"] });
+        const timerId = setTimeout(() => {
+          if (!cancelled) queryClient.invalidateQueries({ queryKey: ["publicProfile"] });
         }, 500);
       } catch {
         // Non-critical — profile view recording can fail silently
