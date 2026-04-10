@@ -404,6 +404,7 @@ export const THEME_PRESETS = [
 export type ThemePresetId = typeof THEME_PRESETS[number]["id"];
 
 export const FONT_OPTIONS = [
+  { id: "ibm-plex", nameEn: "IBM Plex Arabic", nameAr: "IBM Plex Arabic", family: "'IBM Plex Arabic', 'IBM Plex Sans', system-ui, sans-serif" },
   { id: "dm-sans", nameEn: "DM Sans", nameAr: "DM Sans", family: "'DM Sans', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif" },
   { id: "inter", nameEn: "Inter", nameAr: "Inter", family: "'Inter', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif" },
   { id: "poppins", nameEn: "Poppins", nameAr: "Poppins", family: "'Poppins', 'Noto Sans Arabic', ui-sans-serif, system-ui, sans-serif" },
@@ -412,6 +413,7 @@ export const FONT_OPTIONS = [
 ] as const;
 
 export const HEADING_FONT_OPTIONS = [
+  { id: "ibm-plex-heading", nameEn: "IBM Plex Arabic", nameAr: "IBM Plex Arabic", family: "'IBM Plex Arabic', 'IBM Plex Sans', system-ui, sans-serif" },
   { id: "dm-serif", nameEn: "DM Serif Display", nameAr: "DM Serif Display", family: "'DM Serif Display', ui-serif, Georgia, serif" },
   { id: "playfair", nameEn: "Playfair Display", nameAr: "Playfair Display", family: "'Playfair Display', ui-serif, Georgia, serif" },
   { id: "lora", nameEn: "Lora", nameAr: "Lora", family: "'Lora', ui-serif, Georgia, serif" },

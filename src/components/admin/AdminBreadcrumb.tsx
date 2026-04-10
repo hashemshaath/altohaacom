@@ -52,6 +52,7 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
   "/admin/chef-schedule": { en: "Chef Schedule", ar: "جدول الشيف" },
   "/admin/organizers": { en: "Organizers", ar: "المنظمون" },
   "/admin/design": { en: "Design & Identity", ar: "التصميم والهوية" },
+  "/admin/design/theme": { en: "Theme & Appearance", ar: "المظهر والثيم" },
   "/admin/design/brand-identity": { en: "Identity & Branding", ar: "الهوية والعلامة التجارية" },
   "/admin/design/header-footer": { en: "Header & Footer", ar: "الرأس والتذييل" },
   "/admin/design/homepage": { en: "Homepage", ar: "الصفحة الرئيسية" },

@@ -129,8 +129,8 @@ export function useApplyTheme() {
     const localBodyFont = safeStorageGet(LOCAL_FONT_KEY);
     const localHeadingFont = safeStorageGet(LOCAL_HEADING_FONT_KEY);
 
-    const bodyFontId = localBodyFont || globalTypo.bodyFont || "dm-sans";
-    const headingFontId = localHeadingFont || globalTypo.headingFont || "dm-serif";
+    const bodyFontId = localBodyFont || globalTypo.bodyFont || "ibm-plex";
+    const headingFontId = localHeadingFont || globalTypo.headingFont || "ibm-plex-heading";
 
     const bodyFont = FONT_OPTIONS.find((f) => f.id === bodyFontId);
     const headingFont = HEADING_FONT_OPTIONS.find((f) => f.id === headingFontId);
