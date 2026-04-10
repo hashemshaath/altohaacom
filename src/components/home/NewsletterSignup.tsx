@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mail, Sparkles, Shield, Send } from "lucide-react";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { cn } from "@/lib/utils";
+import { SectionReveal } from "@/components/ui/section-reveal";
 
 export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignup(_props, _ref) {
   const { language } = useLanguage();
@@ -15,7 +15,6 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const { ref: scrollRef, isVisible } = useScrollReveal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
