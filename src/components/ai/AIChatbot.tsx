@@ -225,6 +225,7 @@ const AIChatbot = memo(function AIChatbot() {
             placeholder={isAr ? "اكتب رسالتك..." : "Type a message..."}
             className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
             disabled={loading}
+            autoComplete="off"
           />
           <Button
             size="icon"
