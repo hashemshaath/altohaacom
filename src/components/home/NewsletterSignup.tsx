@@ -42,13 +42,11 @@ export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignu
   };
 
   return (
-    <section ref={scrollRef} className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
+    <section className="relative overflow-hidden" aria-label={isAr ? "النشرة الإخبارية" : "Newsletter signup"} dir={isAr ? "rtl" : "ltr"}>
       <div className="container relative">
+        <SectionReveal>
         <div
-          className={cn(
-            "mx-auto max-w-3xl text-center transition-all duration-700",
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-          )}
+          className="mx-auto max-w-3xl text-center"
         >
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15 shadow-lg shadow-primary/5">
             <Mail className="h-7 w-7 text-primary" />
