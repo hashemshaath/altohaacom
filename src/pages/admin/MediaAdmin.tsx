@@ -345,7 +345,7 @@ export default function MediaAdmin() {
                     {file.file_type.startsWith("image") ? (
                       <img loading="lazy" decoding="async" 
                         src={file.file_url} 
-                        alt={item.title || "Media"}
+                        alt={file.title || "Media"}
                         className="h-12 w-12 rounded object-cover"
                       />
                     ) : (
