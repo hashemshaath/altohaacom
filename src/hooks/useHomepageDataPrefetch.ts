@@ -155,24 +155,24 @@ export function useHomepageDataPrefetch() {
       if (exhData) {
         const active = exhData.filter(e => e.status !== "completed");
         const completed = exhData.filter(e => e.status === "completed").reverse().slice(0, 4);
-        qc.setQueryData(["home-exhibitions-minimal"], [...active, ...completed].slice(0, 12));
+        seed(["home-exhibitions-minimal"], [...active, ...completed].slice(0, 12));
       }
 
       // 2. Articles
       const artData = getData<any[]>(2);
-      if (artData) qc.setQueryData(["home-articles-minimal", 8], artData);
+      if (artData) seed(["home-articles-minimal", 8], artData);
 
       // 3. Trending articles
       const trendData = getData<any[]>(3);
-      if (trendData) qc.setQueryData(["home-trending-articles", 8], trendData);
+      if (trendData) seed(["home-trending-articles", 8], trendData);
 
       // 4. Masterclasses
       const mcData = getData<any[]>(4);
-      if (mcData) qc.setQueryData(["home-masterclasses", 8], mcData);
+      if (mcData) seed(["home-masterclasses", 8], mcData);
 
       // 5. Testimonials
       const testData = getData<any[]>(5);
-      if (testData) qc.setQueryData(["home-testimonials", 10], testData);
+      if (testData) seed(["home-testimonials", 10], testData);
 
       // 6. Partner logos
       const logoData = getData<any[]>(6);
@@ -180,15 +180,15 @@ export function useHomepageDataPrefetch() {
         const sponsorLogos = logoData.filter((p) => p.category === "sponsor");
         const partnerOnlyLogos = logoData.filter((p) => p.category !== "sponsor");
         const mapLogo = (p: any) => ({ id: p.id, name: p.name, logo_url: p.logo_url, website_url: p.website_url, category: p.category });
-        qc.setQueryData(["section-logos", "sponsors", 12],
+        seed(["section-logos", "sponsors", 12],
           (sponsorLogos.length > 0 ? sponsorLogos : logoData).slice(0, 12).map(mapLogo));
-        qc.setQueryData(["section-logos", "partners", 12],
+        seed(["section-logos", "partners", 12],
           (partnerOnlyLogos.length > 0 ? partnerOnlyLogos : logoData).slice(0, 12).map(mapLogo));
       }
 
       // 7. Pro suppliers
       const suppData = getData<any[]>(7);
-      if (suppData) qc.setQueryData(["homeProSuppliers", 8], suppData);
+      if (suppData) seed(["homeProSuppliers", 8], suppData);
 
       // 8 & 10. Featured chefs (merged with rankings)
       const profilesData = getData<any[]>(8);
@@ -196,9 +196,9 @@ export function useHomepageDataPrefetch() {
       if (rankingsData && rankingsData.length > 0 && profilesData) {
         const profileMap = new Map(profilesData.map((p) => [p.user_id, p]));
         const merged = rankingsData.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
-        qc.setQueryData(["featured-chefs-home", 8], merged);
+        seed(["featured-chefs-home", 8], merged);
       } else if (profilesData) {
-        qc.setQueryData(["featured-chefs-home", 8], profilesData.map((p) => ({
+        seed(["featured-chefs-home", 8], profilesData.map((p) => ({
           ...p, total_points: p.loyalty_points || 0,
           gold_medals: 0, silver_medals: 0, bronze_medals: 0,
         })));
@@ -206,14 +206,14 @@ export function useHomepageDataPrefetch() {
 
       // 9. Newly joined users
       const newUsersData = getData<any[]>(9);
-      if (newUsersData) qc.setQueryData(["newly-joined-users", 12], newUsersData);
+      if (newUsersData) seed(["newly-joined-users", 12], newUsersData);
 
       // 11. Stats
       const statsResult = results[11];
       if (statsResult.status === "fulfilled") {
         const statsArr = statsResult.value as any[];
         const getCount = (r: { count: number | null }) => r?.count ?? 0;
-        qc.setQueryData(["home-stats"], {
+        seed(["home-stats"], {
           members: getCount(statsArr[0]),
           competitions: getCount(statsArr[1]),
           entities: getCount(statsArr[2]),
