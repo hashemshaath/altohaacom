@@ -464,7 +464,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
               <Label>{isAr ? "الأدوار" : "Roles"}</Label>
               <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
                 {ALL_ROLES.map((role) => (
-                  <div key={role} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm active:scale-[0.98] touch-manipulation ${editRoles.includes(role) ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/40"}`}>
+                  <div key={role} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && toggleRole(role)} onClick={() => toggleRole(role)} className={`flex cursor-pointer items-center gap-2 rounded-xl border p-3 transition-all duration-200 hover:shadow-sm active:scale-[0.98] touch-manipulation focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${editRoles.includes(role) ? "border-primary bg-primary/5 shadow-sm" : "border-border hover:border-primary/40"}`}>
                     <Checkbox checked={editRoles.includes(role)} onCheckedChange={() => toggleRole(role)} />
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any -- role enum not in i18n keys */}
                     <span className="text-sm capitalize">{t(role as any)}</span>
@@ -490,7 +490,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
             <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0], "cover")} />
             <div className="space-y-2">
               <Label>{isAr ? "صورة الغلاف" : "Cover Image"}</Label>
-              <div className="relative rounded-xl border overflow-hidden h-40 bg-muted/30 group cursor-pointer" onClick={() => coverInputRef.current?.click()}>
+              <div role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && coverInputRef.current?.click()} className="relative rounded-xl border overflow-hidden h-40 bg-muted/30 group cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" onClick={() => coverInputRef.current?.click()} aria-label={isAr ? "رفع صورة الغلاف" : "Upload cover image"}>
                 {editingUser.cover_image_url ? <img src={editingUser.cover_image_url} alt="Cover" className="w-full h-full object-cover" loading="lazy" /> : <div className="flex items-center justify-center h-full"><ImageIcon className="h-8 w-8 text-muted-foreground/40" /></div>}
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center"><div className="opacity-0 group-hover:opacity-100 transition-opacity bg-background/80 rounded-full p-2"><Upload className="h-5 w-5" /></div></div>
               </div>
@@ -498,7 +498,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
             <div className="space-y-2">
               <Label>{isAr ? "صورة الملف الشخصي" : "Profile Photo"}</Label>
               <div className="flex items-center gap-4">
-                <div className="relative group cursor-pointer" onClick={() => avatarInputRef.current?.click()}>
+                <div role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && avatarInputRef.current?.click()} className="relative group cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:rounded-full focus-visible:outline-none" onClick={() => avatarInputRef.current?.click()} aria-label={isAr ? "رفع صورة الملف الشخصي" : "Upload profile photo"}>
                   <Avatar className="h-24 w-24 border-2 border-border"><AvatarImage src={editingUser.avatar_url || undefined} /><AvatarFallback className="text-2xl">{(editingUser.full_name || "U")[0].toUpperCase()}</AvatarFallback></Avatar>
                   <div className="absolute inset-0 rounded-full bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center"><Camera className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-background" /></div>
                 </div>

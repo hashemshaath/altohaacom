@@ -182,7 +182,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
                 const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                 const chef = profileMap[ev.chef_id];
                 return (
-                  <div key={ev.id} className={cn("flex items-center gap-2 p-2 rounded-xl border cursor-pointer hover:bg-muted/30", config.color)} onClick={() => onEventClick(ev)}>
+                  <div key={ev.id} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && onEventClick(ev)} className={cn("flex items-center gap-2 p-2 rounded-xl border cursor-pointer hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", config.color)} onClick={() => onEventClick(ev)}>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{ev.title}</p>
                       <p className="text-[12px] text-muted-foreground">{chef?.full_name || "—"} · {ev.city || ev.location || ""}</p>
