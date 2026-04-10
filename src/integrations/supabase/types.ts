@@ -24863,6 +24863,8 @@ export type Database = {
       }
       competition_registrations_judge: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           category_id: string | null
           competition_id: string | null
           dish_description: string | null
@@ -24870,6 +24872,8 @@ export type Database = {
           dish_name: string | null
           entry_type: string | null
           id: string | null
+          notes: string | null
+          organization_id: string | null
           organization_name: string | null
           organization_name_ar: string | null
           organization_type: string | null
@@ -24881,6 +24885,8 @@ export type Database = {
           team_name_ar: string | null
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           category_id?: string | null
           competition_id?: string | null
           dish_description?: string | null
@@ -24888,6 +24894,8 @@ export type Database = {
           dish_name?: string | null
           entry_type?: string | null
           id?: string | null
+          notes?: string | null
+          organization_id?: string | null
           organization_name?: string | null
           organization_name_ar?: string | null
           organization_type?: string | null
@@ -24899,6 +24907,8 @@ export type Database = {
           team_name_ar?: string | null
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           category_id?: string | null
           competition_id?: string | null
           dish_description?: string | null
@@ -24906,6 +24916,8 @@ export type Database = {
           dish_name?: string | null
           entry_type?: string | null
           id?: string | null
+          notes?: string | null
+          organization_id?: string | null
           organization_name?: string | null
           organization_name_ar?: string | null
           organization_type?: string | null
