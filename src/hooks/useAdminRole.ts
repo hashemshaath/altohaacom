@@ -125,10 +125,11 @@ export function useAdminRole(): AdminAccess {
   });
 
   const adminRole = data ?? null;
-  const isSuperAdmin = adminRole === "supervisor";
+  const adminRoleStr = adminRole as unknown as string | null;
+  const isSuperAdmin = adminRoleStr === "supervisor";
   const isFullAdmin = isSuperAdmin; // backward compat alias
-  const isOrganizer = adminRole === "organizer";
-  const isContentManager = isSuperAdmin || adminRole === "admin" || adminRole === "content_writer";
+  const isOrganizer = adminRoleStr === "organizer";
+  const isContentManager = isSuperAdmin || adminRoleStr === "admin" || adminRoleStr === "content_writer";
   const hasAdminAccess = adminRole !== null;
 
   const canAccessPage = (path: string): boolean => {
