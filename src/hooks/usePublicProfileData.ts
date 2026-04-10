@@ -8,20 +8,55 @@ import type { Database } from "@/integrations/supabase/types";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
+export interface PublicProfileData {
+  user_id: string;
+  full_name: string | null;
+  full_name_ar: string | null;
+  display_name: string | null;
+  display_name_ar: string | null;
+  username: string | null;
+  avatar_url: string | null;
+  cover_image_url: string | null;
+  bio: string | null;
+  bio_ar: string | null;
+  city: string | null;
+  country_code: string | null;
+  nationality: string | null;
+  account_type: string | null;
+  specialization: string | null;
+  specialization_ar: string | null;
+  job_title: string | null;
+  job_title_ar: string | null;
+  years_of_experience: number | null;
+  is_verified: boolean | null;
+  membership_tier: string | null;
+  view_count: number | null;
+  instagram: string | null;
+  twitter: string | null;
+  facebook: string | null;
+  linkedin: string | null;
+  youtube: string | null;
+  website: string | null;
+  snapchat: string | null;
+  tiktok: string | null;
+  created_at: string | null;
+}
+
 export function usePublicProfileData(username: string | undefined, followListOpen: "followers" | "following" | null) {
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["publicProfile", username],
     queryFn: async () => {
-      const selectCols = "user_id, full_name, full_name_ar, display_name, display_name_ar, username, avatar_url, cover_image_url, bio, bio_ar, specialization, specialization_ar, country_code, city, nationality, years_of_experience, job_title, job_title_ar, is_verified, account_type, view_count, created_at, instagram, twitter, facebook, linkedin, youtube, website, snapchat, tiktok, membership_tier";
-      const { data, error } = await supabase
-        .from("profiles_public").select(selectCols).eq("username", username?.toLowerCase()).maybeSingle();
+      // Try by username first using secure RPC
+      const { data, error } = await supabase.rpc("get_public_profile", { p_username: username!.toLowerCase() });
       if (error) throw error;
-      if (data) return data;
+      if (data) return data as unknown as PublicProfileData;
+
+      // Fallback: try by user_id if it looks like a UUID
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(username || "");
       if (isUuid) {
-        const { data: byId, error: err2 } = await supabase.from("profiles_public").select(selectCols).eq("user_id", username).maybeSingle();
+        const { data: byId, error: err2 } = await supabase.rpc("get_public_profile_by_id", { p_user_id: username! });
         if (err2) throw err2;
-        if (byId) return byId;
+        if (byId) return byId as unknown as PublicProfileData;
       }
       throw new Error("Profile not found");
     },
@@ -29,9 +64,9 @@ export function usePublicProfileData(username: string | undefined, followListOpe
     staleTime: 1000 * 60 * 2,
   });
 
-  useRecordProfileView(profile?.user_id);
+  useRecordProfileView(profile?.user_id as string | undefined);
 
-  const { data: qrCode } = useEntityQRCode("user", profile?.username || undefined, "account");
+  const { data: qrCode } = useEntityQRCode("user", (profile?.username as string) || undefined, "account");
 
   const { data: roles } = useQuery({
     queryKey: ["publicProfileRoles", profile?.user_id],
