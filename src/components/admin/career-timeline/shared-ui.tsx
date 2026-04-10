@@ -242,7 +242,7 @@ export const SortableItem = memo(function SortableItem({ id, sectionKey, childre
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
       <div className="flex items-center gap-0.5">
-        <button {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
+        <button aria-label="Drag to reorder" {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
           <GripVertical className="h-3.5 w-3.5" />
         </button>
         <div className="flex-1 min-w-0">{children}</div>
@@ -279,7 +279,7 @@ export const SortableSectionItem = memo(function SortableSectionItem({ id, child
 export const SectionDragHandle = memo(function SectionDragHandle() {
   const listeners = useContext(SectionDragListenersContext);
   return (
-    <button {...(listeners || {})} className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
+    <button aria-label="Drag to reorder section" {...(listeners || {})} className="cursor-grab active:cursor-grabbing p-1.5 text-muted-foreground/40 hover:text-muted-foreground transition-colors touch-none">
       <GripVertical className="h-4 w-4" />
     </button>
   );

@@ -148,10 +148,10 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
                     {dc.max_uses && ` · ${dc.used_count}/${dc.max_uses} ${t("used", "مستخدم")}`}
                   </p>
                 </div>
-                <button onClick={() => copyCode(dc.code)} className="h-7 w-7 rounded-md flex items-center justify-center hover:bg-muted transition-colors">
+                <button aria-label="Copy code" onClick={() => copyCode(dc.code)} className="h-7 w-7 rounded-md flex items-center justify-center hover:bg-muted transition-colors">
                   <Copy className="h-3 w-3 text-muted-foreground" />
                 </button>
-                <button onClick={() => toggleCode.mutate({ id: dc.id, active: !dc.is_active })} className="h-7 w-7 rounded-md flex items-center justify-center hover:bg-muted transition-colors">
+                <button aria-label={dc.is_active ? "Deactivate" : "Activate"} onClick={() => toggleCode.mutate({ id: dc.id, active: !dc.is_active })} className="h-7 w-7 rounded-md flex items-center justify-center hover:bg-muted transition-colors">
                   {dc.is_active ? <Trash2 className="h-3 w-3 text-destructive" /> : <Plus className="h-3 w-3 text-primary" />}
                 </button>
               </div>
