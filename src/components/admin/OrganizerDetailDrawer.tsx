@@ -109,7 +109,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
         <div className="relative">
           {org.cover_image_url ? (
             <div className="h-32 overflow-hidden">
-              <img src={org.cover_image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+              <img src={org.cover_image_url} alt={org.name || "Organizer cover"} className="w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
             </div>
           ) : (
@@ -277,7 +277,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
                     <Card className="rounded-xl border-border/40 hover:border-primary/30 hover:shadow-sm transition-all">
                       <CardContent className="p-3 flex items-center gap-3">
                         {ex.cover_image_url ? (
-                          <img src={ex.cover_image_url} alt="" className="h-12 w-18 rounded-lg object-cover shrink-0" loading="lazy" />
+                          <img src={ex.cover_image_url} alt={ex.title || "Exhibition"} className="h-12 w-18 rounded-lg object-cover shrink-0" loading="lazy" />
                         ) : (
                           <div className="h-12 w-18 rounded-lg bg-muted flex items-center justify-center shrink-0">
                             <Landmark className="h-5 w-5 text-muted-foreground/40" />
