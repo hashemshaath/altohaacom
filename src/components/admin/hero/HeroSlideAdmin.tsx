@@ -708,7 +708,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                             <div className="h-36 rounded-xl overflow-hidden border border-border/50 relative">
                               <img
                                 src={slide.image_url}
-                                alt="preview"
+                                alt={isAr ? "معاينة الشريحة" : "Slide preview"}
                                 className="h-full w-full"
                                 style={{ objectFit: slide.object_fit as React.CSSProperties["objectFit"], objectPosition: slide.object_position }}
                               />
