@@ -962,7 +962,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                           </a>
                         )}
                         {form.website && (
-                          <a href={form.website} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 text-xs text-primary hover:underline">
+                          <a href={form.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-primary hover:underline">
                             <Globe className="h-3.5 w-3.5" />{form.website.replace(/^https?:\/\//, "")}
                           </a>
                         )}
@@ -1088,7 +1088,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     </FieldGroup>
                   </div>
                   {form.latitude && form.longitude && (
-                    <a href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2">
+                    <a href={`https://www.google.com/maps?q=${form.latitude},${form.longitude}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-primary hover:underline mt-2">
                       <ExternalLink className="h-3 w-3" />{isAr ? "فتح في خرائط جوجل" : "Open in Google Maps"}
                     </a>
                   )}
