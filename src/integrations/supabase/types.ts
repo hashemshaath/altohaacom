@@ -25737,6 +25737,30 @@ export type Database = {
           tax_number: string
         }[]
       }
+      get_my_profile_views: {
+        Args: { p_limit?: number }
+        Returns: {
+          browser: string
+          country: string
+          created_at: string
+          device_type: string
+          id: string
+          referrer: string
+          viewer_type: string
+          viewer_user_id: string
+        }[]
+      }
+      get_my_referral_clicks: {
+        Args: { p_limit?: number }
+        Returns: {
+          clicked_at: string
+          country: string
+          device_type: string
+          id: string
+          platform: string
+          referral_code_id: string
+        }[]
+      }
       get_profile_safe: { Args: { p_profile_user_id: string }; Returns: Json }
       get_public_profile: { Args: { p_username: string }; Returns: Json }
       get_public_profile_by_id: { Args: { p_user_id: string }; Returns: Json }
