@@ -261,7 +261,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-invitations", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_invitations").select("id, company_id, invitation_type, title, title_ar, description, response_notes, status, expires_at, created_at").eq("company_id", selectedCompany).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_invitations").select("id, company_id, invitation_type, title, title_ar, description, response_notes, status, expires_at, created_at").eq("company_id", selectedCompany).order("created_at", { ascending: false }).limit(200);
       if (error) throw error;
       return data;
     },
@@ -272,7 +272,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-evaluations", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_evaluations").select("id, company_id, evaluated_by, overall_rating, quality_rating, delivery_rating, communication_rating, value_rating, review, review_ar, is_public, created_at").eq("company_id", selectedCompany).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_evaluations").select("id, company_id, evaluated_by, overall_rating, quality_rating, delivery_rating, communication_rating, value_rating, review, review_ar, is_public, created_at").eq("company_id", selectedCompany).order("created_at", { ascending: false }).limit(500);
       if (error) throw error;
       return data;
     },
@@ -283,7 +283,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-catalog", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_catalog").select("id, company_id, name, name_ar, category, description, description_ar, unit_price, currency, image_url, is_active, sku, unit, quantity_available, shop_product_id, created_at").eq("company_id", selectedCompany).order("category").order("name");
+      const { data, error } = await supabase.from("company_catalog").select("id, company_id, name, name_ar, category, description, description_ar, unit_price, currency, image_url, is_active, sku, unit, quantity_available, shop_product_id, created_at").eq("company_id", selectedCompany).order("category").order("name").limit(500);
       if (error) throw error;
       return data;
     },
@@ -294,7 +294,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-drivers", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_drivers").select("id, company_id, name, name_ar, phone, license_number, vehicle_type, vehicle_plate, is_available, is_active, created_at").eq("company_id", selectedCompany).order("name");
+      const { data, error } = await supabase.from("company_drivers").select("id, company_id, name, name_ar, phone, license_number, vehicle_type, vehicle_plate, is_available, is_active, created_at").eq("company_id", selectedCompany).order("name").limit(200);
       if (error) throw error;
       return data;
     },
@@ -305,7 +305,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-communications", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_communications").select("id, company_id, sender_id, direction, subject, message, status, priority, tags, is_archived, is_starred, is_internal_note, parent_id, created_at, updated_at").eq("company_id", selectedCompany).order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_communications").select("id, company_id, sender_id, direction, subject, message, status, priority, tags, is_archived, is_starred, is_internal_note, parent_id, created_at, updated_at").eq("company_id", selectedCompany).order("created_at", { ascending: false }).limit(500);
       if (error) throw error;
       return data;
     },
@@ -316,7 +316,7 @@ export default function CompaniesAdmin() {
     queryKey: ["company-media", selectedCompany],
     queryFn: async () => {
       if (!selectedCompany) return [];
-      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, file_type, file_size, title, category, description, created_at").eq("company_id", selectedCompany).order("category").order("created_at", { ascending: false });
+      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, file_type, file_size, title, category, description, created_at").eq("company_id", selectedCompany).order("category").order("created_at", { ascending: false }).limit(500);
       if (error) throw error;
       return data;
     },
