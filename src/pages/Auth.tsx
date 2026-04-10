@@ -1120,6 +1120,7 @@ export default function Auth() {
               <Input
                 type="password"
                 autoComplete="off"
+                inputMode="numeric"
                 maxLength={6}
                 value={signInPin}
                 onChange={(e) => { setSignInPin(e.target.value.replace(/\D/g, "").slice(0, 6)); setPinError(""); }}
@@ -1176,7 +1177,7 @@ export default function Auth() {
 
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-              <Input type="password" value={signInPassword} onChange={(e) => setSignInPassword(e.target.value)} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && handleSignInPhonePassword()} />
+              <Input type="password" autoComplete="current-password" value={signInPassword} onChange={(e) => setSignInPassword(e.target.value)} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && handleSignInPhonePassword()} />
               {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
             </div>
 
