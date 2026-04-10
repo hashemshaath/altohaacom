@@ -113,8 +113,11 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
       );
     }
 
-    const optimizedSrc = transformUrl(src, displayWidth, quality);
-    const srcSet = buildSrcSet(src, quality);
+    const adaptiveQuality = getAdaptiveQuality(quality);
+    const tier = getQualityTier();
+    const optimizedSrc = transformUrl(src, displayWidth, adaptiveQuality);
+    // Skip srcSet on slow connections to save bandwidth
+    const srcSet = tier === "low" ? undefined : buildSrcSet(src, adaptiveQuality);
 
     return (
       <div className={cn("relative overflow-hidden", aspectRatio)}>
