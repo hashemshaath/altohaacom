@@ -106,7 +106,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
             { data: records },
           ] = await Promise.all([
             supabase.from(metric.table as any).select("id", { count: "exact", head: true }),
-            supabase.from(metric.table as any).select("created_at").order("created_at", { ascending: true }),
+            supabase.from(metric.table as any).select("created_at").order("created_at", { ascending: true }).limit(5000),
           ]);
 
           const months: Record<string, number> = {};

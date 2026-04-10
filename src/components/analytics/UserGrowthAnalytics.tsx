@@ -31,7 +31,7 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "active"),
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "suspended"),
         supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(5000),
-        supabase.from("user_roles").select("role"),
+        supabase.from("user_roles").select("role").limit(5000),
       ]);
 
       // Signups by month

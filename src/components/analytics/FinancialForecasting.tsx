@@ -34,10 +34,10 @@ export const FinancialForecasting = memo(function FinancialForecasting() {
         { data: orders },
         { data: shopOrders },
       ] = await Promise.all([
-        supabase.from("invoices").select("amount, status, created_at, paid_at").order("created_at"),
-        supabase.from("company_transactions").select("amount, type, created_at").order("created_at"),
-        supabase.from("company_orders").select("total_amount, status, created_at, category"),
-        supabase.from("shop_orders").select("total_amount, status, created_at"),
+        supabase.from("invoices").select("amount, status, created_at, paid_at").order("created_at").limit(5000),
+        supabase.from("company_transactions").select("amount, type, created_at").order("created_at").limit(5000),
+        supabase.from("company_orders").select("total_amount, status, created_at, category").limit(5000),
+        supabase.from("shop_orders").select("total_amount, status, created_at").limit(5000),
       ]);
 
       // Monthly revenue from paid invoices
