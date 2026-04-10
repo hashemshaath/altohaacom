@@ -87,7 +87,7 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
   const handlePrint = () => {
     const content = printRef.current;
     if (!content) return;
-    const printWindow = window.open("", "_blank", "noopener");
+    const printWindow = window.open("", "_blank", "noopener,noreferrer");
     if (!printWindow) return;
     printWindow.document.write(`
       <!DOCTYPE html>

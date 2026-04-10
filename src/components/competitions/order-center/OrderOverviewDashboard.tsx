@@ -129,7 +129,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
   ];
 
   const handlePrint = () => {
-    const printWindow = window.open("", "_blank", "noopener");
+    const printWindow = window.open("", "_blank", "noopener,noreferrer");
     if (!printWindow) return;
     const dir = isAr ? "rtl" : "ltr";
     const align = isAr ? "right" : "left";

@@ -268,20 +268,20 @@ function ShareDropdown({ isAr, title, shareUrl }: { isAr: boolean; title: string
           onClick={() => {
             const text = encodeURIComponent(title);
             const url = encodeURIComponent(shareUrl);
-            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "noopener,width=600,height=400");
+            window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "noopener,noreferrer,width=600,height=400");
           }}
         >
           <Twitter className="h-4 w-4" /> Twitter / X
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer gap-2.5 rounded-md py-2.5 text-sm"
-          onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank", "noopener,width=600,height=400")}
+          onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, "_blank", "noopener,noreferrer,width=600,height=400")}
         >
           <Facebook className="h-4 w-4" /> Facebook
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer gap-2.5 rounded-md py-2.5 text-sm"
-          onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, "_blank", "noopener,width=600,height=400")}
+          onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, "_blank", "noopener,noreferrer,width=600,height=400")}
         >
           <Linkedin className="h-4 w-4" /> LinkedIn
         </DropdownMenuItem>

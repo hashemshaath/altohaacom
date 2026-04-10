@@ -19,12 +19,12 @@ export function useNotificationPrefs() {
   });
 
   const setSoundEnabled = (v: boolean) => {
-    try { try { localStorage.setItem(SOUND_KEY, String(v)); } catch { /* restricted */ } } catch {}
+    try { localStorage.setItem(SOUND_KEY, String(v)); } catch { /* restricted */ }
     setSoundEnabledState(v);
   };
 
   const setDndMode = (v: boolean) => {
-    try { try { localStorage.setItem(DND_KEY, String(v)); } catch { /* restricted */ } } catch {}
+    try { localStorage.setItem(DND_KEY, String(v)); } catch { /* restricted */ }
     setDndModeState(v);
   };
 

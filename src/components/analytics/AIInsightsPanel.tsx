@@ -127,7 +127,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
     if (!content) return;
 
     // Use print-friendly approach
-    const printWindow = window.open("", "_blank", "noopener");
+    const printWindow = window.open("", "_blank", "noopener,noreferrer");
     if (!printWindow) {
       toast.error(isAr ? "يرجى السماح بالنوافذ المنبثقة" : "Please allow popups to export");
       return;
