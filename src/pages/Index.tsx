@@ -9,6 +9,7 @@ import { HeroSection } from "@/components/home/sections/HeroSection";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
 import { useHomepageDataPrefetch } from "@/hooks/useHomepageDataPrefetch";
+import { useRoutePrefetch } from "@/hooks/useRoutePrefetch";
 import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 
 /* ─── Fallbacks ─── */
@@ -63,6 +64,7 @@ const Index = () => {
   const isAr = language === "ar";
 
   useHomepageDataPrefetch();
+  useRoutePrefetch();
 
   const { data: dbSections = [], isError } = useHomepageSections();
 

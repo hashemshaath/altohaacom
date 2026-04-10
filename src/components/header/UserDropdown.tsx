@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -27,7 +27,7 @@ const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
   enterprise: { en: "Enterprise", ar: "مؤسسات", color: "bg-[var(--color-info-bg)] text-[var(--color-info)]" },
 };
 
-export const UserDropdown = memo(function UserDropdown() {
+export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdown(_props, ref) {
   const { user, signOut } = useAuth();
   const { t, language } = useLanguage();
   const { data: isAdmin } = useIsAdmin();
@@ -71,7 +71,7 @@ export const UserDropdown = memo(function UserDropdown() {
   }
 
   return (
-    <div className="hidden lg:block">
+    <div ref={ref} className="hidden lg:block">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -169,4 +169,4 @@ export const UserDropdown = memo(function UserDropdown() {
       </DropdownMenu>
     </div>
   );
-});
+}));
