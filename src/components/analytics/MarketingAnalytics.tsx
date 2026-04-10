@@ -29,7 +29,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
     queryFn: async () => {
       const { data } = await supabase
         .from("conversion_events")
-        .select("event_name, event_value, event_category, source, medium, created_at")
+        .select("event_name, event_value, event_category, source, medium, created_at").limit(5000)
         .order("created_at", { ascending: false })
         .limit(1000);
       const events = data || [];
@@ -90,7 +90,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
     queryFn: async () => {
       const { data } = await supabase
         .from("abandoned_carts")
-        .select("id, total_amount, recovery_status, created_at")
+        .select("id, total_amount, recovery_status, created_at").limit(5000)
         .order("created_at", { ascending: false })
         .limit(500);
       const carts = data || [];
@@ -109,7 +109,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
     queryFn: async () => {
       const { data } = await supabase
         .from("ad_campaigns")
-        .select("id, name, status, budget, spent, total_impressions, total_clicks, total_views, billing_model")
+        .select("id, name, status, budget, spent, total_impressions, total_clicks, total_views, billing_model").limit(5000)
         .order("created_at", { ascending: false })
         .limit(20);
       const campaigns = data || [];
@@ -129,7 +129,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
   const { data: trackingConfigs = [] } = useQuery({
     queryKey: ["marketing-tracking-configs"],
     queryFn: async () => {
-      const { data } = await supabase.from("marketing_tracking_config").select("id, platform, tracking_id, is_active, created_at").order("created_at");
+      const { data } = await supabase.from("marketing_tracking_config").select("id, platform, tracking_id, is_active, created_at").order("created_at").limit(500);
       return data || [];
     },
     staleTime: 60000,
