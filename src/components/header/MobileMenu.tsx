@@ -217,7 +217,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
           </div>
 
           {/* Navigation scrollable area */}
-          <nav className="flex-1 overflow-y-auto overscroll-contain">
+          <nav aria-label="Main menu" className="flex-1 overflow-y-auto overscroll-contain">
             {user ? (
               <>
                 {primaryNav.map((link) => (

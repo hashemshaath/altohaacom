@@ -100,7 +100,7 @@ export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valu
                 }}
               >
                 {chef.avatar_url ? (
-                  <img loading="lazy" decoding="async" src={chef.avatar_url} alt="" className="h-8 w-8 rounded-full object-cover" />
+                  <img loading="lazy" decoding="async" src={chef.avatar_url} alt={chef.full_name || "Chef"} className="h-8 w-8 rounded-full object-cover" />
                 ) : (
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
                     <User className="h-4 w-4 text-primary" />

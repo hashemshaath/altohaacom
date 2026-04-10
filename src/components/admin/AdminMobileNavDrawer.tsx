@@ -70,7 +70,7 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
 
           {/* Navigation */}
           <ScrollArea className="flex-1">
-            <nav className="p-2 space-y-1">
+            <nav aria-label="Admin navigation" className="p-2 space-y-1">
               {filteredSections.map((section, idx) => (
                 <Collapsible key={section.titleEn} defaultOpen={idx === 0 || !!search}>
                   <CollapsibleTrigger className={cn(

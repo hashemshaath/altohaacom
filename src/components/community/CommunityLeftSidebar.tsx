@@ -135,7 +135,7 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
       )}
 
       {/* Navigation */}
-      <nav className="space-y-0.5">
+      <nav aria-label="Community navigation" className="space-y-0.5">
         {tabs.filter(t => !t.requiresAuth || user).map((tab) => (
           <button
             key={tab.id}

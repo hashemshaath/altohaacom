@@ -56,7 +56,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
 
   return (
     <ScrollArea className="flex-1">
-      <nav className="px-2 py-2 space-y-0.5">
+      <nav aria-label="Admin sidebar" className="px-2 py-2 space-y-0.5">
         {filteredSections.map((section, idx) => {
           const isOpen = openSections[idx] ?? false;
           const sectionLabel = isAr ? section.titleAr : section.titleEn;
