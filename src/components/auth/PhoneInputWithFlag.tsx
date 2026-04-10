@@ -41,7 +41,7 @@ export const PhoneInputWithFlag = memo(function PhoneInputWithFlag({
   return (
     <div className="space-y-1.5">
       {label && (
-        <Label className="text-xs">
+        <Label htmlFor="phone-input-flag" className="text-xs">
           {label} *
         </Label>
       )}
@@ -50,6 +50,7 @@ export const PhoneInputWithFlag = memo(function PhoneInputWithFlag({
         <div className="relative">
           <button
             type="button"
+            aria-label={isAr ? "اختيار رمز الدولة" : "Select country code"}
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className="flex h-10 items-center gap-1.5 rounded-md border border-input bg-background px-3 text-sm hover:bg-accent/50 transition-colors min-w-[100px]"
             dir="ltr"
@@ -91,6 +92,7 @@ export const PhoneInputWithFlag = memo(function PhoneInputWithFlag({
 
         {/* Phone number input */}
         <Input
+          id="phone-input-flag"
           type="tel"
           dir="ltr"
           autoComplete="tel"
