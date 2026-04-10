@@ -151,6 +151,22 @@ export default function ShopProduct() {
   return (
     <div className="flex min-h-screen flex-col">
       <SEOHead title={title} description={description || `${title} on Altoha Shop`} ogImage={product.image_url || undefined} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: title,
+        description: description || undefined,
+        image: product.image_url || undefined,
+        sku: product.sku || undefined,
+        brand: product.brand ? { "@type": "Brand", name: product.brand } : undefined,
+        offers: {
+          "@type": "Offer",
+          price: product.price,
+          priceCurrency: product.currency || "SAR",
+          availability: isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+          url: typeof window !== "undefined" ? window.location.href : undefined,
+        },
+      }) }} />
       <Header />
 
       <main className="container flex-1 py-4 md:py-8 pb-24 sm:pb-8">
@@ -205,7 +221,7 @@ export default function ShopProduct() {
                    (isAr ? "خدمة" : "Service")}
                 </Badge>
               </div>
-              <h1 className="font-serif text-xl font-bold sm:text-2xl md:text-3xl">{title}</h1>
+              <h1 className="font-serif text-2xl font-bold sm:text-3xl md:text-4xl">{title}</h1>
             </div>
 
             <p className="text-2xl sm:text-3xl font-bold text-primary">
@@ -213,7 +229,7 @@ export default function ShopProduct() {
             </p>
 
             {description && (
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{description}</p>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed whitespace-pre-wrap">{description}</p>
             )}
 
             {product.product_type === "physical" && (
