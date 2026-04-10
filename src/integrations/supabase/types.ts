@@ -13838,6 +13838,13 @@ export type Database = {
             referencedRelation: "job_postings"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings_public"
+            referencedColumns: ["id"]
+          },
         ]
       }
       job_postings: {
@@ -25120,6 +25127,127 @@ export type Database = {
         }
         Relationships: []
       }
+      job_postings_public: {
+        Row: {
+          application_deadline: string | null
+          applications_count: number | null
+          benefits: string | null
+          benefits_ar: string | null
+          city: string | null
+          company_id: string | null
+          country_code: string | null
+          created_at: string | null
+          description: string | null
+          description_ar: string | null
+          experience_level: string | null
+          id: string | null
+          is_featured: boolean | null
+          is_salary_visible: boolean | null
+          job_type: string | null
+          location: string | null
+          location_ar: string | null
+          posted_by: string | null
+          requirements: string | null
+          requirements_ar: string | null
+          salary_currency: string | null
+          salary_max: number | null
+          salary_min: number | null
+          specialization: string | null
+          specialization_ar: string | null
+          status: string | null
+          title: string | null
+          title_ar: string | null
+          updated_at: string | null
+          views_count: number | null
+        }
+        Insert: {
+          application_deadline?: string | null
+          applications_count?: number | null
+          benefits?: string | null
+          benefits_ar?: string | null
+          city?: string | null
+          company_id?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          experience_level?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          is_salary_visible?: boolean | null
+          job_type?: string | null
+          location?: string | null
+          location_ar?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          requirements_ar?: string | null
+          salary_currency?: never
+          salary_max?: never
+          salary_min?: never
+          specialization?: string | null
+          specialization_ar?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Update: {
+          application_deadline?: string | null
+          applications_count?: number | null
+          benefits?: string | null
+          benefits_ar?: string | null
+          city?: string | null
+          company_id?: string | null
+          country_code?: string | null
+          created_at?: string | null
+          description?: string | null
+          description_ar?: string | null
+          experience_level?: string | null
+          id?: string | null
+          is_featured?: boolean | null
+          is_salary_visible?: boolean | null
+          job_type?: string | null
+          location?: string | null
+          location_ar?: string | null
+          posted_by?: string | null
+          requirements?: string | null
+          requirements_ar?: string | null
+          salary_currency?: never
+          salary_max?: never
+          salary_min?: never
+          specialization?: string | null
+          specialization_ar?: string | null
+          status?: string | null
+          title?: string | null
+          title_ar?: string | null
+          updated_at?: string | null
+          views_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_postings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_postings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_postings_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies_public_safe"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       judge_profiles_public: {
         Row: {
           certifications: string[] | null
@@ -25246,6 +25374,42 @@ export type Database = {
           updated_at?: string | null
           user_id?: string | null
           years_of_experience?: number | null
+        }
+        Relationships: []
+      }
+      profile_views_safe: {
+        Row: {
+          browser: string | null
+          company_id: string | null
+          country: string | null
+          created_at: string | null
+          device_type: string | null
+          id: string | null
+          profile_user_id: string | null
+          viewer_type: string | null
+          viewer_user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          company_id?: string | null
+          country?: string | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string | null
+          profile_user_id?: string | null
+          viewer_type?: string | null
+          viewer_user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          company_id?: string | null
+          country?: string | null
+          created_at?: string | null
+          device_type?: string | null
+          id?: string | null
+          profile_user_id?: string | null
+          viewer_type?: string | null
+          viewer_user_id?: string | null
         }
         Relationships: []
       }
