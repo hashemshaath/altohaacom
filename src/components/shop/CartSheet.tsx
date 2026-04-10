@@ -287,7 +287,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
                     {/* Image */}
                     <div className="h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl bg-muted/30 ring-1 ring-border/20">
                       {item.image_url ? (
-                        <img loading="lazy"
+                        <img
                           src={item.image_url}
                           alt={title}
                           className="h-full w-full object-contain p-1"

@@ -46,7 +46,7 @@ export const MasterclassCard = memo(function MasterclassCard({ mc, isEnrolled }:
     >
       <div className="relative aspect-video shrink-0 overflow-hidden bg-muted">
         {mc.cover_image_url ? (
-          <img loading="lazy"
+          <img
             src={mc.cover_image_url}
             alt={title}
             className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"

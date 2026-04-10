@@ -566,7 +566,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
                               >
                                 {/* Preview image */}
                                 <div className="mb-2 h-20 rounded-xl overflow-hidden bg-muted relative">
-                                  <img loading="lazy"
+                                  <img
                                     src={slide.image_url || "https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&q=60"}
                                     alt={tpl.label}
                                     className="h-full w-full object-cover"
@@ -707,7 +707,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
 
                           {slide.image_url && (
                             <div className="h-36 rounded-xl overflow-hidden border border-border/50 relative">
-                              <img loading="lazy"
+                              <img
                                 src={slide.image_url}
                                 alt={isAr ? "معاينة الشريحة" : "Slide preview"}
                                 className="h-full w-full"

@@ -36,7 +36,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
       <Link to={`/shop/${product.id}`} className="block overflow-hidden">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.image_url ? (
-            <img loading="lazy"
+            <img
               src={product.image_url}
               alt={title}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"

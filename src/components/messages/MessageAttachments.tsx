@@ -57,7 +57,7 @@ export const MessageAttachments = forwardRef<HTMLDivElement, MessageAttachmentsP
             <div key={i} className="rounded-xl border border-border/40 bg-background/50 overflow-hidden">
               {isImage && (
                 <a href={url} target="_blank" rel="noopener noreferrer" className="block">
-                  <img loading="lazy"
+                  <img
                     src={url}
                     alt={name}
                     className="max-h-48 w-auto rounded-t-xl object-cover"
