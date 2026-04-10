@@ -58,6 +58,7 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
               />
               {search && (
                 <button
+                  aria-label="Clear search"
                   onClick={() => setSearch("")}
                   className="absolute end-2.5 top-1/2 -translate-y-1/2 rounded-lg p-0.5 hover:bg-muted transition-colors"
                 >
