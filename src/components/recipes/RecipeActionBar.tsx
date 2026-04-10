@@ -69,7 +69,7 @@ export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCou
         trackShare("native");
       } catch {}
     } else {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(url).then(null, () => {});
       trackShare("copy");
       toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     }

@@ -29,7 +29,7 @@ export const ProfileShareButtons = memo(function ProfileShareButtons({ username,
     : `Check out ${displayName}'s profile on Altoha`;
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(profileUrl);
+    await navigator.clipboard.writeText(profileUrl).then(null, () => {});
     setCopied(true);
     toast({ title: isAr ? "تم نسخ الرابط" : "Link copied!" });
     setTimeout(() => setCopied(false), 2000);
