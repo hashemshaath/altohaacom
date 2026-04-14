@@ -830,7 +830,7 @@ export default function CompetitionDetail() {
                         {categories.length > 6 && (
                           <Button variant="ghost" size="sm" className="mt-4 w-full rounded-xl text-xs" onClick={() => setActiveTab("categories")}>
                             {isAr ? `عرض الكل (${categories.length})` : `View All (${categories.length})`}
-                            <ChevronRight className="ms-1 h-3 w-3 rtl:rotate-180" />
+                            <span className="ms-1 text-xs">→</span>
                           </Button>
                         )}
                       </Section>
