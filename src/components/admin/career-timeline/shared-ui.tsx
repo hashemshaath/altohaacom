@@ -6,8 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Plus, Pencil, Trash2, X, Check, GripVertical, ArrowRightLeft, Languages, Loader2,
-} from "lucide-react";
+  Plus, Pencil, Trash2, X, Check, GripVertical, ArrowRightLeft, Languages, Loader2, LucideIcon } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -74,7 +73,7 @@ export const TranslateInlineButton = memo(function TranslateInlineButton({ text,
 
 // ── Empty & Add ──────────────────────────────────────
 
-export const EmptyState = memo(function EmptyState({ icon: Icon, message }: { icon: any; message: string }) {
+export const EmptyState = memo(function EmptyState({ icon: Icon, message }: { icon: LucideIcon; message: string }) {
   return (
     <div className="rounded-xl border border-dashed border-border/50 p-6 text-center bg-muted/20">
       <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-muted/40 mb-2">
@@ -147,7 +146,7 @@ export const BilingualFieldPair = memo(function BilingualFieldPair({ labelEn, la
 // ── Compact Row ──────────────────────────────────────
 
 export const CompactRow = memo(function CompactRow({ icon: Icon, color, logoUrl, title, subtitle, meta, badge, badgeVariant, isCurrent, isAr, onEdit, onDelete, draggable, moveSections, onMove }: {
-  icon: any; color: string; logoUrl?: string; title: string; subtitle: string; meta: string;
+  icon: LucideIcon; color: string; logoUrl?: string; title: string; subtitle: string; meta: string;
   badge?: string; badgeVariant?: "default" | "secondary" | "outline"; isCurrent?: boolean; isAr: boolean;
   onEdit?: () => void; onDelete?: () => void; draggable?: boolean;
   moveSections?: { key: string; label: string }[]; onMove?: (targetSection: string) => void;

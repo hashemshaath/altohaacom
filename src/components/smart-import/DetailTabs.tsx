@@ -14,8 +14,7 @@ import {
   Star, Globe, Calendar, Users, Award, Share2,
   UserCheck, Shield, Link2, BookOpen, ExternalLink,
   Image as ImageIcon, BarChart3, Layers, Mic, ListChecks,
-  Sparkles, Trophy,
-} from "lucide-react";
+  Sparkles, Trophy, LucideIcon } from "lucide-react";
 
 type EditProps = { editing?: boolean; onFieldUpdate?: (key: string, value: string) => void };
 type TabProps = { details: ImportedData; isAr: boolean } & EditProps;
@@ -190,7 +189,7 @@ OverviewTab.displayName = "OverviewTab";
 
 // ── Stat Card ──
 const StatCard = React.memo(({ icon: Icon, iconClass, bgClass, label, value, sub, small }: {
-  icon: any; iconClass?: string; bgClass?: string; label: string; value: string | number; sub?: string; small?: boolean;
+  icon: LucideIcon; iconClass?: string; bgClass?: string; label: string; value: string | number; sub?: string; small?: boolean;
 }) => (
   <div className={`text-center p-3 rounded-xl ${bgClass || 'bg-accent/30'}`}>
     <Icon className={`h-4 w-4 mx-auto mb-1 ${iconClass || 'text-primary'}`} />

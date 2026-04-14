@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Calendar, MapPin, Globe, Building, Ticket, Tag, Star, Image } from "lucide-react";
+import { CheckCircle, Calendar, MapPin, Globe, Building, Ticket, Tag, Star, Image, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import type { ExhibitionFormData } from "./types";
 
@@ -22,7 +22,7 @@ export const ExhibitionReviewStep = memo(function ExhibitionReviewStep({ data }:
   const isAr = language === "ar";
   const typeLabel = typeLabels[data.type] || { en: data.type, ar: data.type, emoji: "📋" };
 
-  const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
+  const Section = ({ icon: Icon, title, children }: { icon: LucideIcon; title: string; children: React.ReactNode }) => (
     <div className="space-y-2">
       <h3 className="flex items-center gap-2 text-sm font-semibold">
         <Icon className="h-4 w-4 text-primary" />

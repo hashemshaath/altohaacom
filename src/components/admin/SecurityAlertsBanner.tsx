@@ -5,7 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShieldAlert, AlertTriangle, Ban, Lock, ArrowRight } from "lucide-react";
+import { ShieldAlert, AlertTriangle, Ban, Lock, ArrowRight, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { subDays } from "date-fns";
 
@@ -57,7 +57,7 @@ export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
       color: "text-chart-4",
       bg: "bg-chart-4/10",
     },
-  ].filter(Boolean) as { icon: any; text: string; color: string; bg: string }[];
+  ].filter(Boolean) as { icon: LucideIcon; text: string; color: string; bg: string }[];
 
   return (
     <Card className="border-destructive/30 bg-destructive/5">

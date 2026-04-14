@@ -33,8 +33,8 @@ import {
   ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot, Award,
   Clock, Star, Sparkles, ExternalLink, Hash, AlertTriangle, ArrowUpRight,
   ImageIcon, History, Activity, Camera, Upload, Palette, StickyNote,
-  BarChart3, Copy, Pencil, type LucideIcon,
-} from "lucide-react";
+  BarChart3, Copy, Pencil, type, LucideIcon,
+, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
 import { MS_PER_DAY } from "@/lib/constants";
@@ -325,7 +325,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const updateField = useCallback((key: string, value: any) => setForm(prev => ({ ...prev, [key]: value })), []);
+  const updateField = useCallback((key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value })), []);
 
   const getSectionStatus = useCallback((sectionId: string): "complete" | "partial" | "empty" => {
     switch (sectionId) {
@@ -1305,7 +1305,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               {selectedSeriesId ? (
                 previousEditions.length > 0 ? (
                   <div className="space-y-2">
-                    {previousEditions.map((ed: any) => {
+                    {previousEditions.map((ed: Record<string, unknown>) => {
                       const isCurrent = ed.id === editingId;
                       const edStatus = statusOptions.find(s => s.value === ed.status);
                       return (

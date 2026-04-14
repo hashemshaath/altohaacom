@@ -5,14 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Beef, Coffee, Wheat, Milk, Candy, Droplets, Flame, Salad,
-  Snowflake, Package, FlaskConical, Star
-} from "lucide-react";
+  Snowflake, Package, FlaskConical, Star, LucideIcon } from "lucide-react";
 
 export interface ProductTemplate {
   id: string;
   name: string;
   name_ar: string;
-  icon: any;
+  icon: LucideIcon;
   color: string;
   criteria: Array<{
     name: string;

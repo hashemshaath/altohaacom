@@ -20,7 +20,7 @@ interface SectionContentProps {
   careerForm: any;
   editingId: string | null;
   saveCareerPending: boolean;
-  onUpdateCareer: (k: string, v: any) => void;
+  onUpdateCareer: (k: string, v: unknown) => void;
   onSaveCareer: () => void;
   onStartEditCareer: (r: CareerRecord) => void;
   onDeleteCareer: (id: string) => void;
@@ -33,7 +33,7 @@ interface SectionContentProps {
   membershipForm?: any;
   editingMembershipId?: string | null;
   saveMembershipPending?: boolean;
-  onUpdateMembership?: (k: string, v: any) => void;
+  onUpdateMembership?: (k: string, v: unknown) => void;
   onSaveMembership?: () => void;
   onStartAddMembership?: () => void;
   onStartEditMembership?: (m) => void;
@@ -55,7 +55,7 @@ interface SectionContentProps {
   editingAwardId?: string | null;
   addAwardPending?: boolean;
   saveAwardPending?: boolean;
-  onUpdateAward?: (k: string, v: any) => void;
+  onUpdateAward?: (k: string, v: unknown) => void;
   onSaveAward?: () => void;
   onAddAward?: () => void;
   onStartAddAward?: () => void;

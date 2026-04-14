@@ -1,10 +1,10 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAnnouncements } from "@/hooks/useAnnouncements";
-import { X, ExternalLink, Info, AlertTriangle, CheckCircle2, Sparkles } from "lucide-react";
+import { X, ExternalLink, Info, AlertTriangle, CheckCircle2, Sparkles, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const TYPE_STYLES: Record<string, { icon: any; bg: string; border: string; text: string }> = {
+const TYPE_STYLES: Record<string, { icon: LucideIcon; bg: string; border: string; text: string }> = {
   info: { icon: Info, bg: "bg-primary/10", border: "border-primary/20", text: "text-primary" },
   warning: { icon: AlertTriangle, bg: "bg-chart-4/10", border: "border-chart-4/20", text: "text-chart-4" },
   success: { icon: CheckCircle2, bg: "bg-chart-2/10", border: "border-chart-2/20", text: "text-chart-2" },

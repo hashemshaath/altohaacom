@@ -8,9 +8,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { CheckCircle, XCircle, FileText, Search } from "lucide-react";
 import { statusColors } from "./statusColors";
+import type { AdRequestRow } from "./types";
+
+type AdRequestWithCompany = AdRequestRow & {
+  companies?: { name: string; name_ar: string | null } | null;
+};
 
 interface Props {
-  requests: any[];
+  requests: AdRequestWithCompany[];
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
 }

@@ -40,8 +40,8 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
       const exhibition = exhibitionRes.data;
 
       // Revenue
-      const totalRevenue = tickets.reduce((s, t: any) => s + (t.price_paid || 0), 0);
-      const boothRevenue = booths.filter((b) => b.assigned_to).reduce((s, b: any) => s + (b.price || 0), 0);
+      const totalRevenue = tickets.reduce((s, t: Record<string, unknown>) => s + (t.price_paid || 0), 0);
+      const boothRevenue = booths.filter((b) => b.assigned_to).reduce((s, b: Record<string, unknown>) => s + (b.price || 0), 0);
       const currency = tickets[0]?.currency || booths[0]?.currency || "SAR";
 
       // Ticket stats
@@ -75,7 +75,7 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
       const boothCategories = Object.entries(catMap).map(([name, value]) => ({ name, value }));
 
       // Reviews
-      const avgRating = reviews.length > 0 ? (reviews.reduce((s, r: any) => s + r.rating, 0) / reviews.length).toFixed(1) : "0";
+      const avgRating = reviews.length > 0 ? (reviews.reduce((s, r: Record<string, unknown>) => s + r.rating, 0) / reviews.length).toFixed(1) : "0";
       const ratingDist = [1, 2, 3, 4, 5].map(star => ({ star: `${star}⭐`, count: reviews.filter((r) => r.rating === star).length }));
 
       // Follower growth (daily, last 14 days)

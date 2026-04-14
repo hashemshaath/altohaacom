@@ -55,8 +55,8 @@ import {
   ClipboardList,
   Upload,
   Search,
-  type LucideIcon,
-} from "lucide-react";
+  type, LucideIcon,
+, LucideIcon } from "lucide-react";
 
 export interface NavItem {
   to: string;

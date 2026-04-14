@@ -73,7 +73,7 @@ export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, 
     willing_to_relocate: profile?.willing_to_relocate || false,
   });
 
-  const update = (k: string, v: any) => {
+  const update = (k: string, v: unknown) => {
     setForm((p) => ({ ...p, [k]: v }));
     setSaved(false);
   };

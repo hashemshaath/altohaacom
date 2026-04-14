@@ -12,11 +12,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Briefcase, Clock, CheckCircle2, XCircle, Eye, ChevronRight,
-  Building2, MapPin, FileText, Inbox,
-} from "lucide-react";
+  Building2, MapPin, FileText, Inbox, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 
-const STATUS_CONFIG: Record<string, { labelEn: string; labelAr: string; color: string; icon: any }> = {
+const STATUS_CONFIG: Record<string, { labelEn: string; labelAr: string; color: string; icon: LucideIcon }> = {
   pending: { labelEn: "Under Review", labelAr: "قيد المراجعة", color: "bg-chart-4/10 text-chart-4 border-chart-4/20", icon: Clock },
   reviewed: { labelEn: "Reviewed", labelAr: "تمت المراجعة", color: "bg-primary/10 text-primary border-primary/20", icon: Eye },
   shortlisted: { labelEn: "Shortlisted", labelAr: "في القائمة المختصرة", color: "bg-chart-2/10 text-chart-2 border-chart-2/20", icon: CheckCircle2 },

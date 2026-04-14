@@ -25,8 +25,7 @@ import {
   ArrowRight, Sparkles, Eye, Star, Globe, BarChart3, Megaphone, Home, ChevronRight,
   LayoutGrid, LayoutList, Bell, BellRing, Bookmark, TrendingUp,
   SlidersHorizontal, History, Zap, AlertCircle, Share2, Copy, Check,
-  ArrowUpDown, Flame, Target, Crown, ExternalLink, ChevronDown, Command, Loader2
-} from "lucide-react";
+  ArrowUpDown, Flame, Target, Crown, ExternalLink, ChevronDown, Command, Loader2, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -915,7 +914,7 @@ export default function JobSearch() {
 
 /* ───── Sub Components ───── */
 
-function StatRow({ icon: Icon, label, value, accent }: { icon: any; label: string; value: number; accent?: boolean }) {
+function StatRow({ icon: Icon, label, value, accent }: { icon: LucideIcon; label: string; value: number; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between">
       <span className="text-[12px] text-muted-foreground flex items-center gap-1.5">

@@ -11,8 +11,7 @@ import {
 } from "recharts";
 import {
   BarChart3, Users, Trophy, TrendingUp, Target, Medal,
-  UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown,
-} from "lucide-react";
+  UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown, LucideIcon } from "lucide-react";
 
 const COLORS = [
   "hsl(var(--primary))",
@@ -348,7 +347,7 @@ export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsD
 });
 
 function KPICard({ icon: Icon, label, value, loading, accent, trend, subtitle }: {
-  icon: any; label: string; value: number | string; loading: boolean; accent: string; trend?: "up" | "down"; subtitle?: string;
+  icon: LucideIcon; label: string; value: number | string; loading: boolean; accent: string; trend?: "up" | "down"; subtitle?: string;
 }) {
   return (
     <Card className="transition-all hover:shadow-md hover:-translate-y-0.5">

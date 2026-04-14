@@ -228,7 +228,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
                 <TableHead></TableHead>
               </TableRow></TableHeader>
               <TableBody>
-                {qaItems.map((qa: any) => {
+                {qaItems.map((qa: Record<string, unknown>) => {
                   const prod = items.find(i => i.id === qa.catalog_item_id);
                   return (
                     <TableRow key={qa.id}>
@@ -267,7 +267,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
         )}
         {badges.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {badges.map((b: any) => (
+            {badges.map((b: Record<string, unknown>) => (
               <Card key={b.id} className={!b.is_active ? "opacity-50" : ""}>
                 <CardContent className="p-3 flex items-center gap-3">
                   <div className="flex-1">

@@ -19,8 +19,7 @@ import {
   Shield, Activity, Package, GraduationCap, LayoutDashboard,
   Zap, MessageSquare, AlertTriangle, Settings,
   Heart, ChefHat, Building2, Landmark, BarChart3,
-  Clock, Eye, Globe,
-} from "lucide-react";
+  Clock, Eye, Globe, LucideIcon } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
@@ -49,7 +48,7 @@ function LazySection({ children, fallback }: { children: React.ReactNode; fallba
 
 /* ─── Metric Card ─── */
 function MetricCard({ title, value, icon: Icon, trend, sparkData, chartColor, link, loading, urgent }: {
-  title: string; value: number; icon: any; trend?: number; sparkData?: { v: number }[];
+  title: string; value: number; icon: LucideIcon; trend?: number; sparkData?: { v: number }[];
   chartColor?: string; link: string; loading?: boolean; urgent?: boolean;
 }) {
   return (

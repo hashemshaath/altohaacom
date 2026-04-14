@@ -8,8 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
-  PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark,
-} from "lucide-react";
+  PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { OnlineCountBadge } from "./PresenceIndicator";
@@ -71,7 +70,7 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
   };
 
   const tabs = useMemo(() => {
-    const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
+    const allTabs: { id: CommunityTab; label: string; icon: LucideIcon; requiresAuth?: boolean }[] = [
       { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
       { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
       { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },

@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ChefHat, Plus, Edit, Trash2, Radio, Check, Clock, Users } from "lucide-react";
+import { ChefHat, Plus, Edit, Trash2, Radio, Check, Clock, Users, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
@@ -143,7 +143,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
   };
 
   const statusBadge = (status: string) => {
-    const map: Record<string, { cls: string; icon: any }> = {
+    const map: Record<string, { cls: string; icon: LucideIcon }> = {
       live: { cls: "bg-destructive text-destructive-foreground", icon: Radio },
       completed: { cls: "bg-muted text-muted-foreground", icon: Check },
       scheduled: { cls: "bg-primary/10 text-primary", icon: Clock },

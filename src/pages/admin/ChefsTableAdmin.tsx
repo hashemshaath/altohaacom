@@ -26,8 +26,7 @@ import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
   Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
   Send, Gavel, Printer, ChevronDown, DollarSign, Download,
-  Users, AlertCircle, BarChart3, UserPlus, Receipt,
-} from "lucide-react";
+  Users, AlertCircle, BarChart3, UserPlus, Receipt, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
@@ -47,7 +46,7 @@ const experienceLabels: Record<string, { en: string; ar: string }> = {
   sample_delivery: { en: "Sample Delivery", ar: "توصيل عينات" },
 };
 
-const statusConfig: Record<string, { variant: "secondary" | "default" | "destructive" | "outline"; icon: any; color: string }> = {
+const statusConfig: Record<string, { variant: "secondary" | "default" | "destructive" | "outline"; icon: LucideIcon; color: string }> = {
   pending: { variant: "secondary", icon: Clock, color: "text-chart-4" },
   approved: { variant: "default", icon: Check, color: "text-chart-5" },
   rejected: { variant: "destructive", icon: X, color: "text-destructive" },

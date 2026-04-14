@@ -6,8 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Package, Calendar, MapPin, ChefHat, Users, Eye,
   Clock, CheckCircle2, XCircle, PlayCircle, Receipt,
-  Globe, Copy, ExternalLink
-} from "lucide-react";
+  Globe, Copy, ExternalLink, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { ChefsTableInvoiceGenerator } from "./ChefsTableInvoiceGenerator";
@@ -24,7 +23,7 @@ const experienceLabels: Record<string, { en: string; ar: string }> = {
   sample_delivery: { en: "Sample Delivery", ar: "توصيل عينات" },
 };
 
-const sessionStatusConfig: Record<string, { icon: any; color: string }> = {
+const sessionStatusConfig: Record<string, { icon: LucideIcon; color: string }> = {
   scheduled: { icon: Calendar, color: "bg-primary/10 text-primary border-primary/20" },
   in_progress: { icon: PlayCircle, color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
   completed: { icon: CheckCircle2, color: "bg-chart-5/10 text-chart-5 border-chart-5/20" },

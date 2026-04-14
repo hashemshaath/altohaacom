@@ -8,8 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import {
   ClipboardList, Package, CheckCircle, Clock, AlertTriangle,
-  Send, Lightbulb, Printer, TrendingUp, FileInput, Download,
-} from "lucide-react";
+  Send, Lightbulb, Printer, TrendingUp, FileInput, Download, LucideIcon } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, isPast, differenceInDays } from "date-fns";
@@ -386,7 +385,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
 });
 
 function MetricCard({ icon: Icon, value, label, iconColor, trend, trendLabel, trendPositive, isValueString }: {
-  icon: any; value: number | string; label: string; iconColor: string;
+  icon: LucideIcon; value: number | string; label: string; iconColor: string;
   trend?: number; trendLabel?: string; trendPositive?: boolean; isValueString?: boolean;
 }) {
   return (
@@ -408,7 +407,7 @@ function MetricCard({ icon: Icon, value, label, iconColor, trend, trendLabel, tr
 }
 
 function StatusCard({ icon: Icon, iconColor, label, value, badge }: {
-  icon: any; iconColor: string; label: string; value: number; badge?: string;
+  icon: LucideIcon; iconColor: string; label: string; value: number; badge?: string;
 }) {
   return (
     <Card className="border-border/60 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98]">

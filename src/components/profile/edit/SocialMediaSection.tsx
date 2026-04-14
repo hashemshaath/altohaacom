@@ -5,7 +5,7 @@ import { Share2, Globe, Instagram, Twitter, Facebook, Linkedin, Youtube } from "
 
 interface SocialMediaSectionProps {
   form: Record<string, any>;
-  update: (k: string, v: any) => void;
+  update: (k: string, v: unknown) => void;
   isAr: boolean;
 }
 

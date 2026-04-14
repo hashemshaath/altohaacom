@@ -19,7 +19,7 @@ import {
 
 export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
   form: any; editingId: string | null; isAr: boolean; isPending: boolean;
-  onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
+  onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   const rt = form.record_type;
   const isEdu = rt === "education";
@@ -218,7 +218,7 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
 
 export const MembershipForm = memo(function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
   form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
-  onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
+  onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
     <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">
@@ -286,7 +286,7 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
   careerForm, onUpdateCareer, isPendingManual, onSaveManual, onCancel }: {
   competitions: any[]; selectedId: string; onSelect: (id: string) => void;
   isAr: boolean; isPendingLink: boolean; onSaveLink: () => void;
-  careerForm: any; onUpdateCareer: (key: string, value: any) => void;
+  careerForm: any; onUpdateCareer: (key: string, value: unknown) => void;
   isPendingManual: boolean; onSaveManual: () => void; onCancel: () => void;
 }) {
   const [mode, setMode] = useState<"link" | "manual">("link");
@@ -352,7 +352,7 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
 
 export const CompetitionEventForm = memo(function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
   form: any; editingId: string | null; isAr: boolean; isPending: boolean;
-  onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
+  onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
     <div className={editingId ? "rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200" : "space-y-3"}>
@@ -429,7 +429,7 @@ export const CompetitionEventForm = memo(function CompetitionEventForm({ form, e
 
 export const AwardAddForm = memo(function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
   form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
-  onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
+  onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
     <div className="rounded-xl border border-primary/20 bg-card p-3 sm:p-4 space-y-3 shadow-sm animate-in fade-in-0 zoom-in-95 duration-200">

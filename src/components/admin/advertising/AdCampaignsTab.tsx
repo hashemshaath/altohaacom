@@ -9,14 +9,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { CheckCircle, XCircle, DollarSign, Megaphone, Pause, Play, TrendingUp, MousePointerClick, Eye } from "lucide-react";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { statusColors } from "./statusColors";
+import type { AdCampaignWithCompany } from "./types";
 
 interface Props {
-  campaigns: any[];
-  bulkActions: any;
+  campaigns: AdCampaignWithCompany[];
+  bulkActions: ReturnType<typeof import("@/hooks/useAdminBulkActions").useAdminBulkActions<AdCampaignWithCompany>>;
   onApprove: (id: string, status: string) => void;
   onReject: (id: string) => void;
-  onInvoice: (campaign) => void;
-  onExportCSV: (items: any[]) => void;
+  onInvoice: (campaign: AdCampaignWithCompany) => void;
+  onExportCSV: (items: AdCampaignWithCompany[]) => void;
   invoicePending: boolean;
 }
 

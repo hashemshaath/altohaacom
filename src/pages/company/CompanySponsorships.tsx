@@ -19,12 +19,11 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Crown, Trophy, Calendar, MapPin, Building2, CheckCircle, XCircle, Clock,
-  Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye
-} from "lucide-react";
+  Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 
-const TIER_CONFIG: Record<string, { icon: any; color: string; label: string; labelAr: string }> = {
+const TIER_CONFIG: Record<string, { icon: LucideIcon; color: string; label: string; labelAr: string }> = {
   strategic_partner: { icon: Crown, color: "text-chart-4", label: "Strategic Partner", labelAr: "شريك استراتيجي" },
   gold: { icon: Star, color: "text-chart-4", label: "Gold Sponsor", labelAr: "الراعي الذهبي" },
   silver: { icon: Medal, color: "text-muted-foreground", label: "Silver Sponsor", labelAr: "الراعي الفضي" },

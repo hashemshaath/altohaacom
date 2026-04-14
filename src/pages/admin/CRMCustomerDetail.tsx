@@ -22,8 +22,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   ArrowLeft, User, Phone, Mail, MapPin, Globe, Calendar, Clock,
   ShoppingCart, DollarSign, Heart, Star, Wallet, Gift, Users,
-  Plus, Edit, Send, CreditCard, Package, AlertCircle, ShieldCheck,
-} from "lucide-react";
+  Plus, Edit, Send, CreditCard, Package, AlertCircle, ShieldCheck, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 
 export default function CRMCustomerDetail() {
@@ -673,7 +672,7 @@ export default function CRMCustomerDetail() {
 }
 
 // Helper Components
-function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function InfoRow({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
     <div className="flex items-center gap-3">
       <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -685,7 +684,7 @@ function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value
   );
 }
 
-function StatCard({ label, value, icon: Icon }: { label: string; value: string | number; icon: any }) {
+function StatCard({ label, value, icon: Icon }: { label: string; value: string | number; icon: LucideIcon }) {
   return (
     <div className="rounded-xl border p-4 text-center space-y-1">
       <Icon className="h-5 w-5 text-muted-foreground mx-auto" />

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, Gift, TrendingUp, Search, Link2, ArrowUpDown, Copy, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { Users, Gift, TrendingUp, Search, Link2, ArrowUpDown, Copy, CheckCircle2, Clock, XCircle, LucideIcon } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -86,7 +86,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
   });
 
   const statusBadge = (status: string) => {
-    const map: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; icon: any }> = {
+    const map: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; icon: LucideIcon }> = {
       pending: { variant: "outline", icon: Clock },
       converted: { variant: "default", icon: CheckCircle2 },
       expired: { variant: "destructive", icon: XCircle },

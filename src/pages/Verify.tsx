@@ -19,8 +19,7 @@ import { generateVCard, downloadVCard, getVerificationUrl } from "@/lib/qrCode";
 import {
   Search, Shield, CheckCircle, XCircle, AlertTriangle,
   User, Award, FileText, Building, Calendar, QrCode,
-  UserPlus, ExternalLink,
-} from "lucide-react";
+  UserPlus, ExternalLink, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 
@@ -347,7 +346,7 @@ function VerificationResult({
   const isAr = language === "ar";
   const entityType = result.entity_type;
 
-  const typeLabels: Record<string, { en: string; ar: string; icon: any; color: string }> = {
+  const typeLabels: Record<string, { en: string; ar: string; icon: LucideIcon; color: string }> = {
     user: { en: "User Account", ar: "حساب مستخدم", icon: User, color: "chart-5" },
     certificate: { en: "Certificate", ar: "شهادة", icon: Award, color: "chart-5" },
     invoice: { en: "Invoice", ar: "فاتورة", icon: FileText, color: "primary" },

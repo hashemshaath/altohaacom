@@ -126,7 +126,7 @@ export default function RecipeDetail() {
             carbohydrateContent: recipe.carbs_g ? `${recipe.carbs_g}g` : undefined,
             fatContent: recipe.fat_g ? `${recipe.fat_g}g` : undefined,
           } : undefined,
-          recipeIngredient: ingredients.map((i: any) => typeof i === "string" ? i : i.name || ""),
+          recipeIngredient: ingredients.map((i: Record<string, unknown>) => typeof i === "string" ? i : i.name || ""),
           recipeInstructions: steps.map((s: any, idx: number) => ({
             "@type": "HowToStep",
             position: idx + 1,

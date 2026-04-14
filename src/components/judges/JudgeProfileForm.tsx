@@ -154,7 +154,7 @@ const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Pro
     },
   });
 
-  const update = (key: string, value: any) => setForm(prev => ({ ...prev, [key]: value }));
+  const update = (key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
   if (isLoading) return <p className="text-muted-foreground py-8 text-center">{isAr ? "جاري التحميل..." : "Loading..."}</p>;
 

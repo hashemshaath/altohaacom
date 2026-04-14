@@ -6,8 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import {
   CheckCircle2, XCircle, AlertTriangle, RefreshCw, Shield,
   Globe, FileText, Code2, Smartphone, Link2, Image, Zap, Lock,
-  Languages, Search, Loader2,
-} from "lucide-react";
+  Languages, Search, Loader2, LucideIcon } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface CheckItem {
@@ -18,7 +17,7 @@ interface CheckItem {
   description: string;
   descriptionAr: string;
   status: "pass" | "fail" | "warning" | "pending";
-  icon: any;
+  icon: LucideIcon;
   autoCheck?: () => Promise<"pass" | "fail" | "warning">;
 }
 

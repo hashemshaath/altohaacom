@@ -12,8 +12,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   Calendar, List, Clock, ChevronLeft, ChevronRight, Globe,
   X, Search, CalendarDays, SlidersHorizontal, Sparkles, MoreHorizontal,
-  TrendingUp, Zap,
-} from "lucide-react";
+  TrendingUp, Zap, LucideIcon } from "lucide-react";
 import { format, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, startOfWeek, endOfWeek, addDays } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -28,7 +27,7 @@ const ListView = lazy(() => import("./events-calendar/ListView").then(m => ({ de
 const SelectedDayPanel = lazy(() => import("./events-calendar/SelectedDayPanel").then(m => ({ default: m.SelectedDayPanel })));
 
 /* ─── Animated stat card ─── */
-function AnimatedStat({ icon: Icon, value, label, accent }: { icon: any; value: number; label: string; accent: string }) {
+function AnimatedStat({ icon: Icon, value, label, accent }: { icon: LucideIcon; value: number; label: string; accent: string }) {
   return (
     <div className={cn(
       "group relative flex items-center gap-3 rounded-2xl border px-4 py-3 transition-all duration-200",

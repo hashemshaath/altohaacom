@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award, Link2, Copy, Check, Share2, ExternalLink, Sparkles, Users, UserPlus } from "lucide-react";
+import { Camera, MapPin, ChefHat, Shield, Crown, Star, Eye, Award, Link2, Copy, Check, Share2, ExternalLink, Sparkles, Users, UserPlus, LucideIcon } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { toEnglishDigits } from "@/lib/formatNumber";
@@ -136,7 +136,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
     }
   };
 
-  const tierConfig: Record<string, { icon: any; label: string; labelAr: string; color: string }> = {
+  const tierConfig: Record<string, { icon: LucideIcon; label: string; labelAr: string; color: string }> = {
     basic: { icon: Star, label: "Basic", labelAr: "أساسي", color: "bg-muted/60 text-muted-foreground" },
     professional: { icon: Crown, label: "Professional", labelAr: "احترافي", color: "bg-primary/15 text-primary border-primary/20" },
     enterprise: { icon: Shield, label: "Enterprise", labelAr: "مؤسسي", color: "bg-chart-2/15 text-chart-2 border-chart-2/20" },

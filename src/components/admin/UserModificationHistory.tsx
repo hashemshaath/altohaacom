@@ -69,7 +69,7 @@ export const UserModificationHistory = memo(function UserModificationHistory({ u
     );
   }
 
-  const formatDetails = (details: any): string => {
+  const formatDetails = (details: Record<string, unknown>): string => {
     if (!details) return "";
     if (details.roles) return `${isAr ? "الأدوار:" : "Roles:"} ${details.roles.join(", ")}`;
     

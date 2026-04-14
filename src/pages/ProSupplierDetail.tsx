@@ -176,16 +176,16 @@ export default function ProSupplierDetail() {
   }, [countries, isAr]);
 
   const categories = useMemo(() => {
-    const cats = new Set(products.map((p: any) => p.category || "other"));
+    const cats = new Set(products.map((p: Record<string, unknown>) => p.category || "other"));
     return Array.from(cats);
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
-    if (selectedCategory !== "all") filtered = filtered.filter((p: any) => (p.category || "other") === selectedCategory);
+    if (selectedCategory !== "all") filtered = filtered.filter((p: Record<string, unknown>) => (p.category || "other") === selectedCategory);
     if (productSearch.trim()) {
       const q = productSearch.toLowerCase();
-      filtered = filtered.filter((p: any) =>
+      filtered = filtered.filter((p: Record<string, unknown>) =>
         (p.name || "").toLowerCase().includes(q) ||
         (p.name_ar || "").toLowerCase().includes(q) ||
         (p.sku || "").toLowerCase().includes(q)
@@ -626,7 +626,7 @@ export default function ProSupplierDetail() {
                       </Button>
                     </div>
                     <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-                      {products.slice(0, 4).map((p: any) => (
+                      {products.slice(0, 4).map((p: Record<string, unknown>) => (
                         <SupplierProductCard
                           key={p.id}
                           product={p}
@@ -667,7 +667,7 @@ export default function ProSupplierDetail() {
                 {selectedProduct ? (
                   <SupplierProductDetail
                     product={selectedProduct}
-                    relatedProducts={products.filter((p: any) => p.id !== selectedProduct.id && p.category === selectedProduct.category)}
+                    relatedProducts={products.filter((p: Record<string, unknown>) => p.id !== selectedProduct.id && p.category === selectedProduct.category)}
                     onBack={() => setSelectedProduct(null)}
                     onAddToCart={handleAddToCart}
                     onViewProduct={(p) => setSelectedProduct(p)}
@@ -751,7 +751,7 @@ export default function ProSupplierDetail() {
                       </div>
                     ) : (
                       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                        {filteredProducts.map((p: any) => (
+                        {filteredProducts.map((p: Record<string, unknown>) => (
                           <SupplierProductCard
                             key={p.id}
                             product={p}

@@ -19,8 +19,7 @@ import {
   FileText,
   Hash,
   Shield,
-  Earth,
-} from "lucide-react";
+  Earth, LucideIcon } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
@@ -272,7 +271,7 @@ const InfoRow = React.memo(function InfoRow({
   value,
   isLink,
 }: {
-  icon: any;
+  icon: LucideIcon;
   label: string;
   value: string | null | undefined;
   isLink?: string;

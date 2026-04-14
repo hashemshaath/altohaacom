@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Building2, Users, Award, MapPin, Globe, Mail, Phone, Calendar, Star, TrendingUp, Eye } from "lucide-react";
+import { Building2, Users, Award, MapPin, Globe, Mail, Phone, Calendar, Star, TrendingUp, Eye, LucideIcon } from "lucide-react";
 
 interface Props {
   entityId: string | null;
@@ -170,7 +170,7 @@ const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ enti
 
 export default EstablishmentDetailDrawer;
 
-function MiniKPI({ icon: Icon, label, value }: { icon: any; label: string; value: string | number }) {
+function MiniKPI({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string | number }) {
   return (
     <div className="rounded-xl border bg-card p-2.5 text-center">
       <Icon className="h-4 w-4 mx-auto text-muted-foreground mb-1" />
@@ -180,7 +180,7 @@ function MiniKPI({ icon: Icon, label, value }: { icon: any; label: string; value
   );
 }
 
-function InfoRow({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function InfoRow({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
     <div className="flex items-center gap-2 text-sm">
       <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0" />

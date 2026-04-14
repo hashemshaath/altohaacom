@@ -6,7 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/PageShell";
-import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight, LayoutDashboard, ChevronRight, Calendar, TrendingUp, Zap } from "lucide-react";
+import { Trophy, Users, GraduationCap, Landmark, MessageSquare, ShoppingBag, Sparkles, Award, Star, UtensilsCrossed, HandHeart, AlertCircle, Megaphone, ClipboardList, ArrowRight, LayoutDashboard, ChevronRight, Calendar, TrendingUp, Zap, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -264,7 +264,7 @@ export default function Dashboard() {
    Sub-Components
    ══════════════════════════════════════════════════════════ */
 
-const SectionLabel = memo(function SectionLabel({ icon: Icon, label }: { icon: any; label: string }) {
+const SectionLabel = memo(function SectionLabel({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <div className="flex items-center gap-2.5 mb-2 lg:mb-0">
       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10">
@@ -399,7 +399,7 @@ const ProfileNudge = memo(function ProfileNudge({ isAr }: { isAr: boolean }) {
 });
 
 /* ── Quick Access Grid ── */
-const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: any; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
+const QuickAccessGrid = memo(function QuickAccessGrid({ sections, isAr }: { sections: Array<{ icon: LucideIcon; title: string; href: string; color: string; bg: string; ring: string; glow: string }>; isAr: boolean }) {
   const { prefetchProps } = usePrefetchRoute();
   return (
     <div className="mb-8">

@@ -12,8 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem,
-} from "lucide-react";
+  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem, LucideIcon } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
@@ -94,7 +93,7 @@ function getCountryFlag(country?: string): string {
 }
 
 /* ---------- Memoized Tab Trigger ---------- */
-const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: any; label: string; count?: number }) => (
+const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: LucideIcon; label: string; count?: number }) => (
   <TabsTrigger
     value={value}
     className="gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted/50 sm:px-4 sm:py-2.5 sm:text-sm whitespace-nowrap touch-manipulation"
@@ -204,11 +203,11 @@ export default function ExhibitionDetail() {
       if (participantIds.length > 0) {
         const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username, avatar_url").in("user_id", participantIds);
         const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
-        scored.forEach((r: any) => { r.participant = profileMap.get(r.participant_id) || null; });
+        scored.forEach((r: Record<string, unknown>) => { r.participant = profileMap.get(r.participant_id) || null; });
       }
 
       const compMap = new Map(linkedCompetitions!.map((c) => [c.id, c]));
-      scored.forEach((r: any) => { r.competition = compMap.get(r.competition_id) || null; });
+      scored.forEach((r: Record<string, unknown>) => { r.competition = compMap.get(r.competition_id) || null; });
       return scored;
     },
     enabled: competitionIds.length > 0,

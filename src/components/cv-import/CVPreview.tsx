@@ -229,7 +229,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
     setData(prev => { const next = updater(prev); onDataChange?.(next); return next; });
   }, [onDataChange]);
 
-  const updatePersonal = useCallback((key: string, value: any) => {
+  const updatePersonal = useCallback((key: string, value: unknown) => {
     updateData(d => ({ ...d, personal_info: { ...d.personal_info, [key]: value } }));
   }, [updateData]);
 

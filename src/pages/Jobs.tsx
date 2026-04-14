@@ -18,8 +18,7 @@ import {
   Utensils, Coffee, Cake, Soup, Salad, Award, GraduationCap,
   ArrowRight, Sparkles, Eye, Star, TrendingUp,
   CheckCircle2, XCircle, Zap, Shield, MessageSquare, Crown, Timer,
-  Play, Target, Rocket, Globe, Heart
-} from "lucide-react";
+  Play, Target, Rocket, Globe, Heart, LucideIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import heroImage from "@/assets/jobs-hero.jpg";
@@ -700,7 +699,7 @@ function TestimonialCard({ quote, name, company, rating }: { quote: string; name
   );
 }
 
-function FeatureRow({ icon: Icon, text }: { icon: any; text: string }) {
+function FeatureRow({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted/10">

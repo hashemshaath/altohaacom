@@ -18,8 +18,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Mail, CheckCircle, XCircle, Clock, CalendarCheck, Trophy, Eye, Send,
-} from "lucide-react";
+  Mail, CheckCircle, XCircle, Clock, CalendarCheck, Trophy, Eye, Send, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 
 export default function CompanyInvitations() {
@@ -72,7 +71,7 @@ export default function CompanyInvitations() {
     onError: (err: Error) => toast({ variant: "destructive", title: "Error", description: err instanceof Error ? err.message : String(err) }),
   });
 
-  const statusConfig: Record<string, { color: "default" | "destructive" | "outline" | "secondary"; icon: any; label: string; labelAr: string }> = {
+  const statusConfig: Record<string, { color: "default" | "destructive" | "outline" | "secondary"; icon: LucideIcon; label: string; labelAr: string }> = {
     pending: { color: "secondary", icon: Clock, label: "Pending", labelAr: "قيد الانتظار" },
     accepted: { color: "default", icon: CheckCircle, label: "Accepted", labelAr: "مقبولة" },
     declined: { color: "destructive", icon: XCircle, label: "Declined", labelAr: "مرفوضة" },

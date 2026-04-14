@@ -2,8 +2,7 @@ import { useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
-  Newspaper, CalendarDays, UsersRound, UserPlus, Users, BookOpen, Radio, Bookmark,
-} from "lucide-react";
+  Newspaper, CalendarDays, UsersRound, UserPlus, Users, BookOpen, Radio, Bookmark, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { CommunityTab } from "./CommunityLeftSidebar";
 import { useUserFeatures } from "@/hooks/useMembershipFeatures";
@@ -24,7 +23,7 @@ export const CommunityMobileTabs = memo(function CommunityMobileTabs({ activeTab
   const { data: enabledFeatures } = useUserFeatures();
 
   const tabs = useMemo(() => {
-    const allTabs: { id: CommunityTab; label: string; icon: any; requiresAuth?: boolean }[] = [
+    const allTabs: { id: CommunityTab; label: string; icon: LucideIcon; requiresAuth?: boolean }[] = [
       { id: "feed", label: isAr ? "الرئيسية" : "Feed", icon: Newspaper },
       { id: "chefs", label: isAr ? "الطهاة" : "Chefs", icon: Users },
       { id: "recipes", label: isAr ? "الوصفات" : "Recipes", icon: BookOpen },

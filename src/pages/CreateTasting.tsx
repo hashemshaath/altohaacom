@@ -22,8 +22,7 @@ import { toast } from "sonner";
 import {
   ArrowLeft, ArrowRight, Check, Trophy, Layers,
   Hash, Star, CheckCircle2, Eye, Wrench, Zap,
-  ClipboardList, Info
-} from "lucide-react";
+  ClipboardList, Info, LucideIcon } from "lucide-react";
 
 type SessionMode = "standalone" | "competition";
 
@@ -33,7 +32,7 @@ const STEPS = [
   { key: "details", icon: Info },
 ] as const;
 
-const EVAL_METHODS: { value: EvalMethod; icon: any; en: string; ar: string; desc_en: string; desc_ar: string }[] = [
+const EVAL_METHODS: { value: EvalMethod; icon: LucideIcon; en: string; ar: string; desc_en: string; desc_ar: string }[] = [
   { value: "numeric", icon: Hash, en: "Numeric (0–10)", ar: "رقمي (0–10)", desc_en: "Professional numeric scale per criterion — used in ACF & WFC competitions", desc_ar: "مقياس رقمي احترافي لكل معيار — مستخدم في مسابقات ACF و WFC" },
   { value: "stars", icon: Star, en: "Star Rating (1–5)", ar: "تقييم بالنجوم (1–5)", desc_en: "Simple star-based rating for quick assessments", desc_ar: "تقييم نجوم بسيط للتقييمات السريعة" },
   { value: "pass_fail", icon: CheckCircle2, en: "Pass / Fail", ar: "نجاح / رسوب", desc_en: "Binary assessment with mandatory comments", desc_ar: "تقييم ثنائي مع ملاحظات إلزامية" },

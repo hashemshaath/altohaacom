@@ -9,8 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Target, ExternalLink, Monitor, Home, Newspaper, Trophy, Users, Layout, Search } from "lucide-react";
+import type { AdPlacementRow } from "./types";
+import type { LucideIcon } from "lucide-react";
 
-const pageIcons: Record<string, any> = {
+const pageIcons: Record<string, LucideIcon> = {
   homepage: Home,
   articles: Newspaper,
   competitions: Trophy,
@@ -19,7 +21,7 @@ const pageIcons: Record<string, any> = {
 };
 
 interface Props {
-  placements: any[];
+  placements: AdPlacementRow[];
   onToggle: (id: string, active: boolean) => void;
 }
 
@@ -55,7 +57,7 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
   }, [placements, searchQuery, pageFilter]);
 
   // Group placements by page_location
-  const grouped = sortedPlacements.reduce((acc: Record<string, any[]>, p: any) => {
+  const grouped = sortedPlacements.reduce<Record<string, AdPlacementRow[]>>((acc, p) => {
     const page = p.page_location || "other";
     if (!acc[page]) acc[page] = [];
     acc[page].push(p);
