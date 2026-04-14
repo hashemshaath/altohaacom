@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { format, subDays, startOfDay } from "date-fns";
 import { getDeviceType } from "@/lib/deviceType";
 import { useSearchParams } from "react-router-dom";
-import { PUBLIC_ROUTES, DEFAULT_ROBOTS_TXT, type SectionKey, resolveSectionParam } from "./seoDashboardTypes";
+import { PUBLIC_ROUTES, DEFAULT_ROBOTS_TXT, NAV_GROUPS, type SectionKey, resolveSectionParam } from "./seoDashboardTypes";
 
 export function useSEODashboardData(isAr: boolean) {
   const [searchParams, setSearchParams] = useSearchParams();
