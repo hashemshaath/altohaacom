@@ -8,6 +8,7 @@ Deno.serve(async (req) => {
   const corsRes = handleCors(req);
   if (corsRes) return corsRes;
 
+  try {
     await authenticateRequest(req);
 
     const { query, language } = await req.json();
@@ -78,6 +79,9 @@ ${!hasResults ? "\nNo direct matches found. Provide helpful suggestions." : ""}`
     return streamResponse(aiRes.body);
   } catch (e: unknown) {
     console.error("ai-search error:", e);
+    if (e instanceof Error && e.message === "Unauthorized") {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
     return errorResponse(e);
   }
 });
