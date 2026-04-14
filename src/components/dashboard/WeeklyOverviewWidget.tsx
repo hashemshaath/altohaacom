@@ -6,6 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Minus, Eye, Heart, Trophy, BookOpen } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface StatItem {
   labelEn: string;
@@ -25,8 +26,8 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
     queryFn: async () => {
       if (!user) return null;
       const now = new Date();
-      const weekAgo = new Date(now.getTime() - 7 * 86400000);
-      const twoWeeksAgo = new Date(now.getTime() - 14 * 86400000);
+      const weekAgo = new Date(now.getTime() - MS_PER_WEEK);
+      const twoWeeksAgo = new Date(now.getTime() - 14 * MS_PER_DAY);
       const weekStr = weekAgo.toISOString();
       const twoWeekStr = twoWeeksAgo.toISOString();
 

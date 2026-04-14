@@ -19,6 +19,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import {
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
   RadarChart,
   Radar,
   PolarGrid,
@@ -41,8 +42,8 @@ const EngagementMetrics = memo(function EngagementMetrics() {
     queryKey: ["engagementMetrics"],
     queryFn: async () => {
       const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * MS_PER_DAY).toISOString();
+      const sixtyDaysAgo = new Date(now.getTime() - 60 * MS_PER_DAY).toISOString();
 
       const [
         { count: totalUsers },
@@ -101,8 +102,8 @@ const EngagementMetrics = memo(function EngagementMetrics() {
       // Weekly activity trend (last 8 weeks)
       const weeklyData: { week: string; activity: number }[] = [];
       for (let i = 7; i >= 0; i--) {
-        const weekStart = new Date(now.getTime() - (i + 1) * 7 * 24 * 60 * 60 * 1000);
-        const weekEnd = new Date(now.getTime() - i * 7 * 24 * 60 * 60 * 1000);
+        const weekStart = new Date(now.getTime() - (i + 1) * MS_PER_WEEK);
+        const weekEnd = new Date(now.getTime() - i * MS_PER_WEEK);
         const weekLabel = `W${8 - i}`;
 
         const weekActivity = (allProfiles || []).filter((p) => {

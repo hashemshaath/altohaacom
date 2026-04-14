@@ -9,6 +9,7 @@ import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import { usePresence } from "@/hooks/usePresence";
 import { useToast } from "@/hooks/use-toast";
 import { uploadMessageAttachment } from "@/utils/storageUtils";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface Message {
   id: string;
@@ -156,7 +157,7 @@ export function useMessagesData() {
     },
     enabled: !!user,
     refetchInterval: messagesRefetchInterval,
-    staleTime: 1000 * 60 * 1,
+    ...CACHE.realtime,
   });
 
   // Fetch user's groups

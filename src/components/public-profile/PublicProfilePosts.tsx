@@ -7,6 +7,7 @@ import { MessageCircle, Heart, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { MentionText } from "@/components/community/MentionText";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface Props {
   userId: string;
@@ -62,7 +63,7 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
 
   const formatTime = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
-    const days = Math.floor(diff / 86400000);
+    const days = Math.floor(diff / MS_PER_DAY);
     if (days === 0) return isAr ? "اليوم" : "Today";
     if (days === 1) return isAr ? "أمس" : "Yesterday";
     if (days < 7) return `${days}${isAr ? "ي" : "d"}`;

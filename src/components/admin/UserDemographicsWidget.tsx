@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Globe, Users, Shield, UserCheck, Crown, Star, TrendingUp, Clock } from "lucide-react";
 import { translateRole } from "@/lib/chartConfig";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
   const { language } = useLanguage();
@@ -29,7 +30,7 @@ export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
         supabase.from("profiles").select("membership_tier").limit(1000),
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_verified", true),
         supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
+        supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", new Date(Date.now() - MS_PER_WEEK).toISOString()),
         supabase.from("profiles").select("id", { count: "exact", head: true }).gte("last_login_at", new Date(Date.now() - 3600000).toISOString()),
       ]);
 

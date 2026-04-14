@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export const COMPANY_ROLES = [
   { value: "sponsor", label: "Sponsor", labelAr: "راعي", color: "bg-chart-4/10 text-chart-4 border-chart-4/20" },
@@ -32,7 +33,7 @@ export function useCompanyRoles(companyId: string | null) {
       return (data || []) as CompanyRoleAssignment[];
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 

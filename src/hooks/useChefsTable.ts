@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { CACHE } from "@/lib/queryConfig";
 
 // ─── Types ──────────────────────────────────────
 
@@ -205,7 +206,7 @@ export function useChefsTableSession(id: string | undefined) {
       return data as unknown as ChefsTableSession;
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

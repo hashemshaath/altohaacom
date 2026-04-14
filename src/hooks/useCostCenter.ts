@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { sendNotification } from "@/lib/notifications";
+import { CACHE } from "@/lib/queryConfig";
+import { MS_PER_DAY } from "@/lib/constants";
 
 // ─── Types ──────────────────────────────────
 
@@ -173,7 +175,7 @@ export function useCostEstimate(id: string | undefined) {
       return data as unknown as CostEstimate;
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 
@@ -523,7 +525,7 @@ export function useConvertToInvoice() {
           currency: est.currency,
           status: "draft",
           issued_by: user?.id,
-          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          due_date: new Date(Date.now() + 30 * MS_PER_DAY).toISOString(),
           notes: `Generated from estimate ${est.estimate_number}`,
         } as any)
         .select()

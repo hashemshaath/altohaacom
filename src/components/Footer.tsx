@@ -151,7 +151,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
             </p>
             <a
               href={`mailto:${contactEmail}`}
-              className="mt-3 inline-flex items-center gap-2 text-xs text-[hsl(220_9%_46%)] hover:text-primary transition-colors duration-200"
+              className="mt-3 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors duration-200"
             >
               <Mail className="h-3.5 w-3.5" />
               {contactEmail}
@@ -160,10 +160,10 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
 
           {/* Newsletter */}
           <div className="w-full max-w-md">
-            <h3 className="text-sm font-semibold text-[hsl(220_13%_11%)] dark:text-foreground">
+            <h3 className="text-sm font-semibold text-foreground">
               {l("Stay Updated", "ابقَ على اطلاع")}
             </h3>
-            <p className="mt-1 text-xs text-[hsl(220_9%_46%)] dark:text-muted-foreground">
+            <p className="mt-1 text-xs text-muted-foreground">
               {l("Get the latest news and updates directly to your inbox.", "احصل على آخر الأخبار والتحديثات مباشرة.")}
             </p>
             <form onSubmit={handleNewsletterSubmit} className="mt-3 flex gap-2">
@@ -173,7 +173,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                 onChange={(e) => setNlEmail(e.target.value)}
                 placeholder={l("your@email.com", "بريدك الإلكتروني")}
                 required
-                className="flex-1 h-10 rounded-xl border-[hsl(220_13%_87%)] bg-white dark:bg-background text-sm"
+                className="flex-1 h-10 rounded-xl border-border bg-white dark:bg-background text-sm"
               />
               <Button type="submit" disabled={nlLoading} size="sm" className="h-10 px-5 rounded-xl gap-1.5 shrink-0">
                 <Send className="h-3.5 w-3.5" />
@@ -184,13 +184,13 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         </div>
 
         {/* ── Divider ── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" aria-hidden="true" />
 
         {/* ── Nav columns ── */}
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-10 sm:grid-cols-2 md:grid-cols-4">
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h3 className="text-[12px] font-semibold uppercase tracking-widest text-[hsl(220_13%_11%)] dark:text-foreground mb-3.5">
+              <h3 className="text-[12px] font-semibold uppercase tracking-widest text-foreground mb-3.5">
                 {l(col.titleEn, col.titleAr)}
               </h3>
               <ul className="space-y-2">
@@ -198,7 +198,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="relative text-[13px] text-[hsl(220_9%_46%)] hover:text-primary transition-colors duration-200 inline-block py-0.5 after:absolute after:bottom-0 after:start-0 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full touch-manipulation"
+                      className="relative text-[13px] text-muted-foreground hover:text-primary transition-colors duration-200 inline-block py-0.5 after:absolute after:bottom-0 after:start-0 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full touch-manipulation"
                     >
                       {l(link.en, link.ar)}
                     </Link>
@@ -210,10 +210,10 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         </div>
 
         {/* ── Trust badges ── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" aria-hidden="true" />
         <div className="py-5 flex flex-wrap items-center justify-center gap-6">
           {trustBadges.map((badge) => (
-            <div key={badge.labelEn} className="flex items-center gap-2 text-[12px] text-[hsl(220_9%_46%)] dark:text-muted-foreground">
+            <div key={badge.labelEn} className="flex items-center gap-2 text-[12px] text-muted-foreground">
               <badge.icon className="h-3.5 w-3.5 text-primary/70" />
               <span>{l(badge.labelEn, badge.labelAr)}</span>
             </div>
@@ -221,9 +221,9 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         </div>
 
         {/* ── Bottom bar ── */}
-        <div className="h-px bg-gradient-to-r from-transparent via-[hsl(220_13%_87%)] to-transparent dark:via-border/30" aria-hidden="true" />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" aria-hidden="true" />
         <div className="py-5 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[12px] text-[hsl(220_9%_55%)] dark:text-muted-foreground/60">{copyrightText}</p>
+          <p className="text-[12px] text-muted-foreground/60">{copyrightText}</p>
 
           {/* Social icons */}
           {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (
@@ -234,7 +234,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                   href={social.href}
                   target="_blank" rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-[hsl(220_9%_55%)] hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/8 transition-all duration-200 touch-manipulation"
                 >
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                     <path d={social.icon} />
@@ -250,7 +250,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
       <button
         onClick={scrollToTop}
         aria-label={l("Back to top", "العودة للأعلى")}
-        className="fixed bottom-6 end-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-[hsl(220_13%_87%)] bg-white/90 text-[hsl(220_9%_35%)] shadow-lg backdrop-blur-sm hover:text-primary hover:border-primary/30 transition-all duration-200 sm:bottom-8 sm:end-8 dark:bg-card/90 dark:border-border/40 dark:text-muted-foreground"
+        className="fixed bottom-6 end-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white/90 text-muted-foreground shadow-lg backdrop-blur-sm hover:text-primary hover:border-primary/30 transition-all duration-200 sm:bottom-8 sm:end-8 dark:bg-card/90 dark:border-border/40"
       >
         <ArrowUp className="h-4 w-4" />
       </button>

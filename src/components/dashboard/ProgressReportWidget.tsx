@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { BarChart3, Trophy, Star, TrendingUp, Award, Target } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export const ProgressReportWidget = memo(function ProgressReportWidget() {
   const { language } = useLanguage();
@@ -22,8 +23,8 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
       if (!user) return null;
 
       const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * MS_PER_DAY);
+      const sixtyDaysAgo = new Date(now.getTime() - 60 * MS_PER_DAY);
 
       const [pointsRes, regsRes, badgesRes, viewsRes] = await Promise.all([
         supabase.from("points_ledger").select("points, created_at").eq("user_id", user.id).gte("created_at", sixtyDaysAgo.toISOString()).order("created_at", { ascending: true }),
@@ -35,7 +36,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
       // Points trend (last 14 days)
       const pointsData: { day: string; pts: number }[] = [];
       for (let i = 13; i >= 0; i--) {
-        const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        const d = new Date(now.getTime() - i * MS_PER_DAY);
         const key = d.toISOString().split("T")[0];
         const dayPoints = (pointsRes.data || []).filter((p) => p.created_at?.startsWith(key)).reduce((s, p) => s + (p.points || 0), 0);
         pointsData.push({ day: key.slice(5), pts: dayPoints });

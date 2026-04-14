@@ -7,6 +7,7 @@ import { BarChart3, FileText, Trophy, Users, TrendingUp, TrendingDown, Minus } f
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface DailyCount {
   day: string;
@@ -27,7 +28,7 @@ function buildDailyCounts(rows: { created_at: string }[] | null, days: number): 
   const now = new Date();
   const result: DailyCount[] = [];
   for (let i = days - 1; i >= 0; i--) {
-    const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+    const d = new Date(now.getTime() - i * MS_PER_DAY);
     const key = d.toISOString().split("T")[0];
     const count = (rows || []).filter(r => r.created_at?.startsWith(key)).length;
     result.push({ day: key.slice(5), count });
@@ -43,8 +44,8 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
     queryKey: ["content-stats-dashboard-v2"],
     queryFn: async () => {
       const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      const sixtyDaysAgo = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000).toISOString();
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * MS_PER_DAY).toISOString();
+      const sixtyDaysAgo = new Date(now.getTime() - 60 * MS_PER_DAY).toISOString();
 
       const [
         articlesRecent, articlesPrev,

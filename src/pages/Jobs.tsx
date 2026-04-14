@@ -25,6 +25,7 @@ import { format } from "date-fns";
 import heroImage from "@/assets/jobs-hero.jpg";
 import employerImage from "@/assets/jobs-employer.jpg";
 import chefImage from "@/assets/jobs-chef.jpg";
+import { MS_PER_DAY } from "@/lib/constants";
 
 const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   full_time: { en: "Full-time", ar: "دوام كامل" },
@@ -284,7 +285,7 @@ export default function Jobs() {
                   const title = isAr ? (job.title_ar || job.title) : job.title;
                   const location = isAr ? (job.location_ar || job.location) : job.location;
                   const typeLabel = JOB_TYPE_LABELS[job.job_type];
-                  const daysAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / 86400000);
+                  const daysAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / MS_PER_DAY);
                   const isNew = daysAgo <= 3;
 
                   return (

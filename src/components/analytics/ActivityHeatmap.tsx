@@ -10,6 +10,7 @@ import { Flame, Clock, Calendar } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { MS_PER_DAY } from "@/lib/constants";
 
 type DataSource = "profiles" | "messages" | "competition_registrations" | "posts";
 
@@ -34,7 +35,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap() {
   const { data: heatmapData, isLoading } = useQuery({
     queryKey: ["activity-heatmap", source],
     queryFn: async () => {
-      const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+      const ninetyDaysAgo = new Date(Date.now() - 90 * MS_PER_DAY).toISOString();
       const { data: records } = await supabase
         .from(source as any)
         .select(sourceConfig[source].dateField)

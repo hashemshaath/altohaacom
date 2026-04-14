@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface Country {
   code: string;
@@ -32,7 +33,7 @@ export function useCountries(activeOnly = true) {
       if (error) throw error;
       return (data || []) as Country[];
     },
-    staleTime: 1000 * 60 * 30,
+    ...CACHE.static,
   });
 }
 

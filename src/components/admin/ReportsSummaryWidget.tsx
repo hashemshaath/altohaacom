@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileBarChart, Users, Trophy, Package, FileText, TrendingUp, Landmark } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface ModuleStat {
   icon: React.ElementType;
@@ -23,7 +24,7 @@ export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
   const { data } = useQuery({
     queryKey: ["reports-summary-widget"],
     queryFn: async () => {
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
 
       const [
         { count: totalUsers }, { count: weekUsers },

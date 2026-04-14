@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface MembershipFeature {
   id: string;
@@ -35,7 +36,7 @@ export function useMembershipFeatures() {
       if (error) throw error;
       return data as MembershipFeature[];
     },
-    staleTime: 1000 * 60 * 10,
+    ...CACHE.long,
   });
 }
 
@@ -50,7 +51,7 @@ export function useFeatureTierMappings() {
       if (error) throw error;
       return data as FeatureTierMapping[];
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 
@@ -66,7 +67,7 @@ export function useAllMembershipFeatures() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 
@@ -84,8 +85,7 @@ export function useUserMembershipTier(userId?: string) {
       return data?.membership_tier || "basic";
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 15,
+    ...CACHE.long,
   });
 }
 
@@ -131,7 +131,7 @@ export function useHasFeatureForUser(featureCode: string, userId?: string) {
       return mapping?.is_enabled ?? false;
     },
     enabled: !!userId && !!tier,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 
   return { hasFeature, isLoading: tierLoading || featureLoading };
@@ -182,6 +182,6 @@ export function useUserFeatures() {
       return enabledSet;
     },
     enabled: !!user?.id && !!tier,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }

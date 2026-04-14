@@ -18,6 +18,7 @@ import {
   Home, ChevronRight, Bookmark, AlertCircle, Calendar
 } from "lucide-react";
 import { format } from "date-fns";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   full_time: { en: "Full-time", ar: "دوام كامل" },
@@ -147,9 +148,9 @@ export default function JobDetail() {
   const reqs = isAr ? (job.requirements_ar || job.requirements) : job.requirements;
   const benefits = isAr ? (job.benefits_ar || job.benefits) : job.benefits;
   const typeLabel = JOB_TYPE_LABELS[job.job_type] || { en: job.job_type, ar: job.job_type };
-  const daysAgo = Math.floor((Date.now() - new Date(job.created_at!).getTime()) / 86400000);
+  const daysAgo = Math.floor((Date.now() - new Date(job.created_at!).getTime()) / MS_PER_DAY);
   const expLabel = job.experience_level ? (isAr ? EXP_LEVELS[job.experience_level]?.ar : EXP_LEVELS[job.experience_level]?.en) : null;
-  const isDeadlineSoon = job.application_deadline && (new Date(job.application_deadline).getTime() - Date.now()) < 7 * 86400000 && new Date(job.application_deadline) > new Date();
+  const isDeadlineSoon = job.application_deadline && (new Date(job.application_deadline).getTime() - Date.now()) < MS_PER_WEEK && new Date(job.application_deadline) > new Date();
 
   return (
     <div className="min-h-screen bg-muted/5">
@@ -311,7 +312,7 @@ export default function JobDetail() {
                 <h3 className="font-bold text-sm">{isAr ? "وظائف مشابهة" : "Similar Jobs"}</h3>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {relatedJobs.map((rj) => {
-                    const rjDaysAgo = Math.floor((Date.now() - new Date(rj.created_at).getTime()) / 86400000);
+                    const rjDaysAgo = Math.floor((Date.now() - new Date(rj.created_at).getTime()) / MS_PER_DAY);
                     return (
                       <Link key={rj.id} to={`/jobs/${rj.id}`}>
                         <Card className="rounded-xl border-border/15 hover:shadow-md transition-all p-4 group">

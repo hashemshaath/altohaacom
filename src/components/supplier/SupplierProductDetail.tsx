@@ -17,6 +17,7 @@ import {
   Timer, Percent, Gift, Verified, Megaphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface SupplierProductDetailProps {
   product: any;
@@ -104,7 +105,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
         "@type": "Offer",
         priceCurrency: product.currency || "SAR",
         price: price.toFixed(2),
-        priceValidUntil: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
+        priceValidUntil: new Date(Date.now() + 30 * MS_PER_DAY).toISOString().split("T")[0],
         availability: isInStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
         itemCondition: "https://schema.org/NewCondition",
         seller: companyName ? { "@type": "Organization", name: companyName } : undefined,

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface UseFormAutoSaveOptions<T> {
   /** Storage key for draft */
@@ -32,7 +33,7 @@ export function useFormAutoSave<T>({
       if (!saved) return null;
       const { data, timestamp } = JSON.parse(saved);
       // Expire drafts older than 24h
-      if (Date.now() - timestamp > 24 * 60 * 60 * 1000) {
+      if (Date.now() - timestamp > MS_PER_DAY) {
         localStorage.removeItem(storageKey);
         return null;
       }

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Star, ArrowRight, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
         .single();
 
       // Recent points earned (last 7 days)
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
       const { data: recentPoints } = await supabase
         .from("points_ledger")
         .select("points")

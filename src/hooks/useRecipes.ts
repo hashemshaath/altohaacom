@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface RecipeIngredient {
   name: string;
@@ -113,7 +114,7 @@ export function useRecipes(filters?: {
         } as RecipeWithMeta;
       });
     },
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 
@@ -251,6 +252,6 @@ export function useDistinctCuisines() {
       const cuisines = [...new Set((data || []).map(r => r.cuisine).filter(Boolean))] as string[];
       return cuisines.sort();
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }

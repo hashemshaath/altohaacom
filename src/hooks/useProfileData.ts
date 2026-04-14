@@ -2,6 +2,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -26,7 +27,7 @@ export function useProfileData() {
       return data as Profile;
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   const { data: roles = [] } = useQuery({
@@ -40,7 +41,7 @@ export function useProfileData() {
       return (data || []).map((r) => r.role) as AppRole[];
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 
   return {

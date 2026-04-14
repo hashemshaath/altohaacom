@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useReferralLeaderboard() {
   return useQuery({
@@ -32,7 +33,7 @@ export function useReferralLeaderboard() {
         profile: profileMap.get(entry.user_id) || null,
       }));
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 
@@ -50,7 +51,7 @@ export function useActiveBonusCampaigns() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 
@@ -94,6 +95,6 @@ export function useSocialProofStats() {
         totalActiveReferrers,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }

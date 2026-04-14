@@ -25,6 +25,7 @@ import { FeedKeyboardShortcuts } from "./FeedKeyboardShortcuts";
 import { FeedStatsBar } from "./FeedStatsBar";
 import { CommunityInsights } from "./CommunityInsights";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export interface CommunityPost {
   id: string;
@@ -409,7 +410,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
     const diffMs = now - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
     const diffHours = Math.floor(diffMs / 3600000);
-    const diffDays = Math.floor(diffMs / 86400000);
+    const diffDays = Math.floor(diffMs / MS_PER_DAY);
     if (diffMins < 1) return isAr ? "الآن" : "now";
     if (diffMins < 60) return toEnglishDigits(`${diffMins}`) + (isAr ? "د" : "m");
     if (diffHours < 24) return toEnglishDigits(`${diffHours}`) + (isAr ? "س" : "h");

@@ -40,6 +40,7 @@ import { AppearanceTab } from "./AppearanceTab";
 import { VisibilityTab } from "./VisibilityTab";
 import { AnalyticsTab } from "./AnalyticsTab";
 import type { PageForm, BioNotification } from "./types";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export default function SocialLinksEditorPage() {
   const { user } = useAuth();
@@ -77,7 +78,7 @@ export default function SocialLinksEditorPage() {
       const { data: visits } = await supabase.from("social_link_visits").select("country, device_type, browser, referrer, created_at").eq("page_id", page!.id).order("created_at", { ascending: false }).limit(1000);
       if (!visits) return { countries: {}, devices: {}, browsers: {}, referrers: {}, total: 0, recent7d: 0, dailyVisits: [] };
       const now = Date.now();
-      const week = 7 * 24 * 60 * 60 * 1000;
+      const week = MS_PER_WEEK;
       const countries: Record<string, number> = {};
       const devices: Record<string, number> = {};
       const browsers: Record<string, number> = {};
@@ -95,7 +96,7 @@ export default function SocialLinksEditorPage() {
         dailyMap[day] = (dailyMap[day] || 0) + 1;
       }
       const dailyVisits: { date: string; visits: number }[] = [];
-      for (let i = 13; i >= 0; i--) { const d = new Date(now - i * 86400000); const key = d.toISOString().slice(0, 10); dailyVisits.push({ date: key.slice(5), visits: dailyMap[key] || 0 }); }
+      for (let i = 13; i >= 0; i--) { const d = new Date(now - i * MS_PER_DAY); const key = d.toISOString().slice(0, 10); dailyVisits.push({ date: key.slice(5), visits: dailyMap[key] || 0 }); }
       return { countries, devices, browsers, referrers, total: visits.length, recent7d, dailyVisits };
     },
     enabled: !!page?.id,
@@ -119,7 +120,7 @@ export default function SocialLinksEditorPage() {
       for (let d = 0; d < 7; d++) for (let h = 0; h < 24; h++) if (heatmap[d][h] > maxVal) { maxVal = heatmap[d][h]; bestHour = h; bestDay = d; }
       const now = Date.now();
       const dailyClicks: { date: string; clicks: number }[] = [];
-      for (let i = 13; i >= 0; i--) { const dt = new Date(now - i * 86400000); const key = dt.toISOString().slice(0, 10); dailyClicks.push({ date: key.slice(5), clicks: dailyClickMap[key] || 0 }); }
+      for (let i = 13; i >= 0; i--) { const dt = new Date(now - i * MS_PER_DAY); const key = dt.toISOString().slice(0, 10); dailyClicks.push({ date: key.slice(5), clicks: dailyClickMap[key] || 0 }); }
       const hourlyAgg = Array(24).fill(0);
       for (let d = 0; d < 7; d++) for (let h = 0; h < 24; h++) hourlyAgg[h] += heatmap[d][h];
       return { heatmap, bestHour, bestDay, dailyClicks, hourlyAgg, total: clicks.length, linkDaily };

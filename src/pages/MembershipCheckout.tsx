@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { MembershipReceipt } from "@/components/membership/MembershipReceipt";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
+import { MS_PER_DAY } from "@/lib/constants";
 
 const ALL_TIERS = [
   { id: "basic", icon: Zap, color: "text-muted-foreground", bg: "bg-muted/30", monthly: 0, yearly: 0 },
@@ -717,7 +718,7 @@ export default function MembershipCheckout() {
                   amount: finalAmount,
                   currency: "SAR",
                   transactionDate: new Date(),
-                  expiresAt: new Date(Date.now() + period * 30 * 24 * 60 * 60 * 1000),
+                  expiresAt: new Date(Date.now() + period * 30 * MS_PER_DAY),
                   receiptNumber: `MBR-${Date.now().toString(36).toUpperCase()}`,
                 }}
               />

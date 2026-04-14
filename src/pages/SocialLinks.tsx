@@ -149,11 +149,11 @@ export default function SocialLinks() {
   const [passwordUnlocked, setPasswordUnlocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
   const [passwordError, setPasswordError] = useState(false);
-  const extra_pre = data?.page?.custom_css ? parseExtra(data.page.custom_css) : ({} as any);
+  const extraPre = data?.page?.custom_css ? parseExtra(data.page.custom_css) : ({} as any);
   const handlePasswordSubmit = useCallback(() => {
-    if (passwordInput === extra_pre.page_password) { setPasswordUnlocked(true); setPasswordError(false); }
+    if (passwordInput === extraPre.page_password) { setPasswordUnlocked(true); setPasswordError(false); }
     else setPasswordError(true);
-  }, [passwordInput, extra_pre.page_password]);
+  }, [passwordInput, extraPre.page_password]);
 
   // ── Loading ──
   if (isLoading) {

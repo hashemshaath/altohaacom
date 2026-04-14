@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 
 interface BenefitUsage {
   benefitCode: string;
@@ -99,6 +100,6 @@ export function useBenefitUsage() {
       });
     },
     enabled: !!user,
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 }

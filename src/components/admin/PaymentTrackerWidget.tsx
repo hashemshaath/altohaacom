@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreditCard, AlertTriangle, Clock, TrendingUp, Receipt } from "lucide-react";
 import { differenceInDays } from "date-fns";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
   const { language } = useLanguage();
@@ -23,7 +24,7 @@ export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
           .limit(200),
         supabase.from("company_transactions")
           .select("id, type, amount, created_at")
-          .gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString())
+          .gte("created_at", new Date(Date.now() - 30 * MS_PER_DAY).toISOString())
           .order("created_at", { ascending: false }),
       ]);
 

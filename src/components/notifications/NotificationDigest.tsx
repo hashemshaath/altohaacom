@@ -12,6 +12,7 @@ import { Sparkles, Bell, TrendingUp, TrendingDown, Minus, ChevronRight, AlertTri
 import { useNavigate } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { inferPriority } from "./NotificationPriorityBadge";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export const NotificationDigest = memo(function NotificationDigest() {
   const { notifications, unreadCount } = useNotifications();
@@ -23,10 +24,10 @@ export const NotificationDigest = memo(function NotificationDigest() {
     if (!notifications.length) return null;
 
     const now = Date.now();
-    const last24h = notifications.filter(n => now - new Date(n.created_at).getTime() < 86400000);
+    const last24h = notifications.filter(n => now - new Date(n.created_at).getTime() < MS_PER_DAY);
     const prev24h = notifications.filter(n => {
       const age = now - new Date(n.created_at).getTime();
-      return age >= 86400000 && age < 172800000;
+      return age >= MS_PER_DAY && age < 172800000;
     });
 
     const urgentCount = last24h.filter(n => inferPriority(n) === "urgent").length;

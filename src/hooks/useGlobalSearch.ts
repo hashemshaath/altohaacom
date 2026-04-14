@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
@@ -253,7 +254,7 @@ export function useGlobalSearch() {
       ) as CompetitionResult[];
     },
     enabled: !!debouncedQuery && searchWords.length > 0,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   // Search articles
@@ -295,7 +296,7 @@ export function useGlobalSearch() {
       ) as ArticleResult[];
     },
     enabled: !!debouncedQuery && searchWords.length > 0,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   // Search members
@@ -344,7 +345,7 @@ export function useGlobalSearch() {
       return sortByRelevance(scored) as MemberResult[];
     },
     enabled: !!debouncedQuery && searchWords.length > 0,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   // Search posts
@@ -398,7 +399,7 @@ export function useGlobalSearch() {
       ) as PostResult[];
     },
     enabled: !!debouncedQuery && searchWords.length > 0,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   // Search entities (culinary_entities + establishments + companies)
@@ -480,7 +481,7 @@ export function useGlobalSearch() {
       return sortByRelevance([...entities, ...establishments, ...companies]);
     },
     enabled: !!debouncedQuery && searchWords.length > 0,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   // Search recipes
@@ -506,7 +507,7 @@ export function useGlobalSearch() {
       ) as RecipeResult[];
     },
     enabled: !!debouncedQuery && searchWords.length > 0,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   // Search exhibitions
@@ -531,7 +532,7 @@ export function useGlobalSearch() {
       ) as ExhibitionResult[];
     },
     enabled: !!debouncedQuery && searchWords.length > 0,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   const results: SearchResults = {

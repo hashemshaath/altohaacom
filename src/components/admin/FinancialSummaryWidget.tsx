@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DollarSign, Receipt, Package, Wallet, TrendingUp, AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
   const { language } = useLanguage();
@@ -23,7 +24,7 @@ export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
         supabase.from("invoices").select("status, amount, currency").limit(500),
         supabase.from("company_orders").select("status, total_amount, currency").limit(500),
         supabase.from("user_wallets").select("balance, points_balance").limit(500),
-        supabase.from("wallet_transactions").select("type, amount, created_at").gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()).limit(500),
+        supabase.from("wallet_transactions").select("type, amount, created_at").gte("created_at", new Date(Date.now() - 30 * MS_PER_DAY).toISOString()).limit(500),
       ]);
 
       // Invoices

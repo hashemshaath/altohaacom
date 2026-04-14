@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface ProductQA {
   id: string;
@@ -42,7 +43,7 @@ export function useProductQA(catalogItemId: string | undefined) {
       if (error) throw error;
       return (data || []) as unknown as ProductQA[];
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 
@@ -68,6 +69,6 @@ export function useProductTrustBadges(companyId: string | undefined, catalogItem
       if (error) throw error;
       return (data || []) as unknown as ProductTrustBadge[];
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }

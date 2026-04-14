@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useReferralCode() {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ export function useReferralCode() {
       return data;
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

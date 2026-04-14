@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Users, Gavel, Medal, Calendar, MapPin, TrendingUp, AlertTriangle } from "lucide-react";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidget() {
   const { language } = useLanguage();
@@ -85,7 +86,7 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
       const upcoming = competitions?.filter(c => {
         if (!c.competition_start) return false;
         const start = new Date(c.competition_start);
-        return start > now && start < new Date(now.getTime() + 30 * 86400000);
+        return start > now && start < new Date(now.getTime() + 30 * MS_PER_DAY);
       }).length || 0;
 
       return {

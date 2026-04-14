@@ -1,6 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export function useFollowStats(userId: string | undefined) {
   return useQuery({
@@ -17,7 +19,7 @@ export function useFollowStats(userId: string | undefined) {
       };
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 
@@ -177,7 +179,7 @@ export function useNewFollowers() {
     queryKey: ["newFollowers", user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
       const { data, error } = await supabase
         .from("user_follows")
         .select("follower_id, created_at")
@@ -237,7 +239,7 @@ export function useFollowRecommendations() {
       return data || [];
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 

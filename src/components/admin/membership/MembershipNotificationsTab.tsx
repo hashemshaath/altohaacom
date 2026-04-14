@@ -23,6 +23,7 @@ import {
   Loader2, CheckCheck, Filter,
 } from "lucide-react";
 import { format } from "date-fns";
+import { MS_PER_DAY } from "@/lib/constants";
 
 const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
   const { language } = useLanguage();
@@ -102,7 +103,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
   // Delete old notifications
   const deleteOld = useMutation({
     mutationFn: async () => {
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+      const thirtyDaysAgo = new Date(Date.now() - 30 * MS_PER_DAY).toISOString();
       await supabase
         .from("notifications")
         .delete()

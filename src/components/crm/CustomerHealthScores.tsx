@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { HeartPulse, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface CustomerHealth {
   userId: string;
@@ -73,7 +74,7 @@ export const CustomerHealthScores = memo(function CustomerHealthScores() {
 
         // Health score: activity recency + low tickets + high ratings + orders
         const daysSinceLogin = p.last_login_at
-          ? Math.floor((Date.now() - new Date(p.last_login_at).getTime()) / 86400000)
+          ? Math.floor((Date.now() - new Date(p.last_login_at).getTime()) / MS_PER_DAY)
           : 999;
         const recencyScore = Math.max(0, 40 - daysSinceLogin * 2); // 0-40
         const ratingScore = (avgRating / 5) * 25; // 0-25

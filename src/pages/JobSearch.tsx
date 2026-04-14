@@ -31,6 +31,7 @@ import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   full_time: { en: "Full-time", ar: "دوام كامل" },
@@ -223,13 +224,13 @@ export default function JobSearch() {
     const totalJobs = jobPostings.length;
     const featuredCount = jobPostings.filter((j) => j.is_featured).length;
     const newThisWeek = jobPostings.filter((j) => {
-      const d = Math.floor((Date.now() - new Date(j.created_at).getTime()) / 86400000);
+      const d = Math.floor((Date.now() - new Date(j.created_at).getTime()) / MS_PER_DAY);
       return d <= 7;
     }).length;
     const urgentCount = jobPostings.filter((j) => {
       if (!j.application_deadline) return false;
       const diff = new Date(j.application_deadline).getTime() - Date.now();
-      return diff > 0 && diff < 7 * 86400000;
+      return diff > 0 && diff < MS_PER_WEEK;
     }).length;
     return { totalJobs, featuredCount, newThisWeek, totalChefs: availableChefs.length, urgentCount };
   }, [jobPostings, availableChefs]);
@@ -1008,9 +1009,9 @@ const JobPostingCard = memo(function JobPostingCard({ job, isAr, viewMode, isSav
   const title = isAr ? (job.title_ar || job.title) : job.title;
   const location = isAr ? (job.location_ar || job.location) : job.location;
   const typeLabel = JOB_TYPE_LABELS[job.job_type] || { en: job.job_type, ar: job.job_type };
-  const daysAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / 86400000);
+  const daysAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / MS_PER_DAY);
   const isNew = daysAgo <= 3;
-  const isUrgent = job.application_deadline && (new Date(job.application_deadline).getTime() - Date.now()) < 7 * 86400000 && new Date(job.application_deadline) > new Date();
+  const isUrgent = job.application_deadline && (new Date(job.application_deadline).getTime() - Date.now()) < MS_PER_WEEK && new Date(job.application_deadline) > new Date();
 
   return (
     <Link to={`/jobs/${job.id}`} className="block">

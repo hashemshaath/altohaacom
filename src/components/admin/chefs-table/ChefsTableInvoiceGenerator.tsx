@@ -13,6 +13,7 @@ import { FileText, DollarSign, Receipt, ChefHat, Send, CheckCircle2 } from "luci
 import { useState } from "react";
 import { executeEvaluationWorkflow } from "@/lib/evaluationWorkflows";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface PricingPlan {
   id: string; name: string; name_ar: string | null;
@@ -74,7 +75,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
           currency: "SAR",
           status: "draft",
           issued_by: user?.id,
-          due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          due_date: new Date(Date.now() + 30 * MS_PER_DAY).toISOString(),
         } as any)
         .select()
         .single();

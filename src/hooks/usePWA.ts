@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -12,7 +13,7 @@ export function useInstallPrompt() {
     try {
       const ts = localStorage.getItem("pwa_banner_dismissed");
       if (!ts) return false;
-      return Date.now() - parseInt(ts) < 7 * 24 * 60 * 60 * 1000;
+      return Date.now() - parseInt(ts) < MS_PER_WEEK;
     } catch { return false; }
   });
 

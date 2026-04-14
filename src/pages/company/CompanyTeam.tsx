@@ -21,6 +21,7 @@ import {
   Clock, CheckCircle2, XCircle, Send, RefreshCw, MoreHorizontal, Trash2,
 } from "lucide-react";
 import {
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -150,7 +151,7 @@ export default function CompanyTeam() {
         .update({ 
           status: "pending", 
           created_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          expires_at: new Date(Date.now() + MS_PER_WEEK).toISOString(),
         })
         .eq("id", inviteId);
       if (error) throw error;

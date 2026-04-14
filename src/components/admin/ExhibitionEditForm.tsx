@@ -37,6 +37,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
+import { MS_PER_DAY } from "@/lib/constants";
 
 type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
@@ -472,7 +473,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const currentStatus = statusOptions.find(s => s.value === form.status);
   const currentType = typeOptions.find(tp => tp.value === form.type);
   const filledSocialLinks = Object.values(socialLinks).filter(v => v?.trim()).length;
-  const daysUntilStart = form.start_date ? Math.ceil((new Date(form.start_date).getTime() - Date.now()) / 86400000) : null;
+  const daysUntilStart = form.start_date ? Math.ceil((new Date(form.start_date).getTime() - Date.now()) / MS_PER_DAY) : null;
 
   return (
     <TooltipProvider>
@@ -1003,7 +1004,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                 <div className="flex items-center gap-2 text-[12px] text-muted-foreground rounded-lg bg-muted/30 px-3 py-1.5 w-fit">
                   <Clock className="h-3 w-3" />
                   {(() => {
-                    const days = Math.ceil((new Date(form.end_date).getTime() - new Date(form.start_date).getTime()) / 86400000);
+                    const days = Math.ceil((new Date(form.end_date).getTime() - new Date(form.start_date).getTime()) / MS_PER_DAY);
                     return days > 0 ? `${days} ${t("day(s)", "يوم")}` : t("Same day", "نفس اليوم");
                   })()}
                 </div>

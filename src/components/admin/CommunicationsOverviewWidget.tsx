@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { MessageSquare, Bell, Ticket, Mail, Send, CheckCircle, AlertCircle, Clock, Zap, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const CommunicationsOverviewWidget = memo(function CommunicationsOverviewWidget() {
   const { language } = useLanguage();
@@ -15,8 +16,8 @@ export const CommunicationsOverviewWidget = memo(function CommunicationsOverview
   const { data } = useQuery({
     queryKey: ["communications-overview-widget"],
     queryFn: async () => {
-      const dayAgo = new Date(Date.now() - 86400000).toISOString();
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const dayAgo = new Date(Date.now() - MS_PER_DAY).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
 
       const [
         { count: totalNotifs },

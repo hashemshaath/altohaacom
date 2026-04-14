@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Checks if the current user is a supervisor (full platform admin).
@@ -18,7 +19,7 @@ export function useIsAdmin() {
       return data as boolean;
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 
@@ -49,6 +50,6 @@ export function useAdminStats() {
       };
     },
     enabled: !!isAdmin,
-    staleTime: 1000 * 60,
+    ...CACHE.realtime,
   });
 }

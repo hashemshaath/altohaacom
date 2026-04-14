@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Activity, Bell, TrendingUp } from "lucide-react";
 import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip, Cell } from "recharts";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export const NotificationActivityWidget = memo(function NotificationActivityWidget() {
   const { notifications, unreadCount } = useNotifications();
@@ -16,7 +17,7 @@ export const NotificationActivityWidget = memo(function NotificationActivityWidg
     const days: { day: string; count: number; isToday: boolean }[] = [];
 
     for (let i = 6; i >= 0; i--) {
-      const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const d = new Date(now.getTime() - i * MS_PER_DAY);
       const key = d.toISOString().split("T")[0];
       const dayLabel = d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { weekday: "short" });
       const count = notifications.filter(n => n.created_at.startsWith(key)).length;

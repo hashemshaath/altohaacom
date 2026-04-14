@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import type { QREntityType } from "@/lib/qrCode";
 import { CODE_PREFIXES } from "@/lib/qrCode";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface QRVerifyResult {
   entity_type: string;
@@ -57,7 +58,7 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
       return newQR;
     },
     enabled: !!entityId,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

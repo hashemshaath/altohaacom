@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Wallet, Coins, ArrowUpRight, ArrowDownRight, Gift, Star, Users, TrendingUp } from "lucide-react";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWidget() {
   const { language } = useLanguage();
@@ -22,9 +23,9 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
       ] = await Promise.all([
         supabase.from("user_wallets").select("balance, points_balance").limit(1000),
         supabase.from("wallet_transactions").select("type, amount, created_at").limit(5000)
-          .gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()).limit(500),
+          .gte("created_at", new Date(Date.now() - MS_PER_WEEK).toISOString()).limit(500),
         supabase.from("points_ledger").select("points, action_type, created_at").limit(5000)
-          .gte("created_at", new Date(Date.now() - 30 * 86400000).toISOString()).limit(500),
+          .gte("created_at", new Date(Date.now() - 30 * MS_PER_DAY).toISOString()).limit(500),
         supabase.from("points_ledger").select("id", { count: "exact", head: true })
           .lt("points", 0),
       ]);
