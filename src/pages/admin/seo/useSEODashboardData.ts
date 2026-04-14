@@ -101,7 +101,7 @@ export function useSEODashboardData(isAr: boolean) {
   const firstQueryError = pageViewsError || vitalsDataError || crawlLogError || crawlerVisitsError || trackedKeywordsError || indexingStatusError;
   useEffect(() => {
     if (firstQueryError) {
-      toast.error((firstQueryError as Record<string, unknown>)?.message as string || (isAr ? "تعذر تحميل بيانات SEO" : "Failed to load SEO data"));
+      toast.error((firstQueryError instanceof Error ? firstQueryError.message : "") || (isAr ? "تعذر تحميل بيانات SEO" : "Failed to load SEO data"));
     }
   }, [firstQueryError, isAr]);
 
@@ -253,7 +253,8 @@ export function useSEODashboardData(isAr: boolean) {
         const layoutShiftEntries = performance.getEntriesByType("layout-shift") as (PerformanceEntry & { hadRecentInput?: boolean; value?: number })[];
         if (layoutShiftEntries.length) cls = Math.round(layoutShiftEntries.reduce((sum, e) => sum + (e.hadRecentInput ? 0 : (e.value || 0)), 0) * 1000) / 1000;
       } catch { /* ignore */ }
-      const payload = { path, lcp, inp: null, cls, fcp, ttfb, device_type: getDeviceType(), connection_type: (navigator as Record<string, unknown> & { connection?: { effectiveType?: string } })?.connection?.effectiveType || null, session_id: "manual-collect-" + Date.now().toString(36), user_agent: navigator.userAgent.slice(0, 200) };
+      const nav = navigator as unknown as { connection?: { effectiveType?: string }; userAgent: string };
+      const payload = { path, lcp, inp: null, cls, fcp, ttfb, device_type: getDeviceType(), connection_type: nav?.connection?.effectiveType || null, session_id: "manual-collect-" + Date.now().toString(36), user_agent: navigator.userAgent.slice(0, 200) };
       const { error } = await supabase.from("seo_web_vitals").insert(payload);
       if (error) throw error;
       await Promise.all([
@@ -361,9 +362,8 @@ export function useSEODashboardData(isAr: boolean) {
   }, [vitalsData]);
 
   const activeSectionInfo = useMemo(() => {
-    const { NAV_GROUPS } = require("./seoDashboardTypes");
     for (const group of NAV_GROUPS) {
-      const item = group.items.find((i: { key: SectionKey }) => i.key === activeSection);
+      const item = group.items.find((i) => i.key === activeSection);
       if (item) return { ...item, groupLabel: group.label, groupLabelAr: group.labelAr };
     }
     return null;
