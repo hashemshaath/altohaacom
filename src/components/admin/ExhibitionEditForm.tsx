@@ -33,7 +33,8 @@ import {
   ChevronLeft, CheckCircle2, Info, Link as LinkIcon, Eye, CircleDot, Award,
   Clock, Star, Sparkles, ExternalLink, Hash, AlertTriangle, ArrowUpRight,
   ImageIcon, History, Activity, Camera, Upload, Palette, StickyNote,
-  BarChart3, Copy, Pencil, type LucideIcon } from "lucide-react";
+  BarChart3, Copy, Pencil, type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
 import { MS_PER_DAY } from "@/lib/constants";
