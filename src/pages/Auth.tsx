@@ -3,113 +3,41 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 import { normalizePhoneForStorage } from "@/lib/arabicNumerals";
-import { getDeviceFingerprint } from "@/lib/deviceFingerprint";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { SEOHead } from "@/components/SEOHead";
-import { useToast } from "@/hooks/use-toast";
 import { PhoneVerification } from "@/components/auth/PhoneVerification";
 import { CountrySelector } from "@/components/auth/CountrySelector";
-import { PasswordStrengthMeter, getPasswordStrength } from "@/components/auth/PasswordStrengthMeter";
+import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 import { UsernameSuggestions } from "@/components/auth/UsernameSuggestions";
 import { ForgotPasswordDialog } from "@/components/auth/ForgotPasswordDialog";
 import { TermsAgreement } from "@/components/auth/TermsAgreement";
 import { AuthLayout } from "@/components/auth/AuthLayout";
 import { PhoneInputWithFlag } from "@/components/auth/PhoneInputWithFlag";
-import { z } from "zod";
 import {
   CheckCircle, XCircle, Loader2, ShieldCheck, UserPlus, LogIn,
   Phone, Mail, KeyRound, Gift, ChefHat, Heart, AlertCircle,
 } from "lucide-react";
 
-import { USERNAME_REGEX, validateUsername, isReservedUsername, detectLoginInputType } from "@/lib/usernameValidation";
-const usernameRegex = USERNAME_REGEX;
-
-const loginSchema = z.object({
-  email: z.string().trim().email().max(255),
-  password: z.string().min(6).max(128),
-});
+import { useAuthHandlers, DEFAULT_PHONE_CODE, DEFAULT_COUNTRY } from "./auth/useAuthHandlers";
 
 const MAX_LOGIN_ATTEMPTS = 5;
-const LOCKOUT_DURATION_MS = 15 * 60 * 1000; // 15 minutes
-
-type SignUpStep = "contact" | "verify" | "details" | "credentials";
-type SignUpMethod = "phone" | "email";
-type SignInMethod = "phone" | "email";
-
-const DEFAULT_COUNTRY = "SA";
-const DEFAULT_PHONE_CODE = "+966";
 
 export default function Auth() {
   const location = useLocation();
   const isResetMode = location.pathname === "/reset-password";
-  const [isSignUp, setIsSignUp] = useState(
-    location.pathname === "/register"
-  );
-  const [signUpStep, setSignUpStep] = useState<SignUpStep>("contact");
-  const [signUpMethod, setSignUpMethod] = useState<SignUpMethod>("phone");
-
-  // Sign-in state
-  const [signInMethod, setSignInMethod] = useState<SignInMethod>("phone");
-  const [signInPhone, setSignInPhone] = useState("");
-  const [signInPhoneCode, setSignInPhoneCode] = useState(DEFAULT_PHONE_CODE);
-  const [signInCountry, setSignInCountry] = useState(DEFAULT_COUNTRY);
-  const [signInEmail, setSignInEmail] = useState("");
-  const [signInPassword, setSignInPassword] = useState("");
-  const [signInPhoneStep, setSignInPhoneStep] = useState<"phone" | "otp" | "password" | "pin">("phone");
-  const [signInVerifiedPhone, setSignInVerifiedPhone] = useState("");
-  const [signInPin, setSignInPin] = useState("");
-  const [pinAvailable, setPinAvailable] = useState(false);
-  const [pinError, setPinError] = useState("");
-
-  // Sign-up contact step
-  const [phoneInput, setPhoneInput] = useState("");
-  const [emailInput, setEmailInput] = useState("");
-  const [countryCode, setCountryCode] = useState(DEFAULT_COUNTRY);
-  const [phoneCode, setPhoneCode] = useState(DEFAULT_PHONE_CODE);
-
-  // Sign-up verified contact
-  const [verifiedPhone, setVerifiedPhone] = useState("");
-  const [verifiedEmail, setVerifiedEmail] = useState("");
-
-  // Sign-up details step
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-
-  // Sign-up credentials step
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [manualRefCode, setManualRefCode] = useState("");
-  const [accountType, setAccountType] = useState<"professional" | "fan">("fan");
-
-  // Password reset
-  const [resetPassword, setResetPassword] = useState("");
-  const [resetConfirm, setResetConfirm] = useState("");
-
-  // Dialogs
-  const [forgotOpen, setForgotOpen] = useState(false);
-
-  const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [formError, setFormError] = useState("");
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [lockoutUntil, setLockoutUntil] = useState<number | null>(null);
+  const [isSignUp, setIsSignUp] = useState(location.pathname === "/register");
 
   const { user } = useAuth();
   const { language } = useLanguage();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const isAr = language === "ar";
 
-  const isLockedOut = lockoutUntil !== null && Date.now() < lockoutUntil;
+  const auth = useAuthHandlers({ isAr, language, isSignUp, setIsSignUp });
 
   // Capture referral code from URL
   const searchParams = new URLSearchParams(location.search);
@@ -118,7 +46,6 @@ export default function Auth() {
   useEffect(() => {
     if (refCode) {
       try { localStorage.setItem("altoha_ref_code", refCode); } catch {}
-      // Track referral link click
       supabase.functions.invoke("track-referral-click", {
         body: { code: refCode, source: searchParams.get("utm_source") || "direct" },
       }).then(null, () => {});
@@ -129,598 +56,19 @@ export default function Auth() {
     if (user && !isResetMode) navigate("/", { replace: true });
   }, [user, navigate, isResetMode]);
 
-  // Sync isSignUp with route
   useEffect(() => {
     if (location.pathname === "/register") setIsSignUp(true);
     else if (location.pathname === "/login") setIsSignUp(false);
   }, [location.pathname]);
 
-  // Username availability check
-  useEffect(() => {
-    const validation = validateUsername(username);
-    if (!username || username.length < 3 || !validation.valid) {
-      setUsernameStatus(validation.valid === false && username.length >= 3 ? "taken" : "idle");
-      return;
-    }
-    setUsernameStatus("checking");
-    const timer = setTimeout(async () => {
-      const { data: taken } = await supabase.rpc("check_username_taken", { p_username: username.toLowerCase() });
-      setUsernameStatus(taken ? "taken" : "available");
-    }, 500);
-    return () => clearTimeout(timer);
-  }, [username]);
-
-  useEffect(() => {
-    setSignUpStep("contact");
-    setErrors({});
-  }, [isSignUp]);
-
-  // ── Google Sign In ──
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setFormError("");
-    const { error } = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
-    });
-    if (error) {
-      setFormError(error.message);
-    }
-    setLoading(false);
-  };
-
-  // ── Sign In with Email/Username ──
-  const handleSignInEmail = async () => {
-    setErrors({});
-    setFormError("");
-
-    if (isLockedOut) return;
-
-    const errs: Record<string, string> = {};
-    const inputVal = signInEmail.trim();
-    if (!inputVal) {
-      errs.signInEmail = isAr ? "هذا الحقل مطلوب" : "This field is required";
-    }
-    if (signInPassword.length < 6) errs.signInPassword = isAr ? "كلمة المرور قصيرة جداً" : "Password too short";
-    if (signInPassword.length > 128) errs.signInPassword = isAr ? "كلمة المرور طويلة جداً" : "Password too long";
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-
-    setLoading(true);
-
-    // Detect input type: email or username
-    const inputType = detectLoginInputType(inputVal);
-    let loginEmail = inputVal;
-
-    if (inputType === "username") {
-      // Resolve username → email via DB
-      const { data: resolvedEmail } = await supabase.rpc("get_user_email_by_username", { p_username: inputVal });
-      if (!resolvedEmail) {
-        setLoading(false);
-        // Generic error to prevent enumeration
-        setFormError(isAr ? "بيانات الدخول غير صحيحة" : "Invalid credentials");
-        const newAttempts = loginAttempts + 1;
-        setLoginAttempts(newAttempts);
-        if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-          const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
-          setLockoutUntil(lockUntil);
-          setLoginAttempts(0);
-        }
-        return;
-      }
-      loginEmail = resolvedEmail as string;
-    } else if (inputType === "email") {
-      const emailResult = loginSchema.shape.email.safeParse(inputVal);
-      if (!emailResult.success) {
-        setLoading(false);
-        setErrors({ signInEmail: isAr ? "البريد الإلكتروني غير صالح" : "Invalid email" });
-        return;
-      }
-    }
-
-    const { error } = await supabase.auth.signInWithPassword({ email: loginEmail, password: signInPassword });
-    setLoading(false);
-
-    if (error) {
-      const newAttempts = loginAttempts + 1;
-      setLoginAttempts(newAttempts);
-
-      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
-        setLockoutUntil(lockUntil);
-        setLoginAttempts(0);
-        try {
-          supabase.rpc("log_security_event", {
-            p_user_id: null as any,
-            p_event_type: "account_locked",
-            p_severity: "warning",
-            p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts`,
-            p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة`,
-            p_metadata: { identifier: inputVal, attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
-          });
-        } catch {}
-        return;
-      }
-
-      let msg = error.message;
-      if (error.message.includes("Email not confirmed")) {
-        msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
-      } else if (error.message.includes("Invalid login credentials")) {
-        msg = isAr
-          ? `بيانات الدخول غير صحيحة. (${MAX_LOGIN_ATTEMPTS - newAttempts} محاولات متبقية)`
-          : `Invalid credentials. (${MAX_LOGIN_ATTEMPTS - newAttempts} attempts remaining)`;
-      }
-      setFormError(msg);
-    } else {
-      setLoginAttempts(0);
-      setLockoutUntil(null);
-      toast({
-        title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
-        description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
-      });
-    }
-  };
-
-  // ── Sign In with Phone (after OTP verification) ──
-  const handleSignInPhoneVerified = async (phone: string) => {
-    const normalizedPhone = normalizePhoneForStorage(phone);
-    setSignInVerifiedPhone(normalizedPhone);
-    setLoading(true);
-
-    try {
-      // OTP is sufficient — sign in directly via edge function
-      const { data, error: fnError } = await supabase.functions.invoke("pin-auth", {
-        body: { action: "phone_otp_login", phone: normalizedPhone },
-      });
-
-      if (fnError || data?.error) {
-        const code = data?.code;
-        if (code === "NO_ACCOUNT") {
-          setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
-        } else {
-          setFormError(data?.error || fnError?.message || "Login failed");
-        }
-        setSignInPhoneStep("phone");
-        setLoading(false);
-        return;
-      }
-
-      // Use the magic link token to verify OTP and create session
-      if (data?.token_hash && data?.email) {
-        const { error: verifyError } = await supabase.auth.verifyOtp({
-          email: data.email,
-          token_hash: data.token_hash,
-          type: "magiclink",
-        });
-
-        if (verifyError) {
-          setFormError(isAr ? "فشل تسجيل الدخول" : "Login failed");
-          setSignInPhoneStep("phone");
-          setLoading(false);
-          return;
-        }
-
-        toast({
-          title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
-          description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
-        });
-      }
-    } catch (err: unknown) {
-      setFormError((err instanceof Error ? err.message : "Login failed"));
-      setSignInPhoneStep("phone");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignInPhonePassword = async () => {
-    setErrors({});
-    setFormError("");
-
-    if (isLockedOut) return;
-
-    if (signInPassword.length < 6) {
-      setErrors({ signInPassword: isAr ? "كلمة المرور قصيرة جداً" : "Password too short" });
-      return;
-    }
-    if (signInPassword.length > 128) {
-      setErrors({ signInPassword: isAr ? "كلمة المرور طويلة جداً" : "Password too long" });
-      return;
-    }
-
-    setLoading(true);
-    const { data: phoneData } = await supabase.rpc("get_user_by_phone", { p_phone: signInVerifiedPhone });
-    const profile = (phoneData as any)?.[0] || null;
-
-    if (!profile) {
-      setLoading(false);
-      setFormError(isAr ? "لا يوجد حساب مرتبط بهذا الرقم" : "No account linked to this phone number");
-      return;
-    }
-
-    const accountEmail = profile.email;
-    if (!accountEmail) {
-      setLoading(false);
-      setFormError(isAr ? "لا يوجد بريد إلكتروني مرتبط بهذا الحساب" : "No email linked to this account");
-      return;
-    }
-
-    const { error } = await supabase.auth.signInWithPassword({ email: accountEmail, password: signInPassword });
-    setLoading(false);
-
-    if (error) {
-      const newAttempts = loginAttempts + 1;
-      setLoginAttempts(newAttempts);
-
-      if (newAttempts >= MAX_LOGIN_ATTEMPTS) {
-        const lockUntil = Date.now() + LOCKOUT_DURATION_MS;
-        setLockoutUntil(lockUntil);
-        setLoginAttempts(0);
-        try {
-          supabase.rpc("log_security_event", {
-            p_user_id: null as any,
-            p_event_type: "account_locked",
-            p_severity: "warning",
-            p_description: `Account locked after ${MAX_LOGIN_ATTEMPTS} failed attempts (phone login)`,
-            p_description_ar: `تم قفل الحساب بعد ${MAX_LOGIN_ATTEMPTS} محاولات فاشلة (تسجيل بالهاتف)`,
-            p_metadata: { phone: signInVerifiedPhone, attempts: MAX_LOGIN_ATTEMPTS, locked_until: new Date(lockUntil).toISOString() } as any,
-          });
-        } catch {}
-        return;
-      }
-
-      let msg = error.message;
-      if (error.message.includes("Invalid login credentials")) {
-        msg = isAr
-          ? `كلمة المرور غير صحيحة (${MAX_LOGIN_ATTEMPTS - newAttempts} محاولات متبقية)`
-          : `Incorrect password (${MAX_LOGIN_ATTEMPTS - newAttempts} attempts remaining)`;
-      } else if (error.message.includes("Email not confirmed")) {
-        msg = isAr ? "لم يتم تأكيد البريد الإلكتروني. يرجى التحقق من بريدك الوارد" : "Email not confirmed. Please check your inbox";
-      }
-      setFormError(msg);
-    } else {
-      setLoginAttempts(0);
-      setLockoutUntil(null);
-      toast({
-        title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
-        description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
-      });
-    }
-  };
-
-  // ── PIN Login (phone + PIN, no OTP) ──
-  const handlePinLogin = async () => {
-    setPinError("");
-    if (signInPin.length !== 6) {
-      setPinError(isAr ? "أدخل الرمز المكون من 6 أرقام" : "Enter your 6-digit PIN");
-      return;
-    }
-    setLoading(true);
-    try {
-      const fingerprint = await getDeviceFingerprint();
-      const fullPhone = normalizePhoneForStorage(signInPhoneCode + signInPhone.replace(/\s/g, ""));
-      const { data, error: fnError } = await supabase.functions.invoke("pin-auth", {
-        body: { action: "pin_login", phone: fullPhone, pin: signInPin, device_fingerprint: fingerprint },
-      });
-
-      if (fnError || data?.error) {
-        const code = data?.code;
-        if (code === "UNTRUSTED_DEVICE") {
-          setPinError(isAr ? "جهاز غير معروف. سجّل الدخول بالتحقق أولاً" : "Unrecognized device. Please login with OTP first.");
-        } else if (code === "WRONG_PIN") {
-          setPinError(isAr ? `رمز غير صحيح (${data.remaining_attempts} محاولات متبقية)` : `Incorrect PIN (${data.remaining_attempts} attempts remaining)`);
-        } else if (code === "PIN_LOCKED") {
-          setPinError(isAr ? "تم قفل الرمز مؤقتاً. حاول لاحقاً" : "PIN temporarily locked. Try again later.");
-        } else if (code === "PIN_EXPIRED") {
-          setPinError(isAr ? "انتهت صلاحية الرمز. أعد إعداده" : "PIN expired. Please set a new one.");
-        } else {
-          setPinError(data?.error || fnError?.message || "Login failed");
-        }
-        setLoading(false);
-        return;
-      }
-
-      if (data?.token_hash && data?.email) {
-        const { error: verifyError } = await supabase.auth.verifyOtp({
-          email: data.email,
-          token_hash: data.token_hash,
-          type: "magiclink",
-        });
-
-        if (verifyError) {
-          setPinError(isAr ? "فشل تسجيل الدخول" : "Login failed");
-          setLoading(false);
-          return;
-        }
-
-        toast({
-          title: isAr ? "تم تسجيل الدخول بنجاح" : "Signed in successfully",
-          description: isAr ? "مرحباً بعودتك!" : "Welcome back!",
-        });
-      }
-    } catch (err: unknown) {
-      setPinError((err instanceof Error ? err.message : "Login failed"));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ── Check PIN availability for phone ──
-  const checkPinForPhone = async (fullPhone: string) => {
-    try {
-      const fingerprint = await getDeviceFingerprint();
-      const { data } = await supabase.functions.invoke("pin-auth", {
-        body: { action: "check_pin_by_phone", phone: fullPhone, device_fingerprint: fingerprint },
-      });
-      setPinAvailable(data?.has_pin && !data?.is_expired && data?.device_trusted);
-    } catch {
-      setPinAvailable(false);
-    }
-  };
-
-  // ── Password Reset ──
-  const [resetSuccess, setResetSuccess] = useState(false);
-  const handleResetPassword = async () => {
-    setErrors({});
-    setFormError("");
-    const errs: Record<string, string> = {};
-    if (resetPassword.length < 8) errs.resetPassword = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
-    else if (!/[A-Z]/.test(resetPassword)) errs.resetPassword = isAr ? "يجب أن تحتوي على حرف كبير" : "Must contain an uppercase letter";
-    else if (!/\d/.test(resetPassword)) errs.resetPassword = isAr ? "يجب أن تحتوي على رقم" : "Must contain a number";
-    else if (getPasswordStrength(resetPassword) < 2) errs.resetPassword = isAr ? "كلمة المرور ضعيفة" : "Password too weak";
-    if (resetPassword !== resetConfirm) errs.resetConfirm = isAr ? "غير متطابقة" : "Passwords don't match";
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-
-    setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: resetPassword });
-    setLoading(false);
-
-    if (error) {
-      setFormError(error.message);
-    } else {
-      setResetSuccess(true);
-      // Send password change confirmation email (fire-and-forget)
-      try {
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        if (currentUser?.email) {
-          supabase.functions.invoke("send-transactional-email", {
-            body: {
-              templateName: "password-changed",
-              recipientEmail: currentUser.email,
-              idempotencyKey: `pwd-changed-${currentUser.id}-${Date.now()}`,
-              templateData: { name: currentUser.user_metadata?.full_name },
-            },
-          }).then(null, () => {});
-        }
-      } catch {}
-      toast({
-        title: isAr ? "تم تحديث كلمة المرور بنجاح" : "Password updated successfully",
-        description: isAr ? "يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة" : "You can now sign in with your new password",
-      });
-      setTimeout(() => navigate("/login", { replace: true }), 2000);
-    }
-  };
-
-  // ── Sign Up Step 1: Contact ──
-  const handleContactSubmit = async () => {
-    setErrors({});
-    const errs: Record<string, string> = {};
-
-    if (signUpMethod === "phone") {
-      const digitsOnly = phoneInput.replace(/\s/g, "");
-      // Validate minimum 7 digits, maximum 15 digits (ITU-T E.164)
-      if (digitsOnly.length < 7 || digitsOnly.length > 15) {
-        errs.phone = isAr ? "طول رقم الهاتف غير صالح (7-15 رقم)" : "Invalid phone length (7-15 digits)";
-      }
-      const fullPhone = normalizePhoneForStorage(phoneCode + digitsOnly);
-      if (!errs.phone && !/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
-        errs.phone = isAr ? "رقم الهاتف غير صالح" : "Invalid phone number";
-      }
-      // Check if phone already registered
-      if (!errs.phone) {
-        setLoading(true);
-        const { data: phoneExists } = await supabase.rpc("check_phone_exists", { p_phone: fullPhone });
-        const existingPhone = phoneExists ? { user_id: "found" } : null;
-        setLoading(false);
-        if (existingPhone) {
-          errs.phone = isAr ? "هذا الرقم مسجل بالفعل. يرجى تسجيل الدخول" : "This number is already registered. Please sign in";
-        }
-      }
-    } else {
-      if (!z.string().email().safeParse(emailInput).success) {
-        errs.email = isAr ? "البريد الإلكتروني غير صالح" : "Invalid email address";
-      }
-      // Check if email already registered
-      if (!errs.email) {
-        setLoading(true);
-        const { data: emailExists } = await supabase.rpc("check_email_exists", { p_email: emailInput.trim().toLowerCase() });
-        const existingEmail = emailExists ? { user_id: "found" } : null;
-        setLoading(false);
-        if (existingEmail) {
-          errs.email = isAr ? "هذا البريد مسجل بالفعل. يرجى تسجيل الدخول" : "This email is already registered. Please sign in";
-        }
-      }
-    }
-
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-    setSignUpStep("verify");
-  };
-
-  // ── Sign Up Step 2: Verified ──
-  const handlePhoneVerified = (phone: string) => {
-    setVerifiedPhone(normalizePhoneForStorage(phone));
-    setSignUpStep("details");
-  };
-
-  const handleSendEmailVerification = async () => {
-    setVerifiedEmail(emailInput);
-    setSignUpStep("details");
-    toast({
-      title: isAr ? "سيتم التحقق من البريد" : "Email will be verified",
-      description: isAr
-        ? "سيتم إرسال رابط التحقق بعد إنشاء الحساب"
-        : "A verification link will be sent after account creation",
-    });
-  };
-
-  // ── Sign Up Step 3: Details ──
-  const handleDetailsSubmit = async () => {
-    setErrors({});
-    const errs: Record<string, string> = {};
-    if (!fullName.trim() || fullName.trim().length < 2) {
-      errs.fullName = isAr ? "الاسم مطلوب (حرفان على الأقل)" : "Name is required (min 2 chars)";
-    }
-    if (signUpMethod === "phone") {
-      if (!z.string().email().safeParse(email).success) {
-        errs.email = isAr ? "البريد الإلكتروني مطلوب لإنشاء الحساب" : "Email required for account creation";
-      }
-      // Check if email already registered
-      if (!errs.email && email) {
-        setLoading(true);
-        const { data: emailExists2 } = await supabase.rpc("check_email_exists", { p_email: email.trim().toLowerCase() });
-        const existingEmail = emailExists2 ? { user_id: "found" } : null;
-        setLoading(false);
-        if (existingEmail) {
-          errs.email = isAr ? "هذا البريد مسجل بالفعل" : "This email is already registered";
-        }
-      }
-    }
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-    setSignUpStep("credentials");
-  };
-
-  // ── Sign Up Step 4: Create Account ──
-  const handleCreateAccount = async () => {
-    setErrors({});
-    const errs: Record<string, string> = {};
-
-    const usernameValidation = validateUsername(username);
-    if (!usernameValidation.valid) errs.username = isAr ? (usernameValidation.errorAr || "اسم مستخدم غير صالح") : (usernameValidation.error || "Invalid username");
-    if (usernameStatus === "taken") errs.username = isAr ? "اسم المستخدم مستخدم بالفعل" : "Username already taken";
-    if (usernameStatus === "checking") errs.username = isAr ? "جاري التحقق..." : "Still checking...";
-    if (password.length < 8) {
-      errs.password = isAr ? "8 أحرف على الأقل" : "At least 8 characters";
-    } else if (!/[A-Z]/.test(password)) {
-      errs.password = isAr ? "يجب أن تحتوي على حرف كبير واحد على الأقل" : "Must contain at least 1 uppercase letter";
-    } else if (!/\d/.test(password)) {
-      errs.password = isAr ? "يجب أن تحتوي على رقم واحد على الأقل" : "Must contain at least 1 number";
-    } else if (getPasswordStrength(password) < 2) {
-      errs.password = isAr ? "كلمة المرور ضعيفة جداً" : "Password is too weak";
-    }
-    if (password !== confirmPassword) errs.confirmPassword = isAr ? "غير متطابقة" : "Passwords don't match";
-    if (!termsAccepted) errs.terms = isAr ? "يجب الموافقة على الشروط والأحكام" : "You must accept the Terms & Conditions";
-
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-
-    const accountEmail = signUpMethod === "phone" ? email : emailInput;
-
-    setLoading(true);
-    const { data, error } = await supabase.auth.signUp({
-      email: accountEmail,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          full_name: fullName,
-          username: username.toLowerCase(),
-          phone: verifiedPhone || null,
-          country_code: countryCode || null,
-          account_type: accountType,
-          preferred_language: language,
-        },
-      },
-    });
-
-    if (error) {
-      setLoading(false);
-      let errMsg = error.message;
-      if (error.message?.toLowerCase().includes("already registered") || error.message?.toLowerCase().includes("already been registered")) {
-        errMsg = isAr ? "هذا البريد الإلكتروني مسجل بالفعل" : "This email is already registered. Please sign in instead.";
-      }
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: errMsg });
-      return;
-    }
-
-    if (data.user) {
-      await supabase.from("user_roles").insert({ user_id: data.user.id, role: (accountType === "fan" ? "viewer" : "chef") as any });
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      await supabase
-        .from("profiles")
-        .update({
-          username: username.toLowerCase(),
-          phone: verifiedPhone || null,
-          country_code: countryCode || null,
-          preferred_language: language,
-          email: accountEmail,
-          account_type: accountType,
-        })
-        .eq("user_id", data.user.id);
-
-      // Process referral code via edge function
-      const storedRef = localStorage.getItem("altoha_ref_code") || manualRefCode.trim().toUpperCase() || null;
-      if (storedRef) {
-        try {
-          await supabase.functions.invoke("process-referral", {
-            body: { referralCode: storedRef, newUserId: data.user.id },
-          });
-          localStorage.removeItem("altoha_ref_code");
-        } catch (err: unknown) {
-          console.error("Referral processing error:", err instanceof Error ? err.message : err);
-          localStorage.removeItem("altoha_ref_code");
-        }
-      }
-
-      // Send welcome email (fire-and-forget)
-      try {
-        supabase.functions.invoke("send-transactional-email", {
-          body: {
-            templateName: "welcome",
-            recipientEmail: accountEmail,
-            idempotencyKey: `welcome-${data.user.id}`,
-            templateData: { name: fullName },
-          },
-        }).then(null, () => {});
-      } catch {}
-
-      // Track signup conversion (fire-and-forget)
-      try {
-        const { sendGoogleConversion, pushToDataLayer } = await import("@/hooks/useGoogleTracking");
-        sendGoogleConversion("sign_up", { method: signUpMethod, currency: "SAR" });
-        pushToDataLayer("sign_up", { method: signUpMethod, userId: data.user.id });
-        supabase.from("conversion_events").insert([{
-          user_id: data.user.id,
-          event_name: "sign_up",
-          event_category: "engagement",
-          source: new URLSearchParams(window.location.search).get("utm_source") || null,
-          medium: new URLSearchParams(window.location.search).get("utm_medium") || null,
-          campaign: new URLSearchParams(window.location.search).get("utm_campaign") || null,
-          session_id: sessionStorage.getItem("ad_session_id") || null,
-          metadata: { method: signUpMethod, country: countryCode } as any,
-        }]).then(null, () => {});
-      } catch {}
-    }
-
-    setLoading(false);
-    toast({
-      title: isAr ? "تم إنشاء الحساب بنجاح! 🎉" : "Account Created! 🎉",
-      description: isAr
-        ? "يرجى التحقق من بريدك الإلكتروني لتأكيد حسابك قبل تسجيل الدخول."
-        : "Please check your email to verify your account before signing in.",
-    });
-    setIsSignUp(false);
-    setSignUpStep("contact");
-    navigate("/login", { replace: true });
-  };
-
   const totalSteps = 4;
 
-  const stepIndex: Record<SignUpStep, number> = { contact: 0, verify: 1, details: 2, credentials: 3 };
-
-  // ── Helper: get hero stage ──
   const getStage = () => {
     if (isResetMode) return "reset" as const;
     if (!isSignUp) return "login" as const;
-    if (signUpStep === "verify") return "verify" as const;
-    if (signUpStep === "details") return "details" as const;
-    if (signUpStep === "credentials") return "credentials" as const;
+    if (auth.signUpStep === "verify") return "verify" as const;
+    if (auth.signUpStep === "details") return "details" as const;
+    if (auth.signUpStep === "credentials") return "credentials" as const;
     return "register" as const;
   };
 
@@ -743,42 +91,32 @@ export default function Auth() {
               </p>
             </div>
 
-            {resetSuccess ? (
+            {auth.resetSuccess ? (
               <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 text-center space-y-2 animate-in fade-in duration-300">
                 <CheckCircle className="mx-auto h-8 w-8 text-primary" />
-                <p className="text-sm font-medium text-primary">
-                  {isAr ? "تم تحديث كلمة المرور بنجاح!" : "Password updated successfully!"}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {isAr ? "جاري إعادة التوجيه..." : "Redirecting..."}
-                </p>
+                <p className="text-sm font-medium text-primary">{isAr ? "تم تحديث كلمة المرور بنجاح!" : "Password updated successfully!"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "جاري إعادة التوجيه..." : "Redirecting..."}</p>
               </div>
             ) : (
               <>
-                {formError && (
+                {auth.formError && (
                   <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
-                    <p className="flex items-center gap-1.5 text-xs text-destructive">
-                      <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-                      {formError}
-                    </p>
+                    <p className="flex items-center gap-1.5 text-xs text-destructive"><AlertCircle className="h-3.5 w-3.5 shrink-0" />{auth.formError}</p>
                   </div>
                 )}
-
                 <div className="space-y-1.5">
                   <Label className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"} *</Label>
-                  <Input type="password" autoComplete="new-password" value={resetPassword} onChange={(e) => setResetPassword(e.target.value)} placeholder="••••••••" />
-                  <PasswordStrengthMeter password={resetPassword} />
-                  {errors.resetPassword && <p className="text-xs text-destructive">{errors.resetPassword}</p>}
+                  <Input type="password" autoComplete="new-password" value={auth.resetPassword} onChange={(e) => auth.setResetPassword(e.target.value)} placeholder="••••••••" />
+                  <PasswordStrengthMeter password={auth.resetPassword} />
+                  {auth.errors.resetPassword && <p className="text-xs text-destructive">{auth.errors.resetPassword}</p>}
                 </div>
-
                 <div className="space-y-1.5">
                   <Label className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-                  <Input type="password" autoComplete="new-password" value={resetConfirm} onChange={(e) => setResetConfirm(e.target.value)} placeholder="••••••••" />
-                  {errors.resetConfirm && <p className="text-xs text-destructive">{errors.resetConfirm}</p>}
+                  <Input type="password" autoComplete="new-password" value={auth.resetConfirm} onChange={(e) => auth.setResetConfirm(e.target.value)} placeholder="••••••••" />
+                  {auth.errors.resetConfirm && <p className="text-xs text-destructive">{auth.errors.resetConfirm}</p>}
                 </div>
-
-                <Button className="w-full" size="lg" onClick={handleResetPassword} disabled={loading}>
-                  {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+                <Button className="w-full" size="lg" onClick={auth.handleResetPassword} disabled={auth.loading}>
+                  {auth.loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
                   {isAr ? "تعيين كلمة المرور الجديدة" : "Set New Password"}
                 </Button>
               </>
@@ -790,7 +128,7 @@ export default function Auth() {
   }
 
   // ── Sign Up Step 2: Verification ──
-  if (signUpStep === "verify" && isSignUp) {
+  if (auth.signUpStep === "verify" && isSignUp) {
     return (
       <AuthLayout stage="verify" isAr={isAr} currentStep={1}>
         <SEOHead title={isAr ? "التحقق" : "Verification"} description="Verify your contact" />
@@ -801,42 +139,24 @@ export default function Auth() {
                 <ShieldCheck className="h-7 w-7 text-primary" />
               </div>
               <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
-                {signUpMethod === "phone"
-                  ? (isAr ? "التحقق من رقم الهاتف" : "Phone Verification")
-                  : (isAr ? "التحقق من البريد الإلكتروني" : "Email Verification")}
+                {auth.signUpMethod === "phone" ? (isAr ? "التحقق من رقم الهاتف" : "Phone Verification") : (isAr ? "التحقق من البريد الإلكتروني" : "Email Verification")}
               </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {isAr ? `الخطوة 2 من ${totalSteps}` : `Step 2 of ${totalSteps}`}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{isAr ? `الخطوة 2 من ${totalSteps}` : `Step 2 of ${totalSteps}`}</p>
             </div>
 
-            {signUpMethod === "phone" ? (
-              <PhoneVerification
-                onVerified={handlePhoneVerified}
-                onBack={() => setSignUpStep("contact")}
-                initialPhone={phoneCode + phoneInput}
-                phoneCode={phoneCode}
-                mode="signup"
-              />
+            {auth.signUpMethod === "phone" ? (
+              <PhoneVerification onVerified={auth.handlePhoneVerified} onBack={() => auth.setSignUpStep("contact")} initialPhone={auth.phoneCode + auth.phoneInput} phoneCode={auth.phoneCode} mode="signup" />
             ) : (
               <div className="space-y-4">
                 <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 text-center">
                   <Mail className="mx-auto mb-2 h-8 w-8 text-primary" />
                   <p className="text-sm font-medium">{isAr ? "سيتم التحقق من:" : "Will verify:"}</p>
-                  <p className="mt-1 font-mono text-sm text-primary">{emailInput}</p>
-                  <p className="mt-2 text-xs text-muted-foreground">
-                    {isAr
-                      ? "سيتم إرسال رابط التحقق إلى بريدك الإلكتروني بعد إنشاء الحساب"
-                      : "A verification link will be sent after account creation"}
-                  </p>
+                  <p className="mt-1 font-mono text-sm text-primary">{auth.emailInput}</p>
+                  <p className="mt-2 text-xs text-muted-foreground">{isAr ? "سيتم إرسال رابط التحقق إلى بريدك الإلكتروني بعد إنشاء الحساب" : "A verification link will be sent after account creation"}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => setSignUpStep("contact")}>
-                    {isAr ? "رجوع" : "Back"}
-                  </Button>
-                  <Button className="flex-1" onClick={handleSendEmailVerification}>
-                    {isAr ? "متابعة" : "Continue"}
-                  </Button>
+                  <Button variant="outline" onClick={() => auth.setSignUpStep("contact")}>{isAr ? "رجوع" : "Back"}</Button>
+                  <Button className="flex-1" onClick={auth.handleSendEmailVerification}>{isAr ? "متابعة" : "Continue"}</Button>
                 </div>
               </div>
             )}
@@ -847,7 +167,7 @@ export default function Auth() {
   }
 
   // ── Sign Up Step 3: Details ──
-  if (signUpStep === "details" && isSignUp) {
+  if (auth.signUpStep === "details" && isSignUp) {
     return (
       <AuthLayout stage="details" isAr={isAr} currentStep={2}>
         <SEOHead title={isAr ? "المعلومات الشخصية" : "Your Details"} description="Complete your details" />
@@ -858,24 +178,16 @@ export default function Auth() {
                 <UserPlus className="h-7 w-7 text-primary" />
               </div>
               <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "المعلومات الشخصية" : "Personal Details"}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {isAr ? `الخطوة 3 من ${totalSteps}` : `Step 3 of ${totalSteps}`}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{isAr ? `الخطوة 3 من ${totalSteps}` : `Step 3 of ${totalSteps}`}</p>
             </div>
 
             <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
               <CheckCircle className="h-5 w-5 text-primary shrink-0" />
               <div className="text-sm">
-                {signUpMethod === "phone" ? (
-                  <>
-                    <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
-                    <span className="font-mono text-primary" dir="ltr">{verifiedPhone}</span>
-                  </>
+                {auth.signUpMethod === "phone" ? (
+                  <><span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span> <span className="font-mono text-primary" dir="ltr">{auth.verifiedPhone}</span></>
                 ) : (
-                  <>
-                    <span className="font-medium">{isAr ? "البريد:" : "Email:"}</span>{" "}
-                    <span className="text-primary">{verifiedEmail}</span>
-                  </>
+                  <><span className="font-medium">{isAr ? "البريد:" : "Email:"}</span> <span className="text-primary">{auth.verifiedEmail}</span></>
                 )}
               </div>
             </div>
@@ -884,50 +196,22 @@ export default function Auth() {
             <div className="space-y-2">
               <Label className="text-xs font-medium">{isAr ? "نوع الحساب" : "Account Type"} *</Label>
               <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setAccountType("professional")}
-                  className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-200 ${
-                    accountType === "professional"
-                      ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
-                      : "border-border/50 hover:border-primary/30 hover:bg-muted/50"
-                  }`}
-                >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                    accountType === "professional" ? "bg-primary/15" : "bg-muted"
-                  }`}>
-                    <ChefHat className={`h-5 w-5 ${accountType === "professional" ? "text-primary" : "text-muted-foreground"}`} />
+                <button type="button" onClick={() => auth.setAccountType("professional")} className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-200 ${auth.accountType === "professional" ? "border-primary bg-primary/5 shadow-md shadow-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-muted/50"}`}>
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${auth.accountType === "professional" ? "bg-primary/15" : "bg-muted"}`}>
+                    <ChefHat className={`h-5 w-5 ${auth.accountType === "professional" ? "text-primary" : "text-muted-foreground"}`} />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${accountType === "professional" ? "text-primary" : "text-foreground"}`}>
-                      {isAr ? "محترف" : "Professional"}
-                    </p>
-                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">
-                      {isAr ? "طاهٍ أو محترف في مجال الطهي" : "Chef or culinary professional"}
-                    </p>
+                    <p className={`text-sm font-bold ${auth.accountType === "professional" ? "text-primary" : "text-foreground"}`}>{isAr ? "محترف" : "Professional"}</p>
+                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">{isAr ? "طاهٍ أو محترف في مجال الطهي" : "Chef or culinary professional"}</p>
                   </div>
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setAccountType("fan")}
-                  className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-200 ${
-                    accountType === "fan"
-                      ? "border-primary bg-primary/5 shadow-md shadow-primary/10"
-                      : "border-border/50 hover:border-primary/30 hover:bg-muted/50"
-                  }`}
-                >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                    accountType === "fan" ? "bg-primary/15" : "bg-muted"
-                  }`}>
-                    <Heart className={`h-5 w-5 ${accountType === "fan" ? "text-primary" : "text-muted-foreground"}`} />
+                <button type="button" onClick={() => auth.setAccountType("fan")} className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-200 ${auth.accountType === "fan" ? "border-primary bg-primary/5 shadow-md shadow-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-muted/50"}`}>
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${auth.accountType === "fan" ? "bg-primary/15" : "bg-muted"}`}>
+                    <Heart className={`h-5 w-5 ${auth.accountType === "fan" ? "text-primary" : "text-muted-foreground"}`} />
                   </div>
                   <div>
-                     <p className={`text-sm font-bold ${accountType === "fan" ? "text-primary" : "text-foreground"}`}>
-                       {isAr ? "مستخدم عادي" : "Regular User"}
-                     </p>
-                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">
-                      {isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}
-                    </p>
+                    <p className={`text-sm font-bold ${auth.accountType === "fan" ? "text-primary" : "text-foreground"}`}>{isAr ? "مستخدم عادي" : "Regular User"}</p>
+                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">{isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}</p>
                   </div>
                 </button>
               </div>
@@ -935,22 +219,22 @@ export default function Auth() {
 
             <div className="space-y-1.5">
               <Label htmlFor="fullName" className="text-xs">{isAr ? "الاسم الكامل" : "Full Name"} *</Label>
-              <Input id="fullName" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={isAr ? "الاسم الكامل" : "Full name"} />
-              {errors.fullName && <p className="text-xs text-destructive">{errors.fullName}</p>}
+              <Input id="fullName" value={auth.fullName} onChange={(e) => auth.setFullName(e.target.value)} placeholder={isAr ? "الاسم الكامل" : "Full name"} />
+              {auth.errors.fullName && <p className="text-xs text-destructive">{auth.errors.fullName}</p>}
             </div>
 
-            {signUpMethod === "phone" && (
+            {auth.signUpMethod === "phone" && (
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
+                <Input id="email" type="email" value={auth.email} onChange={(e) => auth.setEmail(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
                 <p className="text-[12px] text-muted-foreground">{isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}</p>
-                {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
+                {auth.errors.email && <p className="text-xs text-destructive">{auth.errors.email}</p>}
               </div>
             )}
 
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setSignUpStep("verify")}>{isAr ? "رجوع" : "Back"}</Button>
-              <Button className="flex-1" onClick={handleDetailsSubmit}>{isAr ? "التالي" : "Next"}</Button>
+              <Button variant="outline" onClick={() => auth.setSignUpStep("verify")}>{isAr ? "رجوع" : "Back"}</Button>
+              <Button className="flex-1" onClick={auth.handleDetailsSubmit}>{isAr ? "التالي" : "Next"}</Button>
             </div>
           </div>
         </Card>
@@ -959,7 +243,7 @@ export default function Auth() {
   }
 
   // ── Sign Up Step 4: Credentials ──
-  if (signUpStep === "credentials" && isSignUp) {
+  if (auth.signUpStep === "credentials" && isSignUp) {
     return (
       <AuthLayout stage="credentials" isAr={isAr} currentStep={3}>
         <SEOHead title={isAr ? "إنشاء حسابك" : "Complete Registration"} description="Set your password and username" />
@@ -970,99 +254,60 @@ export default function Auth() {
                 <UserPlus className="h-7 w-7 text-primary" />
               </div>
               <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "إنشاء حسابك" : "Create Your Account"}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {isAr ? `الخطوة 4 من ${totalSteps}` : `Step 4 of ${totalSteps}`}
-              </p>
+              <p className="mt-1 text-sm text-muted-foreground">{isAr ? `الخطوة 4 من ${totalSteps}` : `Step 4 of ${totalSteps}`}</p>
             </div>
 
-            {/* Username */}
             <div className="space-y-1.5">
               <Label htmlFor="username" className="text-xs">{isAr ? "اسم المستخدم" : "Username"} *</Label>
               <div className="relative">
-                <Input
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))}
-                  className="pe-10"
-                  placeholder="your_username"
-                />
+                <Input id="username" value={auth.username} onChange={(e) => auth.setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ""))} className="pe-10" placeholder="your_username" />
                 <div className="pointer-events-none absolute end-3 top-1/2 -translate-y-1/2">
-                  {usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-                  {usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
-                  {usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
+                  {auth.usernameStatus === "checking" && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+                  {auth.usernameStatus === "available" && <CheckCircle className="h-4 w-4 text-primary" />}
+                  {auth.usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
                 </div>
               </div>
-              <p className="text-[12px] text-muted-foreground">
-                altoha.com/<span className="font-medium">{username || "username"}</span>
-              </p>
-              {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
-              {usernameStatus === "taken" && (
-                <UsernameSuggestions baseUsername={username} onSelect={(s) => setUsername(s)} />
-              )}
+              <p className="text-[12px] text-muted-foreground">altoha.com/<span className="font-medium">{auth.username || "username"}</span></p>
+              {auth.errors.username && <p className="text-xs text-destructive">{auth.errors.username}</p>}
+              {auth.usernameStatus === "taken" && <UsernameSuggestions baseUsername={auth.username} onSelect={(s) => auth.setUsername(s)} />}
             </div>
 
-            {/* Password */}
             <div className="space-y-1.5">
               <Label htmlFor="password" className="text-xs">{isAr ? "كلمة المرور" : "Password"} *</Label>
-              <Input id="password" type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
-              <PasswordStrengthMeter password={password} />
-              {errors.password && <p className="text-xs text-destructive">{errors.password}</p>}
+              <Input id="password" type="password" autoComplete="new-password" value={auth.password} onChange={(e) => auth.setPassword(e.target.value)} placeholder="••••••••" />
+              <PasswordStrengthMeter password={auth.password} />
+              {auth.errors.password && <p className="text-xs text-destructive">{auth.errors.password}</p>}
             </div>
 
-            {/* Confirm Password */}
             <div className="space-y-1.5">
               <Label htmlFor="confirmPassword" className="text-xs">{isAr ? "تأكيد كلمة المرور" : "Confirm Password"} *</Label>
-              <Input id="confirmPassword" type="password" autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
-              {confirmPassword && password !== confirmPassword && (
-                <p className="text-xs text-destructive">{isAr ? "غير متطابقة" : "Passwords don't match"}</p>
-              )}
-              {errors.confirmPassword && <p className="text-xs text-destructive">{errors.confirmPassword}</p>}
+              <Input id="confirmPassword" type="password" autoComplete="new-password" value={auth.confirmPassword} onChange={(e) => auth.setConfirmPassword(e.target.value)} placeholder="••••••••" />
+              {auth.confirmPassword && auth.password !== auth.confirmPassword && <p className="text-xs text-destructive">{isAr ? "غير متطابقة" : "Passwords don't match"}</p>}
+              {auth.errors.confirmPassword && <p className="text-xs text-destructive">{auth.errors.confirmPassword}</p>}
             </div>
 
-            {/* Referral Code (optional) */}
             {!localStorage.getItem("altoha_ref_code") && (
               <div className="space-y-1.5">
                 <Label htmlFor="refCode" className="text-xs">{isAr ? "كود الإحالة (اختياري)" : "Referral Code (optional)"}</Label>
-                <div className="relative">
-                  <Input
-                    id="refCode"
-                    value={manualRefCode}
-                    onChange={(e) => setManualRefCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))}
-                    placeholder={isAr ? "أدخل كود الإحالة" : "Enter referral code"}
-                    className="font-mono tracking-wider"
-                    dir="ltr"
-                    maxLength={8}
-                  />
-                </div>
-                <p className="text-[12px] text-muted-foreground">
-                  {isAr ? "إذا أحالك أحد الأصدقاء، أدخل الكود هنا" : "If a friend referred you, enter their code here"}
-                </p>
+                <Input id="refCode" value={auth.manualRefCode} onChange={(e) => auth.setManualRefCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} placeholder={isAr ? "أدخل كود الإحالة" : "Enter referral code"} className="font-mono tracking-wider" dir="ltr" maxLength={8} />
+                <p className="text-[12px] text-muted-foreground">{isAr ? "إذا أحالك أحد الأصدقاء، أدخل الكود هنا" : "If a friend referred you, enter their code here"}</p>
               </div>
             )}
 
             {localStorage.getItem("altoha_ref_code") && (
               <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
                 <Gift className="h-4 w-4 text-primary shrink-0" />
-                <p className="text-sm">
-                  {isAr ? "كود الإحالة مُطبق:" : "Referral code applied:"}{" "}
-                  <span className="font-mono font-bold text-primary">{localStorage.getItem("altoha_ref_code")}</span>
-                </p>
+                <p className="text-sm">{isAr ? "كود الإحالة مُطبق:" : "Referral code applied:"} <span className="font-mono font-bold text-primary">{localStorage.getItem("altoha_ref_code")}</span></p>
               </div>
             )}
 
-            {/* Terms */}
-            <TermsAgreement checked={termsAccepted} onCheckedChange={setTermsAccepted} error={errors.terms} />
+            <TermsAgreement checked={auth.termsAccepted} onCheckedChange={auth.setTermsAccepted} error={auth.errors.terms} />
 
             <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setSignUpStep("details")}>{isAr ? "رجوع" : "Back"}</Button>
-              <Button
-                className="flex-1 gap-2"
-                size="lg"
-                disabled={loading || usernameStatus !== "available" || !termsAccepted}
-                onClick={handleCreateAccount}
-              >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
-                {loading ? (isAr ? "جاري الإنشاء..." : "Creating...") : (isAr ? "إنشاء الحساب" : "Create Account")}
+              <Button variant="outline" onClick={() => auth.setSignUpStep("details")}>{isAr ? "رجوع" : "Back"}</Button>
+              <Button className="flex-1 gap-2" size="lg" disabled={auth.loading || auth.usernameStatus !== "available" || !auth.termsAccepted} onClick={auth.handleCreateAccount}>
+                {auth.loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <UserPlus className="h-4 w-4" />}
+                {auth.loading ? (isAr ? "جاري الإنشاء..." : "Creating...") : (isAr ? "إنشاء الحساب" : "Create Account")}
               </Button>
             </div>
           </div>
@@ -1072,79 +317,49 @@ export default function Auth() {
   }
 
   // ── Sign In: Phone OTP step ──
-  if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "otp") {
+  if (!isSignUp && auth.signInMethod === "phone" && auth.signInPhoneStep === "otp") {
     return (
       <AuthLayout stage="verify" isAr={isAr}>
         <SEOHead title={isAr ? "التحقق من الهاتف" : "Verify Phone"} description="Verify your phone to sign in" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6">
-            <PhoneVerification
-              onVerified={handleSignInPhoneVerified}
-              onBack={() => setSignInPhoneStep("phone")}
-              initialPhone={signInPhoneCode + signInPhone}
-              phoneCode={signInPhoneCode}
-              mode="login"
-            />
+            <PhoneVerification onVerified={auth.handleSignInPhoneVerified} onBack={() => auth.setSignInPhoneStep("phone")} initialPhone={auth.signInPhoneCode + auth.signInPhone} phoneCode={auth.signInPhoneCode} mode="login" />
           </div>
         </Card>
       </AuthLayout>
     );
   }
 
-  // ── Sign In: PIN step (phone + PIN only) ──
-  if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "pin") {
+  // ── Sign In: PIN step ──
+  if (!isSignUp && auth.signInMethod === "phone" && auth.signInPhoneStep === "pin") {
     return (
       <AuthLayout stage="login" isAr={isAr}>
         <SEOHead title={isAr ? "الدخول بالرمز السري" : "PIN Login"} description="Sign in with your PIN" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
             <div className="flex flex-col items-center text-center">
-              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                <KeyRound className="h-7 w-7 text-primary" />
-              </div>
-              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>
-                {isAr ? "الدخول بالرمز السري" : "PIN Login"}
-              </h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {isAr ? "أدخل رمز الدخول السريع المكون من 6 أرقام" : "Enter your 6-digit quick login PIN"}
-              </p>
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15"><KeyRound className="h-7 w-7 text-primary" /></div>
+              <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "الدخول بالرمز السري" : "PIN Login"}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">{isAr ? "أدخل رمز الدخول السريع المكون من 6 أرقام" : "Enter your 6-digit quick login PIN"}</p>
             </div>
-
             <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
               <Phone className="h-5 w-5 text-primary shrink-0" />
-              <span className="font-mono text-sm text-primary" dir="ltr">{signInPhoneCode + signInPhone}</span>
+              <span className="font-mono text-sm text-primary" dir="ltr">{auth.signInPhoneCode + auth.signInPhone}</span>
             </div>
-
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "رمز الدخول السريع (PIN)" : "Quick Login PIN"}</Label>
-              <Input
-                type="password"
-                autoComplete="off"
-                inputMode="numeric"
-                maxLength={6}
-                value={signInPin}
-                onChange={(e) => { setSignInPin(e.target.value.replace(/\D/g, "").slice(0, 6)); setPinError(""); }}
-                placeholder="••••••"
-                className="text-center text-2xl tracking-[0.5em] font-mono"
-                autoFocus
-                onKeyDown={(e) => e.key === "Enter" && signInPin.length === 6 && handlePinLogin()}
-              />
+              <Input type="password" autoComplete="off" inputMode="numeric" maxLength={6} value={auth.signInPin} onChange={(e) => { auth.setSignInPin(e.target.value.replace(/\D/g, "").slice(0, 6)); auth.setPinError(""); }} placeholder="••••••" className="text-center text-2xl tracking-[0.5em] font-mono" autoFocus onKeyDown={(e) => e.key === "Enter" && auth.signInPin.length === 6 && auth.handlePinLogin()} />
             </div>
-
-            {pinError && (
+            {auth.pinError && (
               <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2">
-                <p className="flex items-center gap-1.5 text-xs text-destructive">
-                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />{pinError}
-                </p>
+                <p className="flex items-center gap-1.5 text-xs text-destructive"><AlertCircle className="h-3.5 w-3.5 shrink-0" />{auth.pinError}</p>
               </div>
             )}
-
-            <Button className="w-full gap-2" size="lg" onClick={handlePinLogin} disabled={loading || signInPin.length !== 6}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
+            <Button className="w-full gap-2" size="lg" onClick={auth.handlePinLogin} disabled={auth.loading || auth.signInPin.length !== 6}>
+              {auth.loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <KeyRound className="h-4 w-4" />}
               {isAr ? "تسجيل الدخول" : "Sign In"}
             </Button>
-
-            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { setSignInPhoneStep("otp"); setSignInPin(""); setPinError(""); }}>
+            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { auth.setSignInPhoneStep("otp"); auth.setSignInPin(""); auth.setPinError(""); }}>
               {isAr ? "الدخول بالتحقق من الهاتف بدلاً من ذلك" : "Use phone verification instead"}
             </button>
           </div>
@@ -1153,42 +368,31 @@ export default function Auth() {
     );
   }
 
-  // ── Sign In: Phone password step (no email needed) ──
-  if (!isSignUp && signInMethod === "phone" && signInPhoneStep === "password") {
+  // ── Sign In: Phone password step ──
+  if (!isSignUp && auth.signInMethod === "phone" && auth.signInPhoneStep === "password") {
     return (
       <AuthLayout stage="login" isAr={isAr}>
         <SEOHead title={isAr ? "تسجيل الدخول" : "Sign In"} description="Enter your password" />
         <Card className="border-border/50 shadow-xl shadow-primary/5">
           <div className="p-5 md:p-6 space-y-5">
             <div className="flex flex-col items-center text-center">
-              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15">
-                <LogIn className="h-7 w-7 text-primary" />
-              </div>
+              <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 ring-1 ring-primary/15"><LogIn className="h-7 w-7 text-primary" /></div>
               <h2 className={`${isAr ? "font-sans" : "font-serif"} text-xl font-bold`}>{isAr ? "تسجيل الدخول" : "Sign In"}</h2>
             </div>
-
             <div className="flex items-center gap-2 rounded-xl border border-primary/20 bg-primary/5 p-3">
               <CheckCircle className="h-5 w-5 text-primary shrink-0" />
-              <div className="text-sm">
-                <span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span>{" "}
-                <span className="font-mono text-primary" dir="ltr">{signInVerifiedPhone}</span>
-              </div>
+              <div className="text-sm"><span className="font-medium">{isAr ? "تم التحقق:" : "Verified:"}</span> <span className="font-mono text-primary" dir="ltr">{auth.signInVerifiedPhone}</span></div>
             </div>
-
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-              <Input type="password" autoComplete="current-password" value={signInPassword} onChange={(e) => setSignInPassword(e.target.value)} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && handleSignInPhonePassword()} />
-              {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
+              <Input type="password" autoComplete="current-password" value={auth.signInPassword} onChange={(e) => auth.setSignInPassword(e.target.value)} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && auth.handleSignInPhonePassword()} />
+              {auth.errors.signInPassword && <p className="text-xs text-destructive">{auth.errors.signInPassword}</p>}
             </div>
-
-            <Button className="w-full gap-2" size="lg" onClick={handleSignInPhonePassword} disabled={loading}>
-              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+            <Button className="w-full gap-2" size="lg" onClick={auth.handleSignInPhonePassword} disabled={auth.loading}>
+              {auth.loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
               {isAr ? "تسجيل الدخول" : "Sign In"}
             </Button>
-
-            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => { setSignInPhoneStep("phone"); }}>
-              {isAr ? "رجوع" : "Back"}
-            </button>
+            <button type="button" className="w-full text-center text-xs text-primary hover:underline" onClick={() => auth.setSignInPhoneStep("phone")}>{isAr ? "رجوع" : "Back"}</button>
           </div>
         </Card>
       </AuthLayout>
@@ -1203,21 +407,15 @@ export default function Auth() {
         description="Join the global culinary community. Sign in or create your free account on Altoha."
       />
 
-      {/* Header */}
       <div className="flex flex-col items-center text-center">
         <img loading="lazy" src="/altoha-logo.png" alt="Altoha" className="mb-3 h-12 w-auto lg:hidden" />
         <h1 className={`${isAr ? "font-sans" : "font-serif"} text-2xl font-bold`}>
           {isSignUp ? (isAr ? "إنشاء حساب جديد" : "Create Account") : (isAr ? "تسجيل الدخول" : "Sign In")}
         </h1>
-        {isSignUp && (
-          <p className="mt-1 text-sm text-muted-foreground">
-            {isAr ? `الخطوة 1 من ${totalSteps} — طريقة التسجيل` : `Step 1 of ${totalSteps} — Registration method`}
-          </p>
-        )}
+        {isSignUp && <p className="mt-1 text-sm text-muted-foreground">{isAr ? `الخطوة 1 من ${totalSteps} — طريقة التسجيل` : `Step 1 of ${totalSteps} — Registration method`}</p>}
       </div>
 
-      {/* Google Sign In */}
-      <Button variant="outline" className="w-full gap-2" size="lg" onClick={handleGoogleSignIn} disabled={loading}>
+      <Button variant="outline" className="w-full gap-2" size="lg" onClick={auth.handleGoogleSignIn} disabled={auth.loading}>
         <svg className="h-5 w-5" viewBox="0 0 24 24">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -1233,265 +431,116 @@ export default function Auth() {
         <Separator className="flex-1" />
       </div>
 
-      {/* Form Card */}
       <Card className="border-border/50 shadow-lg shadow-primary/5">
         <CardContent className="space-y-4 p-5 md:p-6">
           {isSignUp ? (
-            /* ── SIGN UP: Step 1 Contact ── */
             <>
-              {/* Method Toggle */}
               <div className="flex rounded-xl border border-border/40 bg-muted/40 p-1 gap-1">
-                <button
-                  type="button"
-                  onClick={() => setSignUpMethod("phone")}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
-                    signUpMethod === "phone"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
-                  }`}
-                >
-                  <Phone className="h-4 w-4" />
-                  {isAr ? "رقم الهاتف" : "Phone"}
+                <button type="button" onClick={() => auth.setSignUpMethod("phone")} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${auth.signUpMethod === "phone" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-background/60"}`}>
+                  <Phone className="h-4 w-4" />{isAr ? "رقم الهاتف" : "Phone"}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setSignUpMethod("email")}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
-                    signUpMethod === "email"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
-                  }`}
-                >
-                  <Mail className="h-4 w-4" />
-                  {isAr ? "البريد الإلكتروني" : "Email"}
+                <button type="button" onClick={() => auth.setSignUpMethod("email")} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${auth.signUpMethod === "email" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-background/60"}`}>
+                  <Mail className="h-4 w-4" />{isAr ? "البريد الإلكتروني" : "Email"}
                 </button>
               </div>
 
-              {signUpMethod === "phone" ? (
+              {auth.signUpMethod === "phone" ? (
                 <>
-                  <PhoneInputWithFlag
-                    phone={phoneInput}
-                    onPhoneChange={setPhoneInput}
-                    countryCode={countryCode}
-                    phoneCode={phoneCode}
-                    onCountryChange={(code, pc) => {
-                      setCountryCode(code);
-                      setPhoneCode(pc);
-                    }}
-                    error={errors.phone}
-                    label={isAr ? "رقم الهاتف" : "Phone Number"}
-                    isAr={isAr}
-                  />
-                  <p className="text-[12px] text-muted-foreground">
-                    {isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}
-                  </p>
+                  <PhoneInputWithFlag phone={auth.phoneInput} onPhoneChange={auth.setPhoneInput} countryCode={auth.countryCode} phoneCode={auth.phoneCode} onCountryChange={(code, pc) => { auth.setCountryCode(code); auth.setPhoneCode(pc); }} error={auth.errors.phone} label={isAr ? "رقم الهاتف" : "Phone Number"} isAr={isAr} />
+                  <p className="text-[12px] text-muted-foreground">{isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}</p>
                 </>
               ) : (
                 <>
-                  <CountrySelector
-                    value={countryCode}
-                    onChange={(code, country) => {
-                      setCountryCode(code);
-                      setPhoneCode(country?.phone_code || "");
-                    }}
-                    label={isAr ? "الدولة" : "Country"}
-                    required
-                  />
-                  {errors.countryCode && <p className="text-xs text-destructive">{errors.countryCode}</p>}
-
+                  <CountrySelector value={auth.countryCode} onChange={(code, country) => { auth.setCountryCode(code); auth.setPhoneCode(country?.phone_code || ""); }} label={isAr ? "الدولة" : "Country"} required />
+                  {auth.errors.countryCode && <p className="text-xs text-destructive">{auth.errors.countryCode}</p>}
                   <div className="space-y-1.5">
                     <Label htmlFor="emailInput" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
-                    <Input
-                      id="emailInput"
-                      type="email"
-                      value={emailInput}
-                      onChange={(e) => setEmailInput(e.target.value)}
-                      placeholder={isAr ? "البريد الإلكتروني" : "Email address"}
-                    />
-                    {errors.email && <p className="text-xs text-destructive">{errors.email}</p>}
-                    <p className="text-[12px] text-muted-foreground">
-                      {isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}
-                    </p>
+                    <Input id="emailInput" type="email" value={auth.emailInput} onChange={(e) => auth.setEmailInput(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
+                    {auth.errors.email && <p className="text-xs text-destructive">{auth.errors.email}</p>}
+                    <p className="text-[12px] text-muted-foreground">{isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}</p>
                   </div>
                 </>
               )}
 
-              <Button className="w-full gap-2" size="lg" onClick={handleContactSubmit}>
-                {signUpMethod === "phone"
-                  ? (isAr ? "التالي — التحقق من الهاتف" : "Next — Verify Phone")
-                  : (isAr ? "التالي — التحقق من البريد" : "Next — Verify Email")}
+              <Button className="w-full gap-2" size="lg" onClick={auth.handleContactSubmit}>
+                {auth.signUpMethod === "phone" ? (isAr ? "التالي — التحقق من الهاتف" : "Next — Verify Phone") : (isAr ? "التالي — التحقق من البريد" : "Next — Verify Email")}
               </Button>
             </>
           ) : (
-            /* ── SIGN IN ── */
             <>
-              {/* Sign-in method toggle */}
               <div className="flex rounded-xl border border-border/40 bg-muted/40 p-1 gap-1">
-                <button
-                  type="button"
-                  onClick={() => { setSignInMethod("phone"); setErrors({}); }}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
-                    signInMethod === "phone"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
-                  }`}
-                >
-                  <Phone className="h-4 w-4" />
-                  {isAr ? "الهاتف" : "Phone"}
+                <button type="button" onClick={() => { auth.setSignInMethod("phone"); auth.setErrors({}); }} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${auth.signInMethod === "phone" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-background/60"}`}>
+                  <Phone className="h-4 w-4" />{isAr ? "الهاتف" : "Phone"}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => { setSignInMethod("email"); setErrors({}); }}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${
-                    signInMethod === "email"
-                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                      : "text-muted-foreground hover:text-foreground hover:bg-background/60"
-                  }`}
-                >
-                  <Mail className="h-4 w-4" />
-                  {isAr ? "البريد / المستخدم" : "Email / Username"}
+                <button type="button" onClick={() => { auth.setSignInMethod("email"); auth.setErrors({}); }} className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 ${auth.signInMethod === "email" ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "text-muted-foreground hover:text-foreground hover:bg-background/60"}`}>
+                  <Mail className="h-4 w-4" />{isAr ? "البريد / المستخدم" : "Email / Username"}
                 </button>
               </div>
 
-              {signInMethod === "phone" ? (
+              {auth.signInMethod === "phone" ? (
                 <>
-                   <PhoneInputWithFlag
-                     phone={signInPhone}
-                     onPhoneChange={(val) => {
-                       setSignInPhone(val);
-                       setPinAvailable(false);
-                     }}
-                     countryCode={signInCountry}
-                     phoneCode={signInPhoneCode}
-                     onCountryChange={(code, pc) => {
-                       setSignInCountry(code);
-                       setSignInPhoneCode(pc);
-                       setPinAvailable(false);
-                     }}
-                     error={errors.signInPhone}
-                     label={isAr ? "رقم الهاتف" : "Phone Number"}
-                     isAr={isAr}
-                   />
-
-                   <Button
-                     className="w-full gap-2"
-                     size="lg"
-                     onClick={async () => {
-                       const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
-                       if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
-                         setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
-                         return;
-                       }
-                       setErrors({});
-                       // Check if PIN is available for this phone
-                       await checkPinForPhone(normalizePhoneForStorage(fullPhone));
-                       setSignInPhoneStep("otp");
-                     }}
-                   >
-                     {isAr ? "التالي — التحقق" : "Next — Verify"}
-                   </Button>
-
-                   {/* PIN login shortcut */}
-                   {pinAvailable && (
-                     <button
-                       type="button"
-                       className="w-full text-center text-xs text-primary hover:underline flex items-center justify-center gap-1.5"
-                       onClick={() => {
-                         const fullPhone = signInPhoneCode + signInPhone.replace(/\s/g, "");
-                         if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) {
-                           setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" });
-                           return;
-                         }
-                         setErrors({});
-                         setSignInPhoneStep("pin");
-                       }}
-                     >
-                       <KeyRound className="h-3 w-3" />
-                       {isAr ? "الدخول بالرمز السري (PIN)" : "Login with PIN"}
-                     </button>
-                   )}
+                  <PhoneInputWithFlag phone={auth.signInPhone} onPhoneChange={(val) => { auth.setSignInPhone(val); auth.setPinAvailable(false); }} countryCode={auth.signInCountry} phoneCode={auth.signInPhoneCode} onCountryChange={(code, pc) => { auth.setSignInCountry(code); auth.setSignInPhoneCode(pc); auth.setPinAvailable(false); }} error={auth.errors.signInPhone} label={isAr ? "رقم الهاتف" : "Phone Number"} isAr={isAr} />
+                  <Button className="w-full gap-2" size="lg" onClick={async () => {
+                    const fullPhone = auth.signInPhoneCode + auth.signInPhone.replace(/\s/g, "");
+                    if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) { auth.setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" }); return; }
+                    auth.setErrors({});
+                    await auth.checkPinForPhone(normalizePhoneForStorage(fullPhone));
+                    auth.setSignInPhoneStep("otp");
+                  }}>
+                    {isAr ? "التالي — التحقق" : "Next — Verify"}
+                  </Button>
+                  {auth.pinAvailable && (
+                    <button type="button" className="w-full text-center text-xs text-primary hover:underline flex items-center justify-center gap-1.5" onClick={() => {
+                      const fullPhone = auth.signInPhoneCode + auth.signInPhone.replace(/\s/g, "");
+                      if (!/^\+?[1-9]\d{7,14}$/.test(fullPhone)) { auth.setErrors({ signInPhone: isAr ? "رقم غير صالح" : "Invalid number" }); return; }
+                      auth.setErrors({});
+                      auth.setSignInPhoneStep("pin");
+                    }}>
+                      <KeyRound className="h-3 w-3" />{isAr ? "الدخول بالرمز السري (PIN)" : "Login with PIN"}
+                    </button>
+                  )}
                 </>
               ) : (
                 <>
-                  {isLockedOut && (
+                  {auth.isLockedOut && (
                     <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-center animate-in fade-in slide-in-from-top-2 duration-300">
                       <ShieldCheck className="h-5 w-5 text-destructive mx-auto mb-1.5" />
-                      <p className="text-sm font-medium text-destructive">
-                        {isAr ? "تم قفل تسجيل الدخول مؤقتاً بسبب محاولات كثيرة" : "Login temporarily locked due to too many attempts"}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {isAr ? "يرجى الانتظار 5 دقائق ثم أعد المحاولة" : "Please wait 5 minutes, then try again"}
-                      </p>
+                      <p className="text-sm font-medium text-destructive">{isAr ? "تم قفل تسجيل الدخول مؤقتاً بسبب محاولات كثيرة" : "Login temporarily locked due to too many attempts"}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{isAr ? "يرجى الانتظار 5 دقائق ثم أعد المحاولة" : "Please wait 5 minutes, then try again"}</p>
                     </div>
                   )}
-                  {loginAttempts > 0 && loginAttempts < MAX_LOGIN_ATTEMPTS && !isLockedOut && (
+                  {auth.loginAttempts > 0 && auth.loginAttempts < MAX_LOGIN_ATTEMPTS && !auth.isLockedOut && (
                     <div className="rounded-xl border border-chart-4/30 bg-chart-4/5 px-3 py-2 text-center animate-in fade-in">
                       <p className="text-[12px] text-chart-4 font-medium">
-                        {isAr
-                          ? `${MAX_LOGIN_ATTEMPTS - loginAttempts} محاولات متبقية قبل القفل المؤقت`
-                          : `${MAX_LOGIN_ATTEMPTS - loginAttempts} attempts remaining before temporary lock`}
+                        {isAr ? `${MAX_LOGIN_ATTEMPTS - auth.loginAttempts} محاولات متبقية قبل القفل المؤقت` : `${MAX_LOGIN_ATTEMPTS - auth.loginAttempts} attempts remaining before temporary lock`}
                       </p>
                     </div>
                   )}
 
                   <div className="space-y-1.5">
                     <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد أو اسم المستخدم" : "Email or Username"}</Label>
-                    <Input
-                      id="signInEmail"
-                      type="text"
-                      value={signInEmail}
-                      onChange={(e) => {
-                        setSignInEmail(e.target.value);
-                        if (errors.signInEmail) setErrors((prev) => ({ ...prev, signInEmail: "" }));
-                        if (formError) setFormError("");
-                      }}
-                      placeholder={isAr ? "البريد الإلكتروني أو اسم المستخدم" : "Email or username"}
-                      onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()}
-                      maxLength={255}
-                      autoComplete="username"
-                      disabled={isLockedOut}
-                    />
-                    {errors.signInEmail && <p className="text-xs text-destructive">{errors.signInEmail}</p>}
+                    <Input id="signInEmail" type="text" value={auth.signInEmail} onChange={(e) => { auth.setSignInEmail(e.target.value); if (auth.errors.signInEmail) auth.setErrors((prev) => ({ ...prev, signInEmail: "" })); if (auth.formError) auth.setFormError(""); }} placeholder={isAr ? "البريد الإلكتروني أو اسم المستخدم" : "Email or username"} onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()} maxLength={255} autoComplete="username" disabled={auth.isLockedOut} />
+                    {auth.errors.signInEmail && <p className="text-xs text-destructive">{auth.errors.signInEmail}</p>}
                   </div>
 
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-                      <button type="button" className="text-[12px] text-primary hover:underline" onClick={() => setForgotOpen(true)}>
-                        {isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}
-                      </button>
+                      <button type="button" className="text-[12px] text-primary hover:underline" onClick={() => auth.setForgotOpen(true)}>{isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}</button>
                     </div>
-                    <Input
-                      id="signInPassword"
-                      type="password"
-                      value={signInPassword}
-                      onChange={(e) => {
-                        setSignInPassword(e.target.value);
-                        if (errors.signInPassword) setErrors((prev) => ({ ...prev, signInPassword: "" }));
-                        if (formError) setFormError("");
-                      }}
-                      placeholder="••••••••"
-                      onKeyDown={(e) => e.key === "Enter" && handleSignInEmail()}
-                      maxLength={128}
-                      autoComplete="current-password"
-                      disabled={isLockedOut}
-                    />
-                    {errors.signInPassword && <p className="text-xs text-destructive">{errors.signInPassword}</p>}
+                    <Input id="signInPassword" type="password" value={auth.signInPassword} onChange={(e) => { auth.setSignInPassword(e.target.value); if (auth.errors.signInPassword) auth.setErrors((prev) => ({ ...prev, signInPassword: "" })); if (auth.formError) auth.setFormError(""); }} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && auth.handleSignInEmail()} maxLength={128} autoComplete="current-password" disabled={auth.isLockedOut} />
+                    {auth.errors.signInPassword && <p className="text-xs text-destructive">{auth.errors.signInPassword}</p>}
                   </div>
 
-                  {/* Inline form error */}
-                  {formError && (
+                  {auth.formError && (
                     <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 animate-in slide-in-from-top-1 duration-200">
-                      <p className="flex items-center gap-1.5 text-xs text-destructive">
-                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-                        {formError}
-                      </p>
+                      <p className="flex items-center gap-1.5 text-xs text-destructive"><AlertCircle className="h-3.5 w-3.5 shrink-0" />{auth.formError}</p>
                     </div>
                   )}
 
-                  <Button className="w-full gap-2" size="lg" disabled={loading || isLockedOut} onClick={handleSignInEmail}>
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
-                    {loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
+                  <Button className="w-full gap-2" size="lg" disabled={auth.loading || auth.isLockedOut} onClick={auth.handleSignInEmail}>
+                    {auth.loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <LogIn className="h-4 w-4" />}
+                    {auth.loading ? (isAr ? "جاري الدخول..." : "Signing in...") : (isAr ? "تسجيل الدخول" : "Sign In")}
                   </Button>
                 </>
               )}
@@ -1500,48 +549,28 @@ export default function Auth() {
         </CardContent>
       </Card>
 
-      {/* Toggle sign in / sign up */}
       <div className="flex flex-col items-center gap-2 text-sm">
         <div className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">
-            {isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}
-          </span>
-          <button
-            type="button"
-            className="font-medium text-primary underline-offset-2 hover:underline"
-            onClick={() => {
-              if (isSignUp) {
-                navigate("/login", { replace: true });
-              } else {
-                navigate("/register", { replace: true });
-              }
-              setIsSignUp(!isSignUp);
-              setErrors({});
-              setSignInPhoneStep("phone");
-            }}
-          >
+          <span className="text-muted-foreground">{isSignUp ? (isAr ? "لديك حساب بالفعل؟" : "Already have an account?") : (isAr ? "ليس لديك حساب؟" : "Don't have an account?")}</span>
+          <button type="button" className="font-medium text-primary underline-offset-2 hover:underline" onClick={() => {
+            if (isSignUp) navigate("/login", { replace: true });
+            else navigate("/register", { replace: true });
+            setIsSignUp(!isSignUp);
+            auth.setErrors({});
+            auth.setSignInPhoneStep("phone");
+          }}>
             {isSignUp ? (isAr ? "تسجيل الدخول" : "Sign In") : (isAr ? "إنشاء حساب" : "Sign Up")}
           </button>
         </div>
-
         {!isSignUp && (
           <div className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">
-              {isAr ? "حساب شركة؟" : "Company account?"}
-            </span>
-            <button
-              type="button"
-              className="font-medium text-primary underline-offset-2 hover:underline"
-              onClick={() => navigate("/company-login")}
-            >
-              {isAr ? "تسجيل دخول الشركة" : "Company Login"}
-            </button>
+            <span className="text-muted-foreground">{isAr ? "حساب شركة؟" : "Company account?"}</span>
+            <button type="button" className="font-medium text-primary underline-offset-2 hover:underline" onClick={() => navigate("/company-login")}>{isAr ? "تسجيل دخول الشركة" : "Company Login"}</button>
           </div>
         )}
       </div>
 
-      {/* Forgot Password Dialog */}
-      <ForgotPasswordDialog open={forgotOpen} onOpenChange={setForgotOpen} />
+      <ForgotPasswordDialog open={auth.forgotOpen} onOpenChange={auth.setForgotOpen} />
     </AuthLayout>
   );
 }
