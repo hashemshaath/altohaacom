@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Plus, type, LucideIcon } from "lucide-react";
+import { Plus, type LucideIcon } from "lucide-react";
 
 interface AdminEmptyStateProps {
   icon: LucideIcon;
