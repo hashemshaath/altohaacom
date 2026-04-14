@@ -21,6 +21,7 @@ Deno.serve(async (req) => {
   const corsRes = handleCors(req);
   if (corsRes) return corsRes;
 
+  try {
     await authenticateRequest(req);
 
     const { messages } = await req.json();
@@ -41,6 +42,9 @@ Deno.serve(async (req) => {
     return jsonResponse({ reply: response.content || "I'm sorry, I couldn't generate a response. Please try again." });
   } catch (error: unknown) {
     console.error("ai-chat error:", error);
+    if (error instanceof Error && error.message === "Unauthorized") {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
     return errorResponse(error);
   }
 });
