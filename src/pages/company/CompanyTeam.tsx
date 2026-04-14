@@ -19,13 +19,13 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Users, Mail, Phone, Building, UserPlus, Shield, Crown, Eye, Pencil,
   Clock, CheckCircle2, XCircle, Send, RefreshCw, MoreHorizontal, Trash2,
-} from "lucide-react";
+LucideIcon } from "lucide-react";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const roleConfig: Record<string, { icon: any; color: string; bg: string; labelEn: string; labelAr: string }> = {
+const roleConfig: Record<string, { icon: LucideIcon; color: string; bg: string; labelEn: string; labelAr: string }> = {
   owner: { icon: Crown, color: "text-chart-4", bg: "bg-chart-4/10", labelEn: "Owner", labelAr: "مالك" },
   admin: { icon: Shield, color: "text-destructive", bg: "bg-destructive/10", labelEn: "Admin", labelAr: "مدير" },
   manager: { icon: Users, color: "text-primary", bg: "bg-primary/10", labelEn: "Manager", labelAr: "مشرف" },

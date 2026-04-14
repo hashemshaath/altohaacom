@@ -9,12 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   ArrowUpCircle, ArrowDownCircle, Clock, Gift, XCircle, Crown, Star, Zap, History,
-} from "lucide-react";
+LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 
-const TIER_CONFIG: Record<string, { icon: any; color: string; label: string; labelAr: string }> = {
+const TIER_CONFIG: Record<string, { icon: LucideIcon; color: string; label: string; labelAr: string }> = {
   basic: { icon: Zap, color: "text-muted-foreground", label: "Basic", labelAr: "الأساسي" },
   professional: { icon: Star, color: "text-primary", label: "Professional", labelAr: "الاحترافي" },
   enterprise: { icon: Crown, color: "text-chart-2", label: "Enterprise", labelAr: "المؤسسي" },

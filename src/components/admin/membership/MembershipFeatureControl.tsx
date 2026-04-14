@@ -14,7 +14,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Loader2, Search, Shield, Zap, Star, Crown, Layout, Users, MessageCircle,
   ToggleLeft, ToggleRight, CheckCircle2, XCircle,
-} from "lucide-react";
+LucideIcon } from "lucide-react";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 
@@ -24,7 +24,7 @@ const TIER_CONFIG = {
   enterprise: { icon: Crown, color: "text-chart-2" },
 };
 
-const CATEGORY_CONFIG: Record<string, { icon: any; label: string; labelAr: string }> = {
+const CATEGORY_CONFIG: Record<string, { icon: LucideIcon; label: string; labelAr: string }> = {
   profile_tab: { icon: Layout, label: "Profile Tabs", labelAr: "تبويبات الملف" },
   profile_header: { icon: Shield, label: "Profile Features", labelAr: "مميزات الملف" },
   community: { icon: MessageCircle, label: "Community", labelAr: "المجتمع" },

@@ -16,7 +16,7 @@ import {
   Briefcase, MapPin, DollarSign, Clock, Building2, Users, ArrowLeft, Send,
   CheckCircle2, Share2, Eye, Award, Star, Globe, ChefHat, ArrowRight, Sparkles, Heart,
   Home, ChevronRight, Bookmark, AlertCircle, Calendar
-} from "lucide-react";
+LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
@@ -470,7 +470,7 @@ export default function JobDetail() {
   );
 }
 
-function SummaryRow({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function SummaryRow({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
     <div className="flex items-start gap-2.5">
       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-muted/10">

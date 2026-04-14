@@ -14,7 +14,7 @@ const GENDERS = [
 
 interface PersonalInfoSectionProps {
   form: Record<string, any>;
-  update: (k: string, v: any) => void;
+  update: (k: string, v: unknown) => void;
   isAr: boolean;
 }
 

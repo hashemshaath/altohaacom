@@ -6,7 +6,7 @@ import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { FeatureGateForUser } from "@/components/membership/FeatureGate";
 
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
-import { FileText, Globe } from "lucide-react";
+import { FileText, Globe LucideIcon } from "lucide-react";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
 interface ProfileOverviewTabProps {
@@ -14,7 +14,7 @@ interface ProfileOverviewTabProps {
   userId: string;
 }
 
-function SectionTitle({ icon: Icon, label }: { icon: any; label: string }) {
+function SectionTitle({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <h3 className="flex items-center gap-2.5 text-sm font-bold mb-3.5 uppercase tracking-wider text-muted-foreground">
       <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-gradient-to-br from-primary/15 to-primary/5 shadow-sm">

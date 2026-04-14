@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
-import { Flame, UserCheck, Clock, Bookmark } from "lucide-react";
+import { Flame, UserCheck, Clock, Bookmark LucideIcon } from "lucide-react";
 
 export type FeedFilter = "for_you" | "following" | "latest" | "bookmarks";
 
@@ -15,7 +15,7 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const tabs: { id: FeedFilter; label: string; icon: any; requiresAuth?: boolean }[] = [
+  const tabs: { id: FeedFilter; label: string; icon: LucideIcon; requiresAuth?: boolean }[] = [
     { id: "for_you", label: isAr ? "لك" : "For You", icon: Flame },
     { id: "following", label: isAr ? "المتابَعون" : "Following", icon: UserCheck, requiresAuth: true },
     { id: "latest", label: isAr ? "الأحدث" : "Latest", icon: Clock },

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { Award, BadgeCheck, Shield, Star } from "lucide-react";
+import { Award, BadgeCheck, Shield, Star LucideIcon } from "lucide-react";
 
 interface ChefBadgeProps {
   userId: string;
@@ -14,7 +14,7 @@ interface ChefBadgeProps {
 
 type BadgeLevel = "verified" | "professional" | "champion" | "admin";
 
-const BADGE_CONFIG: Record<BadgeLevel, { icon: any; color: string; label: string; labelAr: string }> = {
+const BADGE_CONFIG: Record<BadgeLevel, { icon: LucideIcon; color: string; label: string; labelAr: string }> = {
   verified: { icon: BadgeCheck, color: "text-primary", label: "Verified Chef", labelAr: "طاهٍ موثق" },
   professional: { icon: Award, color: "text-chart-2", label: "Professional Chef", labelAr: "طاهٍ محترف" },
   champion: { icon: Star, color: "text-chart-4", label: "Competition Champion", labelAr: "بطل المسابقات" },

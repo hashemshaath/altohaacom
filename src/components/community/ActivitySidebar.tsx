@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MessageCircle, UserPlus, Repeat2, Bookmark, Bell } from "lucide-react";
+import { Heart, MessageCircle, UserPlus, Repeat2, Bookmark, Bell LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ActivityItem {
@@ -16,7 +16,7 @@ interface ActivityItem {
   created_at: string;
 }
 
-const ICON_MAP: Record<string, { icon: any; color: string; bg: string }> = {
+const ICON_MAP: Record<string, { icon: LucideIcon; color: string; bg: string }> = {
   like: { icon: Heart, color: "text-destructive", bg: "bg-destructive/10" },
   comment: { icon: MessageCircle, color: "text-primary", bg: "bg-primary/10" },
   follow: { icon: UserPlus, color: "text-chart-3", bg: "bg-chart-3/10" },

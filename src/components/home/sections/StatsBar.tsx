@@ -2,7 +2,7 @@ import { forwardRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { Users, Trophy, Globe, Landmark } from "lucide-react";
+import { Users, Trophy, Globe, Landmark LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
@@ -14,7 +14,7 @@ const COLORS = [
   { bg: "bg-card", text: "text-primary", icon: "bg-primary/10", ring: "ring-border/50" },
 ];
 
-const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon: any; isVisible: boolean; delay: number; colorIdx: number }>(
+const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon: LucideIcon; isVisible: boolean; delay: number; colorIdx: number }>(
   function StatCard({ value, label, icon: Icon, isVisible, delay, colorIdx }, ref) {
     const count = useCountUp(value, isVisible);
     const color = COLORS[colorIdx % COLORS.length];

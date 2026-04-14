@@ -2,11 +2,11 @@ import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Coffee, Wine, UtensilsCrossed, Palette, Globe, ChefHat } from "lucide-react";
+import { Coffee, Wine, UtensilsCrossed, Palette, Globe, ChefHat LucideIcon } from "lucide-react";
 
 export type EvaluationCategory = "culinary" | "coffee" | "barista" | "beverage" | "decoration" | "local_dishes" | "international";
 
-const CATEGORIES: { value: EvaluationCategory; icon: any; en: string; ar: string; desc_en: string; desc_ar: string }[] = [
+const CATEGORIES: { value: EvaluationCategory; icon: LucideIcon; en: string; ar: string; desc_en: string; desc_ar: string }[] = [
   { value: "culinary", icon: UtensilsCrossed, en: "Culinary", ar: "الطهي العام", desc_en: "General culinary evaluation", desc_ar: "تقييم الطهي العام" },
   { value: "coffee", icon: Coffee, en: "Coffee & Latte Art", ar: "القهوة ولاتيه آرت", desc_en: "WLAC-style coffee and latte art competitions", desc_ar: "مسابقات القهوة ولاتيه آرت على غرار WLAC" },
   { value: "barista", icon: ChefHat, en: "Barista Championship", ar: "بطولة الباريستا", desc_en: "Espresso, milk beverages, and signature drinks", desc_ar: "إسبريسو ومشروبات الحليب والمشروبات المميزة" },

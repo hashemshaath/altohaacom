@@ -1,7 +1,7 @@
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Briefcase, GraduationCap, Tv, Award, Trophy, ChevronDown, Calendar, Scale, Users, Medal, CalendarCheck, FileText } from "lucide-react";
+import { Briefcase, GraduationCap, Tv, Award, Trophy, ChevronDown, Calendar, Scale, Users, Medal, CalendarCheck, FileText LucideIcon } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
   EDUCATION_LEVELS, JUDGING_POSITIONS, MEDAL_TYPES, COMPETITION_ROLES,
@@ -43,7 +43,7 @@ const SECTION_ICONS: Record<string, any> = {
 };
 
 const CollapsibleBioSection = memo(function CollapsibleBioSection({ icon: Icon, title, count, theme, children, defaultOpen = true }: {
-  icon: any; title: string; count: number; theme: any; children: React.ReactNode; defaultOpen?: boolean;
+  icon: LucideIcon; title: string; count: number; theme: any; children: React.ReactNode; defaultOpen?: boolean;
 }) {
   const [open, setOpen] = useState(defaultOpen);
   if (count === 0) return null;
@@ -72,7 +72,7 @@ const CollapsibleBioSection = memo(function CollapsibleBioSection({ icon: Icon, 
 });
 
 const RecordCard = memo(function RecordCard({ record, isAr, theme, icon: Icon, iconBg, sectionType }: {
-  record: any; isAr: boolean; theme: any; icon: any; iconBg: string; sectionType: string;
+  record: any; isAr: boolean; theme: any; icon: LucideIcon; iconBg: string; sectionType: string;
 }) {
   const title = pick(isAr, record.title_ar, record.title);
   const entity = pick(isAr, record.entity_name_ar, record.entity_name);

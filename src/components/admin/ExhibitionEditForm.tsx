@@ -325,7 +325,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   const sectionRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const updateField = useCallback((key: string, value: any) => setForm(prev => ({ ...prev, [key]: value })), []);
+  const updateField = useCallback((key: string, value: unknown) => setForm(prev => ({ ...prev, [key]: value })), []);
 
   const getSectionStatus = useCallback((sectionId: string): "complete" | "partial" | "empty" => {
     switch (sectionId) {

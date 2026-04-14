@@ -209,7 +209,7 @@ function generateSlug(name: string) {
 }
 
 /* ─── Quick Nav Item ─── */
-function QuickNavItem({ icon: Icon, label, status, active, onClick }: { icon: any; label: string; status: "complete" | "partial" | "empty"; active: boolean; onClick: () => void }) {
+function QuickNavItem({ icon: Icon, label, status, active, onClick }: { icon: LucideIcon; label: string; status: "complete" | "partial" | "empty"; active: boolean; onClick: () => void }) {
   return (
     <button onClick={onClick} className={cn(
       "flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-xs transition-all",

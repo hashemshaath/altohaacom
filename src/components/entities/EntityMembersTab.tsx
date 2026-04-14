@@ -7,10 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
-import { Users, GraduationCap, Briefcase, Crown, User } from "lucide-react";
+import { Users, GraduationCap, Briefcase, Crown, User LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 
-const membershipTypeLabels: Record<string, { en: string; ar: string; icon: any }> = {
+const membershipTypeLabels: Record<string, { en: string; ar: string; icon: LucideIcon }> = {
   member: { en: "Member", ar: "عضو", icon: Users },
   student: { en: "Student", ar: "طالب", icon: GraduationCap },
   alumni: { en: "Alumni", ar: "خريج", icon: GraduationCap },

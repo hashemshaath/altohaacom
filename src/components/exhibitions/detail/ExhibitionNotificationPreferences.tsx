@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Bell, BellOff, CalendarClock, Ticket, Users, Star, Radio, MessageCircle } from "lucide-react";
+import { Bell, BellOff, CalendarClock, Ticket, Users, Star, Radio, MessageCircle LucideIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface Props {
@@ -64,7 +64,7 @@ export const ExhibitionNotificationPreferences = memo(function ExhibitionNotific
 
   if (!user) return null;
 
-  const items: { key: keyof NotifPrefs; label: string; labelAr: string; desc: string; descAr: string; icon: any }[] = [
+  const items: { key: keyof NotifPrefs; label: string; labelAr: string; desc: string; descAr: string; icon: LucideIcon }[] = [
     { key: "schedule_changes", label: "Schedule Changes", labelAr: "تغييرات الجدول", desc: "Get notified about schedule updates", descAr: "إشعارات عن تحديثات الجدول", icon: CalendarClock },
     { key: "new_sessions", label: "New Sessions", labelAr: "جلسات جديدة", desc: "When new sessions are added", descAr: "عند إضافة جلسات جديدة", icon: Radio },
     { key: "ticket_updates", label: "Ticket Updates", labelAr: "تحديثات التذاكر", desc: "Booking and check-in alerts", descAr: "تنبيهات الحجز والدخول", icon: Ticket },

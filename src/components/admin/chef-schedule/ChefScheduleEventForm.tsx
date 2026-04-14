@@ -65,7 +65,7 @@ const ChefScheduleEventForm = memo(function ChefScheduleEventForm({ event, onClo
     notes: event?.notes || "",
   });
 
-  const set = (key: string, value: any) => setForm(f => ({ ...f, [key]: value }));
+  const set = (key: string, value: unknown) => setForm(f => ({ ...f, [key]: value }));
 
   const handleSubmit = async () => {
     if (!form.chef_id || !form.title || !form.start_date) {

@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Calendar, MapPin, ExternalLink LucideIcon } from "lucide-react";
 import { memo } from "react";
 
 interface CareerRecordCardProps {
   record: any;
-  icon: any;
+  icon: LucideIcon;
   iconBg: string;
   iconColor: string;
   isAr: boolean;

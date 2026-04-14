@@ -23,7 +23,7 @@ import {
   BarChart3, TrendingUp, TrendingDown, ShoppingCart, FileText,
   CreditCard, Users, Download, Calendar, Activity, Receipt, PieChart as PieIcon,
   ArrowUpRight, ArrowDownRight, Package,
-} from "lucide-react";
+LucideIcon } from "lucide-react";
 import { format, subMonths, subDays, startOfMonth, endOfMonth, startOfDay, endOfDay, eachMonthOfInterval, eachWeekOfInterval, parseISO } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
@@ -542,7 +542,7 @@ export default function CompanyAnalytics() {
 }
 
 function KPICard({ icon: Icon, label, value, sub, accent, isLoading }: {
-  icon: any; label: string; value: string | number; sub?: string; accent: string; isLoading: boolean;
+  icon: LucideIcon; label: string; value: string | number; sub?: string; accent: string; isLoading: boolean;
 }) {
   return (
     <Card className="animate-fade-in transition-all duration-200 hover:shadow-md hover:-translate-y-0.5">

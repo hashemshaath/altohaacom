@@ -15,7 +15,7 @@ import {
   MessageSquare, ChevronDown, ChevronUp, ThumbsUp, Clock,
   BadgeCheck, ShieldCheck, Sparkles, Users, HelpCircle,
   Timer, Percent, Gift, Verified, Megaphone,
-} from "lucide-react";
+LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MS_PER_DAY } from "@/lib/constants";
 
@@ -177,7 +177,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
     product.unit && { label: isAr ? "الوحدة" : "Unit", value: product.unit, icon: Ruler },
     stockQty && { label: isAr ? "الكمية المتوفرة" : "Available", value: stockQty.toString(), icon: Package },
     warrantyYears > 0 && { label: isAr ? "الضمان" : "Warranty", value: isAr ? `${warrantyYears} سنوات` : `${warrantyYears} Years`, icon: Shield },
-  ].filter(Boolean) as { label: string; value: string; icon: any }[];
+  ].filter(Boolean) as { label: string; value: string; icon: LucideIcon }[];
 
   const handleShare = async () => {
     try { await navigator.share({ title, url: window.location.href }); } catch { await navigator.clipboard.writeText(window.location.href).then(null, () => {}); }

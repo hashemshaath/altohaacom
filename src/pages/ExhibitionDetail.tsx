@@ -13,7 +13,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
   Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem,
-} from "lucide-react";
+LucideIcon } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";
@@ -94,7 +94,7 @@ function getCountryFlag(country?: string): string {
 }
 
 /* ---------- Memoized Tab Trigger ---------- */
-const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: any; label: string; count?: number }) => (
+const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value: string; icon: LucideIcon; label: string; count?: number }) => (
   <TabsTrigger
     value={value}
     className="gap-1.5 rounded-lg px-3 py-2 text-xs font-semibold transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted/50 sm:px-4 sm:py-2.5 sm:text-sm whitespace-nowrap touch-manipulation"
