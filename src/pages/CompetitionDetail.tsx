@@ -1,34 +1,24 @@
-import { useState, useCallback, useMemo, lazy, Suspense, useEffect, useRef } from "react";
-import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
+import { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { categoryBadgeText } from "@/lib/categoryUtils";
 import { AnimatedCounter as SharedAnimatedCounter } from "@/components/ui/animated-counter";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
-import { safeJsonLd } from "@/lib/safeJsonLd";
-import { useAuth } from "@/contexts/AuthContext";
-import { useIsAdmin } from "@/hooks/useAdmin";
+import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle,
   Settings, Pencil, Award, BookOpen, ClipboardList, Clock, Share2,
-  ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
+  ImageIcon, Twitter, Facebook, Linkedin, Link2,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
   Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
   Swords, Layers, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle, Bookmark, BookmarkCheck,
-  Star, TrendingUp, Zap, Crown, Hash, Timer, Ticket, Activity, Heart,
-  Play, Pause, ChevronRight, ExternalLink, Bell,
+  Star, TrendingUp, Zap, Hash, Timer, Ticket, Activity, Bell,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -37,16 +27,16 @@ import {
 import { SEOHead } from "@/components/SEOHead";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { buildPublicUrl } from "@/lib/publicAppUrl";
-import { format, formatDistanceToNow, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from "date-fns";
-import { deriveCompetitionStatus } from "@/lib/competitionStatus";
-import { useEntityQRCode } from "@/hooks/useQRCode";
+import { safeJsonLd } from "@/lib/safeJsonLd";
+import { format } from "date-fns";
 import { RegistrationStatusBanner } from "@/components/competitions/RegistrationStatusBanner";
-import { CompetitionCountdown } from "@/components/competitions/CompetitionCountdown";
 import { CompetitionTimeline } from "@/components/competitions/CompetitionTimeline";
 import { ParticipantStatsCard } from "@/components/competitions/ParticipantStatsCard";
 import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
-import type { Database } from "@/integrations/supabase/types";
+import { useCompetitionDetailData } from "./competition/useCompetitionDetailData";
+import { statusConfig, TabTransition, Section, LiveCountdownStrip } from "./competition/competitionDetailHelpers";
+import type { CompetitionStatus } from "./competition/competitionDetailHelpers";
 
 // Lazy-loaded tab panels
 const CompetitionStatusManager = lazy(() => import("@/components/competitions/CompetitionStatusManager").then(m => ({ default: m.CompetitionStatusManager })));
@@ -84,280 +74,26 @@ const CompetitionAnalyticsDashboard = lazy(() => import("@/components/competitio
 const AdvancedSchedulingPanel = lazy(() => import("@/components/competitions/AdvancedSchedulingPanel").then(m => ({ default: m.AdvancedSchedulingPanel })));
 const NotificationHub = lazy(() => import("@/components/competitions/NotificationHub").then(m => ({ default: m.NotificationHub })));
 
-type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
-
-const statusConfig: Record<CompetitionStatus, { bg: string; dot: string; label: string; labelAr: string; glow?: boolean }> = {
-  pending: { bg: "bg-chart-4/10 text-chart-4", dot: "bg-chart-4", label: "Pending Approval", labelAr: "بانتظار الموافقة" },
-  draft: { bg: "bg-muted/60", dot: "bg-muted-foreground", label: "Draft", labelAr: "مسودة" },
-  upcoming: { bg: "bg-accent/10 text-accent-foreground", dot: "bg-accent", label: "Upcoming", labelAr: "قادمة" },
-  registration_open: { bg: "bg-primary/10 text-primary", dot: "bg-primary", label: "Registration Open", labelAr: "التسجيل مفتوح", glow: true },
-  registration_closed: { bg: "bg-muted/60 text-muted-foreground", dot: "bg-muted-foreground", label: "Registration Closed", labelAr: "التسجيل مغلق" },
-  in_progress: { bg: "bg-chart-3/10 text-chart-3", dot: "bg-chart-3", label: "In Progress", labelAr: "جارية", glow: true },
-  judging: { bg: "bg-chart-4/10 text-chart-4", dot: "bg-chart-4", label: "Judging", labelAr: "التحكيم", glow: true },
-  completed: { bg: "bg-chart-5/10 text-chart-5", dot: "bg-chart-5", label: "Completed", labelAr: "مكتملة" },
-  cancelled: { bg: "bg-destructive/10 text-destructive", dot: "bg-destructive", label: "Cancelled", labelAr: "ملغاة" },
-};
-
-/* ─── Tab Content Transition Wrapper ─── */
-function TabTransition({ children, activeKey }: { children: React.ReactNode; activeKey: string }) {
-  const [visible, setVisible] = useState(true);
-  const prevKey = useRef(activeKey);
-  useEffect(() => {
-    if (prevKey.current !== activeKey) {
-      setVisible(false);
-      const t = setTimeout(() => { setVisible(true); prevKey.current = activeKey; }, 80);
-      return () => clearTimeout(t);
-    }
-  }, [activeKey]);
-  return (
-    <div className={`transition-all duration-300 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-1"}`}>
-      {children}
-    </div>
-  );
-}
-
-/* ─── Live Countdown Hook ─── */
-function useLiveCountdown(targetDate: string | null) {
-  const [now, setNow] = useState(Date.now());
-  useEffect(() => {
-    if (!targetDate) return;
-    const timer = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(timer);
-  }, [targetDate]);
-
-  if (!targetDate) return null;
-  const target = new Date(targetDate).getTime();
-  const diff = target - now;
-  if (diff <= 0) return null;
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-  return { days, hours, minutes, seconds, total: diff };
-}
-
-/* ─── Mini Progress Ring ─── */
-function ProgressRing({ value, max, size = 44, strokeWidth = 4, color = "text-primary" }: { value: number; max: number; size?: number; strokeWidth?: number; color?: string }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const progress = max > 0 ? Math.min(value / max, 1) : 0;
-  const offset = circumference - progress * circumference;
-
-  return (
-    <svg width={size} height={size} className="-rotate-90">
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={strokeWidth} className="text-muted/30" />
-      <circle cx={size / 2} cy={size / 2} r={radius} fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeDasharray={circumference} strokeDashoffset={offset} strokeLinecap="round" className={`${color} transition-all duration-1000 ease-out`} />
-    </svg>
-  );
-}
-
-/* ─── Section Wrapper — premium editorial feel ─── */
-function Section({
-  icon, title, defaultOpen = true, badge, children, accent = false,
-}: {
-  icon: React.ReactNode; title: string; defaultOpen?: boolean; badge?: React.ReactNode; children: React.ReactNode; accent?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <Collapsible open={open} onOpenChange={setOpen} className="scroll-mt-36" id={`section-${title.toLowerCase().replace(/\s+/g, '-')}`}>
-      <div className={`overflow-hidden rounded-2xl border transition-all duration-300 ${accent ? "border-primary/15 bg-primary/[0.02]" : "border-border/40 bg-card"} ${open ? "shadow-sm" : "shadow-none"}`}>
-        <CollapsibleTrigger className="flex w-full items-center justify-between gap-3 px-4 sm:px-6 py-3.5 sm:py-4 text-start hover:bg-muted/20 transition-colors group touch-manipulation active:scale-[0.98]">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-primary/8 shrink-0 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary/12">
-              <span className="text-primary">{icon}</span>
-            </div>
-            <div>
-              <h3 className="font-semibold text-sm sm:text-base tracking-tight">{title}</h3>
-              {badge && <div className="mt-0.5">{badge}</div>}
-            </div>
-          </div>
-          <ChevronDown className={`h-5 w-5 text-muted-foreground/60 transition-transform duration-300 ease-out-expo ${open ? "rotate-180" : ""}`} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
-          <div className="mx-4 sm:mx-6 mb-0.5">
-            <Separator className="opacity-30" />
-          </div>
-          <div className="p-4 sm:p-6">{children}</div>
-        </CollapsibleContent>
-      </div>
-    </Collapsible>
-  );
-}
-
-/* ─── Live Countdown Display ─── */
-function LiveCountdownStrip({ targetDate, label, labelAr, isAr }: { targetDate: string; label: string; labelAr: string; isAr: boolean }) {
-  const countdown = useLiveCountdown(targetDate);
-  if (!countdown) return null;
-  const units = [
-    { value: countdown.days, en: "Days", ar: "يوم" },
-    { value: countdown.hours, en: "Hrs", ar: "ساعة" },
-    { value: countdown.minutes, en: "Min", ar: "دقيقة" },
-    { value: countdown.seconds, en: "Sec", ar: "ثانية" },
-  ];
-  return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/[0.04] via-transparent to-primary/[0.04] p-4 sm:p-5">
-      <p className="text-xs font-bold uppercase tracking-widest text-primary mb-3">{isAr ? labelAr : label}</p>
-      <div className="grid grid-cols-4 gap-2 sm:gap-3">
-        {units.map((u) => (
-          <div key={u.en} className="text-center">
-            <div className="text-2xl sm:text-3xl font-bold tabular-nums text-foreground leading-none">{String(u.value).padStart(2, "0")}</div>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function CompetitionDetail() {
-  const { slug: urlParam } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
-  const { t, language } = useLanguage();
-  const { user } = useAuth();
-  const isAdmin = useIsAdmin();
+  const {
+    competition, isLoading, competitionId, slug, urlParam,
+    isAr, language, t, user, isAdmin,
+    qrCode, isWatched, toggleWatchlist,
+    categories, criteria, myRegistration, registrationStats, judgesCount,
+    competitionTypes, supervisors, accreditors,
+    isOrganizer, canSeeKnowledge,
+    totalScore, completionPercent,
+  } = useCompetitionDetailData();
+
   const [activeSection, setActiveSection] = useState<string>("overview");
   const setActiveTab = useCallback((tabId: string) => {
     setActiveSection(tabId);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
-  const isAr = language === "ar";
-  const slug = urlParam;
 
-  const { data: competition, isLoading } = useQuery({
-    queryKey: ["competition", slug],
-    queryFn: async () => {
-      let { data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix, slug").eq("slug", slug).maybeSingle();
-      if (!data) {
-        ({ data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix, slug").eq("id", slug).maybeSingle());
-      }
-      if (error) throw error;
-      if (!data) throw new Error("Competition not found");
-      return data;
-    },
-    enabled: !!slug,
-    staleTime: 1000 * 60 * 3,
-  });
 
-  // SEO: Redirect UUID URLs to slug-based canonical URL
-  const isUuidParam = urlParam && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(urlParam);
-  useEffect(() => {
-    if (competition?.slug && isUuidParam && competition.slug !== urlParam) {
-      navigate(`/competitions/${competition.slug}`, { replace: true });
-    }
-  }, [competition?.slug, isUuidParam, urlParam, navigate]);
-
-  const competitionId = competition?.id;
-  const { data: qrCode } = useEntityQRCode("competition", competitionId, "competition");
-  const { isWatched, toggle: toggleWatchlist } = useEventWatchlist("competition", competitionId);
-
-  const { data: categories } = useQuery({
-    queryKey: ["competition-categories", competitionId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar, description, description_ar, max_participants, gender, sort_order, cover_image_url, participant_level, status").eq("competition_id", competitionId!).order("sort_order");
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!competitionId,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const { data: criteria } = useQuery({
-    queryKey: ["judging-criteria", competitionId],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("judging_criteria").select("id, name, name_ar, description, description_ar, max_score, weight, sort_order").eq("competition_id", competitionId!).order("sort_order");
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!competitionId,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const { data: myRegistration } = useQuery({
-    queryKey: ["my-registration", competitionId, user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data } = await supabase.from("competition_registrations").select("id, status, competition_id, participant_id, category_id, dish_name, entry_type, team_name, registered_at").eq("competition_id", competitionId!).eq("participant_id", user.id).maybeSingle();
-      return data;
-    },
-    enabled: !!competitionId && !!user,
-  });
-
-  const { data: registrationStats } = useQuery({
-    queryKey: ["registration-stats", competitionId],
-    queryFn: async () => {
-      const { data } = await supabase.from("competition_registrations").select("status").eq("competition_id", competitionId!);
-      const total = data?.length || 0;
-      const approved = data?.filter(r => r.status === "approved").length || 0;
-      const pending = data?.filter(r => r.status === "pending").length || 0;
-      return { total, approved, pending };
-    },
-    enabled: !!competitionId,
-    staleTime: 1000 * 60 * 2,
-  });
-
-  const { data: judgesCount } = useQuery({
-    queryKey: ["judges-count", competitionId],
-    queryFn: async () => {
-      const { data } = await supabase.from("competition_judges").select("id").eq("competition_id", competitionId!);
-      return data?.length || 0;
-    },
-    enabled: !!competitionId,
-    staleTime: 1000 * 60 * 5,
-  });
-
-  const { data: competitionTypes } = useQuery({
-    queryKey: ["competition-detail-types", competitionId],
-    queryFn: async () => {
-      const { data: assignments } = await supabase.from("competition_type_assignments").select("type_id").eq("competition_id", competitionId!);
-      if (!assignments || assignments.length === 0) return [];
-      const typeIds = assignments.map((a) => a.type_id);
-      const { data: types } = await supabase.from("competition_types").select("id, name, name_ar, icon, cover_image_url").in("id", typeIds);
-      return types || [];
-    },
-    enabled: !!competitionId,
-  });
-
-  const { data: supervisingBodies } = useQuery({
-    queryKey: ["competition-detail-bodies", competitionId],
-    queryFn: async () => {
-      const { data: assignments } = await supabase.from("competition_supervising_bodies").select("entity_id, role").eq("competition_id", competitionId!);
-      if (!assignments || assignments.length === 0) return [];
-      const entityIds = assignments.map((a) => a.entity_id);
-      const roles = new Map(assignments.map(a => [a.entity_id, a.role]));
-      const { data: entities } = await supabase.from("culinary_entities").select("id, name, name_ar, abbreviation, logo_url, type, country").in("id", entityIds);
-      return (entities || []).map(e => ({ ...e, bodyRole: roles.get(e.id) || "supervisor" }));
-    },
-    enabled: !!competitionId,
-  });
-
-  const { data: userRoles } = useQuery({
-    queryKey: ["user-roles", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("user_roles").select("role").eq("user_id", user!.id);
-      return data?.map(r => r.role) || [];
-    },
-    enabled: !!user,
-  });
-
-  const supervisors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole === "supervisor") || [], [supervisingBodies]);
-  const accreditors = useMemo(() => supervisingBodies?.filter(b => b.bodyRole !== "supervisor") || [], [supervisingBodies]);
-
-  const isOrganizer = user && competition?.organizer_id === user.id;
-  const canSeeKnowledge = isOrganizer || isAdmin || userRoles?.some(r => ["judge", "supervisor"].includes(r));
-
-  // Derived data
-  const totalScore = useMemo(() => criteria?.reduce((sum, c) => sum + (c.max_score || 0), 0) || 0, [criteria]);
-  const completionPercent = useMemo(() => {
-    if (!competition) return 0;
-    const start = new Date(competition.competition_start).getTime();
-    const end = new Date(competition.competition_end).getTime();
-    const now = Date.now();
-    if (now < start) return 0;
-    if (now > end) return 100;
-    return Math.round(((now - start) / (end - start)) * 100);
-  }, [competition]);
 
   // ─── Grouped Navigation ───
   const NAV_GROUPS = useMemo(() => {
@@ -1094,7 +830,7 @@ export default function CompetitionDetail() {
                         {categories.length > 6 && (
                           <Button variant="ghost" size="sm" className="mt-4 w-full rounded-xl text-xs" onClick={() => setActiveTab("categories")}>
                             {isAr ? `عرض الكل (${categories.length})` : `View All (${categories.length})`}
-                            <ChevronRight className="ms-1 h-3 w-3 rtl:rotate-180" />
+                            <span className="ms-1 text-xs">→</span>
                           </Button>
                         )}
                       </Section>
