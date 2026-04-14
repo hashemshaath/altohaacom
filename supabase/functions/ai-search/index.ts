@@ -1,6 +1,7 @@
 import { handleCors } from "../_shared/cors.ts";
 import { jsonResponse, errorResponse, streamResponse } from "../_shared/response.ts";
 import { callAIStream } from "../_shared/ai.ts";
+import { authenticateRequest } from "../_shared/auth.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 Deno.serve(async (req) => {
@@ -8,6 +9,8 @@ Deno.serve(async (req) => {
   if (corsRes) return corsRes;
 
   try {
+    await authenticateRequest(req);
+
     const { query, language } = await req.json();
     if (!query || typeof query !== "string" || query.trim().length < 2) {
       return jsonResponse({ error: "Query too short" }, 400);
@@ -76,6 +79,9 @@ ${!hasResults ? "\nNo direct matches found. Provide helpful suggestions." : ""}`
     return streamResponse(aiRes.body);
   } catch (e: unknown) {
     console.error("ai-search error:", e);
+    if (e instanceof Error && e.message === "Unauthorized") {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
     return errorResponse(e);
   }
 });
