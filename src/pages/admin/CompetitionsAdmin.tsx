@@ -512,7 +512,7 @@ export default function CompetitionsAdmin() {
                     <SelectTrigger className="w-[140px] h-8 text-xs rounded-xl"><SelectValue placeholder={isAr ? "المعرض" : "Exhibition"} /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                      {uniqueExhibitions.map((ex: Record<string, unknown>) => <SelectItem key={ex.id} value={ex.id}>{isAr && ex.title_ar ? ex.title_ar : ex.title}</SelectItem>)}
+                      {uniqueExhibitions.map((ex: any) => <SelectItem key={ex.id} value={ex.id}>{isAr && ex.title_ar ? ex.title_ar : ex.title}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 )}

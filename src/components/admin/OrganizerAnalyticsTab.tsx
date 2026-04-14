@@ -49,7 +49,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
 
       const reviews = reviewsRes.data || [];
       const avgRating = reviews.length > 0
-        ? reviews.reduce((s, r: Record<string, unknown>) => s + (r.rating || 0), 0) / reviews.length
+        ? reviews.reduce((s, r: any) => s + (r.rating || 0), 0) / reviews.length
         : 0;
 
       const totalViews = exhibitions.reduce((s, e) => s + (e.view_count || 0), 0);

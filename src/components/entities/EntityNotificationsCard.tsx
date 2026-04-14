@@ -52,7 +52,7 @@ export const EntityNotificationsCard = memo(function EntityNotificationsCard({ e
         });
       });
 
-      (compsRes.data || []).forEach((c: Record<string, unknown>) => {
+      (compsRes.data || []).forEach((c: any) => {
         const comp = c.competitions;
         activities.push({
           type: isAr ? "مسابقة" : "Competition",

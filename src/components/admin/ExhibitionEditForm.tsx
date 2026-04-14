@@ -1305,7 +1305,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
               {selectedSeriesId ? (
                 previousEditions.length > 0 ? (
                   <div className="space-y-2">
-                    {previousEditions.map((ed: Record<string, unknown>) => {
+                    {previousEditions.map((ed: any) => {
                       const isCurrent = ed.id === editingId;
                       const edStatus = statusOptions.find(s => s.value === ed.status);
                       return (

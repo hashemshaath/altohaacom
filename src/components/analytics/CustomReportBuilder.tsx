@@ -110,7 +110,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
           ]);
 
           const months: Record<string, number> = {};
-          (records || []).forEach((r: Record<string, unknown>) => {
+          (records || []).forEach((r: any) => {
             const m = r.created_at?.substring(0, 7);
             if (m) months[m] = (months[m] || 0) + 1;
           });
