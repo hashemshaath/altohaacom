@@ -11,16 +11,9 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { statusColors } from "./statusColors";
 import type { AdCampaignWithCompany } from "./types";
 
-interface BulkActions {
-  selectedIds: Set<string>;
-  toggle: (id: string) => void;
-  toggleAll: (ids: string[]) => void;
-  clearAll: () => void;
-}
-
 interface Props {
   campaigns: AdCampaignWithCompany[];
-  bulkActions: BulkActions;
+  bulkActions: ReturnType<typeof import("@/hooks/useAdminBulkActions").useAdminBulkActions<AdCampaignWithCompany>>;
   onApprove: (id: string, status: string) => void;
   onReject: (id: string) => void;
   onInvoice: (campaign: AdCampaignWithCompany) => void;

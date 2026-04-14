@@ -14,10 +14,10 @@ export type AdImpressionRow = Database["public"]["Tables"]["ad_impressions"]["Ro
 
 /** Creative with its joined placement */
 export type AdCreativeWithPlacement = AdCreativeRow & {
-  ad_placements?: Pick<AdPlacementRow, "name" | "name_ar" | "slug"> | null;
+  ad_placements?: Pick<AdPlacementRow, "name" | "name_ar"> | null;
 };
 
 /** Campaign with optional joined company */
 export type AdCampaignWithCompany = AdCampaignRow & {
-  companies?: { name: string; name_ar: string | null } | null;
+  companies?: { name: string; name_ar: string | null; logo_url?: string | null } | null;
 };
