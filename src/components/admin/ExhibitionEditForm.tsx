@@ -176,7 +176,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   });
   const [selectedSeriesId, setSelectedSeriesId] = useState<string | null>(exhibition?.series_id || null);
   const [editionYear, setEditionYear] = useState<number | null>(exhibition?.edition_year || null);
-  const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as Record<string, unknown>)?.edition_number as number | null ?? null);
+  const [editionNumber, setEditionNumber] = useState<number | null>((exhibition as any)?.edition_number as number | null ?? null);
   const [editionConfirmed, setEditionConfirmed] = useState(!!originalEditingId);
   const [editionResolved, setEditionResolved] = useState(!!originalEditingId || !exhibition?.series_id);
   const [selectedVenue, setSelectedVenue] = useState<VenueValue | null>(() => {
@@ -292,7 +292,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
       }
       setLastSaved(existingEdition.updated_at ? new Date(existingEdition.updated_at) : null);
       setLogoUrl(existingEdition.logo_url || "");
-      setAdminNotes(String((existingEdition as Record<string, unknown>).admin_notes || ""));
+      setAdminNotes(String((existingEdition as any).admin_notes || ""));
     } else {
       setActiveEditingId(null);
       setEditionResolved(false);
@@ -995,7 +995,7 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
                   <Input className="h-9" type="datetime-local" value={form.end_date || ""} onChange={e => updateField("end_date", e.target.value)} />
                 </FieldGroup>
                 <FieldGroup label={t("Registration Deadline", "آخر موعد للتسجيل")}>
-                  <Input className="h-9" type="datetime-local" value={(form as Record<string, unknown>).registration_deadline as string || ""} onChange={e => updateField("registration_deadline", e.target.value)} />
+                  <Input className="h-9" type="datetime-local" value={(form as any).registration_deadline as string || ""} onChange={e => updateField("registration_deadline", e.target.value)} />
                 </FieldGroup>
               </div>
 
