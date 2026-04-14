@@ -43,50 +43,19 @@ import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
-  Package,
-  Search,
-  Plus,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  ChevronLeft,
-  Save,
-  X,
-  Send,
-  MessageSquare,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Truck,
-  Building2,
-  ShoppingBag,
-  Edit,
-  Trash2,
-  FileText,
-  Download,
-  Ban,
-  User,
+  Package, Search, Plus, Eye, CheckCircle, XCircle, Clock, ChevronLeft,
+  Save, X, Send, MessageSquare, ArrowUpRight, ArrowDownLeft, Truck,
+  Building2, ShoppingBag, Edit, Trash2, FileText, Download, Ban, User,
 } from "lucide-react";
 import { format } from "date-fns";
 
-type OrderStatus = "draft" | "pending" | "approved" | "rejected" | "in_progress" | "completed" | "cancelled";
-type OrderDirection = "outgoing" | "incoming";
-type OrderCategory = "promotional" | "equipment" | "materials" | "services" | "catering" | "venue" | "transport" | "other";
-
-const statusColors: Record<string, string> = {
-  draft: "bg-muted-foreground/15 text-muted-foreground",
-  pending: "bg-chart-4/15 text-chart-4",
-  approved: "bg-chart-1/15 text-chart-1",
-  rejected: "bg-destructive/15 text-destructive",
-  in_progress: "bg-chart-3/15 text-chart-3",
-  completed: "bg-chart-5/15 text-chart-5",
-  cancelled: "bg-muted text-muted-foreground",
-  confirmed: "bg-primary/15 text-primary",
-  processing: "bg-chart-3/15 text-chart-3",
-  shipped: "bg-chart-1/15 text-chart-1",
-  delivered: "bg-chart-5/15 text-chart-5",
-  refunded: "bg-muted text-muted-foreground",
-};
+import {
+  type OrderStatus, type OrderDirection, type OrderCategory,
+  type OrderFormType, statusColors, categoryLabels, defaultOrderForm,
+  getStatusLabel, getCategoryLabel,
+} from "./orders/ordersAdminTypes";
+import { CompanyOrderDetailView } from "./orders/CompanyOrderDetailView";
+import { ShopOrderDetailView } from "./orders/ShopOrderDetailView";
 
 const categoryLabels: Record<OrderCategory, { en: string; ar: string }> = {
   promotional: { en: "Promotional", ar: "ترويجية" },
