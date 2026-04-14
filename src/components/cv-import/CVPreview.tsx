@@ -2,30 +2,29 @@ import React, { useState, useCallback, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import type { Json } from "@/integrations/supabase/types";
+import { downloadJSON } from "@/lib/exportUtils";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Collapsible, CollapsibleContent, CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
   ArrowLeft, Save, Loader2, User, GraduationCap, Briefcase,
-  Trophy, Award, Tv, Globe2, Languages, CheckCircle2, MapPin,
-  Edit3, X, Trash2, Download, Printer, ChevronDown, ChevronRight,
+  Trophy, Award, Tv, Globe2, Languages, Download, Printer,
+  Trash2, Edit3, MapPin,
 } from "lucide-react";
-import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
-import type { CVData, CVWorkExperience, CVEducation, CVCompetition, CVMediaAppearance, CVSkill } from "./types";
+import type { CVData } from "./types";
 import {
   getFlag, ROLE_LABELS, MEDIA_TYPE_LABELS,
   EMPLOYMENT_TYPE_LABELS, EDUCATION_LEVEL_LABELS,
 } from "./types";
+import {
+  formatDate, rowBg, TranslateBtn, LocationDisplay, EditableText,
+  CollapsibleSection, PAIRED_PERSONAL_FIELDS,
+} from "./CVPreviewHelpers";
+import {
+  useSmartTranslate, handleCVSave, printCV, exportCVAsCSV,
+} from "./useCVPreviewHandlers";
 
 interface Props {
   data: CVData;
@@ -35,185 +34,6 @@ interface Props {
   onSaved: () => void;
   onDataChange?: (data: CVData) => void;
 }
-
-const formatDate = (d?: string) => {
-  if (!d) return "";
-  const norm = normalizeDate(d);
-  if (!norm) return d;
-  try { return new Date(norm).toLocaleDateString("en-US", { year: "numeric", month: "short" }); } catch { return d; }
-};
-
-/** Normalize partial dates like "2011" or "2011-06" into valid YYYY-MM-DD for Postgres */
-const normalizeDate = (d?: string | null): string | null => {
-  if (!d) return null;
-  const s = d.trim();
-  // Already valid YYYY-MM-DD
-  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-  // Year only: "2011"
-  if (/^\d{4}$/.test(s)) return `${s}-01-01`;
-  // Year-month: "2011-06"
-  if (/^\d{4}-\d{2}$/.test(s)) return `${s}-01`;
-  // Try parsing as date
-  const parsed = new Date(s);
-  if (!isNaN(parsed.getTime())) return parsed.toISOString().split("T")[0];
-  return null;
-};
-
-// ─── Smart Translate Hook ───
-function useSmartTranslate() {
-  const [translatingKey, setTranslatingKey] = useState<string | null>(null);
-  const { toast } = useToast();
-
-  const translate = useCallback(async (
-    text: string,
-    fromLang: "ar" | "en",
-    onResult: (translated: string) => void,
-    key: string,
-  ) => {
-    if (!text.trim()) return;
-    setTranslatingKey(key);
-    try {
-      const { data, error } = await supabase.functions.invoke("smart-translate", {
-        body: { text, from: fromLang, to: fromLang === "ar" ? "en" : "ar", context: "culinary/hospitality/food industry professional CV" },
-      });
-      if (error) throw error;
-      if (data?.translated) {
-        onResult(data.translated);
-        toast({ title: fromLang === "ar" ? "Translated ✓" : "✓ تمت الترجمة" });
-      }
-    } catch (err: unknown) {
-      toast({ title: "Translation Error", description: err instanceof Error ? err.message : String(err), variant: "destructive" });
-    } finally {
-      setTranslatingKey(null);
-    }
-  }, [toast]);
-
-  return { translate, translatingKey };
-}
-
-// ─── Translate Button ───
-const TranslateBtn = ({ onClick, loading, small }: { onClick: () => void; loading: boolean; small?: boolean }) => (
-  <Button
-    variant="ghost" size="icon"
-    className={`${small ? "h-5 w-5" : "h-6 w-6"} shrink-0 text-primary hover:text-primary/80`}
-    onClick={onClick} disabled={loading}
-    title="🔤 Smart Translate"
-  >
-    {loading ? <Loader2 className={`${small ? "h-3 w-3" : "h-3.5 w-3.5"} animate-spin`} /> : <Languages className={`${small ? "h-3 w-3" : "h-3.5 w-3.5"}`} />}
-  </Button>
-);
-
-/** Location display: flag + city, country */
-const LocationDisplay = ({ city, countryCode }: { city?: string; countryCode?: string }) => {
-  if (!city && !countryCode) return null;
-  const flag = getFlag(countryCode);
-  const parts = [city, countryCode?.toUpperCase()].filter(Boolean).join(", ");
-  return (
-    <span className="text-[12px] text-muted-foreground inline-flex items-center gap-1">
-      {flag && <span>{flag}</span>}{parts}
-    </span>
-  );
-};
-
-// Inline editable field
-function EditableText({ value, onChange, label, multiline, className = "" }: {
-  value: string; onChange: (v: string) => void; label?: string; multiline?: boolean; className?: string;
-}) {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(value);
-
-  if (editing) {
-    const save = () => { onChange(draft); setEditing(false); };
-    const cancel = () => { setDraft(value); setEditing(false); };
-    return (
-      <div className="flex items-start gap-1">
-        {multiline ? (
-          <Textarea value={draft} onChange={e => setDraft(e.target.value)} className="text-xs min-h-[60px]" dir="auto" autoFocus onKeyDown={e => e.key === "Escape" && cancel()} />
-        ) : (
-          <Input value={draft} onChange={e => setDraft(e.target.value)} className="text-xs h-7" dir="auto" autoFocus onKeyDown={e => { if (e.key === "Enter") save(); if (e.key === "Escape") cancel(); }} />
-        )}
-        <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={save}><CheckCircle2 className="h-3 w-3 text-chart-2" /></Button>
-        <Button size="icon" variant="ghost" className="h-6 w-6 shrink-0" onClick={cancel}><X className="h-3 w-3" /></Button>
-      </div>
-    );
-  }
-
-  return (
-    <span
-      className={`cursor-pointer hover:bg-muted/50 rounded px-1 -mx-1 transition-colors group/edit inline-flex items-center gap-1 ${className}`}
-      onClick={() => { setDraft(value); setEditing(true); }}
-      title={label || "Click to edit"}
-    >
-      {value || <span className="text-muted-foreground/50 italic text-[12px]">—</span>}
-      <Edit3 className="h-2.5 w-2.5 opacity-0 group-hover/edit:opacity-50 shrink-0" />
-    </span>
-  );
-}
-
-const rowBg = (i: number) => i % 2 === 0 ? "bg-muted/20" : "bg-muted/50";
-
-// ─── Collapsible Section Wrapper ───
-const CollapsibleSection = React.forwardRef<HTMLDivElement, {
-  icon: React.ReactNode; titleEn: string; titleAr: string;
-  count: number; sectionKey: string; colorClass: string;
-  isAr: boolean; checked: boolean; onToggle: () => void;
-  defaultOpen?: boolean; extraActions?: React.ReactNode;
-  children: React.ReactNode;
-}>(function CollapsibleSection({
-  icon, titleEn, titleAr, count, sectionKey, colorClass, isAr, checked, onToggle,
-  defaultOpen = false, extraActions, children,
-}, ref) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <Card ref={ref} className="overflow-hidden">
-      <Collapsible open={open} onOpenChange={setOpen}>
-        <CardHeader className={`pb-2 ${colorClass.replace("text-", "bg-").split(" ")[0]}/5`}>
-          <div className="flex items-center justify-between">
-            <CollapsibleTrigger asChild>
-              <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${colorClass}`}>{icon}</div>
-                <span className="text-sm font-semibold">{isAr ? titleAr : titleEn}</span>
-                <Badge variant="secondary" className="text-[12px] h-5">{count}</Badge>
-                {open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
-              </button>
-            </CollapsibleTrigger>
-            <div className="flex items-center gap-1.5">
-              {extraActions}
-              <Checkbox checked={checked} onCheckedChange={onToggle} />
-            </div>
-          </div>
-        </CardHeader>
-        <CollapsibleContent>
-          <CardContent className="p-0">
-            {children}
-          </CardContent>
-        </CollapsibleContent>
-      </Collapsible>
-    </Card>
-  );
-});
-
-// ─── Paired personal field definitions ───
-type PersonalFieldDef = [string, string, string, string | null];
-
-const PAIRED_PERSONAL_FIELDS: PersonalFieldDef[] = [
-  ["full_name", "Name", "الاسم", "full_name_ar"],
-  ["full_name_ar", "Name (AR)", "الاسم بالعربية", "full_name"],
-  ["job_title", "Job Title", "المسمى الوظيفي", "job_title_ar"],
-  ["job_title_ar", "Job Title (AR)", "المسمى (عربي)", "job_title"],
-  ["specialization", "Specialization", "التخصص", "specialization_ar"],
-  ["specialization_ar", "Specialization (AR)", "التخصص (عربي)", "specialization"],
-  ["phone", "Phone", "الهاتف", null],
-  ["email", "Email", "البريد", null],
-  ["nationality", "Nationality", "الجنسية", null],
-  ["city", "City", "المدينة", null],
-  ["country_code", "Country", "الدولة", null],
-  ["national_address", "National Address", "العنوان الوطني", null],
-  ["years_of_experience", "Years of Exp.", "سنوات الخبرة", null],
-  ["linkedin", "LinkedIn", "LinkedIn", null],
-  ["instagram", "Instagram", "Instagram", null],
-  ["website", "Website", "الموقع", null],
-];
 
 export const CVPreview = memo(function CVPreview({ data: initialData, targetUserId, isAr, onBack, onSaved, onDataChange }: Props) {
   const { toast } = useToast();
@@ -233,11 +53,11 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
     updateData(d => ({ ...d, personal_info: { ...d.personal_info, [key]: value } }));
   }, [updateData]);
 
-  const updateWorkItem = useCallback((index: number, key: string, value: any) => {
+  const updateWorkItem = useCallback((index: number, key: string, value: unknown) => {
     updateData(d => ({ ...d, work_experience: d.work_experience?.map((w, i) => i === index ? { ...w, [key]: value } : w) }));
   }, [updateData]);
 
-  const updateEduItem = useCallback((index: number, key: string, value: any) => {
+  const updateEduItem = useCallback((index: number, key: string, value: unknown) => {
     updateData(d => ({ ...d, education: d.education?.map((e, i) => i === index ? { ...e, [key]: value } : e) }));
   }, [updateData]);
 
@@ -257,419 +77,65 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
   const hasCert = (data.certifications?.length || 0) > 0;
   const hasMedia = (data.media_appearances?.length || 0) > 0;
 
-  // ─── Save handler ───
-  const normalizeExperienceLevel = (level?: string, years?: number | null): "beginner" | "amateur" | "professional" | null => {
-    const normalized = (level || "").toLowerCase().trim();
-    if (normalized === "beginner" || normalized === "amateur" || normalized === "professional") return normalized;
-    if (normalized === "expert" || normalized === "advanced" || normalized === "intermediate") {
-      if (normalized === "expert" || normalized === "advanced") return "professional";
-      if (normalized === "intermediate") return "amateur";
-    }
-    if (typeof years === "number") {
-      if (years < 3) return "beginner";
-      if (years < 10) return "amateur";
-      return "professional";
-    }
-    return null;
-  };
-
   const handleSave = async () => {
     setSaving(true);
-    let recordsCreated = 0;
-    const sectionsImported: string[] = [];
-
-    try {
-      if (sections.personal && hasPersonal) {
-        const profileUpdate: Record<string, any> = {};
-        const keys = ["full_name","full_name_ar","phone","nationality","second_nationality","country_code","city","location","job_title","job_title_ar","specialization","specialization_ar","bio","bio_ar","years_of_experience","date_of_birth","gender","website","linkedin","instagram","twitter"];
-
-        keys.forEach((k) => {
-          const val = (pi as any)[k];
-          if (val !== undefined && val !== null && `${val}`.trim() !== "") profileUpdate[k] = val;
-        });
-
-        const normalizedExperienceLevel = normalizeExperienceLevel((pi as any)?.experience_level, (pi as any)?.years_of_experience);
-        if (normalizedExperienceLevel) profileUpdate.experience_level = normalizedExperienceLevel;
-
-        if (Object.keys(profileUpdate).length > 0) {
-          const { error } = await supabase.from("profiles").update(profileUpdate).eq("user_id", targetUserId);
-          if (error) throw error;
-          recordsCreated++;
-          sectionsImported.push("personal");
-        }
-
-        const { data: existingPage, error: pageLookupError } = await supabase
-          .from("social_link_pages")
-          .select("id")
-          .eq("user_id", targetUserId)
-          .maybeSingle();
-        if (pageLookupError) throw pageLookupError;
-
-        const bioPageUpdate: Record<string, any> = {};
-        if (pi.full_name) bioPageUpdate.page_title = pi.full_name;
-        if (pi.full_name_ar) bioPageUpdate.page_title_ar = pi.full_name_ar;
-        if (pi.bio) bioPageUpdate.bio = pi.bio;
-        if (pi.bio_ar) bioPageUpdate.bio_ar = pi.bio_ar;
-
-        if (Object.keys(bioPageUpdate).length > 0) {
-          if (existingPage) {
-            const { error: pageUpdateError } = await supabase
-              .from("social_link_pages")
-              .update({ ...bioPageUpdate, updated_at: new Date().toISOString() })
-              .eq("id", existingPage.id);
-            if (pageUpdateError) throw pageUpdateError;
-          } else {
-            const { error: pageInsertError } = await supabase.from("social_link_pages").insert({
-              user_id: targetUserId,
-              ...bioPageUpdate,
-              is_published: true,
-              show_avatar: true,
-              show_social_icons: true,
-              theme: "default",
-            });
-            if (pageInsertError) throw pageInsertError;
-          }
-        }
-      }
-
-      const sectionsToDelete: string[] = [];
-      if (sections.education && hasEdu) sectionsToDelete.push("education");
-      if (sections.work && hasWork) sectionsToDelete.push("work");
-      if (sections.competitions && hasComp) sectionsToDelete.push("competitions");
-      if (sections.media && hasMedia) sectionsToDelete.push("media");
-      if (sections.certifications && hasCert) sectionsToDelete.push("certification");
-
-      const uniqueTypes = [...new Set(sectionsToDelete)];
-      if (uniqueTypes.length > 0) {
-        const { error: deleteError } = await supabase
-          .from("user_career_records")
-          .delete()
-          .eq("user_id", targetUserId)
-          .in("record_type", uniqueTypes);
-        if (deleteError) throw deleteError;
-      }
-
-      if (sections.education && hasEdu) {
-        const eduRecords = data.education!.map((edu) => ({
-          user_id: targetUserId,
-          record_type: "education",
-          entity_name: edu.institution,
-          entity_name_ar: edu.institution_ar || null,
-          title: edu.degree,
-          title_ar: edu.degree_ar || null,
-          education_level: edu.education_level || null,
-          field_of_study: edu.field_of_study || null,
-          field_of_study_ar: edu.field_of_study_ar || null,
-          grade: edu.grade || null,
-          start_date: normalizeDate(edu.start_date),
-          end_date: normalizeDate(edu.end_date),
-          is_current: edu.is_current === true && !edu.end_date,
-          location: edu.location || null,
-        }));
-
-        const { error } = await supabase.from("user_career_records").insert(eduRecords);
-        if (error) throw error;
-        recordsCreated += eduRecords.length;
-        sectionsImported.push("education");
-      }
-
-      if (sections.work && hasWork) {
-        const workRecords = data.work_experience!.map((work) => {
-          const enParts = [
-            ...(work.tasks?.map((t) => t.trim()).filter(Boolean) || []),
-            ...(work.achievements?.map((a) => a.trim()).filter(Boolean) || []),
-          ];
-          const arParts = [
-            ...(work.tasks_ar?.map((t) => t.trim()).filter(Boolean) || []),
-            ...(work.achievements_ar?.map((a) => a.trim()).filter(Boolean) || []),
-          ];
-
-          return {
-            user_id: targetUserId,
-            record_type: "work",
-            entity_name: work.company,
-            entity_name_ar: work.company_ar || null,
-            title: work.title,
-            title_ar: work.title_ar || null,
-            employment_type: work.employment_type || null,
-            department: work.department || null,
-            department_ar: work.department_ar || null,
-            start_date: normalizeDate(work.start_date),
-            end_date: normalizeDate(work.end_date),
-            is_current: work.is_current === true && !work.end_date,
-            description: enParts.length ? enParts.join("\n") : null,
-            description_ar: arParts.length ? arParts.join("\n") : null,
-            location: work.location || null,
-          };
-        });
-
-        const { error } = await supabase.from("user_career_records").insert(workRecords);
-        if (error) throw error;
-        recordsCreated += workRecords.length;
-        sectionsImported.push("work");
-      }
-
-      if (sections.competitions && hasComp) {
-        const compRecords = data.competitions!.map((comp) => ({
-          user_id: targetUserId,
-          record_type: "competitions",
-          entity_name: comp.name,
-          entity_name_ar: comp.name_ar || null,
-          title: `${comp.name}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim(),
-          title_ar: comp.name_ar ? `${comp.name_ar}${comp.year ? ` ${comp.year}` : ""}${comp.edition ? ` (${comp.edition})` : ""}`.trim() : null,
-          employment_type: comp.role || null,
-          description: comp.achievement || null,
-          description_ar: comp.achievement_ar || null,
-          start_date: comp.year ? `${comp.year}-01-01` : null,
-          end_date: comp.year ? `${comp.year}-12-31` : null,
-          is_current: false,
-          location: comp.city || null,
-          country_code: comp.country_code || null,
-        }));
-
-        const { error } = await supabase.from("user_career_records").insert(compRecords);
-        if (error) throw error;
-        recordsCreated += compRecords.length;
-        sectionsImported.push("competitions");
-      }
-
-      if (sections.media && hasMedia) {
-        const mediaRecords = data.media_appearances!.map((m) => ({
-          user_id: targetUserId,
-          record_type: "media",
-          entity_name: m.channel_name,
-          entity_name_ar: m.channel_name_ar || null,
-          title: m.program_name || m.channel_name,
-          title_ar: m.program_name_ar || null,
-          department: null, // host field - not available from CV import
-          description: m.description || null,
-          description_ar: m.description_ar || null,
-          start_date: normalizeDate(m.date),
-          is_current: false,
-          country_code: m.country_code || null,
-        }));
-
-        const { error } = await supabase.from("user_career_records").insert(mediaRecords);
-        if (error) throw error;
-        recordsCreated += mediaRecords.length;
-        sectionsImported.push("media");
-      }
-
-      if (sections.certifications && hasCert) {
-        const certRecords = data.certifications!.map((cert) => ({
-          user_id: targetUserId,
-          record_type: "certification",
-          entity_name: cert.issuer || "—",
-          entity_name_ar: null,
-          title: cert.name,
-          title_ar: cert.name_ar || null,
-          description: cert.description || null,
-          start_date: normalizeDate(cert.date),
-          is_current: false,
-        }));
-
-        const { error } = await supabase.from("user_career_records").insert(certRecords);
-        if (error) throw error;
-        recordsCreated += certRecords.length;
-        sectionsImported.push("certifications");
-      }
-
-      if (data.skills?.length) {
-        const skillObjects = data.skills.map((s) => typeof s === "string" ? { name: s, name_ar: "" } : s);
-        const skillsEn = skillObjects.map((s) => s.name).filter(Boolean).join(", ");
-        const skillsAr = skillObjects.map((s) => s.name_ar).filter(Boolean).join("، ");
-        const { error: skillsError } = await supabase
-          .from("profiles")
-          .update({
-            specialization: data.personal_info?.specialization || skillsEn || null,
-            specialization_ar: data.personal_info?.specialization_ar || skillsAr || null,
-          })
-          .eq("user_id", targetUserId);
-        if (skillsError) throw skillsError;
-      }
-
-      try {
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        if (currentUser) {
-          await supabase.from("cv_imports").insert({
-            chef_id: targetUserId,
-            imported_by: currentUser.id,
-            status: "completed",
-            sections_imported: sectionsImported,
-            extracted_data: data as unknown as Json,
-            records_created: recordsCreated,
-            input_method: "paste",
-          });
-        }
-      } catch (logErr: unknown) {
-        console.error("Failed to log import:", logErr);
-      }
-
-      toast({ title: isAr ? `✅ تم استيراد ${recordsCreated} سجل وتحديث صفحة Bio تلقائياً` : `✅ Imported ${recordsCreated} records & Bio page auto-updated` });
-      onSaved();
-    } catch (err: unknown) {
-      toast({ variant: "destructive", title: isAr ? "خطأ" : "Error", description: err instanceof Error ? err.message : String(err) });
-    }
-
+    await handleCVSave(data, sections, targetUserId, toast, isAr, onSaved);
     setSaving(false);
   };
 
-  // ─── Translate All paired personal fields ───
+  // ─── Translate All handlers ───
   const handleTranslateAllPersonal = useCallback(async () => {
     const pairs: [string, string, string][] = [
-      ["full_name", "full_name_ar", "en"],
-      ["full_name_ar", "full_name", "ar"],
-      ["job_title", "job_title_ar", "en"],
-      ["job_title_ar", "job_title", "ar"],
-      ["specialization", "specialization_ar", "en"],
-      ["specialization_ar", "specialization", "ar"],
-      ["bio", "bio_ar", "en"],
-      ["bio_ar", "bio", "ar"],
+      ["full_name", "full_name_ar", "en"], ["full_name_ar", "full_name", "ar"],
+      ["job_title", "job_title_ar", "en"], ["job_title_ar", "job_title", "ar"],
+      ["specialization", "specialization_ar", "en"], ["specialization_ar", "specialization", "ar"],
+      ["bio", "bio_ar", "en"], ["bio_ar", "bio", "ar"],
     ];
     for (const [srcKey, tgtKey, fromLang] of pairs) {
-      const srcVal = (pi as any)[srcKey];
-      const tgtVal = (pi as any)[tgtKey];
+      const srcVal = (pi as Record<string, unknown>)[srcKey];
+      const tgtVal = (pi as Record<string, unknown>)[tgtKey];
       if (srcVal && !tgtVal) {
-        await translate(srcVal, fromLang as "en" | "ar", (t) => updatePersonal(tgtKey, t), `personal_${tgtKey}`);
+        await translate(String(srcVal), fromLang as "en" | "ar", (t) => updatePersonal(tgtKey, t), `personal_${tgtKey}`);
       }
     }
   }, [pi, translate, updatePersonal]);
 
-  // ─── Translate All Education ───
   const handleTranslateAllEducation = useCallback(async () => {
     if (!data.education) return;
     for (let i = 0; i < data.education.length; i++) {
       const edu = data.education[i];
-      if (edu.degree && !edu.degree_ar) {
-        await translate(edu.degree, "en", (t) => updateEduItem(i, "degree_ar", t), `edu_degree_${i}`);
-      }
-      if (edu.degree_ar && !edu.degree) {
-        await translate(edu.degree_ar, "ar", (t) => updateEduItem(i, "degree", t), `edu_degree_en_${i}`);
-      }
-      if (edu.institution && !edu.institution_ar) {
-        await translate(edu.institution, "en", (t) => updateEduItem(i, "institution_ar", t), `edu_inst_${i}`);
-      }
-      if (edu.field_of_study && !edu.field_of_study_ar) {
-        await translate(edu.field_of_study, "en", (t) => updateEduItem(i, "field_of_study_ar", t), `edu_field_${i}`);
-      }
+      if (edu.degree && !edu.degree_ar) await translate(edu.degree, "en", (t) => updateEduItem(i, "degree_ar", t), `edu_degree_${i}`);
+      if (edu.degree_ar && !edu.degree) await translate(edu.degree_ar, "ar", (t) => updateEduItem(i, "degree", t), `edu_degree_en_${i}`);
+      if (edu.institution && !edu.institution_ar) await translate(edu.institution, "en", (t) => updateEduItem(i, "institution_ar", t), `edu_inst_${i}`);
+      if (edu.field_of_study && !edu.field_of_study_ar) await translate(edu.field_of_study, "en", (t) => updateEduItem(i, "field_of_study_ar", t), `edu_field_${i}`);
     }
   }, [data.education, translate, updateEduItem]);
 
-  // ─── Translate All Work Experience ───
   const handleTranslateAllWork = useCallback(async () => {
     if (!data.work_experience) return;
     for (let i = 0; i < data.work_experience.length; i++) {
       const work = data.work_experience[i];
-      if (work.title && !work.title_ar) {
-        await translate(work.title, "en", (t) => updateWorkItem(i, "title_ar", t), `work_title_${i}`);
-      }
-      if (work.title_ar && !work.title) {
-        await translate(work.title_ar, "ar", (t) => updateWorkItem(i, "title", t), `work_title_en_${i}`);
-      }
-      if (work.company && !work.company_ar) {
-        await translate(work.company, "en", (t) => updateWorkItem(i, "company_ar", t), `work_company_${i}`);
-      }
-      if (work.department && !work.department_ar) {
-        await translate(work.department, "en", (t) => updateWorkItem(i, "department_ar", t), `work_dept_${i}`);
-      }
+      if (work.title && !work.title_ar) await translate(work.title, "en", (t) => updateWorkItem(i, "title_ar", t), `work_title_${i}`);
+      if (work.title_ar && !work.title) await translate(work.title_ar, "ar", (t) => updateWorkItem(i, "title", t), `work_title_en_${i}`);
+      if (work.company && !work.company_ar) await translate(work.company, "en", (t) => updateWorkItem(i, "company_ar", t), `work_company_${i}`);
+      if (work.department && !work.department_ar) await translate(work.department, "en", (t) => updateWorkItem(i, "department_ar", t), `work_dept_${i}`);
     }
   }, [data.work_experience, translate, updateWorkItem]);
 
-  // ─── Translate All Competitions ───
   const handleTranslateAllCompetitions = useCallback(async () => {
     if (!data.competitions) return;
     for (let i = 0; i < data.competitions.length; i++) {
       const comp = data.competitions[i];
-      if (comp.name && !comp.name_ar) {
-        await translate(comp.name, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `comp_name_${i}`);
-      }
-      if (comp.name_ar && !comp.name) {
-        await translate(comp.name_ar, "ar", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name: t } : c) })), `comp_name_en_${i}`);
-      }
-      if (comp.achievement && !comp.achievement_ar) {
-        await translate(comp.achievement, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, achievement_ar: t } : c) })), `comp_ach_${i}`);
-      }
+      if (comp.name && !comp.name_ar) await translate(comp.name, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `comp_name_${i}`);
+      if (comp.name_ar && !comp.name) await translate(comp.name_ar, "ar", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name: t } : c) })), `comp_name_en_${i}`);
+      if (comp.achievement && !comp.achievement_ar) await translate(comp.achievement, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, achievement_ar: t } : c) })), `comp_ach_${i}`);
     }
   }, [data.competitions, translate, updateData]);
 
-  // ─── Print CV Report ───
-  const handlePrintCV = useCallback(() => {
-    const win = window.open("", "_blank", "noopener,noreferrer");
-    if (!win) return;
-    const p = data.personal_info;
-    const formatD = (d?: string) => { if (!d) return ""; try { return new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "short" }); } catch { return d; } };
-    
-    const eduHtml = data.education?.length ? `
-      <h2>Education / التعليم</h2>
-      <table><tr><th>Degree</th><th>الشهادة</th><th>Institution</th><th>Field</th><th>Period</th></tr>
-      ${data.education.map(e => `<tr><td>${e.degree || ""}</td><td>${e.degree_ar || ""}</td><td>${e.institution || ""}</td><td>${e.field_of_study || ""}</td><td>${formatD(e.start_date)} - ${e.is_current ? "Present" : formatD(e.end_date)}</td></tr>`).join("")}
-      </table>` : "";
-    
-    const workHtml = data.work_experience?.length ? `
-      <h2>Professional Experience / الخبرات المهنية</h2>
-      <table><tr><th>Position</th><th>المنصب</th><th>Company</th><th>الشركة</th><th>Period</th></tr>
-      ${data.work_experience.map(w => `<tr><td>${w.title || ""}</td><td>${w.title_ar || ""}</td><td>${w.company || ""}</td><td>${w.company_ar || ""}</td><td>${formatD(w.start_date)} - ${w.is_current ? "Present" : formatD(w.end_date)}</td></tr>`).join("")}
-      </table>` : "";
-
-    const compHtml = data.competitions?.length ? `
-      <h2>Competitions / المسابقات</h2>
-      <table><tr><th>Name</th><th>الاسم</th><th>Year</th><th>Role</th><th>Achievement</th></tr>
-      ${data.competitions.map(c => `<tr><td>${c.name || ""}</td><td>${c.name_ar || ""}</td><td>${c.year || ""}</td><td>${ROLE_LABELS[c.role || ""]?.en || c.role || ""}</td><td>${c.achievement || ""}</td></tr>`).join("")}
-      </table>` : "";
-
-    const certHtml = data.certifications?.length ? `
-      <h2>Certifications / الشهادات</h2>
-      <table><tr><th>Name</th><th>الاسم</th><th>Issuer</th><th>Date</th></tr>
-      ${data.certifications.map(c => `<tr><td>${c.name || ""}</td><td>${c.name_ar || ""}</td><td>${c.issuer || ""}</td><td>${formatD(c.date)}</td></tr>`).join("")}
-      </table>` : "";
-
-    const skillsHtml = data.skills?.length ? `<h2>Skills / المهارات</h2>
-      <table><tr><th>English</th><th>العربية</th></tr>
-      ${data.skills.map(s => {
-        const en = typeof s === "string" ? s : s.name;
-        const ar = typeof s === "string" ? "" : (s.name_ar || "");
-        return `<tr><td>${en}</td><td dir="rtl">${ar}</td></tr>`;
-      }).join("")}
-      </table>` : "";
-    const langsHtml = data.languages?.length ? `<h2>Languages / اللغات</h2>
-      <table><tr><th>Language</th><th>اللغة</th><th>Level</th><th>المستوى</th></tr>
-      ${data.languages.map(l => `<tr><td>${l.language}</td><td dir="rtl">${l.language_ar || ""}</td><td>${l.level || ""}</td><td dir="rtl">${l.level_ar || ""}</td></tr>`).join("")}
-      </table>` : "";
-
-    win.document.write(`<!DOCTYPE html><html><head><title>CV - ${p.full_name || ""}</title>
-      <style>
-        @page { size: portrait; margin: 1.5cm; }
-        body { font-family: system-ui, sans-serif; padding: 2rem; color: #1a1a1a; }
-        h1 { font-size: 20px; margin: 0; border-bottom: 2px solid #c8956c; padding-bottom: 6px; }
-        h2 { font-size: 14px; color: #c8956c; margin: 1.2rem 0 0.4rem; border-bottom: 1px solid #e5e5e5; padding-bottom: 3px; }
-        table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 12px; }
-        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: start; }
-        th { background: #f5f0ec; font-weight: 600; font-size: 11px; }
-        tr:nth-child(even) { background: #fafafa; }
-        .meta { color: #888; font-size: 11px; margin-top: 4px; }
-        .bio { background: #f9f7f5; padding: 8px 12px; border-radius: 6px; margin: 8px 0; font-size: 12px; line-height: 1.5; }
-        .subtitle { font-size: 13px; color: #666; margin: 2px 0 0; }
-        @media print { body { padding: 0; } }
-      </style>
-    </head><body>
-      <h1>${p.full_name || ""} ${p.full_name_ar ? `<span style="float:inline-end;font-family:serif;" dir="rtl">${p.full_name_ar}</span>` : ""}</h1>
-      ${p.job_title || p.job_title_ar ? `<p class="subtitle">${p.job_title || ""} ${p.job_title_ar ? `| ${p.job_title_ar}` : ""}</p>` : ""}
-      <p class="meta">${[p.email, p.phone, p.city && p.country_code ? `${getFlag(p.country_code)} ${p.city}` : p.city].filter(Boolean).join(" | ")}${p.years_of_experience ? ` | ${p.years_of_experience} years` : ""}</p>
-      ${p.bio ? `<div class="bio">${p.bio}</div>` : ""}
-      ${p.bio_ar ? `<div class="bio" dir="rtl">${p.bio_ar}</div>` : ""}
-      ${eduHtml}${workHtml}${compHtml}${certHtml}${skillsHtml}${langsHtml}
-      <p class="meta" style="margin-top:1.5rem;border-top:1px solid #ddd;padding-top:6px;">Generated: ${new Date().toLocaleString()} | Altoha Platform</p>
-    </body></html>`);
-    win.document.close();
-    win.focus();
-    win.print();
-  }, [data]);
-
-  // Helper: get display value for personal fields
   const getPersonalDisplay = (key: string): string | undefined => {
-    const raw = (pi as any)[key];
+    const raw = (pi as Record<string, unknown>)[key];
     if (!raw) return undefined;
-    if (key === "nationality" || key === "country_code") return `${getFlag(raw)} ${raw}`;
+    if (key === "nationality" || key === "country_code") return `${getFlag(String(raw))} ${raw}`;
     return String(raw);
   };
 
@@ -729,7 +195,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                             small
                             loading={translatingKey === `personal_${pairedKey}`}
                             onClick={() => translate(
-                              (pi as any)[key] || "",
+                              String((pi as Record<string, unknown>)[key] || ""),
                               isArField ? "ar" : "en",
                               (t) => updatePersonal(pairedKey, t),
                               `personal_${pairedKey}`,
@@ -920,7 +386,6 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
               ))}
             </TableBody>
           </Table>
-          {/* Tasks & Achievements - collapsible per job */}
           {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0 || (w.tasks_ar?.length || 0) > 0 || (w.achievements_ar?.length || 0) > 0) && (
             <div className="border-t border-border/20 p-3 space-y-1">
               <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "التفاصيل والإنجازات" : "Details & Achievements"}</p>
@@ -1197,19 +662,10 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => downloadJSON(data, `cv-data-${targetUserId.slice(0, 8)}`)}>
             <Download className="h-3 w-3" /> JSON
           </Button>
-          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => {
-            const rows: Record<string, any>[] = [];
-            if (data.personal_info) rows.push({ section: "Personal", ...data.personal_info });
-            data.education?.forEach(e => rows.push({ section: "Education", ...e }));
-            data.work_experience?.forEach(w => rows.push({ section: "Work", ...w, tasks: w.tasks?.join("; "), achievements: w.achievements?.join("; ") }));
-            data.competitions?.forEach(c => rows.push({ section: "Competition", ...c }));
-            data.certifications?.forEach(c => rows.push({ section: "Certification", ...c }));
-            data.media_appearances?.forEach(m => rows.push({ section: "Media", ...m }));
-            downloadCSV(rows, `cv-data-${targetUserId.slice(0, 8)}`);
-          }}>
+          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => exportCVAsCSV(data, targetUserId)}>
             <Download className="h-3 w-3" /> CSV
           </Button>
-          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => handlePrintCV()}>
+          <Button variant="outline" size="sm" className="gap-1 text-xs" onClick={() => printCV(data)}>
             <Printer className="h-3 w-3" /> {isAr ? "طباعة" : "Print"}
           </Button>
         </div>
