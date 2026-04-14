@@ -38,6 +38,9 @@ import { companyRoutes } from "@/routes/companyRoutes";
 const AIChatbot = safeLazy(() => import("@/components/ai/AIChatbot"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+import { CACHE } from "@/lib/queryConfig";
+import { HTTP_STATUS } from "@/lib/constants";
+
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => {
@@ -46,11 +49,10 @@ const queryClient = new QueryClient({
   }),
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 3,
-      gcTime: 1000 * 60 * 30,
+      ...CACHE.default,
       retry: (failureCount, error) => {
         const status = (error as { status?: number })?.status;
-        if (status && status >= 400 && status < 500) return false;
+        if (status && status >= HTTP_STATUS.CLIENT_ERROR_MIN && status <= HTTP_STATUS.CLIENT_ERROR_MAX) return false;
         return failureCount < 1;
       },
       refetchOnWindowFocus: false,
