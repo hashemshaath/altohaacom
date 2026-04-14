@@ -11,7 +11,7 @@ import {
   Eye, Edit3, Table, Strikethrough, FileCode,
   AlignLeft, AlignRight, Columns, LayoutTemplate, ChevronDown,
   Highlighter, Superscript, Subscript, CheckSquare, MessageSquareQuote,
-  type, LucideIcon } from "lucide-react";
+  type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
