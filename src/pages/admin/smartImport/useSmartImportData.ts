@@ -15,7 +15,7 @@ import {
 import {
   getPayloadForTable, normalizeWebsiteHost, buildEntityPayload, buildCompanyPayload,
   buildEstablishmentPayload, buildExhibitionPayload, buildCompetitionPayload, buildOrganizerPayload,
-} from "./smartImportPayloads";
+} from "../smartImportPayloads";
 
 export function useSmartImportData(isAr: boolean) {
   const { user } = useAuth();
@@ -368,8 +368,8 @@ export function useSmartImportData(isAr: boolean) {
   const loadHistory = async () => {
     setLoadingHistory(true);
     try {
-      const { data } = await supabase.from("smart_import_logs").select("id, entity_type, source, total_rows, success_rows, failed_rows, status, created_at, created_by, errors").order("created_at", { ascending: false }).limit(50);
-      setImportHistory(data || []);
+      const { data } = await supabase.from("smart_import_logs").select("id, entity_type, total_rows, success_rows, failed_rows, status, created_at, created_by, errors").order("created_at", { ascending: false }).limit(50);
+      setImportHistory((data || []) as Record<string, unknown>[]);
     } catch (err: unknown) { console.error('Failed to load history:', err instanceof Error ? err.message : err); }
     finally { setLoadingHistory(false); }
   };
