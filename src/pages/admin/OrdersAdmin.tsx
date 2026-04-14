@@ -333,28 +333,8 @@ export default function OrdersAdmin() {
 
   // ============ HELPERS ============
 
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, { en: string; ar: string }> = {
-      draft: { en: "Draft", ar: "مسودة" },
-      pending: { en: "Pending", ar: "قيد الانتظار" },
-      approved: { en: "Approved", ar: "معتمد" },
-      rejected: { en: "Rejected", ar: "مرفوض" },
-      in_progress: { en: "In Progress", ar: "قيد التنفيذ" },
-      completed: { en: "Completed", ar: "مكتمل" },
-      cancelled: { en: "Cancelled", ar: "ملغي" },
-      confirmed: { en: "Confirmed", ar: "مؤكد" },
-      processing: { en: "Processing", ar: "قيد المعالجة" },
-      shipped: { en: "Shipped", ar: "تم الشحن" },
-      delivered: { en: "Delivered", ar: "تم التوصيل" },
-      refunded: { en: "Refunded", ar: "مسترد" },
-    };
-    return isAr ? labels[status]?.ar || status : labels[status]?.en || status;
-  };
-
-  const getCategoryLabel = (category: string) => {
-    const c = categoryLabels[category as OrderCategory];
-    return c ? (isAr ? c.ar : c.en) : category;
-  };
+  const getStatusLabelLocal = (status: string) => getStatusLabel(status, isAr);
+  const getCategoryLabelLocal = (category: string) => getCategoryLabel(category, isAr);
 
   const addItemToOrder = () => {
     if (!newItem.name.trim()) return;
