@@ -824,7 +824,7 @@ export default function CompaniesAdmin() {
 
           {/* ── Overview Tab ── */}
           <TabsContent value="overview" className="space-y-6">
-            <CompanyEditPanel companyId={selectedCompany} companyDetails={companyDetails} />
+            <CompanyEditPanel companyId={selectedCompany} companyDetails={companyDetails as any} />
           </TabsContent>
 
           {/* ── Contacts Tab ── */}
