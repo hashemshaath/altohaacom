@@ -42,7 +42,7 @@ import {
   Phone, Link2, Zap, BarChart3, Layers, Edit3,
   Copy, ExternalLink, FileText,
 } from "lucide-react";
-import { getPayloadForTable, normalizeWebsiteHost } from "./smartImportPayloads";
+import { getPayloadForTable, normalizeWebsiteHost, buildEntityPayload, buildCompanyPayload, buildEstablishmentPayload, buildExhibitionPayload, buildCompetitionPayload, buildOrganizerPayload } from "./smartImportPayloads";
 
 // ─── Main Component ───
 export default function SmartImportAdmin() {
