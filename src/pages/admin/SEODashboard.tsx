@@ -59,6 +59,7 @@ const SEOInternalLinkAnalyzer = lazy(() => import("@/components/admin/seo/SEOInt
 const SEOPageSpeedMonitor = lazy(() => import("@/components/admin/seo/SEOPageSpeedMonitor").then(m => ({ default: m.SEOPageSpeedMonitor })));
 const SEOGSCPerformance = lazy(() => import("@/components/admin/seo/SEOGSCPerformance").then(m => ({ default: m.SEOGSCPerformance })));
 const SEOContentGapAnalyzer = lazy(() => import("@/components/admin/seo/SEOContentGapAnalyzer").then(m => ({ default: m.SEOContentGapAnalyzer })));
+import { SEOOverviewSection } from "@/pages/admin/seo/SEOOverviewSection";
 
 // SEO route registry
 const PUBLIC_ROUTES = [
