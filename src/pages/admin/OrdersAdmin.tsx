@@ -43,82 +43,20 @@ import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
-  Package,
-  Search,
-  Plus,
-  Eye,
-  CheckCircle,
-  XCircle,
-  Clock,
-  ChevronLeft,
-  Save,
-  X,
-  Send,
-  MessageSquare,
-  ArrowUpRight,
-  ArrowDownLeft,
-  Truck,
-  Building2,
-  ShoppingBag,
-  Edit,
-  Trash2,
-  FileText,
-  Download,
-  Ban,
-  User,
+  Package, Search, Plus, Eye, CheckCircle, XCircle, Clock, ChevronLeft,
+  Save, X, Send, MessageSquare, ArrowUpRight, ArrowDownLeft, Truck,
+  Building2, ShoppingBag, Edit, Trash2, FileText, Download, Ban, User,
 } from "lucide-react";
 import { format } from "date-fns";
 
-type OrderStatus = "draft" | "pending" | "approved" | "rejected" | "in_progress" | "completed" | "cancelled";
-type OrderDirection = "outgoing" | "incoming";
-type OrderCategory = "promotional" | "equipment" | "materials" | "services" | "catering" | "venue" | "transport" | "other";
+import {
+  type OrderStatus, type OrderDirection, type OrderCategory,
+  type OrderFormType, statusColors, categoryLabels, defaultOrderForm,
+  getStatusLabel, getCategoryLabel,
+} from "./orders/ordersAdminTypes";
+import { CompanyOrderDetailView } from "./orders/CompanyOrderDetailView";
+import { ShopOrderDetailView } from "./orders/ShopOrderDetailView";
 
-const statusColors: Record<string, string> = {
-  draft: "bg-muted-foreground/15 text-muted-foreground",
-  pending: "bg-chart-4/15 text-chart-4",
-  approved: "bg-chart-1/15 text-chart-1",
-  rejected: "bg-destructive/15 text-destructive",
-  in_progress: "bg-chart-3/15 text-chart-3",
-  completed: "bg-chart-5/15 text-chart-5",
-  cancelled: "bg-muted text-muted-foreground",
-  confirmed: "bg-primary/15 text-primary",
-  processing: "bg-chart-3/15 text-chart-3",
-  shipped: "bg-chart-1/15 text-chart-1",
-  delivered: "bg-chart-5/15 text-chart-5",
-  refunded: "bg-muted text-muted-foreground",
-};
-
-const categoryLabels: Record<OrderCategory, { en: string; ar: string }> = {
-  promotional: { en: "Promotional", ar: "ترويجية" },
-  equipment: { en: "Equipment", ar: "معدات" },
-  materials: { en: "Materials", ar: "مواد" },
-  services: { en: "Services", ar: "خدمات" },
-  catering: { en: "Catering", ar: "تموين" },
-  venue: { en: "Venue", ar: "مكان" },
-  transport: { en: "Transport", ar: "نقل" },
-  other: { en: "Other", ar: "أخرى" },
-};
-
-const defaultOrderForm = {
-  company_id: "",
-  direction: "outgoing" as OrderDirection,
-  category: "other" as OrderCategory,
-  title: "",
-  title_ar: "",
-  description: "",
-  description_ar: "",
-  total_amount: 0,
-  subtotal: 0,
-  tax_amount: 0,
-  discount_amount: 0,
-  currency: "SAR",
-  order_date: new Date().toISOString().split("T")[0],
-  delivery_date: "",
-  due_date: "",
-  notes: "",
-  internal_notes: "",
-  items: [] as { name: string; quantity: number; price: number }[],
-};
 
 export default function OrdersAdmin() {
   const { language } = useLanguage();
@@ -395,28 +333,8 @@ export default function OrdersAdmin() {
 
   // ============ HELPERS ============
 
-  const getStatusLabel = (status: string) => {
-    const labels: Record<string, { en: string; ar: string }> = {
-      draft: { en: "Draft", ar: "مسودة" },
-      pending: { en: "Pending", ar: "قيد الانتظار" },
-      approved: { en: "Approved", ar: "معتمد" },
-      rejected: { en: "Rejected", ar: "مرفوض" },
-      in_progress: { en: "In Progress", ar: "قيد التنفيذ" },
-      completed: { en: "Completed", ar: "مكتمل" },
-      cancelled: { en: "Cancelled", ar: "ملغي" },
-      confirmed: { en: "Confirmed", ar: "مؤكد" },
-      processing: { en: "Processing", ar: "قيد المعالجة" },
-      shipped: { en: "Shipped", ar: "تم الشحن" },
-      delivered: { en: "Delivered", ar: "تم التوصيل" },
-      refunded: { en: "Refunded", ar: "مسترد" },
-    };
-    return isAr ? labels[status]?.ar || status : labels[status]?.en || status;
-  };
-
-  const getCategoryLabel = (category: string) => {
-    const c = categoryLabels[category as OrderCategory];
-    return c ? (isAr ? c.ar : c.en) : category;
-  };
+  const getStatusLabelLocal = (status: string) => getStatusLabel(status, isAr);
+  const getCategoryLabelLocal = (category: string) => getCategoryLabel(category, isAr);
 
   const addItemToOrder = () => {
     if (!newItem.name.trim()) return;
@@ -484,10 +402,10 @@ export default function OrdersAdmin() {
       { header: isAr ? "الشركة" : "Company", accessor: (o) => o.companies?.name || "" },
       { header: isAr ? "العنوان" : "Title", accessor: (o) => o.title },
       { header: isAr ? "الاتجاه" : "Direction", accessor: (o) => o.direction },
-      { header: isAr ? "الفئة" : "Category", accessor: (o) => getCategoryLabel(o.category) },
+      { header: isAr ? "الفئة" : "Category", accessor: (o) => getCategoryLabelLocal(o.category) },
       { header: isAr ? "المبلغ" : "Amount", accessor: (o) => o.total_amount },
       { header: isAr ? "العملة" : "Currency", accessor: (o) => o.currency },
-      { header: isAr ? "الحالة" : "Status", accessor: (o) => getStatusLabel(o.status) },
+      { header: isAr ? "الحالة" : "Status", accessor: (o) => getStatusLabelLocal(o.status) },
       { header: isAr ? "التاريخ" : "Date", accessor: (o) => o.created_at?.split("T")[0] || "" },
     ],
     filename: "orders",
@@ -537,311 +455,23 @@ export default function OrdersAdmin() {
 
   if (selectedOrder && orderDetails) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => setSelectedOrder(null)}>
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex-1">
-            <div className="flex items-center gap-3">
-              <Package className="h-8 w-8 text-primary" />
-              <div>
-                <h1 className="text-2xl font-bold">{orderDetails.order_number}</h1>
-                <p className="text-muted-foreground">{orderDetails.title}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => openEditForm(orderDetails)}>
-              <Edit className="h-4 w-4 me-1" />
-              {isAr ? "تعديل" : "Edit"}
-            </Button>
-            {orderDetails.status === "pending" && (
-              <>
-                <Button size="sm" onClick={() => updateStatusMutation.mutate({ id: orderDetails.id, status: "approved" })}>
-                  <CheckCircle className="h-4 w-4 me-1" />
-                  {isAr ? "اعتماد" : "Approve"}
-                </Button>
-                <Button size="sm" variant="destructive" onClick={() => setShowRejectDialog(true)}>
-                  <XCircle className="h-4 w-4 me-1" />
-                  {isAr ? "رفض" : "Reject"}
-                </Button>
-              </>
-            )}
-            {orderDetails.status === "approved" && (
-              <Button size="sm" onClick={() => updateStatusMutation.mutate({ id: orderDetails.id, status: "in_progress" })}>
-                <Truck className="h-4 w-4 me-1" />
-                {isAr ? "بدء التنفيذ" : "Start Processing"}
-              </Button>
-            )}
-            {orderDetails.status === "in_progress" && (
-              <Button size="sm" onClick={() => updateStatusMutation.mutate({ id: orderDetails.id, status: "completed" })}>
-                <CheckCircle className="h-4 w-4 me-1" />
-                {isAr ? "إكمال" : "Complete"}
-              </Button>
-            )}
-            {["draft", "pending"].includes(orderDetails.status) && (
-              <Button size="sm" variant="ghost" className="text-destructive" onClick={() => {
-                if (confirm(isAr ? "هل أنت متأكد من الحذف؟" : "Delete this order?")) {
-                  deleteOrderMutation.mutate(orderDetails.id);
-                }
-              }}>
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Rejection dialog */}
-        {showRejectDialog && (
-          <Card className="border-destructive">
-            <CardContent className="pt-4 space-y-3">
-              <Label>{isAr ? "سبب الرفض" : "Rejection Reason"}</Label>
-              <Textarea
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder={isAr ? "أدخل سبب الرفض..." : "Enter rejection reason..."}
-              />
-              <div className="flex gap-2 justify-end">
-                <Button variant="outline" size="sm" onClick={() => setShowRejectDialog(false)}>
-                  {isAr ? "إلغاء" : "Cancel"}
-                </Button>
-                <Button variant="destructive" size="sm" onClick={() =>
-                  updateStatusMutation.mutate({ id: orderDetails.id, status: "rejected", reason: rejectionReason })
-                }>
-                  {isAr ? "تأكيد الرفض" : "Confirm Reject"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            {/* Order Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle>{isAr ? "تفاصيل الطلب" : "Order Details"}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-                    <AdminStatusBadge status={orderDetails.status} label={getStatusLabel(orderDetails.status)} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الاتجاه" : "Direction"}</p>
-                    <Badge variant={orderDetails.direction === "incoming" ? "default" : "secondary"}>
-                      {orderDetails.direction === "incoming" ? (isAr ? "وارد" : "Incoming") : (isAr ? "صادر" : "Outgoing")}
-                    </Badge>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الفئة" : "Category"}</p>
-                    <p className="font-medium">{getCategoryLabel(orderDetails.category)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "المبلغ" : "Amount"}</p>
-                    <p className="font-bold text-lg"><AnimatedCounter value={Math.round(Number(orderDetails.total_amount))} className="inline" format /> {orderDetails.currency}</p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "المجموع الفرعي" : "Subtotal"}</p>
-                    <p className="font-medium"><AnimatedCounter value={Math.round(Number(orderDetails.subtotal || 0))} className="inline" format /> {orderDetails.currency}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الضريبة" : "Tax"}</p>
-                    <p className="font-medium"><AnimatedCounter value={Math.round(Number(orderDetails.tax_amount || 0))} className="inline" format /> {orderDetails.currency}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الخصم" : "Discount"}</p>
-                    <p className="font-medium"><AnimatedCounter value={Math.round(Number(orderDetails.discount_amount || 0))} className="inline" format /> {orderDetails.currency}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "تاريخ الطلب" : "Order Date"}</p>
-                    <p className="font-medium">{orderDetails.order_date}</p>
-                  </div>
-                </div>
-
-                {(orderDetails.delivery_date || orderDetails.due_date) && (
-                  <>
-                    <Separator />
-                    <div className="grid grid-cols-2 gap-4">
-                      {orderDetails.delivery_date && (
-                        <div>
-                          <p className="text-sm text-muted-foreground">{isAr ? "تاريخ التسليم" : "Delivery Date"}</p>
-                          <p className="font-medium">{orderDetails.delivery_date}</p>
-                        </div>
-                      )}
-                      {orderDetails.due_date && (
-                        <div>
-                          <p className="text-sm text-muted-foreground">{isAr ? "تاريخ الاستحقاق" : "Due Date"}</p>
-                          <p className="font-medium">{orderDetails.due_date}</p>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {orderDetails.description && (
-                  <>
-                    <Separator />
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">{isAr ? "الوصف" : "Description"}</p>
-                      <p>{orderDetails.description}</p>
-                    </div>
-                  </>
-                )}
-
-                {orderDetails.rejection_reason && (
-                  <>
-                    <Separator />
-                    <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20">
-                      <p className="text-sm font-medium text-destructive mb-1">{isAr ? "سبب الرفض" : "Rejection Reason"}</p>
-                      <p className="text-sm">{orderDetails.rejection_reason}</p>
-                    </div>
-                  </>
-                )}
-
-                {orderDetails.notes && (
-                  <>
-                    <Separator />
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">{isAr ? "ملاحظات" : "Notes"}</p>
-                      <p className="text-sm">{orderDetails.notes}</p>
-                    </div>
-                  </>
-                )}
-
-                {/* Items table */}
-                {orderDetails.items && Array.isArray(orderDetails.items) && orderDetails.items.length > 0 && (
-                  <>
-                    <Separator />
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-2">{isAr ? "العناصر" : "Items"}</p>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>{isAr ? "الصنف" : "Item"}</TableHead>
-                            <TableHead>{isAr ? "الكمية" : "Qty"}</TableHead>
-                            <TableHead>{isAr ? "السعر" : "Price"}</TableHead>
-                            <TableHead>{isAr ? "المجموع" : "Total"}</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {(orderDetails.items as any[]).map((item, idx) => (
-                            <TableRow key={idx}>
-                              <TableCell>{item.name}</TableCell>
-                              <TableCell>{item.quantity}</TableCell>
-                              <TableCell>{item.price}</TableCell>
-                              <TableCell><AnimatedCounter value={Math.round(item.quantity * item.price)} className="inline" format /></TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Internal Notes */}
-            <InternalNotesCard
-              notes={orderDetails.internal_notes || ""}
-              onSave={(notes) => updateInternalNotesMutation.mutate({ id: orderDetails.id, notes })}
-              isAr={isAr}
-            />
-
-            {/* Communications */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5" />
-                  {isAr ? "المراسلات" : "Communications"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ScrollArea className="h-[300px] mb-4">
-                  <div className="space-y-4">
-                    {communications.map((msg) => (
-                      <div key={msg.id} className={`flex ${msg.sender_type === "admin" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[80%] rounded-xl p-3 ${
-                          msg.sender_type === "admin" ? "bg-primary text-primary-foreground" : "bg-muted"
-                        }`}>
-                          <p>{msg.message}</p>
-                          <p className="text-xs opacity-70 mt-1">
-                            {format(new Date(msg.created_at), "yyyy-MM-dd HH:mm")}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                    {communications.length === 0 && (
-                      <p className="text-center text-muted-foreground py-8">
-                        {isAr ? "لا توجد رسائل" : "No messages yet"}
-                      </p>
-                    )}
-                  </div>
-                </ScrollArea>
-                <div className="flex gap-2">
-                  <Input
-                    placeholder={isAr ? "اكتب رسالة..." : "Type a message..."}
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && sendMessageMutation.mutate()}
-                  />
-                  <Button onClick={() => sendMessageMutation.mutate()} disabled={!newMessage.trim()}>
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{isAr ? "معلومات الشركة" : "Company Info"}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {orderDetails.companies && (
-                  <div className="flex items-center gap-3">
-                    {orderDetails.companies.logo_url ? (
-                      <img src={orderDetails.companies.logo_url} alt="Company logo" className="h-12 w-12 rounded-xl object-cover" loading="lazy" />
-                    ) : (
-                      <div className="h-12 w-12 rounded-xl bg-muted flex items-center justify-center">
-                        <Building2 className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                    )}
-                    <div>
-                      <p className="font-semibold">{orderDetails.companies.name}</p>
-                      {orderDetails.companies.email && <p className="text-sm text-muted-foreground">{orderDetails.companies.email}</p>}
-                      {orderDetails.companies.phone && <p className="text-sm text-muted-foreground">{orderDetails.companies.phone}</p>}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{isAr ? "الجدول الزمني" : "Timeline"}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <TimelineItem label={isAr ? "تم الإنشاء" : "Created"} date={orderDetails.created_at} color="bg-chart-5" />
-                  {orderDetails.approved_at && <TimelineItem label={isAr ? "تم الاعتماد" : "Approved"} date={orderDetails.approved_at} color="bg-chart-1" />}
-                  {orderDetails.rejected_at && <TimelineItem label={isAr ? "تم الرفض" : "Rejected"} date={orderDetails.rejected_at} color="bg-destructive" />}
-                  {orderDetails.completed_at && <TimelineItem label={isAr ? "مكتمل" : "Completed"} date={orderDetails.completed_at} color="bg-chart-5" />}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
+      <CompanyOrderDetailView
+        orderDetails={orderDetails}
+        communications={communications}
+        isAr={isAr}
+        onBack={() => setSelectedOrder(null)}
+        onEdit={openEditForm}
+        onUpdateStatus={(params) => updateStatusMutation.mutate(params)}
+        onDelete={(id) => deleteOrderMutation.mutate(id)}
+        onSaveInternalNotes={(params) => updateInternalNotesMutation.mutate(params)}
+        onSendMessage={() => sendMessageMutation.mutate()}
+        newMessage={newMessage}
+        onNewMessageChange={setNewMessage}
+        showRejectDialog={showRejectDialog}
+        onShowRejectDialog={setShowRejectDialog}
+        rejectionReason={rejectionReason}
+        onRejectionReasonChange={setRejectionReason}
+      />
     );
   }
 
@@ -849,178 +479,12 @@ export default function OrdersAdmin() {
 
   if (selectedShopOrder && shopOrderDetails) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => setSelectedShopOrder(null)}>
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex-1">
-            <div className="flex items-center gap-3">
-              <ShoppingBag className="h-8 w-8 text-primary" />
-              <div>
-                <h1 className="text-2xl font-bold">{shopOrderDetails.order_number}</h1>
-                <p className="text-muted-foreground">{shopOrderDetails.buyer_name || shopOrderDetails.buyer_email}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {shopOrderDetails.status === "pending" && (
-              <Button size="sm" onClick={() => updateShopStatusMutation.mutate({ id: shopOrderDetails.id, status: "confirmed" })}>
-                <CheckCircle className="h-4 w-4 me-1" />
-                {isAr ? "تأكيد" : "Confirm"}
-              </Button>
-            )}
-            {shopOrderDetails.status === "confirmed" && (
-              <Button size="sm" onClick={() => updateShopStatusMutation.mutate({ id: shopOrderDetails.id, status: "processing" })}>
-                <Package className="h-4 w-4 me-1" />
-                {isAr ? "معالجة" : "Process"}
-              </Button>
-            )}
-            {shopOrderDetails.status === "processing" && (
-              <Button size="sm" onClick={() => updateShopStatusMutation.mutate({ id: shopOrderDetails.id, status: "shipped" })}>
-                <Truck className="h-4 w-4 me-1" />
-                {isAr ? "شحن" : "Ship"}
-              </Button>
-            )}
-            {shopOrderDetails.status === "shipped" && (
-              <Button size="sm" onClick={() => updateShopStatusMutation.mutate({ id: shopOrderDetails.id, status: "delivered" })}>
-                <CheckCircle className="h-4 w-4 me-1" />
-                {isAr ? "تم التوصيل" : "Delivered"}
-              </Button>
-            )}
-            {!["cancelled", "refunded", "delivered"].includes(shopOrderDetails.status) && (
-              <Button size="sm" variant="destructive" onClick={() => updateShopStatusMutation.mutate({ id: shopOrderDetails.id, status: "cancelled" })}>
-                <Ban className="h-4 w-4 me-1" />
-                {isAr ? "إلغاء" : "Cancel"}
-              </Button>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{isAr ? "تفاصيل الطلب" : "Order Details"}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-                    <AdminStatusBadge status={shopOrderDetails.status} label={getStatusLabel(shopOrderDetails.status)} />
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الدفع" : "Payment"}</p>
-                    <Badge variant="outline">{getStatusLabel(shopOrderDetails.payment_status || "pending")}</Badge>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "طريقة الدفع" : "Payment Method"}</p>
-                    <p className="font-medium">{shopOrderDetails.payment_method || "-"}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "المبلغ" : "Total"}</p>
-                    <p className="font-bold text-lg">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.total_amount))} className="inline" format /></p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "المجموع الفرعي" : "Subtotal"}</p>
-                    <p className="font-medium">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.subtotal || 0))} className="inline" format /></p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الضريبة" : "Tax"}</p>
-                    <p className="font-medium">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.tax_amount || 0))} className="inline" format /></p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">{isAr ? "الخصم" : "Discount"}</p>
-                    <p className="font-medium">{shopOrderDetails.currency} <AnimatedCounter value={Math.round(Number(shopOrderDetails.discount_amount || 0))} className="inline" format /></p>
-                  </div>
-                </div>
-
-                {shopOrderDetails.notes && (
-                  <>
-                    <Separator />
-                    <div>
-                      <p className="text-sm text-muted-foreground mb-1">{isAr ? "ملاحظات" : "Notes"}</p>
-                      <p className="text-sm">{shopOrderDetails.notes}</p>
-                    </div>
-                  </>
-                )}
-
-                {/* Products */}
-                <Separator />
-                <div>
-                  <p className="text-sm text-muted-foreground mb-2">{isAr ? "المنتجات" : "Products"}</p>
-                  <div className="space-y-3">
-                    {shopOrderDetails.shop_order_items?.map((item) => (
-                      <div key={item.id} className="flex items-center gap-3">
-                        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md bg-muted">
-                          {item.shop_products?.image_url ? (
-                            <img src={item.shop_products.image_url} alt={item.shop_products.title || "Product"} className="h-full w-full object-cover" loading="lazy" />
-                          ) : (
-                            <div className="flex h-full items-center justify-center">
-                              <ShoppingBag className="h-5 w-5 text-muted-foreground/30" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium line-clamp-1">
-                            {isAr ? item.shop_products?.title_ar || item.shop_products?.title : item.shop_products?.title}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {item.quantity} × {shopOrderDetails.currency} {Number(item.unit_price).toFixed(2)}
-                          </p>
-                        </div>
-                        <p className="text-sm font-semibold">
-                          {shopOrderDetails.currency} {Number(item.total_price).toFixed(2)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Buyer info sidebar */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>{isAr ? "معلومات المشتري" : "Buyer Info"}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                    <User className="h-5 w-5 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <p className="font-medium">{shopOrderDetails.buyer_name || (isAr ? "غير محدد" : "N/A")}</p>
-                    <p className="text-sm text-muted-foreground">{shopOrderDetails.buyer_email || "-"}</p>
-                  </div>
-                </div>
-                {shopOrderDetails.shipping_address && (
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">{isAr ? "عنوان الشحن" : "Shipping Address"}</p>
-                    <p className="text-sm">{typeof shopOrderDetails.shipping_address === "string" ? shopOrderDetails.shipping_address : JSON.stringify(shopOrderDetails.shipping_address)}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{isAr ? "الجدول الزمني" : "Timeline"}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <TimelineItem label={isAr ? "تم الإنشاء" : "Created"} date={shopOrderDetails.created_at} color="bg-chart-5" />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
+      <ShopOrderDetailView
+        shopOrderDetails={shopOrderDetails}
+        isAr={isAr}
+        onBack={() => setSelectedShopOrder(null)}
+        onUpdateStatus={(params) => updateShopStatusMutation.mutate(params)}
+      />
     );
   }
 
@@ -1387,10 +851,10 @@ export default function OrdersAdmin() {
                                   <ArrowUpRight className="h-4 w-4 text-chart-1" />
                                 )}
                               </TableCell>
-                              <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
+                              <TableCell className="text-sm">{getCategoryLabelLocal(order.category)}</TableCell>
                               <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
                               <TableCell>
-                                <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
+                                <AdminStatusBadge status={order.status} label={getStatusLabelLocal(order.status)} />
                               </TableCell>
                               <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                               <TableCell>
@@ -1506,10 +970,10 @@ export default function OrdersAdmin() {
                         <TableCell>{order.shop_order_items?.length || 0} {isAr ? "منتج" : "items"}</TableCell>
                         <TableCell className="font-medium tabular-nums">{order.currency} {Number(order.total_amount).toFixed(2)}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="text-xs">{getStatusLabel(order.payment_status || "pending")}</Badge>
+                          <Badge variant="outline" className="text-xs">{getStatusLabelLocal(order.payment_status || "pending")}</Badge>
                         </TableCell>
                         <TableCell>
-                          <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
+                          <AdminStatusBadge status={order.status} label={getStatusLabelLocal(order.status)} />
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                         <TableCell>
@@ -1556,55 +1020,3 @@ function StatCard({ value, label, color }: { value: number; label: string; color
   );
 }
 
-function TimelineItem({ label, date, color }: { label: string; date: string; color: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className={`h-2 w-2 rounded-full ${color}`} />
-      <div className="flex-1">
-        <p className="text-sm font-medium">{label}</p>
-        <p className="text-xs text-muted-foreground">{format(new Date(date), "yyyy-MM-dd HH:mm")}</p>
-      </div>
-    </div>
-  );
-}
-
-function InternalNotesCard({ notes, onSave, isAr }: { notes: string; onSave: (n: string) => void; isAr: boolean }) {
-  const [value, setValue] = useState(notes);
-  const [editing, setEditing] = useState(false);
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            {isAr ? "ملاحظات داخلية" : "Internal Notes"}
-          </CardTitle>
-          {!editing ? (
-            <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
-              <Edit className="h-4 w-4 me-1" />
-              {isAr ? "تعديل" : "Edit"}
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => { setEditing(false); setValue(notes); }}>
-                {isAr ? "إلغاء" : "Cancel"}
-              </Button>
-              <Button size="sm" onClick={() => { onSave(value); setEditing(false); }}>
-                <Save className="h-4 w-4 me-1" />
-                {isAr ? "حفظ" : "Save"}
-              </Button>
-            </div>
-          )}
-        </div>
-      </CardHeader>
-      <CardContent>
-        {editing ? (
-          <Textarea value={value} onChange={(e) => setValue(e.target.value)} rows={4} placeholder={isAr ? "ملاحظات مرئية للمسؤولين فقط..." : "Notes visible to admins only..."} />
-        ) : (
-          <p className="text-sm text-muted-foreground whitespace-pre-wrap">{notes || (isAr ? "لا توجد ملاحظات" : "No internal notes")}</p>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
