@@ -299,7 +299,7 @@ export default function CompaniesAdmin() {
                 <Label>{isAr ? "الدولة" : "Country"}</Label>
                 <CountrySelector value={companyForm.country_code} onChange={v => {
                   const c = allCountries.find(ct => ct.code === v);
-                  setCompanyForm(f => ({ ...f, country_code: v, country: c?.name_en || f.country }));
+                  setCompanyForm(f => ({ ...f, country_code: v, country: c?.name || f.country }));
                 }} />
               </div>
               <div className="space-y-2"><Label>{isAr ? "المدينة" : "City"}</Label><Input value={companyForm.city} onChange={e => setCompanyForm({ ...companyForm, city: e.target.value })} /></div>
