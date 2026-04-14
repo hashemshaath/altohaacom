@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Package, Star, ExternalLink, CheckCircle, Pencil } from "lucide-react";
+import type { AdPackageRow } from "./types";
 
 const tierColors: Record<string, string> = {
   platinum: "border-primary bg-primary/5",
@@ -15,9 +16,9 @@ const tierColors: Record<string, string> = {
 };
 
 interface Props {
-  packages: any[];
+  packages: AdPackageRow[];
   onToggleActive?: (id: string, active: boolean) => void;
-  onEdit?: (pkg) => void;
+  onEdit?: (pkg: AdPackageRow) => void;
 }
 
 export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleActive, onEdit }: Props) {

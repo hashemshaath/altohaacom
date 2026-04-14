@@ -9,9 +9,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { CheckCircle, XCircle, LayoutGrid, Eye, MousePointerClick, ExternalLink, Image, Search } from "lucide-react";
 import { statusColors } from "./statusColors";
+import type { AdCreativeWithPlacement } from "./types";
 
 interface Props {
-  creatives: any[];
+  creatives: AdCreativeWithPlacement[];
   onApprove: (id: string) => void;
   onReject: (id: string) => void;
   onToggleActive: (id: string, active: boolean) => void;
