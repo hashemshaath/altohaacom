@@ -34,8 +34,8 @@ import {
   EXHIBITION_TYPE_LABELS,
   countFields,
 } from "@/components/smart-import/types";
-import {
 import { MS_PER_DAY } from "@/lib/constants";
+import {
   Search, Loader2, MapPin, Globe, Sparkles, CheckCircle,
   Star, ChevronRight, ArrowLeft, AlertCircle,
   RefreshCw, Plus, Clock, Calendar, Building2,

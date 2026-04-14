@@ -18,8 +18,8 @@ import {
   Award,
   MessageSquare,
 } from "lucide-react";
-import {
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import {
   RadarChart,
   Radar,
   PolarGrid,
