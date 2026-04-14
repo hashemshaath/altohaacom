@@ -708,7 +708,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
             <Package className="h-4 w-4 text-primary" />{isAr ? "منتجات ذات صلة" : "Related Products"}
           </h2>
           <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {relatedProducts.slice(0, 4).map((rp: any) => {
+            {relatedProducts.slice(0, 4).map((rp: Record<string, unknown>) => {
               const rpTitle = isAr && rp.name_ar ? rp.name_ar : rp.name;
               const rpPrice = rp.unit_price || 0;
               const rpPriceVat = Math.round(rpPrice * (1 + VAT_RATE));

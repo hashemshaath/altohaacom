@@ -331,12 +331,12 @@ export const TemplatesManager = memo(function TemplatesManager() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {templates.map(t => {
             const totalCriteria = Array.isArray(t.criteria_snapshot)
-              ? (t.criteria_snapshot as any[]).reduce((sum, cat: any) => sum + (cat.criteria?.length || 0), 0)
+              ? (t.criteria_snapshot as any[]).reduce((sum, cat: Record<string, unknown>) => sum + (cat.criteria?.length || 0), 0)
               : 0;
             const categories = Array.isArray(t.criteria_snapshot) ? (t.criteria_snapshot as any[]).length : 0;
             const emoji = CATEGORY_ICONS[t.product_category || "general"] || "📦";
             const totalWeight = Array.isArray(t.criteria_snapshot)
-              ? (t.criteria_snapshot as any[]).reduce((sum, cat: any) =>
+              ? (t.criteria_snapshot as any[]).reduce((sum, cat: Record<string, unknown>) =>
                   sum + (cat.criteria || []).reduce((cs, cr) => cs + (cr.weight || 0), 0), 0)
               : 0;
 

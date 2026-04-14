@@ -204,11 +204,11 @@ export default function ExhibitionDetail() {
       if (participantIds.length > 0) {
         const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, username, avatar_url").in("user_id", participantIds);
         const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
-        scored.forEach((r: any) => { r.participant = profileMap.get(r.participant_id) || null; });
+        scored.forEach((r: Record<string, unknown>) => { r.participant = profileMap.get(r.participant_id) || null; });
       }
 
       const compMap = new Map(linkedCompetitions!.map((c) => [c.id, c]));
-      scored.forEach((r: any) => { r.competition = compMap.get(r.competition_id) || null; });
+      scored.forEach((r: Record<string, unknown>) => { r.competition = compMap.get(r.competition_id) || null; });
       return scored;
     },
     enabled: competitionIds.length > 0,

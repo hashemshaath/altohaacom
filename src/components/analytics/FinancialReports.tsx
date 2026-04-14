@@ -27,9 +27,9 @@ const FinancialReports = memo(function FinancialReports() {
       ]);
 
       // Total order revenue
-      const totalOrderRevenue = (orders || []).reduce((sum, o: any) => sum + (Number(o.total_amount) || 0), 0);
-      const totalTransactions = (transactions || []).reduce((sum, t: any) => sum + (Number(t.amount) || 0), 0);
-      const totalSponsorship = (sponsors || []).filter((s) => s.status === "active").reduce((sum, s: any) => sum + (Number(s.amount_paid) || 0), 0);
+      const totalOrderRevenue = (orders || []).reduce((sum, o: Record<string, unknown>) => sum + (Number(o.total_amount) || 0), 0);
+      const totalTransactions = (transactions || []).reduce((sum, t: Record<string, unknown>) => sum + (Number(t.amount) || 0), 0);
+      const totalSponsorship = (sponsors || []).filter((s) => s.status === "active").reduce((sum, s: Record<string, unknown>) => sum + (Number(s.amount_paid) || 0), 0);
 
       // Orders by category
       const categoryCounts: Record<string, number> = {};
