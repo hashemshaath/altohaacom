@@ -57,7 +57,7 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
   }, [placements, searchQuery, pageFilter]);
 
   // Group placements by page_location
-  const grouped = sortedPlacements.reduce((acc: Record<string, any[]>, p: any) => {
+  const grouped = sortedPlacements.reduce<Record<string, AdPlacementRow[]>>((acc, p) => {
     const page = p.page_location || "other";
     if (!acc[page]) acc[page] = [];
     acc[page].push(p);

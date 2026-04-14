@@ -35,7 +35,7 @@ interface UserDetailsSidePanelProps {
 }
 
 /** Calculate profile completeness percentage */
-function calcCompleteness(profile: any): { score: number; missing: string[] } {
+function calcCompleteness(profile: Record<string, unknown>): { score: number; missing: string[] } {
   const fields = [
     { key: "full_name", label: "Full Name / الاسم" },
     { key: "username", label: "Username / اسم المستخدم" },
