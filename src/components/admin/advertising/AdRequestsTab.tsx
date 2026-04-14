@@ -11,7 +11,7 @@ import { statusColors } from "./statusColors";
 import type { AdRequestRow } from "./types";
 
 type AdRequestWithCompany = AdRequestRow & {
-  companies?: { name: string; name_ar: string | null } | null;
+  companies?: { name: string; name_ar: string | null; logo_url?: string | null } | null;
 };
 
 interface Props {

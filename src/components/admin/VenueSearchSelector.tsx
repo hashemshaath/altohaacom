@@ -137,7 +137,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
                 {t("Searching...", "جارِ البحث...")}
               </div>
             ) : venues && venues.length > 0 ? (
-              venues.map((v: Record<string, unknown>) => (
+              venues.map((v: any) => (
                 <button key={v.id} className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-start hover:bg-muted/50 transition-colors" onClick={() => selectVenue(v)}>
                   {v.logo_url ? (
                     <img loading="lazy" decoding="async" src={v.logo_url} alt={v.name || "Venue"} className="h-8 w-8 rounded object-contain bg-muted p-0.5 shrink-0" />

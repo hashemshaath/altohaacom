@@ -418,7 +418,7 @@ export default function OrganizersAdmin() {
           ) : viewMode === "cards" ? (
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {pagination.paginated.map((org: Record<string, unknown>) => {
+                {pagination.paginated.map((org: any) => {
                   const pct = getProfileCompleteness(org);
                   return (
                     <Card key={org.id} className="rounded-2xl border-border/40 overflow-hidden group hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
@@ -523,7 +523,7 @@ export default function OrganizersAdmin() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {pagination.paginated.map((org: Record<string, unknown>) => {
+                  {pagination.paginated.map((org: any) => {
                     const pct = getProfileCompleteness(org);
                     return (
                       <TableRow key={org.id} className={cn("group transition-colors", selected.has(org.id) ? "bg-primary/5" : "")} data-clickable="true" onClick={() => setDetailId(org.id)}>

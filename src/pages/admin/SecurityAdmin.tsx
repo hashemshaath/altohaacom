@@ -133,7 +133,7 @@ const EventsTab = memo(function EventsTab() {
 
   const filteredEvents = useMemo(() => {
     if (!data?.events) return [];
-    return data.events.filter((e: Record<string, unknown>) => {
+    return data.events.filter((e: any) => {
       if (severityFilter !== "all" && e.severity !== severityFilter) return false;
       if (filter) {
         const q = filter.toLowerCase();
@@ -181,7 +181,7 @@ const EventsTab = memo(function EventsTab() {
           ) : (
             <ScrollArea className="h-[500px]">
               <div className="space-y-2 pe-2">
-                {filteredEvents.map((event: Record<string, unknown>) => {
+                {filteredEvents.map((event: any) => {
                   const Icon = EVENT_TYPE_ICONS[event.event_type] || Shield;
                   const isCritical = event.severity === "critical" || event.severity === "high";
                   return (

@@ -735,7 +735,7 @@ export default function CompaniesAdmin() {
     }
   };
 
-  const companyBalance = transactions.reduce((acc, t: Record<string, unknown>) => {
+  const companyBalance = transactions.reduce((acc, t: any) => {
     if (t.type === "payment" || t.type === "credit" || t.type === "refund") return acc + Number(t.amount);
     if (t.type === "invoice" || t.type === "debit") return acc - Number(t.amount);
     return acc + Number(t.amount);
