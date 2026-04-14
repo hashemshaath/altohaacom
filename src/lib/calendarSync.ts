@@ -1,7 +1,7 @@
 /**
-import { MS_PER_DAY } from "@/lib/constants";
  * Calendar sync utility — generates .ics files and Google/Outlook calendar links
  */
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface CalendarEvent {
   title: string;
