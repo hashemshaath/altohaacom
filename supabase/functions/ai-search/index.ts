@@ -8,7 +8,8 @@ Deno.serve(async (req) => {
   const corsRes = handleCors(req);
   if (corsRes) return corsRes;
 
-  try {
+    await authenticateRequest(req);
+
     const { query, language } = await req.json();
     if (!query || typeof query !== "string" || query.trim().length < 2) {
       return jsonResponse({ error: "Query too short" }, 400);
