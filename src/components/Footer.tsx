@@ -151,7 +151,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
             </p>
             <a
               href={`mailto:${contactEmail}`}
-              className="mt-3 inline-flex items-center gap-2 text-xs text-[hsl(220_9%_46%)] hover:text-primary transition-colors duration-200"
+              className="mt-3 inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors duration-200"
             >
               <Mail className="h-3.5 w-3.5" />
               {contactEmail}
@@ -160,10 +160,10 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
 
           {/* Newsletter */}
           <div className="w-full max-w-md">
-            <h3 className="text-sm font-semibold text-[hsl(220_13%_11%)] dark:text-foreground">
+            <h3 className="text-sm font-semibold text-foreground">
               {l("Stay Updated", "ابقَ على اطلاع")}
             </h3>
-            <p className="mt-1 text-xs text-[hsl(220_9%_46%)] dark:text-muted-foreground">
+            <p className="mt-1 text-xs text-muted-foreground">
               {l("Get the latest news and updates directly to your inbox.", "احصل على آخر الأخبار والتحديثات مباشرة.")}
             </p>
             <form onSubmit={handleNewsletterSubmit} className="mt-3 flex gap-2">
@@ -173,7 +173,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                 onChange={(e) => setNlEmail(e.target.value)}
                 placeholder={l("your@email.com", "بريدك الإلكتروني")}
                 required
-                className="flex-1 h-10 rounded-xl border-[hsl(220_13%_87%)] bg-white dark:bg-background text-sm"
+                className="flex-1 h-10 rounded-xl border-border bg-white dark:bg-background text-sm"
               />
               <Button type="submit" disabled={nlLoading} size="sm" className="h-10 px-5 rounded-xl gap-1.5 shrink-0">
                 <Send className="h-3.5 w-3.5" />

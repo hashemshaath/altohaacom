@@ -112,7 +112,7 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
           score += overlap * 2;
         }
         // Temporal proximity bonus
-        const daysAway = Math.abs((new Date(e.start_date).getTime() - Date.now()) / 86400000);
+        const daysAway = Math.abs((new Date(e.start_date).getTime() - Date.now()) / MS_PER_DAY);
         if (daysAway < 30) score += 2;
         else if (daysAway < 90) score += 1;
 
@@ -126,7 +126,7 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
       (competitions || []).forEach(c => {
         let score = 0;
         if (viewedCountries.includes(c.country || "")) score += 3;
-        const daysAway = Math.abs((new Date(c.competition_start).getTime() - Date.now()) / 86400000);
+        const daysAway = Math.abs((new Date(c.competition_start).getTime() - Date.now()) / MS_PER_DAY);
         if (daysAway < 30) score += 2;
 
         scored.push({
