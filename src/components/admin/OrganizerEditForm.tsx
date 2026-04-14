@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { SectionHeader, FieldGroup, BilingualField, ProgressRing, QuickNavItem, generateSlug } from "./organizer/OrganizerFormHelpers";
 
 /* ─── Types ─── */
 interface OrganizerForm {
