@@ -1,34 +1,23 @@
-import { useState, useCallback, useMemo, lazy, Suspense, useEffect, useRef } from "react";
-import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
-import { categoryBadgeText } from "@/lib/categoryUtils";
+import { useState, useCallback, useMemo, lazy, Suspense } from "react";
 import { AnimatedCounter as SharedAnimatedCounter } from "@/components/ui/animated-counter";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
-import { safeJsonLd } from "@/lib/safeJsonLd";
-import { useAuth } from "@/contexts/AuthContext";
-import { useIsAdmin } from "@/hooks/useAdmin";
+import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, MapPin, Users, Globe, Trophy, ArrowLeft, CheckCircle,
   Settings, Pencil, Award, BookOpen, ClipboardList, Clock, Share2,
-  ImageIcon, Twitter, Facebook, Linkedin, Link2, ChevronDown,
+  ImageIcon, Twitter, Facebook, Linkedin, Link2,
   Sparkles, Target, BarChart3, UsersRound, Eye, Flame, Shield, Building2,
   Medal, Info, DoorOpen, Scale, FileSpreadsheet, Radio,
   Swords, Layers, CalendarClock, ChefHat, MessageSquare, ClipboardCheck, MessageCircle, Bookmark, BookmarkCheck,
-  Star, TrendingUp, Zap, Crown, Hash, Timer, Ticket, Activity, Heart,
-  Play, Pause, ChevronRight, ExternalLink, Bell,
+  Star, TrendingUp, Zap, Hash, Timer, Ticket, Activity, Bell,
 } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
 import {
@@ -37,16 +26,16 @@ import {
 import { SEOHead } from "@/components/SEOHead";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { buildPublicUrl } from "@/lib/publicAppUrl";
-import { format, formatDistanceToNow, differenceInDays, differenceInHours, differenceInMinutes, differenceInSeconds } from "date-fns";
-import { deriveCompetitionStatus } from "@/lib/competitionStatus";
-import { useEntityQRCode } from "@/hooks/useQRCode";
+import { safeJsonLd } from "@/lib/safeJsonLd";
+import { format } from "date-fns";
 import { RegistrationStatusBanner } from "@/components/competitions/RegistrationStatusBanner";
-import { CompetitionCountdown } from "@/components/competitions/CompetitionCountdown";
 import { CompetitionTimeline } from "@/components/competitions/CompetitionTimeline";
 import { ParticipantStatsCard } from "@/components/competitions/ParticipantStatsCard";
 import { OrganizerCard } from "@/components/competitions/OrganizerCard";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
-import type { Database } from "@/integrations/supabase/types";
+import { useCompetitionDetailData } from "./competition/useCompetitionDetailData";
+import { statusConfig, TabTransition, Section, LiveCountdownStrip } from "./competition/competitionDetailHelpers";
+import type { CompetitionStatus } from "./competition/competitionDetailHelpers";
 
 // Lazy-loaded tab panels
 const CompetitionStatusManager = lazy(() => import("@/components/competitions/CompetitionStatusManager").then(m => ({ default: m.CompetitionStatusManager })));
