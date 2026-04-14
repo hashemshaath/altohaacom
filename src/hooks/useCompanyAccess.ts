@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useCompanyAccess() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ export function useCompanyAccess() {
       return data.company_id;
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 
   return { companyId: companyId || null, isLoading };
@@ -42,6 +43,6 @@ export function useCompanyProfile(companyId: string | null) {
       return data;
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }

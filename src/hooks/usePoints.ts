@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { CACHE } from "@/lib/queryConfig";
 
 export function usePointsBalance() {
   const { user } = useAuth();
@@ -18,7 +19,7 @@ export function usePointsBalance() {
       return data?.points_balance || 0;
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 
@@ -54,7 +55,7 @@ export function usePointsRewards() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 10,
+    ...CACHE.long,
   });
 }
 
@@ -70,7 +71,7 @@ export function useEarningRules() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 10,
+    ...CACHE.long,
   });
 }
 

@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface GlobalEventRecord {
   id: string;
@@ -52,7 +53,7 @@ export function useGlobalEvents(filters?: { status?: string }) {
       if (error) throw error;
       return (data || []) as GlobalEventRecord[];
     },
-    staleTime: 1000 * 60 * 3,
+    ...CACHE.default,
   });
 }
 

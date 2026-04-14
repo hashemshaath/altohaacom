@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { CACHE } from "@/lib/queryConfig";
 
 export type EvalMethod = "numeric" | "stars" | "pass_fail";
 export type SessionStatus = "draft" | "open" | "in_progress" | "completed" | "cancelled";
@@ -143,7 +144,7 @@ export function useTastingSession(id: string | undefined) {
       return data as unknown as TastingSession;
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

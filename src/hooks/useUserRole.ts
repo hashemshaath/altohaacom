@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -22,7 +23,7 @@ export function useUserRoles() {
       return data?.map(r => r.role) || [];
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 

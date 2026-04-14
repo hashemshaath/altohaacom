@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 // ─── Types ──────────────────────────────────────
 
@@ -119,7 +120,7 @@ export function useEvaluationCriteriaCategories(domainId?: string, productCatego
       return (data || []) as unknown as EvaluationCriteriaCategory[];
     },
     enabled: !!domainId,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

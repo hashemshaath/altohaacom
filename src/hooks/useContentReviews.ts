@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface ContentReview {
   id: string;
@@ -29,7 +30,7 @@ export function useContentReviews(entityType: string, entityId: string) {
       if (error) throw error;
       return (data || []) as unknown as ContentReview[];
     },
-    staleTime: 1000 * 60 * 3,
+    ...CACHE.default,
   });
 }
 

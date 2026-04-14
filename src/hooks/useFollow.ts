@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useFollowStats(userId: string | undefined) {
   return useQuery({
@@ -17,7 +18,7 @@ export function useFollowStats(userId: string | undefined) {
       };
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 
@@ -237,7 +238,7 @@ export function useFollowRecommendations() {
       return data || [];
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 

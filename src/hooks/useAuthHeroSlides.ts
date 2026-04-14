@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface AuthHeroSlide {
   id: string;
@@ -26,6 +27,6 @@ export function useAuthHeroSlides(pageType: "individual" | "company" = "individu
       if (error) throw error;
       return (data || []) as AuthHeroSlide[];
     },
-    staleTime: 1000 * 60 * 10,
+    ...CACHE.long,
   });
 }

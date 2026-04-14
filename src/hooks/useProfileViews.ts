@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { getDeviceType } from "@/lib/deviceType";
 import { getBrowser } from "@/lib/analyticsUtils";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Records a profile view and provides analytics data for the profile owner.
@@ -170,6 +171,6 @@ export function useProfileAnalytics(profileUserId: string | undefined) {
       };
     },
     enabled: !!profileUserId,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 
 // ─── Types ──────────────────────────────────
 
@@ -141,7 +142,7 @@ export function useChefScheduleEvents(chefId?: string, dateRange?: { start: stri
       return (data || []) as ChefScheduleEvent[];
     },
     enabled: !!chefId || !dateRange,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

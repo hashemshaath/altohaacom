@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ROUTES } from "@/config/routes";
+import { CACHE } from "@/lib/queryConfig";
 
 export type GlobalEventType =
   | "competition" | "exhibition" | "chefs_table" | "tv_interview"
@@ -208,8 +209,7 @@ export function useGlobalEventsCalendar(filters?: {
       filtered.sort((a, b) => Date.parse(a.start_date) - Date.parse(b.start_date));
       return filtered;
     },
-    staleTime: 1000 * 60 * 5,
-    gcTime: 1000 * 60 * 30,
+    ...CACHE.medium,
     refetchOnWindowFocus: false,
   });
 }

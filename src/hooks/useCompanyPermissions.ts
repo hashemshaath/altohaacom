@@ -2,6 +2,7 @@ import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 // Define which portal pages each role can access
 const ROLE_PAGE_ACCESS: Record<string, string[]> = {
@@ -43,7 +44,7 @@ export function useCompanyContactRole() {
       };
     },
     enabled: !!companyId && !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 

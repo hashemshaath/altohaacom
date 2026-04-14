@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -19,7 +20,7 @@ export function usePermissions() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 10,
+    ...CACHE.long,
   });
 }
 
@@ -35,7 +36,7 @@ export function useRolePermissions(role?: AppRole) {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 
@@ -84,7 +85,7 @@ export function useUserPermissions() {
       return Array.from(permCodes);
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 }
 

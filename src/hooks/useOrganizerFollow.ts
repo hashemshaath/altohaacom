@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useOrganizerFollows() {
   const { user } = useAuth();
@@ -19,7 +20,7 @@ export function useOrganizerFollows() {
       return data.map(r => r.organizer_id);
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 
   const queryClient = useQueryClient();

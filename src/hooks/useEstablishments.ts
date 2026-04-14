@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useEstablishments(filters?: { type?: string; country?: string; search?: string }) {
   return useQuery({
@@ -37,7 +38,7 @@ export function useEstablishment(id?: string) {
       return data;
     },
     enabled: !!id,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

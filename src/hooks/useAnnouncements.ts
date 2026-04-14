@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface SiteAnnouncement {
   id: string;
@@ -35,7 +36,7 @@ export function useAnnouncements() {
       if (error) throw error;
       return (data || []) as SiteAnnouncement[];
     },
-    staleTime: 1000 * 60 * 5,
+    ...CACHE.medium,
   });
 
   // Get dismissed announcements for current user
@@ -49,7 +50,7 @@ export function useAnnouncements() {
       return (data || []).map((d) => d.announcement_id) as string[];
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 10,
+    ...CACHE.long,
   });
 
   const dismiss = useMutation({

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { CACHE } from "@/lib/queryConfig";
 
 export interface MentorshipProgram {
   id: string;
@@ -113,7 +114,7 @@ export function useMentorshipPrograms(statusFilter?: string) {
       if (error) throw error;
       return (data || []) as MentorshipProgram[];
     },
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 }
 

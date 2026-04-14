@@ -5,6 +5,7 @@ import { useUserSpecialties } from "@/hooks/useSpecialties";
 import { useRecordProfileView } from "@/hooks/useProfileViews";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -61,7 +62,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
       throw new Error("Profile not found");
     },
     enabled: !!username,
-    staleTime: 1000 * 60 * 2,
+    ...CACHE.short,
   });
 
   useRecordProfileView(profile?.user_id as string | undefined);
