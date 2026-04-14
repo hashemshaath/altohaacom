@@ -1,6 +1,7 @@
 import { handleCors } from "../_shared/cors.ts";
 import { jsonResponse, errorResponse, streamResponse } from "../_shared/response.ts";
 import { callAIStream } from "../_shared/ai.ts";
+import { authenticateRequest } from "../_shared/auth.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 Deno.serve(async (req) => {

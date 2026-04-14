@@ -1,6 +1,7 @@
 import { handleCors } from "../_shared/cors.ts";
 import { jsonResponse, errorResponse } from "../_shared/response.ts";
 import { callAI } from "../_shared/ai.ts";
+import { authenticateRequest } from "../_shared/auth.ts";
 
 const SYSTEM_PROMPT = `You are Altoha AI — the helpful assistant for Altoha, the world's premier culinary community platform.
 
