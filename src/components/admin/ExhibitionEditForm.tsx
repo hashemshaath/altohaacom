@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, memo, type ReactNode } from "react";
+import { SectionHeader, FieldGroup, EmptyHint } from "@/components/admin/exhibition/ExhibitionFormHelpers";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
