@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Building2, Users, Award, MapPin, Globe, Mail, Phone, Calendar, Star, TrendingUp, Eye LucideIcon } from "lucide-react";
+import { Building2, Users, Award, MapPin, Globe, Mail, Phone, Calendar, Star, TrendingUp, Eye, LucideIcon } from "lucide-react";
 
 interface Props {
   entityId: string | null;

@@ -3,7 +3,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { CheckCircle, Calendar, MapPin, Globe, Building, Ticket, Tag, Star, Image LucideIcon } from "lucide-react";
+import { CheckCircle, Calendar, MapPin, Globe, Building, Ticket, Tag, Star, Image, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import type { ExhibitionFormData } from "./types";
 

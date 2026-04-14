@@ -8,8 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Newspaper, ChefHat, CalendarDays, UsersRound, UserPlus, Users, BookOpen,
-  PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark,
-LucideIcon } from "lucide-react";
+  PanelLeftClose, PanelLeftOpen, PanelRightClose, PanelRightOpen, Radio, Bookmark, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { OnlineCountBadge } from "./PresenceIndicator";

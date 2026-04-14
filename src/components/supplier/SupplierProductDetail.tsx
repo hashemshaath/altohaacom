@@ -14,8 +14,7 @@ import {
   ListChecks, FileText, ChevronRight, Star, Award, Copy,
   MessageSquare, ChevronDown, ChevronUp, ThumbsUp, Clock,
   BadgeCheck, ShieldCheck, Sparkles, Users, HelpCircle,
-  Timer, Percent, Gift, Verified, Megaphone,
-LucideIcon } from "lucide-react";
+  Timer, Percent, Gift, Verified, Megaphone, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MS_PER_DAY } from "@/lib/constants";
 

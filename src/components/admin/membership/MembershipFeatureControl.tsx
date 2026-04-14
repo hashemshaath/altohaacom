@@ -13,8 +13,7 @@ import { toast } from "sonner";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Loader2, Search, Shield, Zap, Star, Crown, Layout, Users, MessageCircle,
-  ToggleLeft, ToggleRight, CheckCircle2, XCircle,
-LucideIcon } from "lucide-react";
+  ToggleLeft, ToggleRight, CheckCircle2, XCircle, LucideIcon } from "lucide-react";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 

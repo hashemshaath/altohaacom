@@ -26,8 +26,7 @@ import {
   ChefHat, Search, Eye, Package, Calendar, FileText,
   Clock, Check, X, ThumbsUp, ThumbsDown, MapPin, Image,
   Send, Gavel, Printer, ChevronDown, DollarSign, Download,
-  Users, AlertCircle, BarChart3, UserPlus, Receipt,
-LucideIcon } from "lucide-react";
+  Users, AlertCircle, BarChart3, UserPlus, Receipt, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";

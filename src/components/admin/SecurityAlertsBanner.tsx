@@ -5,7 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ShieldAlert, AlertTriangle, Ban, Lock, ArrowRight LucideIcon } from "lucide-react";
+import { ShieldAlert, AlertTriangle, Ban, Lock, ArrowRight, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { subDays } from "date-fns";
 

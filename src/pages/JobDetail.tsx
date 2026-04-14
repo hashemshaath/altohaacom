@@ -15,8 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Briefcase, MapPin, DollarSign, Clock, Building2, Users, ArrowLeft, Send,
   CheckCircle2, Share2, Eye, Award, Star, Globe, ChefHat, ArrowRight, Sparkles, Heart,
-  Home, ChevronRight, Bookmark, AlertCircle, Calendar
-LucideIcon } from "lucide-react";
+  Home, ChevronRight, Bookmark, AlertCircle, Calendar, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 

@@ -22,8 +22,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   ArrowLeft, User, Phone, Mail, MapPin, Globe, Calendar, Clock,
   ShoppingCart, DollarSign, Heart, Star, Wallet, Gift, Users,
-  Plus, Edit, Send, CreditCard, Package, AlertCircle, ShieldCheck,
-LucideIcon } from "lucide-react";
+  Plus, Edit, Send, CreditCard, Package, AlertCircle, ShieldCheck, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 
 export default function CRMCustomerDetail() {

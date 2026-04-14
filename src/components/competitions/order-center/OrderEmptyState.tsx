@@ -4,8 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   Package, ClipboardList, Truck, Lightbulb, Send, FileInput,
-  BarChart3, CheckSquare, BookTemplate, ClipboardCheck, Activity,
-LucideIcon } from "lucide-react";
+  BarChart3, CheckSquare, BookTemplate, ClipboardCheck, Activity, LucideIcon } from "lucide-react";
 
 type EmptyStateType =
   | "lists" | "items" | "vendors" | "suggestions" | "quotes"

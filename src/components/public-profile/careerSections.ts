@@ -1,4 +1,4 @@
-import { Briefcase, Gavel, Users, GraduationCap, Tv, Award LucideIcon } from "lucide-react";
+import { Briefcase, Gavel, Users, GraduationCap, Tv, Award, LucideIcon } from "lucide-react";
 
 export interface SectionDef {
   key: string;

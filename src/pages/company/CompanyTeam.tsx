@@ -18,8 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import {
   Users, Mail, Phone, Building, UserPlus, Shield, Crown, Eye, Pencil,
-  Clock, CheckCircle2, XCircle, Send, RefreshCw, MoreHorizontal, Trash2,
-LucideIcon } from "lucide-react";
+  Clock, CheckCircle2, XCircle, Send, RefreshCw, MoreHorizontal, Trash2, LucideIcon } from "lucide-react";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,

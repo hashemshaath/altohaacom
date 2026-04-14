@@ -6,7 +6,7 @@ import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";
 import { FeatureGateForUser } from "@/components/membership/FeatureGate";
 
 import { ProfileActivityTimeline } from "@/components/profile/ProfileActivityTimeline";
-import { FileText, Globe LucideIcon } from "lucide-react";
+import { FileText, Globe, LucideIcon } from "lucide-react";
 import { StaggeredList } from "@/components/ui/staggered-list";
 
 interface ProfileOverviewTabProps {

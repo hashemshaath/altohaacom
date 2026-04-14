@@ -5,8 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Beef, Coffee, Wheat, Milk, Candy, Droplets, Flame, Salad,
-  Snowflake, Package, FlaskConical, Star
-LucideIcon } from "lucide-react";
+  Snowflake, Package, FlaskConical, Star, LucideIcon } from "lucide-react";
 
 export interface ProductTemplate {
   id: string;

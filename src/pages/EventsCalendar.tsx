@@ -12,8 +12,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   Calendar, List, Clock, ChevronLeft, ChevronRight, Globe,
   X, Search, CalendarDays, SlidersHorizontal, Sparkles, MoreHorizontal,
-  TrendingUp, Zap,
-LucideIcon } from "lucide-react";
+  TrendingUp, Zap, LucideIcon } from "lucide-react";
 import { format, isSameMonth, isSameDay, addMonths, subMonths, addWeeks, subWeeks, startOfWeek, endOfWeek, addDays } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";

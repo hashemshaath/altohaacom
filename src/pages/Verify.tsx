@@ -19,8 +19,7 @@ import { generateVCard, downloadVCard, getVerificationUrl } from "@/lib/qrCode";
 import {
   Search, Shield, CheckCircle, XCircle, AlertTriangle,
   User, Award, FileText, Building, Calendar, QrCode,
-  UserPlus, ExternalLink,
-LucideIcon } from "lucide-react";
+  UserPlus, ExternalLink, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 

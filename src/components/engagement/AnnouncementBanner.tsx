@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAnnouncements } from "@/hooks/useAnnouncements";
-import { X, ExternalLink, Info, AlertTriangle, CheckCircle2, Sparkles LucideIcon } from "lucide-react";
+import { X, ExternalLink, Info, AlertTriangle, CheckCircle2, Sparkles, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const TYPE_STYLES: Record<string, { icon: LucideIcon; bg: string; border: string; text: string }> = {

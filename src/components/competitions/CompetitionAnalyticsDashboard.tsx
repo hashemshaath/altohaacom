@@ -11,8 +11,7 @@ import {
 } from "recharts";
 import {
   BarChart3, Users, Trophy, TrendingUp, Target, Medal,
-  UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown,
-LucideIcon } from "lucide-react";
+  UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown, LucideIcon } from "lucide-react";
 
 const COLORS = [
   "hsl(var(--primary))",

@@ -18,8 +18,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import {
-  Mail, CheckCircle, XCircle, Clock, CalendarCheck, Trophy, Eye, Send,
-LucideIcon } from "lucide-react";
+  Mail, CheckCircle, XCircle, Clock, CalendarCheck, Trophy, Eye, Send, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 
 export default function CompanyInvitations() {

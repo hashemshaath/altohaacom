@@ -6,8 +6,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
-  Plus, Pencil, Trash2, X, Check, GripVertical, ArrowRightLeft, Languages, Loader2,
-LucideIcon } from "lucide-react";
+  Plus, Pencil, Trash2, X, Check, GripVertical, ArrowRightLeft, Languages, Loader2, LucideIcon } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,

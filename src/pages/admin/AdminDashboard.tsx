@@ -19,8 +19,7 @@ import {
   Shield, Activity, Package, GraduationCap, LayoutDashboard,
   Zap, MessageSquare, AlertTriangle, Settings,
   Heart, ChefHat, Building2, Landmark, BarChart3,
-  Clock, Eye, Globe,
-LucideIcon } from "lucide-react";
+  Clock, Eye, Globe, LucideIcon } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";

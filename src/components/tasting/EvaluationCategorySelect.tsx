@@ -2,7 +2,7 @@ import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Coffee, Wine, UtensilsCrossed, Palette, Globe, ChefHat LucideIcon } from "lucide-react";
+import { Coffee, Wine, UtensilsCrossed, Palette, Globe, ChefHat, LucideIcon } from "lucide-react";
 
 export type EvaluationCategory = "culinary" | "coffee" | "barista" | "beverage" | "decoration" | "local_dishes" | "international";
 

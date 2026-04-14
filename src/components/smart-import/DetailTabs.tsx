@@ -14,8 +14,7 @@ import {
   Star, Globe, Calendar, Users, Award, Share2,
   UserCheck, Shield, Link2, BookOpen, ExternalLink,
   Image as ImageIcon, BarChart3, Layers, Mic, ListChecks,
-  Sparkles, Trophy,
-LucideIcon } from "lucide-react";
+  Sparkles, Trophy, LucideIcon } from "lucide-react";
 
 type EditProps = { editing?: boolean; onFieldUpdate?: (key: string, value: string) => void };
 type TabProps = { details: ImportedData; isAr: boolean } & EditProps;

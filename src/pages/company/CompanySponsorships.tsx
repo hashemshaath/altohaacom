@@ -19,8 +19,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Crown, Trophy, Calendar, MapPin, Building2, CheckCircle, XCircle, Clock,
-  Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye
-LucideIcon } from "lucide-react";
+  Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 

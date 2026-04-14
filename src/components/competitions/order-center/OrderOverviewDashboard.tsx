@@ -8,8 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import {
   ClipboardList, Package, CheckCircle, Clock, AlertTriangle,
-  Send, Lightbulb, Printer, TrendingUp, FileInput, Download,
-LucideIcon } from "lucide-react";
+  Send, Lightbulb, Printer, TrendingUp, FileInput, Download, LucideIcon } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, isPast, differenceInDays } from "date-fns";

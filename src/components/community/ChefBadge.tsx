@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import { Award, BadgeCheck, Shield, Star LucideIcon } from "lucide-react";
+import { Award, BadgeCheck, Shield, Star, LucideIcon } from "lucide-react";
 
 interface ChefBadgeProps {
   userId: string;

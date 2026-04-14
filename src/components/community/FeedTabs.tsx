@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
-import { Flame, UserCheck, Clock, Bookmark LucideIcon } from "lucide-react";
+import { Flame, UserCheck, Clock, Bookmark, LucideIcon } from "lucide-react";
 
 export type FeedFilter = "for_you" | "following" | "latest" | "bookmarks";
 

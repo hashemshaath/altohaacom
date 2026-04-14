@@ -6,8 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import {
   Package, Calendar, MapPin, ChefHat, Users, Eye,
   Clock, CheckCircle2, XCircle, PlayCircle, Receipt,
-  Globe, Copy, ExternalLink
-LucideIcon } from "lucide-react";
+  Globe, Copy, ExternalLink, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { ChefsTableInvoiceGenerator } from "./ChefsTableInvoiceGenerator";

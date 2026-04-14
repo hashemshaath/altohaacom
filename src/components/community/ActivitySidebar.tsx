@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MessageCircle, UserPlus, Repeat2, Bookmark, Bell LucideIcon } from "lucide-react";
+import { Heart, MessageCircle, UserPlus, Repeat2, Bookmark, Bell, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ActivityItem {

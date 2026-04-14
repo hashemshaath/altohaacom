@@ -25,8 +25,7 @@ import {
   ArrowRight, Sparkles, Eye, Star, Globe, BarChart3, Megaphone, Home, ChevronRight,
   LayoutGrid, LayoutList, Bell, BellRing, Bookmark, TrendingUp,
   SlidersHorizontal, History, Zap, AlertCircle, Share2, Copy, Check,
-  ArrowUpDown, Flame, Target, Crown, ExternalLink, ChevronDown, Command, Loader2
-LucideIcon } from "lucide-react";
+  ArrowUpDown, Flame, Target, Crown, ExternalLink, ChevronDown, Command, Loader2, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";

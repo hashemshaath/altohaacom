@@ -22,8 +22,7 @@ import {
 import {
   BarChart3, TrendingUp, TrendingDown, ShoppingCart, FileText,
   CreditCard, Users, Download, Calendar, Activity, Receipt, PieChart as PieIcon,
-  ArrowUpRight, ArrowDownRight, Package,
-LucideIcon } from "lucide-react";
+  ArrowUpRight, ArrowDownRight, Package, LucideIcon } from "lucide-react";
 import { format, subMonths, subDays, startOfMonth, endOfMonth, startOfDay, endOfDay, eachMonthOfInterval, eachWeekOfInterval, parseISO } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";

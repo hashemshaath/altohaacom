@@ -12,8 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import {
   Calendar, Landmark, ImageIcon, LayoutGrid, MessageSquare, Award,
-  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem,
-LucideIcon } from "lucide-react";
+  Star, Trophy, Users, Clock, Settings, CalendarClock, ChefHat, Navigation, Gavel, Ticket, ScanLine, BookmarkCheck, Gem, LucideIcon } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { ExhibitionGalleryLightbox } from "@/components/exhibitions/detail/ExhibitionGalleryLightbox";
 import { countryFlag as getCountryFlagUtil } from "@/lib/countryFlag";

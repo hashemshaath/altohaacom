@@ -18,8 +18,7 @@ import {
   Utensils, Coffee, Cake, Soup, Salad, Award, GraduationCap,
   ArrowRight, Sparkles, Eye, Star, TrendingUp,
   CheckCircle2, XCircle, Zap, Shield, MessageSquare, Crown, Timer,
-  Play, Target, Rocket, Globe, Heart
-LucideIcon } from "lucide-react";
+  Play, Target, Rocket, Globe, Heart, LucideIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import heroImage from "@/assets/jobs-hero.jpg";

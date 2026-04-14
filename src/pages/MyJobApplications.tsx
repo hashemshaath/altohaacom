@@ -12,8 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Briefcase, Clock, CheckCircle2, XCircle, Eye, ChevronRight,
-  Building2, MapPin, FileText, Inbox,
-LucideIcon } from "lucide-react";
+  Building2, MapPin, FileText, Inbox, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 
 const STATUS_CONFIG: Record<string, { labelEn: string; labelAr: string; color: string; icon: LucideIcon }> = {

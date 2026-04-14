@@ -8,8 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  ArrowUpCircle, ArrowDownCircle, Clock, Gift, XCircle, Crown, Star, Zap, History,
-LucideIcon } from "lucide-react";
+  ArrowUpCircle, ArrowDownCircle, Clock, Gift, XCircle, Crown, Star, Zap, History, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
