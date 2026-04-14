@@ -57,37 +57,6 @@ import {
 import { CompanyOrderDetailView } from "./orders/CompanyOrderDetailView";
 import { ShopOrderDetailView } from "./orders/ShopOrderDetailView";
 
-const categoryLabels: Record<OrderCategory, { en: string; ar: string }> = {
-  promotional: { en: "Promotional", ar: "ترويجية" },
-  equipment: { en: "Equipment", ar: "معدات" },
-  materials: { en: "Materials", ar: "مواد" },
-  services: { en: "Services", ar: "خدمات" },
-  catering: { en: "Catering", ar: "تموين" },
-  venue: { en: "Venue", ar: "مكان" },
-  transport: { en: "Transport", ar: "نقل" },
-  other: { en: "Other", ar: "أخرى" },
-};
-
-const defaultOrderForm = {
-  company_id: "",
-  direction: "outgoing" as OrderDirection,
-  category: "other" as OrderCategory,
-  title: "",
-  title_ar: "",
-  description: "",
-  description_ar: "",
-  total_amount: 0,
-  subtotal: 0,
-  tax_amount: 0,
-  discount_amount: 0,
-  currency: "SAR",
-  order_date: new Date().toISOString().split("T")[0],
-  delivery_date: "",
-  due_date: "",
-  notes: "",
-  internal_notes: "",
-  items: [] as { name: string; quantity: number; price: number }[],
-};
 
 export default function OrdersAdmin() {
   const { language } = useLanguage();
