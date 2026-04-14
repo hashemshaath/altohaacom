@@ -368,7 +368,7 @@ export default function CompetitionDetail() {
       { id: "contestants", icon: Users, labelEn: "Contestants", labelAr: "المتسابقين" },
       { id: "winners", icon: Medal, labelEn: "Winners", labelAr: "الفائزين" },
     ];
-    const competition_tabs = [
+    const competitionTabs = [
       { id: "rounds", icon: Swords, labelEn: "Rounds", labelAr: "الجولات" },
       { id: "stages", icon: Layers, labelEn: "Eval Stages", labelAr: "مراحل التقييم" },
       { id: "judges", icon: Scale, labelEn: "Judging Panel", labelAr: "لجنة التحكيم" },
@@ -407,7 +407,7 @@ export default function CompetitionDetail() {
 
     const groups = [
       { labelEn: "Core", labelAr: "أساسي", tabs: core },
-      { labelEn: "Competition", labelAr: "المسابقة", tabs: competition_tabs },
+      { labelEn: "Competition", labelAr: "المسابقة", tabs: competitionTabs },
       { labelEn: "Community", labelAr: "المجتمع", tabs: community },
     ];
     if (insights.length > 0) {
