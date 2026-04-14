@@ -1433,11 +1433,3 @@ export const ExhibitionEditForm = memo(function ExhibitionEditForm({ exhibition,
   );
 });
 
-/* Helper components are imported from ExhibitionFormHelpers */
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted/40 mb-2">
-        <Icon className="h-5 w-5 text-muted-foreground/50" />
-      </div>
-      <p className="text-xs text-muted-foreground/70">{text}</p>
-    </div>
-  );
-}
