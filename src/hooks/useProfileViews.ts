@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { getDeviceType } from "@/lib/deviceType";
 import { getBrowser } from "@/lib/analyticsUtils";
 import { CACHE } from "@/lib/queryConfig";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 /**
  * Records a profile view and provides analytics data for the profile owner.
@@ -83,8 +84,8 @@ export function useProfileAnalytics(profileUserId: string | undefined) {
       if (!profileUserId) return null;
 
       const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * MS_PER_DAY).toISOString();
+      const sevenDaysAgo = new Date(now.getTime() - MS_PER_WEEK).toISOString();
 
       const { data: allViews } = await supabase
         .from("profile_views")
@@ -132,7 +133,7 @@ export function useProfileAnalytics(profileUserId: string | undefined) {
       });
       // Fill in missing days
       for (let i = 29; i >= 0; i--) {
-        const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        const d = new Date(now.getTime() - i * MS_PER_DAY);
         const key = d.toISOString().split("T")[0];
         dailyViews.push({ date: key, views: dayMap.get(key) || 0 });
       }

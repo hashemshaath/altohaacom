@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Hash, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const TrendingTopics = memo(function TrendingTopics() {
   const { language } = useLanguage();
@@ -15,7 +16,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
     queryKey: ["trending-topics"],
     queryFn: async () => {
       // Get recent posts with hashtags (last 7 days)
-      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
       const { data: posts } = await supabase
         .from("posts")
         .select("content, replies_count, reposts_count, created_at")

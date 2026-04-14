@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { Search, TrendingUp, Clock, Star, Trophy, FileText, Users, UtensilsCrossed, Ticket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { getSavedSearches, addSavedSearch, removeSavedSearch } from "@/lib/recentSearches";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface SearchSuggestionsProps {
   query: string;
@@ -79,7 +80,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
   const { data: trendingSearches } = useQuery({
     queryKey: ["trending-searches"],
     queryFn: async () => {
-      const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const sevenDaysAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
       const { data: posts } = await supabase
         .from("posts")
         .select("content")

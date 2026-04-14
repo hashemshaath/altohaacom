@@ -6,6 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { MS_PER_DAY } from "@/lib/constants";
 
 function getScoreLevel(score: number, isAr: boolean): { label: string; color: string; emoji: string } {
   if (score >= 80) return { label: isAr ? "متميّز" : "Outstanding", color: "text-chart-2", emoji: "🏆" };
@@ -24,8 +25,8 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
     queryKey: ["platform-score", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000).toISOString();
-      const prevThirtyDays = new Date(Date.now() - 60 * 86400000).toISOString();
+      const thirtyDaysAgo = new Date(Date.now() - 30 * MS_PER_DAY).toISOString();
+      const prevThirtyDays = new Date(Date.now() - 60 * MS_PER_DAY).toISOString();
 
       const [posts, reactions, follows, regs, views, prevPosts, prevReactions] = await Promise.allSettled([
         supabase.from("posts").select("id", { count: "exact", head: true }).eq("author_id", user.id).gte("created_at", thirtyDaysAgo),

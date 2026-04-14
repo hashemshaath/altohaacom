@@ -20,6 +20,7 @@ import { SocialProofWidget } from "@/components/referrals/SocialProofWidget";
 import { TierProgressCard } from "@/components/referrals/TierProgressCard";
 import { useToast } from "@/hooks/use-toast";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, CartesianGrid, PieChart, Pie, Cell } from "recharts";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export default function Referrals() {
   const { language } = useLanguage();
@@ -230,7 +231,7 @@ export default function Referrals() {
                 { en: "🔥 Pro tip: Personalize your message to each friend for higher conversion!", ar: "🔥 نصيحة احترافية: خصص رسالتك لكل صديق لتحويل أعلى!" },
                 { en: "⚡ Quick win: Post your referral link in your Instagram bio!", ar: "⚡ فوز سريع: ضع رابط الإحالة في بايو الانستقرام!" },
               ];
-              const randomTip = motivationalTips[Math.floor(Date.now() / 86400000) % motivationalTips.length];
+              const randomTip = motivationalTips[Math.floor(Date.now() / MS_PER_DAY) % motivationalTips.length];
 
               return (
                 <Card className="border-primary/20 bg-gradient-to-br from-primary/8 via-background to-chart-4/8 overflow-hidden relative">

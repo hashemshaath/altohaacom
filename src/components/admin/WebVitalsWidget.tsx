@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Gauge, Smartphone, Monitor, Tablet, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface VitalsRow {
   lcp: number | null;
@@ -51,7 +52,7 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
   const { data, isLoading } = useQuery({
     queryKey: ["admin-web-vitals-summary"],
     queryFn: async () => {
-      const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const since = new Date(Date.now() - MS_PER_DAY).toISOString();
       const { data, error } = await supabase
         .from("seo_web_vitals")
         .select("lcp, inp, cls, fcp, ttfb, device_type, path")

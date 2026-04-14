@@ -32,6 +32,7 @@ import {
 import { format, differenceInDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { Database } from "@/integrations/supabase/types";
+import { MS_PER_DAY } from "@/lib/constants";
 
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
@@ -152,7 +153,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
           await supabase.from("profiles").update({
             membership_tier: bulkTier,
             membership_status: "active",
-            membership_expires_at: bulkTier === "basic" ? null : new Date(Date.now() + 365 * 86400000).toISOString(),
+            membership_expires_at: bulkTier === "basic" ? null : new Date(Date.now() + 365 * MS_PER_DAY).toISOString(),
             membership_started_at: bulkTier === "basic" ? null : new Date().toISOString(),
           }).eq("user_id", userId);
 
@@ -186,7 +187,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
         } else if (bulkAction === "extend") {
           const current = member.membership_expires_at ? new Date(member.membership_expires_at) : new Date();
           const base = current > new Date() ? current : new Date();
-          const newExpiry = new Date(base.getTime() + bulkExtendDays * 86400000);
+          const newExpiry = new Date(base.getTime() + bulkExtendDays * MS_PER_DAY);
 
           await supabase.from("profiles").update({
             membership_expires_at: newExpiry.toISOString(),

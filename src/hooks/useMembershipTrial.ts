@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
+import { MS_PER_DAY } from "@/lib/constants";
 
 export interface TrialInfo {
   trialTier: string | null;
@@ -28,7 +29,7 @@ export function useTrialInfo() {
       if (error || !data) return { trialTier: null, trialStartedAt: null, trialEndsAt: null, trialExpired: false, isInTrial: false, daysRemaining: 0 };
 
       const isInTrial = !!data.trial_tier && !data.trial_expired && !!data.trial_ends_at && new Date(data.trial_ends_at) > new Date();
-      const daysRemaining = data.trial_ends_at ? Math.max(0, Math.ceil((new Date(data.trial_ends_at).getTime() - Date.now()) / 86400000)) : 0;
+      const daysRemaining = data.trial_ends_at ? Math.max(0, Math.ceil((new Date(data.trial_ends_at).getTime() - Date.now()) / MS_PER_DAY)) : 0;
 
       return {
         trialTier: data.trial_tier,

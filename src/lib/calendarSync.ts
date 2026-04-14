@@ -1,4 +1,5 @@
 /**
+import { MS_PER_DAY } from "@/lib/constants";
  * Calendar sync utility — generates .ics files and Google/Outlook calendar links
  */
 
@@ -26,7 +27,7 @@ function escapeICS(text: string): string {
 export function generateICS(event: CalendarEvent): string {
   const start = formatICSDate(event.startDate);
   const end = event.endDate ? formatICSDate(event.endDate) : formatICSDate(
-    new Date(new Date(event.startDate).getTime() + 86400000).toISOString()
+    new Date(new Date(event.startDate).getTime() + MS_PER_DAY).toISOString()
   );
 
   const lines = [
@@ -74,7 +75,7 @@ export function downloadICS(event: CalendarEvent) {
 export function getGoogleCalendarUrl(event: CalendarEvent): string {
   const start = formatICSDate(event.startDate);
   const end = event.endDate ? formatICSDate(event.endDate) : formatICSDate(
-    new Date(new Date(event.startDate).getTime() + 86400000).toISOString()
+    new Date(new Date(event.startDate).getTime() + MS_PER_DAY).toISOString()
   );
   const params = new URLSearchParams({
     action: "TEMPLATE",

@@ -11,6 +11,7 @@ import { THEMES, BUTTON_STYLES, FONT_SIZES } from "./constants";
 import { FONT_FAMILIES } from "@/lib/socialLinksConstants";
 import { Loader2 } from "lucide-react";
 import type { EditorSharedProps } from "./types";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface Props extends EditorSharedProps {
   uploading: boolean;
@@ -119,7 +120,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
             const newSched = {
               id: Date.now().toString(36), theme_id: "gold",
               start_date: new Date().toISOString().slice(0, 10),
-              end_date: new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10),
+              end_date: new Date(Date.now() + MS_PER_WEEK).toISOString().slice(0, 10),
               label: "New Occasion", label_ar: "مناسبة جديدة",
             };
             updateExtra({ scheduled_themes: [...(extra.scheduled_themes || []), newSched] });

@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Coins, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletAdminOverview = memo(function WalletAdminOverview() {
   const { language } = useLanguage();
@@ -15,7 +16,7 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
     queryKey: ["admin-wallet-overview"],
     queryFn: async () => {
       const now = new Date();
-      const last7d = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const last7d = new Date(now.getTime() - MS_PER_WEEK).toISOString();
 
       const [walletsRes, txnRes, recentTxnRes, pointsRes] = await Promise.all([
         supabase.from("user_wallets").select("balance, points_balance").limit(5000),

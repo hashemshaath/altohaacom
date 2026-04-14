@@ -20,6 +20,7 @@ import { format, differenceInDays, subMonths, startOfMonth } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { useToast } from "@/hooks/use-toast";
+import { MS_PER_DAY } from "@/lib/constants";
 
 const MembershipOverview = memo(function MembershipOverview() {
   const { language } = useLanguage();
@@ -81,7 +82,7 @@ const MembershipOverview = memo(function MembershipOverview() {
       }).length;
 
       const trialMembers = cards.filter(c => c.is_trial && c.card_status === "active").length;
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 86400000);
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * MS_PER_DAY);
 
       const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
       const recentUpgrades = history.filter(h =>

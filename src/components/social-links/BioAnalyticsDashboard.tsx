@@ -15,6 +15,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface BioAnalyticsDashboardProps {
   pageId: string;
@@ -75,7 +76,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       if (!visits) return null;
 
       const now = Date.now();
-      const week = 7 * 24 * 60 * 60 * 1000;
+      const week = MS_PER_WEEK;
       const countries: Record<string, number> = {};
       const devices: Record<string, number> = {};
       const browsers: Record<string, number> = {};
@@ -106,14 +107,14 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       // Build last 30 days chart data
       const dailyVisits: { date: string; visits: number }[] = [];
       for (let i = 29; i >= 0; i--) {
-        const d = new Date(now - i * 86400000);
+        const d = new Date(now - i * MS_PER_DAY);
         const key = d.toISOString().slice(0, 10);
         dailyVisits.push({ date: key, visits: dailyMap[key] || 0 });
       }
 
       const changePercent = prev7d > 0 ? Math.round(((recent7d - prev7d) / prev7d) * 100) : recent7d > 0 ? 100 : 0;
       const uniqueSet = new Set(visits.map(v => `${v.device_type}-${v.browser}-${v.referrer || "d"}`));
-      const avgDaily = visits.length > 0 ? Math.round(visits.length / Math.min(30, Math.ceil((now - new Date(visits[visits.length - 1].created_at).getTime()) / 86400000) || 1)) : 0;
+      const avgDaily = visits.length > 0 ? Math.round(visits.length / Math.min(30, Math.ceil((now - new Date(visits[visits.length - 1].created_at).getTime()) / MS_PER_DAY) || 1)) : 0;
 
       return {
         total: visits.length,
@@ -148,7 +149,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       if (!clicks || clicks.length === 0) return null;
 
       const now = Date.now();
-      const week = 7 * 86400000;
+      const week = MS_PER_WEEK;
       const hourlyAgg = Array(24).fill(0);
       const dailyClickMap: Record<string, number> = {};
       const linkClickMap: Record<string, number> = {};
@@ -170,7 +171,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
           linkClickMap[c.link_id] = (linkClickMap[c.link_id] || 0) + 1;
           if (age < week) linkClickMap7d[c.link_id] = (linkClickMap7d[c.link_id] || 0) + 1;
           if (age < 2 * week) linkClickMap14d[c.link_id] = (linkClickMap14d[c.link_id] || 0) + 1;
-          if (age < 30 * 86400000) linkClickMap30d[c.link_id] = (linkClickMap30d[c.link_id] || 0) + 1;
+          if (age < 30 * MS_PER_DAY) linkClickMap30d[c.link_id] = (linkClickMap30d[c.link_id] || 0) + 1;
         }
         if (age < week) clicks7d++;
         if (age < 2 * week) clicks14d++;
@@ -179,7 +180,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
 
       const dailyClicks: { date: string; clicks: number }[] = [];
       for (let i = 29; i >= 0; i--) {
-        const dt = new Date(now - i * 86400000);
+        const dt = new Date(now - i * MS_PER_DAY);
         const key = dt.toISOString().slice(0, 10);
         dailyClicks.push({ date: key, clicks: dailyClickMap[key] || 0 });
       }

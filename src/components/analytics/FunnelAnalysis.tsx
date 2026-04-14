@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { ArrowDown, Users, UserCheck, Trophy, ShoppingCart, TrendingDown } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface FunnelStep {
   label: string;
@@ -26,7 +27,7 @@ export const FunnelAnalysis = memo(function FunnelAnalysis() {
     queryFn: async () => {
       const now = new Date();
       const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
-      const since = new Date(now.getTime() - days * 86400000).toISOString();
+      const since = new Date(now.getTime() - days * MS_PER_DAY).toISOString();
 
       const [profilesRes, regsRes, ordersRes, totalUsersRes] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", since),

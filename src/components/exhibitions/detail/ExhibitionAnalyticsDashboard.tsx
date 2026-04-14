@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, Eye, Users, TrendingUp, MapPin, Smartphone, Monitor, Tablet, Calendar, Star, Ticket } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface Props {
   exhibitionId: string;
@@ -21,7 +22,7 @@ export const ExhibitionAnalyticsDashboard = memo(function ExhibitionAnalyticsDas
   const [period, setPeriod] = useState("7d");
 
   const periodDays = period === "7d" ? 7 : period === "30d" ? 30 : 90;
-  const sinceDate = new Date(Date.now() - periodDays * 86400000).toISOString();
+  const sinceDate = new Date(Date.now() - periodDays * MS_PER_DAY).toISOString();
 
   const { data: events = [] } = useQuery({
     queryKey: ["exhibition-analytics", exhibitionId, period],

@@ -13,6 +13,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface ProfileAnalyticsDashboardProps {
   userId: string;
@@ -36,7 +37,7 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
     queryKey: ["follower-growth", userId],
     queryFn: async () => {
       const now = new Date();
-      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * MS_PER_DAY).toISOString();
 
       const [followersRes, followingRes, recentFollowersRes] = await Promise.all([
         supabase.from("user_follows").select("id").eq("following_id", userId),
@@ -58,7 +59,7 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
       const dailyGrowth: { date: string; newFollowers: number; cumulative: number }[] = [];
       let cumulative = totalFollowers - recentFollowers.length;
       for (let i = 29; i >= 0; i--) {
-        const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        const d = new Date(now.getTime() - i * MS_PER_DAY);
         const key = d.toISOString().split("T")[0];
         const newF = dayMap.get(key) || 0;
         cumulative += newF;
@@ -66,9 +67,9 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
       }
 
       // Week-over-week comparison
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const sevenDaysAgo = new Date(now.getTime() - MS_PER_WEEK).toISOString();
       const last7 = recentFollowers.filter(f => f.created_at >= sevenDaysAgo).length;
-      const prev7 = recentFollowers.filter(f => f.created_at < sevenDaysAgo && f.created_at >= new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString()).length;
+      const prev7 = recentFollowers.filter(f => f.created_at < sevenDaysAgo && f.created_at >= new Date(now.getTime() - 14 * MS_PER_DAY).toISOString()).length;
       const growthPercent = prev7 > 0 ? Math.round(((last7 - prev7) / prev7) * 100) : last7 > 0 ? 100 : 0;
 
       // Best day for new followers

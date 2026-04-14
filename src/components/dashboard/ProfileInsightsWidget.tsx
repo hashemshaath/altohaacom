@@ -10,6 +10,7 @@ import { Eye, TrendingUp, Users, Smartphone, Monitor, ExternalLink } from "lucid
 import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
   const { user } = useAuth();
@@ -22,8 +23,8 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
       if (!user) return null;
 
       const now = new Date();
-      const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000).toISOString();
-      const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+      const fourteenDaysAgo = new Date(now.getTime() - 14 * MS_PER_DAY).toISOString();
+      const sevenDaysAgo = new Date(now.getTime() - MS_PER_WEEK).toISOString();
 
       const [viewsRes, followersRes] = await Promise.all([
         supabase
@@ -55,7 +56,7 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
       // Daily chart data (last 7 days)
       const dailyData: { day: string; views: number }[] = [];
       for (let i = 6; i >= 0; i--) {
-        const d = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+        const d = new Date(now.getTime() - i * MS_PER_DAY);
         const key = d.toISOString().split("T")[0];
         const dayLabel = d.toLocaleDateString(isAr ? "ar-SA" : "en-US", { weekday: "short" });
         const count = last7.filter(v => v.created_at.startsWith(key)).length;

@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { format, differenceInDays, addDays, addMonths, addYears } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
+import { MS_PER_DAY } from "@/lib/constants";
 
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
@@ -187,7 +188,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         updateData.membership_expires_at = null;
         updateData.membership_started_at = null;
       } else {
-        updateData.membership_expires_at = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+        updateData.membership_expires_at = new Date(Date.now() + 365 * MS_PER_DAY).toISOString();
         updateData.membership_started_at = new Date().toISOString();
       }
 
@@ -425,7 +426,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         await supabase.from("profiles").update({
           membership_tier: tier,
           membership_status: "active",
-          membership_expires_at: tier === "basic" ? null : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+          membership_expires_at: tier === "basic" ? null : new Date(Date.now() + 365 * MS_PER_DAY).toISOString(),
           membership_started_at: tier === "basic" ? null : new Date().toISOString(),
         }).eq("user_id", userId);
 

@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Flame, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WeeklyHighlights = memo(function WeeklyHighlights() {
   const { language } = useLanguage();
@@ -16,7 +17,7 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
   const { data, isLoading } = useQuery({
     queryKey: ["community-weekly-highlights"],
     queryFn: async () => {
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
 
       // Single query: top posts by engagement (replies + reposts)
       const { data: topPosts } = await supabase

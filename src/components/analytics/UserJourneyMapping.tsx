@@ -16,6 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell,
 } from "recharts";
 import { cn } from "@/lib/utils";
+import { MS_PER_DAY } from "@/lib/constants";
 
 // Friendly page labels
 const PAGE_LABELS: Record<string, { en: string; ar: string }> = {
@@ -89,7 +90,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
     queryKey: ["user-journey-mapping", period],
     queryFn: async () => {
       const days = period === "7d" ? 7 : period === "30d" ? 30 : 90;
-      const since = new Date(Date.now() - days * 86400000).toISOString();
+      const since = new Date(Date.now() - days * MS_PER_DAY).toISOString();
 
       const { data: views, error } = await supabase
         .from("seo_page_views")

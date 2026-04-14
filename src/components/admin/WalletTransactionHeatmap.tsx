@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, Wallet, TrendingUp, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap() {
   const { language } = useLanguage();
@@ -42,7 +43,7 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
       }
 
       // Weekly summary
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
       const { data: weekTxns } = await supabase
         .from("wallet_transactions")
         .select("type, amount")

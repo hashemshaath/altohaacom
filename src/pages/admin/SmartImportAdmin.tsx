@@ -35,6 +35,7 @@ import {
   countFields,
 } from "@/components/smart-import/types";
 import {
+import { MS_PER_DAY } from "@/lib/constants";
   Search, Loader2, MapPin, Globe, Sparkles, CheckCircle,
   Star, ChevronRight, ArrowLeft, AlertCircle,
   RefreshCw, Plus, Clock, Calendar, Building2,
@@ -794,7 +795,7 @@ export default function SmartImportAdmin() {
         const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
         const now = new Date();
         const defaultStart = details.start_date || now.toISOString().split('T')[0];
-        const defaultEnd = details.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0];
+        const defaultEnd = details.end_date || new Date(now.getTime() + 3 * MS_PER_DAY).toISOString().split('T')[0];
         const payload = {
           ...buildExhibitionPayload(details),
           title: details.name_en || name,
@@ -812,7 +813,7 @@ export default function SmartImportAdmin() {
         subType = "competition";
         const now = new Date();
         const defaultStart = details.start_date || now.toISOString().split('T')[0];
-        const defaultEnd = details.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0];
+        const defaultEnd = details.end_date || new Date(now.getTime() + 3 * MS_PER_DAY).toISOString().split('T')[0];
         const payload = {
           ...buildCompetitionPayload(details),
           title: details.name_en || name,
@@ -987,7 +988,7 @@ export default function SmartImportAdmin() {
             type: (suggestion.sub_type || 'exhibition') as ExhibitionType,
             status: 'pending' as const, slug,
             start_date: d.start_date || now.toISOString().split('T')[0],
-            end_date: d.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0],
+            end_date: d.end_date || new Date(now.getTime() + 3 * MS_PER_DAY).toISOString().split('T')[0],
             created_by: user?.id || null,
           };
           const { data: inserted } = await (supabase as any).from("exhibitions").insert(payload).select("id").single();
@@ -998,7 +999,7 @@ export default function SmartImportAdmin() {
             ...buildCompetitionPayload(d), title: d.name_en || name,
             status: 'pending' as const,
             competition_start: d.start_date || now.toISOString().split('T')[0],
-            competition_end: d.end_date || new Date(now.getTime() + 3 * 86400000).toISOString().split('T')[0],
+            competition_end: d.end_date || new Date(now.getTime() + 3 * MS_PER_DAY).toISOString().split('T')[0],
             organizer_id: user?.id || '', country_code: d.country_code || 'SA',
             edition_year: d.edition_year || now.getFullYear(),
           };

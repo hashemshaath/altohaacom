@@ -10,6 +10,7 @@ import {
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import type { LinkItem, VisitorStats, ClickAnalytics, BioNotification } from "./types";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface Props {
   items: LinkItem[];
@@ -264,7 +265,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                 const linkDays = clickAnalytics.linkDaily?.[item.id] || {};
                 const now = Date.now();
                 const sparkData = Array.from({ length: 7 }, (_, i) => {
-                  const key = new Date(now - (6 - i) * 86400000).toISOString().slice(0, 10);
+                  const key = new Date(now - (6 - i) * MS_PER_DAY).toISOString().slice(0, 10);
                   return linkDays[key] || 0;
                 });
                 const max = Math.max(...sparkData, 1);

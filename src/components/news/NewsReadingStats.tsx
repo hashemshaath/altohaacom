@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { BookOpen, Clock, Trophy, TrendingUp, Flame, Target, BarChart3 } from "lucide-react";
+import { MS_PER_DAY } from "@/lib/constants";
 
 const STORAGE_KEY = "altoha_reading_stats";
 
@@ -138,7 +139,7 @@ export function trackArticleRead(articleType: string, readingTimeMinutes: number
   const stats = loadStats();
   const today = new Date().toDateString();
   const wasYesterday = stats.lastReadDate
-    ? new Date(stats.lastReadDate).toDateString() === new Date(Date.now() - 86400000).toDateString()
+    ? new Date(stats.lastReadDate).toDateString() === new Date(Date.now() - MS_PER_DAY).toDateString()
     : false;
   const isToday = stats.lastReadDate && new Date(stats.lastReadDate).toDateString() === today;
 

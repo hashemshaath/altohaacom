@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { Activity, ArrowRight, UserPlus, Flag, Trophy, FileText, Shield, Package, AlertTriangle, Ticket, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface FeedItem {
   id: string;
@@ -36,7 +37,7 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
     queryKey: ["admin-activity-feed"],
     queryFn: async () => {
       const now = new Date();
-      const since = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+      const since = new Date(now.getTime() - MS_PER_DAY).toISOString();
 
       const [users, reports, orders, actions, competitions, tickets] = await Promise.allSettled([
         supabase.from("profiles").select("user_id, full_name, display_name, created_at").gte("created_at", since).order("created_at", { ascending: false }).limit(5),

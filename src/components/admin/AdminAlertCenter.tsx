@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 interface Alert {
   id: string;
@@ -42,7 +43,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
         .from("security_events")
         .select("id", { count: "exact", head: true })
         .eq("severity", "critical")
-        .gte("created_at", new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString());
+        .gte("created_at", new Date(now.getTime() - MS_PER_DAY).toISOString());
 
       if ((criticalEvents || 0) > 0) {
         alerts.push({
@@ -81,7 +82,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
         .from("profiles")
         .select("id", { count: "exact", head: true })
         .eq("account_status", "suspended")
-        .gte("suspended_at", new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString());
+        .gte("suspended_at", new Date(now.getTime() - MS_PER_WEEK).toISOString());
 
       if ((newSuspended || 0) > 0) {
         alerts.push({
@@ -101,7 +102,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
         .from("membership_cards")
         .select("id", { count: "exact", head: true })
         .eq("card_status", "active")
-        .lte("expires_at", new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000).toISOString())
+        .lte("expires_at", new Date(now.getTime() + MS_PER_WEEK).toISOString())
         .gte("expires_at", now.toISOString());
 
       if ((expiringCards || 0) > 0) {

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { TrendingUp, Users, MessageCircle, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const CommunityInsights = memo(function CommunityInsights() {
   const { language } = useLanguage();
@@ -16,7 +17,7 @@ export const CommunityInsights = memo(function CommunityInsights() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const todayISO = today.toISOString();
-      const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+      const weekAgo = new Date(Date.now() - MS_PER_WEEK).toISOString();
 
       const [todayPostsRes, weekPostsRes, weekRepliesRes, todayAuthorsRes] = await Promise.all([
         supabase.from("posts").select("id", { count: "exact", head: true })
