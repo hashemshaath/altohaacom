@@ -402,10 +402,10 @@ export default function OrdersAdmin() {
       { header: isAr ? "الشركة" : "Company", accessor: (o) => o.companies?.name || "" },
       { header: isAr ? "العنوان" : "Title", accessor: (o) => o.title },
       { header: isAr ? "الاتجاه" : "Direction", accessor: (o) => o.direction },
-      { header: isAr ? "الفئة" : "Category", accessor: (o) => getCategoryLabel(o.category) },
+      { header: isAr ? "الفئة" : "Category", accessor: (o) => getCategoryLabelLocal(o.category) },
       { header: isAr ? "المبلغ" : "Amount", accessor: (o) => o.total_amount },
       { header: isAr ? "العملة" : "Currency", accessor: (o) => o.currency },
-      { header: isAr ? "الحالة" : "Status", accessor: (o) => getStatusLabel(o.status) },
+      { header: isAr ? "الحالة" : "Status", accessor: (o) => getStatusLabelLocal(o.status) },
       { header: isAr ? "التاريخ" : "Date", accessor: (o) => o.created_at?.split("T")[0] || "" },
     ],
     filename: "orders",
@@ -545,7 +545,7 @@ export default function OrdersAdmin() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-                    <AdminStatusBadge status={orderDetails.status} label={getStatusLabel(orderDetails.status)} />
+                    <AdminStatusBadge status={orderDetails.status} label={getStatusLabelLocal(orderDetails.status)} />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الاتجاه" : "Direction"}</p>
@@ -555,7 +555,7 @@ export default function OrdersAdmin() {
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الفئة" : "Category"}</p>
-                    <p className="font-medium">{getCategoryLabel(orderDetails.category)}</p>
+                    <p className="font-medium">{getCategoryLabelLocal(orderDetails.category)}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "المبلغ" : "Amount"}</p>
@@ -825,11 +825,11 @@ export default function OrdersAdmin() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
-                    <AdminStatusBadge status={shopOrderDetails.status} label={getStatusLabel(shopOrderDetails.status)} />
+                    <AdminStatusBadge status={shopOrderDetails.status} label={getStatusLabelLocal(shopOrderDetails.status)} />
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "الدفع" : "Payment"}</p>
-                    <Badge variant="outline">{getStatusLabel(shopOrderDetails.payment_status || "pending")}</Badge>
+                    <Badge variant="outline">{getStatusLabelLocal(shopOrderDetails.payment_status || "pending")}</Badge>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">{isAr ? "طريقة الدفع" : "Payment Method"}</p>
@@ -1305,10 +1305,10 @@ export default function OrdersAdmin() {
                                   <ArrowUpRight className="h-4 w-4 text-chart-1" />
                                 )}
                               </TableCell>
-                              <TableCell className="text-sm">{getCategoryLabel(order.category)}</TableCell>
+                              <TableCell className="text-sm">{getCategoryLabelLocal(order.category)}</TableCell>
                               <TableCell className="font-medium tabular-nums">{Number(order.total_amount).toLocaleString()} {order.currency}</TableCell>
                               <TableCell>
-                                <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
+                                <AdminStatusBadge status={order.status} label={getStatusLabelLocal(order.status)} />
                               </TableCell>
                               <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                               <TableCell>
@@ -1424,10 +1424,10 @@ export default function OrdersAdmin() {
                         <TableCell>{order.shop_order_items?.length || 0} {isAr ? "منتج" : "items"}</TableCell>
                         <TableCell className="font-medium tabular-nums">{order.currency} {Number(order.total_amount).toFixed(2)}</TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="text-xs">{getStatusLabel(order.payment_status || "pending")}</Badge>
+                          <Badge variant="outline" className="text-xs">{getStatusLabelLocal(order.payment_status || "pending")}</Badge>
                         </TableCell>
                         <TableCell>
-                          <AdminStatusBadge status={order.status} label={getStatusLabel(order.status)} />
+                          <AdminStatusBadge status={order.status} label={getStatusLabelLocal(order.status)} />
                         </TableCell>
                         <TableCell className="text-muted-foreground text-sm">{format(new Date(order.created_at), "yyyy-MM-dd")}</TableCell>
                         <TableCell>
