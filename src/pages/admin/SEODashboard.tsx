@@ -502,7 +502,7 @@ export default function SEODashboard() {
   // ── Render Section Content ──
   const renderContent = () => {
     switch (activeSection) {
-      case "overview": return renderOverview();
+      case "overview": return <SEOOverviewSection isAr={isAr} range={range} totalViews={totalViews} prevTotalViews={prevTotalViews} uniqueSessions={uniqueSessions} prevUniqueSessions={prevUniqueSessions} bounceRate={bounceRate} prevBounceRate={prevBounceRate} avgDuration={avgDuration} prevAvgDuration={prevAvgDuration} vitalsAgg={vitalsAgg} indexingStatus={indexingStatus} trackedKeywords={trackedKeywords} totalPages={indexingStatus?.length || PUBLIC_ROUTES.length} />;
       case "gsc-performance": return <Suspense fallback={<SectionSkeleton />}><SEOGSCPerformance isAr={isAr} /></Suspense>;
       case "vitals": return renderVitals();
       case "keywords": return renderKeywords();
