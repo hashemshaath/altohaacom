@@ -6,7 +6,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
   enterprise: { en: "Enterprise", ar: "مؤسسية" },
 };
 
-export async function notifyMembershipUpgraded(params: { userId: string; previousTier: string; newTier: string; amount?: number }) {
+export async function notifyMembershipUpgraded(params: { userId: string; previousTier: string; newTier: string; amount?: number; [key: string]: unknown }) {
   const prev = TIER_LABELS[params.previousTier] || TIER_LABELS.basic;
   const next = TIER_LABELS[params.newTier] || TIER_LABELS.professional;
 
@@ -27,7 +27,7 @@ export async function notifyMembershipUpgraded(params: { userId: string; previou
   });
 }
 
-export async function notifyMembershipDowngraded(params: { userId: string; previousTier: string; newTier: string }) {
+export async function notifyMembershipDowngraded(params: { userId: string; previousTier: string; newTier: string; [key: string]: unknown }) {
   const prev = TIER_LABELS[params.previousTier] || TIER_LABELS.professional;
   const next = TIER_LABELS[params.newTier] || TIER_LABELS.basic;
   return sendNotification({
@@ -39,21 +39,21 @@ export async function notifyMembershipDowngraded(params: { userId: string; previ
   });
 }
 
-export async function notifyMembershipRenewed(params: { userId: string; tier: string; nextRenewalDate: string; amount?: number }) {
+export async function notifyMembershipRenewed(params: { userId: string; tier: string; nextRenewalDate?: string; expiresAt?: string; amount?: number; [key: string]: unknown }) {
   const tier = TIER_LABELS[params.tier] || TIER_LABELS.basic;
 
   try {
     const { data: profile } = await supabase.from("profiles").select("full_name").eq("id", params.userId).maybeSingle();
     await supabase.functions.invoke("send-membership-email", {
-      body: { userId: params.userId, emailType: "renewal", templateData: { userName: profile?.full_name || "Member", tier: tier.en, nextRenewalDate: params.nextRenewalDate, amount: params.amount } },
+      body: { userId: params.userId, emailType: "renewal", templateData: { userName: profile?.full_name || "Member", tier: tier.en, nextRenewalDate: params.nextRenewalDate || params.expiresAt || "", amount: params.amount } },
     });
   } catch { /* email best-effort */ }
 
   return sendNotification({
     userId: params.userId,
     title: `✅ ${tier.en} Membership Renewed`, titleAr: `✅ تم تجديد عضوية ${tier.ar}`,
-    body: `Your ${tier.en} membership has been renewed. Next renewal: ${params.nextRenewalDate}.`,
-    bodyAr: `تم تجديد عضويتك ${tier.ar}. التجديد القادم: ${params.nextRenewalDate}.`,
+    body: `Your ${tier.en} membership has been renewed. Next renewal: ${params.nextRenewalDate || params.expiresAt || ""}.`,
+    bodyAr: `تم تجديد عضويتك ${tier.ar}. التجديد القادم: ${params.nextRenewalDate || params.expiresAt || ""}.`,
     type: "success", link: "/membership", channels: ["in_app"],
   });
 }
@@ -89,7 +89,7 @@ export async function notifyMembershipExpired(params: { userId: string; tier: st
   });
 }
 
-export async function notifyMembershipCancellationSubmitted(params: { userId: string; tier: string; reason?: string }) {
+export async function notifyMembershipCancellationSubmitted(params: { userId: string; tier: string; reason?: string; [key: string]: unknown }) {
   const tier = TIER_LABELS[params.tier] || TIER_LABELS.basic;
   return sendNotification({
     userId: params.userId,

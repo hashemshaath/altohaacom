@@ -121,7 +121,7 @@ export async function notifyAdminSupportTicket(params: { ticketNumber: string; s
   });
 }
 
-export async function notifyAdminMembershipCancellation(params: { userId: string; userName: string; tier: string; reason?: string }) {
+export async function notifyAdminMembershipCancellation(params: { userName: string; tier: string; reason?: string; userId?: string; [key: string]: unknown }) {
   return notifyAllAdmins({
     title: `Membership Cancellation: ${params.userName}`, titleAr: `إلغاء عضوية: ${params.userName}`,
     body: `${params.userName} has requested cancellation of their ${params.tier} membership.${params.reason ? ` Reason: ${params.reason}` : ""}`,
