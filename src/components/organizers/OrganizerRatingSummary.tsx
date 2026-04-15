@@ -45,7 +45,7 @@ export const OrganizerRatingSummary = memo(function OrganizerRatingSummary({ exh
       };
     },
     enabled: exhibitionIds.length > 0,
-    staleTime: STALE_TIME_SHORT0,
+    staleTime: STALE_TIME_SHORT,
   });
 
   if (!data) return null;
