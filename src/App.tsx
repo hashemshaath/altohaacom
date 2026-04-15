@@ -20,9 +20,9 @@ import { ResourceHints } from "@/components/performance/ResourceHints";
 import { MobileBottomNav } from "@/components/mobile/MobileBottomNav";
 import { ScrollProgress } from "@/components/ui/scroll-progress";
 import { BackToTop } from "@/components/ui/back-to-top";
-import { AnnouncementBanner } from "@/components/engagement/AnnouncementBanner";
 import { safeLazy } from "@/lib/safeLazy";
-import { CommandPalette } from "@/components/search/CommandPalette";
+const CommandPalette = safeLazy(() => import("@/components/search/CommandPalette").then(m => ({ default: m.CommandPalette })));
+const AnnouncementBanner = safeLazy(() => import("@/components/engagement/AnnouncementBanner").then(m => ({ default: m.AnnouncementBanner })));
 import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 import { PageTracker } from "@/components/tracking/PageTracker";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
@@ -156,8 +156,10 @@ function AppContent() {
       {/* ─── Global Tracking ─── */}
       <GoogleTrackingProvider />
       <PageTracker />
-      {!isHome && <AnnouncementBanner />}
-      <CommandPalette />
+      <Suspense fallback={null}>
+        {!isHome && <AnnouncementBanner />}
+        <CommandPalette />
+      </Suspense>
       <AppRoutes />
       <AppOverlays isHome={isHome} />
     </>
