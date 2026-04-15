@@ -63,7 +63,7 @@ interface ChatAreaProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setIsApprovalOpen: (v: boolean) => void;
   onBack: () => void;
-  sendMessage: { mutate: (payload: { content: string; message_type?: string; metadata?: Record<string, unknown> }) => void };
+  sendMessage: { mutate: (payload: Record<string, unknown>) => void; isPending: boolean };
   toggleStarMutation: { mutate: (payload: { msgId: string; starred: boolean }) => void };
 }
 
