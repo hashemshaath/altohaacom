@@ -256,27 +256,27 @@ export function useOrdersData() {
   const getStatusLabelLocal = (status: string) => getStatusLabel(status, isAr);
   const getCategoryLabelLocal = (category: string) => getCategoryLabel(category, isAr);
 
-  const addItemToOrder = () => {
+  const addItemToOrder = useCallback(() => {
     if (!newItem.name.trim()) return;
     const updatedItems = [...orderForm.items, { ...newItem }];
     const subtotal = updatedItems.reduce((sum, i) => sum + i.quantity * i.price, 0);
     setOrderForm(prev => ({ ...prev, items: updatedItems, subtotal, total_amount: subtotal + prev.tax_amount - prev.discount_amount }));
     setNewItem({ name: "", quantity: 1, price: 0 });
-  };
+  }, [newItem, orderForm.items, orderForm.tax_amount, orderForm.discount_amount]);
 
-  const removeItemFromOrder = (idx: number) => {
+  const removeItemFromOrder = useCallback((idx: number) => {
     const updatedItems = orderForm.items.filter((_, i) => i !== idx);
     const subtotal = updatedItems.reduce((sum, i) => sum + i.quantity * i.price, 0);
     setOrderForm(prev => ({ ...prev, items: updatedItems, subtotal, total_amount: subtotal + prev.tax_amount - prev.discount_amount }));
-  };
+  }, [orderForm.items, orderForm.tax_amount, orderForm.discount_amount]);
 
-  const recalcTotal = (field: string, value: number) => {
+  const recalcTotal = useCallback((field: string, value: number) => {
     setOrderForm(prev => {
       const updated = { ...prev, [field]: value };
       updated.total_amount = updated.subtotal + updated.tax_amount - updated.discount_amount;
       return updated;
     });
-  };
+  }, []);
 
   const openEditForm = (order: Record<string, unknown>) => {
     setEditingOrder(order.id as string);
@@ -336,22 +336,22 @@ export function useOrdersData() {
     }
   };
 
-  const companyStats = {
+  const companyStats = useMemo(() => ({
     total: orders.length,
     pending: orders.filter((o) => o.status === "pending").length,
     inProgress: orders.filter((o) => o.status === "in_progress" || o.status === "approved").length,
     completed: orders.filter((o) => o.status === "completed").length,
     incoming: orders.filter((o) => o.direction === "incoming").length,
     outgoing: orders.filter((o) => o.direction === "outgoing").length,
-  };
+  }), [orders]);
 
-  const shopStats = {
+  const shopStats = useMemo(() => ({
     total: shopOrders.length,
     pending: shopOrders.filter((o) => o.status === "pending").length,
     confirmed: shopOrders.filter((o) => ["confirmed", "processing"].includes(o.status)).length,
     shipped: shopOrders.filter((o) => o.status === "shipped").length,
     delivered: shopOrders.filter((o) => o.status === "delivered").length,
-  };
+  }), [shopOrders]);
 
   return {
     isAr,
