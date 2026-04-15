@@ -31,6 +31,49 @@ import { SubscriptionDetailsCard } from "./SubscriptionDetailsCard";
 import { MembershipInvoicesSection } from "./MembershipInvoicesSection";
 import { useMembershipTab } from "./useMembershipTab";
 
+const benefits = [
+  { icon: Zap, label: "Priority Support" },
+  { icon: Users, label: "Networking Events" },
+  { icon: Globe, label: "Global Directory" },
+  { icon: Newspaper, label: "Industry Insights" },
+  { icon: ShoppingBag, label: "Exclusive Deals" },
+  { icon: BarChart3, label: "Analytics Dashboard" },
+  { icon: MessageSquare, label: "Direct Messaging" },
+  { icon: BookOpen, label: "Learning Resources" },
+  { icon: Percent, label: "Partner Discounts" },
+  { icon: Headphones, label: "24/7 Concierge" },
+];
+
+const tiers = [
+  {
+    id: "basic", name: "Basic", icon: Star, price: "Free", yearlyPrice: null, savings: null, featured: false,
+    features: ["Basic profile", "Community access", "Event listings", "Newsletter"],
+  },
+  {
+    id: "professional", name: "Professional", icon: Crown, price: "19 SAR/mo", yearlyPrice: "190 SAR/yr", savings: "Save 17%", featured: true,
+    features: ["Priority support", "Analytics dashboard", "Direct messaging", "Exclusive deals", "Learning resources", "Networking events"],
+  },
+  {
+    id: "enterprise", name: "Enterprise", icon: Shield, price: "99 SAR/mo", yearlyPrice: "990 SAR/yr", savings: "Save 17%", featured: false,
+    features: ["All Professional features", "24/7 concierge", "Custom branding", "API access", "Team management", "Dedicated account manager"],
+  },
+];
+
+const faqs = [
+  { q: "How do I upgrade my membership?", a: "Click on the desired plan above and follow the payment process. Your upgrade takes effect immediately." },
+  { q: "Can I cancel anytime?", a: "Yes, you can cancel your membership at any time. You'll continue to have access until the end of your billing period." },
+  { q: "What happens when my trial ends?", a: "Your account will revert to the Basic plan. You can upgrade anytime to keep your premium features." },
+  { q: "Is there a refund policy?", a: "We offer a 14-day refund window from the date of purchase or renewal." },
+];
+
+const cancelReasons = [
+  { value: "too_expensive", label: "Too expensive" },
+  { value: "not_using", label: "Not using enough" },
+  { value: "missing_features", label: "Missing features" },
+  { value: "switching", label: "Switching to competitor" },
+  { value: "other", label: "Other" },
+];
+
 interface UnifiedMembershipTabProps {
   profile: any;
   userId: string;
