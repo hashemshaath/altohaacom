@@ -68,7 +68,7 @@ export default function SocialLinksEditorPage() {
       return data;
     },
     enabled: !!user?.id,
-    staleTime: 2 * 60_000,
+    staleTime: STALE_TIME_SHORT * 4,
     gcTime: 10 * 60_000,
   });
 
@@ -100,7 +100,7 @@ export default function SocialLinksEditorPage() {
       return { countries, devices, browsers, referrers, total: visits.length, recent7d, dailyVisits };
     },
     enabled: !!page?.id,
-    staleTime: 5 * 60_000,
+    staleTime: STALE_TIME_LONG * 2,
   });
 
   const { data: clickAnalytics } = useQuery({
@@ -126,7 +126,7 @@ export default function SocialLinksEditorPage() {
       return { heatmap, bestHour, bestDay, dailyClicks, hourlyAgg, total: clicks.length, linkDaily };
     },
     enabled: !!page?.id,
-    staleTime: 5 * 60_000,
+    staleTime: STALE_TIME_LONG * 2,
   });
 
   const { data: bioNotifications } = useQuery({
@@ -136,7 +136,7 @@ export default function SocialLinksEditorPage() {
       return data || [];
     },
     enabled: !!user?.id,
-    staleTime: 60_000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const [socials, setSocials] = useState<Record<string, string>>({});

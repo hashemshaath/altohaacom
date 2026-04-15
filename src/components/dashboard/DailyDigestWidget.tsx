@@ -52,7 +52,7 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
       };
     },
     enabled: !!user,
-    staleTime: 120000,
+    staleTime: STALE_TIME_SHORT * 4,
   });
 
   if (!user || isLoading || !digest) return null;
