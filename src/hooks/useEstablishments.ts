@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
-import { CACHE } from "@/lib/queryConfig";
 
 export function useEstablishments(filters?: { type?: string; country?: string; search?: string }) {
   return useQuery({
