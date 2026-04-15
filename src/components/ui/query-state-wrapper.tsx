@@ -2,6 +2,7 @@ import React from "react";
 import { PageSkeleton } from "@/components/ui/page-skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
 import { StaleDataBanner } from "@/components/ui/stale-data-banner";
+import { LastUpdated } from "@/components/ui/LastUpdated";
 import { DataErrorFallback } from "@/components/DataErrorFallback";
 import type { LucideIcon } from "lucide-react";
 import { Inbox } from "lucide-react";
@@ -38,8 +39,10 @@ interface QueryStateWrapperProps<T> {
   /* ─── Error config ─── */
   errorVariant?: "network" | "auth" | "unknown";
 
-  /* ─── Stale indicator ─── */
+  /* ─── Stale / freshness indicator ─── */
   isAr?: boolean;
+  /** dataUpdatedAt from TanStack Query — shows "last updated X ago" */
+  dataUpdatedAt?: number;
 }
 
 /**
@@ -75,6 +78,7 @@ export function QueryStateWrapper<T>({
   emptyAction,
   errorVariant = "unknown",
   isAr = false,
+  dataUpdatedAt,
 }: QueryStateWrapperProps<T>) {
   // Loading state
   if (isLoading) {
@@ -113,7 +117,10 @@ export function QueryStateWrapper<T>({
   // Stale data indicator + content
   return (
     <>
-      <StaleDataBanner isRevalidating={isFetching && !isLoading} isAr={isAr} />
+      <div className="flex items-center gap-3 flex-wrap">
+        <StaleDataBanner isRevalidating={isFetching && !isLoading} isAr={isAr} />
+        {dataUpdatedAt ? <LastUpdated updatedAt={dataUpdatedAt} /> : null}
+      </div>
       {children(data)}
     </>
   );
