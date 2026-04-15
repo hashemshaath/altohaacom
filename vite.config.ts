@@ -268,11 +268,11 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("node_modules/lucide-react")) {
             return "vendor-icons";
           }
-          // ── Vendor: All Radix UI + cmdk (shared primitives prevent splitting) ──
+          // ── Vendor: Radix UI primitives ──
           if (id.includes("@radix-ui/") || id.includes("node_modules/cmdk")) {
             return "vendor-ui";
           }
-          // ── Vendor: Charts (admin/analytics only) ──
+          // ── Vendor: Charts (recharts + d3) ──
           if (id.includes("node_modules/recharts") || id.includes("node_modules/d3-")) {
             return "vendor-charts";
           }
@@ -280,7 +280,11 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("node_modules/react-hook-form") || id.includes("node_modules/@hookform/") || id.includes("node_modules/zod")) {
             return "vendor-form";
           }
-          // ── Vendor: Utilities (CSS-in-JS helpers) ──
+          // ── Vendor: Date utilities ──
+          if (id.includes("node_modules/date-fns")) {
+            return "vendor-dates";
+          }
+          // ── Vendor: CSS utilities ──
           if (id.includes("node_modules/class-variance-authority") || id.includes("node_modules/clsx") || id.includes("node_modules/tailwind-merge")) {
             return "vendor-css-utils";
           }
@@ -288,10 +292,8 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("node_modules/next-themes") || id.includes("node_modules/sonner")) {
             return "vendor-ui-misc";
           }
-          // ── Heavy vendors: lazy-only ──
-          if (id.includes("node_modules/recharts")) return "vendor-charts";
+          // ── Heavy vendors: lazy-loaded only ──
           if (id.includes("node_modules/react-markdown")) return "vendor-markdown";
-          if (id.includes("node_modules/date-fns")) return "vendor-dates";
           if (id.includes("node_modules/qrcode.react")) return "vendor-qr";
           if (id.includes("node_modules/pdfjs-dist")) return "vendor-pdf";
           if (id.includes("node_modules/mammoth")) return "vendor-docparse";
@@ -300,7 +302,6 @@ export default defineConfig(({ mode }) => ({
           if (id.includes("node_modules/embla-carousel")) return "vendor-embla";
           if (id.includes("node_modules/react-resizable-panels")) return "vendor-panels";
           if (id.includes("node_modules/react-day-picker")) return "vendor-datepicker";
-          // cmdk is already in vendor-ui-core above
           if (id.includes("node_modules/vaul")) return "vendor-drawer";
           if (id.includes("node_modules/input-otp")) return "vendor-otp";
           if (id.includes("node_modules/dompurify")) return "vendor-sanitize";
