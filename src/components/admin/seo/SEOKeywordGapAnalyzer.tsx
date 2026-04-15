@@ -8,8 +8,8 @@ import {
   Target, Sparkles, TrendingUp, AlertTriangle, Lightbulb,
   ArrowRight, Search, BookOpen, Loader2, Zap, Eye,
 } from "lucide-react";
-import {
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, Cell, ScatterChart, Scatter, ZAxis,
 } from "recharts";

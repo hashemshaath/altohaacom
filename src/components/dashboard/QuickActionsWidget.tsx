@@ -8,8 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
-import {
 import { STALE_TIME_DEFAULT } from "@/lib/constants";
+import {
   Zap, Trophy, FileText, Users, ShoppingBag,
   MessageSquare, ArrowRight, Flame, TrendingUp, Clock,
 } from "lucide-react";
