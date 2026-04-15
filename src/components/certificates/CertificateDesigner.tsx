@@ -21,8 +21,6 @@ import {
 import { CertificateLineEditor } from "./CertificateLineEditor";
 import { CertificateLogoManager } from "./CertificateLogoManager";
 import { CertificatePreview } from "./CertificatePreview";
-import type { CertificateDesign, SignatureItem } from "./types";
-import { professionalTemplates } from "./types";
 
 export type { CertificateDesign } from "./types";
 
