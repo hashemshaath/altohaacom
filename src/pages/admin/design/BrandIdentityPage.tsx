@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Sparkles, Globe, Type } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";

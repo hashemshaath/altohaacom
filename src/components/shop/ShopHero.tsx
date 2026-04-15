@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { ShoppingBag, ShoppingCart, Package } from "lucide-react";

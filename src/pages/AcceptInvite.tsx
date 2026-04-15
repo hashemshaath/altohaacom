@@ -3,7 +3,6 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

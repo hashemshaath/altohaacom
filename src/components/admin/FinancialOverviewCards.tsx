@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DollarSign, TrendingUp, FileText, CreditCard, AlertTriangle } from "lucide-react";
 import { subDays, format } from "date-fns";

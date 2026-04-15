@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

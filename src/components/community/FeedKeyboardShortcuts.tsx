@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useEffect, useCallback } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
 
 interface FeedKeyboardShortcutsProps {

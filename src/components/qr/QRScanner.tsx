@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useCallback, useEffect, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Camera, X } from "lucide-react";
 
 interface QRScannerProps {

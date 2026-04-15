@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useEvaluationDomains,
   useEvaluationCriteriaByDomain,

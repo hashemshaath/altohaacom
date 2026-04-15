@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, forwardRef } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";

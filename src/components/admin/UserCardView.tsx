@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Eye, Shield, Crown, Mail, MapPin } from "lucide-react";
 
 interface UserCardProps {

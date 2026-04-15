@@ -3,7 +3,6 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

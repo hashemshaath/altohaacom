@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";

@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { Link } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";

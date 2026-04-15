@@ -13,7 +13,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNotifications, useNotificationPrefs } from "@/hooks/useNotifications";
 import { useNotificationProfiles } from "@/hooks/useNotificationProfiles";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

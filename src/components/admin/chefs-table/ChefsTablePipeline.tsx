@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileText, CheckCircle2, Calendar, ChefHat, Star, ArrowRight } from "lucide-react";
 import type { ChefsTableRequest, ChefsTableSession } from "@/hooks/useChefsTable";

@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Check } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";

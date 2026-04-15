@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Coins, Users } from "lucide-react";

@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

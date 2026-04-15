@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/select";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useNotificationProfiles } from "@/hooks/useNotificationProfiles";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
 import { formatDistanceToNow, format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";

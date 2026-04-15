@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { PageShell } from "@/components/PageShell";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";

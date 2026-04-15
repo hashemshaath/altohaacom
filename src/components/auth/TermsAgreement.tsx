@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 

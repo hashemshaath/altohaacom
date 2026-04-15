@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, useEffect, lazy, Suspense } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
 import { useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
 import { Badge } from "@/components/ui/badge";

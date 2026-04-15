@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
-import { useLanguage } from "@/i18n/LanguageContext";
 
 interface Step {
   label: string;

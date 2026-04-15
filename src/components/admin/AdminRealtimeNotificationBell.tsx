@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";

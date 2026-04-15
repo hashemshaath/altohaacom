@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useEffect, useMemo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

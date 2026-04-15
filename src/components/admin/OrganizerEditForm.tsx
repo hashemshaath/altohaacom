@@ -1,5 +1,4 @@
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Button } from "@/components/ui/button";

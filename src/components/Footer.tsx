@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, useState } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { Link } from "react-router-dom";

@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, useEffect, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getDeviceType } from "@/lib/deviceType";

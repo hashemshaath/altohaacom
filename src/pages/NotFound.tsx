@@ -8,7 +8,6 @@ import {
   SearchX, Home, HelpCircle, ArrowLeft, AlertTriangle,
   RefreshCw, ExternalLink, WifiOff, Lock, FileQuestion,
 } from "lucide-react";
-import { useLanguage } from "@/i18n/LanguageContext";
 
 interface DiagnosisItem {
   icon: React.ElementType;

@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useNewFollowers, useFollowRecommendations, useIncomingFollowRequests } from "@/hooks/useFollow";
 import { useUpdateFollowPrivacy } from "@/hooks/useFollow";
 import { useQuery } from "@tanstack/react-query";

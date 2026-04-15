@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreateChefsTableRequest, ExperienceType } from "@/hooks/useChefsTable";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";

@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

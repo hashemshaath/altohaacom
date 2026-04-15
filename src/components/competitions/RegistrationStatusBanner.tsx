@@ -4,7 +4,6 @@ import { useIsAr } from "@/hooks/useIsAr";
  * Displays pending/approved/rejected state with contextual messaging.
  */
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { CheckCircle, Clock, XCircle, Trophy, Calendar, Hash, Sparkles } from "lucide-react";

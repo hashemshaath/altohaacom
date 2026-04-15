@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Crown, ArrowRight, Sparkles, Star } from "lucide-react";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 

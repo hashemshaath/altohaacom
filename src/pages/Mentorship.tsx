@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "react-router-dom";
 import { useMentorshipPrograms, useMyMentorshipMatches, useMyMentorApplication } from "@/hooks/useMentorship";

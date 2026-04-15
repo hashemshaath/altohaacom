@@ -9,7 +9,6 @@ import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { useCSVExport } from "@/hooks/useCSVExport";

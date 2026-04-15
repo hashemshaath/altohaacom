@@ -3,7 +3,6 @@ import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDisplayName } from "@/lib/getDisplayName";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";

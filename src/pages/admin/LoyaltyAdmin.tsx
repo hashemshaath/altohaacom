@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, lazy, Suspense, useCallback, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";

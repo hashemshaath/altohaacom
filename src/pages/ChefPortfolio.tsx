@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";

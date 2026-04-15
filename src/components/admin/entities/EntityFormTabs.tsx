@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useRef, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAndGetUrl, getStorageUrl } from "@/lib/storageUrl";
 import { Button } from "@/components/ui/button";

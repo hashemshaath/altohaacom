@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table2, Settings2, UserCog, SlidersHorizontal } from "lucide-react";
 import MembershipFeatureControl from "./MembershipFeatureControl";

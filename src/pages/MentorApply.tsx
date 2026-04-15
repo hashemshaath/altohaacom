@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useApplyAsMentor, useMentorshipPrograms, useMyMentorApplication } from "@/hooks/useMentorship";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

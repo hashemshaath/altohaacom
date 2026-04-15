@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { lazy, Suspense } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Search, Globe, Send, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";

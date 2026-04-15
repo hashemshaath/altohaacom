@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Ruler, Save } from "lucide-react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { useSiteSettings } from "@/hooks/useSiteSettings";

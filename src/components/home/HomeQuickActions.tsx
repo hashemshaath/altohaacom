@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Trophy, BookOpen, Calendar, Search, Users, Utensils, ChefHat, Store } from "lucide-react";
 import { cn } from "@/lib/utils";
 

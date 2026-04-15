@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";

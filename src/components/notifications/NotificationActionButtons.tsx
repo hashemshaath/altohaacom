@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Check, X, Eye, ExternalLink, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";

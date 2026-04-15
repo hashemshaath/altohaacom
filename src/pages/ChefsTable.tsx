@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useChefsTableSessions } from "@/hooks/useChefsTable";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageShell } from "@/components/PageShell";

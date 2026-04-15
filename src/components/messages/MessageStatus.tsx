@@ -7,7 +7,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useLanguage } from "@/i18n/LanguageContext";
 
 interface MessageStatusProps {
   isMine: boolean;

@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo, useCallback } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

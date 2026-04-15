@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useEffect, forwardRef } from "react";
 import { ROUTES } from "@/config/routes";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Search, Trophy, Globe, ChefHat, Utensils, BookOpen, Store, TrendingUp, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

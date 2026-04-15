@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, Users, Star, MapPin } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";

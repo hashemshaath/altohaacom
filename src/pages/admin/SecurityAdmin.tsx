@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useState, lazy, Suspense, memo, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

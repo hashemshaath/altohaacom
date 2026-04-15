@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Search, TrendingUp, Clock, Star, Trophy, FileText, Users, UtensilsCrossed, Ticket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

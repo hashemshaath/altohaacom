@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Progress } from "@/components/ui/progress";
 import { Users, CheckCircle, Clock, XCircle, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

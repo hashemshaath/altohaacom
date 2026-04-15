@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageShell } from "@/components/PageShell";
 import { VerificationRequestForm } from "@/components/verification/VerificationRequestForm";

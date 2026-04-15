@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useEffect, useState, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useChefScheduleEvents, EVENT_TYPE_CONFIG, type ScheduleEventType } from "@/hooks/useChefSchedule";
 import { supabase } from "@/integrations/supabase/client";

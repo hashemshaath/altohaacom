@@ -3,7 +3,6 @@ import { forwardRef } from "react";
 import { useScrolled } from "@/hooks/useScrolled";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useUserRoles } from "@/hooks/useUserRole";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";

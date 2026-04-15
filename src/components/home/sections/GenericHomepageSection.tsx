@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useHomepageSection } from "@/hooks/useHomepageSections";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";

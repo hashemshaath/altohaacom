@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, X, Send, Bot, User, Loader2, Sparkles } from "lucide-react";

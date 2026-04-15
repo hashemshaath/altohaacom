@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllCountries, type Country } from "@/hooks/useCountries";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
