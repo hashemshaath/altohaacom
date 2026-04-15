@@ -135,18 +135,20 @@ export function useAbandonedCartTracker(
 
   // Mark as recovered on checkout
   useEffect(() => {
-    if (isCheckoutComplete && abandonedCartIdRef.current) {
-      supabase
+    if (!isCheckoutComplete || !abandonedCartIdRef.current) return;
+
+    const markRecovered = async () => {
+      await supabase
         .from("abandoned_carts")
         .update({
           recovery_status: "recovered",
           recovered_at: new Date().toISOString(),
         })
-        .eq("id", abandonedCartIdRef.current)
-        .then(() => {
-          sessionStorage.removeItem("abandoned_cart_id");
-          abandonedCartIdRef.current = null;
-        });
-    }
+        .eq("id", abandonedCartIdRef.current!);
+      sessionStorage.removeItem("abandoned_cart_id");
+      abandonedCartIdRef.current = null;
+    };
+
+    markRecovered();
   }, [isCheckoutComplete]);
 }

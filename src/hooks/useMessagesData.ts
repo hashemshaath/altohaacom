@@ -290,14 +290,15 @@ export function useMessagesData() {
     if (existing) {
       setSelectedPartner(existing);
     } else {
-      supabase
-        .from("profiles")
-        .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
-        .eq("user_id", initialUserId)
-        .single()
-        .then(({ data }) => {
-          if (!cancelled && data) setSelectedPartner({ ...data, unread_count: 0, has_approval: false, is_starred: false });
-        });
+      const fetchPartner = async () => {
+        const { data } = await supabase
+          .from("profiles")
+          .select("user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url")
+          .eq("user_id", initialUserId)
+          .single();
+        if (!cancelled && data) setSelectedPartner({ ...data, unread_count: 0, has_approval: false, is_starred: false });
+      };
+      fetchPartner();
     }
     return () => { cancelled = true; };
   }, [initialUserId, conversations, selectedPartner]);
