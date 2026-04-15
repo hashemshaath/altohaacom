@@ -4,6 +4,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const untypedFrom = (table: string) => supabase.from(table as any);
+
 // ─── Types ──────────────────────────────────────
 
 export type RequestStatus = "pending" | "approved" | "rejected" | "cancelled";
