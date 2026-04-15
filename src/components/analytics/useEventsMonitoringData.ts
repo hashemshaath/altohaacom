@@ -49,7 +49,7 @@ export function useEventsMonitoringData() {
         .limit(1000);
       return data || [];
     },
-    staleTime: 30_000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const { data: prevPageViews } = useQuery({
@@ -63,7 +63,7 @@ export function useEventsMonitoringData() {
         .limit(1000);
       return data || [];
     },
-    staleTime: 60_000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const { data: behaviorEvents } = useQuery({
@@ -77,7 +77,7 @@ export function useEventsMonitoringData() {
         .limit(1000);
       return data || [];
     },
-    staleTime: 30_000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const { data: adClicks } = useQuery({
@@ -91,7 +91,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const { data: adImpressions } = useQuery({
@@ -105,7 +105,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const { data: abandonedCarts } = useQuery({
@@ -119,7 +119,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const { data: shopOrders } = useQuery({
@@ -133,7 +133,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   // ── Computed Metrics ──
