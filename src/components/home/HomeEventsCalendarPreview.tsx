@@ -56,7 +56,6 @@ function formatEventDate(value: string, isAr: boolean) {
 }
 
 function formatDateParts(value: string, isAr: boolean) {
-  const isAr = useIsAr();
   const parsed = parseISO(value);
   if (Number.isNaN(parsed.getTime())) return { day: "?", month: "TBD" };
   return {

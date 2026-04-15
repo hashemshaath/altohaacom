@@ -69,7 +69,6 @@ function getScoreLabel(score: number, isAr: boolean) {
 }
 
 function generateRecommendations(categoryScores: any[], isAr: boolean) {
-  const isAr = useIsAr();
   const sorted = [...categoryScores].sort((a, b) => a.avgScore - b.avgScore);
   const weakest = sorted[0];
   const strongest = sorted[sorted.length - 1];
