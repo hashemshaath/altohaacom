@@ -31,7 +31,7 @@ export const CountryBreakdownChart = memo(function CountryBreakdownChart({ metri
     queryKey: ["country-breakdown", metric],
     queryFn: async () => {
       const tableMap: Record<string, string> = { users: "profiles", competitions: "competitions", companies: "companies" };
-      const { data } = await supabase.from(tableMap[metric] as any).select("country_code").not("country_code", "is", null).limit(QUERY_LIMIT_LARGE);
+      const { data } = await supabase.from(tableMap[metric] as never).select("country_code").not("country_code", "is", null).limit(QUERY_LIMIT_LARGE);
       if (!data) return [];
 
       const counts: Record<string, number> = {};

@@ -29,8 +29,8 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
 
       const [pointsRes, regsRes, badgesRes, viewsRes] = await Promise.all([
         supabase.from("points_ledger").select("points, created_at").eq("user_id", user.id).gte("created_at", sixtyDaysAgo.toISOString()).order("created_at", { ascending: true }),
-        (supabase as any).from("competition_registrations").select("id, status, registered_at").eq("participant_id", user.id).gte("registered_at", thirtyDaysAgo.toISOString()),
-        (supabase as any).from("user_badges").select("id, created_at").eq("user_id", user.id),
+        supabase.from("competition_registrations").select("id, status, registered_at").eq("participant_id", user.id).gte("registered_at", thirtyDaysAgo.toISOString()),
+        supabase.from("user_badges").select("id, created_at").eq("user_id", user.id),
         supabase.from("profile_views").select("id, created_at").eq("profile_user_id", user.id).gte("created_at", thirtyDaysAgo.toISOString()),
       ]);
 

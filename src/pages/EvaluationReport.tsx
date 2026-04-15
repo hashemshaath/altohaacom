@@ -46,7 +46,7 @@ export default function EvaluationReport() {
     queryKey: ["public-evaluation-report", token],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("chefs_table_sessions" as any)
+        .from("chefs_table_sessions" as never)
         .select("id, session_date, venue, venue_ar, city, country, organizer_id, domain_slug, product_name, product_name_ar, product_category, brand_name, brand_name_ar, manufacturer, manufacturer_ar, report_token, report_published, status, created_at")
         .eq("report_token", token)
         .eq("report_published", true)
@@ -61,7 +61,7 @@ export default function EvaluationReport() {
     queryKey: ["public-evaluations", session?.id],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("chefs_table_evaluations" as any)
+        .from("chefs_table_evaluations" as never)
         .select("id, session_id, chef_id, overall_score, criteria_scores, strengths, weaknesses, recommendations, status, allow_publish, created_at")
         .eq("session_id", session.id)
         .eq("status", "submitted")

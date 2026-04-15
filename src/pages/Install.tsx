@@ -30,7 +30,7 @@ export default function Install() {
     }
 
     const ua = navigator.userAgent;
-    setIsIOS(/iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream);
+    setIsIOS(/iPad|iPhone|iPod/.test(ua) && !window.MSStream);
 
     return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);

@@ -167,7 +167,7 @@ export const ChatArea = memo(function ChatArea({
   }, [isAr, toast, queryClient]);
 
   const handlePin = useCallback(async (msgId: string, pin: boolean) => {
-    await supabase.from("messages").update({ is_pinned: pin } as any).eq("id", msgId);
+    await supabase.from("messages").update({ is_pinned: pin } as never).eq("id", msgId);
     toast({ title: pin ? (isAr ? "تم تثبيت الرسالة" : "Message pinned") : (isAr ? "تم إلغاء التثبيت" : "Message unpinned") });
   }, [isAr, toast]);
 

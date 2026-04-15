@@ -62,7 +62,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
     queryFn: async () => {
       const { data, error } = await supabase
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-        .from("requirement_templates" as any)
+        .from("requirement_templates" as never)
         .select("id, name, name_ar, description, description_ar, category, items, is_public, usage_count, created_by, created_at")
         .or(`created_by.eq.${user!.id},is_public.eq.true`)
         .order("usage_count", { ascending: false });
@@ -233,13 +233,13 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
 
       if (editingId) {
         const { error } = await supabase
-          .from("requirement_templates" as any)
-          .update(payload as any)
+          .from("requirement_templates" as never)
+          .update(payload as never)
           .eq("id", editingId);
         if (error) throw error;
       } else {
         const { error } = await supabase
-          .from("requirement_templates" as any)
+          .from("requirement_templates" as never)
           .insert(payload);
         if (error) throw error;
       }
@@ -285,7 +285,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
       }
 
       await supabase
-        .from("requirement_templates" as any)
+        .from("requirement_templates" as never)
         .update({ usage_count: (template.usage_count || 0) + 1 } as any)
         .eq("id", template.id);
     },
@@ -300,7 +300,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
   // Delete
   const deleteTemplate = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("requirement_templates" as any).delete().eq("id", id);
+      const { error } = await supabase.from("requirement_templates" as never).delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

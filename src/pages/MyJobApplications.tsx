@@ -31,7 +31,7 @@ export default function MyJobApplications() {
   const { data: applications, isLoading } = useQuery({
     queryKey: ["my-job-applications", user?.id],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("job_applications")
         .select("id, status, cover_letter, created_at, job_id, job_postings(id, title, title_ar, job_type, location, location_ar, companies(name, name_ar, logo_url))")
         .eq("user_id", user!.id)

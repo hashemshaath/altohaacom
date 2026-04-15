@@ -105,7 +105,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
           gender: form.gender, status: form.status,
           participant_level: form.participant_level,
           cover_image_url: form.cover_image_url || null,
-        } as any).eq("id", editingId);
+        } as never).eq("id", editingId);
         if (error) throw error;
       } else {
         const sortOrder = (categories.length || 0) + 1;

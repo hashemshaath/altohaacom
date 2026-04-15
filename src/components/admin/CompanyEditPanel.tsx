@@ -18,8 +18,8 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import {
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import {
   Building2, Save, X, Edit, Sparkles, Upload, Image, CheckCircle,
   Globe, Mail, Phone, MapPin, FileText, CreditCard, Shield, Send,
   Star, ExternalLink, Navigation,

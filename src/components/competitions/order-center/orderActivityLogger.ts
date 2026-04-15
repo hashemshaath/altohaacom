@@ -29,7 +29,7 @@ interface LogParams {
 
 export async function logOrderActivity(params: LogParams) {
   try {
-    await supabase.from("order_activity_log" as any).insert({
+    await supabase.from("order_activity_log" as never).insert({
       competition_id: params.competitionId,
       user_id: params.userId,
       action_type: params.actionType,

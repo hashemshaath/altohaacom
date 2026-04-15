@@ -37,11 +37,11 @@ const dataPrefetchers: Record<string, () => Promise<unknown>> = {
   },
   "/recipes": async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- recipes may not be in generated types
-    await (supabase.from("recipes") as any).select("id,title,slug,featured_image_url").eq("status", "published").order("created_at", { ascending: false }).limit(12);
+    await (supabase.from("recipes") as never).select("id,title,slug,featured_image_url").eq("status", "published").order("created_at", { ascending: false }).limit(12);
   },
   "/shop": async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- shop_products may not be in generated types
-    await (supabase.from("shop_products") as any).select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12);
+    await (supabase.from("shop_products") as never).select("id,name,slug,price,currency,images,status").eq("status", "active").order("created_at", { ascending: false }).limit(12);
   },
 };
 

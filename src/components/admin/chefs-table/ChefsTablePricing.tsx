@@ -31,7 +31,7 @@ function useEvaluationPricing() {
     queryKey: ["evaluation-pricing"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("evaluation_pricing" as any)
+        .from("evaluation_pricing" as never)
         .select("id, name, name_ar, description, description_ar, base_fee, per_chef_fee, currency, product_category, is_active")
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -53,15 +53,15 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
       if (plan.id) {
         const { id, ...rest } = plan;
         const { error } = await supabase
-          .from("evaluation_pricing" as any)
-          .update(rest as any)
+          .from("evaluation_pricing" as never)
+          .update(rest as never)
           .eq("id", id);
         if (error) throw error;
       } else {
         const { id, ...rest } = plan;
         const { error } = await supabase
-          .from("evaluation_pricing" as any)
-          .insert(rest as any);
+          .from("evaluation_pricing" as never)
+          .insert(rest as never);
         if (error) throw error;
       }
     },
@@ -76,7 +76,7 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("evaluation_pricing" as any).delete().eq("id", id);
+      const { error } = await supabase.from("evaluation_pricing" as never).delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

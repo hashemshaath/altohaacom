@@ -25,7 +25,7 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
   const { data: testimonials = [] } = useQuery({
     queryKey: ["home-testimonials", itemCount],
     queryFn: async () => {
-      const { data } = await (supabase as any)
+      const { data } = await supabase
         .from("testimonials")
         .select("id, name, name_ar, role, role_ar, quote, quote_ar, avatar_url, rating, sort_order")
         .eq("is_active", true)

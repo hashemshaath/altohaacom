@@ -67,7 +67,7 @@ export default function CRMCustomerDetail() {
   const { data: orders = [] } = useQuery({
     queryKey: ["crm-customer-orders", userId],
     queryFn: async (): Promise<any[]> => {
-      const result = await (supabase as any)
+      const result = await supabase
         .from("shop_orders")
         .select("id, order_number, user_id, status, total_amount, currency, payment_status, created_at")
         .eq("user_id", userId!)
@@ -159,7 +159,7 @@ export default function CRMCustomerDetail() {
   const { data: registrations = [] } = useQuery({
     queryKey: ["crm-customer-registrations", userId],
     queryFn: async (): Promise<any[]> => {
-      const result = await (supabase as any)
+      const result = await supabase
         .from("competition_registrations")
         .select("*, competitions(name, name_ar)")
         .eq("user_id", userId!);

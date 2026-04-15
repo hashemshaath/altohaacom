@@ -127,7 +127,7 @@ export function useChefScheduleEvents(chefId?: string, dateRange?: { start: stri
     queryKey: ["chef-schedule", chefId, dateRange],
     queryFn: async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-      let query = (supabase as any)
+      let query = supabase
         .from("chef_schedule_events")
         .select("id, chef_id, event_type, title, title_ar, description, description_ar, start_date, end_date, all_day, timezone, location, location_ar, city, country_code, venue, venue_ar, linked_entity_type, linked_entity_id, channel_name, channel_name_ar, program_name, program_name_ar, broadcast_type, media_url, participation_type, participation_type_ar, organizer, organizer_ar, is_contracted, contract_status, fee_amount, fee_currency, visibility, show_details_publicly, status, priority, color, is_recurring, recurrence_rule, recurrence_end_date, parent_event_id, notes, notes_ar, internal_notes, tags, attachments, created_by, updated_by, created_at, updated_at")
         .order("start_date", { ascending: true });
@@ -151,7 +151,7 @@ export function useChefScheduleSettings(chefId?: string) {
     queryKey: ["chef-schedule-settings", chefId],
     queryFn: async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("chef_schedule_settings")
         .select("id, chef_id, share_with_management, share_publicly, default_visibility, show_availability_on_profile, auto_sync_competitions, auto_sync_chefs_table, auto_sync_exhibitions, working_hours_start, working_hours_end, working_days, unavailable_message, unavailable_message_ar, created_at, updated_at")
         .eq("chef_id", chefId!)
@@ -173,7 +173,7 @@ export function usePublicChefSchedule(chefId?: string) {
       threeMonthsLater.setMonth(now.getMonth() + 3);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("chef_schedule_events")
         .select("id, event_type, title, title_ar, start_date, end_date, all_day, city, country_code, venue, venue_ar, participation_type, participation_type_ar, channel_name, channel_name_ar, program_name, program_name_ar, broadcast_type, status, show_details_publicly, visibility")
         .eq("chef_id", chefId!)
@@ -198,7 +198,7 @@ export function useCreateScheduleEvent() {
   return useMutation({
     mutationFn: async (event: Partial<ChefScheduleEvent>) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("chef_schedule_events")
         .insert({ ...event, chef_id: event.chef_id || user?.id, created_by: user?.id })
         .select()
@@ -220,7 +220,7 @@ export function useUpdateScheduleEvent() {
   return useMutation({
     mutationFn: async ({ id, ...updates }: Partial<ChefScheduleEvent> & { id: string }) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("chef_schedule_events")
         .update({ ...updates, updated_by: user?.id })
         .eq("id", id)
@@ -242,7 +242,7 @@ export function useDeleteScheduleEvent() {
   return useMutation({
     mutationFn: async (id: string) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from("chef_schedule_events")
         .delete()
         .eq("id", id);
@@ -263,7 +263,7 @@ export function useSaveScheduleSettings() {
     mutationFn: async (settings: Partial<ChefScheduleSettings>) => {
       const chefId = settings.chef_id || user?.id;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-      const { data: existing } = await (supabase as any)
+      const { data: existing } = await supabase
         .from("chef_schedule_settings")
         .select("id")
         .eq("chef_id", chefId)
@@ -271,14 +271,14 @@ export function useSaveScheduleSettings() {
 
       if (existing) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-        const { error } = await (supabase as any)
+        const { error } = await supabase
           .from("chef_schedule_settings")
           .update(settings)
           .eq("chef_id", chefId);
         if (error) throw error;
       } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-        const { error } = await (supabase as any)
+        const { error } = await supabase
           .from("chef_schedule_settings")
           .insert({ ...settings, chef_id: chefId });
         if (error) throw error;
