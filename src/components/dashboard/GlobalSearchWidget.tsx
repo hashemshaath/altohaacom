@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Search, Trophy, UtensilsCrossed, FileText, Users, ArrowRight, X, Loader2 } from "lucide-react";
+import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface SearchResult {
   id: string;
@@ -63,7 +64,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
       return searchResults;
     },
     enabled: debouncedQuery.length >= 2,
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   // Close on outside click

@@ -37,6 +37,7 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 // Lazy widgets
 const CompetitionPipelineTracker = lazy(() => import("@/components/admin/CompetitionPipelineTracker").then(m => ({ default: m.CompetitionPipelineTracker })));
@@ -133,7 +134,7 @@ export default function CompetitionsAdmin() {
   const { data: seriesList } = useQuery({
     queryKey: ["event-series-comp-filter"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(500);
+      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data as { id: string; name: string; name_ar: string | null }[];
     },
@@ -192,20 +193,20 @@ export default function CompetitionsAdmin() {
 
   const { data: allCategories } = useQuery({
     queryKey: ["adminCompetitionCategories"],
-    queryFn: async () => { const { data } = await supabase.from("competition_categories").select("id, competition_id, name, name_ar").limit(5000); return data || []; },
+    queryFn: async () => { const { data } = await supabase.from("competition_categories").select("id, competition_id, name, name_ar").limit(QUERY_LIMIT_LARGE); return data || []; },
     staleTime: CACHE.medium.staleTime,
   });
 
   const { data: typeAssignments } = useQuery({
     queryKey: ["adminCompetitionTypes"],
-    queryFn: async () => { const { data } = await supabase.from("competition_type_assignments").select("competition_id, type:competition_types(id, name, name_ar)").limit(5000); return data || []; },
+    queryFn: async () => { const { data } = await supabase.from("competition_type_assignments").select("competition_id, type:competition_types(id, name, name_ar)").limit(QUERY_LIMIT_LARGE); return data || []; },
     staleTime: CACHE.medium.staleTime,
   });
 
   const { data: participantCounts } = useQuery({
     queryKey: ["competitionParticipantCounts"],
     queryFn: async () => {
-      const { data } = await supabase.from("competition_registrations").select("competition_id, status").limit(5000);
+      const { data } = await supabase.from("competition_registrations").select("competition_id, status").limit(QUERY_LIMIT_LARGE);
       const counts: Record<string, { approved: number; pending: number }> = {};
       data?.forEach(reg => {
         if (!counts[reg.competition_id]) counts[reg.competition_id] = { approved: 0, pending: 0 };
@@ -743,7 +744,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
     queryFn: async () => {
       const compIds = judgingComps.map(c => c.id);
       if (compIds.length === 0) return [];
-      const { data } = await supabase.from("competition_registrations").select("id, competition_id, participant_id, status").in("competition_id", compIds).limit(500);
+      const { data } = await supabase.from("competition_registrations").select("id, competition_id, participant_id, status").in("competition_id", compIds).limit(QUERY_LIMIT_MEDIUM);
       return (data || []) as any[];
     },
     enabled: judgingComps.length > 0,

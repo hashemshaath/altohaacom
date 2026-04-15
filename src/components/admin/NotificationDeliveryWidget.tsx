@@ -12,6 +12,7 @@ import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -19,7 +20,7 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const visibleInterval = useVisibleRefetchInterval(60000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-notification-delivery"],
@@ -29,8 +30,8 @@ export const NotificationDeliveryWidget = memo(function NotificationDeliveryWidg
       const thirtyDaysAgo = subDays(now, 30).toISOString();
 
       const [recent, all30d] = await Promise.all([
-        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", sevenDaysAgo).limit(5000),
-        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
+        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", sevenDaysAgo).limit(QUERY_LIMIT_LARGE),
+        supabase.from("notifications").select("id, type, is_read, created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const recentData = recent.data || [];

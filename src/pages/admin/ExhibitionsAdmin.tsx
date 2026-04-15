@@ -39,6 +39,7 @@ import ExhibitionDetailDrawer from "@/components/admin/ExhibitionDetailDrawer";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/config/routes";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const BulkImportPanel = lazy(() => import("@/components/admin/BulkImportPanel").then(m => ({ default: m.BulkImportPanel })));
 const BatchDuplicateScanner = lazy(() => import("@/components/admin/BatchDuplicateScanner").then(m => ({ default: m.BatchDuplicateScanner })));
@@ -111,7 +112,7 @@ export default function ExhibitionsAdmin() {
   const { data: seriesList } = useQuery({
     queryKey: ["event-series-select"],
     queryFn: async () => {
-      const { data } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(500);
+      const { data } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
       return data as any[] || [];
     },
   });

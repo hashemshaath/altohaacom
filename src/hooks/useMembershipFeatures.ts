@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export interface MembershipFeature {
   id: string;
@@ -160,8 +161,8 @@ export function useUserFeatures() {
 
       // Get tier mappings & overrides in parallel
       const [{ data: tierMappings }, { data: overrides }] = await Promise.all([
-        supabase.from("membership_feature_tiers").select("feature_id, is_enabled").eq("tier", tier).limit(5000),
-        supabase.from("membership_feature_overrides").select("feature_id, granted").eq("user_id", user.id).limit(5000),
+        supabase.from("membership_feature_tiers").select("feature_id, is_enabled").eq("tier", tier).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_feature_overrides").select("feature_id, granted").eq("user_id", user.id).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const enabledSet = new Set<string>();

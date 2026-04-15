@@ -6,6 +6,7 @@ import { downloadCSV, printableReport } from "@/lib/exportUtils";
 import { toast } from "@/hooks/use-toast";
 import { format, subDays, subHours, parseISO, getHours, getDay } from "date-fns";
 import { type TimeRange, getDelta, type EcomMetrics } from "./eventsMonitoringTypes";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 function getTimeFilter(range: TimeRange): string {
   const now = new Date();
@@ -87,7 +88,7 @@ export function useEventsMonitoringData() {
         .select("id, device_type, browser, country, created_at, page_url")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
     staleTime: 30_000,
@@ -101,7 +102,7 @@ export function useEventsMonitoringData() {
         .select("id, device_type, browser, country, created_at, page_url")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
     staleTime: 30_000,
@@ -115,7 +116,7 @@ export function useEventsMonitoringData() {
         .select("id, total_amount, currency, recovery_status, items, created_at, updated_at")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
     staleTime: 30_000,
@@ -129,7 +130,7 @@ export function useEventsMonitoringData() {
         .select("id, total_amount, currency, payment_status, created_at, order_number")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
     staleTime: 30_000,

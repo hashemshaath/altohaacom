@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Ticket, Clock, CheckCircle, AlertTriangle, MessageSquare, ThumbsUp, Timer } from "lucide-react";
+import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
   const { language } = useLanguage();
@@ -15,8 +16,8 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
     queryKey: ["support-overview-widget"],
     queryFn: async () => {
       const [{ data: tickets }, { data: sessions }] = await Promise.all([
-        supabase.from("support_tickets").select("status, priority, created_at, resolved_at").limit(500),
-        supabase.from("chat_sessions").select("status, rating, created_at").limit(500),
+        supabase.from("support_tickets").select("status, priority, created_at, resolved_at").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("chat_sessions").select("status, rating, created_at").limit(QUERY_LIMIT_MEDIUM),
       ]);
 
       const total = tickets?.length || 0;
@@ -43,7 +44,7 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
         totalSessions, satisfaction, ratedCount,
       };
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   if (!data) return null;

@@ -10,6 +10,7 @@ import { Trophy, Users, Gavel, MapPin, TrendingUp, Calendar } from "lucide-react
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidget() {
   const { language } = useLanguage();
@@ -19,10 +20,10 @@ export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidg
     queryKey: ["comp-live-stats"],
     queryFn: async () => {
       const [compsRes, regsRes, scoresRes, roundsRes] = await Promise.all([
-        supabase.from("competitions").select("id, status, country_code, competition_start, max_participants, city").limit(5000),
-        supabase.from("competition_registrations").select("competition_id, status, registered_at").limit(5000),
-        supabase.from("competition_scores").select("id, judge_id").limit(5000),
-        supabase.from("competition_rounds").select("id, competition_id, status").limit(5000),
+        supabase.from("competitions").select("id, status, country_code, competition_start, max_participants, city").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_registrations").select("competition_id, status, registered_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_scores").select("id, judge_id").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_rounds").select("id, competition_id, status").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const comps = compsRes.data || [];

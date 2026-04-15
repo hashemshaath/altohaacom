@@ -14,6 +14,7 @@ import {
   TrendingUp, ArrowDownToLine, Zap, Target, BarChart3, CalendarClock,
 } from "lucide-react";
 import {
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT, STALE_TIME_SHORT } from "@/lib/constants";
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell,
 } from "recharts";
@@ -29,7 +30,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
     queryFn: async () => {
       const { data } = await supabase
         .from("conversion_events")
-        .select("event_name, event_value, event_category, source, medium, created_at").limit(5000)
+        .select("event_name, event_value, event_category, source, medium, created_at").limit(QUERY_LIMIT_LARGE)
         .order("created_at", { ascending: false })
         .limit(1000);
       const events = data || [];
@@ -82,7 +83,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
         dailyTrend, sourcePie,
       };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const { data: cartData } = useQuery({
@@ -90,9 +91,9 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
     queryFn: async () => {
       const { data } = await supabase
         .from("abandoned_carts")
-        .select("id, total_amount, recovery_status, created_at").limit(5000)
+        .select("id, total_amount, recovery_status, created_at").limit(QUERY_LIMIT_LARGE)
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       const carts = data || [];
       const abandoned = carts.filter(c => c.recovery_status === "abandoned");
       const recovered = carts.filter(c => c.recovery_status === "recovered");
@@ -101,7 +102,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
       const recoveryRate = carts.length > 0 ? Math.round((recovered.length / carts.length) * 100) : 0;
       return { total: carts.length, abandoned: abandoned.length, recovered: recovered.length, lostRevenue, recoveredRevenue, recoveryRate };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const { data: campaignData } = useQuery({
@@ -109,7 +110,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
     queryFn: async () => {
       const { data } = await supabase
         .from("ad_campaigns")
-        .select("id, name, status, budget, spent, total_impressions, total_clicks, total_views, billing_model").limit(5000)
+        .select("id, name, status, budget, spent, total_impressions, total_clicks, total_views, billing_model").limit(QUERY_LIMIT_LARGE)
         .order("created_at", { ascending: false })
         .limit(20);
       const campaigns = data || [];
@@ -122,17 +123,17 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
       const roi = totalSpent > 0 ? (((Number(conversionData?.totalRevenue || 0) - totalSpent) / totalSpent) * 100).toFixed(1) : "0";
       return { campaigns, activeCampaigns, totalBudget, totalSpent, totalClicks, totalImpressions, avgCTR, roi };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
     enabled: conversionData !== undefined,
   });
 
   const { data: trackingConfigs = [] } = useQuery({
     queryKey: ["marketing-tracking-configs"],
     queryFn: async () => {
-      const { data } = await supabase.from("marketing_tracking_config").select("id, platform, tracking_id, is_active, created_at").order("created_at").limit(500);
+      const { data } = await supabase.from("marketing_tracking_config").select("id, platform, tracking_id, is_active, created_at").order("created_at").limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const eventLabels: Record<string, { en: string; ar: string }> = {

@@ -20,6 +20,7 @@ import { formatCurrency } from "@/lib/currencyFormatter";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -45,7 +46,7 @@ export default function CompanyAdvertising() {
     queryKey: ["company-ad-campaigns", companyId],
     queryFn: async () => {
       if (!companyId) return [];
-      const { data, error } = await supabase.from("ad_campaigns").select("id, name, name_ar, status, budget, spent, start_date, end_date, billing_model, total_impressions, total_clicks, total_views, currency, priority, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(5000);
+      const { data, error } = await supabase.from("ad_campaigns").select("id, name, name_ar, status, budget, spent, start_date, end_date, billing_model, total_impressions, total_clicks, total_views, currency, priority, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       return data;
     },

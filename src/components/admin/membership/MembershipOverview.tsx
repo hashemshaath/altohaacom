@@ -20,7 +20,7 @@ import { format, differenceInDays, subMonths, startOfMonth } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { useToast } from "@/hooks/use-toast";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const MembershipOverview = memo(function MembershipOverview() {
   const { language } = useLanguage();
@@ -52,12 +52,12 @@ const MembershipOverview = memo(function MembershipOverview() {
     queryKey: ["membership-overview-stats"],
     queryFn: async () => {
       const [profilesRes, cardsRes, historyRes, cancellationsRes, invoicesRes, walletsRes] = await Promise.all([
-        supabase.from("profiles").select("membership_tier, membership_status, membership_expires_at, created_at").limit(5000),
-        supabase.from("membership_cards").select("is_trial, trial_ends_at, card_status, expires_at").limit(5000),
+        supabase.from("profiles").select("membership_tier, membership_status, membership_expires_at, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_cards").select("is_trial, trial_ends_at, card_status, expires_at").limit(QUERY_LIMIT_LARGE),
         supabase.from("membership_history").select("new_tier, previous_tier, created_at").order("created_at", { ascending: false }).limit(200),
-        supabase.from("membership_cancellation_requests").select("status, created_at").eq("status", "pending").limit(5000),
-        supabase.from("invoices").select("amount, status, created_at, paid_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("user_wallets").select("balance, points_balance").limit(5000),
+        supabase.from("membership_cancellation_requests").select("status, created_at").eq("status", "pending").limit(QUERY_LIMIT_LARGE),
+        supabase.from("invoices").select("amount, status, created_at, paid_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("user_wallets").select("balance, points_balance").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const profiles = profilesRes.data || [];

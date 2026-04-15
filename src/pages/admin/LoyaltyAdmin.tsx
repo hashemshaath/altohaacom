@@ -23,6 +23,7 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 // Lazy load heavy analytics widgets
 const LoyaltyOverviewWidget = lazy(() => import("@/components/admin/LoyaltyOverviewWidget").then(m => ({ default: m.LoyaltyOverviewWidget })));
@@ -91,7 +92,7 @@ export default memo(function LoyaltyAdmin() {
   const { data: tiers = [] } = useQuery({
     queryKey: ["adminLoyaltyTiers"],
     queryFn: async () => {
-      const { data } = await supabase.from("loyalty_tiers").select("id, name, name_ar, slug, min_points, multiplier, icon_emoji, color, benefits, is_active, sort_order").order("sort_order").limit(5000);
+      const { data } = await supabase.from("loyalty_tiers").select("id, name, name_ar, slug, min_points, multiplier, icon_emoji, color, benefits, is_active, sort_order").order("sort_order").limit(QUERY_LIMIT_LARGE);
       return data || [];
     },
   });
@@ -99,7 +100,7 @@ export default memo(function LoyaltyAdmin() {
   const { data: challenges = [] } = useQuery({
     queryKey: ["adminChallenges"],
     queryFn: async () => {
-      const { data } = await supabase.from("challenges").select("id, title, title_ar, description, description_ar, category, challenge_type, target_action, target_count, reward_points, reward_badge, difficulty, icon_emoji, is_active, is_hidden, starts_at, ends_at, sort_order").order("sort_order").limit(5000);
+      const { data } = await supabase.from("challenges").select("id, title, title_ar, description, description_ar, category, challenge_type, target_action, target_count, reward_points, reward_badge, difficulty, icon_emoji, is_active, is_hidden, starts_at, ends_at, sort_order").order("sort_order").limit(QUERY_LIMIT_LARGE);
       return data || [];
     },
   });
@@ -107,7 +108,7 @@ export default memo(function LoyaltyAdmin() {
   const { data: rewards = [] } = useQuery({
     queryKey: ["adminRewards"],
     queryFn: async () => {
-      const { data } = await supabase.from("rewards_catalog").select("id, name, name_ar, description, description_ar, points_cost, category, image_url, is_active, is_featured, min_tier, stock, sort_order").order("sort_order").limit(5000);
+      const { data } = await supabase.from("rewards_catalog").select("id, name, name_ar, description, description_ar, points_cost, category, image_url, is_active, is_featured, min_tier, stock, sort_order").order("sort_order").limit(QUERY_LIMIT_LARGE);
       return data || [];
     },
   });

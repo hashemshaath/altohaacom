@@ -13,6 +13,7 @@ import { AIAssistant } from "@/components/knowledge/AIAssistant";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface FAQ {
   id: string;
@@ -53,8 +54,8 @@ export default function HelpCenter() {
     const fetchData = async () => {
       setLoading(true);
       const [faqsRes, articlesRes] = await Promise.all([
-        supabase.from("faqs").select("id, question, question_ar, answer, answer_ar, category, sort_order, is_featured").order("sort_order").limit(5000),
-        supabase.from("knowledge_articles").select("id, title, title_ar, content, content_ar, category, status, tags, view_count, helpful_count, created_at, updated_at").eq("status", "published").order("created_at", { ascending: false }).limit(5000),
+        supabase.from("faqs").select("id, question, question_ar, answer, answer_ar, category, sort_order, is_featured").order("sort_order").limit(QUERY_LIMIT_LARGE),
+        supabase.from("knowledge_articles").select("id, title, title_ar, content, content_ar, category, status, tags, view_count, helpful_count, created_at, updated_at").eq("status", "published").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE),
       ]);
 
       if (faqsRes.data) setFaqs(faqsRes.data);

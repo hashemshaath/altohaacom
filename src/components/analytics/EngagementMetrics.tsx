@@ -19,7 +19,7 @@ import {
   Award,
   MessageSquare,
 } from "lucide-react";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import {
   RadarChart,
   Radar,
@@ -64,14 +64,14 @@ const EngagementMetrics = memo(function EngagementMetrics() {
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
         supabase.from("profiles").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
-        supabase.from("competition_registrations").select("created_at").gte("created_at", thirtyDaysAgo).limit(5000),
-        supabase.from("competition_registrations").select("created_at").gte("created_at", sixtyDaysAgo).limit(5000).lt("created_at", thirtyDaysAgo),
+        supabase.from("competition_registrations").select("created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_registrations").select("created_at").gte("created_at", sixtyDaysAgo).limit(QUERY_LIMIT_LARGE).lt("created_at", thirtyDaysAgo),
         supabase.from("messages").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
         supabase.from("messages").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
         supabase.from("certificates").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
         supabase.from("certificates").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
-        supabase.from("competition_scores").select("score, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
-        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(500),
+        supabase.from("competition_scores").select("score, created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
+        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(QUERY_LIMIT_MEDIUM),
         supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
         supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", sixtyDaysAgo).lt("created_at", thirtyDaysAgo),
       ]);

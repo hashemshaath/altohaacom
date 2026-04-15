@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import { TrendingUp, MousePointer, Eye, Globe, Smartphone, Monitor, Tablet } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const CHART_COLORS = [
   "hsl(var(--chart-1))",
@@ -52,7 +53,7 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const { data: placements = [] } = useQuery({
     queryKey: ["ad-analytics-placements"],
     queryFn: async () => {
-      const { data } = await supabase.from("ad_placements").select("id, name, name_ar, slug").limit(500);
+      const { data } = await supabase.from("ad_placements").select("id, name, name_ar, slug").limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
   });
@@ -60,7 +61,7 @@ export const AdAnalyticsDashboard = memo(function AdAnalyticsDashboard() {
   const { data: campaigns = [] } = useQuery({
     queryKey: ["ad-analytics-campaigns"],
     queryFn: async () => {
-      const { data } = await supabase.from("ad_campaigns").select("id, name, name_ar, companies(name, name_ar)").limit(5000);
+      const { data } = await supabase.from("ad_campaigns").select("id, name, name_ar, companies(name, name_ar)").limit(QUERY_LIMIT_LARGE);
       return data || [];
     },
   });

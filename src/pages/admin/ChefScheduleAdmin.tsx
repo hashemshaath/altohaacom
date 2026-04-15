@@ -36,6 +36,7 @@ import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const EVENT_ICONS: Record<string, any> = {
   competition: Trophy, chefs_table: ChefHat, exhibition: Landmark,
@@ -68,7 +69,7 @@ export default function ChefScheduleAdmin() {
   const { data: profiles = [] } = useQuery({
     queryKey: ["admin-chef-profiles"],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("user_id, full_name, full_name_ar, avatar_url").eq("is_chef_visible", true).limit(500);
+      const { data } = await supabase.from("profiles").select("user_id, full_name, full_name_ar, avatar_url").eq("is_chef_visible", true).limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
   });

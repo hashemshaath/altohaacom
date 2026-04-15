@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Timer, CheckCircle2, Clock, TrendingDown, Zap, BarChart3 } from "lucide-react";
 import { differenceInHours } from "date-fns";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
   const { language } = useLanguage();
@@ -19,7 +20,7 @@ export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
         .from("support_tickets")
         .select("id, status, priority, created_at, resolved_at")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
 
       const all = tickets || [];

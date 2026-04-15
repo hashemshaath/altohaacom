@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Megaphone, Eye, MousePointerClick, DollarSign, TrendingUp, Pause, Play, AlertCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const AdCampaignOverviewWidget = memo(function AdCampaignOverviewWidget() {
   const { language } = useLanguage();
@@ -16,8 +17,8 @@ export const AdCampaignOverviewWidget = memo(function AdCampaignOverviewWidget()
     queryKey: ["ad-campaign-overview-widget"],
     queryFn: async () => {
       const [{ data: campaigns }, { data: creatives }] = await Promise.all([
-        supabase.from("ad_campaigns").select("status, budget, spent, total_impressions, total_clicks, total_views, billing_model").limit(500),
-        supabase.from("ad_creatives").select("status, impressions, clicks, views").limit(500),
+        supabase.from("ad_campaigns").select("status, budget, spent, total_impressions, total_clicks, total_views, billing_model").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("ad_creatives").select("status, impressions, clicks, views").limit(QUERY_LIMIT_MEDIUM),
       ]);
 
       const total = campaigns?.length || 0;
@@ -38,7 +39,7 @@ export const AdCampaignOverviewWidget = memo(function AdCampaignOverviewWidget()
         totalImpressions, totalClicks, ctr, budgetUtilization, pendingCreatives,
       };
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   if (!data) return null;

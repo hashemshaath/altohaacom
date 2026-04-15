@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 interface PendingItem {
   label: string;
@@ -49,7 +50,7 @@ export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget
       };
     },
     staleTime: CACHE.realtime.staleTime,
-    refetchInterval: useVisibleRefetchInterval(1000 * 60),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
   });
 
   const items: PendingItem[] = [

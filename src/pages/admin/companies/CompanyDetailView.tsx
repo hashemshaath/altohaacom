@@ -26,6 +26,7 @@ import {
   Upload, File, Sparkles, ChevronLeft, CheckCircle, XCircle, Phone, Mail,
 } from "lucide-react";
 import { type CompanyStatus, MEDIA_CATEGORIES, DAYS, getTypeLabel, getStatusLabel } from "./companiesAdminTypes";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const AdminCatalogExtended = safeLazy(() => import("@/components/admin/AdminCatalogExtended").then(m => ({ default: m.AdminCatalogExtended })));
 const CompanyEditPanel = safeLazy(() => import("@/components/admin/CompanyEditPanel").then(m => ({ default: m.CompanyEditPanel })));
@@ -95,7 +96,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const { data: contacts = [] } = useQuery({
     queryKey: ["company-contacts", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_contacts").select("id, company_id, user_id, name, name_ar, role, email, phone, mobile, is_primary, can_login, title, department, created_at").eq("company_id", companyId).order("is_primary", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("company_contacts").select("id, company_id, user_id, name, name_ar, role, email, phone, mobile, is_primary, can_login, title, department, created_at").eq("company_id", companyId).order("is_primary", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },
@@ -104,7 +105,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const { data: branches = [] } = useQuery({
     queryKey: ["company-branches", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_branches").select("id, company_id, name, name_ar, city, address, phone, email, is_headquarters, is_active, country, manager_name, manager_phone, created_at").eq("company_id", companyId).order("is_headquarters", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("company_branches").select("id, company_id, name, name_ar, city, address, phone, email, is_headquarters, is_active, country, manager_name, manager_phone, created_at").eq("company_id", companyId).order("is_headquarters", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },
@@ -140,7 +141,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const { data: evaluations = [] } = useQuery({
     queryKey: ["company-evaluations", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_evaluations").select("id, company_id, evaluated_by, overall_rating, quality_rating, delivery_rating, communication_rating, value_rating, review, review_ar, is_public, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("company_evaluations").select("id, company_id, evaluated_by, overall_rating, quality_rating, delivery_rating, communication_rating, value_rating, review, review_ar, is_public, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },
@@ -149,7 +150,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const { data: catalogItems = [] } = useQuery({
     queryKey: ["company-catalog", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_catalog").select("id, company_id, name, name_ar, category, description, description_ar, unit_price, currency, image_url, is_active, sku, unit, quantity_available, shop_product_id, created_at").eq("company_id", companyId).order("category").order("name").limit(500);
+      const { data, error } = await supabase.from("company_catalog").select("id, company_id, name, name_ar, category, description, description_ar, unit_price, currency, image_url, is_active, sku, unit, quantity_available, shop_product_id, created_at").eq("company_id", companyId).order("category").order("name").limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },
@@ -167,7 +168,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const { data: communications = [] } = useQuery({
     queryKey: ["company-communications", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_communications").select("id, company_id, sender_id, direction, subject, message, status, priority, tags, is_archived, is_starred, is_internal_note, parent_id, created_at, updated_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("company_communications").select("id, company_id, sender_id, direction, subject, message, status, priority, tags, is_archived, is_starred, is_internal_note, parent_id, created_at, updated_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },
@@ -176,7 +177,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const { data: media = [] } = useQuery({
     queryKey: ["company-media", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, file_type, file_size, title, category, description, created_at").eq("company_id", companyId).order("category").order("created_at", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, file_type, file_size, title, category, description, created_at").eq("company_id", companyId).order("category").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },

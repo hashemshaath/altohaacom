@@ -24,6 +24,7 @@ import {
   BarChart3, CheckCircle2, ArrowUpRight, Info, Shield,
 } from "lucide-react";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -61,11 +62,11 @@ const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibition
     queryKey: ["admin-exhibition-detail-analytics", exhibitionId],
     queryFn: async () => {
       const [ticketsRes, reviewsRes, followersRes, boothsRes, sponsorsRes] = await Promise.all([
-        supabase.from("exhibition_tickets").select("id, status, created_at, checked_in_at, ticket_type, attendee_name").eq("exhibition_id", exhibitionId!).limit(5000),
-        supabase.from("exhibition_reviews").select("id, rating, content, created_at, user_id, is_verified_attendee, helpful_count").eq("exhibition_id", exhibitionId!).order("created_at", { ascending: false }).limit(5000),
-        supabase.from("exhibition_followers").select("id, created_at").eq("exhibition_id", exhibitionId!).limit(5000),
-        supabase.from("exhibition_booths").select("id, booth_number, status, assigned_to, price, size").eq("exhibition_id", exhibitionId!).limit(5000),
-        supabase.from("exhibition_sponsors").select("id, tier, name, name_ar, logo_url").eq("exhibition_id", exhibitionId!).limit(5000),
+        supabase.from("exhibition_tickets").select("id, status, created_at, checked_in_at, ticket_type, attendee_name").eq("exhibition_id", exhibitionId!).limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_reviews").select("id, rating, content, created_at, user_id, is_verified_attendee, helpful_count").eq("exhibition_id", exhibitionId!).order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_followers").select("id, created_at").eq("exhibition_id", exhibitionId!).limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_booths").select("id, booth_number, status, assigned_to, price, size").eq("exhibition_id", exhibitionId!).limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_sponsors").select("id, tier, name, name_ar, logo_url").eq("exhibition_id", exhibitionId!).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const tickets = ticketsRes.data || [];

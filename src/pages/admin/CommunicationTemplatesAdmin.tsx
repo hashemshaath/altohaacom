@@ -33,6 +33,7 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface Template {
   id: string;
@@ -96,7 +97,7 @@ export default function CommunicationTemplatesAdmin() {
   const { data: templates = [], isLoading } = useQuery({
     queryKey: ["communication-templates", search, categoryFilter, channelFilter],
     queryFn: async () => {
-      let query = supabase.from("communication_templates").select("id, name, name_ar, slug, category, channel, subject, subject_ar, body, body_ar, variables, is_active, created_at, updated_at").order("category").order("name").limit(5000);
+      let query = supabase.from("communication_templates").select("id, name, name_ar, slug, category, channel, subject, subject_ar, body, body_ar, variables, is_active, created_at, updated_at").order("category").order("name").limit(QUERY_LIMIT_LARGE);
       if (search) query = query.or(`name.ilike.%${search}%,slug.ilike.%${search}%`);
       if (categoryFilter !== "all") query = query.eq("category", categoryFilter);
       if (channelFilter !== "all") query = query.eq("channel", channelFilter);

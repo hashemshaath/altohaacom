@@ -24,6 +24,7 @@ import {
 import { format, subDays, differenceInDays, formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -45,7 +46,7 @@ const ExhibitionKPIStrip = memo(function ExhibitionKPIStrip() {
   const { data, isLoading } = useQuery({
     queryKey: ["exhibition-stats-kpi"],
     queryFn: async () => {
-      const { data: exhibitions } = await supabase.from("exhibitions").select("id, status, start_date, view_count").limit(5000);
+      const { data: exhibitions } = await supabase.from("exhibitions").select("id, status, start_date, view_count").limit(QUERY_LIMIT_LARGE);
       const exhs = exhibitions || [];
       const now = new Date();
       const [tickets, booths, followers] = await Promise.all([
@@ -106,11 +107,11 @@ const OverviewTab = memo(function OverviewTab() {
     queryFn: async () => {
       const now = new Date();
       const [exhRes, ticketsRes, boothsRes, followersRes, sponsorsRes] = await Promise.all([
-        supabase.from("exhibitions").select("id, title, title_ar, status, start_date, end_date, venue, city, country, view_count, created_at").limit(5000),
-        supabase.from("exhibition_tickets").select("id, exhibition_id, created_at, status, checked_in_at").limit(5000),
-        supabase.from("exhibition_booths").select("id, exhibition_id, status, assigned_to").limit(5000),
-        supabase.from("exhibition_followers").select("id, exhibition_id").limit(5000),
-        supabase.from("exhibition_sponsors").select("id, exhibition_id, tier").limit(5000),
+        supabase.from("exhibitions").select("id, title, title_ar, status, start_date, end_date, venue, city, country, view_count, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_tickets").select("id, exhibition_id, created_at, status, checked_in_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_booths").select("id, exhibition_id, status, assigned_to").limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_followers").select("id, exhibition_id").limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_sponsors").select("id, exhibition_id, tier").limit(QUERY_LIMIT_LARGE),
       ]);
       const exhibitions = exhRes.data || [];
       const tickets = ticketsRes.data || [];
@@ -309,8 +310,8 @@ const TicketsTab = memo(function TicketsTab() {
       const now = new Date();
       const thirtyDaysAgo = subDays(now, 30);
       const [ticketsRes, exhRes] = await Promise.all([
-        supabase.from("exhibition_tickets").select("id, exhibition_id, status, created_at, checked_in_at, ticket_number, attendee_name").order("created_at", { ascending: false }).limit(500),
-        supabase.from("exhibitions").select("id, title, title_ar").limit(5000),
+        supabase.from("exhibition_tickets").select("id, exhibition_id, status, created_at, checked_in_at, ticket_number, attendee_name").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("exhibitions").select("id, title, title_ar").limit(QUERY_LIMIT_LARGE),
       ]);
       const tickets = ticketsRes.data || [];
       const exhibitions = exhRes.data || [];
@@ -448,10 +449,10 @@ const AnalyticsTab = memo(function AnalyticsTab() {
       const now = new Date();
       const thirtyDaysAgo = subDays(now, 30);
       const [exhibitions, tickets, reviews, followers] = await Promise.all([
-        supabase.from("exhibitions").select("id, title, status, city, country, view_count, is_free, ticket_price").limit(5000),
-        supabase.from("exhibition_tickets").select("id, exhibition_id, status, created_at, checked_in_at").limit(5000),
-        supabase.from("exhibition_reviews").select("id, exhibition_id, rating, created_at").limit(5000),
-        supabase.from("exhibition_followers").select("id, exhibition_id, created_at").limit(5000),
+        supabase.from("exhibitions").select("id, title, status, city, country, view_count, is_free, ticket_price").limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_tickets").select("id, exhibition_id, status, created_at, checked_in_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_reviews").select("id, exhibition_id, rating, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("exhibition_followers").select("id, exhibition_id, created_at").limit(QUERY_LIMIT_LARGE),
       ]);
       const allExhibitions = exhibitions.data || [];
       const allTickets = tickets.data || [];
@@ -609,7 +610,7 @@ const ActivityTab = memo(function ActivityTab() {
   const { data: actions = [] } = useQuery({
     queryKey: ["exhibition-stats-activity"],
     queryFn: async () => {
-      const { data } = await supabase.from("admin_actions").select("id, action_type, created_at").limit(5000)
+      const { data } = await supabase.from("admin_actions").select("id, action_type, created_at").limit(QUERY_LIMIT_LARGE)
         .or("action_type.ilike.%exhibition%,action_type.eq.approve_exhibition,action_type.eq.reject_exhibition")
         .order("created_at", { ascending: false }).limit(30);
       return data || [];
@@ -619,7 +620,7 @@ const ActivityTab = memo(function ActivityTab() {
   const { data: recentTickets = [] } = useQuery({
     queryKey: ["exhibition-stats-recent-tickets"],
     queryFn: async () => {
-      const { data } = await supabase.from("exhibition_tickets").select("id, ticket_number, attendee_name, status, created_at").limit(5000)
+      const { data } = await supabase.from("exhibition_tickets").select("id, ticket_number, attendee_name, status, created_at").limit(QUERY_LIMIT_LARGE)
         .order("created_at", { ascending: false }).limit(15);
       return data || [];
     },

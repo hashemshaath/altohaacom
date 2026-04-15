@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -21,8 +22,8 @@ export const CertificatesLiveWidget = memo(function CertificatesLiveWidget() {
     queryKey: ["certificatesLiveStats"],
     queryFn: async () => {
       const [certsRes, templatesRes, verificationsRes] = await Promise.all([
-        supabase.from("certificates").select("id, type, status, created_at, issued_at, sent_at, downloaded_count, template_id").limit(5000),
-        supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").limit(500),
+        supabase.from("certificates").select("id, type, status, created_at, issued_at, sent_at, downloaded_count, template_id").limit(QUERY_LIMIT_LARGE),
+        supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").limit(QUERY_LIMIT_MEDIUM),
         supabase.from("certificate_verifications").select("id, verified_at").order("verified_at", { ascending: false }).limit(200),
       ]);
 
@@ -71,7 +72,7 @@ export const CertificatesLiveWidget = memo(function CertificatesLiveWidget() {
         issuanceRate: totalCerts > 0 ? Math.round((issued / totalCerts) * 100) : 0,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Gauge, Smartphone, Monitor, Tablet, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_SLOW, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface VitalsRow {
   lcp: number | null;
@@ -57,7 +57,7 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
         .from("seo_web_vitals")
         .select("lcp, inp, cls, fcp, ttfb, device_type, path")
         .gte("created_at", since)
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
 
       if (error) throw error;
       const rows = (data || []) as VitalsRow[];
@@ -102,8 +102,8 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
         slowestPages,
       };
     },
-    staleTime: 60000,
-    refetchInterval: useVisibleRefetchInterval(120000),
+    staleTime: STALE_TIME_DEFAULT,
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_SLOW),
   });
 
   const metrics = [

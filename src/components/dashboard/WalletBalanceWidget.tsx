@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Star, ArrowRight, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, STALE_TIME_LONG } from "@/lib/constants";
 
 export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   const { user } = useAuth();
@@ -44,7 +44,7 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
       };
     },
     enabled: !!user,
-    staleTime: 3 * 60 * 1000,
+    staleTime: STALE_TIME_LONG,
   });
 
   if (!data) return null;

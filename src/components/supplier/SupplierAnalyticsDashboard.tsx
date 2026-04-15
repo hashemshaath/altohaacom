@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Package, MessageSquare, Star, Eye, TrendingUp, Heart, Download } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const SupplierAnalyticsDashboard = memo(function SupplierAnalyticsDashboard() {
   const { language } = useLanguage();
@@ -63,7 +64,7 @@ export const SupplierAnalyticsDashboard = memo(function SupplierAnalyticsDashboa
         .select("id, viewed_at")
         .eq("company_id", companyId)
         .order("viewed_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
     enabled: !!companyId,

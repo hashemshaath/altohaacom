@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { memo } from "react";
 import { CACHE } from "@/lib/queryConfig";
+import { REFETCH_INTERVAL_BACKGROUND } from "@/lib/constants";
 
 interface PendingItem {
   key: string;
@@ -76,7 +77,7 @@ const AdminPendingBanner = memo(function AdminPendingBanner() {
       return list.filter(i => i.count > 0);
     },
     staleTime: CACHE.medium.staleTime,
-    refetchInterval: useVisibleRefetchInterval(1000 * 60 * 5),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_BACKGROUND),
   });
 
   if (!items || items.length === 0) return null;

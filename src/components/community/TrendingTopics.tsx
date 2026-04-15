@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Hash, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const TrendingTopics = memo(function TrendingTopics() {
@@ -24,7 +24,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
         .eq("moderation_status", "approved")
         .gte("created_at", weekAgo)
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
 
       if (!posts) return [];
 

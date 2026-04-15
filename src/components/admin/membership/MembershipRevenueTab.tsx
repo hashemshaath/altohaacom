@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const { language } = useLanguage();
@@ -30,10 +31,10 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
         { data: history },
         { data: wallets },
       ] = await Promise.all([
-        supabase.from("profiles").select("membership_tier, membership_status, membership_started_at, created_at").limit(5000),
-        supabase.from("invoices").select("amount, currency, status, created_at, paid_at").order("created_at", { ascending: false }).limit(5000),
-        supabase.from("membership_history").select("previous_tier, new_tier, created_at, reason").order("created_at", { ascending: false }).limit(500),
-        supabase.from("user_wallets").select("balance, points_balance").limit(5000),
+        supabase.from("profiles").select("membership_tier, membership_status, membership_started_at, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("invoices").select("amount, currency, status, created_at, paid_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_history").select("previous_tier, new_tier, created_at, reason").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("user_wallets").select("balance, points_balance").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const now = new Date();

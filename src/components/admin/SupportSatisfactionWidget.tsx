@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, L
 import { SmilePlus, Clock, Timer, Users, TrendingDown, Zap } from "lucide-react";
 import { format, subDays, differenceInMinutes } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget() {
   const { language } = useLanguage();
@@ -19,9 +20,9 @@ export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget
     queryKey: ["admin-support-satisfaction"],
     queryFn: async () => {
       const [ticketsRes, messagesRes, recentTicketsRes] = await Promise.all([
-        supabase.from("support_tickets").select("id, status, priority, created_at, resolved_at, assigned_to").limit(5000),
-        supabase.from("support_ticket_messages").select("ticket_id, sender_id, created_at, is_internal_note").order("created_at").limit(5000),
-        supabase.from("support_tickets").select("created_at, status, resolved_at").gte("created_at", subDays(new Date(), 14).toISOString()).limit(5000),
+        supabase.from("support_tickets").select("id, status, priority, created_at, resolved_at, assigned_to").limit(QUERY_LIMIT_LARGE),
+        supabase.from("support_ticket_messages").select("ticket_id, sender_id, created_at, is_internal_note").order("created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("support_tickets").select("created_at, status, resolved_at").gte("created_at", subDays(new Date(), 14).toISOString()).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const tickets = ticketsRes.data || [];

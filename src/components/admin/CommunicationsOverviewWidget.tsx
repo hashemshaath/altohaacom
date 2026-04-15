@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { MessageSquare, Bell, Ticket, Mail, Send, CheckCircle, AlertCircle, Clock, Zap, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_MEDIUM, STALE_TIME_SHORT } from "@/lib/constants";
 
 export const CommunicationsOverviewWidget = memo(function CommunicationsOverviewWidget() {
   const { language } = useLanguage();
@@ -40,7 +40,7 @@ export const CommunicationsOverviewWidget = memo(function CommunicationsOverview
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).in("status", ["open", "in_progress"]),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).eq("priority", "urgent"),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).gte("created_at", weekAgo),
-        supabase.from("notification_queue").select("status").limit(500),
+        supabase.from("notification_queue").select("status").limit(QUERY_LIMIT_MEDIUM),
         supabase.from("messages").select("id", { count: "exact", head: true }),
         supabase.from("messages").select("id", { count: "exact", head: true }).gte("created_at", dayAgo),
         supabase.from("chat_sessions").select("id", { count: "exact", head: true }).eq("status", "active"),
@@ -69,7 +69,7 @@ export const CommunicationsOverviewWidget = memo(function CommunicationsOverview
         totalTemplates: totalTemplates || 0,
       };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   if (!data) return null;

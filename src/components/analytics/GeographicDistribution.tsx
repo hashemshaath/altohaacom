@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Globe, MapPin, Users, TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
 } from "recharts";
@@ -36,8 +37,8 @@ export const GeographicDistribution = memo(function GeographicDistribution() {
         { data: companies },
       ] = await Promise.all([
         supabase.from("profiles").select("country_code").not("country_code", "is", null).limit(1000),
-        supabase.from("competitions").select("country_code").not("country_code", "is", null).limit(5000),
-        supabase.from("companies").select("country_code").not("country_code", "is", null).limit(5000),
+        supabase.from("competitions").select("country_code").not("country_code", "is", null).limit(QUERY_LIMIT_LARGE),
+        supabase.from("companies").select("country_code").not("country_code", "is", null).limit(QUERY_LIMIT_LARGE),
       ]);
 
       // Count users by country

@@ -32,6 +32,7 @@ import {
   Tag, StickyNote, BarChart3, Trash2, Eye, EyeOff, Filter, Download,
 } from "lucide-react";
 import { format, differenceInMinutes, differenceInHours } from "date-fns";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 // ─── Types ───────────────────────────────────────────────────
 interface Communication {
@@ -113,7 +114,7 @@ export default function CommunicationsAdmin() {
       if (priorityFilter !== "all") query = query.eq("priority", priorityFilter);
       if (tagFilter !== "all") query = query.contains("tags", [tagFilter]);
 
-      const { data, error } = await query.limit(5000);
+      const { data, error } = await query.limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       return (data || []) as Communication[];
     },
@@ -178,7 +179,7 @@ export default function CommunicationsAdmin() {
       const { data, error } = await supabase
         .from("company_communications").select("created_at, direction, status, priority, response_time_minutes, is_internal_note")
         .is("parent_id", null).eq("is_internal_note", false)
-        .order("created_at", { ascending: false }).limit(500);
+        .order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data || [];
     },

@@ -10,6 +10,7 @@ import { Globe } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { CHART_COLORS, TOOLTIP_STYLE, CHART_HEIGHT, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface CountryBreakdownChartProps {
   metric: "users" | "competitions" | "companies";
@@ -30,7 +31,7 @@ export const CountryBreakdownChart = memo(function CountryBreakdownChart({ metri
     queryKey: ["country-breakdown", metric],
     queryFn: async () => {
       const tableMap: Record<string, string> = { users: "profiles", competitions: "competitions", companies: "companies" };
-      const { data } = await supabase.from(tableMap[metric] as any).select("country_code").not("country_code", "is", null).limit(5000);
+      const { data } = await supabase.from(tableMap[metric] as any).select("country_code").not("country_code", "is", null).limit(QUERY_LIMIT_LARGE);
       if (!data) return [];
 
       const counts: Record<string, number> = {};

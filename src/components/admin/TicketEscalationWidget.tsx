@@ -12,12 +12,13 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInHours, differenceInMinutes, subDays, format } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { CACHE } from "@/lib/queryConfig";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const visibleInterval = useVisibleRefetchInterval(60000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-ticket-escalation"],

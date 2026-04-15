@@ -18,6 +18,7 @@ import {
   Settings, User, LayoutDashboard, Command,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface PaletteItem {
   id: string;
@@ -130,7 +131,7 @@ export const CommandPalette = memo(function CommandPalette() {
       return results;
     },
     enabled: debouncedQuery.length >= 2,
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   const allItems = [...filteredPages, ...dbResults];

@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Trophy, Users, Gavel, Medal, TrendingUp, MapPin } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -21,10 +22,10 @@ export const CompetitionAnalyticsWidget = memo(function CompetitionAnalyticsWidg
     queryKey: ["admin-competition-analytics-widget"],
     queryFn: async () => {
       const [competitions, registrations, scores, judges] = await Promise.all([
-        supabase.from("competitions").select("id, status, country_code, created_at").limit(5000),
-        supabase.from("competition_registrations").select("id, competition_id, status, registered_at").limit(5000),
-        supabase.from("competition_scores").select("id, score").limit(5000),
-        supabase.from("competition_roles").select("id, role, status").eq("role", "judge").eq("status", "active").limit(5000),
+        supabase.from("competitions").select("id, status, country_code, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_registrations").select("id, competition_id, status, registered_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_scores").select("id, score").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_roles").select("id, role, status").eq("role", "judge").eq("status", "active").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const allComps = competitions.data || [];
@@ -69,7 +70,7 @@ export const CompetitionAnalyticsWidget = memo(function CompetitionAnalyticsWidg
         regStatusDist,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

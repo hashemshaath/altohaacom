@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { Activity, ArrowRight, UserPlus, Flag, Trophy, FileText, Shield, Package, AlertTriangle, Ticket, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 interface FeedItem {
@@ -94,7 +94,7 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
       return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 15);
     },
     staleTime: CACHE.realtime.staleTime,
-    refetchInterval: useVisibleRefetchInterval(1000 * 60),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
   });
 
   return (

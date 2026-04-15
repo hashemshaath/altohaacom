@@ -14,6 +14,7 @@ import {
   FileWarning, Copy, Sparkles, BarChart3, Eye,
 } from "lucide-react";
 import { toast } from "sonner";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const CHART_COLORS = [
   "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -43,7 +44,7 @@ export function SEOContentGapAnalyzer({ isAr }: Props) {
         .select("id, title, title_ar, slug, excerpt, excerpt_ar, content, content_ar, type, status, view_count, published_at, metadata")
         .eq("status", "published")
         .order("published_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data || [];
     },

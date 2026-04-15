@@ -16,6 +16,7 @@ import {
 import type { DataPoint } from "@/lib/trendPrediction";
 import type { DateRange } from "./AnalyticsDateRange";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface Props {
   dateRange?: DateRange;
@@ -38,10 +39,10 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
         supabase.from("masterclasses").select("id", { count: "exact", head: true }),
         supabase.from("certificates").select("id", { count: "exact", head: true }),
         supabase.from("messages").select("id", { count: "exact", head: true }),
-        supabase.from("user_roles").select("role").limit(5000),
-        supabase.from("competitions").select("status").limit(5000),
-        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(5000),
-        supabase.from("competitions").select("created_at").order("created_at", { ascending: true }).limit(5000),
+        supabase.from("user_roles").select("role").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competitions").select("status").limit(QUERY_LIMIT_LARGE),
+        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(QUERY_LIMIT_LARGE),
+        supabase.from("competitions").select("created_at").order("created_at", { ascending: true }).limit(QUERY_LIMIT_LARGE),
       ] as const;
 
       const rangeQueries = fromISO && toISO ? [

@@ -21,6 +21,7 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 const MAX_CHARS = 1000;
 const MAX_IMAGES = 4;
@@ -89,7 +90,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
       return data;
     },
     enabled: !!user,
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   useEffect(() => {

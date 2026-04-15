@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileBarChart, Users, Trophy, Package, FileText, TrendingUp, Landmark } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface ModuleStat {
   icon: React.ElementType;
@@ -57,7 +57,7 @@ export const ReportsSummaryWidget = memo(function ReportsSummaryWidget() {
         certs: { total: totalCerts || 0, week: weekCerts || 0 },
       };
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   if (!data) return null;

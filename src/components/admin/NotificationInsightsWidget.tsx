@@ -10,6 +10,7 @@ import { Bell, Send, Eye, AlertTriangle, Zap, Mail, Smartphone, MessageSquare } 
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const NotificationInsightsWidget = memo(function NotificationInsightsWidget() {
   const { language } = useLanguage();
@@ -19,9 +20,9 @@ export const NotificationInsightsWidget = memo(function NotificationInsightsWidg
     queryKey: ["notif-insights-widget"],
     queryFn: async () => {
       const [notifsRes, queueRes, rulesRes] = await Promise.all([
-        supabase.from("notifications").select("id, type, status, channel, created_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("notification_queue").select("id, status, channel, error_message, created_at").limit(500),
-        supabase.from("notification_rules").select("id, is_active").limit(5000),
+        supabase.from("notifications").select("id, type, status, channel, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("notification_queue").select("id, status, channel, error_message, created_at").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("notification_rules").select("id, is_active").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const notifs = notifsRes.data || [];

@@ -20,6 +20,7 @@ import { formatCurrency } from "@/lib/currencyFormatter";
 import { format, subMonths, eachMonthOfInterval, startOfMonth } from "date-fns";
 import { ar } from "date-fns/locale";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const FinancialForecasting = memo(function FinancialForecasting() {
   const { language } = useLanguage();
@@ -35,10 +36,10 @@ export const FinancialForecasting = memo(function FinancialForecasting() {
         { data: orders },
         { data: shopOrders },
       ] = await Promise.all([
-        supabase.from("invoices").select("amount, status, created_at, paid_at").order("created_at").limit(5000),
-        supabase.from("company_transactions").select("amount, type, created_at").order("created_at").limit(5000),
-        supabase.from("company_orders").select("total_amount, status, created_at, category").limit(5000),
-        supabase.from("shop_orders").select("total_amount, status, created_at").limit(5000),
+        supabase.from("invoices").select("amount, status, created_at, paid_at").order("created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_transactions").select("amount, type, created_at").order("created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_orders").select("total_amount, status, created_at, category").limit(QUERY_LIMIT_LARGE),
+        supabase.from("shop_orders").select("total_amount, status, created_at").limit(QUERY_LIMIT_LARGE),
       ]);
 
       // Monthly revenue from paid invoices

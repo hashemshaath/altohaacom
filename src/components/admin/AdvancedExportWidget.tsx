@@ -11,6 +11,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recha
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_SLOW } from "@/lib/constants";
 
 interface ExportModule {
   key: string;
@@ -38,7 +39,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
   const { toast } = useToast();
 
   // Get record counts for all modules
-  const visibleInterval = useVisibleRefetchInterval(120000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_SLOW);
 
   const { data: counts } = useQuery({
     queryKey: ["exportModuleCounts"],
@@ -64,7 +65,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
     setExporting(true);
     try {
       const mod = EXPORT_MODULES.find(m => m.key === moduleKey)!;
-      const { data } = await supabase.from(mod.table as never).select(mod.columns).limit(5000);
+      const { data } = await supabase.from(mod.table as never).select(mod.columns).limit(QUERY_LIMIT_LARGE);
       if (!data || data.length === 0) {
         setExporting(false);
         return;

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export interface RecipeIngredient {
   name: string;
@@ -90,10 +91,10 @@ export function useRecipes(filters?: {
 
       const [profilesRes, ratingsRes] = await Promise.all([
         authorIds.length > 0
-          ? supabase.from("profiles").select("user_id, full_name").in("user_id", authorIds).limit(5000)
+          ? supabase.from("profiles").select("user_id, full_name").in("user_id", authorIds).limit(QUERY_LIMIT_LARGE)
           : { data: [] },
         recipeIds.length > 0
-          ? supabase.from("recipe_ratings").select("recipe_id, rating").in("recipe_id", recipeIds).limit(5000)
+          ? supabase.from("recipe_ratings").select("recipe_id, rating").in("recipe_id", recipeIds).limit(QUERY_LIMIT_LARGE)
           : { data: [] },
       ]);
 
@@ -133,7 +134,7 @@ export function useRecipeBySlug(slug: string | undefined) {
 
       const [profileRes, ratingsRes] = await Promise.all([
         supabase.from("profiles").select("user_id, full_name, avatar_url, username").eq("user_id", data.author_id).maybeSingle(),
-        supabase.from("recipe_ratings").select("id, recipe_id, rating, user_id").eq("recipe_id", data.id).limit(5000),
+        supabase.from("recipe_ratings").select("id, recipe_id, rating, user_id").eq("recipe_id", data.id).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const ratings = ratingsRes.data || [];

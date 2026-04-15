@@ -10,6 +10,7 @@ import { usePresence } from "@/hooks/usePresence";
 import { useToast } from "@/hooks/use-toast";
 import { uploadMessageAttachment } from "@/utils/storageUtils";
 import { CACHE } from "@/lib/queryConfig";
+import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
 
 export interface Message {
   id: string;
@@ -79,7 +80,7 @@ export function useMessagesData() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
-  const messagesRefetchInterval = useVisibleRefetchInterval(30000);
+  const messagesRefetchInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_FAST);
   const initialUserId = searchParams.get("user");
 
   const [selectedPartner, setSelectedPartner] = useState<ConversationPartner | null>(null);

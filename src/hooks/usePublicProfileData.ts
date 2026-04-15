@@ -6,6 +6,7 @@ import { useRecordProfileView } from "@/hooks/useProfileViews";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -81,7 +82,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
   const { data: careerRecords = [] } = useQuery({
     queryKey: ["public-career-records", profile?.user_id],
     queryFn: async () => {
-      const { data } = await supabase.from("user_career_records").select("id, user_id, record_type, title, title_ar, entity_name, entity_name_ar, description, description_ar, start_date, end_date, is_current, location, country_code, sort_order, department, department_ar, employment_type, education_level, field_of_study, field_of_study_ar, grade, entity_id").limit(5000)
+      const { data } = await supabase.from("user_career_records").select("id, user_id, record_type, title, title_ar, entity_name, entity_name_ar, description, description_ar, start_date, end_date, is_current, location, country_code, sort_order, department, department_ar, employment_type, education_level, field_of_study, field_of_study_ar, grade, entity_id").limit(QUERY_LIMIT_LARGE)
         .eq("user_id", profile!.user_id)
         .order("is_current", { ascending: false })
         .order("end_date", { ascending: false, nullsFirst: true })

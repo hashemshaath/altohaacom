@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, ShieldAlert, ArrowRight, Database, Users, Building2, Trophy } from "lucide-react";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 interface EntityScore {
   label: string;
@@ -36,10 +37,10 @@ export const DataQualityDashboardWidget = memo(function DataQualityDashboardWidg
     queryKey: ["data-quality-widget"],
     queryFn: async () => {
       const [{ data: orgs }, { data: companies }, { data: profiles }, { data: competitions }] = await Promise.allSettled([
-        supabase.from("organizers").select("name, name_ar, email, phone, website, city, country, description").limit(500),
-        supabase.from("companies").select("name, name_ar, email, phone, website, city, country, description").limit(500),
-        supabase.from("profiles").select("full_name, email, phone, country, city, avatar_url, bio").limit(500),
-        supabase.from("competitions").select("title, title_ar, description, country_code, city, venue, competition_start").limit(500),
+        supabase.from("organizers").select("name, name_ar, email, phone, website, city, country, description").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("companies").select("name, name_ar, email, phone, website, city, country, description").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("profiles").select("full_name, email, phone, country, city, avatar_url, bio").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("competitions").select("title, title_ar, description, country_code, city, venue, competition_start").limit(QUERY_LIMIT_MEDIUM),
       ]).then(results => results.map(r => r.status === "fulfilled" ? r.value : { data: [] }));
 
       const entities: EntityScore[] = [

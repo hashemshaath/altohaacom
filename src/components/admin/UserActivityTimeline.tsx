@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Activity, UserCheck, UserX, Shield, KeyRound, Edit, Ban, Clock } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const ACTION_CONFIG: Record<string, { icon: typeof Activity; color: string; label: string; labelAr: string }> = {
   update_profile: { icon: Edit, color: "text-primary", label: "Profile Updated", labelAr: "تحديث الملف" },
@@ -52,7 +53,7 @@ export const UserActivityTimeline = memo(function UserActivityTimeline() {
         target: a.target_user_id ? profileMap.get(a.target_user_id) : null,
       }));
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
   });
 
   return (

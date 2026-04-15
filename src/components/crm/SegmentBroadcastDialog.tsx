@@ -25,6 +25,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Send, Users, Bell, Mail, MessageSquare } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface SegmentBroadcastDialogProps {
   open: boolean;
@@ -59,7 +60,7 @@ export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
       if (!user) throw new Error("Not authenticated");
 
       // Get matching user IDs based on segment filters
-      let query = supabase.from("profiles").select("user_id").limit(5000);
+      let query = supabase.from("profiles").select("user_id").limit(QUERY_LIMIT_LARGE);
 
       // Apply country filter if set
       if (filters?.countries?.length > 0) {

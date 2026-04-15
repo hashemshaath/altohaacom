@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -22,10 +23,10 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
     queryFn: async () => {
       const [ledgerRes, challengesRes, tiersRes, campaignsRes, walletsRes] = await Promise.all([
         supabase.from("points_ledger").select("id, user_id, action_type, points, created_at, balance_after").order("created_at", { ascending: false }).limit(1000),
-        supabase.from("challenges").select("id, title, is_active").limit(5000),
-        supabase.from("loyalty_tiers").select("id, name, name_ar, min_points, sort_order").order("sort_order").limit(5000),
-        supabase.from("bonus_campaigns").select("id, name, is_active, starts_at, ends_at").limit(5000),
-        supabase.from("user_wallets").select("user_id, points_balance").limit(5000),
+        supabase.from("challenges").select("id, title, is_active").limit(QUERY_LIMIT_LARGE),
+        supabase.from("loyalty_tiers").select("id, name, name_ar, min_points, sort_order").order("sort_order").limit(QUERY_LIMIT_LARGE),
+        supabase.from("bonus_campaigns").select("id, name, is_active, starts_at, ends_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("user_wallets").select("user_id, points_balance").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const ledger = ledgerRes.data || [];
@@ -89,7 +90,7 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
         tierDist,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

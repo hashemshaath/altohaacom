@@ -12,6 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -19,7 +20,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const visibleInterval = useVisibleRefetchInterval(60000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-user-growth-widget"],
@@ -33,8 +34,8 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
           .gte("created_at", thirtyDaysAgo),
         supabase.from("profiles").select("id", { count: "exact", head: true })
           .gte("created_at", sevenDaysAgo),
-        supabase.from("user_roles").select("role").limit(5000),
-        supabase.from("profiles").select("country_code").not("country_code", "is", null).limit(5000),
+        supabase.from("user_roles").select("role").limit(QUERY_LIMIT_LARGE),
+        supabase.from("profiles").select("country_code").not("country_code", "is", null).limit(QUERY_LIMIT_LARGE),
       ]);
 
       // Build daily trend

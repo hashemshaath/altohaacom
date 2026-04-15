@@ -17,12 +17,13 @@ import {
 } from "@/lib/chartConfig";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_SLOW } from "@/lib/constants";
 
 export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const visibleInterval = useVisibleRefetchInterval(120000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_SLOW);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-advanced-kpi"],
@@ -47,8 +48,8 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
         supabase.from("articles").select("id", { count: "exact", head: true }).gte("created_at", prevThirtyStart).lt("created_at", thirtyDaysAgo),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).gte("created_at", thirtyDaysAgo),
         supabase.from("support_tickets").select("id", { count: "exact", head: true }).gte("created_at", prevThirtyStart).lt("created_at", thirtyDaysAgo),
-        supabase.from("company_orders").select("total_amount").gte("created_at", thirtyDaysAgo).limit(5000),
-        supabase.from("profiles").select("created_at").gte("created_at", thirtyDaysAgo).order("created_at").limit(5000),
+        supabase.from("company_orders").select("total_amount").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
+        supabase.from("profiles").select("created_at").gte("created_at", thirtyDaysAgo).order("created_at").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const calcGrowth = (current: number, prev: number) => {

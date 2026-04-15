@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Gavel, Users, CheckCircle, Clock, AlertCircle } from "lucide-react";
+import { REFETCH_INTERVAL_DEFAULT, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker() {
   const { language } = useLanguage();
@@ -90,8 +91,8 @@ export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker
 
       return { competitions };
     },
-    staleTime: 60000,
-    refetchInterval: useVisibleRefetchInterval(60000),
+    staleTime: STALE_TIME_DEFAULT,
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
   });
 
   if (!data || data.competitions.length === 0) return null;
