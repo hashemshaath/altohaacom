@@ -84,7 +84,7 @@ const certificateTypes: { value: CertificateType; label: string; labelAr: string
   { value: "volunteer", label: "Volunteer", labelAr: "متطوع", color: "bg-accent-foreground" },
 ];
 
-// statusColors removed — using AdminStatusBadge instead
+
 
 export default function CertificatesAdmin() {
   const { language } = useLanguage();
