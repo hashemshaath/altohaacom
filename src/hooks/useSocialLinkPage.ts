@@ -49,7 +49,7 @@ export function useSocialLinkPageByUsername(username?: string) {
       const { data: profile, error: pErr } = await supabase
         .from("profiles_public")
         .select(
-          "user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, cover_image_url, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, specialization, specialization_ar, city, country_code, nationality, years_of_experience, is_verified, membership_tier, job_title, job_title_ar, view_count"
+          "user_id, username, full_name, full_name_ar, display_name, display_name_ar, avatar_url, cover_image_url, bio, bio_ar, instagram, twitter, facebook, linkedin, youtube, tiktok, snapchat, website, specialization, specialization_ar, city, country_code, nationality, years_of_experience, is_verified, membership_tier, job_title, job_title_ar, view_count, show_nationality"
         )
         .ilike("username", normalizedUsername)
         .maybeSingle();
