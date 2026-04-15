@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -241,7 +242,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
       return data || [];
     },
     enabled: !!userId,
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   const { data: memberships = [] } = useQuery({
@@ -254,7 +255,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
       return data || [];
     },
     enabled: !!userId,
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   const { data: certificates = [] } = useQuery({
@@ -267,7 +268,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
       return data || [];
     },
     enabled: !!userId,
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   const { data: userSections = [] } = useQuery({
@@ -280,7 +281,7 @@ export const BioCareerSections = memo(function BioCareerSections({ userId, theme
       return data || [];
     },
     enabled: !!userId,
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   const orderedSections = useMemo(() => {

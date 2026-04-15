@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,7 +35,7 @@ export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
       return data || [];
     },
     enabled: !!user,
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   if (!orders || orders.length === 0) return null;
