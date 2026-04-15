@@ -23,6 +23,7 @@ import { BackToTop } from "@/components/ui/back-to-top";
 import { safeLazy } from "@/lib/safeLazy";
 const CommandPalette = safeLazy(() => import("@/components/search/CommandPalette").then(m => ({ default: m.CommandPalette })));
 const AnnouncementBanner = safeLazy(() => import("@/components/engagement/AnnouncementBanner").then(m => ({ default: m.AnnouncementBanner })));
+import { GoogleTrackingProvider } from "@/components/tracking/GoogleTrackingProvider";
 import { PageTracker } from "@/components/tracking/PageTracker";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
 import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
