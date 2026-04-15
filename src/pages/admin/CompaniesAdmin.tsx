@@ -17,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { useAllCountries } from "@/hooks/useCountries";
 import { countryFlag } from "@/lib/countryFlag";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const BulkImportPanel = safeLazy(() => import("@/components/admin/BulkImportPanel").then(m => ({ default: m.BulkImportPanel })));
 const BatchDuplicateScanner = safeLazy(() => import("@/components/admin/BatchDuplicateScanner").then(m => ({ default: m.BatchDuplicateScanner })));
@@ -48,7 +49,6 @@ import { format } from "date-fns";
 import { CompanyDetailView } from "./companies/CompanyDetailView";
 import { type Company, type CompanyType, type CompanyStatus, COMPANY_TYPES, getTypeLabel, getStatusLabel } from "./companies/companiesAdminTypes";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompaniesAdmin() {
   const isAr = useIsAr();

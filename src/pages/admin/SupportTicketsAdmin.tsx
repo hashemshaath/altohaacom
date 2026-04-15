@@ -53,6 +53,7 @@ import { SupportSatisfactionWidget } from "@/components/admin/SupportSatisfactio
 import { MessagingAdminOverview } from "@/components/admin/MessagingAdminOverview";
 import { SupportOverviewWidget } from "@/components/admin/SupportOverviewWidget";
 import {
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
   Ticket,
   Search,
   Send,
@@ -71,7 +72,6 @@ import {
 import { format, formatDistanceToNow, differenceInHours, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ─── SLA Thresholds (hours) ─────────────────────────────────
 const SLA_THRESHOLDS: Record<string, { warning: number; breach: number }> = {
