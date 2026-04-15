@@ -574,7 +574,7 @@ function InsightRow({ icon: Icon, label, value, color }: {
   );
 }
 
-function EmptyState({ isAr }: { isAr: boolean }) {
+function EmptyState({ }: {: boolean }) {
   const isAr = useIsAr();
   return (
     <div className="flex items-center justify-center h-[180px] text-muted-foreground text-sm">

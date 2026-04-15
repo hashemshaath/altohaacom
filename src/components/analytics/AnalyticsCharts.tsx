@@ -12,7 +12,7 @@ import {
   translateStatus, getTooltipStyle,
 } from "@/lib/chartConfig";
 
-function NoData({ isAr }: { isAr: boolean }) {
+function NoData({ }: {: boolean }) {
   const isAr = useIsAr();
   return <p className="py-12 text-center text-muted-foreground text-sm">{getNoDataText(isAr)}</p>;
 }

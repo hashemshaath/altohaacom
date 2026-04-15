@@ -271,7 +271,7 @@ const FilterPill = memo(
 
 /* ─── Event Card ─── */
 const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(
-  function EventCard({ event, isAr }, ref) {
+  function EventCard({ event }, ref) {
   const isAr = useIsAr();
   const eventType = resolveEventType(event.type);
   const colors = GLOBAL_EVENT_COLORS[eventType];
