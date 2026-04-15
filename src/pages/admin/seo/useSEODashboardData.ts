@@ -269,28 +269,42 @@ export function useSEODashboardData(isAr: boolean) {
   };
 
   // ── Computed Metrics ──
-  const totalViews = pageViews?.length || 0;
-  const uniqueSessions = new Set(pageViews?.map((v) => v.session_id) || []).size;
-  const bounceCount = pageViews?.filter((v) => v.is_bounce)?.length || 0;
-  const bounceRate = totalViews > 0 ? Math.round((bounceCount / totalViews) * 100) : 0;
-  const avgDuration = totalViews > 0 ? Math.round((pageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / totalViews) : 0;
+  const viewMetrics = useMemo(() => {
+    const totalViews = pageViews?.length || 0;
+    const uniqueSessions = new Set(pageViews?.map((v) => v.session_id) || []).size;
+    const bounceCount = pageViews?.filter((v) => v.is_bounce)?.length || 0;
+    const bounceRate = totalViews > 0 ? Math.round((bounceCount / totalViews) * 100) : 0;
+    const avgDuration = totalViews > 0 ? Math.round((pageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / totalViews) : 0;
+    return { totalViews, uniqueSessions, bounceCount, bounceRate, avgDuration };
+  }, [pageViews]);
 
-  const prevTotalViews = prevPageViews?.length || 0;
-  const prevUniqueSessions = new Set(prevPageViews?.map((v) => v.session_id) || []).size;
-  const prevBounceCount = prevPageViews?.filter((v) => v.is_bounce)?.length || 0;
-  const prevBounceRate = prevTotalViews > 0 ? Math.round((prevBounceCount / prevTotalViews) * 100) : 0;
-  const prevAvgDuration = prevTotalViews > 0 ? Math.round((prevPageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / prevTotalViews) : 0;
+  const prevViewMetrics = useMemo(() => {
+    const prevTotalViews = prevPageViews?.length || 0;
+    const prevUniqueSessions = new Set(prevPageViews?.map((v) => v.session_id) || []).size;
+    const prevBounceCount = prevPageViews?.filter((v) => v.is_bounce)?.length || 0;
+    const prevBounceRate = prevTotalViews > 0 ? Math.round((prevBounceCount / prevTotalViews) * 100) : 0;
+    const prevAvgDuration = prevTotalViews > 0 ? Math.round((prevPageViews?.reduce((s, v) => s + (v.duration_seconds || 0), 0) || 0) / prevTotalViews) : 0;
+    return { prevTotalViews, prevUniqueSessions, prevBounceCount, prevBounceRate, prevAvgDuration };
+  }, [prevPageViews]);
 
-  const devices = { mobile: 0, tablet: 0, desktop: 0 };
-  pageViews?.forEach((v) => {
-    if (v.device_type === "mobile") devices.mobile++;
-    else if (v.device_type === "tablet") devices.tablet++;
-    else devices.desktop++;
-  });
+  const { totalViews, uniqueSessions, bounceCount, bounceRate, avgDuration } = viewMetrics;
+  const { prevTotalViews, prevUniqueSessions, prevBounceCount, prevBounceRate, prevAvgDuration } = prevViewMetrics;
 
-  const pageCounts: Record<string, number> = {};
-  pageViews?.forEach((v) => { pageCounts[v.path] = (pageCounts[v.path] || 0) + 1; });
-  const topPages = Object.entries(pageCounts).sort(([, a], [, b]) => b - a).slice(0, 15);
+  const devices = useMemo(() => {
+    const d = { mobile: 0, tablet: 0, desktop: 0 };
+    pageViews?.forEach((v) => {
+      if (v.device_type === "mobile") d.mobile++;
+      else if (v.device_type === "tablet") d.tablet++;
+      else d.desktop++;
+    });
+    return d;
+  }, [pageViews]);
+
+  const topPages = useMemo(() => {
+    const pageCounts: Record<string, number> = {};
+    pageViews?.forEach((v) => { pageCounts[v.path] = (pageCounts[v.path] || 0) + 1; });
+    return Object.entries(pageCounts).sort(([, a], [, b]) => b - a).slice(0, 15);
+  }, [pageViews]);
 
   const p75 = (arr: number[]) => { if (!arr.length) return null; const s = [...arr].sort((a, b) => a - b); return s[Math.ceil(s.length * 0.75) - 1]; };
 
