@@ -333,7 +333,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
                 </div>
               </div>
             ) : (
-              <EmptyState isAr={isAr} />
+              <EmptyState />
             )}
           </CardContent>
         </Card>
@@ -376,7 +376,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <EmptyState isAr={isAr} />
+              <EmptyState />
             )}
           </CardContent>
         </Card>
@@ -419,7 +419,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <EmptyState isAr={isAr} />
+            <EmptyState />
           )}
         </CardContent>
       </Card>
@@ -456,7 +456,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
                 </LineChart>
               </ResponsiveContainer>
             ) : (
-              <EmptyState isAr={isAr} />
+              <EmptyState />
             )}
           </CardContent>
         </Card>

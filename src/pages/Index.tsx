@@ -17,6 +17,7 @@ import { HomeSectionsRenderer } from "@/pages/home/HomeSectionsRenderer";
 /* ─── Fallbacks ─── */
 
 function HomeEmergencyHero({ language }: { language: string }) {
+  const isAr = language === "ar";
   return (
     <section className="bg-background">
       <div className="container py-16 lg:py-28 text-center">

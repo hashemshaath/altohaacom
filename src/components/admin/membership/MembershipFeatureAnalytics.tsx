@@ -132,7 +132,7 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
               <SelectItem value="90">{isAr ? "٩٠ يوم" : "90 days"}</SelectItem>
             </SelectContent>
           </Select>
-          <FeatureExportButton featureAgg={featureAgg} isAr={isAr} />
+          <FeatureExportButton featureAgg={featureAgg} />
         </div>
       </div>
 

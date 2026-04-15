@@ -47,6 +47,7 @@ const typeLabels: Record<string, { en: string; ar: string }> = {
 export const ProfileCertificates = memo(function ProfileCertificates({ userId, isOwner = false }: ProfileCertificatesProps) {
   const { user } = useAuth();
   const isAr = useIsAr();
+  const { language } = useLanguage();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();

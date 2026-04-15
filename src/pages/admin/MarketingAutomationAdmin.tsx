@@ -303,7 +303,7 @@ export default function MarketingAutomationAdmin() {
 
         {/* Workflows Tab - Drip Campaign Builder */}
         <TabsContent value="workflows">
-          <WorkflowBuilder isAr={isAr} />
+          <WorkflowBuilder />
         </TabsContent>
 
         {/* Triggers Tab */}

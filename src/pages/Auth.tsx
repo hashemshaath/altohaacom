@@ -35,6 +35,7 @@ export default function Auth() {
 
   const { user } = useAuth();
   const isAr = useIsAr();
+  const { language } = useLanguage();
   const navigate = useNavigate();
 
   const auth = useAuthHandlers({ isAr, language, isSignUp, setIsSignUp });

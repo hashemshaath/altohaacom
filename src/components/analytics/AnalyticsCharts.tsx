@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -37,7 +36,7 @@ export const RegistrationTrendChart = memo(function RegistrationTrendChart({ dat
               <Bar dataKey="count" fill={CHART_COLORS[0]} radius={BAR_RADIUS} name={isAr ? "التسجيلات" : "Registrations"} />
             </BarChart>
           </ResponsiveContainer>
-        ) : <NoData isAr={isAr} />}
+        ) : <NoData />}
       </CardContent>
     </Card>
   );
@@ -63,7 +62,7 @@ export const MonthlyCompetitionsChart = memo(function MonthlyCompetitionsChart({
               <Line type="monotone" dataKey="count" stroke={CHART_COLORS[2]} strokeWidth={2} dot={{ r: 3, fill: CHART_COLORS[2] }} name={isAr ? "المسابقات" : "Competitions"} />
             </LineChart>
           </ResponsiveContainer>
-        ) : <NoData isAr={isAr} />}
+        ) : <NoData />}
       </CardContent>
     </Card>
   );
@@ -89,7 +88,7 @@ export const ScoreDistributionChart = memo(function ScoreDistributionChart({ dat
               <Bar dataKey="count" fill={CHART_COLORS[1]} radius={BAR_RADIUS} name={isAr ? "العدد" : "Count"} />
             </BarChart>
           </ResponsiveContainer>
-        ) : <NoData isAr={isAr} />}
+        ) : <NoData />}
       </CardContent>
     </Card>
   );
@@ -115,7 +114,7 @@ export const StatusBreakdownChart = memo(function StatusBreakdownChart({ data }:
               <Legend wrapperStyle={LEGEND_STYLE} />
             </PieChart>
           </ResponsiveContainer>
-        ) : <NoData isAr={isAr} />}
+        ) : <NoData />}
       </CardContent>
     </Card>
   );
