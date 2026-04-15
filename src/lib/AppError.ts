@@ -106,10 +106,16 @@ export class AppError extends Error {
       code === "ECONNABORTED" ||
       code === "TIMEOUT" ||
       message.toLowerCase().includes("timeout") ||
-      message.toLowerCase().includes("network")
+      message.toLowerCase().includes("network") ||
+      message.toLowerCase().includes("failed to fetch")
     ) {
       return AppError.timeout(message, error);
     }
+
+    // PostgREST / Postgres codes
+    if (code === "PGRST116") return AppError.notFound("Record not found", error);
+    if (code === "23505") return AppError.validation("A record with this information already exists", error);
+    if (code === "42501") return AppError.forbidden("You don't have permission to perform this action", error);
 
     // HTTP-status mapping
     if (status === 401) return AppError.unauthorized(message, error);

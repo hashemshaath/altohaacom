@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQueryClient } from "@tanstack/react-query";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useRecipeSave(recipeId: string) {
   const { user } = useAuth();
@@ -32,13 +33,17 @@ export function useRecipeSave(recipeId: string) {
     setLoading(true);
     try {
       if (isSaved) {
-        await supabase.from("recipe_saves").delete().eq("user_id", user.id).eq("recipe_id", recipeId);
+        const { error } = await supabase.from("recipe_saves").delete().eq("user_id", user.id).eq("recipe_id", recipeId);
+        if (error) throw handleSupabaseError(error);
         setIsSaved(false);
       } else {
-        await supabase.from("recipe_saves").insert({ user_id: user.id, recipe_id: recipeId });
+        const { error } = await supabase.from("recipe_saves").insert({ user_id: user.id, recipe_id: recipeId });
+        if (error) throw handleSupabaseError(error);
         setIsSaved(true);
       }
       queryClient.invalidateQueries({ queryKey: ["recipes"] });
+    } catch (err) {
+      if (import.meta.env.DEV) console.error("[useRecipeSave]", err);
     } finally {
       setLoading(false);
     }
