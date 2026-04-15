@@ -47,7 +47,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
       const results: Record<string, number> = {};
       await Promise.all(
         EXPORT_MODULES.map(async (m) => {
-          const { count } = await supabase.from(m.table as never).select("id", { count: "exact", head: true });
+          const { count } = await supabase.from(m.table as any).select("id", { count: "exact", head: true });
           results[m.key] = count || 0;
         })
       );
@@ -65,7 +65,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
     setExporting(true);
     try {
       const mod = EXPORT_MODULES.find(m => m.key === moduleKey)!;
-      const { data } = await supabase.from(mod.table as never).select(mod.columns).limit(QUERY_LIMIT_LARGE);
+      const { data } = await supabase.from(mod.table as any).select(mod.columns).limit(QUERY_LIMIT_LARGE);
       if (!data || data.length === 0) {
         setExporting(false);
         return;

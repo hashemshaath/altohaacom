@@ -20,7 +20,7 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
     queryFn: async () => {
       const r1 = await supabase.from("masterclasses").select("id", { count: "exact", head: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema columns
-      const r2 = await (supabase.from("masterclasses").select("id", { count: "exact", head: true }) as never).eq("is_published", true) as { count: number | null };
+      const r2 = await (supabase.from("masterclasses").select("id", { count: "exact", head: true }) as any).eq("is_published", true) as { count: number | null };
       const r3 = await supabase.from("masterclass_modules").select("id", { count: "exact", head: true });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
       const r4 = await supabase.from("masterclass_enrollments").select("progress_percentage, completed_at").limit(QUERY_LIMIT_LARGE) as { data: { progress_percentage: number; completed_at: string | null }[] | null };

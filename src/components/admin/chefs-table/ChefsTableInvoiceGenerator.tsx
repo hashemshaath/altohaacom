@@ -31,7 +31,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
     queryKey: ["evaluation-pricing"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("evaluation_pricing" as never)
+        .from("evaluation_pricing" as any)
         .select("id, name, name_ar, base_fee, per_chef_fee, currency, product_category, is_active")
         .eq("is_active", true);
       if (error) throw error;
@@ -59,7 +59,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
 
       // Create invoice
       const { data: invoice, error } = await supabase
-        .from("invoices" as never)
+        .from("invoices" as any)
         .insert({
           company_id: session.company_id,
           session_id: session.id,
@@ -83,7 +83,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
 
       // Update session with cost and invoice
       await supabase
-        .from("chefs_table_sessions" as never)
+        .from("chefs_table_sessions" as any)
         .update({ pricing_id: selectedPlan.id, total_cost: totalAmount, invoice_id: (invoice as any).id } as any)
         .eq("id", session.id);
 

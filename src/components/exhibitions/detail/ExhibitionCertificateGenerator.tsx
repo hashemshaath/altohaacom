@@ -94,7 +94,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
 
       if (certs.length === 0) throw new Error("No eligible attendees");
 
-      const { error } = await supabase.from("certificates").insert(certs as never);
+      const { error } = await supabase.from("certificates").insert(certs as any);
       if (error) throw error;
       return certs.length;
     },

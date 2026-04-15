@@ -50,7 +50,7 @@ export function useBenefitUsage() {
       // Query actual usage counts in parallel
       const countQuery = async (table: string, userCol: string, dateCol: string, extraFilters?: Record<string, string>) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic table name
-        let q = supabase.from(table as never).select("id", { count: "exact", head: true }).eq(userCol, user.id);
+        let q = supabase.from(table as any).select("id", { count: "exact", head: true }).eq(userCol, user.id);
         if (dateCol) {
           q = q.gte(dateCol, monthStart).lte(dateCol, monthEnd);
         }

@@ -340,7 +340,7 @@ export function useOrganizerEditForm(organizerId: string | null | undefined, onC
         const { error } = await supabase.from("organizers").update(payload).eq("id", organizerId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("organizers").insert(payload as never);
+        const { error } = await supabase.from("organizers").insert(payload as any);
         if (error) throw error;
       }
     },

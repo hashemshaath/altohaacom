@@ -137,7 +137,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
         const { error } = await supabase.from("event_series").update(payload).eq("id", editingId);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("event_series").insert(payload as never);
+        const { error } = await supabase.from("event_series").insert(payload as any);
         if (error) throw error;
       }
     },
