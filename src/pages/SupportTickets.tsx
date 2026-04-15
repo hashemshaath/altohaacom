@@ -47,6 +47,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface SupportTicket {
   id: string;
@@ -123,7 +124,7 @@ export default function SupportTickets() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as SupportTicket[];
     },
     enabled: !!user,
@@ -140,7 +141,7 @@ export default function SupportTickets() {
         .eq("ticket_id", selectedTicket.id)
         .eq("is_internal_note", false)
         .order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as TicketMessage[];
     },
     enabled: !!selectedTicket,
@@ -157,7 +158,7 @@ export default function SupportTickets() {
         category: newCategory,
         priority: newPriority,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["supportTickets"] });
@@ -191,7 +192,7 @@ export default function SupportTickets() {
         sender_id: user.id,
         message: newReply,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ticketMessages"] });

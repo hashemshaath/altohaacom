@@ -12,6 +12,7 @@ import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
 import { TrendingUp, Users, Ticket, Star, Clock, Activity, Globe, Eye } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -38,7 +39,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .select("created_at, checked_in_at, price_paid, currency, ticket_type_id")
         .eq("exhibition_id", exhibitionId)
         .order("created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.realtime.staleTime,
@@ -51,7 +52,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .from("exhibition_reviews")
         .select("rating, created_at")
         .eq("exhibition_id", exhibitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.realtime.staleTime,
@@ -64,7 +65,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .from("exhibition_booths")
         .select("category, status, size")
         .eq("exhibition_id", exhibitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.realtime.staleTime,
@@ -77,7 +78,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .from("exhibition_schedule_items")
         .select("id, title, category, max_attendees")
         .eq("exhibition_id", exhibitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data || data.length === 0) return [];
       const itemIds = data.map(d => d.id);
       const { data: regs } = await supabase
@@ -99,7 +100,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .select("created_at")
         .eq("exhibition_id", exhibitionId)
         .order("created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.realtime.staleTime,
@@ -112,7 +113,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .from("exhibition_cooking_sessions")
         .select("id, title, status")
         .eq("exhibition_id", exhibitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data || data.length === 0) return [];
       const sessionIds = data.map(d => d.id);
       const { data: regs } = await supabase

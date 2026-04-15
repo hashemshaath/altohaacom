@@ -33,6 +33,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const CHART_COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -122,7 +123,7 @@ const EventsTab = memo(function EventsTab() {
     queryKey: ["security-events-tab"],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("security-audit", { body: { action: "get_dashboard" } });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return {
         events: (data?.recent_events || []) as any[],
         typeBreakdown: (data?.type_breakdown || {}) as Record<string, number>,

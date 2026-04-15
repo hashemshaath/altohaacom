@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { Activity, Trophy, Clock, Users, ArrowRight, Flame } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface LiveCompetition {
   id: string;
@@ -40,7 +41,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
         .order("competition_start", { ascending: true })
         .limit(5);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!comps?.length) return [];
 
       // Get registration counts

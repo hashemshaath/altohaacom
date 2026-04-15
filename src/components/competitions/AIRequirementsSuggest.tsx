@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Loader2 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Suggestion {
   name: string;
@@ -52,7 +53,7 @@ export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ compe
           existingItems: existingItemNames,
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as { suggestions: Suggestion[] };
     },
     onSuccess: (data) => {
@@ -80,7 +81,7 @@ export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ compe
         }));
       if (items.length === 0) return;
       const { error } = await supabase.from("requirement_list_items").insert(items as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       onItemsAdded();

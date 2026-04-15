@@ -9,6 +9,7 @@ import { downloadCSV } from "@/lib/exportUtils";
 import { toast } from "@/hooks/use-toast";
 import { Download, FileSpreadsheet, Users, Ticket, LayoutGrid, CalendarClock, Star } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -33,7 +34,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .select("ticket_number, attendee_name, attendee_email, checked_in_at, created_at, ticket_type_id, price_paid, currency")
           .eq("exhibition_id", exhibitionId)
           .order("created_at", { ascending: false });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         downloadCSV(
           (data || []).map((t) => ({
             ticket_number: t.ticket_number,
@@ -63,7 +64,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .select("booth_number, name, name_ar, category, hall, status, contact_name, contact_email, contact_phone, size_sqm, price")
           .eq("exhibition_id", exhibitionId)
           .order("booth_number");
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         downloadCSV(
           (data || []).map((b) => ({
             booth_number: b.booth_number,
@@ -97,7 +98,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .select("title, title_ar, category, speaker_name, location, start_time, end_time, max_attendees, is_featured")
           .eq("exhibition_id", exhibitionId)
           .order("start_time");
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         downloadCSV(
           (data || []).map((s) => ({
             title: isAr ? (s.title_ar || s.title) : s.title,
@@ -127,7 +128,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .select("name, name_ar, price, currency, max_quantity, sold_count, is_active")
           .eq("exhibition_id", exhibitionId)
           .order("sort_order");
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         downloadCSV(
           (data || []).map((tt) => ({
             name: isAr ? (tt.name_ar || tt.name) : tt.name,
@@ -155,7 +156,7 @@ export const ExhibitionDataExport = memo(function ExhibitionDataExport({ exhibit
           .select("rating, title, content, helpful_count, is_verified_attendee, created_at, user_id")
           .eq("exhibition_id", exhibitionId)
           .order("created_at", { ascending: false });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         const userIds = [...new Set((data || []).map(r => r.user_id))];
         let profileMap = new Map<string, any>();
         if (userIds.length > 0) {

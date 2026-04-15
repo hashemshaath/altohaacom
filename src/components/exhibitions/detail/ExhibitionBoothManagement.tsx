@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Building, Hash, Search, CheckCircle2, Clock, XCircle, Edit2, Save } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -30,7 +31,7 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
         .select("id, booth_number, name, name_ar, status, booking_status, category, hall, size, price, currency, contact_name, contact_email, company_id, assigned_to")
         .eq("exhibition_id", exhibitionId)
         .order("booth_number");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -41,7 +42,7 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
         .from("exhibition_booths")
         .update({ status, updated_at: new Date().toISOString() })
         .eq("id", boothId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["organizer-booths", exhibitionId] });

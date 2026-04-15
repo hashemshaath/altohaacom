@@ -6,6 +6,7 @@ import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
 import type { CVData, CVPersonalInfo } from "./types";
 import { getFlag, ROLE_LABELS } from "./types";
 import { normalizeDate } from "./CVPreviewHelpers";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ─── Smart Translate Hook ───
 export function useSmartTranslate() {
@@ -24,7 +25,7 @@ export function useSmartTranslate() {
       const { data, error } = await supabase.functions.invoke("smart-translate", {
         body: { text, from: fromLang, to: fromLang === "ar" ? "en" : "ar", context: "culinary/hospitality/food industry professional CV" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         onResult(data.translated);
         toast({ title: fromLang === "ar" ? "Translated ✓" : "✓ تمت الترجمة" });
@@ -86,7 +87,7 @@ export async function handleCVSave(
 
       if (Object.keys(profileUpdate).length > 0) {
         const { error } = await supabase.from("profiles").update(profileUpdate).eq("user_id", targetUserId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         recordsCreated++;
         sectionsImported.push("personal");
       }
@@ -140,7 +141,7 @@ export async function handleCVSave(
         is_current: edu.is_current === true && !edu.end_date, location: edu.location || null,
       }));
       const { error } = await supabase.from("user_career_records").insert(eduRecords);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       recordsCreated += eduRecords.length;
       sectionsImported.push("education");
     }
@@ -163,7 +164,7 @@ export async function handleCVSave(
         };
       });
       const { error } = await supabase.from("user_career_records").insert(workRecords);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       recordsCreated += workRecords.length;
       sectionsImported.push("work");
     }
@@ -180,7 +181,7 @@ export async function handleCVSave(
         is_current: false, location: comp.city || null, country_code: comp.country_code || null,
       }));
       const { error } = await supabase.from("user_career_records").insert(compRecords);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       recordsCreated += compRecords.length;
       sectionsImported.push("competitions");
     }
@@ -194,7 +195,7 @@ export async function handleCVSave(
         start_date: normalizeDate(m.date), is_current: false, country_code: m.country_code || null,
       }));
       const { error } = await supabase.from("user_career_records").insert(mediaRecords);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       recordsCreated += mediaRecords.length;
       sectionsImported.push("media");
     }
@@ -208,7 +209,7 @@ export async function handleCVSave(
         start_date: normalizeDate(cert.date), is_current: false,
       }));
       const { error } = await supabase.from("user_career_records").insert(certRecords);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       recordsCreated += certRecords.length;
       sectionsImported.push("certifications");
     }

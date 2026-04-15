@@ -18,6 +18,7 @@ import {
   Plus, Trash2, GripVertical, Save, BookOpen, PlayCircle, FileText,
   ChevronUp, ChevronDown, X,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   masterclassId: string;
@@ -45,7 +46,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
         .select("*, masterclass_lessons(*)")
         .eq("masterclass_id", masterclassId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -61,7 +62,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
         is_free_preview: moduleForm.is_free_preview,
         sort_order: maxOrder + 1,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-modules", masterclassId] });
@@ -75,7 +76,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
   const deleteModuleMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("masterclass_modules").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-modules", masterclassId] });
@@ -115,7 +116,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
         duration_minutes: lessonForm.duration_minutes || null,
         sort_order: maxOrder + 1,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-modules", masterclassId] });
@@ -129,7 +130,7 @@ export const ModuleLessonManager = memo(function ModuleLessonManager({ mastercla
   const deleteLessonMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("masterclass_lessons").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-modules", masterclassId] });

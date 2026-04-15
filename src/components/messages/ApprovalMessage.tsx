@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, XCircle, Clock, MessageSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ApprovalMessageProps {
   messageId: string;
@@ -49,7 +50,7 @@ export const ApprovalMessage = memo(function ApprovalMessage({ messageId, sender
           original_message_id: messageId,
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Update original message metadata
       const { error: updateError } = await supabase

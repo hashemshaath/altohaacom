@@ -36,6 +36,7 @@ import { NewsReadingStats } from "@/components/news/NewsReadingStats";
 import { NewsWeeklyDigest } from "@/components/news/NewsWeeklyDigest";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Category {
   id: string;
@@ -146,7 +147,7 @@ export default function News() {
         .select("id, title, title_ar, slug, type, excerpt, excerpt_ar, featured_image_url, published_at, category_id, is_featured, status, view_count, author_id, created_at, event_start, event_end, event_location, event_location_ar")
         .eq("status", "published")
         .order("published_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as NewsArticle[];
     },
     staleTime: CACHE.default.staleTime,

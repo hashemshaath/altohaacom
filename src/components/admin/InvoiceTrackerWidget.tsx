@@ -10,6 +10,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "hsl(var(--muted-foreground))",
@@ -31,7 +32,7 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
         .select("id, status, amount, currency, due_date, created_at")
         .order("created_at", { ascending: false })
         .limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const all = invoices || [];
       const totalAmount = all.reduce((s, i) => s + (Number(i.amount) || 0), 0);

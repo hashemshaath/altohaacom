@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { DISH_TEMPLATES } from "@/data/dishTemplates";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const AISLES = [
   { key: "all", labelEn: "All", labelAr: "الكل", icon: Store },
@@ -65,7 +66,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
         .order("category")
         .order("name")
         .limit(2000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -100,7 +101,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
         estimated_cost: item.estimated_cost,
         added_by: user!.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_, item) => {
       setAddedIds(prev => new Set(prev).add(item.id));
@@ -155,7 +156,7 @@ export const SupermarketListPicker = memo(function SupermarketListPicker({ listI
 
       if (inserts.length) {
         const { error } = await supabase.from("requirement_list_items").insert(inserts);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
       return inserts.length;
     },

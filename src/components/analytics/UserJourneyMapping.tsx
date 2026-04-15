@@ -18,6 +18,7 @@ import {
 import { cn } from "@/lib/utils";
 import { MS_PER_DAY, QUERY_LIMIT_LARGE } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // Friendly page labels
 const PAGE_LABELS: Record<string, { en: string; ar: string }> = {
@@ -99,7 +100,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
         .order("created_at", { ascending: true })
         .limit(QUERY_LIMIT_LARGE);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return views || [];
     },
     staleTime: CACHE.medium.staleTime,

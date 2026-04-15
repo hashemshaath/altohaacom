@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIERS = [
   { id: "professional", icon: Star, color: "text-primary", bg: "bg-primary/10", monthly: 19, yearly: 190 },
@@ -87,7 +88,7 @@ export default function MembershipGift() {
         .select("gift_code")
         .single();
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: (data) => {

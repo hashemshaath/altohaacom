@@ -26,6 +26,7 @@ import {
   Image, Upload, Trash2, Search, Filter, X, ChevronLeft, ChevronRight, FileText, Download, Eye,
 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const CATEGORIES = [
   { value: "logo", en: "Logo", ar: "شعار" },
@@ -74,7 +75,7 @@ export default function CompanyMedia() {
         .select("id, company_id, filename, file_url, file_type, file_size, category, title, title_ar, description, is_public, uploaded_by, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as MediaItem[];
     },
     enabled: !!companyId,
@@ -132,7 +133,7 @@ export default function CompanyMedia() {
         await supabase.storage.from("company-media").remove([decodeURIComponent(urlParts[1])]);
       }
       const { error } = await supabase.from("company_media").delete().eq("id", item.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyMedia"] });

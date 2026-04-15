@@ -16,6 +16,7 @@ import { SocialLinksCard } from "./settings/SocialLinksCard";
 import { AddressSettingsCard } from "./settings/AddressSettingsCard";
 import { CompanyInfoSummaryCard } from "./settings/CompanyInfoSummaryCard";
 import { BrandingSettingsCard } from "./settings/BrandingSettingsCard";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const DEFAULT_FORM = {
   currency: "SAR",
@@ -57,7 +58,7 @@ function CompanySettingsContent() {
     queryFn: async () => {
       if (!companyId) return null;
       const { data, error } = await supabase.from("companies").select("id, name, name_ar, company_number, type, status, is_verified, verification_level, email, website, phone, phone_secondary, fax, google_maps_url, city, country_code, district, district_ar, street, street_ar, postal_code, national_address, currency, payment_terms, credit_limit, tax_number, registration_number, tagline, tagline_ar, description, description_ar, founded_year, social_links, created_at").eq("id", companyId).single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!companyId,
@@ -163,7 +164,7 @@ function CompanySettingsContent() {
           social_links: socialLinks as any,
         })
         .eq("id", companyId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companySettings"] });

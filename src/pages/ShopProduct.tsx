@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function ShopProduct() {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +40,7 @@ export default function ShopProduct() {
         .select("id, title, title_ar, description, description_ar, price, compare_at_price, currency, image_url, gallery_urls, category, stock_quantity, sku, seller_id, product_type, is_active, is_featured, discount_percent, brand, brand_ar, tags, created_at")
         .eq("id", id)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!id,

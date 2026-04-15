@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface UserBadgesDisplayProps {
   userId: string;
@@ -33,7 +34,7 @@ export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit
       if (limit) query = query.limit(limit);
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!userId,

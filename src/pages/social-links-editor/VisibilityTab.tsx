@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { parseExtra, DEFAULT_EXTRA, FONT_FAMILIES } from "@/lib/socialLinksConstants";
 import type { EditorSharedProps } from "./types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props extends EditorSharedProps {
   userId: string | undefined;
@@ -121,7 +122,7 @@ export const VisibilityTab = memo(function VisibilityTab({
                 const ext = file.name.split(".").pop();
                 const path = `${userId}/cover-${Date.now()}.${ext}`;
                 const { error } = await supabase.storage.from("user-media").upload(path, file, { upsert: true });
-                if (error) throw error;
+                if (error) throw handleSupabaseError(error);
                 const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
                 updateExtra({ cover_image_url: urlData.publicUrl });
                 toast({ title: isAr ? "تم رفع صورة الغلاف" : "Cover image uploaded" });

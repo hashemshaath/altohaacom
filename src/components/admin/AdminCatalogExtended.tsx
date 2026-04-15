@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Trash2, Plus, X, Archive, Eye, EyeOff, Tag, Shield, HelpCircle, Edit } from "lucide-react";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props { companyId: string; }
 
@@ -66,7 +67,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const updateMut = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: any }) => {
       const { error } = await supabase.from("company_catalog").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-catalog-ext", companyId] }); toast({ title: isAr ? "تم الحفظ" : "Saved" }); setEditingId(null); },
   });
@@ -75,7 +76,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const archiveMut = useMutation({
     mutationFn: async ({ id, archived }: { id: string; archived: boolean }) => {
       const { error } = await supabase.from("company_catalog").update({ is_archived: archived }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-catalog-ext", companyId] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
@@ -84,7 +85,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const toggleActiveMut = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
       const { error } = await supabase.from("company_catalog").update({ is_active: active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-catalog-ext", companyId] }),
   });
@@ -93,14 +94,14 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const addQaMut = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("product_qa").insert({ ...qaForm } as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-product-qa", companyId] }); setShowQaForm(false); setQaForm({ catalog_item_id: "", question: "", question_ar: "", answer: "", answer_ar: "", answered_by: "", answered_by_ar: "" }); toast({ title: isAr ? "تم الإضافة" : "Added" }); },
   });
 
   // Delete Q&A
   const deleteQaMut = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("product_qa").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("product_qa").delete().eq("id", id); if (error) throw handleSupabaseError(error); },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-product-qa", companyId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
   });
 
@@ -108,14 +109,14 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const addBadgeMut = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("product_trust_badges").insert({ company_id: companyId, ...badgeForm } as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-trust-badges", companyId] }); setShowBadgeForm(false); setBadgeForm({ label: "", label_ar: "", badge_type: "custom", icon_name: "ShieldCheck", color_class: "text-primary" }); toast({ title: isAr ? "تم الإضافة" : "Added" }); },
   });
 
   // Delete badge
   const deleteBadgeMut = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("product_trust_badges").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("product_trust_badges").delete().eq("id", id); if (error) throw handleSupabaseError(error); },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-trust-badges", companyId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
   });
 
@@ -123,7 +124,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const toggleBadgeMut = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
       const { error } = await supabase.from("product_trust_badges").update({ is_active: active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-trust-badges", companyId] }),
   });

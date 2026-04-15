@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // Lazy-loaded heavy widgets
 const UserGrowthTrendWidget = lazy(() => import("@/components/admin/UserGrowthTrendWidget").then(m => ({ default: m.UserGrowthTrendWidget })));
@@ -158,7 +159,7 @@ export default function UserManagement() {
       if (accountTypeFilter !== "all") query = query.eq("account_type", accountTypeFilter as Database["public"]["Enums"]["account_type"]);
 
       const { data: profiles, error, count } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const userIds = profiles?.map((p) => p.user_id) || [];
       const { data: roles } = await supabase.from("user_roles").select("user_id, role").in("user_id", userIds);
@@ -234,7 +235,7 @@ export default function UserManagement() {
         suspended_reason: newStatus === "suspended" || newStatus === "banned" ? reason : null,
         suspended_at: newStatus === "suspended" || newStatus === "banned" ? new Date().toISOString() : null,
       }).eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: userId, action_type: `${newStatus}_user`, details: { reason } }]);
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminUsers"] }); toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" }); },

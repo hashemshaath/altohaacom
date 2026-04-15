@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { Users, GraduationCap, Briefcase, Crown, User, LucideIcon } from "lucide-react";
 import type { EntityPositionWithProfile } from "./entityTypes";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const membershipTypeLabels: Record<string, { en: string; ar: string; icon: LucideIcon }> = {
   member: { en: "Member", ar: "عضو", icon: Users },
@@ -63,7 +64,7 @@ export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Pro
         .eq("entity_id", entityId)
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as EntityPositionWithProfile[];
     },
   });

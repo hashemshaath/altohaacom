@@ -21,6 +21,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RubricTemplatesPanel } from "./RubricTemplatesPanel";
 import { ReferenceGalleryPanel } from "./ReferenceGalleryPanel";
 import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type ResourceType = "link" | "file" | "document" | "image" | "video" | "law" | "scraped_content";
 
@@ -61,7 +62,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
         .select("rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, title, title_ar")
         .eq("id", competitionId)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -75,7 +76,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
         .select("id, title, title_ar, description, description_ar, resource_type, file_url, url, file_type, file_size, tags, is_judge_resource, is_published, category_id, competition_id, view_count, added_by, scraped_content, scraped_content_ar, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -89,7 +90,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
         .select("id, competition_id, name, name_ar, description, description_ar, max_score, weight, sort_order")
         .eq("competition_id", competitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -115,7 +116,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
           scoring_notes_ar: scoringNotesAr || null,
         })
         .eq("id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-knowledge", competitionId] });
@@ -141,7 +142,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
         competition_id: competitionId,
         added_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-resources", competitionId] });
@@ -159,7 +160,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
   const deleteResourceMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("knowledge_resources").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-resources", competitionId] });
@@ -201,7 +202,7 @@ export const CompetitionKnowledgeTab = memo(function CompetitionKnowledgeTab({ c
         added_by: user?.id,
         tags: ["scraped"],
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       queryClient.invalidateQueries({ queryKey: ["competition-resources", competitionId] });
       setScrapeUrl("");

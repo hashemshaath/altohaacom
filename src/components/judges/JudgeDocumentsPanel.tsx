@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Upload, FileText, ShieldCheck, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   userId: string;
@@ -46,7 +47,7 @@ const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin 
         .select("id, user_id, document_type, title, file_url, file_name, file_size, expiry_date, notes, is_verified, verified_by, verified_at, created_at")
         .eq("user_id", userId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -76,7 +77,7 @@ const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin 
         expiry_date: form.expiry_date || null,
         notes: form.notes || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judge-documents", userId] });
@@ -95,7 +96,7 @@ const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("judge_documents").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judge-documents", userId] });
@@ -110,7 +111,7 @@ const JudgeDocumentsPanel = memo(function JudgeDocumentsPanel({ userId, isAdmin 
         verified_by: user?.id,
         verified_at: new Date().toISOString(),
       }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judge-documents", userId] });

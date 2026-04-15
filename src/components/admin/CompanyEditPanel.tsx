@@ -24,6 +24,7 @@ import {
   Globe, Mail, Phone, MapPin, FileText, CreditCard, Shield, Send,
   Star, ExternalLink, Navigation,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type CompanyType = "sponsor" | "supplier" | "partner" | "vendor";
 
@@ -76,7 +77,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
     queryFn: async () => {
       const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, category, file_type, created_at").limit(QUERY_LIMIT_LARGE)
         .eq("company_id", companyId).in("category", ["logo", "product_images"]).order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: showMediaPicker,
@@ -157,7 +158,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
         phone_secondary: rest.phone_secondary || null,
         fax: rest.fax || null,
       }).eq("id", companyId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company", companyId] });
@@ -176,7 +177,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text, source_lang: sourceLang, target_lang: targetLang, optimize_seo: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) setter(data.translated);
     } catch {
       toast({ variant: "destructive", title: isAr ? "خدمة الترجمة غير متاحة" : "Translation unavailable" });

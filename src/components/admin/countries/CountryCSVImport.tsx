@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, FileText, CheckCircle, XCircle, AlertTriangle, Loader2 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ParsedRow {
   code: string;
@@ -112,7 +113,7 @@ export const CountryCSVImport = memo(function CountryCSVImport() {
       }));
 
       const { error } = await supabase.from("countries").upsert(payload, { onConflict: "code" });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Log audit
       await supabase.from("country_audit_log").insert(

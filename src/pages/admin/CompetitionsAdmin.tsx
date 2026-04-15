@@ -38,6 +38,7 @@ import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // Lazy widgets
 const CompetitionPipelineTracker = lazy(() => import("@/components/admin/CompetitionPipelineTracker").then(m => ({ default: m.CompetitionPipelineTracker })));
@@ -134,7 +135,7 @@ export default function CompetitionsAdmin() {
     queryKey: ["event-series-comp-filter"],
     queryFn: async () => {
       const { data, error } = await supabase.from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as { id: string; name: string; name_ar: string | null }[];
     },
   });
@@ -156,7 +157,7 @@ export default function CompetitionsAdmin() {
       if (yearFilter !== "all") query = query.eq("edition_year", parseInt(yearFilter));
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const entityIds = [...new Set((data || []).map(c => (c.exhibition as any)?.organizer_entity_id).filter(Boolean))];
       const companyIds = [...new Set((data || []).map(c => (c.exhibition as any)?.organizer_company_id).filter(Boolean))];
@@ -227,7 +228,7 @@ export default function CompetitionsAdmin() {
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: CompetitionStatus }) => {
       const { error } = await supabase.from("competitions").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "update_competition_status", details: { competition_id: id, new_status: status } });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); toast({ title: isAr ? "تم تحديث الحالة" : "Status updated" }); },
@@ -237,7 +238,7 @@ export default function CompetitionsAdmin() {
   const approveCompetition = useMutation({
     mutationFn: async (comp: Record<string, any>) => {
       const { error } = await supabase.from("competitions").update({ status: "draft" as CompetitionStatus }).eq("id", comp.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_competition", details: { competition_id: comp.id } });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] }); toast({ title: isAr ? "تمت الموافقة" : "Approved" }); },
@@ -247,7 +248,7 @@ export default function CompetitionsAdmin() {
   const rejectCompetition = useMutation({
     mutationFn: async (comp: Record<string, any>) => {
       const { error } = await supabase.from("competitions").update({ status: "cancelled" as CompetitionStatus }).eq("id", comp.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_competition", details: { competition_id: comp.id } });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); queryClient.invalidateQueries({ queryKey: ["admin-pending-counts"] }); toast({ title: isAr ? "تم الرفض" : "Rejected" }); },
@@ -258,7 +259,7 @@ export default function CompetitionsAdmin() {
     mutationFn: async (comp: Record<string, any>) => {
       const { id, created_at, updated_at, organizer, exhibition, competition_number, slug, view_count, ...rest } = comp;
       const { error } = await supabase.from("competitions").insert({ ...rest, title: `${rest.title} (Copy)`, title_ar: rest.title_ar ? `${rest.title_ar} (نسخة)` : null, status: "draft" as CompetitionStatus, view_count: 0 } as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); toast({ title: isAr ? "تم النسخ" : "Duplicated" }); },
     onError: (error) => { toast({ variant: "destructive", title: "Error", description: error.message }); },
@@ -267,7 +268,7 @@ export default function CompetitionsAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("competitions").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "delete_competition", details: { competition_id: id } });
     },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCompetitions"] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
@@ -360,11 +361,11 @@ export default function CompetitionsAdmin() {
       let competitionId: string;
       if (mode === "update" && existingId) {
         const { error } = await supabase.from("competitions").update(competitionPayload as any).eq("id", existingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         competitionId = existingId;
       } else {
         const { data: inserted, error } = await supabase.from("competitions").insert({ ...competitionPayload, status: "draft" as any, organizer_id: user?.id || "" } as any).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         competitionId = inserted.id;
       }
 

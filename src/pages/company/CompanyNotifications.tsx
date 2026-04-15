@@ -22,6 +22,7 @@ import { ar, enUS } from "date-fns/locale";
 import { CompanyPageGuard } from "@/components/company/CompanyPageGuard";
 import { useToast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type NotificationType = string | null;
 
@@ -85,7 +86,7 @@ export default function CompanyNotifications() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Notification[];
     },
     enabled: !!user?.id,

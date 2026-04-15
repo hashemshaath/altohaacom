@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { Upload, Trash2, Loader2, Search, Filter, Image, FileText, Grid3X3, List, CheckSquare, Square, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -51,7 +52,7 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
         .select("id, exhibition_id, file_url, file_type, title, category, sort_order, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!exhibitionId,
@@ -97,7 +98,7 @@ export const ExhibitionMediaLibrary = memo(function ExhibitionMediaLibrary({ exh
     mutationFn: async (ids: string[]) => {
       for (const id of ids) {
         const { error } = await supabase.from("exhibition_media").delete().eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {

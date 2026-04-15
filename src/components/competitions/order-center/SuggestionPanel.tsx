@@ -17,6 +17,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 
 import { SUGGESTION_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const STATUS_STYLES: Record<string, { icon: typeof Clock; color: string }> = {
   pending: { icon: Clock, color: "bg-muted text-muted-foreground" },
@@ -50,7 +51,7 @@ export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, is
         .select("id, competition_id, suggested_by, item_name, item_name_ar, category, quantity, unit, description, estimated_cost, priority, status, reviewed_by, reviewed_at, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -69,7 +70,7 @@ export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, is
         estimated_cost: form.estimated_cost ? parseFloat(form.estimated_cost) : null,
         priority: form.priority,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-suggestions", competitionId] });
@@ -87,7 +88,7 @@ export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, is
         reviewed_by: user!.id,
         reviewed_at: new Date().toISOString(),
       }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["requirement-suggestions", competitionId] });

@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Landmark, Calendar, MapPin, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format, isFuture } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget() {
   const isAr = useIsAr();
@@ -23,7 +24,7 @@ export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget
         .order("start_date", { ascending: true })
         .limit(3);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data?.filter((e) => isFuture(new Date(e.end_date))) || [];
     },
   });

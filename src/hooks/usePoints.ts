@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function usePointsBalance() {
   const { user } = useAuth();
@@ -36,7 +37,7 @@ export function usePointsLedger() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!user,
@@ -52,7 +53,7 @@ export function usePointsRewards() {
         .select("id, name, name_ar, description, description_ar, points_cost, category, reward_type, image_url, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     ...CACHE.long,
@@ -68,7 +69,7 @@ export function useEarningRules() {
         .select("id, action_type, action_label, action_label_ar, points, is_active, max_per_day, max_per_user")
         .eq("is_active", true)
         .order("points", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     ...CACHE.long,
@@ -92,7 +93,7 @@ export function useRedeemReward() {
         status: "pending",
         redemption_code: crypto.randomUUID().slice(0, 8).toUpperCase(),
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Atomic deduction via server-side RPC
       const { error: rpcError } = await supabase.rpc("redeem_points", {
@@ -129,7 +130,7 @@ export function useMyRedemptions() {
         .select("*, points_rewards(*)")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!user,

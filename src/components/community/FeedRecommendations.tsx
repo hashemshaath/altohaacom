@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, Hash, TrendingUp } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const FeedRecommendations = memo(function FeedRecommendations() {
   const { user } = useAuth();
@@ -17,7 +18,7 @@ export const FeedRecommendations = memo(function FeedRecommendations() {
     queryKey: ["feed-recommendations", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("recommend-feed");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as {
         suggestions: { theme: string; hashtag: string }[];
         user_interests: string[];

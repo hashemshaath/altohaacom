@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Star, User, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   masterclassId: string;
@@ -36,7 +37,7 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
         .select("*, profiles:user_id(full_name, avatar_url)")
         .eq("masterclass_id", masterclassId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -56,7 +57,7 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
         rating,
         review: reviewText || null,
       }, { onConflict: "masterclass_id,user_id" });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["masterclass-reviews", masterclassId] });
@@ -74,7 +75,7 @@ export const MasterclassReviews = memo(function MasterclassReviews({ masterclass
         .delete()
         .eq("masterclass_id", masterclassId)
         .eq("user_id", user.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["masterclass-reviews", masterclassId] });

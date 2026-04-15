@@ -13,6 +13,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, Cell, ScatterChart, Scatter, ZAxis,
 } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface TrackedKeyword {
   id: string;
@@ -145,7 +146,7 @@ Return ONLY valid JSON array of objects with fields: keyword, type, estimatedTra
           model: "google/gemini-2.5-flash",
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const content = data?.choices?.[0]?.message?.content || data?.content || "";
       const jsonMatch = content.match(/\[[\s\S]*\]/);

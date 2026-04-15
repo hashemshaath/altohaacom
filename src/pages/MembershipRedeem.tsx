@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIER_NAMES: Record<string, { en: string; ar: string }> = {
   professional: { en: "Professional", ar: "الاحترافي" },
@@ -41,7 +42,7 @@ export default function MembershipRedeem() {
       if (!code || code.length < 5) return null;
       const { data, error } = await supabase
         .rpc("lookup_gift_by_code" as any, { p_gift_code: code });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return Array.isArray(data) ? data[0] ?? null : data;
     },
     enabled: code.length >= 5,

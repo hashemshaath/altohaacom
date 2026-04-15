@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Plus, Trash2, Image, Library } from "lucide-react";
 import type { LogoItem } from "./types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CertificateLogoManagerProps {
   logos: LogoItem[];
@@ -39,7 +40,7 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
         .select("id, name, name_ar, logo_url, organization, is_sponsor, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

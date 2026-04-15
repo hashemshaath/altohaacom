@@ -28,6 +28,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell,
 } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -75,7 +76,7 @@ export default function CompanyCampaignDetail() {
         .select("id, name, name_ar, description, company_id, package_id, status, billing_model, budget, spent, currency, start_date, end_date, priority, target_roles, target_countries, target_interests, total_impressions, total_clicks, total_views, approved_by, approved_at, rejection_reason, created_by, created_at, updated_at")
         .eq("id", campaignId)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!campaignId,
@@ -90,7 +91,7 @@ export default function CompanyCampaignDetail() {
         .select("*, ad_placements(name, name_ar, placement_type, width, height)")
         .eq("campaign_id", campaignId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!campaignId,
@@ -159,7 +160,7 @@ export default function CompanyCampaignDetail() {
         format: form.format,
         status: "pending_approval",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["campaign-creatives"] });
@@ -173,7 +174,7 @@ export default function CompanyCampaignDetail() {
   const toggleCreative = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("ad_creatives").update({ is_active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["campaign-creatives"] }),
   });

@@ -51,6 +51,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Segment {
   id: string;
@@ -108,7 +109,7 @@ export default function AudienceSegments() {
         .from("audience_segments")
         .select("id, name, name_ar, description, description_ar, filters, estimated_reach, is_active, last_used_at, created_by, created_at, updated_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Segment[];
     },
   });
@@ -176,7 +177,7 @@ export default function AudienceSegments() {
         estimated_reach: reach,
         created_by: user.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["audienceSegments"] });
@@ -193,7 +194,7 @@ export default function AudienceSegments() {
   const deleteSegment = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("audience_segments").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["audienceSegments"] });

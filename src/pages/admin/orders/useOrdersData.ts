@@ -14,6 +14,7 @@ import {
   getStatusLabel,
   getCategoryLabel,
 } from "./ordersAdminTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type CompanyOrderStatus = Database["public"]["Tables"]["company_orders"]["Row"]["status"];
 type CompanyOrderDirection = Database["public"]["Tables"]["company_orders"]["Row"]["direction"];
@@ -57,7 +58,7 @@ export function useOrdersData() {
       if (directionFilter !== "all") query = query.eq("direction", directionFilter as CompanyOrderDirection);
       if (categoryFilter !== "all") query = query.eq("category", categoryFilter as CompanyOrderCategory);
       const { data, error } = await query.limit(200);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -69,7 +70,7 @@ export function useOrdersData() {
       const { data, error } = await supabase.from("company_orders")
         .select("*, companies:company_id (id, name, name_ar, logo_url, email, phone)")
         .eq("id", selectedOrder).single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedOrder,
@@ -82,7 +83,7 @@ export function useOrdersData() {
       const { data, error } = await supabase.from("order_communications")
         .select("id, order_id, message, sender_type, sender_id, created_at")
         .eq("order_id", selectedOrder).order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedOrder,
@@ -93,7 +94,7 @@ export function useOrdersData() {
     queryFn: async () => {
       const { data, error } = await supabase.from("companies")
         .select("id, name, name_ar").eq("status", "active").order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -107,7 +108,7 @@ export function useOrdersData() {
       if (shopSearchQuery) query = query.or(`order_number.ilike.%${shopSearchQuery}%,buyer_name.ilike.%${shopSearchQuery}%,buyer_email.ilike.%${shopSearchQuery}%`);
       if (shopStatusFilter !== "all") query = query.eq("status", shopStatusFilter as ShopOrderStatus);
       const { data, error } = await query.limit(200);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -119,7 +120,7 @@ export function useOrdersData() {
       const { data, error } = await supabase.from("shop_orders")
         .select("*, shop_order_items(*, shop_products(title, title_ar, image_url))")
         .eq("id", selectedShopOrder).single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedShopOrder,
@@ -137,7 +138,7 @@ export function useOrdersData() {
       }
       if (status === "completed") updates.completed_at = new Date().toISOString();
       const { error } = await supabase.from("company_orders").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["all-orders"] });
@@ -163,7 +164,7 @@ export function useOrdersData() {
         items: orderForm.items.length > 0 ? JSON.stringify(orderForm.items) : "[]",
         status: "pending", created_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["all-orders"] });
@@ -190,7 +191,7 @@ export function useOrdersData() {
         items: orderForm.items.length > 0 ? JSON.stringify(orderForm.items) : "[]",
         direction: orderForm.direction, category: orderForm.category,
       }).eq("id", editingOrder);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["all-orders"] });
@@ -205,7 +206,7 @@ export function useOrdersData() {
   const deleteOrderMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("company_orders").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["all-orders"] });
@@ -217,7 +218,7 @@ export function useOrdersData() {
   const updateShopStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("shop_orders").update({ status: status as ShopOrderStatus }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["shop-orders-admin"] });
@@ -232,7 +233,7 @@ export function useOrdersData() {
       const { error } = await supabase.from("order_communications").insert({
         order_id: selectedOrder, message: newMessage, sender_type: "admin", sender_id: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["order-communications", selectedOrder] });
@@ -243,7 +244,7 @@ export function useOrdersData() {
   const updateInternalNotesMutation = useMutation({
     mutationFn: async ({ id, notes }: { id: string; notes: string }) => {
       const { error } = await supabase.from("company_orders").update({ internal_notes: notes }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["order", selectedOrder] });

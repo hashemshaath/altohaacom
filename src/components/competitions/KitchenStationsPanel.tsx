@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { Plus, ChefHat, Trash2, Wrench } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -37,7 +38,7 @@ export const KitchenStationsPanel = memo(function KitchenStationsPanel({ competi
         .select("id, competition_id, station_number, station_name, station_name_ar, status, assigned_registration_id, assigned_slot_id, equipment_list, created_at")
         .eq("competition_id", competitionId)
         .order("station_number");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -50,7 +51,7 @@ export const KitchenStationsPanel = memo(function KitchenStationsPanel({ competi
         station_name: form.station_name || undefined,
         station_name_ar: form.station_name_ar || undefined,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["kitchen-stations", competitionId] });
@@ -64,7 +65,7 @@ export const KitchenStationsPanel = memo(function KitchenStationsPanel({ competi
   const deleteStation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("kitchen_stations").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["kitchen-stations", competitionId] });

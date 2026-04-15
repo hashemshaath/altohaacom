@@ -11,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, Shield, Crown, Loader2, X, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface InlineUserSearchProps {
   onSelectUser: (userId: string) => void;
@@ -32,7 +33,7 @@ export const InlineUserSearch = memo(function InlineUserSearch({ onSelectUser, o
         .select("user_id, full_name, full_name_ar, username, account_number, avatar_url, account_status, is_verified, account_type, membership_tier, email, specialization, specialization_ar, country_code")
         .or(`full_name.ilike.%${query}%,username.ilike.%${query}%,account_number.ilike.%${query}%,email.ilike.%${query}%,full_name_ar.ilike.%${query}%`)
         .limit(12);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: query.length >= 2,

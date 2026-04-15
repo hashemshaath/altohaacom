@@ -33,6 +33,7 @@ import {
   Calendar, Clock, Star, Download, BarChart3, TrendingUp, ToggleLeft, ToggleRight,
   Timer, Sparkles,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type ViewMode = "list" | "create" | "edit";
 
@@ -65,7 +66,7 @@ export default function ArticlesAdmin() {
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
       if (typeFilter !== "all") query = query.eq("type", typeFilter);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -73,7 +74,7 @@ export default function ArticlesAdmin() {
   const updateMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: any }) => {
       const { error } = await supabase.from("articles").update(data).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
@@ -89,7 +90,7 @@ export default function ArticlesAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("articles").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
@@ -155,7 +156,7 @@ export default function ArticlesAdmin() {
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.from("articles").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });
@@ -167,7 +168,7 @@ export default function ArticlesAdmin() {
   const bulkStatusMutation = useMutation({
     mutationFn: async ({ ids, status }: { ids: string[]; status: string }) => {
       const { error } = await supabase.from("articles").update({ status }).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-articles"] });

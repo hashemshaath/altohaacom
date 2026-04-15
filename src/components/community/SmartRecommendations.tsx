@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight, Landmark, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface RecommendationItem {
   id?: string;
@@ -55,7 +56,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
     queryKey: ["smart-recommendations", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("smart-recommendations");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as RecommendationData;
     },
     enabled: !!user,

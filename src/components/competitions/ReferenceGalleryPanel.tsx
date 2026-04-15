@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { ImageIcon, Plus, Trash2, Save, X, Star, ThumbsUp, ThumbsDown, Expand } from "lucide-react";
 import { ImageLightbox } from "./ImageLightbox";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ReferenceGalleryPanelProps {
   competitionId?: string;
@@ -61,7 +62,7 @@ export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ compe
         .select("id, title, title_ar, description, description_ar, image_url, category, competition_category, rating, score_range_min, score_range_max, tags, sort_order, is_active, added_by, uploaded_by_name, created_at")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -83,7 +84,7 @@ export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ compe
         added_by: user?.id,
         is_active: true,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reference-gallery"] });
@@ -101,7 +102,7 @@ export const ReferenceGalleryPanel = memo(function ReferenceGalleryPanel({ compe
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("reference_gallery").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["reference-gallery"] });

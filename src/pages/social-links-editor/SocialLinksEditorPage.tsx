@@ -42,6 +42,7 @@ import { VisibilityTab } from "./VisibilityTab";
 import { AnalyticsTab } from "./AnalyticsTab";
 import type { PageForm, BioNotification } from "./types";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function SocialLinksEditorPage() {
   const { user } = useAuth();
@@ -220,7 +221,7 @@ export default function SocialLinksEditorPage() {
         return phoneCode + clean;
       };
       const { error } = await supabase.from("profiles").update({ ...normalizedSocials, whatsapp: buildPhone(contacts.whatsapp, "whatsapp"), phone: buildPhone(contacts.phone, "phone"), phone2: buildPhone(contacts.phone2, "phone2") }).eq("user_id", user.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       toast({ title: isAr ? "✅ تم حفظ الحسابات" : "✅ Accounts saved" });
       refetchProfile();
     } catch (err: unknown) {
@@ -270,7 +271,7 @@ export default function SocialLinksEditorPage() {
       const ext = file.name.split(".").pop();
       const path = `${user.id}/social-bg-${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from("user-media").upload(path, file, { upsert: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
       updateForm({ background_image_url: urlData.publicUrl });
       toast({ title: isAr ? "تم رفع الصورة" : "Image uploaded" });

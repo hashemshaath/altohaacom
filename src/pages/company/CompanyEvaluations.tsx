@@ -11,6 +11,7 @@ import { Award, MessageSquare } from "lucide-react";
 import { CompanyEvaluation } from "@/components/company/evaluations/evaluationTypes";
 import { EvaluationStats } from "@/components/company/evaluations/EvaluationStats";
 import { EvaluationCard } from "@/components/company/evaluations/EvaluationCard";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyEvaluations() {
   const { language } = useLanguage();
@@ -29,7 +30,7 @@ export default function CompanyEvaluations() {
         .select("id, company_id, overall_rating, quality_rating, delivery_rating, communication_rating, value_rating, review, review_ar, is_public, evaluated_by, order_id, competition_id, company_response, company_response_ar, responded_at, responded_by, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as CompanyEvaluation[];
     },
     enabled: !!companyId,
@@ -46,7 +47,7 @@ export default function CompanyEvaluations() {
           responded_by: user?.id || null,
         })
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyEvaluations"] });

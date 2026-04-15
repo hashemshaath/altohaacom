@@ -7,6 +7,7 @@ import { Languages, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface BilingualFieldProps {
   label: string;
@@ -40,7 +41,7 @@ export const BilingualField = memo(function BilingualField({
       const { data, error } = await supabase.functions.invoke("smart-translate", {
         body: { text, from, to, context },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         (from === "en" ? onChangeAr : onChangeEn)(data.translated);
         toast.success(from === "en" ? "تمت الترجمة ✓" : "Translated ✓");

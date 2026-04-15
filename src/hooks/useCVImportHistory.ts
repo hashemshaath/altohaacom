@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CVImportRecord {
   id: string;
@@ -21,7 +22,7 @@ async function fetchCVImports(isAr: boolean) {
     .order("created_at", { ascending: false })
     .limit(50);
 
-  if (error) throw error;
+  if (error) throw handleSupabaseError(error);
   const imports = (data || []) as CVImportRecord[];
 
   const chefIds = [...new Set(imports.map(d => d.chef_id))];

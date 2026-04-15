@@ -30,6 +30,7 @@ import { SectionContent } from "./career-timeline/section-renderer";
 import { useCareerData } from "./career-timeline/useCareerData";
 import { useCareerMutations } from "./career-timeline/useCareerMutations";
 import { CareerTimelineSkeleton } from "./career-timeline/CareerTimelineSkeleton";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props { userId: string; isAr: boolean; }
 
@@ -93,7 +94,7 @@ export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isA
         .select("id, title, title_ar, competition_start, country_code")
         .in("status", ["upcoming", "registration_open", "registration_closed", "in_progress", "completed"])
         .order("competition_start", { ascending: false }).limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: addingSection === "competitions",

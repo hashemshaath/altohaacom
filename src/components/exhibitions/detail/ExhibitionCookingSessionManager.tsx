@@ -15,6 +15,7 @@ import { ChefHat, Plus, Edit, Trash2, Radio, Check, Clock, Users, LucideIcon } f
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -83,10 +84,10 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
 
       if (editingId) {
         const { error } = await supabase.from("exhibition_cooking_sessions").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("exhibition_cooking_sessions").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -100,7 +101,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
   const statusMut = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("exhibition_cooking_sessions").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast.success(t("Status updated", "تم تحديث الحالة"));
@@ -111,7 +112,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
   const deleteMut = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_cooking_sessions").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast.success(t("Session deleted", "تم حذف الجلسة"));

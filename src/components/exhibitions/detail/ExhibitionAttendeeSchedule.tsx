@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "@/hooks/use-toast";
 import { CalendarPlus, Clock, Trash2, MapPin, Plus, BookmarkCheck, CalendarDays } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props { exhibitionId: string; isAr: boolean; }
 
@@ -60,7 +61,7 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
         custom_title: item.custom_title || null,
         custom_notes: item.custom_notes || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["attendee-schedule"] });
@@ -75,7 +76,7 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
   const removeFromSchedule = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_attendee_schedule").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["attendee-schedule"] });

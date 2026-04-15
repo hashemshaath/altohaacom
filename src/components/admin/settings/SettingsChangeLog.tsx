@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const CATEGORY_ICONS: Record<string, any> = {
   appearance: Palette,
@@ -28,7 +29,7 @@ export const SettingsChangeLog = memo(function SettingsChangeLog() {
         .select("key, category, updated_at")
         .order("updated_at", { ascending: false })
         .limit(15);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

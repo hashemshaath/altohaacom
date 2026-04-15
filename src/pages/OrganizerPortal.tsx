@@ -18,6 +18,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { deriveExhibitionStatus } from "@/lib/exhibitionStatus";
 import { countryFlag } from "@/lib/countryFlag";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function OrganizerPortal() {
   const { user } = useAuth();
@@ -34,7 +35,7 @@ export default function OrganizerPortal() {
         .select("id, title, title_ar, slug, status, start_date, end_date, cover_image_url, city, country, view_count, registration_deadline")
         .eq("created_by", user.id)
         .order("start_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!user,

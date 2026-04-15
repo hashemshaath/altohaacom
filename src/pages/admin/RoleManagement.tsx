@@ -17,6 +17,7 @@ import OverridesTab from "@/components/admin/roles/OverridesTab";
 import ActivityTab from "@/components/admin/roles/ActivityTab";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function RoleManagement() {
   const isAr = useIsAr();
@@ -33,7 +34,7 @@ export default function RoleManagement() {
     queryKey: ["roleStats"],
     queryFn: async () => {
       const { data, error } = await supabase.from("user_roles").select("role").limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const counts: Record<string, number> = {};
       data?.forEach((r) => { counts[r.role] = (counts[r.role] || 0) + 1; });
       return ALL_ROLES.map((role) => ({ role, count: counts[role] || 0 }));
@@ -47,7 +48,7 @@ export default function RoleManagement() {
       const { count, error } = await supabase
         .from("user_permission_overrides")
         .select("id", { count: "exact", head: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return count || 0;
     },
     staleTime: CACHE.realtime.staleTime,

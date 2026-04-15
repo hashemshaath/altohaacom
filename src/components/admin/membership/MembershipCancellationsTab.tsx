@@ -24,6 +24,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { UserX, Gift, Check, X, MessageSquare, Download, ShieldCheck, Clock, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CancellationRequest {
   id: string;
@@ -62,7 +63,7 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
         .order("created_at", { ascending: false });
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as CancellationRequest[];
     },
   });
@@ -93,7 +94,7 @@ const MembershipCancellationsTab = memo(function MembershipCancellationsTab() {
           retention_offer_ar: retentionOfferAr || null,
         })
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       if (action === "approved") {
         // Downgrade to basic

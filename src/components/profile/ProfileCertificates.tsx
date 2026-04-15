@@ -14,6 +14,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ProfileCertificatesProps {
   userId: string;
@@ -67,7 +68,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!userId,
@@ -79,7 +80,7 @@ export const ProfileCertificates = memo(function ProfileCertificates({ userId, i
         .from("certificates")
         .update({ visibility })
         .eq("id", certId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile-certificates"] });

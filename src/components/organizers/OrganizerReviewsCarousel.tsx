@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MessageSquareQuote } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   isAr: boolean;
@@ -20,7 +21,7 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
         .not("content", "is", null)
         .order("created_at", { ascending: false })
         .limit(8);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Get user profiles for each review
       if (!data || data.length === 0) return [];

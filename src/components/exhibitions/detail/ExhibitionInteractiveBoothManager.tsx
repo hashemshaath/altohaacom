@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "@/hooks/use-toast";
 import { LayoutGrid, Search, DollarSign, MapPin, Building, Users, CheckCircle2, Clock, XCircle, Eye, Bookmark } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props { exhibitionId: string; isAr: boolean; isOwner?: boolean; }
 
@@ -41,7 +42,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
         .select("id, booth_number, name, name_ar, description, description_ar, category, hall, hall_ar, floor_level, size, size_sqm, location_x, location_y, is_featured, logo_url, website_url, contact_name, contact_email, contact_phone, status, color_hex, price, currency, assigned_to, booking_status, notes")
         .eq("exhibition_id", exhibitionId)
         .order("booth_number");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -54,7 +55,7 @@ export default memo(function ExhibitionInteractiveBoothManager({ exhibitionId, i
         .update({ booking_status: "pending", booked_by: user.id, booked_at: new Date().toISOString(), status: "reserved" })
         .eq("id", boothId)
         .eq("status", "available");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["interactive-booths", exhibitionId] });

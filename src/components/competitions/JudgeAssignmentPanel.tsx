@@ -27,6 +27,7 @@ import {
   Loader2,
   Scale,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface JudgeAssignmentPanelProps {
   competitionId: string;
@@ -72,7 +73,7 @@ export const JudgeAssignmentPanel = memo(function JudgeAssignmentPanel({ competi
         .eq("competition_id", competitionId)
         .order("assigned_at", { ascending: true });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Fetch profiles for assigned judges
       const judgeIds = data.map((j) => j.judge_id);
@@ -136,7 +137,7 @@ export const JudgeAssignmentPanel = memo(function JudgeAssignmentPanel({ competi
         assigned_by: user?.id,
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-judges", competitionId] });
@@ -164,7 +165,7 @@ export const JudgeAssignmentPanel = memo(function JudgeAssignmentPanel({ competi
         .delete()
         .eq("id", assignmentId);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-judges", competitionId] });

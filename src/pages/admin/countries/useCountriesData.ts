@@ -8,6 +8,7 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface Country {
   id: string;
@@ -89,7 +90,7 @@ export function useCountriesData() {
     queryKey: ["admin-countries"],
     queryFn: async () => {
       const { data, error } = await supabase.from("countries").select("id, code, code_alpha3, name, name_ar, name_local, flag_emoji, continent, region, default_language, supported_languages, currency_code, currency_symbol, currency_name, currency_name_ar, timezone, date_format, phone_code, phone_format, is_active, is_featured, launch_date, sort_order, tax_rate, tax_name, tax_name_ar, requires_tax_number, data_residency_notes, features, support_email, support_phone, local_office_address, local_office_address_ar, metadata, created_at, updated_at").order("sort_order").order("name").limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Country[];
     },
   });
@@ -162,13 +163,13 @@ export function useCountriesData() {
           if (JSON.stringify(ec[k]) !== JSON.stringify(v)) changes[k] = { old: ec[k], new: v };
         });
         const { error } = await supabase.from("countries").update(payload).eq("id", editCountry.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         if (Object.keys(changes).length > 0) {
           await logAudit(payload.code, "updated", `Updated ${Object.keys(changes).join(", ")}`, `تم تحديث ${Object.keys(changes).join(", ")}`, changes);
         }
       } else {
         const { error } = await supabase.from("countries").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         await logAudit(payload.code, "created", `Created country: ${payload.name}`, `تم إنشاء دولة: ${payload.name}`);
       }
     },
@@ -184,7 +185,7 @@ export function useCountriesData() {
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, active, code }: { id: string; active: boolean; code: string }) => {
       const { error } = await supabase.from("countries").update({ is_active: active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await logAudit(code, active ? "activated" : "deactivated", `${active ? "Activated" : "Deactivated"} country`, `${active ? "تم تفعيل" : "تم إلغاء تفعيل"} الدولة`);
     },
     onSuccess: () => {
@@ -196,7 +197,7 @@ export function useCountriesData() {
   const deleteMutation = useMutation({
     mutationFn: async ({ id, code }: { id: string; code: string }) => {
       const { error } = await supabase.from("countries").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await logAudit(code, "deleted", `Deleted country`, `تم حذف الدولة`);
     },
     onSuccess: () => {
@@ -212,7 +213,7 @@ export function useCountriesData() {
     mutationFn: async (active: boolean) => {
       const ids = [...bulk.selected];
       const { error } = await supabase.from("countries").update({ is_active: active }).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-countries"] });

@@ -19,6 +19,7 @@ import {
   Save, X, Loader2,
 } from "lucide-react";
 import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, levelDisplay, categoryBadgeText } from "@/lib/categoryUtils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CategoryManagementPanelProps {
   competitionId: string;
@@ -64,7 +65,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
         .select("id, competition_id, name, name_ar, description, description_ar, max_participants, gender, participant_level, status, sort_order, cover_image_url")
         .eq("competition_id", competitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -76,7 +77,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
         .from("competition_registrations")
         .select("*, profiles:participant_id(full_name, username, avatar_url)")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -88,7 +89,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
         .from("competition_scores")
         .select("*, registration:registration_id(category_id, participant_id)")
         .order("score", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: competitionStatus === "completed" || competitionStatus === "judging",
@@ -105,7 +106,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
           participant_level: form.participant_level,
           cover_image_url: form.cover_image_url || null,
         } as any).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const sortOrder = (categories.length || 0) + 1;
         const { error } = await supabase.from("competition_categories").insert({
@@ -118,7 +119,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
           cover_image_url: form.cover_image_url || null,
           sort_order: sortOrder,
         } as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -135,7 +136,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("competition_categories").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-categories-full", competitionId] });
@@ -148,7 +149,7 @@ export const CategoryManagementPanel = memo(function CategoryManagementPanel({ c
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("competition_categories").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-categories-full", competitionId] });

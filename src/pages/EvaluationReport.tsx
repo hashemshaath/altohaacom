@@ -19,6 +19,7 @@ import {
 import { useRef, useMemo } from "react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -51,7 +52,7 @@ export default function EvaluationReport() {
         .eq("report_token", token)
         .eq("report_published", true)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as any;
     },
     enabled: !!token,
@@ -66,7 +67,7 @@ export default function EvaluationReport() {
         .eq("session_id", session.id)
         .eq("status", "submitted")
         .eq("allow_publish", true);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       
       const evals = (data || []) as any[];
       if (evals.length) {

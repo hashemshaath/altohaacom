@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Save, Globe, AlertTriangle, CheckCircle2, Loader2, Plus, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface PageMeta {
   path: string;
@@ -55,7 +56,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
       const { error } = await supabase
         .from("site_settings")
         .upsert({ key, value: value as unknown as Json }, { onConflict: "key" });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["seo-meta-configs"] });

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { Newspaper, Calendar, Eye } from "lucide-react";
 import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   entityId: string;
@@ -29,7 +30,7 @@ export const EntityNewsTab = memo(function EntityNewsTab({ entityId, entityName,
         .eq("status", "published")
         .order("published_at", { ascending: false })
         .limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Filter articles that mention the entity name in title or content
       const filtered = (data || []).filter(article => {

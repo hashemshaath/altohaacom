@@ -17,6 +17,7 @@ import {
   ClipboardList, Plus, Trash2, Save, X, Pencil, ChevronDown, ChevronUp, GripVertical
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CriterionItem {
   name: string;
@@ -60,7 +61,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -81,10 +82,10 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
 
       if (editingId) {
         const { error } = await supabase.from("judging_rubric_templates").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("judging_rubric_templates").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -98,7 +99,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("judging_rubric_templates").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["rubric-templates"] });
@@ -131,7 +132,7 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
             sort_order: i,
           }))
         );
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {

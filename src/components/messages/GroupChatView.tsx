@@ -28,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface GroupChatViewProps {
   groupId: string;
@@ -116,7 +117,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
         attachment_names: payload.attachment_names || [],
         metadata: payload.metadata || {},
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       setNewMessage("");

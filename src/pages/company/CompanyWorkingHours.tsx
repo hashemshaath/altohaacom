@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, Save, Copy, RotateCcw, CalendarDays } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const DAYS = [
   { en: "Monday", ar: "الاثنين" },
@@ -78,7 +79,7 @@ export default function CompanyWorkingHours() {
         .select("working_hours")
         .eq("id", companyId)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!companyId,
@@ -97,7 +98,7 @@ export default function CompanyWorkingHours() {
         .from("companies")
         .update({ working_hours: schedule as any })
         .eq("id", companyId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyWorkingHours"] });

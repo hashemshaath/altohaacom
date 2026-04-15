@@ -27,6 +27,7 @@ import {
   BookOpen, Plus, Trash2, Edit, Link, FileText, Image, Scale, Upload,
   Folder, Star, Eye, EyeOff, Save, X, GalleryHorizontalEnd, Globe, Loader2
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type ResourceType = "link" | "file" | "document" | "image" | "video" | "law" | "scraped_content";
 
@@ -72,7 +73,7 @@ export default function KnowledgeAdmin() {
         .from("knowledge_resources")
         .select("*, category:knowledge_categories(name, name_ar)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -84,7 +85,7 @@ export default function KnowledgeAdmin() {
         .from("knowledge_categories")
         .select("id, name, name_ar, description, description_ar, icon, parent_id, sort_order, created_at, updated_at")
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -96,7 +97,7 @@ export default function KnowledgeAdmin() {
         .from("reference_gallery")
         .select("id, title, title_ar, description, description_ar, image_url, rating, competition_category, category, category_id, score_range_min, score_range_max, tags, is_active, sort_order, added_by, uploaded_by_name, created_at")
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -108,7 +109,7 @@ export default function KnowledgeAdmin() {
         .from("judging_rubric_templates")
         .select("id, name, name_ar, description, description_ar, competition_type, category_type, criteria, is_active, created_by, created_at, updated_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -120,7 +121,7 @@ export default function KnowledgeAdmin() {
         .from("competitions")
         .select("id, title, title_ar")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -142,7 +143,7 @@ export default function KnowledgeAdmin() {
         competition_id: resourceForm.competition_id || null,
         added_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-knowledge-resources"] });
@@ -166,7 +167,7 @@ export default function KnowledgeAdmin() {
         description_ar: categoryForm.description_ar || null,
         icon: categoryForm.icon,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["knowledge-categories"] });
@@ -192,7 +193,7 @@ export default function KnowledgeAdmin() {
         tags: referenceForm.tags ? referenceForm.tags.split(",").map(t => t.trim()) : [],
         added_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-reference-gallery"] });
@@ -225,7 +226,7 @@ export default function KnowledgeAdmin() {
         criteria: parsedCriteria,
         created_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-rubric-templates"] });
@@ -242,7 +243,7 @@ export default function KnowledgeAdmin() {
   const deleteResourceMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("knowledge_resources").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-knowledge-resources"] });
@@ -253,7 +254,7 @@ export default function KnowledgeAdmin() {
   const togglePublishMutation = useMutation({
     mutationFn: async ({ id, is_published }: { id: string; is_published: boolean }) => {
       const { error } = await supabase.from("knowledge_resources").update({ is_published }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-knowledge-resources"] }),
   });
@@ -290,7 +291,7 @@ export default function KnowledgeAdmin() {
         added_by: user?.id,
         tags: ["scraped"],
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       queryClient.invalidateQueries({ queryKey: ["admin-knowledge-resources"] });
       setScrapeUrl("");
       setShowScrapeUrl(false);

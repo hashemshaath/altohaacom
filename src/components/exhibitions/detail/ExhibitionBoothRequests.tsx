@@ -10,6 +10,7 @@ import { CheckCircle2, XCircle, Clock, Building, Loader2, Eye } from "lucide-rea
 import { format } from "date-fns";
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -31,7 +32,7 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
         .select("id, company_name, company_name_ar, contact_name, contact_email, contact_phone, status, preferred_size, preferred_category, preferred_hall, special_requirements, admin_notes, booth_id, user_id, created_at, reviewed_at, description, description_ar, website_url")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -48,7 +49,7 @@ export const ExhibitionBoothRequests = memo(function ExhibitionBoothRequests({ e
           updated_at: new Date().toISOString(),
         })
         .eq("id", requestId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["booth-requests", exhibitionId] });

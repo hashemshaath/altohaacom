@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { QrCode, CheckCircle2, XCircle, Loader2, Search, User, Ticket } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -31,7 +32,7 @@ export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ e
         .eq("exhibition_id", exhibitionId)
         .or(`ticket_number.eq.${trimmed},qr_code.eq.${trimmed}`)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: (data) => {
@@ -58,7 +59,7 @@ export const ExhibitionTicketCheckin = memo(function ExhibitionTicketCheckin({ e
         .from("exhibition_tickets")
         .update({ checked_in_at: new Date().toISOString(), checked_in_by: user?.id })
         .eq("id", ticketId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-tickets"] });

@@ -35,6 +35,7 @@ import { useCart } from "@/hooks/useCart";
 import { CartSheet } from "@/components/shop/CartSheet";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /* ─── Tab type ─── */
 type DetailTab = "overview" | "products" | "sponsorships" | "contact" | "reviews";
@@ -99,7 +100,7 @@ export default function ProSupplierDetail() {
         .eq("id", id)
         .eq("status", "active")
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!id,

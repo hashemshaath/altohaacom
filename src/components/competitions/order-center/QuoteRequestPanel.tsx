@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 
 import { QUOTE_STATUS_LABELS, getStatusLabel } from "./OrderStatusLabels";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -48,7 +49,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
         .select("id, title, title_ar, category, status")
         .eq("competition_id", competitionId)
         .order("created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -62,7 +63,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
         .select("*, requirement_items(name, name_ar, category)")
         .eq("list_id", selectedListId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedListId,
@@ -77,7 +78,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
         .eq("status", "active")
         .order("name")
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -90,7 +91,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
         .select("*, companies:sponsor_company_id(name, name_ar)")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -120,7 +121,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
         total_estimated_cost: totalCost,
         status: "pending",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["req-sponsorship-requests", competitionId] });

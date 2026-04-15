@@ -16,6 +16,7 @@ import {
   useRemoveCompanyRole,
 } from "@/hooks/useCompanyRoles";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   companyId: string;
@@ -44,7 +45,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
         .select("id, name, name_ar, description, color, icon, is_active, is_system, sort_order, created_by, created_at")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -60,7 +61,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
         created_by: user?.id || null,
         sort_order: classifications.length + 1,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-classifications"] });
@@ -74,7 +75,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
   const deleteClassificationMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("company_classifications").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-classifications"] });

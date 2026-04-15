@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // === Programs ===
 export function useEntityPrograms(entityId?: string) {
@@ -17,7 +18,7 @@ export function useEntityPrograms(entityId?: string) {
       if (entityId) query.eq("entity_id", entityId);
       
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: entityId !== undefined,
@@ -34,7 +35,7 @@ export function useEntityProgramEnrollments(programId?: string) {
         .select("*, entity_programs(name, name_ar, entity_id)")
         .eq("program_id", programId!)
         .order("enrolled_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!programId,
@@ -51,7 +52,7 @@ export function useMyEnrollments() {
         .select("*, entity_programs(*, culinary_entities(name, name_ar, logo_url))")
         .eq("user_id", user!.id)
         .order("enrolled_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user?.id,
@@ -67,7 +68,7 @@ export function useEnrollInProgram() {
       const { error } = await supabase
         .from("entity_program_enrollments")
         .insert({ program_id: programId, user_id: user.id });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-enrollments"] });
@@ -90,7 +91,7 @@ export function useEntityMemberships(entityId?: string) {
         .select("id, entity_id, user_id, membership_type, status, enrollment_date, graduation_date, department, department_ar, title, title_ar, student_id, is_public, notes, created_at")
         .eq("entity_id", entityId!)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!entityId,
@@ -107,7 +108,7 @@ export function useMyMemberships() {
         .select("*, culinary_entities(name, name_ar, logo_url, type)")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user?.id,
@@ -124,7 +125,7 @@ export function useEntityDegrees(entityId?: string) {
         .select("id, entity_id, user_id, degree_name, degree_name_ar, degree_type, field_of_study, field_of_study_ar, graduation_date, gpa, honors, certificate_number, is_verified, is_public, document_url, issue_date, program_id, created_at")
         .eq("entity_id", entityId!)
         .order("graduation_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!entityId,
@@ -141,7 +142,7 @@ export function useMyDegrees() {
         .select("*, culinary_entities(name, name_ar, logo_url)")
         .eq("user_id", user!.id)
         .order("graduation_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user?.id,
@@ -158,7 +159,7 @@ export function useEntityEvents(entityId?: string) {
         .select("id, entity_id, title, title_ar, description, description_ar, start_date, end_date, location, location_ar, event_type, status, image_url, is_public, is_virtual, max_attendees, meeting_url, created_at")
         .eq("entity_id", entityId!)
         .order("start_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!entityId,
@@ -175,7 +176,7 @@ export function useEntityCompetitions(entityId?: string) {
         .select("*, competitions(title, title_ar, competition_start, status, country_code, cover_image_url)")
         .eq("entity_id", entityId!)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!entityId,

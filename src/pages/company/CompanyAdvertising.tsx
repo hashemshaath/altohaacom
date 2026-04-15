@@ -22,6 +22,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -48,7 +49,7 @@ export default function CompanyAdvertising() {
     queryFn: async () => {
       if (!companyId) return [];
       const { data, error } = await supabase.from("ad_campaigns").select("id, name, name_ar, status, budget, spent, start_date, end_date, billing_model, total_impressions, total_clicks, total_views, currency, priority, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!companyId,
@@ -60,7 +61,7 @@ export default function CompanyAdvertising() {
     queryFn: async () => {
       if (!companyId) return [];
       const { data, error } = await supabase.from("ad_requests").select("id, title, title_ar, status, request_type, budget, currency, desired_start_date, desired_end_date, admin_notes, reviewed_at, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(200);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!companyId,
@@ -87,7 +88,7 @@ export default function CompanyAdvertising() {
         package_id: form.package_id || null,
         created_by: (await supabase.auth.getUser()).data.user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["company-ad-requests"] });

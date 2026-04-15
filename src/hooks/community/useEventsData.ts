@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface CommunityEvent {
   id: string;
@@ -135,7 +136,7 @@ export function useEventsData(): UseEventsDataReturn {
         location: input.location.trim() || null, is_virtual: input.is_virtual,
         max_attendees: input.max_attendees ? parseInt(input.max_attendees) : null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
   });
@@ -147,7 +148,7 @@ export function useEventsData(): UseEventsDataReturn {
       const { error } = await supabase.from("community_polls").insert({
         author_id: user.id, question: input.question.trim(), options,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
   });
@@ -168,7 +169,7 @@ export function useEventsData(): UseEventsDataReturn {
     mutationFn: async ({ pollId, optionIndex }: { pollId: string; optionIndex: number }) => {
       if (!user) throw new Error("Not authenticated");
       const { error } = await supabase.from("poll_votes").insert({ poll_id: pollId, user_id: user.id, option_index: optionIndex });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
   });

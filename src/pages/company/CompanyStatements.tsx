@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyStatements() {
   const { companyId, isLoading: accessLoading } = useCompanyAccess();
@@ -57,7 +58,7 @@ export default function CompanyStatements() {
         .gte("transaction_date", startDate.toISOString())
         .lte("transaction_date", endDate.toISOString())
         .order("transaction_date", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,

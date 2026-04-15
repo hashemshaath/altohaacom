@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Loader2, Save, X, User, GripVertical } from "lucide-react";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -54,7 +55,7 @@ export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({
         .select("id, exhibition_id, full_name, full_name_ar, role_title, role_title_ar, email, phone, avatar_url, user_id, sort_order, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!exhibitionId,
@@ -74,7 +75,7 @@ export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({
         phone: form.phone || null,
         sort_order: officials.length,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       queryClient.invalidateQueries({ queryKey: ["exhibition-officials", exhibitionId] });
       toast({ title: t("Official added", "تمت إضافة المسؤول") });
       setForm(emptyOfficial);
@@ -89,7 +90,7 @@ export const ExhibitionOfficialsPanel = memo(function ExhibitionOfficialsPanel({
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_officials").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-officials", exhibitionId] });

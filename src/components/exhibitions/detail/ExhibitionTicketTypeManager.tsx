@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Ticket, Edit, Trash2, DollarSign, Users } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -34,7 +35,7 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
         .select("id, name, name_ar, description, description_ar, price, currency, max_quantity, sold_count, is_active, color, sort_order, benefits")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -56,10 +57,10 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
       };
       if (editingId) {
         const { error } = await supabase.from("exhibition_ticket_types").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("exhibition_ticket_types").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -73,7 +74,7 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_ticket_types").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ticket-types", exhibitionId] });

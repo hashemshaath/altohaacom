@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
 import { Tag, Plus, Trash2, Copy, Loader2 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -50,7 +51,7 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
         max_uses: maxUses ? parseInt(maxUses) : null,
         created_by: user.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-discount-codes", exhibitionId] });
@@ -69,7 +70,7 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
   const toggleCode = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
       const { error } = await supabase.from("exhibition_discount_codes").update({ is_active: active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["exhibition-discount-codes", exhibitionId] }),
   });

@@ -27,6 +27,7 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface ImportedData {
   name_en?: string;
@@ -229,7 +230,7 @@ export const SmartImportDialog = memo(function SmartImportDialog({
         },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.success) throw new Error(data?.error || "Import failed");
 
       setResult(data.data);

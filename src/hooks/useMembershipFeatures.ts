@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface MembershipFeature {
   id: string;
@@ -34,7 +35,7 @@ export function useMembershipFeatures() {
         .select("id, code, name, name_ar, description, description_ar, category, icon, sort_order, is_active")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as MembershipFeature[];
     },
     ...CACHE.long,
@@ -49,7 +50,7 @@ export function useFeatureTierMappings() {
       const { data, error } = await supabase
         .from("membership_feature_tiers")
         .select("id, feature_id, tier, is_enabled");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as FeatureTierMapping[];
     },
     ...CACHE.medium,
@@ -65,7 +66,7 @@ export function useAllMembershipFeatures() {
         .from("membership_features")
         .select("*, membership_feature_tiers(*)")
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.medium,

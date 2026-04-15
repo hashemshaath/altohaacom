@@ -14,6 +14,7 @@ import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   seriesId: string | null;
@@ -116,7 +117,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
         .select("id, title, title_ar, slug, start_date, end_date, edition_year, edition_stats, status, city, country, cover_image_url, logo_url, view_count, description, description_ar, gallery_urls, includes_competitions")
         .eq("series_id", seriesId)
         .order("edition_year", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as EditionRow[];
     },
     enabled: !!seriesId,

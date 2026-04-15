@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Camera, Upload, X, Loader2, ArrowLeft, UserPlus, Users, Building2, Plus, Trash2, DollarSign, Search } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Category {
   id: string;
@@ -236,7 +237,7 @@ export const RegistrationForm = memo(function RegistrationForm({
         .select("id")
         .single();
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Insert team members if team entry
       if (entryType === "team" && teamMembers.length > 0 && registration) {

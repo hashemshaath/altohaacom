@@ -18,6 +18,7 @@ import {
   Download, FileText, ShoppingCart, BarChart3, Calendar, Filter,
   TrendingUp, TrendingDown, DollarSign, FileSpreadsheet,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 function downloadCSV(filename: string, headers: string[], rows: string[][]) {
   const bom = "\uFEFF";
@@ -51,7 +52,7 @@ export default function CompanyReports() {
         .select("order_number, title, direction, category, status, total_amount, currency, order_date, delivery_date, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -67,7 +68,7 @@ export default function CompanyReports() {
         .select("invoice_number, title, status, amount, subtotal, tax_amount, discount_amount, currency, due_date, paid_at, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -83,7 +84,7 @@ export default function CompanyReports() {
         .select("transaction_number, type, amount, currency, description, payment_method, transaction_date, created_at, is_reconciled")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,

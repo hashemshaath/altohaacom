@@ -20,6 +20,7 @@ import {
   Printer, Users,
 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Invitation {
   id: string;
@@ -64,7 +65,7 @@ function useEvaluationInvitations() {
         .from("evaluation_invitations" as any)
         .select("id, session_id, domain_slug, chef_id, invited_by, status, product_name, product_name_ar, product_description, evaluation_date, evaluation_location, expected_duration_minutes, offered_amount, currency, response_deadline, decline_reason, notes, responded_at, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as Invitation[];
     },
   });
@@ -162,7 +163,7 @@ export const InvitationManager = memo(function InvitationManager() {
       const { error } = await supabase
         .from("evaluation_invitations" as any)
         .insert(invites as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Send notifications to each chef
       for (const chefId of selectedChefs) {

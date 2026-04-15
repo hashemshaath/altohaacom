@@ -23,6 +23,7 @@ import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const roleConfig: Record<string, { icon: LucideIcon; color: string; bg: string; labelEn: string; labelAr: string }> = {
   owner: { icon: Crown, color: "text-chart-4", bg: "bg-chart-4/10", labelEn: "Owner", labelAr: "مالك" },
@@ -55,7 +56,7 @@ export default function CompanyTeam() {
         .select("id, company_id, user_id, name, name_ar, title, title_ar, email, phone, mobile, whatsapp, department, role, is_primary, can_login, avatar_url, invitation_status, invited_at, invited_by, accepted_at, created_at, updated_at")
         .eq("company_id", companyId)
         .order("is_primary", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -71,7 +72,7 @@ export default function CompanyTeam() {
         .select("id, company_id, email, role, department, title, title_ar, message, message_ar, status, token, invited_by, expires_at, accepted_at, accepted_by, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -94,7 +95,7 @@ export default function CompanyTeam() {
         title: inviteTitle || null,
         message: inviteMessage || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyEmployeeInvites"] });
@@ -118,7 +119,7 @@ export default function CompanyTeam() {
         .from("company_contacts")
         .update({ role: newRole as any })
         .eq("id", contactId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyContacts"] });
@@ -133,7 +134,7 @@ export default function CompanyTeam() {
         .from("company_employee_invites")
         .delete()
         .eq("id", inviteId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyEmployeeInvites"] });
@@ -152,7 +153,7 @@ export default function CompanyTeam() {
           expires_at: new Date(Date.now() + MS_PER_WEEK).toISOString(),
         })
         .eq("id", inviteId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyEmployeeInvites"] });

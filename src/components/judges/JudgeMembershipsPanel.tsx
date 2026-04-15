@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Building2, Pencil } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   userId: string;
@@ -39,7 +40,7 @@ const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAd
         .select("id, user_id, organization_name, organization_name_ar, membership_type, membership_number, role_in_organization, role_in_organization_ar, joined_date, expiry_date, is_active, notes")
         .eq("user_id", userId)
         .order("is_active", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -61,10 +62,10 @@ const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAd
       };
       if (editingId) {
         const { error } = await supabase.from("judge_memberships").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("judge_memberships").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -78,7 +79,7 @@ const JudgeMembershipsPanel = memo(function JudgeMembershipsPanel({ userId, isAd
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("judge_memberships").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judge-memberships", userId] });

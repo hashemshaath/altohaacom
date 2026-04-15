@@ -14,6 +14,7 @@ import {
   Plus, Trash2, Pencil, Users, Save, X, Loader2,
   Phone, Mail, UserCheck, CheckCircle, Clock,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CompetitionTeamPanelProps {
   competitionId: string;
@@ -104,7 +105,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
         .select("id, competition_id, name, name_ar, role, email, phone, title, title_ar, photo_url, notes, is_checked_in, checked_in_at, is_active, created_at")
         .eq("competition_id", competitionId)
         .order("created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -120,12 +121,12 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
       };
       if (editingId) {
         const { error } = await supabase.from("competition_team_members").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("competition_team_members").insert({
           competition_id: competitionId, ...payload,
         });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -141,7 +142,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("competition_team_members").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-team", competitionId] });
@@ -155,7 +156,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
         is_checked_in: checkedIn,
         checked_in_at: checkedIn ? new Date().toISOString() : null,
       }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-team", competitionId] });

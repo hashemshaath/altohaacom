@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useApprovedSpecialties() {
   return useQuery({
@@ -12,7 +13,7 @@ export function useApprovedSpecialties() {
         .eq("is_approved", true)
         .eq("is_active", true)
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     ...CACHE.static,
@@ -27,7 +28,7 @@ export function useAllSpecialties() {
         .from("specialties")
         .select("id, name, name_ar, slug, category, is_approved, is_active, created_by, approved_by, approved_at, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -42,7 +43,7 @@ export function useUserSpecialties(userId: string | undefined) {
         .from("user_specialties")
         .select("id, specialty_id, specialties(id, name, name_ar, slug)")
         .eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!userId,
@@ -57,7 +58,7 @@ export function useApproveSpecialty() {
         .from("specialties")
         .update({ is_approved: true, approved_by: approvedBy, approved_at: new Date().toISOString() })
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["specialties"] }),
   });
@@ -68,7 +69,7 @@ export function useCreateSpecialty() {
   return useMutation({
     mutationFn: async (specialty: { name: string; name_ar?: string; slug: string; category?: string; created_by?: string; is_approved?: boolean }) => {
       const { data, error } = await supabase.from("specialties").insert(specialty).select().single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["specialties"] }),

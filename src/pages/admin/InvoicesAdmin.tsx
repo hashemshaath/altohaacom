@@ -39,6 +39,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface InvoiceItem {
   name: string;
@@ -92,7 +93,7 @@ export default function InvoicesAdmin() {
       }
 
       const { data, error } = await query.limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -105,7 +106,7 @@ export default function InvoicesAdmin() {
         .select("id, name, name_ar")
         .eq("status", "active")
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -119,7 +120,7 @@ export default function InvoicesAdmin() {
         .select(`*, companies:company_id (id, name, name_ar, email, phone, address)`)
         .eq("id", selectedInvoice)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedInvoice,
@@ -152,7 +153,7 @@ export default function InvoicesAdmin() {
         status: "draft",
         issued_by: user.id,
       } as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });
@@ -168,7 +169,7 @@ export default function InvoicesAdmin() {
       const updates: Record<string, unknown> = { status };
       if (status === "paid") updates.paid_at = new Date().toISOString();
       const { error } = await supabase.from("invoices").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return { id, status };
     },
     onSuccess: (result) => {
@@ -224,7 +225,7 @@ export default function InvoicesAdmin() {
         status: "draft",
         issued_by: user.id,
       } as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-invoices"] });

@@ -15,6 +15,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { OrderExportActions } from "./OrderExportActions";
 import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -42,7 +43,7 @@ export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrga
         .from("requirement_lists")
         .select("id, category")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -55,7 +56,7 @@ export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrga
         .from("requirement_list_items")
         .select("id, list_id, estimated_cost, quantity, status")
         .in("list_id", lists.map((l) => l.id));
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!lists?.length,
@@ -69,7 +70,7 @@ export const BudgetTracker = memo(function BudgetTracker({ competitionId, isOrga
         .select("id, status, total_estimated_cost")
         .eq("competition_id", competitionId)
         .eq("status", "accepted");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

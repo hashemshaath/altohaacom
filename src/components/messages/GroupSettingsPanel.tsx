@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Settings, UserMinus, Crown, Save, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface GroupSettingsPanelProps {
   open: boolean;
@@ -33,7 +34,7 @@ export const GroupSettingsPanel = memo(function GroupSettingsPanel({ open, onOpe
   const updateNameMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("chat_groups").update({ name: groupName, updated_at: new Date().toISOString() }).eq("id", group.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast({ title: isAr ? "تم تحديث اسم المجموعة" : "Group name updated" });
@@ -45,7 +46,7 @@ export const GroupSettingsPanel = memo(function GroupSettingsPanel({ open, onOpe
   const removeMemberMutation = useMutation({
     mutationFn: async (memberId: string) => {
       const { error } = await supabase.from("chat_group_members").delete().eq("group_id", group.id).eq("user_id", memberId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast({ title: isAr ? "تم إزالة العضو" : "Member removed" });
@@ -56,7 +57,7 @@ export const GroupSettingsPanel = memo(function GroupSettingsPanel({ open, onOpe
   const promoteToAdminMutation = useMutation({
     mutationFn: async (memberId: string) => {
       const { error } = await supabase.from("chat_group_members").update({ role: "admin" }).eq("group_id", group.id).eq("user_id", memberId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast({ title: isAr ? "تمت ترقية العضو" : "Member promoted to admin" });

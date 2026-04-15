@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -37,7 +38,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
         .from("requirement_lists")
         .select("id, title, status, category")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -50,7 +51,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
         .from("requirement_list_items")
         .select("id, status, checked, assigned_vendor_id, estimated_cost, quantity, deadline")
         .in("list_id", lists.map(l => l.id));
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- partial select
       return data as any[];
     },
@@ -64,7 +65,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
         .from("requirement_sponsorship_requests")
         .select("id, status, total_estimated_cost")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -78,7 +79,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
         .eq("competition_id", competitionId)
         .eq("role", "judge")
         .eq("status", "active");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -91,7 +92,7 @@ export const ReadinessChecklist = memo(function ReadinessChecklist({ competition
         .select("id")
         .eq("competition_id", competitionId)
         .eq("status", "approved");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

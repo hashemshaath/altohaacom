@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, Languages } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   bio: string;
@@ -31,7 +32,7 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: bio, source_lang: lang, optimize_only: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.optimized) {
         onBioChange(data.optimized);
         toast({ title: isAr ? "تم تحسين النبذة" : "Bio optimized successfully" });
@@ -54,7 +55,7 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: bio, source_lang: lang, target_lang: targetLang, optimize_seo: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         if (onTranslatedBioChange) {
           onTranslatedBioChange(data.translated);

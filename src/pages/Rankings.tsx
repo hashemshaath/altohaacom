@@ -15,6 +15,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const medalBg = (rank: number) =>
   rank === 1 ? "from-yellow-500/20 via-yellow-400/10 to-yellow-500/5 ring-yellow-500/30"
@@ -47,7 +48,7 @@ export default function Rankings() {
       if (specialtyFilter !== "all") query = query.eq("specialty", specialtyFilter);
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       if (!data?.length) return [];
       const userIds = data.map(r => r.user_id);

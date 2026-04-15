@@ -4,6 +4,7 @@ import { CACHE } from "@/lib/queryConfig";
 import type { Database } from "@/integrations/supabase/types";
 import { buildFlexibleFilter, countMatchingWords, sortByRelevance } from "./searchUtils";
 import type { MemberResult, SearchFilters } from "./searchTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSearchMembers(searchWords: string[], debouncedQuery: string, filters: SearchFilters) {
   return useQuery({
@@ -25,7 +26,7 @@ export function useSearchMembers(searchWords: string[], debouncedQuery: string, 
       }
 
       const { data, error } = await query.limit(30);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       let scored = (data || []).map((r) => ({
         ...r,

@@ -20,6 +20,7 @@ import {
   Play, Pause, BarChart3, Shield, Users, Trophy, FileText,
   ShoppingCart, Calendar, UserPlus, AlertCircle,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface NotificationRule {
   id: string;
@@ -88,7 +89,7 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
         .from("notification_rules")
         .select("id, name, name_ar, description, description_ar, trigger_event, conditions, notification_title, notification_title_ar, notification_body, notification_body_ar, notification_type, notification_link, channels, delay_minutes, is_active, priority, max_sends_per_user, cooldown_hours, created_at")
         .order("priority", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as NotificationRule[];
     },
   });
@@ -101,7 +102,7 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
         .select("rule_id")
         .order("triggered_at", { ascending: false })
         .limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -132,10 +133,10 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
 
       if (editingRule) {
         const { error } = await supabase.from("notification_rules").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", editingRule.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("notification_rules").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -151,7 +152,7 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
   const toggleMutation = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
       const { error } = await supabase.from("notification_rules").update({ is_active: active, updated_at: new Date().toISOString() }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notification-rules"] });
@@ -162,7 +163,7 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("notification_rules").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notification-rules"] });

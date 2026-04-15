@@ -13,6 +13,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { Search, UserCog, Download, Loader2, Filter } from "lucide-react";
 import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   isAr: boolean;
@@ -37,7 +38,7 @@ export default function UsersTab({ isAr, t }: Props) {
         query = query.or(`full_name.ilike.%${userSearch}%,username.ilike.%${userSearch}%,email.ilike.%${userSearch}%,account_number.ilike.%${userSearch}%`);
       }
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const userIds = data?.map(u => u.user_id) || [];
       if (userIds.length === 0) return [];
       const { data: roles } = await supabase.from("user_roles").select("user_id, role").in("user_id", userIds);
@@ -57,10 +58,10 @@ export default function UsersTab({ isAr, t }: Props) {
     mutationFn: async ({ userId, role, add }: { userId: string; role: AppRole; add: boolean }) => {
       if (add) {
         const { error } = await supabase.from("user_roles").insert({ user_id: userId, role });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("user_roles").delete().eq("user_id", userId).eq("role", role);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {

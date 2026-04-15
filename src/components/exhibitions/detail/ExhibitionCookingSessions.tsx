@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -137,7 +138,7 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
       const { error } = await supabase.from("exhibition_session_interactions").insert({
         session_id: session.id, user_id: user.id, type, content: content || null, emoji: emoji || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       setQuestion("");
@@ -338,7 +339,7 @@ export const ExhibitionCookingSessions = memo(function ExhibitionCookingSessions
     mutationFn: async (sessionId: string) => {
       if (!user) throw new Error("Not authenticated");
       const { error } = await supabase.from("exhibition_session_registrations").insert({ session_id: sessionId, user_id: user.id });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast.success(t("Registered!", "تم التسجيل!"));

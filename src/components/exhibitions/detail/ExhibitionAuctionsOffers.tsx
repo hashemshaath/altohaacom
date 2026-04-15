@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Gavel, Clock, TrendingUp, DollarSign, Flame, Timer, Tag, Percent, ShoppingBag } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -70,7 +71,7 @@ export const ExhibitionAuctionsOffers = memo(function ExhibitionAuctionsOffers({
         user_id: user.id,
         amount,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // Update current price
       await supabase.from("exhibition_auctions").update({ current_price: amount }).eq("id", auctionId);
     },

@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { Save, User, Shield, Plane, Heart, Briefcase } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   userId: string;
@@ -29,7 +30,7 @@ const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Pro
         .select("id, user_id, judge_title, judge_title_ar, judge_category, judge_level, nationality, second_nationality, country_of_residence, full_name_ar, date_of_birth, gender, marital_status, spouse_name, spouse_name_ar, spouse_phone, emergency_contact_name, emergency_contact_phone, blood_type, passport_number, passport_country, passport_issue_date, passport_expiry_date, national_id, current_position, current_employer, years_of_experience, culinary_specialties, certifications, languages_spoken, education, education_ar, dietary_restrictions, allergies, medical_notes, shirt_size, preferred_airline, frequent_flyer_number, travel_notes, notes, internal_notes")
         .eq("user_id", userId)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -137,10 +138,10 @@ const JudgeProfileForm = memo(function JudgeProfileForm({ userId, isAdmin }: Pro
 
       if (profile) {
         const { error } = await supabase.from("judge_profiles").update(payload).eq("user_id", userId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("judge_profiles").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {

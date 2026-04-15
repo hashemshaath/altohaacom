@@ -28,6 +28,7 @@ import { OrganizerSearchAutocomplete } from "@/components/organizers/OrganizerSe
 import { OrganizerReviewsCarousel } from "@/components/organizers/OrganizerReviewsCarousel";
 import { useOrganizerFollows } from "@/hooks/useOrganizerFollow";
 import { Heart } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type SortKey = "featured" | "name" | "events" | "rating" | "newest";
 type ViewMode = "grid" | "list" | "map";
@@ -58,7 +59,7 @@ export default function Organizers() {
         .eq("status", "active")
         .order("is_featured", { ascending: false })
         .order("total_exhibitions", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

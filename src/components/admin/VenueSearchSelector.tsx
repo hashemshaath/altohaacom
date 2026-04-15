@@ -12,6 +12,7 @@ import {
   MapPin, Search, Plus, Building2, X, Check, Globe, Users, Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface VenueValue {
   id: string;
@@ -215,7 +216,7 @@ function InlineCreateVenueForm({ isAr, initialSearch, onCreated, onCancel }: {
         .from("exhibition_venues")
         .insert({ ...form, capacity: form.capacity ? parseInt(form.capacity) : null })
         .select("*").single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: (data) => {

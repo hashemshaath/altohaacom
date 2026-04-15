@@ -45,6 +45,7 @@ import {
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ParticipantsListProps {
   competitionId: string;
@@ -112,7 +113,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
         .select("id, name, name_ar")
         .eq("competition_id", competitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as CategoryData[];
     },
     enabled: !!competitionId,
@@ -127,7 +128,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
          .eq("competition_id", competitionId)
          .order("registered_at", { ascending: true });
 
-       if (error) throw error;
+       if (error) throw handleSupabaseError(error);
        if (!registrations || registrations.length === 0) return [];
 
        // Fetch team members if needed
@@ -208,7 +209,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
         .select("id, competition_id, invited_by, invitee_name, invitee_name_ar, invitee_email, invitee_phone, invitee_role, status, organization_name, organization_name_ar, organization_type, invitation_channel, message, sent_at, responded_at, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!competitionId && isOrganizer,
@@ -232,7 +233,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
         invitation_channel: inviteForm.invitation_channel,
         status: "pending",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-invitations", competitionId] });

@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { uploadMessageAttachment } from "@/utils/storageUtils";
 import { CACHE } from "@/lib/queryConfig";
 import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface MessageMetadata {
   reactions?: Record<string, string[]>;
@@ -235,7 +236,7 @@ export function useMessagesData() {
         })
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       try {
         await supabase.from("notifications").insert([{
@@ -263,7 +264,7 @@ export function useMessagesData() {
   const toggleStarMutation = useMutation({
     mutationFn: async ({ msgId, starred }: { msgId: string; starred: boolean }) => {
       const { error } = await supabase.from("messages").update({ is_starred: starred }).eq("id", msgId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages"] });
@@ -274,7 +275,7 @@ export function useMessagesData() {
   const archiveMutation = useMutation({
     mutationFn: async (msgId: string) => {
       const { error } = await supabase.from("messages").update({ is_archived: true }).eq("id", msgId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["messages"] });

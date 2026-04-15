@@ -17,6 +17,7 @@ import { defaultDesign } from "./types";
 import {
   Sparkles, Trophy, Users, FileText, Eye, Loader2, CheckCircle, AlertCircle,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CandidateResult {
   registrationId: string;
@@ -159,7 +160,7 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
            title_text: "Certificate", body_template: "Participated in {{event_name}}.",
            body_template_ar: "شارك في {{event_name}}.", is_active: true,
          }).select("id").single();
-         if (error) throw error;
+         if (error) throw handleSupabaseError(error);
          templateId = newT.id;
        }
 
@@ -201,7 +202,7 @@ export const CandidateSelector = memo(function CandidateSelector({ competitions,
        if (certs.length === 0) throw new Error(language === "ar" ? "جميع الشهادات صادرة بالفعل" : "All certificates already issued for selected candidates");
 
        const { error } = await supabase.from("certificates").insert(certs);
-       if (error) throw error;
+       if (error) throw handleSupabaseError(error);
        return certs.length;
      },
     onSuccess: (count) => {

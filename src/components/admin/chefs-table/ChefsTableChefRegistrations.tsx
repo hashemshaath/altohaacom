@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { UserPlus, Check, Calendar, MapPin, Star, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ChefRegistration {
   id: string;
@@ -39,7 +40,7 @@ export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrat
         .from("chef_evaluation_registrations" as any)
         .select("id, chef_id, session_id, specialties, availability_start, availability_end, preferred_city, experience_years, motivation, status, matched_at, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       
       const regs = (data || []) as unknown as ChefRegistration[];
       
@@ -68,7 +69,7 @@ export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrat
         .from("chef_evaluation_registrations" as any)
         .update({ status: "matched", matched_at: new Date().toISOString(), session_id: sessionId || null } as any)
         .eq("id", regId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chef-evaluation-registrations"] });

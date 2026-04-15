@@ -20,6 +20,7 @@ import { toast } from "@/hooks/use-toast";
 import {
   Megaphone, Send, Users, Loader2,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -99,7 +100,7 @@ export const ExhibitionOrganizerQuickActions = memo(function ExhibitionOrganizer
       }));
 
       const { error } = await supabase.from("notifications").insert(notifications);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return allIds.size;
     },
     onSuccess: (count) => {

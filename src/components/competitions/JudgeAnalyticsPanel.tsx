@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart3, AlertTriangle, CheckCircle, Clock, TrendingUp, Users, Activity } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ScatterChart, Scatter, Cell } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -24,7 +25,7 @@ export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competiti
         .from("judge_analytics")
         .select("id, competition_id, judge_id, avg_score_given, score_std_deviation, bias_indicator, consistency_score, completion_rate, scores_count, avg_scoring_time_seconds")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       if (!data?.length) return { judges: [], profiles: {} };
 

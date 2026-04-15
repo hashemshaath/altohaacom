@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
 import { ACTION_LABELS } from "./orderActivityLogger";
 import { formatDistanceToNow } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -63,7 +64,7 @@ export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false })
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return data as any[];
     },
@@ -81,7 +82,7 @@ export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }
         .from("profiles")
         .select("user_id, full_name, username")
         .in("user_id", userIds);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: userIds.length > 0,

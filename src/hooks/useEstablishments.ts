@@ -52,7 +52,7 @@ export function useEstablishmentAssociations(establishmentId?: string) {
         .select("*, profiles:user_id(full_name, full_name_ar, avatar_url, username)")
         .eq("establishment_id", establishmentId!)
         .order("start_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!establishmentId,
@@ -69,7 +69,7 @@ export function useMyEstablishmentAssociations() {
         .select("*, establishments(name, name_ar, type, logo_url, city, country_code)")
         .eq("user_id", user!.id)
         .order("start_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user?.id,
@@ -86,7 +86,7 @@ export function useMyEstablishmentQualifications() {
         .select("*, chef_establishment_associations(establishment_id, establishments(name, name_ar))")
         .eq("user_id", user!.id)
         .order("issued_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user?.id,
@@ -102,7 +102,7 @@ export function useAssociationQualifications(associationId?: string) {
         .select("id, association_id, user_id, qualification_name, qualification_name_ar, qualification_type, issued_date, expiry_date, credential_id, description, description_ar, created_at")
         .eq("association_id", associationId!)
         .order("issued_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!associationId,
@@ -131,7 +131,7 @@ export function useCreateEstablishment() {
     }) => {
       if (!user) throw new Error("Not authenticated");
       const { error } = await supabase.from("establishments").insert({ ...data, created_by: user.id });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["establishments"] });
@@ -160,7 +160,7 @@ export function useAddAssociation() {
     }) => {
       if (!user) throw new Error("Not authenticated");
       const { error } = await supabase.from("chef_establishment_associations").insert({ ...data, user_id: user.id });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-establishment-associations"] });
@@ -189,7 +189,7 @@ export function useAddQualification() {
     }) => {
       if (!user) throw new Error("Not authenticated");
       const { error } = await supabase.from("chef_establishment_qualifications").insert({ ...data, user_id: user.id });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-establishment-qualifications"] });

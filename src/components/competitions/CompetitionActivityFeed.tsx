@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Megaphone, Plus, Send, Pin, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CompetitionActivityFeedProps {
   competitionId: string;
@@ -44,7 +45,7 @@ export const CompetitionActivityFeed = React.forwardRef<HTMLDivElement, Competit
           .order("is_pinned", { ascending: false })
           .order("created_at", { ascending: false })
           .limit(10);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         return data;
       },
     });
@@ -59,7 +60,7 @@ export const CompetitionActivityFeed = React.forwardRef<HTMLDivElement, Competit
           content: content.trim() || null,
           update_type: "announcement",
         });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       },
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["competition-updates", competitionId] });

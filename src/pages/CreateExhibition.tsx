@@ -18,6 +18,7 @@ import { ExhibitionReviewStep } from "@/components/exhibitions/wizard/ReviewStep
 import { initialExhibitionData } from "@/components/exhibitions/wizard/types";
 import type { ExhibitionFormData } from "@/components/exhibitions/wizard/types";
 import { EventCreationGate } from "@/components/permissions/EventCreationGate";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CreateExhibition() {
   const { user } = useAuth();
@@ -92,7 +93,7 @@ export default function CreateExhibition() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return exhibition;
     },
     onSuccess: (exhibition) => {

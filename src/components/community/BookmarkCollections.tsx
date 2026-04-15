@@ -14,6 +14,7 @@ import { FolderPlus, Folder, Check, Plus, Trash2, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface BookmarkCollectionsProps {
   postId: string;
@@ -87,7 +88,7 @@ export const BookmarkCollections = memo(function BookmarkCollections({ postId }:
         .insert({ user_id: user.id, name: newName.trim() })
         .select("id")
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // Add post to the new collection
       await supabase
         .from("bookmark_collection_items")

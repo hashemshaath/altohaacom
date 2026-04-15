@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface SiteAnnouncement {
   id: string;
@@ -33,7 +34,7 @@ export function useAnnouncements() {
         .lte("starts_at", new Date().toISOString())
         .or(`ends_at.is.null,ends_at.gt.${new Date().toISOString()}`)
         .order("priority", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as SiteAnnouncement[];
     },
     ...CACHE.medium,

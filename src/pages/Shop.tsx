@@ -18,6 +18,7 @@ import { toast } from "@/hooks/use-toast";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 import { useAbandonedCartTracker } from "@/hooks/useAbandonedCartTracker";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function Shop() {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ export default function Shop() {
         .eq("is_active", true)
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.medium.staleTime,

@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { History, Search, User, Clock } from "lucide-react";
 import { useState, useMemo } from "react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface AuditEntry {
   id: string;
@@ -51,7 +52,7 @@ export const CountryAuditLog = memo(function CountryAuditLog({ countryCode }: { 
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as AuditEntry[];
     },
   });

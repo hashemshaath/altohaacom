@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Layers, Eye, Wrench, Flame, Presentation, GripVertical, Trash2 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -41,7 +42,7 @@ export const EvaluationStagesPanel = memo(function EvaluationStagesPanel({ compe
         .select("id, competition_id, name, name_ar, stage_type, weight_percentage, sort_order, is_active, created_at")
         .eq("competition_id", competitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -72,7 +73,7 @@ export const EvaluationStagesPanel = memo(function EvaluationStagesPanel({ compe
         weight_percentage: parseFloat(form.weight_percentage) || 100,
         sort_order: (stages?.length || 0) + 1,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["evaluation-stages", competitionId] });
@@ -86,7 +87,7 @@ export const EvaluationStagesPanel = memo(function EvaluationStagesPanel({ compe
   const deleteStage = useMutation({
     mutationFn: async (stageId: string) => {
       const { error } = await supabase.from("evaluation_stages").delete().eq("id", stageId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["evaluation-stages", competitionId] });

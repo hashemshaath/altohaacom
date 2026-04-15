@@ -23,6 +23,7 @@ import {
   X,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
 
@@ -146,7 +147,7 @@ export const CompetitionStatusManager = memo(function CompetitionStatusManager({
         .update({ status: newStatus, updated_at: new Date().toISOString() })
         .eq("id", competitionId);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Notify registered participants about status changes
       const notifyStatuses: CompetitionStatus[] = ["registration_open", "in_progress", "judging", "completed", "cancelled"];

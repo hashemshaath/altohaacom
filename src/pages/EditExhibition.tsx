@@ -16,6 +16,7 @@ import { ExhibitionDatesLocationStep } from "@/components/exhibitions/wizard/Dat
 import { ExhibitionOrganizerTicketsStep } from "@/components/exhibitions/wizard/OrganizerTicketsStep";
 import type { ExhibitionFormData } from "@/components/exhibitions/wizard/types";
 import type { Database } from "@/integrations/supabase/types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function EditExhibition() {
   const { slug } = useParams<{ slug: string }>();
@@ -39,7 +40,7 @@ export default function EditExhibition() {
         .select("id, title, title_ar, slug, description, description_ar, type, status, cover_image_url, start_date, end_date, registration_deadline, venue, venue_ar, city, country, map_url, is_virtual, virtual_link, organizer_id, organizer_name, organizer_name_ar, organizer_email, organizer_phone, organizer_website, registration_url, website_url, is_free, ticket_price, ticket_price_ar, max_attendees, tags, target_audience, is_featured, series_id, edition_year, created_by")
         .eq("slug", slug!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!slug,
@@ -135,7 +136,7 @@ export default function EditExhibition() {
         } as never)
         .eq("id", exhibition.id);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition", slug] });

@@ -20,6 +20,7 @@ import {
   Factory, Globe, ArrowUpDown, Scale, Trophy, Star, Crown,
   TrendingUp, Award, CheckCircle2, Shield, Zap
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const SUPPLIER_CATEGORIES = [
   { value: "all", en: "All", ar: "الكل", icon: Grid3X3 },
@@ -51,7 +52,7 @@ export default function ProSuppliers() {
         .eq("is_pro_supplier", true)
         .order("featured_order", { ascending: true, nullsFirst: false })
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

@@ -18,6 +18,7 @@ import { OrderStats } from "@/components/company/orders/OrderStats";
 import { OrdersTable } from "@/components/company/orders/OrdersTable";
 import { OrderFormDialog } from "@/components/company/orders/OrderFormDialog";
 import { OrderDetailDialog } from "@/components/company/orders/OrderDetailDialog";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyOrders() {
   const { language } = useLanguage();
@@ -51,7 +52,7 @@ export default function CompanyOrders() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as CompanyOrder[];
     },
     enabled: !!companyId,
@@ -79,7 +80,7 @@ export default function CompanyOrders() {
         status: "draft" as any,
         created_by: user?.id || null,
       }]);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyOrders"] });
@@ -98,7 +99,7 @@ export default function CompanyOrders() {
         .from("company_orders")
         .update({ status: "pending" })
         .eq("id", orderId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyOrders"] });

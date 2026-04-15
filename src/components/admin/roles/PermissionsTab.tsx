@@ -12,6 +12,7 @@ import {
   Shield, Save, Loader2, Lock, Search, Copy, ChevronDown, ChevronUp, CheckCircle2,
 } from "lucide-react";
 import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Permission {
   id: string;
@@ -118,7 +119,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
       if (selectedPerms.size > 0) {
         const inserts = Array.from(selectedPerms).map(pid => ({ role: activeRole, permission_id: pid }));
         const { error } = await supabase.from("role_permissions").insert(inserts);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
       queryClient.invalidateQueries({ queryKey: ["rolePermissions"] });
       queryClient.invalidateQueries({ queryKey: ["roleStats"] });

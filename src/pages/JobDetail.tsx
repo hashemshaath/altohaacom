@@ -18,6 +18,7 @@ import {
   Home, ChevronRight, Bookmark, AlertCircle, Calendar, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   full_time: { en: "Full-time", ar: "دوام كامل" },
@@ -52,7 +53,7 @@ export default function JobDetail() {
         .select("*, companies(name, name_ar, logo_url, slug)")
         .eq("id", id!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!id,
@@ -95,7 +96,7 @@ export default function JobDetail() {
         user_id: user!.id,
         cover_letter: coverLetter || null,
       } as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["job-application-check", id] });

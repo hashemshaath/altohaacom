@@ -12,6 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { Plus, Clock, MapPin, Trash2, Star, Edit, CalendarClock, Users } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/contexts/AuthContext";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -49,7 +50,7 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
         .select("id, exhibition_id, title, title_ar, description, description_ar, speaker_name, speaker_name_ar, speaker_image_url, location, location_ar, category, start_time, end_time, max_attendees, is_featured, sort_order, created_by, created_at, updated_at")
         .eq("exhibition_id", exhibitionId)
         .order("start_time", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -75,10 +76,10 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
       };
       if (editingId) {
         const { error } = await supabase.from("exhibition_schedule_items").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("exhibition_schedule_items").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -93,7 +94,7 @@ export const ExhibitionScheduleManager = memo(function ExhibitionScheduleManager
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_schedule_items").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["schedule-items-manage", exhibitionId] });

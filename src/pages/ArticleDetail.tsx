@@ -43,6 +43,7 @@ import { ArticleEngagementHeatmap } from "@/components/articles/ArticleEngagemen
 import { ArticleLiveReaders } from "@/components/articles/ArticleLiveReaders";
 import { ArticleMoodReactions } from "@/components/articles/ArticleMoodReactions";
 import { ArticleSmartRecommendations } from "@/components/articles/ArticleSmartRecommendations";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 function calculateReadingTime(text: string): number {
   return Math.max(1, Math.ceil(text.trim().split(/\s+/).filter(Boolean).length / 200));
@@ -128,7 +129,7 @@ export default function ArticleDetail() {
         .eq("slug", slug)
         .eq("status", "published")
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) throw new Error("Not found");
       return data;
     },

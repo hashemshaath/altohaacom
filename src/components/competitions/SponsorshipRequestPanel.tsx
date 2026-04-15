@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Send, Building2, Clock, CheckCircle, XCircle } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const REQUEST_STATUS_COLORS: Record<string, string> = {
   pending: "bg-muted text-muted-foreground",
@@ -49,7 +50,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
         .select("*, companies:sponsor_company_id(id, name, name_ar, logo_url)")
         .eq("list_id", listId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -63,7 +64,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
         .in("type", ["sponsor", "supplier", "partner"])
         .eq("status", "active")
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: showCreateDialog,
@@ -77,7 +78,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
         .from("requirement_list_items")
         .select("*, requirement_items(name, name_ar)")
         .eq("list_id", listId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: showCreateDialog,
@@ -107,7 +108,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
         deadline: newRequest.deadline || null,
         status: "pending",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["sponsorship-requests", listId] });
@@ -123,7 +124,7 @@ export const SponsorshipRequestPanel = memo(function SponsorshipRequestPanel({ l
       const updates: Record<string, unknown> = { status };
       if (status === "sent") updates.sent_at = new Date().toISOString();
       const { error } = await supabase.from("requirement_sponsorship_requests").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Notify the organizer who created the request about status changes from sponsor side
       if (user && ["accepted", "declined", "partially_accepted", "fulfilled"].includes(status)) {

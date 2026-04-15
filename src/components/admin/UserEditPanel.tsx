@@ -28,6 +28,7 @@ import {
   Loader2, Upload, Camera, KeyRound, Mail, AlertCircle,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type AccountStatus = Database["public"]["Enums"]["account_status"];
 type AccountType = Database["public"]["Enums"]["account_type"];
@@ -139,7 +140,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   const updateProfileMutation = useMutation({
     mutationFn: async (updates: Record<string, unknown>) => {
       const { error } = await supabase.from("profiles").update(updates).eq("user_id", editingUser.user_id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert([{ admin_id: user!.id, target_user_id: editingUser.user_id, action_type: "update_profile", details: updates as Record<string, unknown> as Database["public"]["Tables"]["admin_actions"]["Insert"]["details"] }]);
     },
     onSuccess: () => {
@@ -157,12 +158,12 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
       const toDelete = [...existingSet].filter((r) => !newSet.has(r as AppRole));
       if (toDelete.length > 0) {
         const { error } = await supabase.from("user_roles").delete().eq("user_id", editingUser.user_id).in("role", toDelete);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
       const toInsert = [...newSet].filter((r) => !existingSet.has(r));
       if (toInsert.length > 0) {
         const { error } = await supabase.from("user_roles").insert(toInsert.map((role) => ({ user_id: editingUser.user_id, role })));
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -193,7 +194,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   const addSpecialtyMutation = useMutation({
     mutationFn: async (specialtyId: string) => {
       const { error } = await supabase.from("user_specialties").insert({ user_id: editingUser.user_id, specialty_id: specialtyId });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { refetchUserSpecialties(); toast({ title: isAr ? "تمت الإضافة" : "Added" }); },
     onError: (e) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),
@@ -202,7 +203,7 @@ export const UserEditPanel = memo(function UserEditPanel({ user: editingUser, on
   const removeSpecialtyMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("user_specialties").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { refetchUserSpecialties(); toast({ title: isAr ? "تمت الإزالة" : "Removed" }); },
     onError: (e) => toast({ variant: "destructive", title: "Error", description: e instanceof Error ? e.message : String(e) }),

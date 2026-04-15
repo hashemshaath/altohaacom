@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface Story {
   id: string;
@@ -100,7 +101,7 @@ export function useStoriesData(): UseStoriesReturn {
       const { error } = await supabase.from("community_stories").insert({
         user_id: user.id, media_url: urlData.publicUrl, media_type: mediaType, caption: caption.trim() || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
   });

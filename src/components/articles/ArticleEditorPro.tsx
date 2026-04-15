@@ -25,6 +25,7 @@ import {
   ArrowLeft, Save, Eye, Calendar, Star, Loader2, CheckCircle2, Globe,
   Sparkles, Link2, Tag, FolderOpen, Wand2, RotateCcw, Languages, Search,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ArticleFormData {
   title: string;
@@ -199,10 +200,10 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
       let savedId = articleId;
       if (articleId) {
         const { error } = await supabase.from("articles").update(payload).eq("id", articleId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { data: inserted, error } = await supabase.from("articles").insert([payload]).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         savedId = inserted.id;
       }
       if (savedId) {

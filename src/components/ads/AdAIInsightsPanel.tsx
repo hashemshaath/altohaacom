@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, TrendingUp, Target, DollarSign, Clock, RefreshCw, Users, Repeat } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
   const isAr = useIsAr();
@@ -17,7 +18,7 @@ export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
     queryKey: ["ai-ad-insights", refreshKey],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("ai-ad-insights");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.medium,

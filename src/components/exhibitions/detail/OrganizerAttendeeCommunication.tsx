@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Send, Bell, Users, Mail, Megaphone } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -58,7 +59,7 @@ export const OrganizerAttendeeCommunication = memo(function OrganizerAttendeeCom
       }));
 
       const { error } = await supabase.from("notifications").insert(notifications);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return userIds.length;
     },
     onSuccess: (count) => {

@@ -11,6 +11,7 @@ import { useIsAdmin } from "@/hooks/useAdmin";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useCompetitionDetailData() {
   const { slug: urlParam } = useParams<{ slug: string }>();
@@ -28,7 +29,7 @@ export function useCompetitionDetailData() {
       if (!data) {
         ({ data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, cover_image_url, rules_summary, rules_summary_ar, scoring_notes, scoring_notes_ar, registration_start, registration_end, competition_start, competition_end, is_virtual, venue, venue_ar, city, country, country_code, edition_year, max_participants, exhibition_id, organizer_id, competition_number, status, registration_fee_type, registration_fee, registration_currency, registration_tax_rate, registration_tax_name, registration_tax_name_ar, allowed_entry_types, max_team_size, min_team_size, series_id, created_at, blind_judging_enabled, blind_code_prefix, slug").eq("id", slug).maybeSingle());
       }
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) throw new Error("Competition not found");
       return data;
     },
@@ -52,7 +53,7 @@ export function useCompetitionDetailData() {
     queryKey: ["competition-categories", competitionId],
     queryFn: async () => {
       const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar, description, description_ar, max_participants, gender, sort_order, cover_image_url, participant_level, status").eq("competition_id", competitionId!).order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!competitionId,
@@ -63,7 +64,7 @@ export function useCompetitionDetailData() {
     queryKey: ["judging-criteria", competitionId],
     queryFn: async () => {
       const { data, error } = await supabase.from("judging_criteria").select("id, name, name_ar, description, description_ar, max_score, weight, sort_order").eq("competition_id", competitionId!).order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!competitionId,

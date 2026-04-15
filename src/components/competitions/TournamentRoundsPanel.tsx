@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trophy, Users, ArrowRight, ChevronDown, ChevronUp, Play, CheckCircle, Clock, Swords } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -67,7 +68,7 @@ export const TournamentRoundsPanel = memo(function TournamentRoundsPanel({ compe
         .select("id, competition_id, name, name_ar, round_number, round_type, format, status, sort_order, start_time, end_time, advancement_count, advancement_rule, threshold_score, max_participants")
         .eq("competition_id", competitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -81,7 +82,7 @@ export const TournamentRoundsPanel = memo(function TournamentRoundsPanel({ compe
         .from("round_participants")
         .select("*, competition_registrations:registration_id(participant_id, dish_name, profiles:participant_id(full_name, full_name_ar, avatar_url))")
         .in("round_id", roundIds);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const grouped: Record<string, typeof data> = {};
       data?.forEach(rp => {
         if (!grouped[rp.round_id]) grouped[rp.round_id] = [];
@@ -108,7 +109,7 @@ export const TournamentRoundsPanel = memo(function TournamentRoundsPanel({ compe
         max_participants: form.max_participants ? parseInt(form.max_participants) : null,
         sort_order: nextOrder,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-rounds", competitionId] });
@@ -122,7 +123,7 @@ export const TournamentRoundsPanel = memo(function TournamentRoundsPanel({ compe
   const updateRoundStatus = useMutation({
     mutationFn: async ({ roundId, status }: { roundId: string; status: string }) => {
       const { error } = await supabase.from("competition_rounds").update({ status }).eq("id", roundId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-rounds", competitionId] });

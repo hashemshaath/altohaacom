@@ -32,6 +32,7 @@ import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
 import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function LiveChatAdmin() {
   const { user } = useAuth();
@@ -63,7 +64,7 @@ export default function LiveChatAdmin() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     refetchInterval: chatRefetchInterval,
@@ -97,7 +98,7 @@ export default function LiveChatAdmin() {
         .select("id, session_id, sender_id, message, message_type, created_at")
         .eq("session_id", selectedSessionId)
         .order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedSessionId,
@@ -133,7 +134,7 @@ export default function LiveChatAdmin() {
         .from("chat_sessions")
         .update({ agent_id: user.id, status: "active" })
         .eq("id", sessionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminChatSessions"] });
@@ -148,7 +149,7 @@ export default function LiveChatAdmin() {
         .from("chat_sessions")
         .update({ status: "closed", ended_at: new Date().toISOString() })
         .eq("id", sessionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminChatSessions"] });
@@ -164,7 +165,7 @@ export default function LiveChatAdmin() {
         .from("chat_sessions")
         .update({ agent_id: null, status: "waiting" })
         .eq("id", sessionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminChatSessions"] });
@@ -181,7 +182,7 @@ export default function LiveChatAdmin() {
         sender_id: user.id,
         message: newMessage,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       setNewMessage("");

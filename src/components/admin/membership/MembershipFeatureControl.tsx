@@ -14,6 +14,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   Loader2, Search, Shield, Zap, Star, Crown, Layout, Users, MessageCircle,
   ToggleLeft, ToggleRight, CheckCircle2, XCircle, LucideIcon } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 
@@ -73,12 +74,12 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
           .from("membership_feature_tiers")
           .update({ is_enabled: !currentEnabled })
           .eq("id", existing.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase
           .from("membership_feature_tiers")
           .insert({ feature_id: featureId, tier, is_enabled: !currentEnabled });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
 
       queryClient.invalidateQueries({ queryKey: ["allMembershipFeatures"] });
@@ -99,7 +100,7 @@ const MembershipFeatureControl = memo(function MembershipFeatureControl() {
         .from("membership_features")
         .update({ is_active: !currentActive })
         .eq("id", featureId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       queryClient.invalidateQueries({ queryKey: ["allMembershipFeatures"] });
       toast.success(isAr ? "تم التحديث" : "Updated");
     } catch {

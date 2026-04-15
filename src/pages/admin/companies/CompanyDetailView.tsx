@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { type CompanyStatus, MEDIA_CATEGORIES, DAYS, getTypeLabel, getStatusLabel } from "./companiesAdminTypes";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const AdminCatalogExtended = safeLazy(() => import("@/components/admin/AdminCatalogExtended").then(m => ({ default: m.AdminCatalogExtended })));
 const CompanyEditPanel = safeLazy(() => import("@/components/admin/CompanyEditPanel").then(m => ({ default: m.CompanyEditPanel })));
@@ -87,7 +88,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("companies").select("id, name, name_ar, type, status, country_code, country, city, address, address_ar, phone, email, website, logo_url, cover_image_url, description, description_ar, company_number, tax_number, registration_number, founded_year, specializations, social_links, currency, credit_limit, payment_terms, created_at, updated_at").eq("id", companyId).single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -96,7 +97,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-contacts", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_contacts").select("id, company_id, user_id, name, name_ar, role, email, phone, mobile, is_primary, can_login, title, department, created_at").eq("company_id", companyId).order("is_primary", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -105,7 +106,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-branches", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_branches").select("id, company_id, name, name_ar, city, address, phone, email, is_headquarters, is_active, country, manager_name, manager_phone, created_at").eq("company_id", companyId).order("is_headquarters", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -114,7 +115,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-orders", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_orders").select("id, company_id, order_number, title, direction, status, total_amount, currency, notes, created_at, updated_at, created_by").eq("company_id", companyId).order("created_at", { ascending: false }).limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -123,7 +124,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-transactions", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_transactions").select("id, company_id, transaction_number, type, amount, currency, description, description_ar, invoice_id, transaction_date, created_at, created_by").eq("company_id", companyId).order("created_at", { ascending: false }).limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -132,7 +133,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-invitations", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_invitations").select("id, company_id, invitation_type, title, title_ar, description, response_notes, status, expires_at, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(200);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -141,7 +142,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-evaluations", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_evaluations").select("id, company_id, evaluated_by, overall_rating, quality_rating, delivery_rating, communication_rating, value_rating, review, review_ar, is_public, created_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -150,7 +151,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-catalog", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_catalog").select("id, company_id, name, name_ar, category, description, description_ar, unit_price, currency, image_url, is_active, sku, unit, quantity_available, shop_product_id, created_at").eq("company_id", companyId).order("category").order("name").limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -159,7 +160,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-drivers", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_drivers").select("id, company_id, name, name_ar, phone, license_number, vehicle_type, vehicle_plate, is_available, is_active, created_at").eq("company_id", companyId).order("name").limit(200);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -168,7 +169,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-communications", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_communications").select("id, company_id, sender_id, direction, subject, message, status, priority, tags, is_archived, is_starred, is_internal_note, parent_id, created_at, updated_at").eq("company_id", companyId).order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -177,7 +178,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["company-media", companyId],
     queryFn: async () => {
       const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, file_type, file_size, title, category, description, created_at").eq("company_id", companyId).order("category").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -186,7 +187,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
     queryKey: ["shop-products-for-catalog"],
     queryFn: async () => {
       const { data, error } = await supabase.from("shop_products").select("id, title, sku").eq("is_active", true).order("title").limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -195,7 +196,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: CompanyStatus }) => {
       const { error } = await supabase.from("companies").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
@@ -213,7 +214,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
         phone: contactForm.phone || null, mobile: contactForm.mobile || null,
         whatsapp: contactForm.whatsapp || null, is_primary: contactForm.is_primary, can_login: contactForm.can_login,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-contacts", companyId] });
@@ -225,7 +226,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   });
 
   const deleteContactMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("company_contacts").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("company_contacts").delete().eq("id", id); if (error) throw handleSupabaseError(error); },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["company-contacts", companyId] }); toast({ title: isAr ? "تم الحذف" : "Contact removed" }); },
   });
 
@@ -239,7 +240,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
         postal_code: branchForm.postal_code || null, is_headquarters: branchForm.is_headquarters,
         manager_name: branchForm.manager_name || null, manager_phone: branchForm.manager_phone || null, manager_email: branchForm.manager_email || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-branches", companyId] });
@@ -251,7 +252,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   });
 
   const deleteBranchMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("company_branches").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("company_branches").delete().eq("id", id); if (error) throw handleSupabaseError(error); },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["company-branches", companyId] }); toast({ title: isAr ? "تم الحذف" : "Branch removed" }); },
   });
 
@@ -263,7 +264,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
         vehicle_plate: driverForm.vehicle_plate || null, license_number: driverForm.license_number || null,
         is_available: driverForm.is_available,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-drivers", companyId] });
@@ -275,7 +276,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   });
 
   const deleteDriverMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("company_drivers").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("company_drivers").delete().eq("id", id); if (error) throw handleSupabaseError(error); },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["company-drivers", companyId] }); toast({ title: isAr ? "تم الحذف" : "Driver removed" }); },
   });
 
@@ -288,7 +289,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
         description: invitationForm.description || null, event_date: invitationForm.event_date || null,
         expires_at: invitationForm.expires_at || null, status: "pending", created_by: user?.id || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-invitations", companyId] });
@@ -307,7 +308,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
         subject: `Re: ${parent?.subject || ""}`, message, direction: "incoming",
         priority: parent?.priority || "normal", parent_id: parentId, status: "unread",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-communications"] });
@@ -320,7 +321,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   const saveWorkingHoursMutation = useMutation({
     mutationFn: async () => {
       const { error } = await supabase.from("companies").update({ working_hours: workingHours as any }).eq("id", companyId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company", companyId] });
@@ -355,7 +356,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   });
 
   const deleteMediaMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("company_media").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("company_media").delete().eq("id", id); if (error) throw handleSupabaseError(error); },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["company-media", companyId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
   });
 
@@ -369,7 +370,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
         description: catalogForm.description || null,
         shop_product_id: catalogForm.shop_product_id && catalogForm.shop_product_id !== "none" ? catalogForm.shop_product_id : null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["company-catalog", companyId] });
@@ -381,7 +382,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
   });
 
   const deleteCatalogMutation = useMutation({
-    mutationFn: async (id: string) => { const { error } = await supabase.from("company_catalog").delete().eq("id", id); if (error) throw error; },
+    mutationFn: async (id: string) => { const { error } = await supabase.from("company_catalog").delete().eq("id", id); if (error) throw handleSupabaseError(error); },
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["company-catalog", companyId] }); toast({ title: isAr ? "تم الحذف" : "Deleted" }); },
   });
 
@@ -392,7 +393,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: textAr, source_lang: "ar", target_lang: "en", optimize_seo: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) setter(data.translated);
       else toast({ variant: "destructive", title: isAr ? "لم يتم الترجمة" : "Translation failed" });
     } catch {

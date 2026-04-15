@@ -22,6 +22,7 @@ import {
   Loader2,
   AlertTriangle,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CriteriaManagementPanelProps {
   competitionId: string;
@@ -67,7 +68,7 @@ export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
         .select("id, competition_id, name, name_ar, description, description_ar, max_score, weight, sort_order, created_at")
         .eq("competition_id", competitionId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!competitionId,
@@ -94,10 +95,10 @@ export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
           .from("judging_criteria")
           .update(data)
           .eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("judging_criteria").insert(data);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -113,7 +114,7 @@ export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("judging_criteria").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judging-criteria", competitionId] });

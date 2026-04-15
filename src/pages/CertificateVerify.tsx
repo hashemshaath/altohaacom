@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CertificateVerify() {
   const { language } = useLanguage();
@@ -41,7 +42,7 @@ export default function CertificateVerify() {
       const { data, error } = await supabase
         .rpc("verify_certificate", { p_code: searchedCode.toUpperCase() });
       
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- RPC returns dynamic shape
       if (!data || (data as any[]).length === 0) return null;
       

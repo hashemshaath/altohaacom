@@ -73,6 +73,7 @@ import {
 import { format, formatDistanceToNow, differenceInHours, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ─── SLA Thresholds (hours) ─────────────────────────────────
 const SLA_THRESHOLDS: Record<string, { warning: number; breach: number }> = {
@@ -151,7 +152,7 @@ export default function SupportTicketsAdmin() {
       if (priorityFilter !== "all") query = query.eq("priority", priorityFilter);
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -184,7 +185,7 @@ export default function SupportTicketsAdmin() {
         .select("id, ticket_id, sender_id, message, message_ar, is_internal_note, attachments, created_at")
         .eq("ticket_id", selectedTicketId)
         .order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedTicketId,
@@ -201,7 +202,7 @@ export default function SupportTicketsAdmin() {
       }
 
       const { error } = await supabase.from("support_tickets").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminTickets"] });
@@ -219,7 +220,7 @@ export default function SupportTicketsAdmin() {
         message: newReply,
         is_internal_note: isInternalNote,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Auto-update status to in_progress if open
       if (selectedTicket?.status === "open") {

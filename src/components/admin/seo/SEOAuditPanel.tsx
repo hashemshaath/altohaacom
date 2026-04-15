@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const SEVERITY_CONFIG = {
   error: { icon: AlertTriangle, class: "text-destructive bg-destructive/10 border-destructive/20", label: "Error", labelAr: "خطأ" },
@@ -32,7 +33,7 @@ export function SEOAuditPanel() {
         .select("*")
         .order("created_at", { ascending: false })
         .limit(10);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -46,7 +47,7 @@ export function SEOAuditPanel() {
         .select("*")
         .eq("audit_id", expandedAudit)
         .order("severity", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!expandedAudit,
@@ -58,7 +59,7 @@ export function SEOAuditPanel() {
       const { data, error } = await supabase.functions.invoke("seo-audit", {
         headers: { Authorization: `Bearer ${session?.access_token}` },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: (data) => {

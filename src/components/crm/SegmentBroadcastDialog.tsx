@@ -26,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Users, Bell, Mail, MessageSquare } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface SegmentBroadcastDialogProps {
   open: boolean;
@@ -106,7 +107,7 @@ export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
         for (let i = 0; i < notifications.length; i += 100) {
           const batch = notifications.slice(i, i + 100);
           const { error } = await supabase.from("notifications").insert(batch);
-          if (error) throw error;
+          if (error) throw handleSupabaseError(error);
         }
       }
 

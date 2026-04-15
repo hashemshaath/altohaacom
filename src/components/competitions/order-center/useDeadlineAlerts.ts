@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { isPast, differenceInDays } from "date-fns";
 import { getItemDisplayName } from "./orderCenterUtils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /**
  * Hook that shows toast warnings for overdue/upcoming deadlines
@@ -24,7 +25,7 @@ export function useDeadlineAlerts(competitionId: string) {
         .from("requirement_lists")
         .select("id")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.medium,
@@ -40,7 +41,7 @@ export function useDeadlineAlerts(competitionId: string) {
         .in("list_id", lists.map(l => l.id))
         .not("deadline", "is", null)
         .neq("status", "delivered");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!lists?.length,

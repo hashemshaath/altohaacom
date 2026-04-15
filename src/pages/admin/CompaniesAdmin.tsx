@@ -48,6 +48,7 @@ import { format } from "date-fns";
 import { CompanyDetailView } from "./companies/CompanyDetailView";
 import { type Company, type CompanyType, type CompanyStatus, COMPANY_TYPES, getTypeLabel, getStatusLabel } from "./companies/companiesAdminTypes";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompaniesAdmin() {
   const isAr = useIsAr();
@@ -82,7 +83,7 @@ export default function CompaniesAdmin() {
       if (typeFilter !== "all") query = query.eq("type", typeFilter as CompanyType);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as CompanyStatus);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Company[];
     },
   });
@@ -91,7 +92,7 @@ export default function CompaniesAdmin() {
     mutationFn: async (data: typeof companyForm) => {
       const { country_code, ...rest } = data;
       const { error } = await supabase.from("companies").insert({ ...rest, country_code: country_code || null, status: "pending" });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
@@ -108,7 +109,7 @@ export default function CompaniesAdmin() {
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: CompanyStatus }) => {
       const { error } = await supabase.from("companies").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companies"] });
@@ -132,7 +133,7 @@ export default function CompaniesAdmin() {
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: textAr, source_lang: "ar", target_lang: "en", optimize_seo: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) setter(data.translated);
       else toast({ variant: "destructive", title: isAr ? "لم يتم الترجمة" : "Translation failed" });
     } catch {

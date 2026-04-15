@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, XCircle, Loader2, Ticket } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -27,7 +28,7 @@ export const ExhibitionPaymentCallback = memo(function ExhibitionPaymentCallback
         const { data, error } = await supabase.functions.invoke("moyasar-payment", {
           body: { action: "verify-payment", payment_id: paymentId },
         });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         setStatus(data?.status === "paid" ? "success" : "failed");
       } catch {
         setStatus(paymentStatus === "paid" ? "success" : "failed");

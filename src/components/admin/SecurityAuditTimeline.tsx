@@ -11,6 +11,7 @@ import { ShieldAlert, ShieldCheck, Shield, Lock, LogIn, LogOut, UserX, KeyRound,
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const SEVERITY_CONFIG = {
   critical: { color: "text-destructive", bg: "bg-destructive/10", icon: AlertTriangle },
@@ -48,7 +49,7 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),

@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { Crown, User, Shield, Star, Users, Award } from "lucide-react";
 import type { EntityPositionWithProfile } from "./entityTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const positionLabels: Record<string, { en: string; ar: string }> = {
   president: { en: "President", ar: "الرئيس" },
@@ -54,7 +55,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
         .eq("entity_id", entityId)
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as EntityPositionWithProfile[];
     },
   });

@@ -10,6 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { Clock, MapPin, Star, UserPlus, UserMinus, CalendarClock, Users, Mic } from "lucide-react";
 import { format, parseISO, isSameDay } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -43,7 +44,7 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
         .select("id, title, title_ar, description, description_ar, start_time, end_time, location, location_ar, category, speaker_name, speaker_name_ar, max_attendees, is_featured")
         .eq("exhibition_id", exhibitionId)
         .order("start_time", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.medium.staleTime,
@@ -69,10 +70,10 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
     mutationFn: async ({ itemId, action }: { itemId: string; action: "register" | "unregister" }) => {
       if (action === "register") {
         const { error } = await supabase.from("exhibition_schedule_registrations").insert({ schedule_item_id: itemId, user_id: user!.id });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("exhibition_schedule_registrations").delete().eq("schedule_item_id", itemId).eq("user_id", user!.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: (_, vars) => {

@@ -15,6 +15,7 @@ import { MessageCircle, Flag, EyeOff, Trash2, Search, Eye, Shield } from "lucide
 import { toast } from "@/hooks/use-toast";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const AdminCommentModeration = memo(function AdminCommentModeration() {
   const isAr = useIsAr();
@@ -36,7 +37,7 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
       if (filter === "hidden") query = query.eq("is_hidden", true);
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data || data.length === 0) return [];
 
       // Fetch profiles
@@ -55,7 +56,7 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
         hidden_by: hide ? (await supabase.auth.getUser()).data.user?.id : null,
         hidden_at: hide ? new Date().toISOString() : null,
       }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-comments-moderation"] });
@@ -66,7 +67,7 @@ export const AdminCommentModeration = memo(function AdminCommentModeration() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("event_comments").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-comments-moderation"] });

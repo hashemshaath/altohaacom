@@ -20,6 +20,7 @@ import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPan
 import { Image, Languages, Loader2, MapPin, Search, Upload, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];
@@ -127,7 +128,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
     queryKey: ["admin-users-for-manager"],
     queryFn: async () => {
       const { data, error } = await supabase.from("profiles").select("id, full_name").order("full_name").limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -153,7 +154,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: sourceText, source_lang: direction === "en_to_ar" ? "en" : "ar", target_lang: direction === "en_to_ar" ? "ar" : "en", optimize_seo: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         onUpdate(targetField, data.translated);
         toast({ title: isAr ? "تمت الترجمة + SEO" : "Translated + SEO optimized" });
@@ -174,7 +175,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text, source_lang: isArabicField ? "ar" : "en", optimize_only: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.optimized) {
         onUpdate(field, data.optimized);
         toast({ title: isAr ? "تم تحسين النص" : "Text optimized for SEO" });

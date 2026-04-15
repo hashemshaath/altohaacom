@@ -13,6 +13,7 @@ import { ar } from "date-fns/locale";
 import { toast } from "sonner";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TYPE_ICONS: Record<string, typeof Bell> = {
   warning: AlertTriangle,
@@ -41,7 +42,7 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     refetchInterval: visibleInterval,
@@ -53,7 +54,7 @@ export const AdminNotificationCenter = memo(function AdminNotificationCenter() {
         .from("notifications")
         .update({ is_read: true })
         .eq("is_read", false);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-notifications"] });

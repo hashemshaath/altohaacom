@@ -15,6 +15,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
 import { Search, Plus, Building2, X, Globe, Check, User, Briefcase } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type OrganizerType = "entity" | "company" | "chef" | "custom";
 
@@ -81,7 +82,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         .select("id, name, name_ar, type, country, city, logo_url, website, status, email")
         .in("status", ["active", "pending"])
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.medium.staleTime,
@@ -97,7 +98,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         .select("id, name, name_ar, type, country_code, city, logo_url, website, email, phone") as any)
         .eq("is_active", true)
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.medium.staleTime,
@@ -113,7 +114,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         .select("user_id, full_name, full_name_ar, avatar_url, nationality, email")
         .or(`full_name.ilike.%${search}%,full_name_ar.ilike.%${search}%`)
         .limit(10);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: search.length >= 2 && isOpen && (category === "all" || category === "chef"),
@@ -277,7 +278,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
         is_visible: false,
       }).select("id, name, name_ar, country").single();
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data) {
         onChange({
           type: "entity",

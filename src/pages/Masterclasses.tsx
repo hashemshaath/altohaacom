@@ -13,6 +13,7 @@ import { MasterclassHero } from "@/components/masterclass/MasterclassHero";
 import { MasterclassFilters } from "@/components/masterclass/MasterclassFilters";
 import { MasterclassCard } from "@/components/masterclass/MasterclassCard";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function Masterclasses() {
   const { user } = useAuth();
@@ -31,7 +32,7 @@ export default function Masterclasses() {
         .select("*, masterclass_modules(id), masterclass_enrollments(id), masterclass_reviews(rating)")
         .eq("status", "published")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.default.staleTime,
@@ -46,7 +47,7 @@ export default function Masterclasses() {
         .select("masterclass_id")
         .eq("user_id", user.id)
         .eq("status", "active");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data?.map((e) => e.masterclass_id) || [];
     },
     enabled: !!user,

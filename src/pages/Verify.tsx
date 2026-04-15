@@ -22,6 +22,7 @@ import {
   UserPlus, ExternalLink, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type CategoryFilter = "all" | "account" | "certificate" | "invoice" | "competition" | "company" | "participant" | "judge" | "team_member" | "exhibition";
 
@@ -42,7 +43,7 @@ export default function Verify() {
     queryFn: async () => {
       if (!searchedCode) return null;
       const { data, error } = await supabase.rpc("verify_certificate", { p_code: searchedCode.toUpperCase() });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data || (data as Record<string, any>[]).length === 0) return null;
       return (data as Record<string, any>[])[0];
     },

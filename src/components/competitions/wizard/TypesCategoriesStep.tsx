@@ -14,6 +14,7 @@ import { Flame, Cake, Eye, Monitor, Check, Plus, Trash2 } from "lucide-react";
 import type { CategoryForm } from "./types";
 import { emptyCategory } from "./types";
 import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, categoryBadgeText } from "@/lib/categoryUtils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const iconMap: Record<string, React.ReactNode> = {
   flame: <Flame className="h-5 w-5" />,
@@ -45,7 +46,7 @@ export const TypesCategoriesStep = memo(function TypesCategoriesStep({
         .select("id, name, name_ar, description, description_ar, icon, cover_image_url, is_active, sort_order")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -62,7 +63,7 @@ export const TypesCategoriesStep = memo(function TypesCategoriesStep({
         query = query.in("type_id", selectedTypeIds);
       }
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: selectedTypeIds.length > 0,

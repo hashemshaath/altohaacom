@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { CreditCard, Lock, CheckCircle2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -71,7 +72,7 @@ export const MoyasarPaymentForm = memo(function MoyasarPaymentForm({
         },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       if (data?.payment_url) {
         // 3D Secure redirect

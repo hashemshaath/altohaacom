@@ -10,6 +10,7 @@ import { MessageCircle, Heart, Send, Loader2, Trash2, Flag } from "lucide-react"
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface EventCommentsProps {
   eventType: "competition" | "exhibition";
@@ -34,7 +35,7 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
         .is("parent_id", null)
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data || data.length === 0) return [];
 
       // Fetch replies
@@ -90,7 +91,7 @@ export const EventComments = memo(function EventComments({ eventType, eventId }:
         parent_id: replyTo,
         content: content.trim(),
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       setContent("");

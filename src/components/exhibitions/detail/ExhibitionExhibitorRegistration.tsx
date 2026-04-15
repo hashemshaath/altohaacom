@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Building, Send, CheckCircle2, Clock, XCircle, Loader2 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -59,7 +60,7 @@ export const ExhibitionExhibitorRegistration = memo(function ExhibitionExhibitor
         user_id: user.id,
         ...form,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["booth-request", exhibitionId] });

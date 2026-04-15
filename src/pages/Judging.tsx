@@ -26,6 +26,7 @@ import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
 import { EntryComparison } from "@/components/judging/EntryComparison";
 import { OfflineJudgingPanel } from "@/components/judging/OfflineJudgingPanel";
 import { WifiOff } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type Registration = Database["public"]["Tables"]["competition_registrations"]["Row"];
 type Criteria = Database["public"]["Tables"]["judging_criteria"]["Row"];
@@ -101,7 +102,7 @@ export default function Judging() {
         .eq("competition_id", selectedCompetition)
         .eq("status", "approved");
       
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       
       // Fetch profiles for participants
       if (data && data.length > 0) {
@@ -134,7 +135,7 @@ export default function Judging() {
         .eq("competition_id", selectedCompetition)
         .order("sort_order");
       
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!selectedCompetition,
@@ -151,7 +152,7 @@ export default function Judging() {
         .select("id, judge_id, registration_id, criteria_id, score, notes, scored_at")
         .eq("judge_id", user.id);
       
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!selectedCompetition && !!user,
@@ -186,7 +187,7 @@ export default function Judging() {
         .from("competition_scores")
         .insert(scoreRows);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judge-scores"] });

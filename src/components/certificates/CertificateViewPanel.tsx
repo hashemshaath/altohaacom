@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useRef, useCallback } from "react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Certificate {
   id: string;
@@ -88,7 +89,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
       const { error } = await supabase.from("certificates").update({
         status: "signed" as Database["public"]["Enums"]["certificate_status"], signed_at: new Date().toISOString(), signed_by: user?.id,
       }).eq("id", cert.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
@@ -101,7 +102,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
       const { error } = await supabase.from("certificates").update({
         status: "issued" as Database["public"]["Enums"]["certificate_status"], issued_at: new Date().toISOString(),
       }).eq("id", cert.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
@@ -114,7 +115,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
       const { error } = await supabase.from("certificates").update({
         sent_at: new Date().toISOString(), sent_to_email: cert.recipient_email,
       }).eq("id", cert.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
@@ -127,7 +128,7 @@ export const CertificateViewPanel = memo(function CertificateViewPanel({ certifi
       const { error } = await supabase.from("certificates").update({
         status: "revoked" as Database["public"]["Enums"]["certificate_status"], revoked_at: new Date().toISOString(), revoked_by: user?.id,
       }).eq("id", cert.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });

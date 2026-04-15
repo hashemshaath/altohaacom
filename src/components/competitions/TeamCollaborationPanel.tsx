@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "@/hooks/use-toast";
 import { Plus, ClipboardList, ChefHat, Calendar, CheckSquare, Square, Users, Utensils } from "lucide-react";
 import type { Json } from "@/integrations/supabase/types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -58,7 +59,7 @@ export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ com
         .from("team_workspaces")
         .select("id, competition_id, registration_id, name, name_ar, task_board, recipe_plan, practice_schedule, created_at, updated_at")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -90,7 +91,7 @@ export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ com
         recipe_plan: [] as unknown as Json,
         practice_schedule: [] as unknown as Json,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["team-workspaces", competitionId] });
@@ -106,7 +107,7 @@ export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ com
         .from("team_workspaces")
         .update({ [field]: value })
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["team-workspaces", competitionId] }),
   });

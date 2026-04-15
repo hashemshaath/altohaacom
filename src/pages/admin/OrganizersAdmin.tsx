@@ -46,6 +46,7 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip as RechartsTooltip, AreaChart, Area,
 } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const BulkImportPanel = lazy(() => import("@/components/admin/BulkImportPanel").then(m => ({ default: m.BulkImportPanel })));
 const BatchDuplicateScanner = lazy(() => import("@/components/admin/BatchDuplicateScanner").then(m => ({ default: m.BatchDuplicateScanner })));
@@ -88,7 +89,7 @@ export default function OrganizersAdmin() {
         .from("organizers")
         .select("id, name, name_ar, slug, email, phone, website, city, city_ar, country, country_ar, country_code, status, is_verified, is_featured, logo_url, cover_image_url, organizer_number, total_exhibitions, total_views, average_rating, follower_count, description, description_ar, address, address_ar, services, targeted_sectors, founded_year, social_links, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -146,7 +147,7 @@ export default function OrganizersAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("organizers").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-organizers"] }); toast.success(isAr ? "تم الحذف" : "Deleted"); },
     onError: (e: Error) => toast.error(e.message),
@@ -155,7 +156,7 @@ export default function OrganizersAdmin() {
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.from("organizers").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-organizers"] }); clearSelection(); toast.success(isAr ? "تم الحذف" : "Deleted"); },
   });
@@ -163,7 +164,7 @@ export default function OrganizersAdmin() {
   const bulkStatusMutation = useMutation({
     mutationFn: async ({ ids, status }: { ids: string[]; status: string }) => {
       const { error } = await supabase.from("organizers").update({ status }).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-organizers"] }); clearSelection(); toast.success(isAr ? "تم التحديث" : "Updated"); },
   });
@@ -171,7 +172,7 @@ export default function OrganizersAdmin() {
   const bulkVerifyMutation = useMutation({
     mutationFn: async ({ ids, verified }: { ids: string[]; verified: boolean }) => {
       const { error } = await supabase.from("organizers").update({ is_verified: verified }).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-organizers"] }); clearSelection(); toast.success(isAr ? "تم التحديث" : "Updated"); },
   });
@@ -179,7 +180,7 @@ export default function OrganizersAdmin() {
   const quickToggleVerify = useMutation({
     mutationFn: async ({ id, verified }: { id: string; verified: boolean }) => {
       const { error } = await supabase.from("organizers").update({ is_verified: verified }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-organizers"] }); toast.success(isAr ? "تم التحديث" : "Updated"); },
   });
@@ -187,7 +188,7 @@ export default function OrganizersAdmin() {
   const quickToggleFeatured = useMutation({
     mutationFn: async ({ id, featured }: { id: string; featured: boolean }) => {
       const { error } = await supabase.from("organizers").update({ is_featured: featured }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-organizers"] }); toast.success(isAr ? "تم التحديث" : "Updated"); },
   });
@@ -195,7 +196,7 @@ export default function OrganizersAdmin() {
   const refreshStatsMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.rpc("refresh_organizer_stats", { p_organizer_id: id });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-organizers"] }); toast.success(isAr ? "تم تحديث الإحصائيات" : "Stats refreshed"); },
   });

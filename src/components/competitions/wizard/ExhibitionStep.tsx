@@ -12,6 +12,7 @@ import { Calendar, MapPin, Building2, Globe, Check, X, Search, ChefHat, Users, U
 import { format } from "date-fns";
 import { useState } from "react";
 import { useCountries } from "@/hooks/useCountries";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ExhibitionStepProps {
   selectedId: string | null;
@@ -49,7 +50,7 @@ export const ExhibitionStep = memo(function ExhibitionStep({
         .select("id, title, title_ar, start_date, end_date, venue, venue_ar, city, country, is_virtual, type, status, organizer_name, organizer_name_ar, organizer_email, organizer_phone, organizer_website, cover_image_url, max_attendees")
         .in("status", ["upcoming", "active"])
         .order("start_date", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -63,7 +64,7 @@ export const ExhibitionStep = memo(function ExhibitionStep({
         .eq("status", "active")
         .eq("is_visible", true)
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -77,7 +78,7 @@ export const ExhibitionStep = memo(function ExhibitionStep({
         .not("full_name", "is", null)
         .order("full_name")
         .limit(200);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

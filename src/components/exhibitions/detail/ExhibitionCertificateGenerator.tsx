@@ -10,6 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { Award, Loader2, Download, CheckCircle2, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -32,7 +33,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
         .select("id, name, name_ar, type")
         .eq("is_active", true)
         .in("type", ["participation", "appreciation", "organizer", "volunteer"]);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.long.staleTime,
@@ -47,7 +48,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
         .select("id, user_id, attendee_name, attendee_email, checked_in_at")
         .eq("exhibition_id", exhibitionId)
         .not("checked_in_at", "is", null);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -61,7 +62,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
         .select("id, recipient_id, type, status, certificate_number")
         .eq("event_name", exhibitionTitle)
         .not("status", "eq", "revoked");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -95,7 +96,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
       if (certs.length === 0) throw new Error("No eligible attendees");
 
       const { error } = await supabase.from("certificates").insert(certs as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return certs.length;
     },
     onSuccess: (count) => {

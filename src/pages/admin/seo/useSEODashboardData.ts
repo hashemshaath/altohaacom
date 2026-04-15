@@ -10,6 +10,7 @@ import { getDeviceType } from "@/lib/deviceType";
 import { useSearchParams } from "react-router-dom";
 import { PUBLIC_ROUTES, DEFAULT_ROBOTS_TXT, NAV_GROUPS, type SectionKey, resolveSectionParam } from "./seoDashboardTypes";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSEODashboardData(isAr: boolean) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,7 +41,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-page-views", range],
     queryFn: async () => {
       const { data, error } = await supabase.from("seo_page_views").select("path, device_type, is_bounce, duration_seconds, created_at, session_id").gte("created_at", fromDate).order("created_at", { ascending: false }).limit(1000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -49,7 +50,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-page-views-prev", range],
     queryFn: async () => {
       const { data, error } = await supabase.from("seo_page_views").select("path, device_type, is_bounce, duration_seconds, session_id").gte("created_at", prevFromDate).lt("created_at", fromDate).limit(1000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -58,7 +59,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-web-vitals", range],
     queryFn: async () => {
       const { data, error } = await supabase.from("seo_web_vitals").select("path, lcp, inp, cls, fcp, ttfb, device_type, connection_type, created_at").gte("created_at", fromDate).order("created_at", { ascending: false }).limit(1000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -67,7 +68,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-crawl-log"],
     queryFn: async () => {
       const { data, error } = await supabase.from("seo_crawl_log").select("*").order("created_at", { ascending: false }).limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -76,7 +77,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-crawler-visits", range],
     queryFn: async () => {
       const { data, error } = await supabase.from("seo_crawler_visits").select("path, crawler_name, crawler_type, created_at").gte("created_at", fromDate).order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -85,7 +86,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
       const { data, error } = await supabase.from("seo_tracked_keywords").select("*").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -94,7 +95,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-indexing-status"],
     queryFn: async () => {
       const { data, error } = await supabase.from("seo_indexing_status").select("*").order("updated_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -111,7 +112,7 @@ export function useSEODashboardData(isAr: boolean) {
     queryKey: ["seo-site-settings"],
     queryFn: async () => {
       const { data, error } = await supabase.from("site_settings").select("value").eq("key", "seo").maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data?.value as Record<string, unknown>) || {};
     },
   });
@@ -136,7 +137,7 @@ export function useSEODashboardData(isAr: boolean) {
     try {
       const merged = { ...(seoSettings || {}), ...patch };
       const { error } = await supabase.from("site_settings").update({ value: merged as never, updated_at: new Date().toISOString() }).eq("key", "seo");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await refetchSeoSettings();
       toast.success(isAr ? "تم الحفظ بنجاح" : "Saved successfully");
     } catch (e: unknown) { toast.error(e instanceof Error ? e.message : String(e)); } finally { setSavingSeo(false); }
@@ -152,7 +153,7 @@ export function useSEODashboardData(isAr: boolean) {
     setAddingKeyword(true);
     try {
       const { error } = await supabase.from("seo_tracked_keywords").insert({ keyword: newKeyword.trim(), target_page: newKeywordPage.trim() || null });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setNewKeyword(""); setNewKeywordPage("");
       refetchKeywords();
       toast.success(isAr ? "تمت إضافة الكلمة المفتاحية" : "Keyword added");
@@ -184,7 +185,7 @@ export function useSEODashboardData(isAr: boolean) {
       const end = format(new Date(), "yyyy-MM-dd");
       const start = format(subDays(new Date(), 28), "yyyy-MM-dd");
       const { data, error } = await supabase.functions.invoke("gsc-sync", { body: { action: "search_performance", siteUrl: GSC_SITE_URL, startDate: start, endDate: end } });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       toast.success(isAr ? `تم مزامنة ${data.total_queries} استعلام` : `Synced ${data.total_queries} queries`);
       refetchKeywords();
     } catch (e: unknown) { toast.error((e instanceof Error ? e.message : "") || "GSC sync failed"); } finally { setGscSyncing(null); }
@@ -198,7 +199,7 @@ export function useSEODashboardData(isAr: boolean) {
       if (!session) throw new Error("Not authenticated");
       const urls = indexingStatus.slice(0, 20).map((s) => s.url);
       const { data, error } = await supabase.functions.invoke("gsc-sync", { body: { action: "inspect_urls", siteUrl: GSC_SITE_URL, urls } });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       toast.success(isAr ? `تم فحص ${data.inspections?.filter((i: Record<string, unknown>) => !i.error).length || 0} صفحة` : `Inspected ${data.inspections?.filter((i: Record<string, unknown>) => !i.error).length || 0} URLs`);
       refetchIndexing();
     } catch (e: unknown) { toast.error((e instanceof Error ? e.message : "") || "Inspection failed"); } finally { setGscSyncing(null); }
@@ -212,7 +213,7 @@ export function useSEODashboardData(isAr: boolean) {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error("Not authenticated");
       const { data, error } = await supabase.functions.invoke("gsc-sync", { body: { action: "submit_indexing", urls: targetUrls.slice(0, 10) } });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       toast.success(isAr ? `تم إرسال ${data.submissions?.filter((s: Record<string, unknown>) => s.success).length || 0} صفحة` : `Submitted ${data.submissions?.filter((s: Record<string, unknown>) => s.success).length || 0} URLs`);
       refetchIndexing();
     } catch (e: unknown) { toast.error((e instanceof Error ? e.message : "") || "Submission failed"); } finally { setGscSyncing(null); }
@@ -223,7 +224,7 @@ export function useSEODashboardData(isAr: boolean) {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       const { data, error } = await supabase.functions.invoke("seo-sitemap-ping", { headers: { Authorization: `Bearer ${session?.access_token}` } });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const results = data?.results || [];
       const sitemapOk = results.some((r: Record<string, unknown>) => r.engine === "Sitemap" && r.status === "success");
       const allOk = results.every((r: Record<string, unknown>) => ["success", "info"].includes(r.status as string));
@@ -257,7 +258,7 @@ export function useSEODashboardData(isAr: boolean) {
       const nav = navigator as unknown as { connection?: { effectiveType?: string }; userAgent: string };
       const payload = { path, lcp, inp: null, cls, fcp, ttfb, device_type: getDeviceType(), connection_type: nav?.connection?.effectiveType || null, session_id: "manual-collect-" + Date.now().toString(36), user_agent: navigator.userAgent.slice(0, 200) };
       const { error } = await supabase.from("seo_web_vitals").insert(payload);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["seo-web-vitals"] }),
         queryClient.invalidateQueries({ queryKey: ["seo-speed-current"] }),

@@ -10,6 +10,7 @@ import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { Ticket, CheckCircle2, Shield, Download, Share2, Calendar, MapPin, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -33,7 +34,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
         .eq("exhibition_id", exhibitionId)
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!user,

@@ -15,6 +15,7 @@ import {
   Bell, Send, Megaphone, MessageSquare, Users, Plus,
   CheckCircle2, Clock, AlertCircle,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -119,7 +120,7 @@ export const NotificationHub = memo(function NotificationHub({ competitionId, la
       }));
 
       const { error } = await supabase.from("notifications").insert(notifications);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return userIds.length;
     },
     onSuccess: (count) => {

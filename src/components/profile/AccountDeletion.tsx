@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Trash2, AlertTriangle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const AccountDeletion = memo(function AccountDeletion() {
   const { user } = useAuth();
@@ -35,7 +36,7 @@ export const AccountDeletion = memo(function AccountDeletion() {
         body: { action: "delete_own_account", confirmation: "DELETE" },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.error) throw new Error(data.error);
 
       toast({ title: isAr ? "تم حذف حسابك" : "Your account has been deleted" });

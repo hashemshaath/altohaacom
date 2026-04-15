@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Star, MessageSquare, ThumbsUp } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   companyId: string;
@@ -84,7 +85,7 @@ export const SupplierReviews = memo(function SupplierReviews({ companyId }: Prop
         title: title || null,
         comment: comment || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["supplierReviews", companyId] });

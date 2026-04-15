@@ -24,6 +24,7 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 
 type AppRole = Database["public"]["Enums"]["app_role"];
@@ -96,7 +97,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
         suspended_reason: status === "suspended" || status === "banned" ? "Admin action" : null,
         suspended_at: status === "suspended" || status === "banned" ? new Date().toISOString() : null,
       }).eq("user_id", userId!);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert([{
         admin_id: admin!.id,
         target_user_id: userId!,

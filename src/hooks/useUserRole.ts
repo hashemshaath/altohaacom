@@ -19,7 +19,7 @@ export function useUserRoles() {
         .select("role")
         .eq("user_id", user.id);
       
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data?.map(r => r.role) || [];
     },
     enabled: !!user?.id,
@@ -43,3 +43,4 @@ export function useIsOrganizer() {
 
 // Re-export permission hooks for convenience
 export { useHasPermission, useUserPermissions } from "./usePermissions";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

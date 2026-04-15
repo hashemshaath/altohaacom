@@ -36,6 +36,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { MasterclassInsightsWidget } from "@/components/admin/MasterclassInsightsWidget";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function MasterclassesAdmin() {
   const { language } = useLanguage();
@@ -71,7 +72,7 @@ export default function MasterclassesAdmin() {
         .from("masterclasses")
         .select("*, masterclass_modules(id), masterclass_enrollments(id)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -86,7 +87,7 @@ export default function MasterclassesAdmin() {
         instructor_id: user.id,
         price: rest.is_free ? 0 : rest.price,
       } as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-masterclasses"] });
@@ -102,7 +103,7 @@ export default function MasterclassesAdmin() {
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("masterclasses").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-masterclasses"] });
@@ -113,7 +114,7 @@ export default function MasterclassesAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("masterclasses").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-masterclasses"] });
