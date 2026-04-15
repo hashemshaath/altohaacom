@@ -366,7 +366,7 @@ export default function SocialLinks() {
               ))}
             </div>
           )}
-          {extra.show_membership && membershipTier && membershipTier !== "free" && (
+          {extra.show_membership && membershipTier && (membershipTier as string) !== "free" && (
             <div className="mt-2.5">
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-[12px] font-semibold rounded-full capitalize tracking-wide"
                 style={{ background: `linear-gradient(135deg, ${theme.accentLight}, ${theme.accentLight}88)`, color: theme.accent, border: `1px solid ${theme.accentMedium}` }}>✦ {membershipTier}</span>
