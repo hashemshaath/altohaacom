@@ -5,6 +5,7 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { ThemePresetsPanel } from "@/components/admin/settings/ThemePresetsPanel";
 import { CoverSettings } from "@/components/admin/settings/CoverSettings";
 import { Skeleton } from "@/components/ui/skeleton";
+import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 
 export default function CoversThemesPage() {
   const isAr = useIsAr();
@@ -25,8 +26,12 @@ export default function CoversThemesPage() {
         <Skeleton className="h-96 w-full rounded-xl" />
       ) : (
         <>
-          <ThemePresetsPanel settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
-          <CoverSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+          <WidgetErrorBoundary name="theme-presets">
+            <ThemePresetsPanel settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+          </WidgetErrorBoundary>
+          <WidgetErrorBoundary name="cover-settings">
+            <CoverSettings settings={settings} onSave={handleSave} isPending={saveSetting.isPending} />
+          </WidgetErrorBoundary>
         </>
       )}
     </div>
