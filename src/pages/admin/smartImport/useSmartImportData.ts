@@ -67,7 +67,10 @@ export function useSmartImportData(isAr: boolean) {
   const [importMode, setImportMode] = useState<"search" | "url" | "bulk" | "cv">("search");
   const [urlImporting, setUrlImporting] = useState(false);
 
-  const [stats, setStats] = useState<Record<string, unknown> | null>(null);
+  const [stats, setStats] = useState<{
+    totals: { entities: number; companies: number; establishments: number; exhibitions?: number; competitions?: number; organizers?: number };
+    imports: { today: number; week: number; total: number; by_table: Record<string, number>; by_action: { create: number; update: number } };
+  } | null>(null);
   const [loadingStats, setLoadingStats] = useState(true);
 
   const [editingFields, setEditingFields] = useState(false);

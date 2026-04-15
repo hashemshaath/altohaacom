@@ -280,7 +280,7 @@ export default function SmartImportAdmin() {
               </Card>
             </div>
             <div className="lg:col-span-3">
-              <GoogleMapEmbed results={d.searchResults} selectedId={d.selectedResult?.id} onSelect={(item) => !d.loadingDetails && d.handleResultClick(item)} />
+              <GoogleMapEmbed latitude={d.selectedResult?.latitude} longitude={d.selectedResult?.longitude} name={d.selectedResult?.name} searchQuery={d.query} location={d.location} className="h-full min-h-[350px]" />
             </div>
           </div>
         </>
