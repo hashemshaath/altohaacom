@@ -43,8 +43,8 @@ export default function Verify() {
       if (!searchedCode) return null;
       const { data, error } = await supabase.rpc("verify_certificate", { p_code: searchedCode.toUpperCase() });
       if (error) throw error;
-      if (!data || (data as any[]).length === 0) return null;
-      return (data as any[])[0];
+      if (!data || (data as Record<string, unknown>[]).length === 0) return null;
+      return (data as Record<string, unknown>[])[0];
     },
     enabled: !!searchedCode && !qrResult,
   });
@@ -65,7 +65,7 @@ export default function Verify() {
         }
         case "certificate": {
           const { data } = await supabase.rpc("verify_certificate", { p_code: qrResult.entity_id });
-          const arr = data as any[] | null;
+          const arr = data as Record<string, unknown>[] | null;
           return arr && arr.length > 0 ? { ...arr[0], type: "certificate" as const } : null;
         }
         case "invoice": {
@@ -74,7 +74,7 @@ export default function Verify() {
             .select("invoice_number, total_amount, currency, status, due_date, created_at")
             .eq("invoice_number", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as any), type: "invoice" as const } : null;
+          return data ? { ...(data as Record<string, unknown>), type: "invoice" as const } : null;
         }
         case "competition": {
           const { data } = await supabase
@@ -82,7 +82,7 @@ export default function Verify() {
             .select("title, title_ar, competition_start, competition_end, venue, city, country, status, competition_number, cover_image_url")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as any), type: "competition" as const } : null;
+          return data ? { ...(data as Record<string, unknown>), type: "competition" as const } : null;
         }
         case "company": {
           const { data } = await supabase
@@ -90,7 +90,7 @@ export default function Verify() {
             .select("name, name_ar, type, status, company_number, email, phone, city, country, logo_url, website")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as any), type: "company" as const } : null;
+          return data ? { ...(data as Record<string, unknown>), type: "company" as const } : null;
         }
         case "exhibition": {
           const { data } = await supabase
@@ -98,7 +98,7 @@ export default function Verify() {
             .select("title, title_ar, start_date, end_date, venue, city, country, status, cover_image_url, slug")
             .eq("id", qrResult.entity_id)
             .maybeSingle();
-          return data ? { ...(data as any), type: "exhibition" as const } : null;
+          return data ? { ...(data as Record<string, unknown>), type: "exhibition" as const } : null;
         }
         case "participant": {
           const { data: reg } = await supabase
@@ -336,8 +336,8 @@ function VerificationResult({
   code,
   onSaveContact,
 }: {
-  result: any;
-  entityDetails: any;
+  result: Record<string, unknown>;
+  entityDetails: Record<string, unknown> | null;
   code: string;
   onSaveContact: () => void;
 }) {
@@ -434,7 +434,7 @@ function VerificationResult({
   );
 }
 
-function UserVerificationDetails({ details, onSaveContact }: { details: any; onSaveContact: () => void }) {
+function UserVerificationDetails({ details, onSaveContact }: { details: Record<string, any>; onSaveContact: () => void }) {
   const isAr = useIsAr();
 
   return (
@@ -495,7 +495,7 @@ function UserVerificationDetails({ details, onSaveContact }: { details: any; onS
   );
 }
 
-function CertificateVerificationDetails({ details }: { details: any }) {
+function CertificateVerificationDetails({ details }: { details: Record<string, any> }) {
   const isAr = useIsAr();
 
   if (!details) return null;
@@ -549,7 +549,7 @@ function CertificateVerificationDetails({ details }: { details: any }) {
   );
 }
 
-function InvoiceVerificationDetails({ details }: { details: any }) {
+function InvoiceVerificationDetails({ details }: { details: Record<string, any> }) {
   const isAr = useIsAr();
 
   return (
@@ -579,7 +579,7 @@ function InvoiceVerificationDetails({ details }: { details: any }) {
   );
 }
 
-function CompetitionVerificationDetails({ details, entityId }: { details: any; entityId: string }) {
+function CompetitionVerificationDetails({ details, entityId }: { details: Record<string, any>; entityId: string }) {
   const isAr = useIsAr();
 
   return (
@@ -628,7 +628,7 @@ function CompetitionVerificationDetails({ details, entityId }: { details: any; e
   );
 }
 
-function CompanyVerificationDetails({ details, entityId }: { details: any; entityId: string }) {
+function CompanyVerificationDetails({ details, entityId }: { details: Record<string, any>; entityId: string }) {
   const isAr = useIsAr();
 
   return (
@@ -679,7 +679,7 @@ function CompanyVerificationDetails({ details, entityId }: { details: any; entit
   );
 }
 
-function ExhibitionVerificationDetails({ details }: { details: any }) {
+function ExhibitionVerificationDetails({ details }: { details: Record<string, any> }) {
   const isAr = useIsAr();
 
   return (
@@ -730,7 +730,7 @@ function ExhibitionVerificationDetails({ details }: { details: any }) {
   );
 }
 
-function ParticipantVerificationDetails({ details }: { details: any }) {
+function ParticipantVerificationDetails({ details }: { details: Record<string, any> }) {
   const isAr = useIsAr();
 
   return (
@@ -794,7 +794,7 @@ function ParticipantVerificationDetails({ details }: { details: any }) {
   );
 }
 
-function TeamMemberVerificationDetails({ details }: { details: any }) {
+function TeamMemberVerificationDetails({ details }: { details: Record<string, any> }) {
   const isAr = useIsAr();
 
   return (
