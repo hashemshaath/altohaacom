@@ -520,7 +520,7 @@ export default function Auth() {
 
                   <div className="space-y-1.5">
                     <Label htmlFor="signInEmail" className="text-xs">{isAr ? "البريد أو اسم المستخدم" : "Email or Username"}</Label>
-                    <Input id="signInEmail" type="text" value={auth.signInEmail} onChange={(e) => { auth.setSignInEmail(e.target.value); if (auth.errors.signInEmail) auth.setErrors((prev) => ({ ...prev, signInEmail: "" })); if (auth.formError) auth.setFormError(""); }} placeholder={isAr ? "البريد الإلكتروني أو اسم المستخدم" : "Email or username"} onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()} maxLength={255} autoComplete="username" disabled={auth.isLockedOut} />
+                    <Input id="signInEmail" type="text" value={auth.signInEmail} onChange={(e) => { auth.setSignInEmail(e.target.value); if (auth.errors.signInEmail) auth.setErrors({ ...auth.errors, signInEmail: "" }); if (auth.formError) auth.setFormError(""); }} placeholder={isAr ? "البريد الإلكتروني أو اسم المستخدم" : "Email or username"} onKeyDown={(e) => e.key === "Enter" && document.getElementById("signInPassword")?.focus()} maxLength={255} autoComplete="username" disabled={auth.isLockedOut} />
                     {auth.errors.signInEmail && <p className="text-xs text-destructive">{auth.errors.signInEmail}</p>}
                   </div>
 
@@ -529,7 +529,7 @@ export default function Auth() {
                       <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
                       <button type="button" className="text-xs text-primary hover:underline" onClick={() => auth.setForgotOpen(true)}>{isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}</button>
                     </div>
-                    <Input id="signInPassword" type="password" value={auth.signInPassword} onChange={(e) => { auth.setSignInPassword(e.target.value); if (auth.errors.signInPassword) auth.setErrors((prev) => ({ ...prev, signInPassword: "" })); if (auth.formError) auth.setFormError(""); }} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && auth.handleSignInEmail()} maxLength={128} autoComplete="current-password" disabled={auth.isLockedOut} />
+                    <Input id="signInPassword" type="password" value={auth.signInPassword} onChange={(e) => { auth.setSignInPassword(e.target.value); if (auth.errors.signInPassword) auth.setErrors({ ...auth.errors, signInPassword: "" }); if (auth.formError) auth.setFormError(""); }} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && auth.handleSignInEmail()} maxLength={128} autoComplete="current-password" disabled={auth.isLockedOut} />
                     {auth.errors.signInPassword && <p className="text-xs text-destructive">{auth.errors.signInPassword}</p>}
                   </div>
 
