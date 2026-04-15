@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,7 +56,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
       return (data || []);
     },
     enabled: showResults,
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   const selectVenue = useCallback((v: { id: string; name: string; name_ar?: string | null; city?: string | null; country?: string | null; address?: string | null; capacity?: number | null; logo_url?: string | null; map_url?: string | null }) => {

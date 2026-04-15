@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -68,7 +69,7 @@ export const DataQualityDashboardWidget = memo(function DataQualityDashboardWidg
 
       return { entities, overallScore };
     },
-    staleTime: 120_000,
+    ...CACHE.short,
   });
 
   const overall = scores?.overallScore ?? 0;

@@ -75,7 +75,7 @@ export function useSocialLinkPageByUsername(username?: string) {
       return { profile, page, items };
     },
     enabled: !!username,
-    staleTime: 30_000,
+    ...CACHE.realtime,
     refetchInterval: false, // static page, no need to poll
     gcTime: 10 * 60_000,
   });

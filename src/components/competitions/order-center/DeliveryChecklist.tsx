@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,7 +56,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   const { data: allItems, isLoading } = useQuery({
@@ -71,7 +72,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
       return data;
     },
     enabled: !!lists?.length,
-    staleTime: 60 * 1000,
+    ...CACHE.realtime,
   });
 
   const toggleCheck = useMutation({

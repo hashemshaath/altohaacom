@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, memo, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -63,7 +64,7 @@ const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
       return data || [];
     },
     enabled: userSearch.length >= 2,
-    staleTime: 10000,
+    ...CACHE.realtime,
   });
 
   const { data: invoiceStats } = useQuery({

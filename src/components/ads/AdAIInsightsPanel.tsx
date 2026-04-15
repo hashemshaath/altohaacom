@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -20,7 +21,7 @@ export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
       if (error) throw error;
       return data;
     },
-    staleTime: 5 * 60 * 1000,
+    ...CACHE.medium,
   });
 
   if (isLoading) {

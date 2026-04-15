@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,7 +51,7 @@ export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
 
       return { total: all.length, resolved: resolved.length, open: open.length, avgHours, resolutionRate, byPriority, slaBreach };
     },
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   if (!stats) return null;
