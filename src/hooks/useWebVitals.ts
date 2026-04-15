@@ -88,7 +88,6 @@ export function useWebVitals() {
     const timer = setTimeout(() => {
       const v = vitals.current;
       if (import.meta.env.DEV) {
-        console.log(
           "%c⚡ Web Vitals",
           "color: #10b981; font-weight: bold",
           `TTFB: ${v.ttfb?.toFixed(0) ?? "?"}ms`,
