@@ -28,6 +28,7 @@ import { PageTracker } from "@/components/tracking/PageTracker";
 import { useSEOTracking } from "@/hooks/useSEOTracking";
 import { useWebVitalsTracking } from "@/hooks/useWebVitalsTracking";
 import { OfflineIndicator } from "@/components/ui/OfflineIndicator";
+import { useOfflineMutationManager } from "@/hooks/useOfflineMutationManager";
 import { RouteLoadingBar } from "@/components/RouteLoadingBar";
 
 import { publicRoutes } from "@/routes/publicRoutes";
@@ -58,16 +59,19 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       ...CACHE.default,
+      networkMode: "offlineFirst",
       retry: (failureCount, error) => {
         const appError = error instanceof AppError ? error : handleSupabaseError(error);
-        // Never retry auth or validation errors
         if (!appError.isRetryable) return false;
         return failureCount < 2;
       },
       refetchOnWindowFocus: false,
       refetchOnReconnect: "always",
     },
-    mutations: { retry: 0 },
+    mutations: {
+      retry: 0,
+      networkMode: "offlineFirst",
+    },
   },
 });
 
@@ -140,6 +144,7 @@ function AppContent() {
   // SEO analytics tracking hooks (page views + Core Web Vitals)
   useSEOTracking();
   useWebVitalsTracking();
+  useOfflineMutationManager();
 
   return (
     <>
