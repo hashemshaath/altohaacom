@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
@@ -30,7 +31,6 @@ import {
   Play,
 } from "lucide-react";
 import {
-import { CACHE } from "@/lib/queryConfig";
   BarChart,
   Bar,
   XAxis,

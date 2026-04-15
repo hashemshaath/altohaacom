@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +15,6 @@ import { AdBanner } from "@/components/ads/AdBanner";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 import { countryFlag } from "@/lib/countryFlag";
 import {
-import { CACHE } from "@/lib/queryConfig";
   Building2, Search, ChefHat, UtensilsCrossed, Package, Shirt,
   Wrench, Boxes, Grid3X3, ArrowRight, Sparkles,
   Factory, Globe, ArrowUpDown, Scale, Trophy, Star, Crown,

@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,7 +18,6 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import {
-import { CACHE } from "@/lib/queryConfig";
   Megaphone, Target, BarChart3, Globe, Users, CheckCircle2,
   Sparkles, ArrowRight, Loader2, Eye, MousePointer, DollarSign,
   Zap, Clock, Building2,

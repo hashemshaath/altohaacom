@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { SEOHead } from "@/components/SEOHead";
@@ -16,7 +17,6 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { countryFlag } from "@/lib/countryFlag";
 import {
-import { CACHE } from "@/lib/queryConfig";
   CompetitionCard,
   FeaturedCompetitionCard,
   getDerivedStatus,

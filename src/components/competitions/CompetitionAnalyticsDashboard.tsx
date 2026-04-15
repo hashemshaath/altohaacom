@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +11,6 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import {
-import { CACHE } from "@/lib/queryConfig";
   BarChart3, Users, Trophy, TrendingUp, Target, Medal,
   UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown, LucideIcon } from "lucide-react";
 
