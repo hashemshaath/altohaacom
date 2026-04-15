@@ -952,7 +952,7 @@ function GoogleSkeleton() {
 }
 
 /* ──────────────── Empty State ──────────────── */
-function EmptySearch({ isAr, query }: { isAr: boolean; query: string }) {
+function EmptySearch({ query }: { query: string }) {
   const isAr = useIsAr();
   return (
     <div className="py-16 text-center">
