@@ -227,8 +227,8 @@ export function useCreateRecipe() {
           ...recipe,
           author_id: user.id,
           slug,
-          ingredients: recipe.ingredients as any,
-          steps: recipe.steps as any,
+          ingredients: recipe.ingredients as Json,
+          steps: recipe.steps as Json,
         })
         .select()
         .single();
