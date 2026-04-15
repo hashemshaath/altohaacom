@@ -125,7 +125,7 @@ export const CompetitionCard = memo(
                       </div>
                     </div>
                   )}
-                  <img src={competition.cover_image_url} alt={title} className={`h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`} loading="lazy" decoding="async" onLoad={onImgLoad} />
+                  <img src={getOptimizedUrl(competition.cover_image_url, 640)} alt={title} width={640} height={360} className={`h-full w-full object-cover transition-all duration-700 ease-out group-hover:scale-105 ${imgLoaded ? "opacity-100" : "opacity-0"}`} loading="lazy" decoding="async" onLoad={onImgLoad} />
                 </>
               ) : (
                 <div className="flex h-full items-center justify-center bg-gradient-to-br from-primary/8 via-muted to-accent/8">
