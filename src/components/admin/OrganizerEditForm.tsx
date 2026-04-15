@@ -1,14 +1,7 @@
-import { useState, useCallback, useRef, useEffect, memo, useMemo, type ReactNode } from "react";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { uploadAndGetUrl } from "@/lib/storageUrl";
+import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { useAutoTranslate } from "@/hooks/useAutoTranslate";
-import { useEntityDedup } from "@/hooks/useEntityDedup";
-import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,468 +21,32 @@ import {
   StickyNote, BarChart3, Eye, Activity, Briefcase, Clock,
   ExternalLink, Info, Copy, Users, Trash2, Plus, RefreshCw,
   Undo2, Youtube, MessageCircle, MapPinned, Navigation, TrendingUp,
-  Zap, History, ChevronRight, Hash, FileCheck, Sparkles, type LucideIcon,
+  Zap, History, ChevronRight, Hash, FileCheck, Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { SectionHeader, FieldGroup, BilingualField, ProgressRing, QuickNavItem, generateSlug } from "./organizer/OrganizerFormHelpers";
+import { useOrganizerEditForm, TABS, type OrganizerForm } from "./organizer/useOrganizerEditForm";
+import { toast } from "sonner";
 
-/* ─── Types ─── */
-interface OrganizerForm {
-  name: string; name_ar: string; slug: string;
-  description: string; description_ar: string;
-  logo_url: string; cover_image_url: string;
-  email: string; phone: string; fax: string; website: string;
-  address: string; address_ar: string;
-  city: string; city_ar: string;
-  country: string; country_ar: string; country_code: string;
-  district: string; district_ar: string;
-  street: string; street_ar: string;
-  postal_code: string; building_number: string; additional_number: string;
-  unit_number: string; short_address: string;
-  national_address: string; national_address_ar: string;
-  latitude: string; longitude: string; google_maps_url: string;
-  status: string; is_verified: boolean; is_featured: boolean;
-  services: string; targeted_sectors: string; founded_year: string;
-  registration_number: string; license_number: string; vat_number: string;
-  social_twitter: string; social_facebook: string;
-  social_linkedin: string; social_instagram: string;
-  social_youtube: string; social_tiktok: string;
-  social_whatsapp: string; social_snapchat: string;
-  admin_notes: string;
-  gallery_urls: string[];
-  key_contacts: KeyContact[];
-}
-
-interface KeyContact {
-  name: string; name_ar: string; role: string; role_ar: string; email: string; phone: string;
-}
-
-const emptyContact: KeyContact = { name: "", name_ar: "", role: "", role_ar: "", email: "", phone: "" };
-
-const emptyForm: OrganizerForm = {
-  name: "", name_ar: "", slug: "", description: "", description_ar: "",
-  logo_url: "", cover_image_url: "", email: "", phone: "", fax: "", website: "",
-  address: "", address_ar: "", city: "", city_ar: "", country: "", country_ar: "",
-  country_code: "", district: "", district_ar: "", street: "", street_ar: "",
-  postal_code: "", building_number: "", additional_number: "", unit_number: "", short_address: "",
-  national_address: "", national_address_ar: "",
-  latitude: "", longitude: "", google_maps_url: "",
-  status: "active", is_verified: false, is_featured: false,
-  services: "", targeted_sectors: "", founded_year: "",
-  registration_number: "", license_number: "", vat_number: "",
-  social_twitter: "", social_facebook: "", social_linkedin: "", social_instagram: "",
-  social_youtube: "", social_tiktok: "", social_whatsapp: "", social_snapchat: "",
-  admin_notes: "", gallery_urls: [], key_contacts: [],
-};
-
-/* ─── Tab Definitions ─── */
-const TABS = [
-  { id: "identity", icon: Building2, en: "Information", ar: "المعلومات" },
-  { id: "images", icon: ImageIcon, en: "Media", ar: "الوسائط" },
-  { id: "contact", icon: Mail, en: "Contact", ar: "التواصل" },
-  { id: "location", icon: MapPin, en: "Location", ar: "الموقع" },
-  { id: "team", icon: Users, en: "Team", ar: "الفريق" },
-  { id: "details", icon: Briefcase, en: "Details", ar: "التفاصيل" },
-  { id: "social", icon: Globe, en: "Social", ar: "اجتماعي" },
-  { id: "settings", icon: Shield, en: "Settings", ar: "إعدادات" },
-  { id: "exhibitions", icon: Calendar, en: "Events", ar: "المعارض" },
-  { id: "analytics", icon: TrendingUp, en: "Analytics", ar: "التحليلات" },
-  { id: "notes", icon: StickyNote, en: "Notes", ar: "ملاحظات" },
-];
-
-
-/* ═══════════════════════════════════════════════════ */
-/* ═══ Main Component ═══ */
-/* ═══════════════════════════════════════════════════ */
 interface OrganizerEditFormProps {
   organizerId?: string | null;
   onClose: () => void;
 }
 
 export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEditFormProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
-  const qc = useQueryClient();
-  const [form, setForm] = useState<OrganizerForm>(emptyForm);
-  const [initialForm, setInitialForm] = useState<OrganizerForm>(emptyForm);
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-  const [activeTab, setActiveTab] = useState("identity");
-  const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [uploadingLogo, setUploadingLogo] = useState(false);
-  const [uploadingCover, setUploadingCover] = useState(false);
-  const [uploadingGallery, setUploadingGallery] = useState(false);
-  const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
-  const [showSideNav, setShowSideNav] = useState(true);
-  const logoRef = useRef<HTMLInputElement>(null);
-  const coverRef = useRef<HTMLInputElement>(null);
-  const galleryRef = useRef<HTMLInputElement>(null);
+  const d = useOrganizerEditForm(organizerId ?? null, onClose);
 
-  const hasUnsavedChanges = JSON.stringify(form) !== JSON.stringify(initialForm);
-
-  const { clearDraft } = useFormAutoSave({
-    key: `organizer-${organizerId || "new"}`,
-    values: form,
-    enabled: hasUnsavedChanges,
-  });
-
-  const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
-    tables: ["organizers", "companies", "culinary_entities", "establishments"],
-    excludeId: organizerId || undefined,
-  });
-
-  const { translateField, autoTranslateFields } = useAutoTranslate();
-  const [translating, setTranslating] = useState(false);
-  const translateCtx = "event organizer / exhibition management / Saudi Arabia";
-
-  // Load existing data
-  const { data: orgData, isLoading } = useQuery({
-    queryKey: ["admin-organizer-edit", organizerId],
-    queryFn: async () => {
-      if (!organizerId) return null;
-      const { data, error } = await supabase.from("organizers").select("*").eq("id", organizerId).maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!organizerId,
-  });
-
-  // Load linked exhibitions with all editions
-  const { data: linkedExhibitions } = useQuery({
-    queryKey: ["organizer-exhibitions", organizerId, orgData?.name],
-    queryFn: async () => {
-      if (!organizerId) return [];
-      const fields = "id, title, title_ar, slug, type, status, start_date, end_date, edition_year, edition_number, cover_image_url, view_count, series_id";
-      const { data: byId } = await supabase.from("exhibitions")
-        .select(fields)
-        .or(`organizer_id.eq.${organizerId},organizer_entity_id.eq.${organizerId}`)
-        .order("edition_year", { ascending: false }).limit(50);
-      if (byId && byId.length > 0) return byId;
-      if (orgData?.name) {
-        const { data: byName } = await supabase.from("exhibitions")
-          .select(fields)
-          .or(`organizer_name.ilike.${orgData.name},organizer_name_ar.ilike.${orgData.name_ar || ""}`)
-          .order("edition_year", { ascending: false }).limit(50);
-        return byName || [];
-      }
-      return [];
-    },
-    enabled: !!organizerId,
-  });
-
-  // Load linked competitions
-  const { data: linkedCompetitions } = useQuery({
-    queryKey: ["organizer-competitions", organizerId],
-    queryFn: async () => {
-      if (!organizerId) return [];
-      const { data } = await supabase.from("competitions")
-        .select("id, title, title_ar, status, competition_start, competition_end, edition_year, competition_number, cover_image_url, country_code, slug")
-        .eq("organizer_id", organizerId)
-        .order("edition_year", { ascending: false }).limit(50);
-      return data || [];
-    },
-    enabled: !!organizerId,
-  });
-
-  // Group exhibitions by base title (series)
-  const exhibitionGroups = useMemo(() => {
-    if (!linkedExhibitions?.length) return [];
-    const groups: Record<string, typeof linkedExhibitions> = {};
-    for (const ex of linkedExhibitions) {
-      // Strip year from title to find base name
-      const baseTitle = ex.title.replace(/\s*\d{4}\s*$/, "").trim() || ex.title;
-      if (!groups[baseTitle]) groups[baseTitle] = [];
-      groups[baseTitle].push(ex);
-    }
-    return Object.entries(groups).map(([baseName, editions]) => ({
-      baseName,
-      baseNameAr: editions[0]?.title_ar?.replace(/\s*[\u0660-\u0669\d]{4}\s*$/, "").trim() || editions[0]?.title_ar || baseName,
-      editions: editions.sort((a, b) => (b.edition_year || 0) - (a.edition_year || 0)),
-      coverImage: editions.find(e => e.cover_image_url)?.cover_image_url,
-    }));
-  }, [linkedExhibitions]);
-
-  const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-
-  // Populate form
-  useEffect(() => {
-    if (!orgData) return;
-    const social = (orgData.social_links as Record<string, string>) || {};
-    const contacts = (orgData.key_contacts as unknown as KeyContact[]) || [];
-    const gallery = (orgData.gallery_urls as string[]) || [];
-    const org = orgData as Record<string, unknown>;
-    const populated: OrganizerForm = {
-      name: orgData.name || "", name_ar: orgData.name_ar || "", slug: orgData.slug || "",
-      description: orgData.description || "", description_ar: orgData.description_ar || "",
-      logo_url: orgData.logo_url || "", cover_image_url: orgData.cover_image_url || "",
-      email: orgData.email || "", phone: orgData.phone || "",
-      fax: String(org.fax || ""), website: orgData.website || "",
-      address: orgData.address || "", address_ar: orgData.address_ar || "",
-      city: orgData.city || "", city_ar: orgData.city_ar || "",
-      country: orgData.country || "", country_ar: orgData.country_ar || "",
-      country_code: orgData.country_code || "",
-      district: String(org.district || ""), district_ar: String(org.district_ar || ""),
-      street: String(org.street || ""), street_ar: String(org.street_ar || ""),
-      postal_code: String(org.postal_code || ""),
-      building_number: String(org.building_number || ""),
-      additional_number: String(org.additional_number || ""),
-      unit_number: String(org.unit_number || ""),
-      short_address: String(org.short_address || ""),
-      national_address: String(org.national_address || ""),
-      national_address_ar: String(org.national_address_ar || ""),
-      latitude: org.latitude ? String(org.latitude) : "",
-      longitude: org.longitude ? String(org.longitude) : "",
-      google_maps_url: String(org.google_maps_url || ""),
-      status: orgData.status || "active",
-      is_verified: orgData.is_verified || false, is_featured: orgData.is_featured || false,
-      services: (orgData.services as string[] || []).join(", "),
-      targeted_sectors: (orgData.targeted_sectors as string[] || []).join(", "),
-      founded_year: orgData.founded_year?.toString() || "",
-      registration_number: String(org.registration_number || ""),
-      license_number: String(org.license_number || ""),
-      vat_number: String(org.vat_number || ""),
-      social_twitter: social.twitter || "", social_facebook: social.facebook || "",
-      social_linkedin: social.linkedin || "", social_instagram: social.instagram || "",
-      social_youtube: social.youtube || "", social_tiktok: social.tiktok || "",
-      social_whatsapp: social.whatsapp || "", social_snapchat: social.snapchat || "",
-      admin_notes: "",
-      gallery_urls: gallery,
-      key_contacts: contacts.length > 0 ? contacts : [],
-    };
-    setForm(populated);
-    setInitialForm(populated);
-  }, [orgData]);
-
-  // Dedup check
-  useEffect(() => {
-    if (!form.name && !form.email) return;
-    const timer = setTimeout(() => {
-      checkEntity({ name: form.name, name_ar: form.name_ar, email: form.email, phone: form.phone, website: form.website, city: form.city, country: form.country });
-    }, 800);
-    return () => clearTimeout(timer);
-  }, [form.name, form.email, form.website]);
-
-  // Auto-generate slug
-  useEffect(() => {
-    if (!organizerId && form.name && !form.slug) {
-      setForm(f => ({ ...f, slug: generateSlug(f.name) }));
-    }
-  }, [form.name, organizerId]);
-
-  const validateForm = useCallback((f: OrganizerForm): Record<string, string> => {
-    const errors: Record<string, string> = {};
-    if (!f.name.trim() && !f.name_ar.trim()) errors.name = isAr ? "الاسم مطلوب" : "Name is required";
-    if (f.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email)) errors.email = isAr ? "بريد غير صالح" : "Invalid email";
-    if (f.website && !/^https?:\/\/.+/.test(f.website)) errors.website = isAr ? "رابط غير صالح" : "Invalid URL";
-    if (f.founded_year && (parseInt(f.founded_year) < 1900 || parseInt(f.founded_year) > new Date().getFullYear()))
-      errors.founded_year = isAr ? "سنة غير صالحة" : "Invalid year";
-    return errors;
-  }, [isAr]);
-
-  // Image upload
-  const handleImageUpload = useCallback(async (file: File, type: "logo" | "cover" | "gallery") => {
-    const setter = type === "logo" ? setUploadingLogo : type === "cover" ? setUploadingCover : setUploadingGallery;
-    setter(true);
-    try {
-      const ext = file.name.split(".").pop() || "jpg";
-      const path = `organizers/${type}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { url: uploadedUrl, error: uploadError } = await uploadAndGetUrl("company-media", path, file);
-      if (uploadError) throw uploadError;
-      if (type === "gallery") {
-        setForm(f => ({ ...f, gallery_urls: [...f.gallery_urls, uploadedUrl] }));
-      } else {
-        setForm(f => ({ ...f, [type === "logo" ? "logo_url" : "cover_image_url"]: uploadedUrl }));
-      }
-      toast.success(isAr ? "تم الرفع بنجاح" : "Uploaded successfully");
-    } catch (err: unknown) {
-      toast.error((err instanceof Error ? err.message : "") || (isAr ? "فشل الرفع" : "Upload failed"));
-    } finally { setter(false); }
-  }, [isAr]);
-
-  // Auto-translate all
-  const handleAutoTranslate = useCallback(async () => {
-    setTranslating(true);
-    try {
-      const updates = await autoTranslateFields([
-        { en: form.name, ar: form.name_ar, key: "name" },
-        { en: form.description, ar: form.description_ar, key: "description" },
-        { en: form.address, ar: form.address_ar, key: "address" },
-        { en: form.city, ar: form.city_ar, key: "city" },
-        { en: form.country, ar: form.country_ar, key: "country" },
-        { en: form.district, ar: form.district_ar, key: "district" },
-        { en: form.street, ar: form.street_ar, key: "street" },
-        { en: form.national_address, ar: form.national_address_ar, key: "national_address" },
-      ], translateCtx);
-      if (Object.keys(updates).length > 0) {
-        setForm(f => ({ ...f, ...updates }));
-        toast.success(isAr ? "تمت الترجمة التلقائية" : "Auto-translated");
-      } else {
-        toast.info(isAr ? "لا حاجة للترجمة" : "Nothing to translate");
-      }
-    } catch { toast.error(isAr ? "فشلت الترجمة" : "Translation failed"); }
-    finally { setTranslating(false); }
-  }, [form, autoTranslateFields, isAr]);
-
-  // Save
-  const saveMutation = useMutation({
-    mutationFn: async (f: OrganizerForm) => {
-      const socialLinks: Record<string, string> = {};
-      if (f.social_twitter) socialLinks.twitter = f.social_twitter;
-      if (f.social_facebook) socialLinks.facebook = f.social_facebook;
-      if (f.social_linkedin) socialLinks.linkedin = f.social_linkedin;
-      if (f.social_instagram) socialLinks.instagram = f.social_instagram;
-      if (f.social_youtube) socialLinks.youtube = f.social_youtube;
-      if (f.social_tiktok) socialLinks.tiktok = f.social_tiktok;
-      if (f.social_whatsapp) socialLinks.whatsapp = f.social_whatsapp;
-      if (f.social_snapchat) socialLinks.snapchat = f.social_snapchat;
-      const payload: Record<string, any> = {
-        name: f.name || f.name_ar, name_ar: f.name_ar || null,
-        slug: f.slug || generateSlug(f.name || f.name_ar),
-        description: f.description || null, description_ar: f.description_ar || null,
-        logo_url: f.logo_url || null, cover_image_url: f.cover_image_url || null,
-        email: f.email || null, phone: f.phone || null, fax: f.fax || null, website: f.website || null,
-        address: f.address || null, address_ar: f.address_ar || null,
-        city: f.city || null, city_ar: f.city_ar || null,
-        country: f.country || null, country_ar: f.country_ar || null,
-        country_code: f.country_code || null,
-        district: f.district || null, district_ar: f.district_ar || null,
-        street: f.street || null, street_ar: f.street_ar || null,
-        postal_code: f.postal_code || null,
-        building_number: f.building_number || null,
-        additional_number: f.additional_number || null,
-        unit_number: f.unit_number || null,
-        short_address: f.short_address || null,
-        national_address: f.national_address || null,
-        national_address_ar: f.national_address_ar || null,
-        latitude: f.latitude ? parseFloat(f.latitude) : null,
-        longitude: f.longitude ? parseFloat(f.longitude) : null,
-        google_maps_url: f.google_maps_url || null,
-        status: f.status, is_verified: f.is_verified, is_featured: f.is_featured,
-        services: f.services ? f.services.split(",").map(s => s.trim()).filter(Boolean) : null,
-        targeted_sectors: f.targeted_sectors ? f.targeted_sectors.split(",").map(s => s.trim()).filter(Boolean) : null,
-        founded_year: f.founded_year ? parseInt(f.founded_year) : null,
-        registration_number: f.registration_number || null,
-        license_number: f.license_number || null,
-        vat_number: f.vat_number || null,
-        social_links: Object.keys(socialLinks).length > 0 ? socialLinks : null,
-        gallery_urls: f.gallery_urls.length > 0 ? f.gallery_urls : null,
-        key_contacts: f.key_contacts.length > 0 ? (f.key_contacts as unknown as Record<string, unknown>[]) : null,
-      };
-      if (organizerId) {
-        const { error } = await supabase.from("organizers").update(payload).eq("id", organizerId);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("organizers").insert(payload as never);
-        if (error) throw error;
-      }
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-organizers"] });
-      qc.invalidateQueries({ queryKey: ["admin-organizer-edit", organizerId] });
-      setLastSaved(new Date());
-      setInitialForm(form);
-      clearDraft();
-      toast.success(organizerId ? (isAr ? "تم التحديث بنجاح" : "Updated successfully") : (isAr ? "تمت الإضافة بنجاح" : "Created successfully"));
-      if (!organizerId) onClose();
-    },
-    onError: (e: Error) => toast.error(e.message),
-  });
-
-  const handleSave = useCallback(() => {
-    const errors = validateForm(form);
-    setFormErrors(errors);
-    if (Object.keys(errors).length > 0) {
-      toast.error(isAr ? "يرجى تصحيح الأخطاء" : "Please fix errors");
-      if (errors.name) setActiveTab("identity");
-      else if (errors.email || errors.website) setActiveTab("contact");
-      return;
-    }
-    saveMutation.mutate(form);
-  }, [form, validateForm, saveMutation, isAr]);
-
-  const handleDiscard = useCallback(() => {
-    setForm(initialForm);
-    setFormErrors({});
-    setShowDiscardConfirm(false);
-    toast.info(isAr ? "تم التراجع عن التغييرات" : "Changes discarded");
-  }, [initialForm, isAr]);
-
-  // Refresh stats
-  const refreshStatsMutation = useMutation({
-    mutationFn: async () => {
-      if (!organizerId) return;
-      const { error } = await supabase.rpc("refresh_organizer_stats", { p_organizer_id: organizerId });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["admin-organizer-edit", organizerId] });
-      toast.success(isAr ? "تم تحديث الإحصائيات" : "Stats refreshed");
-    },
-  });
-
-  // Ctrl+S
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") { e.preventDefault(); handleSave(); }
-    };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [handleSave]);
-
-  // Section status
-  const getTabStatus = useCallback((id: string): "complete" | "partial" | "empty" => {
-    switch (id) {
-      case "identity": return (form.name || form.name_ar) && (form.description || form.description_ar) ? "complete" : (form.name || form.name_ar) ? "partial" : "empty";
-      case "images": return form.logo_url && form.cover_image_url ? "complete" : form.logo_url || form.cover_image_url || form.gallery_urls.length > 0 ? "partial" : "empty";
-      case "contact": return form.email && form.phone ? "complete" : form.email || form.phone || form.website || form.fax ? "partial" : "empty";
-      case "location": return (form.city || form.city_ar) && (form.country || form.country_ar) ? "complete" : (form.city || form.country || form.address || form.district) ? "partial" : "empty";
-      case "team": return form.key_contacts.length > 0 && form.key_contacts[0]?.name ? "complete" : form.key_contacts.length > 0 ? "partial" : "empty";
-      case "details": return form.services && form.founded_year && form.registration_number ? "complete" : form.services || form.founded_year || form.registration_number ? "partial" : "empty";
-      case "social": {
-        const has = [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram, form.social_youtube, form.social_tiktok].filter(Boolean).length;
-        return has >= 3 ? "complete" : has > 0 ? "partial" : "empty";
-      }
-      case "settings": return "complete";
-      case "exhibitions": return (linkedExhibitions?.length || 0) > 0 ? "complete" : "empty";
-      case "analytics": return organizerId ? "complete" : "empty";
-      case "notes": return form.admin_notes ? "complete" : "empty";
-      default: return "empty";
-    }
-  }, [form, linkedExhibitions, organizerId]);
-
-  const completePct = Math.round(
-    (TABS.filter(t => getTabStatus(t.id) === "complete").length / TABS.length) * 100
-  );
-
-  // Contacts
-  const addContact = () => setForm(f => ({ ...f, key_contacts: [...f.key_contacts, { ...emptyContact }] }));
-  const removeContact = (i: number) => setForm(f => ({ ...f, key_contacts: f.key_contacts.filter((_, idx) => idx !== i) }));
-  const updateContact = (i: number, field: keyof KeyContact, value: string) => {
-    setForm(f => ({ ...f, key_contacts: f.key_contacts.map((c, idx) => idx === i ? { ...c, [field]: value } : c) }));
-  };
-  const removeGalleryImage = (i: number) => setForm(f => ({ ...f, gallery_urls: f.gallery_urls.filter((_, idx) => idx !== i) }));
-
-  // Navigate tabs
-  const goNextTab = () => {
-    const idx = TABS.findIndex(t => t.id === activeTab);
-    if (idx < TABS.length - 1) setActiveTab(TABS[idx + 1].id);
-  };
-  const goPrevTab = () => {
-    const idx = TABS.findIndex(t => t.id === activeTab);
-    if (idx > 0) setActiveTab(TABS[idx - 1].id);
-  };
-  const currentTabIdx = TABS.findIndex(t => t.id === activeTab);
-
-  const socialProfiles = [form.social_twitter, form.social_facebook, form.social_linkedin, form.social_instagram, form.social_youtube, form.social_tiktok, form.social_whatsapp, form.social_snapchat].filter(Boolean).length;
-
-  if (isLoading) {
+  if (d.isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-32 gap-3">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-xs text-muted-foreground">{isAr ? "جاري التحميل..." : "Loading..."}</p>
+        <p className="text-xs text-muted-foreground">{d.isAr ? "جاري التحميل..." : "Loading..."}</p>
       </div>
     );
   }
+
+  const { form, setForm, formErrors, setFormErrors, isAr, orgData } = d;
 
   return (
     <div className="animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
@@ -497,7 +54,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       <div className="sticky top-0 z-20 bg-background/95 backdrop-blur-sm border-b border-border/60 -mx-4 md:-mx-6 px-4 md:px-6 py-3 mb-0">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <Button variant="ghost" size="icon" onClick={() => hasUnsavedChanges ? setShowDiscardConfirm(true) : onClose()} className="h-8 w-8 rounded-xl shrink-0">
+            <Button variant="ghost" size="icon" onClick={() => d.hasUnsavedChanges ? d.setShowDiscardConfirm(true) : onClose()} className="h-8 w-8 rounded-xl shrink-0">
               <ChevronLeft className="h-4 w-4" />
             </Button>
             {form.logo_url ? (
@@ -518,7 +75,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 <Badge variant={form.status === "active" ? "default" : form.status === "pending" ? "outline" : "secondary"} className="text-[12px] h-4 capitalize">{form.status}</Badge>
                 {form.is_verified && <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-primary/30"><CheckCircle2 className="h-2.5 w-2.5 text-primary" />{isAr ? "موثق" : "Verified"}</Badge>}
                 {form.is_featured && <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-amber-500/30"><Star className="h-2.5 w-2.5 text-amber-500" />{isAr ? "مميز" : "Featured"}</Badge>}
-                {hasUnsavedChanges && (
+                {d.hasUnsavedChanges && (
                   <Badge variant="outline" className="text-[12px] h-4 px-1.5 border-amber-500/50 text-amber-600 animate-pulse">
                     {isAr ? "غير محفوظ" : "Unsaved"}
                   </Badge>
@@ -528,12 +85,12 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
           </div>
 
           <div className="flex items-center gap-1.5">
-            {lastSaved && (
+            {d.lastSaved && (
               <span className="text-[12px] text-muted-foreground hidden lg:flex items-center gap-1">
-                <Clock className="h-3 w-3" />{lastSaved.toLocaleTimeString()}
+                <Clock className="h-3 w-3" />{d.lastSaved.toLocaleTimeString()}
               </span>
             )}
-            <ProgressRing pct={completePct} />
+            <ProgressRing pct={d.completePct} />
             {organizerId && orgData?.slug && (
               <TooltipProvider><Tooltip><TooltipTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8 rounded-xl" asChild>
@@ -541,18 +98,18 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                 </Button>
               </TooltipTrigger><TooltipContent><p className="text-xs">{isAr ? "عرض الصفحة العامة" : "View public page"}</p></TooltipContent></Tooltip></TooltipProvider>
             )}
-            {hasUnsavedChanges && (
-              <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground h-8" onClick={() => setShowDiscardConfirm(true)}>
+            {d.hasUnsavedChanges && (
+              <Button variant="ghost" size="sm" className="gap-1 text-muted-foreground h-8" onClick={() => d.setShowDiscardConfirm(true)}>
                 <Undo2 className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline text-xs">{isAr ? "تراجع" : "Discard"}</span>
               </Button>
             )}
-            <Button variant="secondary" size="sm" className="gap-1.5 h-8" onClick={handleAutoTranslate} disabled={translating}>
+            <Button variant="secondary" size="sm" className="gap-1.5 h-8" onClick={d.handleAutoTranslate} disabled={d.translating}>
               <Languages className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline text-xs">{translating ? "..." : isAr ? "ترجمة" : "Translate"}</span>
+              <span className="hidden sm:inline text-xs">{d.translating ? "..." : isAr ? "ترجمة" : "Translate"}</span>
             </Button>
-            <Button size="sm" onClick={handleSave} disabled={(!form.name && !form.name_ar) || saveMutation.isPending} className="gap-1.5 h-8 min-w-[72px]">
-              {saveMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+            <Button size="sm" onClick={d.handleSave} disabled={(!form.name && !form.name_ar) || d.saveMutation.isPending} className="gap-1.5 h-8 min-w-[72px]">
+              {d.saveMutation.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
               <span className="text-xs">{isAr ? "حفظ" : "Save"}</span>
             </Button>
           </div>
@@ -560,39 +117,45 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
       </div>
 
       {/* Dedup */}
-      <DeduplicationPanel duplicates={duplicates} checking={checking} onDismiss={clearDuplicates} compact />
+      <DeduplicationPanel duplicates={d.duplicates} checking={d.checking} onDismiss={d.clearDuplicates} compact />
 
       {/* ══ Layout: Side Nav + Content ══ */}
       <div className="flex gap-0 mt-0">
         {/* Side Navigation */}
         <div className={cn(
           "shrink-0 border-e border-border/40 transition-all duration-300 hidden lg:block",
-          showSideNav ? "w-48 pe-4 pt-5" : "w-0 pe-0 overflow-hidden"
+          d.showSideNav ? "w-48 pe-4 pt-5" : "w-0 pe-0 overflow-hidden"
         )}>
-          {showSideNav && (
+          {d.showSideNav && (
             <nav aria-label={isAr ? "أقسام النموذج" : "Form sections"} className="sticky top-20 space-y-0.5">
               <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">{isAr ? "الأقسام" : "Sections"}</p>
               {TABS.map(tab => (
                 <QuickNavItem
                   key={tab.id}
-                  icon={tab.icon}
+                  icon={
+                    tab.id === "identity" ? Building2 : tab.id === "images" ? ImageIcon :
+                    tab.id === "contact" ? Mail : tab.id === "location" ? MapPin :
+                    tab.id === "team" ? Users : tab.id === "details" ? Briefcase :
+                    tab.id === "social" ? Globe : tab.id === "settings" ? Shield :
+                    tab.id === "exhibitions" ? Calendar : tab.id === "analytics" ? TrendingUp : StickyNote
+                  }
                   label={isAr ? tab.ar : tab.en}
-                  status={getTabStatus(tab.id)}
-                  active={activeTab === tab.id}
-                  onClick={() => setActiveTab(tab.id)}
+                  status={d.getTabStatus(tab.id)}
+                  active={d.activeTab === tab.id}
+                  onClick={() => d.setActiveTab(tab.id)}
                 />
               ))}
               <Separator className="my-3" />
               <div className="px-3 space-y-2">
                 <div className="flex items-center justify-between text-[12px]">
                   <span className="text-muted-foreground">{isAr ? "الاكتمال" : "Complete"}</span>
-                  <span className={cn("font-bold", completePct >= 80 ? "text-chart-2" : completePct >= 50 ? "text-amber-600" : "text-primary")}>{completePct}%</span>
+                  <span className={cn("font-bold", d.completePct >= 80 ? "text-chart-2" : d.completePct >= 50 ? "text-amber-600" : "text-primary")}>{d.completePct}%</span>
                 </div>
-                <Progress value={completePct} className="h-1.5" />
+                <Progress value={d.completePct} className="h-1.5" />
                 <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-1">
-                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-chart-2" />{TABS.filter(t => getTabStatus(t.id) === "complete").length}</span>
-                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-amber-500" />{TABS.filter(t => getTabStatus(t.id) === "partial").length}</span>
-                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />{TABS.filter(t => getTabStatus(t.id) === "empty").length}</span>
+                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-chart-2" />{TABS.filter(t => d.getTabStatus(t.id) === "complete").length}</span>
+                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-amber-500" />{TABS.filter(t => d.getTabStatus(t.id) === "partial").length}</span>
+                  <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />{TABS.filter(t => d.getTabStatus(t.id) === "empty").length}</span>
                 </div>
               </div>
             </nav>
@@ -600,20 +163,25 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         </div>
 
         {/* Main Content */}
-        <div className={cn("flex-1 min-w-0", showSideNav ? "ps-0 lg:ps-6" : "ps-0")}>
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <div className={cn("flex-1 min-w-0", d.showSideNav ? "ps-0 lg:ps-6" : "ps-0")}>
+          <Tabs value={d.activeTab} onValueChange={d.setActiveTab} className="w-full">
             {/* Mobile Tab Bar */}
             <div className="overflow-x-auto lg:hidden -mx-4 md:-mx-6 px-4 md:px-6 pt-4">
               <TabsList className="inline-flex h-10 gap-0.5 bg-muted/50 p-1 rounded-xl w-max">
                 {TABS.map(tab => {
-                  const status = getTabStatus(tab.id);
+                  const status = d.getTabStatus(tab.id);
+                  const TabIcon = tab.id === "identity" ? Building2 : tab.id === "images" ? ImageIcon :
+                    tab.id === "contact" ? Mail : tab.id === "location" ? MapPin :
+                    tab.id === "team" ? Users : tab.id === "details" ? Briefcase :
+                    tab.id === "social" ? Globe : tab.id === "settings" ? Shield :
+                    tab.id === "exhibitions" ? Calendar : tab.id === "analytics" ? TrendingUp : StickyNote;
                   return (
                     <TabsTrigger key={tab.id} value={tab.id} className="gap-1.5 text-xs px-3 rounded-lg data-[state=active]:shadow-sm relative">
                       <div className={cn(
                         "h-1.5 w-1.5 rounded-full shrink-0",
                         status === "complete" ? "bg-chart-2" : status === "partial" ? "bg-amber-500" : "bg-muted-foreground/30"
                       )} />
-                      <tab.icon className="h-3.5 w-3.5 shrink-0" />
+                      <TabIcon className="h-3.5 w-3.5 shrink-0" />
                       <span className="hidden sm:inline">{isAr ? tab.ar : tab.en}</span>
                     </TabsTrigger>
                   );
@@ -626,7 +194,6 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
               <TabsContent value="identity" className="space-y-6 mt-0">
                 <SectionHeader icon={Building2} title={isAr ? "معلومات المنظم" : "Organizer Information"} desc={isAr ? "الاسم والوصف والرابط المختصر" : "Name, description & URL slug"} />
 
-                {/* Quick Summary Card for existing organizers */}
                 {organizerId && orgData && (
                   <Card className="rounded-2xl bg-gradient-to-r from-primary/5 to-transparent border-primary/10">
                     <CardContent className="p-4">
@@ -668,7 +235,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   valueAr={form.name_ar} valueEn={form.name}
                   onChangeAr={v => setForm(f => ({ ...f, name_ar: v }))}
                   onChangeEn={v => { setForm(f => ({ ...f, name: v })); setFormErrors(e => ({ ...e, name: "" })); }}
-                  translateField={translateField} context={translateCtx}
+                  translateField={d.translateField} context={d.translateCtx}
                   placeholder_ar="اسم المنظم بالعربية" placeholder_en="Organizer name in English"
                 />
                 {formErrors.name && <p className="text-[12px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
@@ -689,12 +256,11 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   valueAr={form.description_ar} valueEn={form.description}
                   onChangeAr={v => setForm(f => ({ ...f, description_ar: v }))}
                   onChangeEn={v => setForm(f => ({ ...f, description: v }))}
-                  translateField={translateField} context={translateCtx}
+                  translateField={d.translateField} context={d.translateCtx}
                   multiline rows={5}
                   placeholder_ar="وصف المنظم بالعربية..." placeholder_en="Describe the organizer..."
                 />
 
-                {/* Character counts */}
                 <div className="flex justify-between text-[12px] text-muted-foreground">
                   <span>{form.description_ar.length} {isAr ? "حرف (عربي)" : "chars (AR)"}</span>
                   <span>{form.description.length} {isAr ? "حرف (إنجليزي)" : "chars (EN)"}</span>
@@ -715,23 +281,23 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         </Label>
                         {form.logo_url && <Badge variant="outline" className="text-[12px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
                       </div>
-                      <input ref={logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "logo"); }} />
+                      <input ref={d.logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) d.handleImageUpload(file, "logo"); }} />
                       {form.logo_url ? (
                         <div className="flex items-center gap-4">
                           <img src={form.logo_url} alt="Logo" className="h-20 w-20 rounded-2xl object-cover shrink-0 border shadow-sm" loading="lazy" />
                           <div className="flex-1 min-w-0 space-y-2">
                             <p className="text-[12px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
                             <div className="flex gap-2">
-                              <Button type="button" variant="outline" size="sm" className="h-7 text-xs rounded-lg" onClick={() => logoRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
+                              <Button type="button" variant="outline" size="sm" className="h-7 text-xs rounded-lg" onClick={() => d.logoRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
                               <Button type="button" variant="ghost" size="sm" className="h-7 text-xs text-destructive rounded-lg" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}><X className="h-3.5 w-3.5" /></Button>
                             </div>
                           </div>
                         </div>
                       ) : (
-                        <button type="button" onClick={() => logoRef.current?.click()} disabled={uploadingLogo}
+                        <button type="button" onClick={() => d.logoRef.current?.click()} disabled={d.uploadingLogo}
                           className="w-full rounded-2xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-all p-6 flex flex-col items-center gap-2 text-muted-foreground hover:bg-muted/30 active:scale-[0.98]">
-                          {uploadingLogo ? <Loader2 className="h-6 w-6 animate-spin" /> : <Upload className="h-6 w-6" />}
-                          <span className="text-xs">{uploadingLogo ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع شعار" : "Upload Logo")}</span>
+                          {d.uploadingLogo ? <Loader2 className="h-6 w-6 animate-spin" /> : <Upload className="h-6 w-6" />}
+                          <span className="text-xs">{d.uploadingLogo ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع شعار" : "Upload Logo")}</span>
                         </button>
                       )}
                       <Input value={form.logo_url} onChange={e => setForm(f => ({ ...f, logo_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-xs h-8" dir="ltr" />
@@ -747,20 +313,20 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         </Label>
                         {form.cover_image_url && <Badge variant="outline" className="text-[12px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
                       </div>
-                      <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "cover"); }} />
+                      <input ref={d.coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) d.handleImageUpload(file, "cover"); }} />
                       {form.cover_image_url ? (
                         <div className="relative group rounded-2xl border overflow-hidden">
                           <img src={form.cover_image_url} alt="Cover" className="w-full h-32 object-cover" loading="lazy" />
                           <div className="absolute inset-0 bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                            <Button type="button" variant="secondary" size="sm" className="h-8 rounded-lg" onClick={() => coverRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
+                            <Button type="button" variant="secondary" size="sm" className="h-8 rounded-lg" onClick={() => d.coverRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
                             <Button type="button" variant="destructive" size="sm" className="h-8 rounded-lg" onClick={() => setForm(f => ({ ...f, cover_image_url: "" }))}><X className="h-4 w-4" /></Button>
                           </div>
                         </div>
                       ) : (
-                        <button type="button" onClick={() => coverRef.current?.click()} disabled={uploadingCover}
+                        <button type="button" onClick={() => d.coverRef.current?.click()} disabled={d.uploadingCover}
                           className="w-full rounded-2xl border-2 border-dashed border-border/60 hover:border-primary/40 transition-all p-6 flex flex-col items-center gap-2 text-muted-foreground hover:bg-muted/30 active:scale-[0.98]">
-                          {uploadingCover ? <Loader2 className="h-6 w-6 animate-spin" /> : <ImageIcon className="h-6 w-6" />}
-                          <span className="text-xs">{uploadingCover ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع غلاف" : "Upload Cover")}</span>
+                          {d.uploadingCover ? <Loader2 className="h-6 w-6 animate-spin" /> : <ImageIcon className="h-6 w-6" />}
+                          <span className="text-xs">{d.uploadingCover ? (isAr ? "جاري الرفع..." : "Uploading...") : (isAr ? "رفع غلاف" : "Upload Cover")}</span>
                         </button>
                       )}
                       <Input value={form.cover_image_url} onChange={e => setForm(f => ({ ...f, cover_image_url: e.target.value }))} placeholder={isAr ? "أو الصق رابط" : "Or paste URL"} className="text-xs h-8" dir="ltr" />
@@ -773,9 +339,9 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
                       <Label className="text-xs font-medium">{isAr ? "معرض الصور" : "Photo Gallery"} <Badge variant="outline" className="text-[12px] h-4 ms-1">{form.gallery_urls.length}</Badge></Label>
-                      <input ref={galleryRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) handleImageUpload(file, "gallery"); }} />
-                      <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => galleryRef.current?.click()} disabled={uploadingGallery}>
-                        {uploadingGallery ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
+                      <input ref={d.galleryRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) d.handleImageUpload(file, "gallery"); }} />
+                      <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => d.galleryRef.current?.click()} disabled={d.uploadingGallery}>
+                        {d.uploadingGallery ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
                         {isAr ? "إضافة صورة" : "Add Photo"}
                       </Button>
                     </div>
@@ -784,7 +350,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                         {form.gallery_urls.map((url, i) => (
                           <div key={i} className="relative group aspect-square rounded-xl border overflow-hidden">
                             <img src={url} alt={`Gallery image ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
-                            <button type="button" aria-label={`Remove image ${i + 1}`} onClick={() => removeGalleryImage(i)}
+                            <button type="button" aria-label={`Remove image ${i + 1}`} onClick={() => d.removeGalleryImage(i)}
                               className="absolute top-1 end-1 h-6 w-6 rounded-full bg-destructive/90 text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                               <X className="h-3 w-3" />
                             </button>
@@ -819,27 +385,14 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   </FieldGroup>
                 </div>
 
-                {/* Contact Quick Preview */}
                 {(form.email || form.phone || form.website) && (
                   <Card className="rounded-2xl bg-muted/30">
                     <CardContent className="p-4">
                       <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معاينة سريعة" : "Quick Preview"}</p>
                       <div className="flex flex-wrap gap-3">
-                        {form.email && (
-                          <a href={`mailto:${form.email}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline">
-                            <Mail className="h-3.5 w-3.5" />{form.email}
-                          </a>
-                        )}
-                        {form.phone && (
-                          <a href={`tel:${form.phone}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline">
-                            <Phone className="h-3.5 w-3.5" />{form.phone}
-                          </a>
-                        )}
-                        {form.website && (
-                          <a href={form.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-primary hover:underline">
-                            <Globe className="h-3.5 w-3.5" />{form.website.replace(/^https?:\/\//, "")}
-                          </a>
-                        )}
+                        {form.email && <a href={`mailto:${form.email}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline"><Mail className="h-3.5 w-3.5" />{form.email}</a>}
+                        {form.phone && <a href={`tel:${form.phone}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline"><Phone className="h-3.5 w-3.5" />{form.phone}</a>}
+                        {form.website && <a href={form.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-primary hover:underline"><Globe className="h-3.5 w-3.5" />{form.website.replace(/^https?:\/\//, "")}</a>}
                       </div>
                     </CardContent>
                   </Card>
@@ -855,7 +408,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   valueAr={form.country_ar} valueEn={form.country}
                   onChangeAr={v => setForm(f => ({ ...f, country_ar: v }))}
                   onChangeEn={v => setForm(f => ({ ...f, country: v }))}
-                  translateField={translateField} context={translateCtx}
+                  translateField={d.translateField} context={d.translateCtx}
                   placeholder_ar="المملكة العربية السعودية" placeholder_en="Saudi Arabia"
                 />
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
@@ -886,7 +439,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     valueAr={form.district_ar} valueEn={form.district}
                     onChangeAr={v => setForm(f => ({ ...f, district_ar: v }))}
                     onChangeEn={v => setForm(f => ({ ...f, district: v }))}
-                    translateField={translateField} context={translateCtx}
+                    translateField={d.translateField} context={d.translateCtx}
                     placeholder_ar="حي العليا" placeholder_en="Al Olaya"
                   />
                   <div className="mt-4">
@@ -895,7 +448,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                       valueAr={form.street_ar} valueEn={form.street}
                       onChangeAr={v => setForm(f => ({ ...f, street_ar: v }))}
                       onChangeEn={v => setForm(f => ({ ...f, street: v }))}
-                      translateField={translateField} context={translateCtx}
+                      translateField={d.translateField} context={d.translateCtx}
                       placeholder_ar="شارع الملك فهد" placeholder_en="King Fahd Road"
                     />
                   </div>
@@ -919,7 +472,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                       valueAr={form.address_ar} valueEn={form.address}
                       onChangeAr={v => setForm(f => ({ ...f, address_ar: v }))}
                       onChangeEn={v => setForm(f => ({ ...f, address: v }))}
-                      translateField={translateField} context={translateCtx}
+                      translateField={d.translateField} context={d.translateCtx}
                     />
                   </div>
                 </div>
@@ -939,7 +492,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     valueAr={form.national_address_ar} valueEn={form.national_address}
                     onChangeAr={v => setForm(f => ({ ...f, national_address_ar: v }))}
                     onChangeEn={v => setForm(f => ({ ...f, national_address: v }))}
-                    translateField={translateField} context={translateCtx}
+                    translateField={d.translateField} context={d.translateCtx}
                   />
                 </div>
 
@@ -975,14 +528,14 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   icon={Users}
                   title={isAr ? "جهات الاتصال الرئيسية" : "Key Contacts"}
                   desc={isAr ? "أعضاء الفريق وجهات الاتصال" : "Team members & contact persons"}
-                  actions={<Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={addContact}><Plus className="h-3 w-3" />{isAr ? "إضافة" : "Add"}</Button>}
+                  actions={<Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={d.addContact}><Plus className="h-3 w-3" />{isAr ? "إضافة" : "Add"}</Button>}
                 />
                 {form.key_contacts.length === 0 ? (
                   <Card className="rounded-2xl border-dashed">
                     <CardContent className="p-8 text-center">
                       <Users className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
                       <p className="text-xs text-muted-foreground mb-3">{isAr ? "لا توجد جهات اتصال بعد" : "No contacts added yet"}</p>
-                      <Button type="button" variant="outline" size="sm" className="gap-1 text-xs rounded-lg" onClick={addContact}>
+                      <Button type="button" variant="outline" size="sm" className="gap-1 text-xs rounded-lg" onClick={d.addContact}>
                         <Plus className="h-3 w-3" />{isAr ? "إضافة جهة اتصال" : "Add Contact"}
                       </Button>
                     </CardContent>
@@ -1000,28 +553,28 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                               <span className="text-xs font-medium">{c.name || c.name_ar || `${isAr ? "جهة اتصال" : "Contact"} ${i + 1}`}</span>
                               {c.role && <Badge variant="outline" className="text-[12px] h-4">{c.role}</Badge>}
                             </div>
-                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive rounded-lg" onClick={() => removeContact(i)}>
+                            <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive rounded-lg" onClick={() => d.removeContact(i)}>
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>
                           </div>
                           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             <FieldGroup label={isAr ? "الاسم بالعربية" : "Name (AR)"}>
-                              <Input value={c.name_ar} onChange={e => updateContact(i, "name_ar", e.target.value)} dir="rtl" className="h-9" />
+                              <Input value={c.name_ar} onChange={e => d.updateContact(i, "name_ar", e.target.value)} dir="rtl" className="h-9" />
                             </FieldGroup>
                             <FieldGroup label={isAr ? "الاسم (EN)" : "Name (EN)"}>
-                              <Input value={c.name} onChange={e => updateContact(i, "name", e.target.value)} className="h-9" />
+                              <Input value={c.name} onChange={e => d.updateContact(i, "name", e.target.value)} className="h-9" />
                             </FieldGroup>
                             <FieldGroup label={isAr ? "المنصب بالعربية" : "Role (AR)"}>
-                              <Input value={c.role_ar} onChange={e => updateContact(i, "role_ar", e.target.value)} dir="rtl" className="h-9" />
+                              <Input value={c.role_ar} onChange={e => d.updateContact(i, "role_ar", e.target.value)} dir="rtl" className="h-9" />
                             </FieldGroup>
                             <FieldGroup label={isAr ? "المنصب (EN)" : "Role (EN)"}>
-                              <Input value={c.role} onChange={e => updateContact(i, "role", e.target.value)} className="h-9" placeholder="Director" />
+                              <Input value={c.role} onChange={e => d.updateContact(i, "role", e.target.value)} className="h-9" placeholder="Director" />
                             </FieldGroup>
                             <FieldGroup label={isAr ? "البريد" : "Email"}>
-                              <Input value={c.email} onChange={e => updateContact(i, "email", e.target.value)} type="email" className="h-9" dir="ltr" />
+                              <Input value={c.email} onChange={e => d.updateContact(i, "email", e.target.value)} type="email" className="h-9" dir="ltr" />
                             </FieldGroup>
                             <FieldGroup label={isAr ? "الهاتف" : "Phone"}>
-                              <Input value={c.phone} onChange={e => updateContact(i, "phone", e.target.value)} dir="ltr" className="h-9" />
+                              <Input value={c.phone} onChange={e => d.updateContact(i, "phone", e.target.value)} dir="ltr" className="h-9" />
                             </FieldGroup>
                           </div>
                         </CardContent>
@@ -1035,7 +588,6 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
               <TabsContent value="details" className="space-y-6 mt-0">
                 <SectionHeader icon={Briefcase} title={isAr ? "التفاصيل والخدمات" : "Details & Services"} desc={isAr ? "التسجيل والترخيص والخدمات" : "Registration, licensing & services"} />
 
-                {/* Registration & Legal */}
                 <Card className="rounded-2xl">
                   <CardContent className="p-4 space-y-4">
                     <h4 className="text-xs font-semibold flex items-center gap-2">
@@ -1065,7 +617,6 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   </CardContent>
                 </Card>
 
-                {/* Services & Sectors */}
                 <Card className="rounded-2xl">
                   <CardContent className="p-4 space-y-4">
                     <h4 className="text-xs font-semibold flex items-center gap-2">
@@ -1133,8 +684,8 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   })}
                 </div>
                 <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
-                  <Progress value={(socialProfiles / 8) * 100} className="h-1.5 w-20" />
-                  {socialProfiles}/8 {isAr ? "حسابات مرتبطة" : "profiles linked"}
+                  <Progress value={(d.socialProfiles / 8) * 100} className="h-1.5 w-20" />
+                  {d.socialProfiles}/8 {isAr ? "حسابات مرتبطة" : "profiles linked"}
                 </div>
               </TabsContent>
 
@@ -1146,32 +697,32 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                     <CardContent className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="h-9 w-9 rounded-xl bg-muted flex items-center justify-center">
-                          <Building2 className="h-4 w-4 text-muted-foreground" />
+                          <Activity className="h-4 w-4 text-muted-foreground" />
                         </div>
                         <div>
-                          <p className="text-xs font-medium">{isAr ? "الحالة" : "Status"}</p>
-                          <p className="text-[12px] text-muted-foreground">{isAr ? "حالة حساب المنظم" : "Account status"}</p>
+                          <Label className="text-xs font-medium">{isAr ? "الحالة" : "Status"}</Label>
+                          <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
+                            <SelectTrigger className="h-8 w-28 mt-1 text-xs"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="active" className="text-xs">{isAr ? "نشط" : "Active"}</SelectItem>
+                              <SelectItem value="pending" className="text-xs">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
+                              <SelectItem value="inactive" className="text-xs">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
+                              <SelectItem value="suspended" className="text-xs">{isAr ? "معلق" : "Suspended"}</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
-                      <Select value={form.status} onValueChange={v => setForm(f => ({ ...f, status: v }))}>
-                        <SelectTrigger className="w-28 h-8 text-xs rounded-lg"><SelectValue /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="active">{isAr ? "نشط" : "Active"}</SelectItem>
-                          <SelectItem value="inactive">{isAr ? "غير نشط" : "Inactive"}</SelectItem>
-                          <SelectItem value="pending">{isAr ? "قيد المراجعة" : "Pending"}</SelectItem>
-                        </SelectContent>
-                      </Select>
                     </CardContent>
                   </Card>
                   <Card className="rounded-2xl hover:shadow-sm transition-shadow">
                     <CardContent className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center">
-                          <Shield className="h-4 w-4 text-primary" />
+                        <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center", form.is_verified ? "bg-primary/10" : "bg-muted")}>
+                          <CheckCircle2 className={cn("h-4 w-4", form.is_verified ? "text-primary" : "text-muted-foreground")} />
                         </div>
                         <div>
-                          <p className="text-xs font-medium">{isAr ? "التوثيق" : "Verified"}</p>
-                          <p className="text-[12px] text-muted-foreground">{isAr ? "إظهار شارة التوثيق" : "Show verified badge"}</p>
+                          <Label className="text-xs font-medium">{isAr ? "موثق" : "Verified"}</Label>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "جهة موثقة رسمياً" : "Officially verified"}</p>
                         </div>
                       </div>
                       <Switch checked={form.is_verified} onCheckedChange={v => setForm(f => ({ ...f, is_verified: v }))} />
@@ -1180,12 +731,12 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   <Card className="rounded-2xl hover:shadow-sm transition-shadow">
                     <CardContent className="p-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                          <Star className="h-4 w-4 text-amber-500" />
+                        <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center", form.is_featured ? "bg-amber-500/10" : "bg-muted")}>
+                          <Star className={cn("h-4 w-4", form.is_featured ? "text-amber-500" : "text-muted-foreground")} />
                         </div>
                         <div>
-                          <p className="text-xs font-medium">{isAr ? "مميز" : "Featured"}</p>
-                          <p className="text-[12px] text-muted-foreground">{isAr ? "إبراز في الصفحة الرئيسية" : "Highlight on homepage"}</p>
+                          <Label className="text-xs font-medium">{isAr ? "مميز" : "Featured"}</Label>
+                          <p className="text-[12px] text-muted-foreground">{isAr ? "يظهر في الواجهة" : "Appears prominently"}</p>
                         </div>
                       </div>
                       <Switch checked={form.is_featured} onCheckedChange={v => setForm(f => ({ ...f, is_featured: v }))} />
@@ -1196,117 +747,101 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
               {/* ═══ Exhibitions Tab ═══ */}
               <TabsContent value="exhibitions" className="space-y-6 mt-0">
-                <SectionHeader
-                  icon={Calendar}
-                  title={isAr ? "المعارض والفعاليات المرتبطة" : "Linked Exhibitions & Events"}
-                  desc={isAr ? "الفعاليات المرتبطة بهذا المنظم" : "Events linked to this organizer"}
-                  actions={organizerId ? (
-                    <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => refreshStatsMutation.mutate()} disabled={refreshStatsMutation.isPending}>
-                      {refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
-                      {isAr ? "تحديث" : "Refresh"}
-                    </Button>
-                  ) : undefined}
-                />
+                <SectionHeader icon={Calendar} title={isAr ? "المعارض والمسابقات" : "Events & Competitions"} desc={isAr ? "جميع المعارض والمسابقات المرتبطة" : "All linked exhibitions & competitions"} />
+
                 {!organizerId ? (
                   <Card className="rounded-2xl border-dashed">
                     <CardContent className="p-8 text-center">
-                      <Info className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
-                      <p className="text-xs text-muted-foreground">{isAr ? "احفظ المنظم أولاً لربط المعارض" : "Save organizer first to link exhibitions"}</p>
+                      <Calendar className="h-8 w-8 text-muted-foreground/30 mx-auto mb-2" />
+                      <p className="text-xs text-muted-foreground">{isAr ? "احفظ المنظم أولاً" : "Save organizer first"}</p>
                     </CardContent>
                   </Card>
                 ) : (
                   <>
-                    {orgData && (
-                      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
-                        {[
-                          { label: isAr ? "المعارض" : "Exhibitions", value: linkedExhibitions?.length || 0, icon: Calendar },
-                          { label: isAr ? "المسابقات" : "Competitions", value: linkedCompetitions?.length || 0, icon: Star },
-                          { label: isAr ? "المشاهدات" : "Views", value: (orgData.total_views || 0).toLocaleString(), icon: Eye },
-                          { label: isAr ? "التقييم" : "Rating", value: orgData.average_rating || "—", icon: Star },
-                          { label: isAr ? "المتابعون" : "Followers", value: orgData.follower_count || 0, icon: Activity },
-                        ].map(s => (
-                          <Card key={s.label} className="rounded-2xl group hover:shadow-md transition-all">
-                            <CardContent className="p-3 flex items-center gap-3">
-                              <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                                <s.icon className="h-4 w-4 text-primary" />
-                              </div>
-                              <div>
-                                <p className="text-sm font-bold">{s.value}</p>
-                                <p className="text-[12px] text-muted-foreground">{s.label}</p>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
+                    {d.linkedCompetitions && d.linkedCompetitions.length > 0 && (
+                      <div>
+                        <h4 className="text-xs font-semibold mb-3 flex items-center gap-2">
+                          <BarChart3 className="h-3.5 w-3.5 text-primary" />
+                          {isAr ? "المسابقات" : "Competitions"} <Badge variant="outline" className="text-[12px] h-4">{d.linkedCompetitions.length}</Badge>
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {d.linkedCompetitions.map(comp => (
+                            <Link key={comp.id} to={`/competitions/${comp.slug || comp.id}`} target="_blank" className="block">
+                              <Card className="rounded-xl hover:shadow-sm transition-all group">
+                                <CardContent className="p-3 flex items-center gap-3">
+                                  {comp.cover_image_url ? (
+                                    <img src={comp.cover_image_url} alt="" className="h-10 w-10 rounded-lg object-cover border shrink-0" loading="lazy" />
+                                  ) : (
+                                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                      <BarChart3 className="h-4 w-4 text-primary" />
+                                    </div>
+                                  )}
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-medium truncate">{isAr ? (comp.title_ar || comp.title) : comp.title}</p>
+                                    <div className="flex items-center gap-1.5">
+                                      <Badge variant="outline" className="text-[12px] h-3.5 capitalize">{comp.status}</Badge>
+                                      {comp.edition_year && <span className="text-[12px] text-muted-foreground">{comp.edition_year}</span>}
+                                    </div>
+                                  </div>
+                                  <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                                </CardContent>
+                              </Card>
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     )}
 
-                    {exhibitionGroups.length > 0 ? (
+                    {d.exhibitionGroups.length > 0 ? (
                       <div className="space-y-3">
-                        {exhibitionGroups.map(group => {
-                          const isExpanded = expandedGroup === group.baseName;
+                        <h4 className="text-xs font-semibold flex items-center gap-2">
+                          <Calendar className="h-3.5 w-3.5 text-primary" />
+                          {isAr ? "المعارض والمؤتمرات" : "Exhibitions & Conferences"} <Badge variant="outline" className="text-[12px] h-4">{d.linkedExhibitions?.length || 0}</Badge>
+                        </h4>
+                        {d.exhibitionGroups.map(group => {
+                          const isExpanded = d.expandedGroup === group.baseName;
                           return (
-                            <Card key={group.baseName} className="rounded-2xl overflow-hidden">
+                            <Card key={group.baseName} className="rounded-2xl overflow-hidden hover:shadow-sm transition-all">
                               <CardContent className="p-0">
-                                {/* Group Header - clickable */}
-                                <button
-                                  type="button"
-                                  onClick={() => setExpandedGroup(isExpanded ? null : group.baseName)}
-                                  className="w-full p-3 flex items-center gap-3 hover:bg-muted/30 transition-colors text-start"
-                                >
+                                <button type="button" onClick={() => d.setExpandedGroup(isExpanded ? null : group.baseName)}
+                                  className="w-full flex items-center gap-3 p-4 text-start hover:bg-muted/30 transition-colors">
                                   {group.coverImage ? (
-                                    <img loading="lazy" decoding="async" src={group.coverImage} alt={group.baseName || "Exhibition series"} className="h-14 w-20 rounded-xl object-cover shrink-0" />
+                                    <img src={group.coverImage} alt="" className="h-12 w-12 rounded-xl object-cover border shrink-0" loading="lazy" />
                                   ) : (
-                                    <div className="h-14 w-20 rounded-xl bg-muted flex items-center justify-center shrink-0">
-                                      <Building2 className="h-5 w-5 text-muted-foreground" />
+                                    <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                                      <Calendar className="h-5 w-5 text-primary" />
                                     </div>
                                   )}
-                                  <div className="min-w-0 flex-1">
+                                  <div className="flex-1 min-w-0">
                                     <p className="text-sm font-semibold truncate">{isAr ? group.baseNameAr : group.baseName}</p>
-                                    <div className="flex items-center gap-1.5 mt-0.5">
-                                      <Badge variant="outline" className="text-[12px] h-4">
-                                        {group.editions.length} {isAr ? "نسخة" : group.editions.length === 1 ? "edition" : "editions"}
-                                      </Badge>
-                                      {group.editions[0]?.edition_year && (
-                                        <span className="text-[12px] text-muted-foreground">
-                                          {group.editions[group.editions.length - 1]?.edition_year} — {group.editions[0]?.edition_year}
-                                        </span>
-                                      )}
+                                    <div className="flex items-center gap-2 mt-0.5">
+                                      <Badge variant="outline" className="text-[12px] h-4">{group.editions.length} {isAr ? "نسخة" : "editions"}</Badge>
+                                      {group.editions[0]?.edition_year && <span className="text-[12px] text-muted-foreground">{group.editions[group.editions.length - 1]?.edition_year} — {group.editions[0].edition_year}</span>}
                                     </div>
                                   </div>
                                   <ChevronRight className={cn("h-4 w-4 text-muted-foreground transition-transform shrink-0", isExpanded && "rotate-90")} />
                                 </button>
-
-                                {/* Expanded Editions */}
                                 {isExpanded && (
-                                  <div className="border-t border-border/40 bg-muted/10">
-                                    <div className="p-3 space-y-2">
-                                      <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                                        {isAr ? "النسخ المسجلة" : "Registered Editions"}
-                                      </p>
+                                  <div className="border-t border-border/40 px-4 py-3 bg-muted/20">
+                                    <div className="space-y-1.5">
                                       {group.editions.map(ed => (
-                                        <Link key={ed.id} to={`/admin/exhibitions?edit=${ed.id}`} className="block">
-                                          <div className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-background border border-transparent hover:border-border/50 transition-all group/ed cursor-pointer">
-                                            {ed.cover_image_url ? (
-                                              <img loading="lazy" decoding="async" src={ed.cover_image_url} alt={ed.title || "Edition cover"} className="h-10 w-14 rounded-lg object-cover shrink-0" />
-                                            ) : (
-                                              <div className="h-10 w-14 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                                                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                              </div>
-                                            )}
+                                        <Link key={ed.id} to={`/exhibitions/${ed.slug || ed.id}`} target="_blank" className="block">
+                                          <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-background transition-colors group/ed">
+                                            <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                              <span className="text-xs font-bold text-primary">{ed.edition_year || "—"}</span>
+                                            </div>
                                             <div className="flex-1 min-w-0">
-                                              <div className="flex items-center gap-2">
-                                                <span className="text-xs font-bold text-primary">{ed.edition_year || "—"}</span>
-                                                {ed.edition_number && (
-                                                  <span className="text-[12px] text-muted-foreground">
-                                                    {isAr ? `النسخة ${ed.edition_number}` : `Edition #${ed.edition_number}`}
-                                                  </span>
-                                                )}
-                                              </div>
-                                              <div className="flex items-center gap-1.5 mt-0.5">
-                                                <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-[12px] h-3.5 capitalize">{ed.status}</Badge>
-                                                {ed.start_date && <span className="text-[12px] text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
-                                                {ed.view_count ? <span className="text-[12px] text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
-                                              </div>
+                                              <p className="text-xs font-medium truncate">{isAr ? (ed.title_ar || ed.title) : ed.title}</p>
+                                              {ed.edition_number && (
+                                                <span className="text-[12px] text-muted-foreground">
+                                                  {isAr ? `النسخة ${ed.edition_number}` : `Edition #${ed.edition_number}`}
+                                                </span>
+                                              )}
+                                            </div>
+                                            <div className="flex items-center gap-1.5 mt-0.5">
+                                              <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-[12px] h-3.5 capitalize">{ed.status}</Badge>
+                                              {ed.start_date && <span className="text-[12px] text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
+                                              {ed.view_count ? <span className="text-[12px] text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
                                             </div>
                                             <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover/ed:opacity-100 transition-opacity shrink-0" />
                                           </div>
@@ -1339,8 +874,8 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                   title={isAr ? "التحليلات والأداء" : "Analytics & Performance"}
                   desc={isAr ? "إحصائيات تفصيلية حول أداء المنظم" : "Detailed performance metrics and insights"}
                   actions={organizerId ? (
-                    <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => refreshStatsMutation.mutate()} disabled={refreshStatsMutation.isPending}>
-                      {refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                    <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => d.refreshStatsMutation.mutate()} disabled={d.refreshStatsMutation.isPending}>
+                      {d.refreshStatsMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
                       {isAr ? "تحديث" : "Refresh"}
                     </Button>
                   ) : undefined}
@@ -1386,7 +921,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                             { label: isAr ? "متوسط المشاهدات / معرض" : "Avg Views/Event", value: orgData.total_exhibitions > 0 ? Math.round((orgData.total_views || 0) / orgData.total_exhibitions).toLocaleString() : "—" },
                             { label: isAr ? "نسبة المتابعة" : "Follow Rate", value: orgData.total_views > 0 ? `${((orgData.follower_count || 0) / orgData.total_views * 100).toFixed(1)}%` : "—" },
                             { label: isAr ? "سنوات الخبرة" : "Years Active", value: form.founded_year ? `${new Date().getFullYear() - parseInt(form.founded_year)}` : "—" },
-                            { label: isAr ? "حسابات التواصل" : "Social Profiles", value: socialProfiles },
+                            { label: isAr ? "حسابات التواصل" : "Social Profiles", value: d.socialProfiles },
                           ].map(m => (
                             <div key={m.label} className="rounded-xl bg-muted/40 p-3">
                               <p className="text-[12px] text-muted-foreground mb-1">{m.label}</p>
@@ -1412,7 +947,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                             { label: isAr ? "معلومات التواصل" : "Contact Info", ok: !!(form.email && form.phone) },
                             { label: isAr ? "الموقع" : "Location Set", ok: !!(form.city && form.country) },
                             { label: isAr ? "الموقع الإلكتروني" : "Website", ok: !!form.website },
-                            { label: isAr ? "حسابات اجتماعية (3+)" : "Social Media (3+)", ok: socialProfiles >= 3 },
+                            { label: isAr ? "حسابات اجتماعية (3+)" : "Social Media (3+)", ok: d.socialProfiles >= 3 },
                             { label: isAr ? "معرض الصور" : "Photo Gallery", ok: form.gallery_urls.length > 0 },
                             { label: isAr ? "فريق العمل" : "Team Contacts", ok: form.key_contacts.length > 0 },
                           ].map(item => (
@@ -1466,7 +1001,7 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
                           { label: "ID", value: organizerId.slice(0, 8) + "...", copyable: organizerId },
                           { label: isAr ? "رقم المنظم" : "Number", value: orgData.organizer_number || "—" },
                           { label: isAr ? "تاريخ الإنشاء" : "Created", value: orgData.created_at ? new Date(orgData.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US") : "—" },
-                          { label: isAr ? "آخر حفظ" : "Last Saved", value: lastSaved ? lastSaved.toLocaleTimeString(isAr ? "ar-SA" : "en-US") : "—" },
+                          { label: isAr ? "آخر حفظ" : "Last Saved", value: d.lastSaved ? d.lastSaved.toLocaleTimeString(isAr ? "ar-SA" : "en-US") : "—" },
                         ].map(m => (
                           <div key={m.label} className="rounded-xl bg-muted/40 p-3 group">
                             <p className="text-[12px] text-muted-foreground">{m.label}</p>
@@ -1489,13 +1024,13 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
               {/* ── Tab Navigation Footer ── */}
               <div className="flex items-center justify-between pt-6 mt-6 border-t border-border/40">
-                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={goPrevTab} disabled={currentTabIdx === 0}>
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={d.goPrevTab} disabled={d.currentTabIdx === 0}>
                   <ChevronLeft className="h-3.5 w-3.5" />
-                  <span className="text-xs">{currentTabIdx > 0 ? (isAr ? TABS[currentTabIdx - 1].ar : TABS[currentTabIdx - 1].en) : (isAr ? "السابق" : "Previous")}</span>
+                  <span className="text-xs">{d.currentTabIdx > 0 ? (isAr ? TABS[d.currentTabIdx - 1].ar : TABS[d.currentTabIdx - 1].en) : (isAr ? "السابق" : "Previous")}</span>
                 </Button>
-                <span className="text-[12px] text-muted-foreground">{currentTabIdx + 1} / {TABS.length}</span>
-                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={goNextTab} disabled={currentTabIdx === TABS.length - 1}>
-                  <span className="text-xs">{currentTabIdx < TABS.length - 1 ? (isAr ? TABS[currentTabIdx + 1].ar : TABS[currentTabIdx + 1].en) : (isAr ? "التالي" : "Next")}</span>
+                <span className="text-[12px] text-muted-foreground">{d.currentTabIdx + 1} / {TABS.length}</span>
+                <Button variant="outline" size="sm" className="gap-1.5 rounded-xl" onClick={d.goNextTab} disabled={d.currentTabIdx === TABS.length - 1}>
+                  <span className="text-xs">{d.currentTabIdx < TABS.length - 1 ? (isAr ? TABS[d.currentTabIdx + 1].ar : TABS[d.currentTabIdx + 1].en) : (isAr ? "التالي" : "Next")}</span>
                   <ChevronRight className="h-3.5 w-3.5" />
                 </Button>
               </div>
@@ -1506,13 +1041,13 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
 
       {/* Discard confirmation */}
       <ConfirmDialog
-        open={showDiscardConfirm}
-        onOpenChange={setShowDiscardConfirm}
+        open={d.showDiscardConfirm}
+        onOpenChange={d.setShowDiscardConfirm}
         title={isAr ? "تجاهل التغييرات؟" : "Discard changes?"}
         description={isAr ? "لديك تغييرات غير محفوظة. هل تريد تجاهلها؟" : "You have unsaved changes. Discard them?"}
         confirmLabel={isAr ? "تجاهل" : "Discard"}
         cancelLabel={isAr ? "البقاء" : "Stay"}
-        onConfirm={handleDiscard}
+        onConfirm={d.handleDiscard}
         variant="destructive"
       />
     </div>
