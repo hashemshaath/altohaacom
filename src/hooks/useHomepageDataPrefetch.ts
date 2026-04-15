@@ -143,7 +143,7 @@ export function useHomepageDataPrefetch() {
         qc.setQueryData(key, data, { updatedAt: now });
 
       // 0. Competitions
-      const compsData = getData<any[]>(0);
+      const compsData = getData<Record<string, unknown>[]>(0);
       if (compsData) {
         seed(["home-competitions-minimal", 6], compsData.slice(0, 6));
         seed(["home-regional-comps"], compsData);
@@ -155,7 +155,7 @@ export function useHomepageDataPrefetch() {
       }
 
       // 1. Exhibitions
-      const exhData = getData<any[]>(1);
+      const exhData = getData<Record<string, unknown>[]>(1);
       if (exhData) {
         const active = exhData.filter(e => e.status !== "completed");
         const completed = exhData.filter(e => e.status === "completed").reverse().slice(0, 4);
@@ -163,27 +163,27 @@ export function useHomepageDataPrefetch() {
       }
 
       // 2. Articles
-      const artData = getData<any[]>(2);
+      const artData = getData<Record<string, unknown>[]>(2);
       if (artData) seed(["home-articles-minimal", 8], artData);
 
       // 3. Trending articles
-      const trendData = getData<any[]>(3);
+      const trendData = getData<Record<string, unknown>[]>(3);
       if (trendData) seed(["home-trending-articles", 8], trendData);
 
       // 4. Masterclasses
-      const mcData = getData<any[]>(4);
+      const mcData = getData<Record<string, unknown>[]>(4);
       if (mcData) seed(["home-masterclasses", 8], mcData);
 
       // 5. Testimonials
-      const testData = getData<any[]>(5);
+      const testData = getData<Record<string, unknown>[]>(5);
       if (testData) seed(["home-testimonials", 10], testData);
 
       // 6. Partner logos
-      const logoData = getData<any[]>(6);
+      const logoData = getData<Record<string, unknown>[]>(6);
       if (logoData) {
         const sponsorLogos = logoData.filter((p) => p.category === "sponsor");
         const partnerOnlyLogos = logoData.filter((p) => p.category !== "sponsor");
-        const mapLogo = (p: any) => ({ id: p.id, name: p.name, logo_url: p.logo_url, website_url: p.website_url, category: p.category });
+        const mapLogo = (p: Record<string, unknown>) => ({ id: p.id, name: p.name, logo_url: p.logo_url, website_url: p.website_url, category: p.category });
         seed(["section-logos", "sponsors", 12],
           (sponsorLogos.length > 0 ? sponsorLogos : logoData).slice(0, 12).map(mapLogo));
         seed(["section-logos", "partners", 12],
@@ -191,12 +191,12 @@ export function useHomepageDataPrefetch() {
       }
 
       // 7. Pro suppliers
-      const suppData = getData<any[]>(7);
+      const suppData = getData<Record<string, unknown>[]>(7);
       if (suppData) seed(["homeProSuppliers", 8], suppData);
 
       // 8 & 10. Featured chefs (merged with rankings)
-      const profilesData = getData<any[]>(8);
-      const rankingsData = getData<any[]>(10);
+      const profilesData = getData<Record<string, unknown>[]>(8);
+      const rankingsData = getData<Record<string, unknown>[]>(10);
       if (rankingsData && rankingsData.length > 0 && profilesData) {
         const profileMap = new Map(profilesData.map((p) => [p.user_id, p]));
         const merged = rankingsData.map((r) => ({ ...r, ...(profileMap.get(r.user_id) || {}) }));
@@ -209,13 +209,13 @@ export function useHomepageDataPrefetch() {
       }
 
       // 9. Newly joined users
-      const newUsersData = getData<any[]>(9);
+      const newUsersData = getData<Record<string, unknown>[]>(9);
       if (newUsersData) seed(["newly-joined-users", 12], newUsersData);
 
       // 11. Stats
       const statsResult = results[11];
       if (statsResult.status === "fulfilled") {
-        const statsArr = statsResult.value as any[];
+        const statsArr = statsResult.value as { count: number | null }[];
         const getCount = (r: { count: number | null }) => r?.count ?? 0;
         seed(["home-stats"], {
           members: getCount(statsArr[0]),
