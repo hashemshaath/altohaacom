@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const untypedFrom = (table: string) => supabase.from(table as Record<string, unknown>);
+const untypedFrom = (table: string) => supabase.from(table as any) as any;
 
 // ─── Types ──────────────────────────────────────
 
