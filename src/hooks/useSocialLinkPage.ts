@@ -64,13 +64,16 @@ export function useSocialLinkPageByUsername(username?: string) {
         .maybeSingle();
       if (pgErr) throw pgErr;
 
-      const items = page ? await supabase
-        .from("social_link_items")
-        .select("id, title, title_ar, url, icon, link_type, sort_order, is_active, click_count, thumbnail_url, scheduled_start, scheduled_end, page_tab, ab_enabled, ab_variant_title, ab_variant_title_ar, ab_variant_icon, ab_variant_click_count")
-        .eq("page_id", page.id)
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true })
-        .then(r => r.data || []) : [];
+      let items: any[] = [];
+      if (page) {
+        const { data: linkItems } = await supabase
+          .from("social_link_items")
+          .select("id, title, title_ar, url, icon, link_type, sort_order, is_active, click_count, thumbnail_url, scheduled_start, scheduled_end, page_tab, ab_enabled, ab_variant_title, ab_variant_title_ar, ab_variant_icon, ab_variant_click_count")
+          .eq("page_id", page.id)
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true });
+        items = linkItems || [];
+      }
 
       return { profile, page, items };
     },

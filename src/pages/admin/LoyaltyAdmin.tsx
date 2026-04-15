@@ -1,4 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
+import { formatSimpleDate } from "@/lib/dateUtils";
 import { useState, lazy, Suspense, useCallback, memo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { useTableSort } from "@/hooks/useTableSort";
@@ -175,7 +176,7 @@ export default memo(function LoyaltyAdmin() {
       { header: isAr ? "الكود" : "Code", accessor: (r) => r.redemption_code || "" },
       { header: isAr ? "النقاط" : "Points", accessor: (r) => r.points_spent },
       { header: isAr ? "الحالة" : "Status", accessor: (r) => r.status },
-      { header: isAr ? "التاريخ" : "Date", accessor: (r) => new Date(r.created_at).toLocaleDateString() },
+      { header: isAr ? "التاريخ" : "Date", accessor: (r) => formatSimpleDate(r.created_at) },
     ],
     filename: "redemptions",
   });
@@ -361,7 +362,7 @@ export default memo(function LoyaltyAdmin() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-xs text-muted-foreground">
-                    {new Date(r.created_at).toLocaleDateString()}
+                    {formatSimpleDate(r.created_at)}
                   </TableCell>
                   <TableCell>
                     {r.status === "pending" && (
