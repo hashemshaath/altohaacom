@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -43,10 +44,9 @@ import { format } from "date-fns";
 
 export default function MentorshipMatch() {
   const { id } = useParams<{ id: string }>();
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
 
   const { data: match, isLoading: matchLoading } = useMentorshipMatchDetails(id);
   const { data: sessions = [] } = useMentorshipSessions(id);

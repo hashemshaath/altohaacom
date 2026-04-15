@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,8 +16,7 @@ interface Props {
 }
 
 export const JudgeAnalyticsPanel = memo(function JudgeAnalyticsPanel({ competitionId, isOrganizer }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: analytics, isLoading } = useQuery({
     queryKey: ["judge-analytics", competitionId],

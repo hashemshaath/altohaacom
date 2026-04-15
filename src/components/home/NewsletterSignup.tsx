@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,8 +11,7 @@ import { cn } from "@/lib/utils";
 import { SectionReveal } from "@/components/ui/section-reveal";
 
 export const NewsletterSignup = forwardRef<HTMLElement>(function NewsletterSignup(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);

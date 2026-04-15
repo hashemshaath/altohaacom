@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
@@ -21,8 +22,7 @@ interface StepProgressProps {
  * Shows completed, current, and upcoming steps with connecting lines.
  */
 export const StepProgress = memo(function StepProgress({ steps, currentStep, className, variant = "horizontal" }: StepProgressProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (variant === "vertical") {
     return (

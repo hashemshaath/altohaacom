@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -26,10 +27,9 @@ const typeColors: Record<string, string> = {
 };
 
 export const NotificationsSummaryWidget = memo(function NotificationsSummaryWidget() {
+  const isAr = useIsAr();
   const { notifications, unreadCount, markAsRead, loading } = useNotifications();
-  const { language } = useLanguage();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   const recentUnread = notifications.filter((n) => !n.is_read).slice(0, 4);
 

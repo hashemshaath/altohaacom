@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -54,10 +55,9 @@ export default function CompanyLogin() {
   const [forgotOpen, setForgotOpen] = useState(false);
 
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const isLockedOut = lockoutUntil !== null && Date.now() < lockoutUntil;
 
   // If already logged in and has company access, redirect

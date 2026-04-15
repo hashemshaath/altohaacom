@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useOnlineStatus } from "@/hooks/usePWA";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -44,8 +45,7 @@ interface CachedRecipe {
 type Tab = "competitions" | "articles" | "recipes";
 
 export default function OfflinePage() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const isOnline = useOnlineStatus();
   const [tab, setTab] = useState<Tab>("competitions");
   const [competitions, setCompetitions] = useState<CachedCompetition[]>([]);

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useEntityEvents } from "@/hooks/useEntities";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -32,8 +33,7 @@ interface Props {
 }
 
 export const EntityEventsTab = memo(function EntityEventsTab({ entityId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: events, isLoading } = useEntityEvents(entityId);
 
   if (isLoading) {

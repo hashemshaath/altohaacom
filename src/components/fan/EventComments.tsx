@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,8 +19,7 @@ interface EventCommentsProps {
 
 export const EventComments = memo(function EventComments({ eventType, eventId }: EventCommentsProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const [replyTo, setReplyTo] = useState<string | null>(null);

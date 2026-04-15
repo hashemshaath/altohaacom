@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -13,9 +14,8 @@ import {
 } from "lucide-react";
 
 export const DashboardStatusStrip = memo(function DashboardStatusStrip() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["dashboard-status-strip", user?.id],

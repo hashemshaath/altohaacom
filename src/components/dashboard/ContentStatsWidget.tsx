@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,8 +39,7 @@ function buildDailyCounts(rows: { created_at: string }[] | null, days: number): 
 }
 
 export const ContentStatsWidget = memo(function ContentStatsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["content-stats-dashboard-v2"],

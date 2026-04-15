@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -15,9 +16,8 @@ import { CACHE } from "@/lib/queryConfig";
  * to finish setting up their profile.
  */
 export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["profile-completion", user?.id],

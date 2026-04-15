@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,8 +31,7 @@ const CATEGORY_CONFIG: Record<string, { icon: LucideIcon; label: string; labelAr
 };
 
 const MembershipFeatureControl = memo(function MembershipFeatureControl() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const { data: features, isLoading } = useAllMembershipFeatures();
   const [search, setSearch] = useState("");

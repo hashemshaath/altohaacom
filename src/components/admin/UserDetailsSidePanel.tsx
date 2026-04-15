@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, forwardRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -59,9 +60,9 @@ function calcCompleteness(profile: Record<string, unknown>): { score: number; mi
 }
 
 export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId, onClose, onEdit }: UserDetailsSidePanelProps) {
+  const isAr = useIsAr();
   const { t, language } = useLanguage();
   const { user: admin } = useAuth();
-  const isAr = language === "ar";
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("overview");
   const [confirmAction, setConfirmAction] = useState<{ type: "suspend" | "ban" | "activate"; userId: string } | null>(null);
@@ -375,6 +376,7 @@ export const UserDetailsSidePanel = memo(function UserDetailsSidePanel({ userId,
 // ── Helper Components ──
 
 function SectionLabel({ icon: Icon, text }: { icon: typeof Mail; text: string }) {
+  const isAr = useIsAr();
   return (
     <p className="text-[12px] font-semibold text-foreground/80 flex items-center gap-1.5">
       <Icon className="h-3.5 w-3.5 text-primary/70" />
@@ -404,6 +406,7 @@ function InfoRow({ icon: Icon, label, value, dir, onCopy, isAr }: { icon: typeof
 
 const MiniStatCard = forwardRef<HTMLDivElement, { icon: typeof Award; label: string; value: string; color: string }>(
   function MiniStatCard({ icon: Icon, label, value, color }, ref) {
+  const isAr = useIsAr();
     return (
       <div ref={ref} className="rounded-xl border border-border/40 bg-muted/20 p-3">
         <div className="flex items-center gap-1.5 mb-1">

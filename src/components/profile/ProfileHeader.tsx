@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -26,8 +27,8 @@ interface ProfileHeaderProps {
 
 export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userId, onProfileUpdate }: ProfileHeaderProps) {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { downloadCSV } from "@/lib/exportUtils";
@@ -48,8 +49,7 @@ const ENTITY_COLORS: Record<string, string> = {
 };
 
 export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [filterAction, setFilterAction] = useState<string>("all");
   const [filterEntity, setFilterEntity] = useState<string>("all");
   useRealtimeOrderUpdates(competitionId, true);

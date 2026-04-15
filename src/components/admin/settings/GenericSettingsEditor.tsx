@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -21,8 +22,7 @@ interface Props {
 export const GenericSettingsEditor = memo(function GenericSettingsEditor({
   settings, onSave, isPending,
 }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const [search, setSearch] = useState("");
   const [newKey, setNewKey] = useState("");

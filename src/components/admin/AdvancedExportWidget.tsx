@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -32,10 +33,9 @@ const EXPORT_MODULES: ExportModule[] = [
 ];
 
 export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const [selectedModule, setSelectedModule] = useState("users");
   const [exporting, setExporting] = useState(false);
+  const isAr = useIsAr();
   const { toast } = useToast();
 
   // Get record counts for all modules

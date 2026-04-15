@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -7,12 +8,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const CommunityStories = memo(function CommunityStories() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: profiles = [] } = useQuery({
     queryKey: ["community-stories-profiles", user?.id],
@@ -41,7 +40,7 @@ export const CommunityStories = memo(function CommunityStories() {
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (profiles.length === 0 && !user) return null;

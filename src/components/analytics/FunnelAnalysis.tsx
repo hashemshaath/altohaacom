@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -19,8 +20,7 @@ interface FunnelStep {
 }
 
 export const FunnelAnalysis = memo(function FunnelAnalysis() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [period, setPeriod] = useState("30d");
 
   const { data: funnelData, isLoading } = useQuery({

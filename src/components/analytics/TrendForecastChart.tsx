@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -30,8 +31,7 @@ export const TrendForecastChart = memo(function TrendForecastChart({
   title, data, isLoading, forecastPeriods = 3,
   icon: Icon = TrendingUp, color = "primary",
 }: TrendForecastChartProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const analysis = (() => {
     if (!data || data.length < 2) return null;

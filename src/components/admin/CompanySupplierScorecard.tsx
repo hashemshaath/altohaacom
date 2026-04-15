@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -12,8 +13,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Building2, Search, Star, TrendingUp, Clock, Package, Filter, ArrowUpDown } from "lucide-react";
 
 export const CompanySupplierScorecard = memo(function CompanySupplierScorecard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [sortBy, setSortBy] = useState<"score" | "orders" | "delivery" | "response">("score");

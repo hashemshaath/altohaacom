@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -10,8 +11,7 @@ import { Bell, Send, Eye, AlertCircle, TrendingUp, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: stats } = useQuery({
     queryKey: ["notification-analytics-widget"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,8 +18,7 @@ const REWARD_TIERS = [
 ];
 
 export const ReferralWidget = memo(function ReferralWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const { data: referralCode } = useReferralCode();
   const { data: stats } = useReferralStats();

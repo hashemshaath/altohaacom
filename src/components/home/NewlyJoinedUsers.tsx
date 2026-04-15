@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDisplayName } from "@/lib/getDisplayName";
@@ -20,8 +21,7 @@ import { HorizontalScrollRow } from "./HorizontalScrollRow";
 import { CACHE } from "@/lib/queryConfig";
 
 export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: allCountries = [] } = useAllCountries();
   const [countryFilter, setCountryFilter] = useState<string | null>(null);
   const sectionConfig = useSectionConfig();

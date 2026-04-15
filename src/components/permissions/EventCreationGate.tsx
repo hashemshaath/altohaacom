@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,8 +18,7 @@ interface EventCreationGateProps {
 
 export const EventCreationGate = memo(function EventCreationGate({ children, eventType }: EventCreationGateProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: verificationStatus, isLoading: verLoading } = useVerificationStatus();
 
   const { data: profile, isLoading: profLoading } = useQuery({

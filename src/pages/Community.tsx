@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, lazy, Suspense, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -34,9 +35,8 @@ function TabFallback() {
 }
 
 export default function Community() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   useAdTracking();
 
   const [searchParams] = useSearchParams();

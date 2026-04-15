@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -67,9 +68,9 @@ const educationalTypes: EntityType[] = ["culinary_academy", "university", "colle
 export default function EntityDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const { data: countries = [] } = useAllCountries();
 
   // Helper to get localized country name

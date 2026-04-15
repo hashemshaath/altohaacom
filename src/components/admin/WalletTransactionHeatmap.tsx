@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -6,11 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, ArrowDownRight, Wallet, TrendingUp, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { MS_PER_DAY, MS_PER_WEEK, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["wallet-txn-heatmap"],
@@ -59,7 +60,7 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
         weekDebits,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

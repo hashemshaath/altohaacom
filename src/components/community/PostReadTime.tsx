@@ -1,11 +1,11 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Clock } from "lucide-react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 /** Estimates read time for a post and shows it as a tiny badge */
 export const PostReadTime = memo(function PostReadTime({ content }: { content: string }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const words = content?.trim().split(/\s+/).length || 0;
   const minutes = Math.max(1, Math.ceil(words / 200));
 

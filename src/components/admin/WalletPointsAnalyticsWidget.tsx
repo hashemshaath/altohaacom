@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -6,11 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Wallet, Coins, ArrowUpRight, ArrowDownRight, Gift, Star, Users, TrendingUp } from "lucide-react";
-import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["wallet-points-analytics-widget"],
@@ -59,7 +60,7 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
         walletUtilization, actionCounts,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

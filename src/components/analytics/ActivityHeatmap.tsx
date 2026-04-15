@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -16,8 +17,7 @@ import { CACHE } from "@/lib/queryConfig";
 type DataSource = "profiles" | "messages" | "competition_registrations" | "posts";
 
 export const ActivityHeatmap = memo(function ActivityHeatmap() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [source, setSource] = useState<DataSource>("profiles");
 
   const sourceConfig: Record<DataSource, { label: string; labelAr: string; dateField: string }> = {

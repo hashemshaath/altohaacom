@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Sparkles, Globe, Type } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,8 +10,7 @@ import { TypographySettings } from "@/components/admin/settings/TypographySettin
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BrandIdentityPage() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { settings, isLoading, saveSetting } = useSiteSettings();
 
   const handleSave = (key: string, value: Record<string, any>, category?: string) => {

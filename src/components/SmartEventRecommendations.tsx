@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { MS_PER_DAY } from "@/lib/constants";
 import { useQuery } from "@tanstack/react-query";
@@ -37,8 +38,7 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
   limit?: number;
 }) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: recommendations = [] } = useQuery<RecommendedEvent[]>({
     queryKey: ["smart-recommendations", currentEventId, user?.id],

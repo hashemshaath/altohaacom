@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React, { useState, useMemo, useCallback } from "react";
 import { Bell, Check, CheckCheck, Trash2, X, Filter, Info, AlertTriangle, CircleCheck, CircleX, ShoppingCart, Trophy, FileText, Building2, GraduationCap, Users, Handshake, HeadphonesIcon, CreditCard, CalendarDays, Settings, Search, Sparkles } from "lucide-react";
 import { PageShell } from "@/components/PageShell";
@@ -73,9 +74,9 @@ function categorizeNotification(n: { link?: string | null; title?: string; title
 }
 
 export default function Notifications() {
+  const isAr = useIsAr();
   const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification, clearAllRead, loading } = useNotifications();
   const { getProfile } = useNotificationProfiles(notifications);
-  const { language } = useLanguage();
   const { isFan } = useAccountType();
   const navigate = useNavigate();
   const [filter, setFilter] = useState("all");
@@ -83,7 +84,6 @@ export default function Notifications() {
   const [sectionFilter, setSectionFilter] = useState<NotificationSection>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const isAr = language === "ar";
 
   const toggleSelect = useCallback((id: string) => {
     setSelectedIds(prev => {

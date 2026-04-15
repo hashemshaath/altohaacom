@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -42,8 +43,8 @@ const statusConfig: Record<string, { icon: typeof CheckCircle; color: string; la
 export const VerificationRequestForm = memo(function VerificationRequestForm() {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const submitMutation = useSubmitVerification();
   const { data: myRequests, isLoading: loadingRequests } = useMyVerificationRequests();
 

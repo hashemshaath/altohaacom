@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { useParams, Link } from "react-router-dom";
@@ -28,8 +29,8 @@ import { format } from "date-fns";
 export default function CRMCustomerDetail() {
   const { userId } = useParams<{ userId: string }>();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user: adminUser } = useAuth();
-  const isAr = language === "ar";
   const qc = useQueryClient();
 
   const [walletAmount, setWalletAmount] = useState("");

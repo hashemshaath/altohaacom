@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -70,10 +71,9 @@ const marketStatusOptions = [
 ];
 
 export default function ChefsTableRequest() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const createRequest = useCreateChefsTableRequest();
   const { companyId: registeredCompanyId, isLoading: companyLoading } = useCompanyAccess();
 

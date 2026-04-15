@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,9 +17,8 @@ interface Props {
 export const MaintenanceGuard = memo(forwardRef<HTMLDivElement, Props>(function MaintenanceGuard({ children }, _ref) {
   const settings = useSiteSettingsContext();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { data: roles = [] } = useUserRoles();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   const registration = settings.registration || {};
   const isMaintenanceMode = registration.maintenanceMode === true;

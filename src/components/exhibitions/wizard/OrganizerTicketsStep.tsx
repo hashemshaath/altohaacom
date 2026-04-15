@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -17,8 +18,7 @@ interface Props {
 }
 
 export const ExhibitionOrganizerTicketsStep = memo(function ExhibitionOrganizerTicketsStep({ data, onChange }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: organizers } = useQuery({
     queryKey: ["organizers-list"],

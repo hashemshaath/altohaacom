@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useEntityCompetitions } from "@/hooks/useEntities";
@@ -23,8 +24,7 @@ interface Props {
 }
 
 export const EntityCompetitionsTab = memo(function EntityCompetitionsTab({ entityId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: participations, isLoading } = useEntityCompetitions(entityId);
 
   if (isLoading) {

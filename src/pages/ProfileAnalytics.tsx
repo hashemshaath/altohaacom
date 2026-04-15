@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
@@ -10,8 +11,7 @@ import { Link } from "react-router-dom";
 
 export default function ProfileAnalytics() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <PageShell title={isAr ? "التحليلات المتقدمة" : "Advanced Analytics"} className="max-w-5xl mx-auto">

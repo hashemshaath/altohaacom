@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,8 +22,7 @@ const RANK_COLORS = [
 ];
 
 const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefsSection(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: allCountries = [] } = useAllCountries();
   const config = useSectionConfig();
 

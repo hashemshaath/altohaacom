@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -30,8 +31,7 @@ export const AdminEmptyState = memo(function AdminEmptyState({
   onAction,
   className,
 }: AdminEmptyStateProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className={cn("flex flex-col items-center justify-center py-16 text-center animate-in fade-in-50 slide-in-from-bottom-3 duration-500", className)}>

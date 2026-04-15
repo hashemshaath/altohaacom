@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -20,10 +21,9 @@ import {
 import { Button } from "@/components/ui/button";
 
 export default function CompanyPublicProfile() {
+  const isAr = useIsAr();
   const { id } = useParams();
-  const { language } = useLanguage();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const { data: countries = [] } = useAllCountries();
 
   const { data: company, isLoading } = useQuery({

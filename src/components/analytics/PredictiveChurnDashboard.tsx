@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -25,7 +26,7 @@ interface ChurnRisk {
 
 export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["churn-predictions"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -11,9 +12,8 @@ import { adminNavSections } from "@/config/adminNavSections";
 import { useAdminRole } from "@/hooks/useAdminRole";
 
 export const AdminSearchCommand = memo(function AdminSearchCommand() {
+  const isAr = useIsAr();
   const [open, setOpen] = useState(false);
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const { isSuperAdmin, isFullAdmin } = useAdminRole();
 

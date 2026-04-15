@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,8 +51,7 @@ export const CriteriaManagementPanel = memo(function CriteriaManagementPanel({
   competitionId,
   isOrganizer,
 }: CriteriaManagementPanelProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 

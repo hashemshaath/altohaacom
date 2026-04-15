@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -15,9 +16,8 @@ import { SectionReveal } from "@/components/ui/section-reveal";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
 
 export const PlatformFeatures = memo(function PlatformFeatures() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const services = [
     { icon: Trophy, title: isAr ? "مسابقات الطهي" : "Culinary Competitions", desc: isAr ? "تحدَّ نفسك في مسابقات عالمية ومحلية مع نظام تحكيم رقمي احترافي." : "Challenge yourself in global & local competitions with a professional digital judging system.", href: "/competitions", color: "text-chart-1", bg: "bg-chart-1/10" },

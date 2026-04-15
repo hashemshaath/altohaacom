@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -59,8 +60,7 @@ const tiktokIntegrations = [
 ];
 
 export const TikTokPixelPanel = memo(function TikTokPixelPanel() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const qc = useQueryClient();
   const [configs, setConfigs] = useState<Record<string, IntegrationConfig>>({});
 

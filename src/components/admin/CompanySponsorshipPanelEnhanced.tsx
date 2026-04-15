@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -29,7 +30,7 @@ interface Props {
 
 export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipPanelEnhanced({ companyId }: Props) {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [aiSuggestions, setAiSuggestions] = useState<string | null>(null);
   const [aiLoading, setAiLoading] = useState(false);

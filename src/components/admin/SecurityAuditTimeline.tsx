@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,8 +32,7 @@ const EVENT_ICONS: Record<string, typeof Shield> = {
 };
 
 export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [severityFilter, setSeverityFilter] = useState("all");
 
   const { data: events = [], isLoading } = useQuery({

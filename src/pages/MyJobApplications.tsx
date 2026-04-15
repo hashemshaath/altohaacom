@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -24,9 +25,8 @@ const STATUS_CONFIG: Record<string, { labelEn: string; labelAr: string; color: s
 };
 
 export default function MyJobApplications() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: applications, isLoading } = useQuery({
     queryKey: ["my-job-applications", user?.id],

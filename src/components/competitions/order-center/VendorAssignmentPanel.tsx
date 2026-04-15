@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,10 +30,10 @@ function getItemName(item: any, isAr: boolean): string {
 
 export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [filterCategory, setFilterCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");

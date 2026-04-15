@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +13,6 @@ import { Link } from "react-router-dom";
 import { Activity, Trophy, Clock, Users, ArrowRight, Flame } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface LiveCompetition {
   id: string;
@@ -26,9 +27,8 @@ interface LiveCompetition {
 }
 
 export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: competitions = [], isLoading } = useQuery({
     queryKey: ["live-competitions-widget", user?.id],
@@ -73,7 +73,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
         user_registered: userRegs.includes(c.id),
       })) as LiveCompetition[];
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const getStatusBadge = (status: string) => {

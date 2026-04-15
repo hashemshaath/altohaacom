@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -6,11 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Ticket, Clock, CheckCircle, AlertTriangle, MessageSquare, ThumbsUp, Timer } from "lucide-react";
-import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["support-overview-widget"],
@@ -44,7 +45,7 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
         totalSessions, satisfaction, ratedCount,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

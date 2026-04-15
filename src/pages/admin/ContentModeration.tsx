@@ -40,8 +40,6 @@ export default function ContentModeration() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  const isAr = language === "ar";
   const [expandedReportId, setExpandedReportId] = useState<string | null>(null);
   const [resolutionNotes, setResolutionNotes] = useState<Record<string, string>>({});
   const [activeTab, setActiveTab] = useState("reports");

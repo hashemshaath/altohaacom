@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -19,12 +20,11 @@ import type { Database } from "@/integrations/supabase/types";
 
 export default function EditExhibition() {
   const { slug } = useParams<{ slug: string }>();
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [data, setData] = useState<ExhibitionFormData | null>(null);
 

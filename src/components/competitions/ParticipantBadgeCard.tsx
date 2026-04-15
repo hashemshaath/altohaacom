@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,9 +71,8 @@ export const ParticipantBadgeCard = memo(function ParticipantBadgeCard({
   compact = false,
   className = "",
 }: ParticipantBadgeCardProps) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const config = ROLE_CONFIG[role];
 
   const { data: qrCode, isLoading } = useEntityQRCode(config.prefix, entityId, config.prefix);

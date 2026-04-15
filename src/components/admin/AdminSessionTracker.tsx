@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,8 +14,7 @@ import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const AdminSessionTracker = memo(function AdminSessionTracker() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: sessions = [] } = useQuery({
     queryKey: ["adminActiveSessions"],

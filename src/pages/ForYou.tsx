@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { lazy, Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,8 +27,7 @@ interface RecommendationData {
 
 export default function ForYou() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ["smart-recommendations-full", user?.id],

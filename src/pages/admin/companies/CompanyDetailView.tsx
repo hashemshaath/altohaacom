@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, lazy, Suspense, memo } from "react";
 import { safeLazy } from "@/lib/safeLazy";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,8 +41,7 @@ interface Props {
 }
 
 export const CompanyDetailView = memo(function CompanyDetailView({ companyId, onBack }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [companyDetailTab, setCompanyDetailTab] = useState("overview");

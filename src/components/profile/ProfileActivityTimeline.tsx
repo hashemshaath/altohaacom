@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +24,7 @@ interface TimelineEvent {
 }
 
 export const ProfileActivityTimeline = memo(function ProfileActivityTimeline({ userId }: ProfileActivityTimelineProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["profile-activity-timeline", userId],

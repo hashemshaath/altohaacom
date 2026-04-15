@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -65,8 +66,7 @@ const ROUTE_LABELS: Record<string, { en: string; ar: string }> = {
 };
 
 export const AdminBreadcrumb = memo(function AdminBreadcrumb() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const location = useLocation();
   const pathname = location.pathname;
 

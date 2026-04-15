@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,8 +32,7 @@ interface Props {
 }
 
 const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId, exhibitions }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const exIds = useMemo(() => exhibitions.map((e) => e.id).filter(Boolean), [exhibitions]);
 

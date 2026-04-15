@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,8 +17,7 @@ interface AdminExportButtonProps {
 }
 
 export const AdminExportButton = memo(function AdminExportButton({ onExport, isExporting, disabled }: AdminExportButtonProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <DropdownMenu>

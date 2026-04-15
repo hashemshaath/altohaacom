@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
@@ -20,8 +21,7 @@ interface ApprovalTemplateDialogProps {
 }
 
 export const ApprovalTemplateDialog = memo(function ApprovalTemplateDialog({ open, onOpenChange, onSend, isPending }: ApprovalTemplateDialogProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 

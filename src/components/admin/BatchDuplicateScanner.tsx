@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -36,8 +37,7 @@ export const BatchDuplicateScanner = memo(function BatchDuplicateScanner({
   defaultTable = "organizers",
   onMergeComplete,
 }: BatchDuplicateScannerProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { scanning, scanGroups, batchScan, merging, mergeEntities } = useEntityDedup();
   const [table, setTable] = useState(defaultTable);
   const [crossTableCheck, setCrossTableCheck] = useState(true);

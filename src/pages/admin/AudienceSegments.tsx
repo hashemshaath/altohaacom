@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { SegmentBroadcastDialog } from "@/components/crm/SegmentBroadcastDialog";
@@ -84,10 +85,9 @@ const AVAILABLE_ROLES = [
 
 export default function AudienceSegments() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [broadcastSegment, setBroadcastSegment] = useState<Segment | null>(null);

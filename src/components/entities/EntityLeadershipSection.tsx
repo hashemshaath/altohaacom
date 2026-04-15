@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,6 +30,7 @@ const executiveTypes = ["president", "vice_president", "secretary_general", "tre
 const honoraryTypes = ["honorary_president", "honorary_member", "advisor", "spokesperson"];
 
 function getPositionIcon(type: string) {
+  const isAr = useIsAr();
   if (type === "president" || type === "honorary_president") return Crown;
   if (type === "vice_president" || type === "director") return Shield;
   if (honoraryTypes.includes(type)) return Star;
@@ -42,8 +44,7 @@ interface Props {
 }
 
 export const EntityLeadershipSection = memo(function EntityLeadershipSection({ entityId, presidentName, secretaryName }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: positions, isLoading } = useQuery({
     queryKey: ["entity-leadership-public", entityId],

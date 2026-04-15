@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,8 +24,7 @@ interface Props {
 }
 
 const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const fromISO = dateRange?.from.toISOString();
   const toISO = dateRange?.to.toISOString();

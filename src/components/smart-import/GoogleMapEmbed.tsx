@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -11,8 +12,7 @@ interface GoogleMapEmbedProps {
 }
 
 export const GoogleMapEmbed = memo(function GoogleMapEmbed({ latitude, longitude, name, searchQuery, location, className = "" }: GoogleMapEmbedProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   // If we have coordinates, show the exact location
   // Otherwise, show the search query on the map (like Google Maps search)

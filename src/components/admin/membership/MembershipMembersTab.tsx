@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { createMembershipInvoice } from "@/lib/membershipInvoice";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -63,11 +64,10 @@ const EXTEND_OPTIONS = [
 ];
 
 const MembershipMembersTab = memo(function MembershipMembersTab() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const { exportCSV } = useCSVExport({
     columns: [

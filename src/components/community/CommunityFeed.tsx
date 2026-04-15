@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, useRef, memo, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -60,9 +61,8 @@ const PAGE_SIZE = 20;
 
 export const CommunityFeed = memo(function CommunityFeed() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tagFilter = searchParams.get("tag");

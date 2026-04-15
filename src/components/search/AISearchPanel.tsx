@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ interface Props {
 
 export const AISearchPanel = memo(function AISearchPanel({ query }: Props) {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [aiResponse, setAiResponse] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);

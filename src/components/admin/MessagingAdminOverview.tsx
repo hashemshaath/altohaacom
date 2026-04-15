@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,11 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Ticket, Bell, TrendingUp, Users, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
-import { REFETCH_INTERVAL_DEFAULT, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
@@ -69,7 +70,7 @@ export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
         messagesToday: messagesToday || 0,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
     refetchInterval: visibleInterval,
   });
 

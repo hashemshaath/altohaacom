@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, useRef, useEffect, memo } from "react";
 import { ROUTES } from "@/config/routes";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -8,7 +10,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Search, Trophy, UtensilsCrossed, FileText, Users, ArrowRight, X, Loader2 } from "lucide-react";
-import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface SearchResult {
   id: string;
@@ -26,8 +27,7 @@ const typeConfig = {
 };
 
 export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -64,7 +64,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
       return searchResults;
     },
     enabled: debouncedQuery.length >= 2,
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   // Close on outside click
@@ -177,6 +177,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
 });
 
 function useDebounce(value: string, delay: number) {
+  const isAr = useIsAr();
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
     const timer = setTimeout(() => setDebounced(value), delay);

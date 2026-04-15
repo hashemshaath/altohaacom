@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -27,8 +28,7 @@ const rankCircle = (rank: number) =>
   : "bg-gradient-to-br from-amber-500 to-amber-600 shadow-amber-500/30";
 
 export default function Rankings() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [period, setPeriod] = useState("all_time");
   const [countryFilter, setCountryFilter] = useState("all");
   const [specialtyFilter, setSpecialtyFilter] = useState("all");

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -24,8 +25,7 @@ import {
 } from "@/components/competitions/CompetitionCard";
 
 export default function CompetitionDiscovery() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");

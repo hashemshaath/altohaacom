@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -9,8 +10,7 @@ interface Props {
 }
 
 export const VoiceSearchButton = memo(function VoiceSearchButton({ onResult, className }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
 

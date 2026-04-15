@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,8 +18,7 @@ interface ChefSearchSelectorProps {
 }
 
 export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valueName, onChange, onClear, placeholder, disabled }: ChefSearchSelectorProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedName, setSelectedName] = useState(valueName || "");

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { PageShell } from "@/components/PageShell";
@@ -9,9 +10,8 @@ import { VerifiedBadge } from "@/components/verification/VerifiedBadge";
 import { ShieldCheck, CheckCircle, Info } from "lucide-react";
 
 export default function Verification() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { data: status } = useVerificationStatus();
 
   return (

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,8 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, TrendingUp, Target, DollarSign, Clock, RefreshCw, Users, Repeat } from "lucide-react";
 
 export const AdAIInsightsPanel = memo(function AdAIInsightsPanel() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [refreshKey, setRefreshKey] = useState(0);
 
   const { data: insights, isLoading, isError } = useQuery({

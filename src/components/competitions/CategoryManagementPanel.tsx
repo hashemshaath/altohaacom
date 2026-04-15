@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,10 +45,9 @@ const emptyForm: CategoryFormData = {
 };
 
 export const CategoryManagementPanel = memo(function CategoryManagementPanel({ competitionId, isOrganizer, competitionStatus }: CategoryManagementPanelProps) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [view, setView] = useState<"list" | "detail" | "form">("list");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);

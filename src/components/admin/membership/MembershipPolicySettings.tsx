@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -42,8 +43,7 @@ const DEFAULT_POLICY: PolicyConfig = {
 const SETTINGS_KEY = "membership_policy";
 
 const MembershipPolicySettings = memo(function MembershipPolicySettings() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const { settings, isLoading, saveSetting } = useSiteSettings();
   const [policy, setPolicy] = useState<PolicyConfig>(DEFAULT_POLICY);

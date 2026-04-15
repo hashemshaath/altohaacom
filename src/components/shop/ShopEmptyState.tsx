@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,8 +10,7 @@ interface ShopEmptyStateProps {
 }
 
 export const ShopEmptyState = memo(function ShopEmptyState({ search, onClearSearch }: ShopEmptyStateProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">

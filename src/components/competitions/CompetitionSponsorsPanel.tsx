@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useRef, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,13 +40,12 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({ competitionId, isOrganizer }: CompetitionSponsorsPanelProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("");
-  const isAr = language === "ar";
 
   const { data: sponsors } = useQuery({
     queryKey: ["competition-sponsors", competitionId],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -26,8 +27,7 @@ import { ar as arLocale } from "date-fns/locale";
 type CategoryFilter = "all" | "account" | "certificate" | "invoice" | "competition" | "company" | "participant" | "judge" | "team_member" | "exhibition";
 
 export default function Verify() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [searchParams] = useSearchParams();
   const initialCode = searchParams.get("code") || "";
   const [inputCode, setInputCode] = useState(initialCode);
@@ -342,8 +342,6 @@ function VerificationResult({
   code: string;
   onSaveContact: () => void;
 }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const entityType = result.entity_type;
 
   const typeLabels: Record<string, { en: string; ar: string; icon: LucideIcon; color: string }> = {
@@ -437,8 +435,6 @@ function VerificationResult({
 }
 
 function UserVerificationDetails({ details, onSaveContact }: { details: any; onSaveContact: () => void }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   return (
     <div className="space-y-4">
@@ -499,8 +495,7 @@ function UserVerificationDetails({ details, onSaveContact }: { details: any; onS
 }
 
 function CertificateVerificationDetails({ details }: { details: any }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (!details) return null;
 
@@ -554,8 +549,7 @@ function CertificateVerificationDetails({ details }: { details: any }) {
 }
 
 function InvoiceVerificationDetails({ details }: { details: any }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -585,8 +579,7 @@ function InvoiceVerificationDetails({ details }: { details: any }) {
 }
 
 function CompetitionVerificationDetails({ details, entityId }: { details: any; entityId: string }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-4">
@@ -635,8 +628,7 @@ function CompetitionVerificationDetails({ details, entityId }: { details: any; e
 }
 
 function CompanyVerificationDetails({ details, entityId }: { details: any; entityId: string }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-4">
@@ -687,8 +679,7 @@ function CompanyVerificationDetails({ details, entityId }: { details: any; entit
 }
 
 function ExhibitionVerificationDetails({ details }: { details: any }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-4">
@@ -739,8 +730,7 @@ function ExhibitionVerificationDetails({ details }: { details: any }) {
 }
 
 function ParticipantVerificationDetails({ details }: { details: any }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-4">
@@ -804,8 +794,7 @@ function ParticipantVerificationDetails({ details }: { details: any }) {
 }
 
 function TeamMemberVerificationDetails({ details }: { details: any }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-4">

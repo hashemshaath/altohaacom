@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +24,7 @@ const BADGE_CONFIG: Record<BadgeLevel, { icon: LucideIcon; color: string; label:
 };
 
 export const ChefBadge = memo(function ChefBadge({ userId, className, showTooltip = true }: ChefBadgeProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: badges = [] } = useQuery({
     queryKey: ["chef-badges", userId],

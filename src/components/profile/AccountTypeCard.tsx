@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAccountType } from "@/hooks/useAccountType";
@@ -15,9 +16,8 @@ import {
 import { ChefHat, Heart, ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react";
 
 export const AccountTypeCard = memo(function AccountTypeCard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { accountType, isFan, isProfessional } = useAccountType();
   const { toast } = useToast();
   const queryClient = useQueryClient();

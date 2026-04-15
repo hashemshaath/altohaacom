@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -24,9 +25,8 @@ const statusColors: Record<string, string> = {
 };
 
 export default function ShopOrders() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ["shop-orders", user?.id],

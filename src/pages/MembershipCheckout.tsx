@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { createMembershipInvoice } from "@/lib/membershipInvoice";
@@ -42,9 +43,8 @@ const TIER_NAMES: Record<string, { en: string; ar: string }> = {
 };
 
 export default function MembershipCheckout() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 /**
  * Shows registration status for the current user on a competition detail page.
  * Displays pending/approved/rejected state with contextual messaging.
@@ -67,8 +68,7 @@ const statusLabels: Record<string, { en: string; ar: string }> = {
 };
 
 export const RegistrationStatusBanner = memo(function RegistrationStatusBanner({ registration, competitionStatus }: RegistrationStatusBannerProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (!registration) return null;
 

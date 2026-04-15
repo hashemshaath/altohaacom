@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,10 +36,9 @@ import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
 
 export default function LiveChatAdmin() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const chatRefetchInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_FAST);
 
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);

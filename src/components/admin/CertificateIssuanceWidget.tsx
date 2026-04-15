@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -6,11 +8,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Award, FileCheck, Send, Clock, ShieldCheck, Download, PenTool } from "lucide-react";
-import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["certificate-issuance-widget"],
@@ -41,7 +42,7 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
         typeCounts, issuanceRate,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

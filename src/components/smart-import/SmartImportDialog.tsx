@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -206,8 +207,7 @@ export const SmartImportDialog = memo(function SmartImportDialog({
   onImport,
   entityType = "company",
 }: SmartImportDialogProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const [query, setQuery] = useState("");
   const [location, setLocation] = useState("");
@@ -462,6 +462,7 @@ export const SmartImportDialog = memo(function SmartImportDialog({
 });
 
 function DataField({ label, value, multiline }: { label: string; value?: string | null; multiline?: boolean }) {
+  const isAr = useIsAr();
   if (!value) return null;
   return (
     <div className="space-y-0.5">

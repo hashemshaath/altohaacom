@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -37,9 +38,8 @@ interface ChefResult {
 type Step = "search" | "input" | "preview";
 
 export const CVImportSection = memo(function CVImportSection() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
 
   const [step, setStep] = useState<Step>("search");
   const [searchQuery, setSearchQuery] = useState("");

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -20,8 +21,7 @@ interface Milestone {
 
 export const GoalsMilestonesWidget = memo(function GoalsMilestonesWidget() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: milestones } = useQuery({
     queryKey: ["goals-milestones", user?.id],

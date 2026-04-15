@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,8 +25,7 @@ interface Suggestion {
 }
 
 export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen, onSelect, onClose }: SearchSuggestionsProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const ref = useRef<HTMLDivElement>(null);
 
   // Close on outside click

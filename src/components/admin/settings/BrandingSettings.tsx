@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -14,8 +15,7 @@ interface Props {
 }
 
 export const BrandingSettings = memo(function BrandingSettings({ settings, onSave, isPending }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const branding = settings.branding || {};
 
   const [brand, setBrand] = useState(branding);

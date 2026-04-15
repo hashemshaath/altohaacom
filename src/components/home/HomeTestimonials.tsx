@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,8 +13,7 @@ import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { CACHE } from "@/lib/queryConfig";
 
 export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimonials(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [current, setCurrent] = useState(0);
   const sectionConfig = useSectionConfig();
 

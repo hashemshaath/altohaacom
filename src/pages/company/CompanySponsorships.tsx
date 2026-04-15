@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,12 +48,11 @@ const STATUS_CONFIG: Record<string, { color: string; label: string; labelAr: str
 };
 
 export default function CompanySponsorships() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [applyDialog, setApplyDialog] = useState<any>(null);
   const [selectedPackage, setSelectedPackage] = useState("");
   const [applicationNote, setApplicationNote] = useState("");

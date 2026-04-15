@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
@@ -34,8 +35,7 @@ const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
 
 export const ActivitySidebar = memo(function ActivitySidebar() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: activities = [] } = useQuery({
     queryKey: ["community-activity", user?.id],

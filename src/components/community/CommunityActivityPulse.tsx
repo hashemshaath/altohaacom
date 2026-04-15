@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useEffect, useState, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,8 +9,7 @@ import { Zap } from "lucide-react";
  * Shows a real-time pulse of community activity — new posts appearing in real time.
  */
 export const CommunityActivityPulse = memo(function CommunityActivityPulse() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [recentCount, setRecentCount] = useState(0);
   const [pulse, setPulse] = useState(false);
   const timeout = useRef<ReturnType<typeof setTimeout>>();

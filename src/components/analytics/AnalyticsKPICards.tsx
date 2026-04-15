@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,8 +17,7 @@ interface Props {
 }
 
 export const AnalyticsKPICards = memo(function AnalyticsKPICards({ data, isLoading }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const cards = useMemo(() => [
     { label: isAr ? "المسابقات" : "Competitions", value: data?.totalCompetitions, icon: Trophy, color: "text-primary", bg: "bg-primary/10" },

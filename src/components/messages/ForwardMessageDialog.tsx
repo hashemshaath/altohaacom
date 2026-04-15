@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -20,8 +21,7 @@ interface ForwardMessageDialogProps {
 
 export const ForwardMessageDialog = memo(function ForwardMessageDialog({ open, onOpenChange, message }: ForwardMessageDialogProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [sent, setSent] = useState<Set<string>>(new Set());

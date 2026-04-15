@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -11,8 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const SupplierAnalyticsDashboard = memo(function SupplierAnalyticsDashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
 
   const { data: products = [] } = useQuery({

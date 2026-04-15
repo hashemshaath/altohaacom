@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo, useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -24,8 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { MS_PER_DAY, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const MembershipOverview = memo(function MembershipOverview() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [lastRunResult, setLastRunResult] = useState<{ auto_downgraded?: number; notifications_created?: number; expired?: number; warning?: number } | null>(null);
 

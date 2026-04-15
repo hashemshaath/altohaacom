@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
@@ -58,6 +59,7 @@ const statusColors: Record<string, "default" | "destructive" | "outline" | "seco
 
 export default function InvoicesAdmin() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -278,8 +280,6 @@ export default function InvoicesAdmin() {
     const l = labels[status] || labels.draft;
     return language === "ar" ? l.ar : l.en;
   };
-
-  const isAr = language === "ar";
 
   const { sorted: sortedInvoices, sortColumn, sortDirection, toggleSort } = useTableSort(invoices, "created_at", "desc");
   const pagination = usePagination(sortedInvoices, { defaultPageSize: 15 });

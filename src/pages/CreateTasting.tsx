@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -45,8 +46,7 @@ const STAGES_INFO = [
 ];
 
 export default function CreateTasting() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const preselectedCompetitionId = searchParams.get("competition_id");

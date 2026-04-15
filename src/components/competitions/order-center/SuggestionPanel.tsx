@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -31,10 +32,10 @@ interface Props {
 
 export const SuggestionPanel = memo(function SuggestionPanel({ competitionId, isOrganizer }: Props) {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
     item_name: "", item_name_ar: "", category: "equipment", quantity: 1,

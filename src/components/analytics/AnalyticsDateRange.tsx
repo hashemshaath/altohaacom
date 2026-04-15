@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -47,8 +48,7 @@ interface Props {
 }
 
 export const AnalyticsDateRange = memo(function AnalyticsDateRange({ value, onChange, onExport }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activePreset, setActivePreset] = useState("30d");
 
   const handlePreset = (key: string) => {

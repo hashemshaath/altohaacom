@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,8 +21,7 @@ const SEVERITY_CONFIG = {
 };
 
 export function SEOAuditPanel() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const qc = useQueryClient();
   const [expandedAudit, setExpandedAudit] = useState<string | null>(null);
 

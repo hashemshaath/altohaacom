@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,9 +19,8 @@ interface Props {
 
 export function ArticleImageUpload({ value, onChange, label, className }: Props) {
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => isAr ? ar : en;
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);

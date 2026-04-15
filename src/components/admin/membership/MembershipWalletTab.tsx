@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -34,11 +35,10 @@ import type { Database } from "@/integrations/supabase/types";
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
 const MembershipWalletTab = memo(function MembershipWalletTab() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [search, setSearch] = useState("");
   const [tierFilter, setTierFilter] = useState("all");

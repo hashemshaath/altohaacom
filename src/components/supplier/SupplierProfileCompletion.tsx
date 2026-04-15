@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
@@ -85,8 +86,7 @@ const STEPS: Step[] = [
 ];
 
 export const SupplierProfileCompletion = memo(function SupplierProfileCompletion() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const { data: company } = useCompanyProfile(companyId);
 

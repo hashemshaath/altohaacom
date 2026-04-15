@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,8 +25,7 @@ interface NewConversationDialogProps {
 
 export const NewConversationDialog = memo(function NewConversationDialog({ open, onOpenChange, onSelectUser }: NewConversationDialogProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
 
   const { data: users = [], isLoading } = useQuery({

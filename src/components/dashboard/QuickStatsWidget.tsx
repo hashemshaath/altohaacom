@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -39,8 +40,7 @@ function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColo
 
 export const QuickStatsWidget = memo(function QuickStatsWidget() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { isProfessional } = useAccountType();
 
   const { data: stats, isLoading } = useQuery({

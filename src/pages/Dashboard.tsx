@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { lazy, Suspense, useEffect, useRef, memo } from "react";
 import { MembershipExpiryBanner } from "@/components/membership/MembershipExpiryBanner";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
@@ -76,7 +77,7 @@ function W({ children, lines, name }: { children: React.ReactNode; lines?: numbe
 export default function Dashboard() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { widgets, toggleWidget, resetLayout, isVisible } = useDashboardLayout();
   const { isFan } = useAccountType();
 

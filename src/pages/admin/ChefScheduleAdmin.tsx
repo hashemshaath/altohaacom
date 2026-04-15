@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useTableSort } from "@/hooks/useTableSort";
@@ -48,8 +49,7 @@ const EVENT_ICONS: Record<string, any> = {
 const VIS_ICONS: Record<string, any> = { private: Lock, management: Shield, public: Globe };
 
 export default function ChefScheduleAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");

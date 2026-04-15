@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,8 +30,7 @@ const DOC_CATEGORIES = [
 ];
 
 export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({ exhibitionId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const t = (en: string, ar: string) => isAr ? ar : en;
   const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -22,8 +23,7 @@ interface QuickReactionsProps {
 
 export const QuickReactions = memo(function QuickReactions({ postId, className }: QuickReactionsProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [reacting, setReacting] = useState<string | null>(null);
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);

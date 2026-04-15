@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -22,8 +23,7 @@ interface Props {
 }
 
 export const EvaluationCategorySelect = memo(function EvaluationCategorySelect({ value, onChange }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <RadioGroup value={value} onValueChange={(v) => onChange(v as EvaluationCategory)} className="grid gap-2 sm:grid-cols-2">

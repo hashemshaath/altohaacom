@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React, { memo } from "react";
 import { CACHE } from "@/lib/queryConfig";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -13,9 +14,8 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 
 export const DailyDigestWidget = memo(function DailyDigestWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: digest, isLoading } = useQuery({
     queryKey: ["daily-digest", user?.id],

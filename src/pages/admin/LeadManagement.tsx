@@ -100,7 +100,6 @@ const PIPELINE_STAGES = ["new", "contacted", "qualified", "proposal", "won"] as 
 
 export default function LeadManagement() {
   const { t, language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();

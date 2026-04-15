@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,12 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Wallet, Star, ArrowRight, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
-import { MS_PER_DAY, MS_PER_WEEK, STALE_TIME_LONG } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["wallet-balance-widget", user?.id],
@@ -44,7 +45,7 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
       };
     },
     enabled: !!user,
-    staleTime: STALE_TIME_LONG,
+    ...CACHE.default,
   });
 
   if (!data) return null;

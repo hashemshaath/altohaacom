@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,8 +13,7 @@ import { TemplatesManager } from "@/components/evaluation/TemplatesManager";
 import { useCSVExport } from "@/hooks/useCSVExport";
 
 function DomainStats() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: domains } = useEvaluationDomains();
 
   const domainIcons: Record<string, React.ElementType> = {
@@ -51,8 +51,7 @@ function DomainStats() {
 }
 
 export default function EvaluationCenter() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState("criteria");
   const { data: domains } = useEvaluationDomains();
 

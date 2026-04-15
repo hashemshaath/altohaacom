@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { getDaysInMonth, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType } from "@/hooks/useChefSchedule";
@@ -28,8 +29,7 @@ interface Props {
 }
 
 const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, profileMap, onEventClick, onDateClick }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [showGlobal, setShowGlobal] = useState(true);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);

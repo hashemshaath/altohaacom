@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -26,8 +27,7 @@ interface DeduplicationPanelProps {
 export const DeduplicationPanel = memo(function DeduplicationPanel({
   duplicates, checking, onMerge, onDismiss, compact = false,
 }: DeduplicationPanelProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (checking) {
     return (

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -47,10 +48,9 @@ const statusConfig: Record<string, { en: string; ar: string; color: string }> = 
 
 export default function TastingDetail() {
   const { id } = useParams();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isAr = useIsAr();
 
   const { data: session, isLoading } = useTastingSession(id);
   const { data: criteria = [] } = useTastingCriteria(id);

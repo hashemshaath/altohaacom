@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -72,8 +73,8 @@ function downloadCSV(filename: string, headers: string[], rows: string[][]) {
 
 export default function CompanyAnalytics() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
-  const isAr = language === "ar";
   const [period, setPeriod] = useState("6m");
   const [activeTab, setActiveTab] = useState("overview");
 

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, lazy, Suspense, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -40,6 +41,7 @@ const ShopOrdersOverviewWidget = lazy(() => import("@/components/admin/ShopOrder
 const AdminCommandBar = lazy(() => import("@/components/admin/AdminCommandBar").then(m => ({ default: m.AdminCommandBar })));
 
 function LazySection({ children, fallback }: { children: React.ReactNode; fallback?: React.ReactNode }) {
+  const isAr = useIsAr();
   const { ref, inView } = useInViewport("400px 0px");
   return (
     <div ref={ref}>
@@ -53,6 +55,7 @@ function MetricCard({ title, value, icon: Icon, trend, sparkData, chartColor, li
   title: string; value: number; icon: LucideIcon; trend?: number; sparkData?: { v: number }[];
   chartColor?: string; link: string; loading?: boolean; urgent?: boolean;
 }) {
+  const isAr = useIsAr();
   return (
     <Link to={link}>
       <div className={cn(
@@ -100,8 +103,7 @@ function MetricCard({ title, value, icon: Icon, trend, sparkData, chartColor, li
 
 /* ─── Main ─── */
 export default function AdminDashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState("overview");
   useAdminCacheWarmer();
 

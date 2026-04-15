@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -32,7 +33,7 @@ function downloadCSV(filename: string, headers: string[], rows: string[][]) {
 
 export default function CompanyReports() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -55,10 +56,9 @@ const PIE_COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--cha
 export default function CompanyCampaignDetail() {
   const { campaignId } = useParams<{ campaignId: string }>();
   const navigate = useNavigate();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const qc = useQueryClient();
   const [creativeOpen, setCreativeOpen] = useState(false);
   const [form, setForm] = useState({

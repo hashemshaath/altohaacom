@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -10,8 +11,7 @@ interface MasterclassHeroProps {
 }
 
 export const MasterclassHero = memo(function MasterclassHero({ totalCount, filteredCount, totalEnrollments }: MasterclassHeroProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <section className="relative overflow-hidden border-b border-border/40">

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { CACHE } from "@/lib/queryConfig";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,9 +13,8 @@ import { MessageSquare, ArrowRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export const RecentChatsWidget = memo(function RecentChatsWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: chats } = useQuery({
     queryKey: ["recent-chats-widget", user?.id],

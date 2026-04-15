@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -27,9 +28,8 @@ const SUPPLIER_CAT_LABELS: Record<string, { en: string; ar: string }> = {
 };
 
 export const HomeProSuppliers = memo(function HomeProSuppliers() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const [catFilter, setCatFilter] = useState<string | null>(null);
   const sectionConfig = useSectionConfig();
 

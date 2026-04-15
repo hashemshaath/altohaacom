@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -25,8 +26,7 @@ interface Props {
 }
 
 const ChefScheduleEventForm = memo(function ChefScheduleEventForm({ event, onClose, defaultDate }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const createEvent = useCreateScheduleEvent();
   const updateEvent = useUpdateScheduleEvent();
 

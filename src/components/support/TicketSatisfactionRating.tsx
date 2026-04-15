@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,8 +16,7 @@ interface TicketSatisfactionRatingProps {
 }
 
 export const TicketSatisfactionRating = memo(function TicketSatisfactionRating({ ticketId, ticketStatus, existingRating }: TicketSatisfactionRatingProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [rating, setRating] = useState(existingRating || 0);
   const [hovered, setHovered] = useState(0);
   const [feedback, setFeedback] = useState("");

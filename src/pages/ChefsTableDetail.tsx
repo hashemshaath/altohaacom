@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -37,10 +38,9 @@ const scoreLabels = [
 
 export default function ChefsTableDetail() {
   const { id } = useParams();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isAr = useIsAr();
 
   const { data: session, isLoading } = useChefsTableSession(id);
   const { data: invitations = [] } = useChefsTableInvitations(id);

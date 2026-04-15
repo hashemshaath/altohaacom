@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,8 +8,7 @@ import { useReferralStats } from "@/hooks/useReferral";
 import { Layers, ChevronRight, Star } from "lucide-react";
 
 export const TierProgressCard = memo(function TierProgressCard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: tiers } = useReferralTiers();
   const { data: stats } = useReferralStats();
 

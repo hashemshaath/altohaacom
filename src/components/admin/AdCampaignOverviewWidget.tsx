@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,11 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Megaphone, Eye, MousePointerClick, DollarSign, TrendingUp, Pause, Play, AlertCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const AdCampaignOverviewWidget = memo(function AdCampaignOverviewWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["ad-campaign-overview-widget"],
@@ -39,7 +40,7 @@ export const AdCampaignOverviewWidget = memo(function AdCampaignOverviewWidget()
         totalImpressions, totalClicks, ctr, budgetUtilization, pendingCreatives,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

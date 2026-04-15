@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
@@ -38,6 +39,7 @@ import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 export default function MasterclassesAdmin() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -61,8 +63,6 @@ export default function MasterclassesAdmin() {
     status: "draft",
     country_code: "",
   });
-
-  const isAr = language === "ar";
 
   const { data: masterclasses = [], isLoading } = useQuery({
     queryKey: ["admin-masterclasses"],

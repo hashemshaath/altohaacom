@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -14,8 +15,7 @@ import { ar } from "date-fns/locale";
 import { CACHE } from "@/lib/queryConfig";
 
 export const ExecutiveSummary = memo(function ExecutiveSummary() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const reportRef = useRef<HTMLDivElement>(null);
   const [period, setPeriod] = useState("30d");
 

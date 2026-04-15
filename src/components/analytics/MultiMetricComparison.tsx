@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -33,8 +34,7 @@ const METRICS: MetricDef[] = [
 ];
 
 export const MultiMetricComparison = memo(function MultiMetricComparison() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [selected, setSelected] = useState<string[]>(["users", "competitions", "orders"]);
 
   const toggle = (id: string) => {

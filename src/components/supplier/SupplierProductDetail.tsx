@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useMemo, useEffect, forwardRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +33,7 @@ const VAT_RATE = 0.15;
 type InfoTab = "description" | "specs" | "shipping" | "reviews" | "qa";
 
 function parseDescription(text: string) {
+  const isAr = useIsAr();
   if (!text) return [];
   return text.split("\n").filter(Boolean).map(line => {
     const trimmed = line.trim();
@@ -49,8 +51,7 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierProductDetailProps>(function SupplierProductDetail({
   product, relatedProducts = [], onBack, onAddToCart, onViewProduct, companyName, companyId,
 }, ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [qty, setQty] = useState(1);
   const [isFav, setIsFav] = useState(false);
   const [infoTab, setInfoTab] = useState<InfoTab>("description");

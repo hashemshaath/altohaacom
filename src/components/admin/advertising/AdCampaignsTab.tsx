@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,8 +25,7 @@ interface Props {
 export const AdCampaignsTab = memo(function AdCampaignsTab({
   campaigns, bulkActions, onApprove, onReject, onInvoice, onExportCSV, invoicePending,
 }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const stats = useMemo(() => {
     const totalBudget = campaigns.reduce((s, c) => s + (c.budget || 0), 0);

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, lazy, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -61,12 +62,12 @@ const CHART_COLORS = [
 ];
 
 function WidgetFallback() {
+  const isAr = useIsAr();
   return <div className="h-48 rounded-2xl bg-muted/30 animate-pulse" />;
 }
 
 export default function OrganizersAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const qc = useQueryClient();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");

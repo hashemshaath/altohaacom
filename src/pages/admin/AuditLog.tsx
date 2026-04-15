@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTableSort } from "@/hooks/useTableSort";
@@ -56,8 +57,8 @@ interface ContentAuditEntry {
 }
 
 export default function AuditLog() {
+  const isAr = useIsAr();
   const { t, language } = useLanguage();
-  const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [actionFilter, setActionFilter] = useState("all");
   const [dateRange, setDateRange] = useState("30d");

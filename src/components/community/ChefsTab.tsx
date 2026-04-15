@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -45,8 +46,8 @@ function extractCity(location: string | null): string {
 
 export const ChefsTab = memo(function ChefsTab() {
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { t, language } = useLanguage();
-  const isAr = language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("name");
 

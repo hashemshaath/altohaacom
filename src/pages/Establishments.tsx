@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { PageShell } from "@/components/PageShell";
@@ -28,9 +29,8 @@ const establishmentTypes = [
 ];
 
 export default function Establishments() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);

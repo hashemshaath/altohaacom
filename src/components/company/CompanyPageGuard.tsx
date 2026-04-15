@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useCanAccessPage } from "@/hooks/useCompanyPermissions";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,10 +13,9 @@ interface CompanyPageGuardProps {
 }
 
 export const CompanyPageGuard = memo(function CompanyPageGuard({ page, children }: CompanyPageGuardProps) {
+  const isAr = useIsAr();
   const canAccess = useCanAccessPage(page);
-  const { language } = useLanguage();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   if (!canAccess) {
     return (

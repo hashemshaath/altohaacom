@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +10,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Rss, Ticket, MessageSquare, UserSearch, Bell, Send } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
-import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface TimelineItem {
   id: string;
@@ -20,8 +21,7 @@ interface TimelineItem {
 }
 
 export const ActivityTimelineFeed = memo(function ActivityTimelineFeed() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: timeline = [] } = useQuery({
     queryKey: ["crmActivityTimeline"],
@@ -72,7 +72,7 @@ export const ActivityTimelineFeed = memo(function ActivityTimelineFeed() {
 
       return items.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 25);
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   const typeConfig: Record<string, { icon: typeof Ticket; color: string; bg: string; label: string; labelAr: string }> = {

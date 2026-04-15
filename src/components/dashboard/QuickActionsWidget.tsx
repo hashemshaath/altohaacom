@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,7 +10,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 import {
   Zap, Trophy, FileText, Users, ShoppingBag,
   MessageSquare, ArrowRight, Flame, TrendingUp, Clock,
@@ -26,9 +27,8 @@ interface QuickAction {
 }
 
 export const QuickActionsWidget = memo(function QuickActionsWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: pending } = useQuery({
     queryKey: ["quick-actions-pending", user?.id],
@@ -55,7 +55,7 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
       };
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const actions: QuickAction[] = [

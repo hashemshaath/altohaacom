@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -18,8 +19,7 @@ interface ProfileShareButtonsProps {
 }
 
 export const ProfileShareButtons = memo(function ProfileShareButtons({ username, displayName, variant = "icon" }: ProfileShareButtonsProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
 

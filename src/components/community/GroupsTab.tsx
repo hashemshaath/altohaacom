@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -28,9 +29,9 @@ interface Group {
 
 export const GroupsTab = memo(function GroupsTab() {
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { t, language } = useLanguage();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

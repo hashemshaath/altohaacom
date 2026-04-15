@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +24,7 @@ interface GroupSettingsPanelProps {
 
 export const GroupSettingsPanel = memo(function GroupSettingsPanel({ open, onOpenChange, group, members, onAddMembers }: GroupSettingsPanelProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [groupName, setGroupName] = useState(group?.name || "");

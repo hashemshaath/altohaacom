@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,11 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT, STALE_TIME_SHORT } from "@/lib/constants";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   // Abandoned carts stats
   const { data: cartStats } = useQuery({
@@ -43,7 +44,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         recoveredValue,
       };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   // User behavior stats (top pages, engagement)
@@ -90,7 +91,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         deviceDistribution: Object.fromEntries(deviceCounts),
       };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   // Conversion events stats
@@ -114,7 +115,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         topEvents: [...new Map<string, number>()].slice(0, 5),
       };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   // Top interests
@@ -128,7 +129,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         .limit(10);
       return data || [];
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const categoryLabels: Record<string, { en: string; ar: string }> = {
@@ -348,8 +349,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
 });
 
 function LifecycleTriggersList() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: triggers = [] } = useQuery({
     queryKey: ["crm-lifecycle-triggers"],

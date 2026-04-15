@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { CACHE } from "@/lib/queryConfig";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -14,9 +15,8 @@ import { MembershipBadge } from "@/components/membership/MembershipBadge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: profile } = useQuery({
     queryKey: ["profile-summary-card", user?.id],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -35,11 +36,10 @@ const companyTypes = [
 ];
 
 export default function CompaniesLanding() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ companyName: "", contactName: "", email: "", phone: "", message: "" });
-  const isAr = language === "ar";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

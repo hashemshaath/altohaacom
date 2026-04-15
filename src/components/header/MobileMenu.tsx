@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,7 +18,6 @@ import {
   Settings, Crown,
 } from "lucide-react";
 import { useState, useCallback, memo, forwardRef, useEffect } from "react";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface NavLink {
   to: string;
@@ -41,6 +42,7 @@ const tierLabels: Record<string, { en: string; ar: string; color: string }> = {
 const NavItem = memo(React.forwardRef<HTMLAnchorElement, {
   to: string; icon: React.ElementType; children: React.ReactNode; active?: boolean; onClose: () => void;
 }>(function NavItem({ to, icon: Icon, children, active, onClose }, ref) {
+  const isAr = useIsAr();
   return (
     <Link
       ref={ref}
@@ -63,6 +65,7 @@ const NavItem = memo(React.forwardRef<HTMLAnchorElement, {
 const Section = memo(function Section({ label, defaultOpen = false, children }: {
   label: string; defaultOpen?: boolean; children: React.ReactNode;
 }) {
+  const isAr = useIsAr();
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div>
@@ -91,13 +94,13 @@ const Section = memo(function Section({ label, defaultOpen = false, children }: 
 });
 
 export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function MobileMenu({ primaryNav, moreLinks }, ref) {
+  const isAr = useIsAr();
   const { user, signOut } = useAuth();
   const { t, language } = useLanguage();
   const { data: isAdmin } = useIsAdmin();
   const { data: userRoles = [] } = useUserRoles();
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const isAr = language === "ar";
 
   const { data: profile } = useQuery({
     queryKey: ["header-profile", user?.id],
@@ -111,7 +114,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const displayName = getDisplayName(profile, isAr, user?.email?.split("@")[0] || "");

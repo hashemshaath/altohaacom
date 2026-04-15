@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -13,8 +14,7 @@ import { CACHE } from "@/lib/queryConfig";
  * linked to the homepage. Falls back gracefully if no ads are available.
  */
 export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAdBanner(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const config = useSectionConfig();
 
   const sectionKey = config?.section_key || "ad_banner_top";

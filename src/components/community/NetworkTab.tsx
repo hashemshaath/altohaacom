@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -25,8 +26,7 @@ import { FollowButton } from "./FollowButton";
 
 export const NetworkTab = memo(function NetworkTab() {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
 
   const { data: newFollowers = [], isLoading: loadingNew } = useNewFollowers();

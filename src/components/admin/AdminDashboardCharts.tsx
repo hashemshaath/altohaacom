@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +24,7 @@ interface ChartTooltipProps {
 
 /* ─── Shared tooltip ─── */
 function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
+  const isAr = useIsAr();
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-lg">
@@ -45,6 +47,7 @@ export const GrowthAreaChart = memo(function GrowthAreaChart({
   data: Record<string, unknown>[]; lines: { key: string; name: string; color: string }[];
   title: string; className?: string;
 }) {
+  const isAr = useIsAr();
   return (
     <Card className={cn("rounded-lg", className)}>
       <CardHeader className="pb-2">
@@ -85,6 +88,7 @@ export const DonutChart = memo(function DonutChart({
   data: { name: string; value: number; color: string }[];
   title: string; className?: string;
 }) {
+  const isAr = useIsAr();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const total = data.reduce((s, d) => s + d.value, 0);
 
@@ -161,6 +165,7 @@ export const ComparisonBarChart = memo(function ComparisonBarChart({
   data: Record<string, unknown>[]; bars: { key: string; name: string; color: string }[];
   title: string; className?: string;
 }) {
+  const isAr = useIsAr();
   return (
     <Card className={cn("rounded-lg", className)}>
       <CardHeader className="pb-2">
@@ -202,8 +207,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap({
   data: { day: number; hour: number; value: number }[];
   title: string; className?: string;
 }) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const days = isAr ? DAYS_AR : DAYS_EN;
   const [hovered, setHovered] = useState<{ day: number; hour: number } | null>(null);
 

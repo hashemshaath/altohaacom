@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
@@ -31,11 +32,10 @@ const SUPPLIER_CATEGORIES = [
 ];
 
 export default function CompanySupplierProfile() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
   const { data: company } = useCompanyProfile(companyId);
   const permissions = useCompanyPagePermissions();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const navigate = useNavigate();

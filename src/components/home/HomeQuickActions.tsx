@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -16,8 +17,7 @@ const actions = [
 ];
 
 export const HomeQuickActions = memo(function HomeQuickActions() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <section className="container py-1" dir={isAr ? "rtl" : "ltr"} aria-label={isAr ? "إجراءات سريعة" : "Quick actions"}>

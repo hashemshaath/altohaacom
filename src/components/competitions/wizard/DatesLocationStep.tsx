@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -25,8 +26,7 @@ const ENTRY_TYPES = [
 ];
 
 export const DatesLocationStep = memo(function DatesLocationStep({ data, onChange, competitionNumber }: DatesLocationStepProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: countries } = useCountries();
 
   const handleCountryChange = (code: string, country: any) => {

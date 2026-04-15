@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, Suspense } from "react";
 import { safeLazy } from "@/lib/safeLazy";
 import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
@@ -50,8 +51,7 @@ import { type Company, type CompanyType, type CompanyStatus, COMPANY_TYPES, getT
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function CompaniesAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");

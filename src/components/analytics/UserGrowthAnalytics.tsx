@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,7 +18,7 @@ import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["userGrowthAnalytics"],

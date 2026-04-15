@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Code2, Save, RotateCcw, Eye, AlertTriangle, Copy, Check } from "lucide-react";
@@ -69,8 +70,7 @@ const CSS_SNIPPETS = [
 ];
 
 export default function CustomCSSPage() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { settings, isLoading, saveSetting } = useSiteSettings();
 
   const cssCfg = settings.custom_css || {};

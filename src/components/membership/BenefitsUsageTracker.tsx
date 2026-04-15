@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useBenefitUsage } from "@/hooks/useBenefitUsage";
@@ -16,8 +17,7 @@ const ICON_MAP: Record<string, any> = {
 };
 
 export const BenefitsUsageTracker = memo(function BenefitsUsageTracker() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: benefits, isLoading } = useBenefitUsage();
 
   if (isLoading) {

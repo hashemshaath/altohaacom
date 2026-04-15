@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { lazy, Suspense, useState } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -30,6 +31,7 @@ const MembershipBulkOperationsTab = lazy(() => import("@/components/admin/member
 const MembershipRevenueTab = lazy(() => import("@/components/admin/membership/MembershipRevenueTab"));
 
 function TabFallback() {
+  const isAr = useIsAr();
   return (
     <div className="space-y-4">
       <Skeleton className="h-10 w-full rounded-lg" />
@@ -90,8 +92,7 @@ const tabGroups = (isAr: boolean) => [
 ];
 
 export default function MembershipManagement() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState("overview");
   const groups = tabGroups(isAr);
 

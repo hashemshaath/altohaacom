@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -34,11 +35,10 @@ function StarRating({ rating, onRate, interactive = false }: { rating: number; o
 }
 
 export const SupplierReviews = memo(function SupplierReviews({ companyId }: Props) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [showForm, setShowForm] = useState(false);
   const [rating, setRating] = useState(0);
   const [title, setTitle] = useState("");

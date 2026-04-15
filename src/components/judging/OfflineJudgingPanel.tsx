@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useOfflineJudging } from "@/hooks/useOfflineJudging";
@@ -15,8 +16,7 @@ interface OfflineJudgingPanelProps {
 }
 
 export const OfflineJudgingPanel = memo(function OfflineJudgingPanel({ onSelectCachedCompetition }: OfflineJudgingPanelProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const {
     cachedCompetitions,

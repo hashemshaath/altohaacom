@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -59,9 +60,8 @@ const PRIVACY_SECTIONS: SectionItem[] = [
 ];
 
 export const ProfilePrivacySettings = memo(function ProfilePrivacySettings({ profile, userId, onSaved }: ProfilePrivacySettingsProps) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
 
   const existingVisibility = profile?.section_visibility || {};
   const [visibility, setVisibility] = useState<Record<string, boolean>>({

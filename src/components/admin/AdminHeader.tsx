@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,10 +19,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 export const AdminHeader = memo(function AdminHeader() {
   const { signOut } = useAuth();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const siteSettings = useSiteSettingsContext();
   const { isSuperAdmin, adminRole } = useAdminRole();
   const brandCfg = siteSettings.branding || {};
-  const isAr = language === "ar";
 
   const roleBadge = isSuperAdmin
     ? { label: isAr ? "مسؤول أعلى" : "Super Admin", icon: ShieldCheck, className: "bg-destructive/10 text-destructive border-destructive/20" }

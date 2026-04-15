@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,10 +18,9 @@ import { ChefsTableFAQ } from "@/components/chefs-table/ChefsTableFAQ";
 import { ChefsTableSuccessMetrics } from "@/components/chefs-table/ChefsTableSuccessMetrics";
 
 export default function ChefsTable() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const { data: sessions, isLoading } = useChefsTableSessions();

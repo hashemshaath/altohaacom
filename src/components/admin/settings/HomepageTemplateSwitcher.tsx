@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useSiteSettingsContext } from "@/contexts/SiteSettingsContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -31,8 +32,7 @@ const TEMPLATES = [
 ];
 
 export const HomepageTemplateSwitcher = memo(function HomepageTemplateSwitcher() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const settings = useSiteSettingsContext();
   const current = (settings?.homepage as any)?.template || "v1";
   const qc = useQueryClient();

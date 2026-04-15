@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { getDisplayName, getDisplayInitial } from "@/lib/getDisplayName";
@@ -9,9 +10,8 @@ import { Trophy, Medal, Crown } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const ReferralLeaderboard = memo(function ReferralLeaderboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { data: leaderboard, isLoading } = useReferralLeaderboard();
 
   if (isLoading) {

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -14,8 +15,7 @@ import { CACHE } from "@/lib/queryConfig";
  * helps admins monitor data growth at a glance.
  */
 export const DatabaseOverviewWidget = memo(function DatabaseOverviewWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-db-overview"],

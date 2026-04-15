@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -35,11 +36,10 @@ interface SupportMessage {
 
 export default function CompanyAdminMessaging() {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { companyId } = useCompanyAccess();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [newMessage, setNewMessage] = useState("");

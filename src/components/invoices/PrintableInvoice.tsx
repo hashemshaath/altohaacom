@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +8,6 @@ import { Printer } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { getVerificationUrl } from "@/lib/qrCode";
 import { toEnglishDigits } from "@/lib/formatNumber";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface InvoiceItem {
   name: string;
@@ -74,7 +74,7 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
       if (error) return null;
       return data;
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const cfg = settings || {} as Record<string, any>;

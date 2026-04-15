@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +24,7 @@ import { ar as arLocale } from "date-fns/locale";
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
 function getScoreColor(score: number) {
+  const isAr = useIsAr();
   if (score >= 9) return "text-chart-5";
   if (score >= 7.5) return "text-primary";
   if (score >= 6) return "text-chart-4";
@@ -30,6 +32,7 @@ function getScoreColor(score: number) {
 }
 
 function getScoreLabel(score: number, isAr: boolean) {
+  const isAr = useIsAr();
   if (score >= 9) return isAr ? "ممتاز" : "Excellent";
   if (score >= 7.5) return isAr ? "جيد جداً" : "Very Good";
   if (score >= 6) return isAr ? "جيد" : "Good";
@@ -37,9 +40,8 @@ function getScoreLabel(score: number, isAr: boolean) {
 }
 
 export default function EvaluationReport() {
+  const isAr = useIsAr();
   const { token } = useParams<{ token: string }>();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const reportRef = useRef<HTMLDivElement>(null);
 
   const { data: session, isLoading, error } = useQuery({

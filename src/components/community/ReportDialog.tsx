@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -30,9 +31,8 @@ interface ReportDialogProps {
 
 export const ReportDialog = memo(function ReportDialog({ postId, onClose }: ReportDialogProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
 
   const [reason, setReason] = useState("");
   const [detail, setDetail] = useState("");

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +25,7 @@ import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const FinancialForecasting = memo(function FinancialForecasting() {
   const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [forecastMonths, setForecastMonths] = useState("6");
 
   const { data, isLoading } = useQuery({

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -27,10 +28,9 @@ interface CommunityRightSidebarProps {
 }
 
 export const CommunityRightSidebar = memo(function CommunityRightSidebar({ rightSidebarOpen, setRightSidebarOpen }: CommunityRightSidebarProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   const { data: suggestedUsers = [] } = useQuery({
     queryKey: ["community-suggested-users", user?.id],

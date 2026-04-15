@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -46,9 +47,8 @@ const emptyForm: BranchForm = {
 };
 
 export default function CompanyBranches() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { companyId } = useCompanyAccess();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const qc = useQueryClient();
   const permissions = useCompanyPagePermissions();

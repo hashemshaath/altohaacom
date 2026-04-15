@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,9 +18,8 @@ import {
 } from "lucide-react";
 
 export default function Mentorship() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const { data: programs = [], isLoading } = useMentorshipPrograms("active");
   const { data: myMatches = [] } = useMyMentorshipMatches();

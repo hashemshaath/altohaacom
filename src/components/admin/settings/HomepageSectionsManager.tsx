@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, useRef, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import {
@@ -21,12 +22,11 @@ import { useToast } from "@/hooks/use-toast";
 import { SectionRow } from "./homepage/SectionRow";
 
 export const HomepageSectionsManager = memo(function HomepageSectionsManager() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { data: sections = [], isLoading } = useHomepageSections();
   const updateSection = useUpdateHomepageSection();
   const bulkUpdate = useBulkUpdateHomepageSections();
   const createSection = useCreateHomepageSection();
+  const isAr = useIsAr();
   const { toast } = useToast();
 
   const [openSections, setOpenSections] = useState<Set<string>>(new Set());

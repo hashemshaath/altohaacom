@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,9 +16,8 @@ interface ShopHeroProps {
 }
 
 export const ShopHero = memo(function ShopHero({ productCount, cart, onCartOpen }: ShopHeroProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <section className="relative overflow-hidden border-b border-border/40">

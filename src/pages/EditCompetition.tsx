@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -25,12 +26,11 @@ const STEP_LABELS_AR = ["المعرض", "المعلومات", "الأنواع و
 
 export default function EditCompetition() {
   const { id } = useParams<{ id: string }>();
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [step, setStep] = useState(1);
   const [data, setData] = useState<CompetitionFormData | null>(null);
 

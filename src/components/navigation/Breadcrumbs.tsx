@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -48,9 +49,8 @@ interface BreadcrumbsProps {
 }
 
 export const Breadcrumbs = memo(function Breadcrumbs({ currentLabel, className }: BreadcrumbsProps) {
+  const isAr = useIsAr();
   const location = useLocation();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
 
   const crumbs = useMemo(() => {
     const path = location.pathname;

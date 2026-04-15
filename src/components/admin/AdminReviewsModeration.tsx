@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -12,8 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Star, Search, CheckCircle, XCircle, Eye, Flag } from "lucide-react";
 
 export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");

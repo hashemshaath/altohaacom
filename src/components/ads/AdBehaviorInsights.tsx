@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -17,8 +18,7 @@ const COLORS = [
 ];
 
 export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: behaviors = [] } = useQuery({
     queryKey: ["ad-behavior-insights"],

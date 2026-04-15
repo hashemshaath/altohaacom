@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, memo } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,8 +39,7 @@ interface PostThreadProps {
 
 export const PostThread = memo(function PostThread({ postId, onClose, onPostUpdated }: PostThreadProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [parentPost, setParentPost] = useState<{
     avatar_url?: string; display_name?: string; full_name?: string;
     username?: string; author_id: string; content: string;

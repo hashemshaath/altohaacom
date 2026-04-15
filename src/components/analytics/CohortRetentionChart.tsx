@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,8 +18,7 @@ import { linearRegression, forecast, type DataPoint } from "@/lib/trendPredictio
 import { CACHE } from "@/lib/queryConfig";
 
 export const CohortRetentionChart = memo(function CohortRetentionChart() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-cohort-retention-v2"],

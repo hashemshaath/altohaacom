@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useCallback } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -31,8 +32,8 @@ const FREE_SHIPPING_THRESHOLD = 500;
 
 export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: CartSheetProps) {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const [isPlacing, setIsPlacing] = useState(false);
   const [isApplyingCode, setIsApplyingCode] = useState(false);

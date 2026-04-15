@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,8 +18,7 @@ const STAGES = [
 ];
 
 export const PipelineFunnelView = memo(function PipelineFunnelView() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: leadsByStage } = useQuery({
     queryKey: ["crmPipelineFunnel"],

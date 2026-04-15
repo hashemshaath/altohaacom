@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -20,11 +21,10 @@ import type { ExhibitionFormData } from "@/components/exhibitions/wizard/types";
 import { EventCreationGate } from "@/components/permissions/EventCreationGate";
 
 export default function CreateExhibition() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [step, setStep] = useState(1);
   const [data, setData] = useState<ExhibitionFormData>(initialExhibitionData);
 

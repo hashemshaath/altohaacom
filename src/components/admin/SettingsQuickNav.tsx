@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -15,9 +16,8 @@ const NAV_ITEMS = [
 ];
 
 export const SettingsQuickNav = memo(function SettingsQuickNav() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const location = useLocation();
-  const isAr = language === "ar";
 
   return (
     <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none pb-0.5">

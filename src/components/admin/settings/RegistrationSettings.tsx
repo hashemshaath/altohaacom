@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -47,8 +48,7 @@ const REGISTRATION_TOGGLES = [
 ];
 
 export const RegistrationSettings = memo(function RegistrationSettings({ settings, onSave, isPending }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const regCfg = settings.registration || {};
   const [reg, setReg] = useState(regCfg);

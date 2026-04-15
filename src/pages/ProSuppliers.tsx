@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,9 +35,8 @@ const SUPPLIER_CATEGORIES = [
 type SortOption = "featured" | "name" | "newest";
 
 export default function ProSuppliers() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [sortBy, setSortBy] = useState<SortOption>("featured");

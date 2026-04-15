@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, lazy, Suspense, memo, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,8 +55,7 @@ const TabSkeleton = () => (
 
 // ── KPI Strip ────────────────────────────────────────────
 const SecurityKPIStrip = memo(function SecurityKPIStrip() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["security-kpi-strip"],
@@ -115,8 +115,7 @@ const SecurityKPIStrip = memo(function SecurityKPIStrip() {
 
 // ── Events Tab ───────────────────────────────────────────
 const EventsTab = memo(function EventsTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [filter, setFilter] = useState("");
   const [severityFilter, setSeverityFilter] = useState("all");
 
@@ -252,8 +251,7 @@ const EventsTab = memo(function EventsTab() {
 
 // ── Sessions Tab ─────────────────────────────────────────
 const SessionsTab = memo(function SessionsTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["security-sessions-full"],
@@ -383,8 +381,7 @@ const SessionsTab = memo(function SessionsTab() {
 
 // ── Permissions Tab ──────────────────────────────────────
 const PermissionsTab = memo(function PermissionsTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["security-permissions-full"],
@@ -499,8 +496,7 @@ const PermissionsTab = memo(function PermissionsTab() {
 
 // ── Analytics Tab ────────────────────────────────────────
 const AnalyticsTab = memo(function AnalyticsTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["security-analytics-full"],
@@ -669,8 +665,7 @@ const AnalyticsTab = memo(function AnalyticsTab() {
 
 // ── Main Page ────────────────────────────────────────────
 export default function SecurityAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [activeTab, setActiveTab] = useState("events");
 
   return (

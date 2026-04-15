@@ -1,11 +1,11 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useSocialProofStats } from "@/hooks/useReferralExtras";
 import { Users, TrendingUp } from "lucide-react";
 
 export const SocialProofWidget = memo(function SocialProofWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: stats } = useSocialProofStats();
 
   if (!stats || (stats.recentConversions === 0 && stats.totalActiveReferrers === 0)) return null;

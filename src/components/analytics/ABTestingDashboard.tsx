@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -73,8 +74,7 @@ const MOCK_EXPERIMENTS: Experiment[] = [
 ];
 
 export const ABTestingDashboard = memo(function ABTestingDashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [experiments] = useState<Experiment[]>(MOCK_EXPERIMENTS);
   const [selectedExp, setSelectedExp] = useState<Experiment | null>(null);
 

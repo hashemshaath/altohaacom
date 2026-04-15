@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,7 +20,6 @@ import {
   Settings, User, LayoutDashboard, Command,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface PaletteItem {
   id: string;
@@ -71,11 +72,10 @@ export const CommandPalette = memo(function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
-  const isAr = language === "ar";
 
   const debouncedQuery = useDebounce(query, 250);
 
@@ -131,7 +131,7 @@ export const CommandPalette = memo(function CommandPalette() {
       return results;
     },
     enabled: debouncedQuery.length >= 2,
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   const allItems = [...filteredPages, ...dbResults];

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,11 +27,10 @@ const typeIcons: Record<string, string> = {
 
 export const CompetitionActivityFeed = React.forwardRef<HTMLDivElement, CompetitionActivityFeedProps>(
   function CompetitionActivityFeed({ competitionId, isOrganizer }, ref) {
-    const { language } = useLanguage();
     const { user } = useAuth();
+  const isAr = useIsAr();
     const { toast } = useToast();
     const queryClient = useQueryClient();
-    const isAr = language === "ar";
     const [showForm, setShowForm] = useState(false);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");

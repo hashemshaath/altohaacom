@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -12,9 +13,8 @@ import { CACHE } from "@/lib/queryConfig";
  * Compact real-time stats bar shown above the feed.
  */
 export const FeedStatsBar = memo(function FeedStatsBar() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: stats } = useQuery({
     queryKey: ["feed-stats-bar", user?.id],

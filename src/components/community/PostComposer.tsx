@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,7 +23,6 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 const MAX_CHARS = 1000;
 const MAX_IMAGES = 4;
@@ -48,8 +49,8 @@ const POST_TYPE_CONFIG = {
 export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId, placeholder, compact, autoFocus }: PostComposerProps) {
   const { user } = useAuth();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -90,7 +91,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   useEffect(() => {

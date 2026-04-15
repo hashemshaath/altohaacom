@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -17,9 +18,8 @@ import {
 type RankBy = "rating" | "products" | "views";
 
 export default function SupplierLeaderboard() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const [rankBy, setRankBy] = useState<RankBy>("rating");
 
   const { data: suppliers = [] } = useQuery({

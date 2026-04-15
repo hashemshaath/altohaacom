@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useEffect, useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,9 +19,8 @@ const ICONS: Record<string, any> = {
 };
 
 export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const [realtimeFlag, setRealtimeFlag] = useState(0);
 
   const dateRange = useMemo(() => {

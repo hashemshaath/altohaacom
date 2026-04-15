@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,8 +10,7 @@ import { Link } from "react-router-dom";
 import { CACHE } from "@/lib/queryConfig";
 
 export const FanRecommendationsWidget = memo(function FanRecommendationsWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: recipes = [] } = useQuery({
     queryKey: ["fan-recommended-recipes"],

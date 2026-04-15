@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -45,8 +46,8 @@ const COUNTRIES = [
 
 export default function Checkout() {
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
-  const isAr = language === "ar";
   const navigate = useNavigate();
   const cart = useCart();
   const { trackCheckoutStep, trackCheckoutBegin, trackPurchase, trackRemoveFromCart } = useEcommerceTracking();

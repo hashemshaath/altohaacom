@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -18,8 +19,7 @@ import {
 } from "./AnalyticsCharts";
 
 const CompetitionAnalytics = memo(function CompetitionAnalytics() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data, isLoading } = useQuery({
     queryKey: ["competitionAnalytics"],

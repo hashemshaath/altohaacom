@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
@@ -34,8 +35,7 @@ export const SupplierBadges = memo(function SupplierBadges({
   sponsorshipCount = 0,
   variant = "full",
 }: SupplierBadgesProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const yearsInBusiness = foundedYear ? new Date().getFullYear() - foundedYear : 0;
 

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -32,8 +33,7 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 const MembershipChurnRetention = memo(function MembershipChurnRetention() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const { user: adminUser } = useAuth();
 

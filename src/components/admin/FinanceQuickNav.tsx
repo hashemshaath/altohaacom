@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -35,9 +36,8 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 export const FinanceQuickNav = memo(function FinanceQuickNav() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const location = useLocation();
-  const isAr = language === "ar";
 
   const { data: counts } = useQuery({
     queryKey: ["finance-nav-counts"],

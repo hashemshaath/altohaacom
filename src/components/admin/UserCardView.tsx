@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -26,8 +27,7 @@ interface UserCardProps {
 }
 
 export const UserCard = memo(function UserCard({ user, onView }: UserCardProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const statusColor = user.account_status === "active"
     ? "bg-chart-2/15 text-chart-2 border-chart-2/20"
@@ -110,6 +110,7 @@ interface UserCardViewProps {
 }
 
 export const UserCardView = memo(function UserCardView({ users, onViewUser }: UserCardViewProps) {
+  const isAr = useIsAr();
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
       {users.map(user => (

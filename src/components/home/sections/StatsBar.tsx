@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +18,7 @@ const COLORS = [
 
 const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon: LucideIcon; isVisible: boolean; delay: number; colorIdx: number }>(
   function StatCard({ value, label, icon: Icon, isVisible, delay, colorIdx }, ref) {
+  const isAr = useIsAr();
     const count = useCountUp(value, isVisible);
     const color = COLORS[colorIdx % COLORS.length];
 
@@ -43,8 +45,7 @@ const StatCard = forwardRef<HTMLDivElement, { value: number; label: string; icon
 );
 
 const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { ref, isVisible } = useScrollReveal({ threshold: 0.3 });
 
   const { data: stats } = useQuery({

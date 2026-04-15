@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -36,9 +37,8 @@ const EXP_LEVELS: Record<string, { en: string; ar: string }> = {
 
 export default function JobDetail() {
   const { id } = useParams<{ id: string }>();
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const navigate = useNavigate();
   const qc = useQueryClient();

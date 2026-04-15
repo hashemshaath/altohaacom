@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { ArrowUp } from "lucide-react";
@@ -9,8 +10,7 @@ interface NewPostsBannerProps {
 }
 
 export const NewPostsBanner = memo(function NewPostsBanner({ count, onClick }: NewPostsBannerProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   if (count <= 0) return null;
 

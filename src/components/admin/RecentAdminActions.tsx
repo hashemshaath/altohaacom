@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -13,8 +14,7 @@ import { CACHE } from "@/lib/queryConfig";
  * Shows recent admin actions (last 10) for audit visibility.
  */
 export const RecentAdminActions = memo(function RecentAdminActions() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: actions = [] } = useQuery({
     queryKey: ["recent-admin-actions"],

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Eye, Clock, TrendingUp } from "lucide-react";
@@ -22,8 +23,7 @@ export const PostEngagementBar = memo(function PostEngagementBar({
   repostsCount,
   className,
 }: PostEngagementBarProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   // Estimate read time (average reading speed)
   const wordCount = content.split(/\s+/).filter(Boolean).length;

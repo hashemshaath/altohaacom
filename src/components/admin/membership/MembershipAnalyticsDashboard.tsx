@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -33,8 +34,7 @@ const TIER_LABELS: Record<string, { en: string; ar: string }> = {
 };
 
 const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   // Tier distribution
   const { data: tierDist, isLoading: tierLoading } = useQuery({
@@ -536,6 +536,7 @@ export default MembershipAnalyticsDashboard;
 function KPICard({ icon: Icon, label, value, sub, color = "text-foreground" }: {
   icon: React.ElementType; label: string; value: string | number; sub: string; color?: string;
 }) {
+  const isAr = useIsAr();
   return (
     <Card>
       <CardContent className="p-4">
@@ -557,6 +558,7 @@ function KPICard({ icon: Icon, label, value, sub, color = "text-foreground" }: {
 function InsightRow({ icon: Icon, label, value, color }: {
   icon: React.ElementType; label: string; value: string | number; color: string;
 }) {
+  const isAr = useIsAr();
   return (
     <div className="flex items-center justify-between rounded-xl border p-3">
       <div className="flex items-center gap-2">
@@ -573,6 +575,7 @@ function InsightRow({ icon: Icon, label, value, color }: {
 }
 
 function EmptyState({ isAr }: { isAr: boolean }) {
+  const isAr = useIsAr();
   return (
     <div className="flex items-center justify-center h-[180px] text-muted-foreground text-sm">
       {isAr ? "لا توجد بيانات بعد" : "No data yet"}

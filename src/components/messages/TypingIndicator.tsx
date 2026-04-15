@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -6,8 +7,7 @@ interface TypingIndicatorProps {
 }
 
 export const TypingIndicator = memo(function TypingIndicator({ partnerName }: TypingIndicatorProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="flex justify-start animate-in fade-in-50 slide-in-from-bottom-2 duration-300 mb-2">

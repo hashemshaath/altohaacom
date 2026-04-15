@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -26,8 +27,7 @@ interface Props {
 }
 
 export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onToggle }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [searchQuery, setSearchQuery] = useState("");
   const [pageFilter, setPageFilter] = useState("all");
 

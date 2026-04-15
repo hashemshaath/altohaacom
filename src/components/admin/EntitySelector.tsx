@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,8 +36,7 @@ interface EntitySelectorProps {
 }
 
 export const EntitySelector = memo(function EntitySelector({ value, entityName, onChange, label }: EntitySelectorProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");

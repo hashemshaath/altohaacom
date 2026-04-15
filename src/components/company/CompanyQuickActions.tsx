@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
@@ -19,8 +20,7 @@ const QUICK_ACTIONS = [
 ];
 
 export const CompanyQuickActions = memo(function CompanyQuickActions() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { usePermissions, useRolePermissions } from "@/hooks/usePermissions";
@@ -19,8 +20,7 @@ import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function RoleManagement() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   const [activeTab, setActiveTab] = useState("overview");

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useEntityDedup } from "@/hooks/useEntityDedup";
@@ -64,8 +65,7 @@ export const EntityFormGuard = memo(function EntityFormGuard({
   onTranslated,
   showTranslate = true,
 }: EntityFormGuardProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { checking, duplicates, checkEntity, clearDuplicates } = useEntityDedup({
     tables: tables || ["organizers", "companies", "culinary_entities", "establishments"],

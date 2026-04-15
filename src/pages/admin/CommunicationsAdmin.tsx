@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -70,11 +71,10 @@ const TAG_OPTIONS = [
 
 // ─── Main Component ──────────────────────────────────────────
 export default function CommunicationsAdmin() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
 
   const [filter, setFilter] = useState("all");
   const [priorityFilter, setPriorityFilter] = useState("all");

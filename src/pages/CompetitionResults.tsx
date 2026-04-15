@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -39,9 +40,8 @@ const PODIUM_CONFIG = [
 ];
 
 export default function CompetitionResults() {
+  const isAr = useIsAr();
   const { slug } = useParams<{ slug: string }>();
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const [categoryFilter, setCategoryFilter] = useState("all");
 
   const { data: competition, isLoading: loadingComp } = useQuery({

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { Link } from "react-router-dom";
 import {
   ChefHat, Trophy, Award, Users, Globe, GraduationCap, ArrowRight,
@@ -29,8 +30,7 @@ const journey = [
 ];
 
 export default function ChefsLanding() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

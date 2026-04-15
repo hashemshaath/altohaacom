@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,8 +17,7 @@ interface CookingTimerProps {
 type TimerPhase = "prep" | "cook";
 
 export const CookingTimer = memo(function CookingTimer({ prepMinutes, cookMinutes, recipeName }: CookingTimerProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const hasPrep = !!prepMinutes && prepMinutes > 0;
   const hasCook = !!cookMinutes && cookMinutes > 0;

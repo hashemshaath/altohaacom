@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,11 +30,10 @@ export const UserQuickActions = memo(function UserQuickActions({
   userId, userName, email, status, isVerified, onViewProfile,
   onResetPassword, onSuspend, onSendNotification, onActivate,
 }: UserQuickActionsProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const isAr = language === "ar";
   const [copied, setCopied] = useState(false);
 
   const handleToggleVerify = async () => {

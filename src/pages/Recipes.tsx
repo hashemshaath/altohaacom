@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -111,9 +112,8 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
 });
 
 export default function Recipes() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [search, setSearch] = useState("");
   const [cuisine, setCuisine] = useState("all");
   const [difficulty, setDifficulty] = useState("all");

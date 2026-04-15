@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -30,8 +31,7 @@ import { useToast } from "@/hooks/use-toast";
 import { createMembershipInvoice, markInvoicePaid, voidInvoice } from "@/lib/membershipInvoice";
 
 const MembershipInvoicesTab = memo(function MembershipInvoicesTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");

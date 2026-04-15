@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,11 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { MessageSquare, Bell, Ticket, Mail, Send, CheckCircle, AlertCircle, Clock, Zap, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_MEDIUM, STALE_TIME_SHORT } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const CommunicationsOverviewWidget = memo(function CommunicationsOverviewWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["communications-overview-widget"],
@@ -69,7 +70,7 @@ export const CommunicationsOverviewWidget = memo(function CommunicationsOverview
         totalTemplates: totalTemplates || 0,
       };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

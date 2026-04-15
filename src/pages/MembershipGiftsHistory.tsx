@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -116,9 +117,8 @@ function GiftCard({ gift, type, isAr }: { gift: any; type: "sent" | "received"; 
 }
 
 export default function MembershipGiftsHistory() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
 
   const { data: sentGifts = [], isLoading: loadingSent } = useQuery({

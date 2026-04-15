@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { Link } from "react-router-dom";
@@ -11,8 +12,7 @@ import { ScanSearch, Merge, ArrowRight, Clock } from "lucide-react";
 import { format } from "date-fns";
 
 export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data } = useQuery({
     queryKey: ["dedup-widget-stats"],

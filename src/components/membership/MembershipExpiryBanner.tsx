@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -12,9 +13,8 @@ import { CACHE } from "@/lib/queryConfig";
 
 export const MembershipExpiryBanner = memo(function MembershipExpiryBanner({ className }: { className?: string }) {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const [dismissed, setDismissed] = useState(false);
 
   const { data: expiryInfo } = useQuery({

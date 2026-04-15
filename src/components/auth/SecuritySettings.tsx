@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,10 +18,9 @@ import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 
 export const SecuritySettings = memo(function SecuritySettings() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const {
     sessions, loading: sessionsLoading, currentSessionId,
     listSessions, revokeSession, revokeAllSessions,

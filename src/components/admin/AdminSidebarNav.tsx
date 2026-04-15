@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -32,9 +33,8 @@ function useFilteredNav(): NavSection[] {
 }
 
 export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false, isMobile = false, onItemClick }: AdminSidebarNavProps) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const location = useLocation();
-  const isAr = language === "ar";
   const filteredSections = useFilteredNav();
 
   const initialOpen = useMemo(() => {

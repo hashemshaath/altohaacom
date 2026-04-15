@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -21,8 +22,7 @@ const ACTION_CONFIG: Record<string, { icon: typeof Activity; color: string; labe
 };
 
 export const UserActivityTimeline = memo(function UserActivityTimeline() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: actions = [] } = useQuery({
     queryKey: ["userActivityTimeline"],

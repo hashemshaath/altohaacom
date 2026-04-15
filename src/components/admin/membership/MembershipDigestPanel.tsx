@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo, useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
@@ -19,8 +20,7 @@ import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 type Period = "7d" | "14d" | "30d";
 
 const MembershipDigestPanel = memo(function MembershipDigestPanel() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [period, setPeriod] = useState<Period>("7d");
 
   const days = period === "7d" ? 7 : period === "14d" ? 14 : 30;

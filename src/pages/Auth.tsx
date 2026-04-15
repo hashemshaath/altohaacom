@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -33,9 +34,8 @@ export default function Auth() {
   const [isSignUp, setIsSignUp] = useState(location.pathname === "/register");
 
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   const auth = useAuthHandlers({ isAr, language, isSignUp, setIsSignUp });
 

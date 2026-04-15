@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useQuery } from "@tanstack/react-query";
@@ -31,8 +32,7 @@ interface RegRow { id: string; registration_number: string | null; registered_at
 interface TicketRow { id: string; ticket_number: string | null; subject: string | null; created_at: string }
 
 export const AdminActivityFeed = memo(function AdminActivityFeed() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: feed = [] } = useQuery({
     queryKey: ["admin-activity-feed"],

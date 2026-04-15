@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useEffect, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useToast } from "@/hooks/use-toast";
@@ -17,8 +18,7 @@ export const FeedKeyboardShortcuts = memo(function FeedKeyboardShortcuts({
   onRefresh,
   onScrollTop,
 }: FeedKeyboardShortcutsProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { toast } = useToast();
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {

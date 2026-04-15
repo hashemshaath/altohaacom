@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useNavigate } from "react-router-dom";
@@ -21,10 +22,9 @@ export const UpgradePrompt = memo(function UpgradePrompt({
   variant = "inline",
   className,
 }: UpgradePromptProps) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
 
   const displayName = isAr ? (featureNameAr || featureName) : featureName;
 

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,10 +23,9 @@ interface ProfileEditFormProps {
 }
 
 export const ProfileEditForm = memo(function ProfileEditForm({ profile, userId, onSaved }: ProfileEditFormProps) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const { isFan } = useAccountType();
-  const isAr = language === "ar";
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 

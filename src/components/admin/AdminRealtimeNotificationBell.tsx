@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -22,8 +23,7 @@ interface AdminEvent {
 }
 
 export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotificationBell() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [events, setEvents] = useState<AdminEvent[]>([]);
   const [open, setOpen] = useState(false);
 

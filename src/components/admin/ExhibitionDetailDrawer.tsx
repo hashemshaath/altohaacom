@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -38,8 +39,7 @@ interface Props {
 }
 
 const ExhibitionDetailDrawer = memo(function ExhibitionDetailDrawer({ exhibitionId, open, onClose }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   // Exhibition details

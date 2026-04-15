@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +24,7 @@ type RecoveryMethod = "email" | "phone";
 type Step = "input" | "sent";
 
 export const ForgotPasswordDialog = memo(function ForgotPasswordDialog({ open, onOpenChange }: ForgotPasswordDialogProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const [step, setStep] = useState<Step>("input");
   const [method, setMethod] = useState<RecoveryMethod>("email");

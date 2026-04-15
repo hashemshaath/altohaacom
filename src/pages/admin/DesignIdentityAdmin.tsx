@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -65,6 +66,7 @@ const designSections = [
 
 /* ── Design Audit Checks ── */
 function getAuditChecks(settings: Record<string, any>, homepageSections: any[], isAr: boolean) {
+  const isAr = useIsAr();
   const bi = settings.brand_identity || {};
   const br = settings.branding || {};
   const hd = settings.header || {};
@@ -90,8 +92,7 @@ function getAuditChecks(settings: Record<string, any>, homepageSections: any[], 
 }
 
 export default function DesignIdentityAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { settings } = useSiteSettings();
   const { data: homepageSections = [] } = useHomepageSections();
   const { getStyle } = useStaggeredReveal(designSections.length + 4, 50);

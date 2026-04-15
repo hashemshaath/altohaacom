@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,8 +30,7 @@ interface ChefRegistration {
 }
 
 export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrations() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
 
   const { data: registrations = [], isLoading } = useQuery({

@@ -1,3 +1,5 @@
+import { useIsAr } from "@/hooks/useIsAr";
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { HeartPulse, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
-import { MS_PER_DAY, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { MS_PER_DAY } from "@/lib/constants";
 
 interface CustomerHealth {
   userId: string;
@@ -24,8 +26,7 @@ interface CustomerHealth {
 }
 
 export const CustomerHealthScores = memo(function CustomerHealthScores() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: healthData = [], isLoading } = useQuery({
     queryKey: ["crmHealthScores"],
@@ -99,7 +100,7 @@ export const CustomerHealthScores = memo(function CustomerHealthScores() {
         } as CustomerHealth;
       }).sort((a, b) => b.score - a.score);
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const getScoreColor = (score: number) => {

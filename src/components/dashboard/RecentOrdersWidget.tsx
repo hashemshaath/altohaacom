@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,9 +19,8 @@ const STATUS_CONFIG: Record<string, { icon: typeof Package; color: string; en: s
 };
 
 export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
-  const { language } = useLanguage();
   const { user } = useAuth();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: orders } = useQuery({
     queryKey: ["recent-orders-widget", user?.id],

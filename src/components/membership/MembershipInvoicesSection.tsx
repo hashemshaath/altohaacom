@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -15,8 +16,7 @@ interface MembershipInvoicesSectionProps {
 }
 
 export const MembershipInvoicesSection = memo(function MembershipInvoicesSection({ userId }: MembershipInvoicesSectionProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
 
   const { data: invoices, isLoading } = useQuery({
     queryKey: ["membership-invoices", userId],

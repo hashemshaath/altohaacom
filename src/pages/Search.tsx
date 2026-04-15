@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, lazy, Suspense, createContext, useContext } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -65,8 +66,8 @@ const SearchQueryContext = createContext("");
 function useSearchQuery() { return useContext(SearchQueryContext); }
 
 export default function Search() {
+  const isAr = useIsAr();
   const { t, language } = useLanguage();
-  const isAr = language === "ar";
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
@@ -632,6 +633,7 @@ function CompetitionRow({
 
 /* ──────────────── Article Row ──────────────── */
 function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const isAr = useIsAr();
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const excerpt = isAr && data.excerpt_ar ? data.excerpt_ar : data.excerpt;
@@ -690,6 +692,7 @@ function ArticleRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Member Row ──────────────── */
 function MemberRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const isAr = useIsAr();
   const sq = useSearchQuery();
   const displayName = isAr
     ? data.display_name_ar || data.full_name_ar || data.display_name || data.full_name || data.username || "?"
@@ -746,6 +749,7 @@ function MemberRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Post Row ──────────────── */
 function PostRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const isAr = useIsAr();
   return (
     <Link
       to="/community"
@@ -791,6 +795,7 @@ function PostRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Recipe Row ──────────────── */
 function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const isAr = useIsAr();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
   const totalTime = (data.prep_time || 0) + (data.cook_time || 0);
@@ -843,6 +848,7 @@ function RecipeRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Exhibition Row ──────────────── */
 function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const isAr = useIsAr();
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
@@ -872,6 +878,7 @@ function ExhibitionRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Entity Row ──────────────── */
 function EntityRow({ data, isAr }: { data: any; isAr: boolean }) {
+  const isAr = useIsAr();
   const name = isAr && data.name_ar ? data.name_ar : data.name;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
   const location = [data.city, data.country].filter(Boolean).join(" · ");
@@ -926,6 +933,7 @@ function EntityRow({ data, isAr }: { data: any; isAr: boolean }) {
 
 /* ──────────────── Skeleton ──────────────── */
 function GoogleSkeleton() {
+  const isAr = useIsAr();
   return (
     <div className="space-y-6">
       {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -945,6 +953,7 @@ function GoogleSkeleton() {
 
 /* ──────────────── Empty State ──────────────── */
 function EmptySearch({ isAr, query }: { isAr: boolean; query: string }) {
+  const isAr = useIsAr();
   return (
     <div className="py-16 text-center">
       <SearchIcon className="h-12 w-12 text-muted-foreground/20 mx-auto mb-4" />

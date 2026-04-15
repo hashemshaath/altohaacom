@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -18,9 +19,8 @@ const MAX_CHARS = 1000;
 
 export const PostEditDialog = memo(function PostEditDialog({ post, onClose, onSaved }: PostEditDialogProps) {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const [content, setContent] = useState(post.content);
   const [saving, setSaving] = useState(false);
 

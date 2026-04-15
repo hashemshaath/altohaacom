@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo, useCallback, useRef } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -148,8 +149,6 @@ function saveTemplates(templates: ExportTemplate[]) {
 
 /* ─── Main Page ─── */
 const DataImportExportAdmin = () => {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   return (
@@ -191,8 +190,6 @@ export default DataImportExportAdmin;
 
 /* ─── Export Tab ─── */
 const ExportTab = memo(function ExportTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   const [selectedModule, setSelectedModule] = useState("users");
@@ -493,10 +490,9 @@ const ExportTab = memo(function ExportTab() {
 
 /* ─── Import Tab ─── */
 const ImportTab = memo(function ImportTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
   const { user } = useAuth();
+  const isAr = useIsAr();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -762,8 +758,6 @@ const ImportTab = memo(function ImportTab() {
 
 /* ─── History Tab ─── */
 const HistoryTab = memo(function HistoryTab() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const t = (en: string, ar: string) => (isAr ? ar : en);
 
   const { data: imports, isLoading } = useQuery({

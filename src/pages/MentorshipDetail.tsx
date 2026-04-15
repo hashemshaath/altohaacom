@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -20,11 +21,10 @@ import { GraduationCap, Clock, Users, ArrowLeft, HandHeart, Target, CheckCircle,
 
 export default function MentorshipDetail() {
   const { id } = useParams<{ id: string }>();
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const { data: program, isLoading } = useMentorshipProgram(id);
   const { data: myEnrollment } = useMyEnrollment(id);
   const enrollMutation = useEnrollAsMentee();

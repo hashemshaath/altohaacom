@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,9 +14,8 @@ import { MS_PER_DAY } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const ProgressReportWidget = memo(function ProgressReportWidget() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { data: pointsBalance } = usePointsBalance();
 
   const { data } = useQuery({

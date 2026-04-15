@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -39,12 +40,11 @@ const STEPS = ["company_info", "contact_details", "branding", "services", "revie
 type Step = typeof STEPS[number];
 
 export default function RegisterCompany() {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { data: countries = [] } = useAllCountries();
-  const isAr = language === "ar";
 
   const [currentStep, setCurrentStep] = useState<Step>("company_info");
   const [isSubmitting, setIsSubmitting] = useState(false);

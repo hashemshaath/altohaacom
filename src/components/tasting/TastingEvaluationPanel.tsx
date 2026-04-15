@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -41,9 +42,8 @@ const EVAL_SCALE_LABELS = [
 ];
 
 export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ sessionId, entries, criteria, scores, evalMethod, allowNotes, isBlind }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
   const { user } = useAuth();
+  const isAr = useIsAr();
   const submitScore = useSubmitScore();
   const [selectedEntry, setSelectedEntry] = useState<string>(entries[0]?.id || "");
   const [localScores, setLocalScores] = useState<Record<string, { score?: number; stars?: number; passed?: boolean; note?: string }>>({});

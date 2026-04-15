@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
@@ -39,8 +40,7 @@ interface Props {
 }
 
 export const NotificationActionButtons = memo(function NotificationActionButtons({ notification, onMarkRead, compact = true }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const navigate = useNavigate();
 
   const actions = typeActions[notification.type || ""] || [];

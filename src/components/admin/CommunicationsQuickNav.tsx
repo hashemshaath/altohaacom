@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -17,9 +18,8 @@ const NAV_ITEMS = [
 ];
 
 export const CommunicationsQuickNav = memo(function CommunicationsQuickNav() {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const location = useLocation();
-  const isAr = language === "ar";
 
   const { data: counts } = useQuery({
     queryKey: ["comms-nav-counts"],

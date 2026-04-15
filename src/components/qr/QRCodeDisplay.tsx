@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,9 +39,8 @@ export const QRCodeDisplay = React.forwardRef<HTMLDivElement, QRCodeDisplayProps
   className = "",
   compact = false,
 }, ref) {
-  const { language } = useLanguage();
+  const isAr = useIsAr();
   const { toast } = useToast();
-  const isAr = language === "ar";
   const verificationUrl = getVerificationUrl(code);
 
   const handleCopyCode = () => {

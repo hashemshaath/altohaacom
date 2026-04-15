@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,8 +36,7 @@ const BulkUrlImport = safeLazy(() => import("@/components/smart-import/BulkUrlIm
 const CVImportSection = safeLazy(() => import("@/components/cv-import/CVImportSection").then(m => ({ default: m.CVImportSection })));
 
 export default function SmartImportAdmin() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const d = useSmartImportData(isAr);
 
   return (

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -74,6 +75,7 @@ function useSwipe(onLeft: () => void, onRight: () => void) {
 }
 
 function FallbackHero({ isAr }: { isAr: boolean }) {
+  const isAr = useIsAr();
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5" dir={isAr ? "rtl" : "ltr"}>
       <div className="container py-12 sm:py-16 lg:py-24">
@@ -137,8 +139,7 @@ function FallbackHero({ isAr }: { isAr: boolean }) {
 }
 
 export function HeroSection() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isPaused, setIsPaused] = useState(false);

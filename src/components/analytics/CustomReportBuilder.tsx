@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -76,8 +77,7 @@ interface SavedReport {
 }
 
 export const CustomReportBuilder = memo(function CustomReportBuilder() {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(["users", "competitions"]);
   const [chartType, setChartType] = useState<ChartType>("bar");
   const [reportName, setReportName] = useState("");

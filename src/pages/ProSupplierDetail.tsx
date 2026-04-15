@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useCallback, useMemo, lazy, Suspense } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -74,8 +75,8 @@ const InfoRow = memo(function InfoRow({ icon: Icon, children, href, className }:
 export default function ProSupplierDetail() {
   const { id } = useParams();
   const { language } = useLanguage();
+  const isAr = useIsAr();
   const navigate = useNavigate();
-  const isAr = language === "ar";
   const { data: countries = [] } = useAllCountries();
   const [activeTab, setActiveTab] = useState<DetailTab>("overview");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);

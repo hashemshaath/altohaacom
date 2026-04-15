@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -41,10 +42,9 @@ interface JudgeProfile {
 }
 
 export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(function JudgesList({ competitionId, isOrganizer = false }, ref) {
-  const { language } = useLanguage();
   const { user } = useAuth();
+  const isAr = useIsAr();
   const { data: isAdmin } = useIsAdmin();
-  const isAr = language === "ar";
   const canAppoint = isOrganizer || !!isAdmin;
   const queryClient = useQueryClient();
   const [confirmDialog, setConfirmDialog] = useState<{ type: "appoint" | "remove"; judgeId: string; judgeName: string } | null>(null);

@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useEntityDegrees } from "@/hooks/useEntities";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -23,8 +24,7 @@ interface Props {
 }
 
 export const EntityDegreesTab = memo(function EntityDegreesTab({ entityId }: Props) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
+  const isAr = useIsAr();
   const { data: degrees, isLoading } = useEntityDegrees(entityId);
 
   if (isLoading) {
