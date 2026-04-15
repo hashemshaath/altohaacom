@@ -29,13 +29,15 @@ export class AppError extends Error {
   readonly code: ErrorCode;
   readonly status?: number;
   readonly detail?: string;
+  readonly originalError?: unknown;
 
   constructor(opts: AppErrorOptions) {
-    super(opts.message, { cause: opts.cause });
+    super(opts.message);
     this.name = "AppError";
     this.code = opts.code;
     this.status = opts.status;
     this.detail = opts.detail;
+    this.originalError = opts.cause;
   }
 
   /** True when the user's session is invalid and they should re-authenticate */

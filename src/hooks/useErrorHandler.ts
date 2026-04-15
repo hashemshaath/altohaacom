@@ -41,7 +41,7 @@ export function useErrorHandler(defaults?: ErrorHandlerOptions) {
 
       // ── Logging ────────────────────────────────────────────────────
       if (import.meta.env.DEV) {
-        console.error(`[AppError:${appError.code}]`, appError.message, appError.cause ?? "");
+        console.error(`[AppError:${appError.code}]`, appError.message, appError.originalError ?? "");
       }
 
       // ── Auth redirect hook ─────────────────────────────────────────
