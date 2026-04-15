@@ -223,3 +223,4 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
   );
 });
 
+export default ExhibitionCheckinScanner;
