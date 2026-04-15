@@ -148,4 +148,3 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
   );
 });
 
-export default OrganizerSalesReport;
