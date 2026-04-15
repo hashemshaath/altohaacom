@@ -6,22 +6,54 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+/** Minimum page views before showing install prompt */
+const MIN_INTERACTIONS = 3;
+const INTERACTION_KEY = "pwa_interaction_count";
+const DISMISS_KEY = "pwa_banner_dismissed";
+
+function getInteractionCount(): number {
+  try { return parseInt(localStorage.getItem(INTERACTION_KEY) || "0", 10); }
+  catch { return 0; }
+}
+
+function incrementInteraction(): number {
+  try {
+    const count = getInteractionCount() + 1;
+    localStorage.setItem(INTERACTION_KEY, String(count));
+    return count;
+  } catch { return 0; }
+}
+
 function useInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [hasEnoughInteraction, setHasEnoughInteraction] = useState(
+    () => getInteractionCount() >= MIN_INTERACTIONS
+  );
   const [dismissed, setDismissed] = useState(() => {
     try {
-      const ts = localStorage.getItem("pwa_banner_dismissed");
+      const ts = localStorage.getItem(DISMISS_KEY);
       if (!ts) return false;
       return Date.now() - parseInt(ts) < MS_PER_WEEK;
     } catch { return false; }
   });
 
+  // Track page navigations as meaningful interactions
   useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
+    const count = incrementInteraction();
+    if (count >= MIN_INTERACTIONS) setHasEnoughInteraction(true);
+  }, []);
+
+  useEffect(() => {
+    // Check standalone mode (covers iOS)
+    if (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      ("standalone" in navigator && (navigator as { standalone?: boolean }).standalone)
+    ) {
       setIsInstalled(true);
       return;
     }
+
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
@@ -46,15 +78,20 @@ function useInstallPrompt() {
 
   const dismiss = useCallback(() => {
     setDismissed(true);
-    try { localStorage.setItem("pwa_banner_dismissed", Date.now().toString()); } catch { /* restricted */ }
+    try { localStorage.setItem(DISMISS_KEY, Date.now().toString()); } catch { /* restricted */ }
   }, []);
 
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+    !("MSStream" in window);
+
   return {
-    canInstall: !!deferredPrompt && !isInstalled && !dismissed,
+    canInstall: hasEnoughInteraction && !isInstalled && !dismissed && (!!deferredPrompt || isIOS),
     isInstalled,
     install,
     dismiss,
-    isIOS: /iPad|iPhone|iPod/.test(navigator.userAgent),
+    isIOS,
+    /** True when browser supports native install prompt (not iOS) */
+    hasNativePrompt: !!deferredPrompt,
   };
 }
 
@@ -120,3 +157,6 @@ function usePWAUpdate() {
 
   return { needsUpdate, update };
 }
+
+export { useInstallPrompt, usePWAUpdate };
+export type { BeforeInstallPromptEvent };
