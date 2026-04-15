@@ -66,7 +66,6 @@ const designSections = [
 
 /* ── Design Audit Checks ── */
 function getAuditChecks(settings: Record<string, any>, homepageSections: any[], isAr: boolean) {
-  const isAr = useIsAr();
   const bi = settings.brand_identity || {};
   const br = settings.branding || {};
   const hd = settings.header || {};
