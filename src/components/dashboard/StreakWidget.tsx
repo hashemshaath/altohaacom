@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
@@ -16,7 +17,7 @@ export const StreakWidget = memo(function StreakWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["login-streak", user?.id],
     queryFn: async () => {
       if (!user) return { streak: 0, weekDays: [] };
@@ -53,6 +54,18 @@ export const StreakWidget = memo(function StreakWidget() {
     enabled: !!user,
     staleTime: CACHE.long.staleTime,
   });
+
+  if (isLoading) return (
+    <Card className="border-border/40 animate-pulse">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <Skeleton className="h-10 w-10 rounded-xl" />
+          <div className="space-y-1.5"><Skeleton className="h-6 w-8" /><Skeleton className="h-3 w-20" /></div>
+        </div>
+        <div className="flex gap-1">{[1,2,3,4,5,6,7].map(i => <Skeleton key={i} className="h-10 flex-1 rounded-xl" />)}</div>
+      </CardContent>
+    </Card>
+  );
 
   const streak = data?.streak || 0;
   const weekDays = data?.weekDays || getWeekDays();

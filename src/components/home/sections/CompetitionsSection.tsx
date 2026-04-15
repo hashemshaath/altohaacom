@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Trophy, Flame } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -38,7 +39,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
-  const { data: competitions = [] } = useQuery({
+  const { data: competitions = [], isLoading: loadingComps } = useQuery({
     queryKey: ["home-competitions-minimal", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -54,7 +55,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
     refetchOnWindowFocus: false,
   });
 
-  const { data: exhibitions = [] } = useQuery({
+  const { data: exhibitions = [], isLoading: loadingExhibs } = useQuery({
     queryKey: ["home-exhibitions-minimal"],
     queryFn: async () => {
       const { data } = await supabase
@@ -77,7 +78,9 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
     ...exhibitions.map((e) => ({ ...e, type: "exhibition" as const, date: e.start_date, link: ROUTES.exhibition(e.slug || e.id) })),
   ].sort((a, b) => new Date(a.date || 0).getTime() - new Date(b.date || 0).getTime()).slice(0, Math.max(itemCount, 12));
 
-  if (allEvents.length === 0) return null;
+  const isLoading = loadingComps || loadingExhibs;
+
+  if (!isLoading && allEvents.length === 0) return null;
 
   return (
     <section dir={isAr ? "rtl" : "ltr"}>
@@ -92,7 +95,19 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
         />
 
         <HorizontalScrollRow isAr={isAr}>
-          {allEvents.map((event) => {
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="snap-start shrink-0 w-[75vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] animate-pulse">
+                  <div className="rounded-2xl border border-border/30 bg-card overflow-hidden">
+                    <Skeleton className="aspect-[16/10]" />
+                    <div className="p-4 space-y-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                    </div>
+                  </div>
+                </div>
+              ))
+            : allEvents.map((event) => {
             const status = event.status && STATUS_STYLES[event.status];
             return (
               <Link

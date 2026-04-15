@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, FileText, Trophy, Users, TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
@@ -40,7 +41,7 @@ function buildDailyCounts(rows: { created_at: string }[] | null, days: number): 
 export const ContentStatsWidget = memo(function ContentStatsWidget() {
   const isAr = useIsAr();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["content-stats-dashboard-v2"],
     queryFn: async () => {
       const now = new Date();
@@ -80,6 +81,21 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
     },
     staleTime: CACHE.medium.staleTime,
   });
+
+  if (isLoading) return (
+    <Card>
+      <CardHeader className="pb-3"><Skeleton className="h-5 w-40" /></CardHeader>
+      <CardContent className="space-y-3">
+        {[1,2,3].map(i => (
+          <div key={i} className="flex items-center gap-3 rounded-xl border border-border/40 p-3 animate-pulse">
+            <Skeleton className="h-9 w-9 rounded-xl shrink-0" />
+            <div className="flex-1 space-y-1.5"><Skeleton className="h-3 w-16" /><Skeleton className="h-5 w-12" /></div>
+            <Skeleton className="h-8 w-20 shrink-0" />
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
 
   if (!data) return null;
 

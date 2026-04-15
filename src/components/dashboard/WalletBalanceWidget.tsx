@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Wallet, Star, ArrowRight, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MS_PER_WEEK } from "@/lib/constants";
@@ -13,7 +14,7 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["wallet-balance-widget", user?.id],
     queryFn: async () => {
       if (!user) return null;
@@ -44,6 +45,21 @@ export const WalletBalanceWidget = memo(function WalletBalanceWidget() {
     enabled: !!user,
     ...CACHE.default,
   });
+
+  if (isLoading) return (
+    <Card className="border-border/40 animate-pulse">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-8 rounded-xl" />
+          <Skeleton className="h-4 w-16" />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Skeleton className="h-20 rounded-xl" />
+          <Skeleton className="h-20 rounded-xl" />
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   if (!data) return null;
 

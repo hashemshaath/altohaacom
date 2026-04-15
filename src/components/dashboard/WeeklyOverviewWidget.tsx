@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Minus, Eye, Trophy, BookOpen } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CACHE } from "@/lib/queryConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
@@ -20,7 +22,7 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: stats } = useQuery({
+  const { data: stats, isLoading } = useQuery({
     queryKey: ["weekly-overview", user?.id],
     queryFn: async () => {
       if (!user) return null;
@@ -48,6 +50,15 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
     enabled: !!user,
     ...CACHE.medium,
   });
+
+  if (isLoading) return (
+    <Card className="border-border/40 animate-pulse">
+      <CardHeader className="pb-2"><Skeleton className="h-4 w-32" /></CardHeader>
+      <CardContent className="grid grid-cols-3 gap-3">
+        {[1,2,3].map(i => <Skeleton key={i} className="h-24 rounded-xl" />)}
+      </CardContent>
+    </Card>
+  );
 
   if (!stats) return null;
 
