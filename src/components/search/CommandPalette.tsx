@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";

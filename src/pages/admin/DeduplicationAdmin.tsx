@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, memo, useCallback } from "react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";

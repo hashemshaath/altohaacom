@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";

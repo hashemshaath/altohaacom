@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useEffect, useRef } from "react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { useSearchParams } from "react-router-dom";

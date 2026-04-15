@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
