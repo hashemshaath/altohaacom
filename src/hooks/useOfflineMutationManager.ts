@@ -52,26 +52,28 @@ export function useOfflineMutationManager() {
             const table = action.table;
             const payload = action.payload;
 
+            // Cast to `any` because table name is dynamic from the queue
+            const db = supabase as any;
             switch (action.type) {
               case "insert": {
-                const { error } = await supabase.from(table).insert(payload as never);
+                const { error } = await db.from(table).insert(payload);
                 if (error) throw error;
                 break;
               }
               case "update": {
                 const id = payload.id as string;
                 const { id: _, ...rest } = payload;
-                const { error } = await supabase.from(table).update(rest as never).eq("id", id);
+                const { error } = await db.from(table).update(rest).eq("id", id);
                 if (error) throw error;
                 break;
               }
               case "upsert": {
-                const { error } = await supabase.from(table).upsert(payload as never);
+                const { error } = await db.from(table).upsert(payload);
                 if (error) throw error;
                 break;
               }
               case "delete": {
-                const { error } = await supabase.from(table).delete().eq("id", payload.id as string);
+                const { error } = await db.from(table).delete().eq("id", payload.id as string);
                 if (error) throw error;
                 break;
               }
