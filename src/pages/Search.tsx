@@ -382,7 +382,7 @@ export default function Search() {
               isAr={isAr}
             />
           ) : totalResults === 0 ? (
-            <EmptySearch isAr={isAr} query={filters.query} />
+            <EmptySearch query={filters.query} />
           ) : (
             <div className="space-y-6">
               {/* ALL tab — unified list */}
@@ -632,7 +632,7 @@ function CompetitionRow({
 }
 
 /* ──────────────── Article Row ──────────────── */
-function ArticleRow({ data }: { data: any;: boolean }) {
+function ArticleRow({ data }: { data: any }) {
   const isAr = useIsAr();
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
@@ -691,7 +691,7 @@ function ArticleRow({ data }: { data: any;: boolean }) {
 }
 
 /* ──────────────── Member Row ──────────────── */
-function MemberRow({ data }: { data: any;: boolean }) {
+function MemberRow({ data }: { data: any }) {
   const isAr = useIsAr();
   const sq = useSearchQuery();
   const displayName = isAr
@@ -748,7 +748,7 @@ function MemberRow({ data }: { data: any;: boolean }) {
 }
 
 /* ──────────────── Post Row ──────────────── */
-function PostRow({ data }: { data: any;: boolean }) {
+function PostRow({ data }: { data: any }) {
   const isAr = useIsAr();
   return (
     <Link
@@ -794,7 +794,7 @@ function PostRow({ data }: { data: any;: boolean }) {
 }
 
 /* ──────────────── Recipe Row ──────────────── */
-function RecipeRow({ data }: { data: any;: boolean }) {
+function RecipeRow({ data }: { data: any }) {
   const isAr = useIsAr();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
@@ -847,7 +847,7 @@ function RecipeRow({ data }: { data: any;: boolean }) {
 }
 
 /* ──────────────── Exhibition Row ──────────────── */
-function ExhibitionRow({ data }: { data: any;: boolean }) {
+function ExhibitionRow({ data }: { data: any }) {
   const isAr = useIsAr();
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
@@ -877,7 +877,7 @@ function ExhibitionRow({ data }: { data: any;: boolean }) {
 }
 
 /* ──────────────── Entity Row ──────────────── */
-function EntityRow({ data }: { data: any;: boolean }) {
+function EntityRow({ data }: { data: any }) {
   const isAr = useIsAr();
   const name = isAr && data.name_ar ? data.name_ar : data.name;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
