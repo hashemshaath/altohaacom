@@ -43,7 +43,7 @@ export interface CVEducation {
 
 export type CVExperienceLevel = "beginner" | "amateur" | "professional";
 
-export const EXPERIENCE_LEVEL_VALUES: CVExperienceLevel[] = ["beginner", "amateur", "professional"];
+const EXPERIENCE_LEVEL_VALUES: CVExperienceLevel[] = ["beginner", "amateur", "professional"];
 
 export interface CVWorkExperience {
   company: string;
@@ -119,7 +119,7 @@ export interface CVData {
   languages?: CVLanguage[];
 }
 
-export const COUNTRY_FLAGS: Record<string, string> = {
+const COUNTRY_FLAGS: Record<string, string> = {
   SA: "🇸🇦", AE: "🇦🇪", KW: "🇰🇼", BH: "🇧🇭", QA: "🇶🇦", OM: "🇴🇲",
   EG: "🇪🇬", JO: "🇯🇴", LB: "🇱🇧", IQ: "🇮🇶", SY: "🇸🇾", PS: "🇵🇸",
   MA: "🇲🇦", TN: "🇹🇳", DZ: "🇩🇿", LY: "🇱🇾", SD: "🇸🇩", YE: "🇾🇪",

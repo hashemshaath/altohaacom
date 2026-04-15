@@ -41,7 +41,7 @@ export function useSmartTranslate() {
 }
 
 // ─── Normalize experience level ───
-export const normalizeExperienceLevel = (level?: string, years?: number | null): "beginner" | "amateur" | "professional" | null => {
+const normalizeExperienceLevel = (level?: string, years?: number | null): "beginner" | "amateur" | "professional" | null => {
   const normalized = (level || "").toLowerCase().trim();
   if (normalized === "beginner" || normalized === "amateur" || normalized === "professional") return normalized;
   if (normalized === "expert" || normalized === "advanced") return "professional";

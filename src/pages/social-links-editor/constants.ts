@@ -50,7 +50,7 @@ export const FONT_SIZES = [
   { id: "xl", label: "Extra Large", labelAr: "كبير جداً" },
 ];
 
-export const SOCIAL_ICONS: Record<string, typeof Instagram> = {
+const SOCIAL_ICONS: Record<string, typeof Instagram> = {
   instagram: Instagram, twitter: Twitter, facebook: Facebook,
   linkedin: Linkedin, youtube: Youtube, website: Globe,
 };
@@ -76,7 +76,7 @@ export function normalizeSocialUrl(value: string, platform: typeof SOCIAL_PLATFO
   return trimmed;
 }
 
-export function extractUsername(value: string, platform: typeof SOCIAL_PLATFORMS[number]): string {
+function extractUsername(value: string, platform: typeof SOCIAL_PLATFORMS[number]): string {
   if (!value) return "";
   if (platform.prefix && value.startsWith(platform.prefix)) {
     return value.slice(platform.prefix.length).replace(/\/$/, "");

@@ -9,7 +9,7 @@ const ONLINE_THRESHOLD = 60000; // 60 seconds
 /**
  * Hook to track and display user online status using Supabase Presence.
  */
-export function usePresence() {
+function usePresence() {
   const { user } = useAuth();
   const [onlineUsers, setOnlineUsers] = useState<Set<string>>(new Set());
 

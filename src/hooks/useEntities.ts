@@ -26,7 +26,7 @@ export function useEntityPrograms(entityId?: string) {
   });
 }
 
-export function useEntityProgramEnrollments(programId?: string) {
+function useEntityProgramEnrollments(programId?: string) {
   return useQuery({
     queryKey: ["program-enrollments", programId],
     queryFn: async () => {
@@ -98,7 +98,7 @@ export function useEntityMemberships(entityId?: string) {
   });
 }
 
-export function useMyMemberships() {
+function useMyMemberships() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-memberships", user?.id],
@@ -132,7 +132,7 @@ export function useEntityDegrees(entityId?: string) {
   });
 }
 
-export function useMyDegrees() {
+function useMyDegrees() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-degrees", user?.id],

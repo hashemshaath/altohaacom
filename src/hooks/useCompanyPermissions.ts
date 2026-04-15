@@ -23,7 +23,7 @@ const ROLE_PAGE_ACCESS: Record<string, string[]> = {
   ],
 };
 
-export function useCompanyContactRole() {
+function useCompanyContactRole() {
   const { user } = useAuth();
   const { companyId } = useCompanyAccess();
 

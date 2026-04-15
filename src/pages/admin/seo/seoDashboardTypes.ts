@@ -124,7 +124,7 @@ export const NAV_GROUPS: NavGroup[] = [
   },
 ];
 
-export const SECTION_KEYS = new Set<SectionKey>(NAV_GROUPS.flatMap((group) => group.items.map((item) => item.key)));
+const SECTION_KEYS = new Set<SectionKey>(NAV_GROUPS.flatMap((group) => group.items.map((item) => item.key)));
 
 export function resolveSectionParam(value: string | null): SectionKey {
   if (value && SECTION_KEYS.has(value as SectionKey)) return value as SectionKey;

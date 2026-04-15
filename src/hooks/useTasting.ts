@@ -211,7 +211,7 @@ export function useCriteriaPresets() {
   });
 }
 
-export function useTastingJudges(sessionId: string | undefined) {
+function useTastingJudges(sessionId: string | undefined) {
   return useQuery({
     queryKey: ["tasting-judges", sessionId],
     queryFn: async () => {
@@ -266,7 +266,7 @@ export function useUpdateTastingSession() {
   });
 }
 
-export function useDeleteTastingSession() {
+function useDeleteTastingSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -330,7 +330,7 @@ export function useAddTastingEntry() {
   });
 }
 
-export function useUpdateTastingEntry() {
+function useUpdateTastingEntry() {
   const queryClient = useQueryClient();
 
   return useMutation({

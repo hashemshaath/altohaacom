@@ -107,7 +107,7 @@ export function useEvaluationDomains() {
   });
 }
 
-export function useEvaluationCriteriaCategories(domainId?: string, productCategory?: string) {
+function useEvaluationCriteriaCategories(domainId?: string, productCategory?: string) {
   return useQuery({
     queryKey: ["evaluation-criteria-categories", domainId, productCategory],
     queryFn: async () => {
@@ -126,7 +126,7 @@ export function useEvaluationCriteriaCategories(domainId?: string, productCatego
   });
 }
 
-export function useEvaluationCriteria(categoryId?: string) {
+function useEvaluationCriteria(categoryId?: string) {
   return useQuery({
     queryKey: ["evaluation-criteria", categoryId],
     queryFn: async () => {
@@ -184,7 +184,7 @@ export function useEvaluationCriteriaByDomain(domainSlug: string, productCategor
   });
 }
 
-export function useEvaluationScores(entityId?: string, domainSlug?: string) {
+function useEvaluationScores(entityId?: string, domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-scores", entityId, domainSlug],
     queryFn: async () => {
@@ -200,7 +200,7 @@ export function useEvaluationScores(entityId?: string, domainSlug?: string) {
   });
 }
 
-export function useEvaluationReports(domainSlug?: string) {
+function useEvaluationReports(domainSlug?: string) {
   return useQuery({
     queryKey: ["evaluation-reports", domainSlug],
     queryFn: async () => {

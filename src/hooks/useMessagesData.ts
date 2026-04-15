@@ -56,15 +56,15 @@ export interface ConversationPartner {
 
 export type MessageFilter = "all" | "unread" | "starred" | "approval" | "archived";
 
-export const MAX_FILE_SIZE = 20 * 1024 * 1024;
-export const ALLOWED_TYPES = {
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+const ALLOWED_TYPES = {
   image: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"],
   audio: ["audio/mpeg", "audio/wav", "audio/ogg", "audio/mp4"],
   video: ["video/mp4", "video/webm", "video/quicktime"],
   file: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain", "application/zip"],
 };
 
-export function getMessageTypeFromMime(mime: string): string {
+function getMessageTypeFromMime(mime: string): string {
   if (ALLOWED_TYPES.image.includes(mime)) return "image";
   if (ALLOWED_TYPES.audio.includes(mime)) return "audio";
   if (ALLOWED_TYPES.video.includes(mime)) return "video";

@@ -147,7 +147,7 @@ export function useChefScheduleEvents(chefId?: string, dateRange?: { start: stri
   });
 }
 
-export function useChefScheduleSettings(chefId?: string) {
+function useChefScheduleSettings(chefId?: string) {
   return useQuery({
     queryKey: ["chef-schedule-settings", chefId],
     queryFn: async () => {
@@ -256,7 +256,7 @@ export function useDeleteScheduleEvent() {
   });
 }
 
-export function useSaveScheduleSettings() {
+function useSaveScheduleSettings() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
@@ -293,7 +293,7 @@ export function useSaveScheduleSettings() {
 
 // ─── Helpers ────────────────────────────────
 
-export function getEventColor(eventType: ScheduleEventType): string {
+function getEventColor(eventType: ScheduleEventType): string {
   return EVENT_TYPE_CONFIG[eventType]?.color || EVENT_TYPE_CONFIG.other.color;
 }
 

@@ -18,7 +18,7 @@ import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
  * Queue a mutation for later replay when the user is offline.
  * Call this from your mutation's `onError` when `!navigator.onLine`.
  */
-export function enqueueOfflineMutation(
+function enqueueOfflineMutation(
   table: string,
   type: "insert" | "update" | "upsert" | "delete",
   payload: Record<string, unknown>,

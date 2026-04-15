@@ -89,6 +89,6 @@ export function queueAnalyticsInsert(table: string, record: QueuedRecord) {
  * Immediately flush all pending analytics writes.
  * Useful before navigation or page unload.
  */
-export function flushAnalytics() {
+function flushAnalytics() {
   flushAll();
 }

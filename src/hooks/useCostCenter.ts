@@ -176,7 +176,7 @@ export function useCostEstimates(filters?: { moduleType?: string; status?: strin
   });
 }
 
-export function useCostEstimate(id: string | undefined) {
+function useCostEstimate(id: string | undefined) {
   return useQuery({
     queryKey: ["cost-estimate", id],
     queryFn: async () => {

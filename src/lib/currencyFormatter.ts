@@ -4,7 +4,7 @@
  */
 
 export const SAR_SYMBOL = "SAR"; // Saudi Riyal
-export const SAR_CODE = "SAR";
+const SAR_CODE = "SAR";
 export const DEFAULT_CURRENCY = "SAR";
 
 export interface FormattingOptions {
@@ -49,7 +49,7 @@ function toArabicNumerals(str: string): string {
  * @param options - Formatting options
  * @returns Formatted currency string
  */
-export function formatSAR(
+function formatSAR(
   amount: number,
   options: FormattingOptions = {}
 ): string {
@@ -104,7 +104,7 @@ export function formatCurrency(amount: number, language: "en" | "ar" = "en"): st
 /**
  * Get SAR symbol based on context
  */
-export function getSARSymbol(): string {
+function getSARSymbol(): string {
   return SAR_SYMBOL;
 }
 
@@ -113,7 +113,7 @@ export function getSARSymbol(): string {
  * @param value - Currency string to parse
  * @returns Numeric value
  */
-export function parseCurrency(value: string | number): number {
+function parseCurrency(value: string | number): number {
   if (typeof value === "number") return value;
   
   // Remove all non-numeric characters except decimal point and minus
@@ -132,7 +132,7 @@ export function parseCurrency(value: string | number): number {
  * @param language - Language code
  * @returns Formatted price range
  */
-export function formatPriceRange(
+function formatPriceRange(
   minPrice: number,
   maxPrice: number,
   language: "en" | "ar" = "en"
@@ -147,7 +147,7 @@ export function formatPriceRange(
  * @param taxRate - Tax rate as percentage (e.g., 15 for 15%)
  * @returns Tax amount
  */
-export function calculateTax(amount: number, taxRate: number): number {
+function calculateTax(amount: number, taxRate: number): number {
   return (amount * taxRate) / 100;
 }
 
@@ -158,7 +158,7 @@ export function calculateTax(amount: number, taxRate: number): number {
  * @param language - Language code
  * @returns Formatted string showing amount + tax
  */
-export function formatWithTax(
+function formatWithTax(
   amount: number,
   taxRate: number,
   language: "en" | "ar" = "en"

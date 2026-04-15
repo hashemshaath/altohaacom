@@ -19,7 +19,7 @@ export interface RelatedPage {
 }
 
 /** Master registry of all linkable pages for SEO cross-linking */
-export const PAGE_REGISTRY: Record<string, RelatedPage> = {
+const PAGE_REGISTRY: Record<string, RelatedPage> = {
   competitions: { href: "/competitions", label: "Competitions", labelAr: "المسابقات", icon: Trophy, desc: "Browse culinary competitions", descAr: "تصفح مسابقات الطهي" },
   discover: { href: "/discover", label: "Discover", labelAr: "استكشاف", icon: Compass, desc: "Discover upcoming events", descAr: "اكتشف الفعاليات القادمة" },
   recipes: { href: "/recipes", label: "Recipes", labelAr: "الوصفات", icon: UtensilsCrossed, desc: "Professional chef recipes", descAr: "وصفات الطهاة المحترفين" },

@@ -59,7 +59,7 @@ export function useEstablishmentAssociations(establishmentId?: string) {
   });
 }
 
-export function useMyEstablishmentAssociations() {
+function useMyEstablishmentAssociations() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-establishment-associations", user?.id],
@@ -76,7 +76,7 @@ export function useMyEstablishmentAssociations() {
   });
 }
 
-export function useMyEstablishmentQualifications() {
+function useMyEstablishmentQualifications() {
   const { user } = useAuth();
   return useQuery({
     queryKey: ["my-establishment-qualifications", user?.id],

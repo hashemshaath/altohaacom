@@ -182,7 +182,7 @@ export function useManageSocialLinkItems() {
   return { addItem, updateItem, deleteItem, reorderItems };
 }
 
-export function useRecordLinkClick() {
+function useRecordLinkClick() {
   return useMutation({
     mutationFn: async (itemId: string) => {
       await supabase.rpc("increment_field" as any, { table_name: "social_link_items", field_name: "click_count", row_id: itemId });

@@ -117,7 +117,7 @@ const BASE_DELAY = 500; // ms
  * );
  * ```
  */
-export async function supabaseQuery<T>(
+async function supabaseQuery<T>(
   fn: (signal?: AbortSignal) => PromiseLike<{ data: T; error: unknown }>,
   opts?: QueryOptions,
 ): Promise<T> {

@@ -6,7 +6,7 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-export function useInstallPrompt() {
+function useInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstalled, setIsInstalled] = useState(false);
   const [dismissed, setDismissed] = useState(() => {
@@ -75,7 +75,7 @@ export function useOnlineStatus() {
   return isOnline;
 }
 
-export function usePWAUpdate() {
+function usePWAUpdate() {
   const [needsUpdate, setNeedsUpdate] = useState(false);
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
 

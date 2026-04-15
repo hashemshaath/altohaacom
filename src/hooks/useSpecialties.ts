@@ -20,7 +20,7 @@ export function useApprovedSpecialties() {
   });
 }
 
-export function useAllSpecialties() {
+function useAllSpecialties() {
   return useQuery({
     queryKey: ["specialties", "all"],
     queryFn: async () => {
@@ -50,7 +50,7 @@ export function useUserSpecialties(userId: string | undefined) {
   });
 }
 
-export function useApproveSpecialty() {
+function useApproveSpecialty() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, approvedBy }: { id: string; approvedBy: string }) => {
@@ -64,7 +64,7 @@ export function useApproveSpecialty() {
   });
 }
 
-export function useCreateSpecialty() {
+function useCreateSpecialty() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (specialty: { name: string; name_ar?: string; slug: string; category?: string; created_by?: string; is_approved?: boolean }) => {

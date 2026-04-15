@@ -20,7 +20,7 @@ export function getVerificationUrl(code: string): string {
 }
 
 /** Build a direct entity URL (used as secondary link in QR metadata) */
-export function getEntityUrl(entityType: QREntityType, entityId: string): string {
+function getEntityUrl(entityType: QREntityType, entityId: string): string {
   switch (entityType) {
     case "user":
       return `${BASE_URL}/${entityId}`; // entityId = username

@@ -4,7 +4,7 @@ function isPreviewHost(hostname: string) {
   return hostname.endsWith(".lovableproject.com") || hostname.includes("id-preview--");
 }
 
-export function getPublicAppOrigin() {
+function getPublicAppOrigin() {
   if (typeof window === "undefined") return FALLBACK_PUBLISHED_ORIGIN;
 
   const { origin, hostname } = window.location;

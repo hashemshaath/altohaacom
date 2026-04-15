@@ -306,7 +306,7 @@ function injectHotjar(siteId: string) {
    for pushing events to the GTM dataLayer.
    ═══════════════════════════════════════════ */
 
-export function pushDataLayer(event: string, params?: Record<string, unknown>) {
+function pushDataLayer(event: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   const payload = { event, ...params };
   window.dataLayer = window.dataLayer || [];

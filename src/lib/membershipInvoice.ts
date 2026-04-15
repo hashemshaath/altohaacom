@@ -127,7 +127,7 @@ export async function voidInvoice(invoiceId: string) {
   return !error;
 }
 
-export async function refundInvoice(invoiceId: string, reason?: string) {
+async function refundInvoice(invoiceId: string, reason?: string) {
   const { error } = await supabase
     .from("invoices")
     .update({
@@ -141,7 +141,7 @@ export async function refundInvoice(invoiceId: string, reason?: string) {
   return !error;
 }
 
-export async function applyInvoiceDiscount(invoiceId: string, discount: number) {
+async function applyInvoiceDiscount(invoiceId: string, discount: number) {
   // Recalculate totals
   const { data: invoice } = await supabase
     .from("invoices")

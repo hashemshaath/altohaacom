@@ -33,7 +33,7 @@ export const COMPANY_TYPES: { value: CompanyType; label: string; labelAr: string
   { value: "vendor", label: "Vendor", labelAr: "بائع" },
 ];
 
-export const STATUS_COLORS: Record<CompanyStatus, string> = {
+const STATUS_COLORS: Record<CompanyStatus, string> = {
   active: "bg-chart-5",
   inactive: "bg-muted-foreground",
   pending: "bg-chart-4",

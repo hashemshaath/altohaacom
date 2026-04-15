@@ -24,7 +24,7 @@ export function useIsAdmin() {
   });
 }
 
-export function useAdminStats() {
+function useAdminStats() {
   const { data: isAdmin } = useIsAdmin();
 
   return useQuery({

@@ -41,7 +41,7 @@ export function TabTransition({ children, activeKey }: { children: React.ReactNo
 }
 
 /* ─── Live Countdown Hook ─── */
-export function useLiveCountdown(targetDate: string | null) {
+function useLiveCountdown(targetDate: string | null) {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     if (!targetDate) return;
@@ -62,7 +62,7 @@ export function useLiveCountdown(targetDate: string | null) {
 }
 
 /* ─── Mini Progress Ring ─── */
-export function ProgressRing({ value, max, size = 44, strokeWidth = 4, color = "text-primary" }: { value: number; max: number; size?: number; strokeWidth?: number; color?: string }) {
+function ProgressRing({ value, max, size = 44, strokeWidth = 4, color = "text-primary" }: { value: number; max: number; size?: number; strokeWidth?: number; color?: string }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const progress = max > 0 ? Math.min(value / max, 1) : 0;

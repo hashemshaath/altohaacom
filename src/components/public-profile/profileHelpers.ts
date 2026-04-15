@@ -1,10 +1,10 @@
 import { toEnglishDigits } from "@/lib/formatNumber";
 
 /** Detect Arabic characters in a string */
-export const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
+const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
 
 /** Detect Latin characters in a string */
-export const containsLatin = (text?: string | null) => !!text && /[A-Za-z]/.test(text);
+const containsLatin = (text?: string | null) => !!text && /[A-Za-z]/.test(text);
 
 /**
  * Pick the correct localized text based on current language, with character-detection fallbacks
@@ -19,7 +19,7 @@ export const pickLocalizedText = (isAr: boolean, arText?: string | null, enText?
   return en || ar || "";
 };
 
-export const formatDate = (date: string | null, isAr: boolean) => {
+const formatDate = (date: string | null, isAr: boolean) => {
   if (!date) return "";
   return toEnglishDigits(new Date(date).toLocaleDateString(isAr ? "ar-SA" : "en-US", { year: "numeric", month: "short" }));
 };

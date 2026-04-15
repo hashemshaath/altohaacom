@@ -16,7 +16,7 @@ export const SUPPORTED_LANGUAGES = [
 
 export type LangCode = typeof SUPPORTED_LANGUAGES[number]["code"];
 
-export const T: Record<string, Record<LangCode, string>> = {
+const T: Record<string, Record<LangCode, string>> = {
   follow: { ar: "متابعة", en: "Follow", fr: "Suivre", es: "Seguir", de: "Folgen", tr: "Takip Et", pt: "Seguir", zh: "关注", ja: "フォロー", ko: "팔로우" },
   following: { ar: "متابَع", en: "Following", fr: "Abonné", es: "Siguiendo", de: "Folgend", tr: "Takip", pt: "Seguindo", zh: "已关注", ja: "フォロー中", ko: "팔로잉" },
   followers: { ar: "متابع", en: "Followers", fr: "Abonnés", es: "Seguidores", de: "Follower", tr: "Takipçi", pt: "Seguidores", zh: "粉丝", ja: "フォロワー", ko: "팔로워" },
@@ -67,8 +67,8 @@ export const SOCIAL_ICONS: Record<string, { icon: typeof Instagram; label: strin
   website: { icon: Globe, label: "Website", hoverColor: "#10B981" },
 };
 
-export const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
-export const containsLatin = (text?: string | null) => !!text && /[A-Za-z]/.test(text);
+const containsArabic = (text?: string | null) => !!text && /[\u0600-\u06FF]/.test(text);
+const containsLatin = (text?: string | null) => !!text && /[A-Za-z]/.test(text);
 
 export const pickLocalizedText = (isArabicUi: boolean, arText?: string | null, enText?: string | null) => {
   const ar = (arText || "").trim();
