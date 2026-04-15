@@ -90,7 +90,7 @@ function useChefCostProfiles() {
     queryKey: ["chef-cost-profiles"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("chef_cost_profiles" as any)
+        .from("chef_cost_profiles" as never)
         .select("id, chef_id, country_code, city, visa_required, visa_fee, visa_currency, visa_valid_until, visa_type, flight_cost_estimate, local_transport_cost, transport_currency, transport_notes, hotel_cost_per_night, accommodation_currency, preferred_hotel, preferred_hotel_ar, daily_allowance, evaluation_fee, fee_currency, estimated_total_cost, estimated_days, notes, notes_ar, is_active, created_at, updated_at, created_by")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -104,7 +104,7 @@ function useChefTravelRecords(chefId?: string) {
     queryKey: ["chef-travel-records", chefId],
     queryFn: async () => {
       let query = supabase
-        .from("chef_travel_records" as any)
+        .from("chef_travel_records" as never)
         .select("id, chef_id, session_id, destination_country_code, destination_city, travel_date, return_date, flight_cost, hotel_cost, hotel_name, hotel_nights, local_transport_cost, visa_cost, daily_allowance_total, other_costs, total_cost, currency, visa_number, visa_issued_date, visa_expiry_date, visa_type, notes, notes_ar, created_at")
         .order("travel_date", { ascending: false });
       if (chefId) query = query.eq("chef_id", chefId);
@@ -194,11 +194,11 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
       const payload = { ...profile, estimated_total_cost: estimated, created_by: user?.id };
       if (profile.id) {
         const { id, ...rest } = payload;
-        const { error } = await supabase.from("chef_cost_profiles" as any).update(rest as any).eq("id", id);
+        const { error } = await supabase.from("chef_cost_profiles" as never).update(rest as never).eq("id", id);
         if (error) throw error;
       } else {
         const { id, ...rest } = payload;
-        const { error } = await supabase.from("chef_cost_profiles" as any).insert(rest as any);
+        const { error } = await supabase.from("chef_cost_profiles" as never).insert(rest as never);
         if (error) throw error;
       }
     },
@@ -213,7 +213,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
 
   const deleteCostProfile = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("chef_cost_profiles" as any).delete().eq("id", id);
+      const { error } = await supabase.from("chef_cost_profiles" as never).delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -229,11 +229,11 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
       const payload = { ...record, total_cost: total, created_by: user?.id };
       if (record.id) {
         const { id, ...rest } = payload;
-        const { error } = await supabase.from("chef_travel_records" as any).update(rest as any).eq("id", id);
+        const { error } = await supabase.from("chef_travel_records" as never).update(rest as never).eq("id", id);
         if (error) throw error;
       } else {
         const { id, ...rest } = payload;
-        const { error } = await supabase.from("chef_travel_records" as any).insert(rest as any);
+        const { error } = await supabase.from("chef_travel_records" as never).insert(rest as never);
         if (error) throw error;
       }
     },
@@ -248,7 +248,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
 
   const deleteTravelRecord = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("chef_travel_records" as any).delete().eq("id", id);
+      const { error } = await supabase.from("chef_travel_records" as never).delete().eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {

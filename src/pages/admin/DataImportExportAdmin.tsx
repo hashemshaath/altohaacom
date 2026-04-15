@@ -222,7 +222,7 @@ const ExportTab = memo(function ExportTab() {
   const { data: recordCount } = useQuery({
     queryKey: ["export-count", selectedModule],
     queryFn: async () => {
-      const { count } = await supabase.from(currentModule.table as any).select("id", { count: "exact", head: true });
+      const { count } = await supabase.from(currentModule.table as never).select("id", { count: "exact", head: true });
       return count || 0;
     },
   });
@@ -243,7 +243,7 @@ const ExportTab = memo(function ExportTab() {
     setExporting(true);
     try {
       const cols = Array.from(selectedColumns).join(", ");
-      const { data, error } = await supabase.from(currentModule.table as any).select(cols).limit(QUERY_LIMIT_LARGE);
+      const { data, error } = await supabase.from(currentModule.table as never).select(cols).limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       if (!data?.length) {
         toast({ title: t("No data found", "لا توجد بيانات") });
@@ -572,7 +572,7 @@ const ImportTab = memo(function ImportTab() {
     try {
       for (let i = 0; i < mappedRows.length; i += batchSize) {
         const batch = mappedRows.slice(i, i + batchSize);
-        const { error } = await supabase.from(currentModule.table as any).insert(batch as any);
+        const { error } = await supabase.from(currentModule.table as never).insert(batch as never);
         if (error) {
           failed += batch.length;
         } else {

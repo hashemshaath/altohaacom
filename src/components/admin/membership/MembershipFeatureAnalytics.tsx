@@ -48,7 +48,7 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
     queryKey: ["feature-usage-analytics", startDate],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("membership_feature_usage" as any)
+        .from("membership_feature_usage" as never)
         .select("*, membership_features!inner(name, name_ar, code, category)")
         .gte("usage_date", startDate)
         .order("access_count", { ascending: false });

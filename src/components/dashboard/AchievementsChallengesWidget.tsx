@@ -34,7 +34,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
           .select("challenge_id, progress, completed_at")
           .eq("user_id", user.id),
         supabase
-          .from("user_badges" as any)
+          .from("user_badges" as never)
           .select("id, badge_name, badge_name_ar, badge_icon, earned_at")
           .eq("user_id", user.id)
           .order("earned_at", { ascending: false })

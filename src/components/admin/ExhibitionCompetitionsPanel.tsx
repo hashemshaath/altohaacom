@@ -99,7 +99,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
         status: "draft",
         exhibition_id: exhibitionId,
         created_by: user?.id,
-      } as any).select("id").single();
+      } as never).select("id").single();
       if (error) throw error;
       return data.id;
     },

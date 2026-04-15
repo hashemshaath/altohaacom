@@ -65,7 +65,7 @@ function useEvaluationTemplates(domainId?: string) {
     queryKey: ["evaluation-templates", domainId],
     queryFn: async () => {
       let query = supabase
-        .from("evaluation_templates" as any)
+        .from("evaluation_templates" as never)
         .select("id, domain_id, name, name_ar, description, description_ar, template_type, product_category, criteria_snapshot, is_default, is_active, created_at")
         .order("created_at", { ascending: false });
       if (domainId) query = query.eq("domain_id", domainId);
@@ -100,14 +100,14 @@ export const TemplatesManager = memo(function TemplatesManager() {
       if (template.id) {
         const { id, created_at, ...rest } = template as any;
         const { error } = await supabase
-          .from("evaluation_templates" as any)
-          .update(rest as any)
+          .from("evaluation_templates" as never)
+          .update(rest as never)
           .eq("id", id);
         if (error) throw error;
       } else {
         const { id, created_at, ...rest } = template as any;
         const { error } = await supabase
-          .from("evaluation_templates" as any)
+          .from("evaluation_templates" as never)
           .insert({ ...rest, domain_id: domainId } as any);
         if (error) throw error;
       }
@@ -124,7 +124,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("evaluation_templates" as any)
+        .from("evaluation_templates" as never)
         .delete()
         .eq("id", id);
       if (error) throw error;

@@ -177,7 +177,7 @@ export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isA
     toast({ title: isAr ? "تم تغيير الأيقونة" : "Icon changed" });
   };
   const deleteSection = async (key: string) => {
-    await supabase.from("user_career_sections" as any).delete().eq("user_id", userId).eq("section_key", key);
+    await supabase.from("user_career_sections" as never).delete().eq("user_id", userId).eq("section_key", key);
     queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
     toast({ title: isAr ? "تم حذف القسم" : "Section deleted" });
   };
@@ -187,14 +187,14 @@ export const UserCareerTimeline = memo(function UserCareerTimeline({ userId, isA
     const { CUSTOM_SECTION_COLORS } = await import("./career-timeline/constants");
     const colorIndex = sections.filter(s => s.isCustom).length % CUSTOM_SECTION_COLORS.length;
     const newSection: SectionConfig = { key, icon: "FileText", en: newSectionName.en, ar: newSectionName.ar || newSectionName.en, color: CUSTOM_SECTION_COLORS[colorIndex], isCustom: true };
-    await supabase.from("user_career_sections" as any).insert({ user_id: userId, section_key: key, icon: newSection.icon, name_en: newSection.en, name_ar: newSection.ar, color: newSection.color, sort_order: sections.length, is_custom: true } as any);
+    await supabase.from("user_career_sections" as never).insert({ user_id: userId, section_key: key, icon: newSection.icon, name_en: newSection.en, name_ar: newSection.ar, color: newSection.color, sort_order: sections.length, is_custom: true } as any);
     if (dbSections.length === 0) { await persistSectionsOrder([...sections, newSection]); } else { queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] }); }
     setExpandedSections(prev => new Set([...prev, key]));
     setNewSectionName({ en: "", ar: "" }); setAddingSectionDialog(false);
     toast({ title: isAr ? "تم إنشاء القسم" : "Section created" });
   };
   const deleteCustomSection = async (key: string) => {
-    await supabase.from("user_career_sections" as any).delete().eq("user_id", userId).eq("section_key", key);
+    await supabase.from("user_career_sections" as never).delete().eq("user_id", userId).eq("section_key", key);
     await supabase.from("user_career_records").delete().eq("user_id", userId).eq("record_type", key);
     queryClient.invalidateQueries({ queryKey: ["user-career-sections", userId] });
     queryClient.invalidateQueries({ queryKey: ["career-records", userId] });

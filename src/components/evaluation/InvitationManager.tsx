@@ -60,7 +60,7 @@ function useEvaluationInvitations() {
     queryKey: ["evaluation-invitations"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("evaluation_invitations" as any)
+        .from("evaluation_invitations" as never)
         .select("id, session_id, domain_slug, chef_id, invited_by, status, product_name, product_name_ar, product_description, evaluation_date, evaluation_location, expected_duration_minutes, offered_amount, currency, response_deadline, decline_reason, notes, responded_at, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
@@ -159,8 +159,8 @@ export const InvitationManager = memo(function InvitationManager() {
         status: "pending",
       }));
       const { error } = await supabase
-        .from("evaluation_invitations" as any)
-        .insert(invites as any);
+        .from("evaluation_invitations" as never)
+        .insert(invites as never);
       if (error) throw error;
 
       // Send notifications to each chef

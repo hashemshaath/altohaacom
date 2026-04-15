@@ -134,7 +134,7 @@ export default function CompetitionsAdmin() {
   const { data: seriesList } = useQuery({
     queryKey: ["event-series-comp-filter"],
     queryFn: async () => {
-      const { data, error } = await (supabase as any).from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
+      const { data, error } = await supabase.from("event_series").select("id, name, name_ar").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data as { id: string; name: string; name_ar: string | null }[];
     },
@@ -360,11 +360,11 @@ export default function CompetitionsAdmin() {
 
       let competitionId: string;
       if (mode === "update" && existingId) {
-        const { error } = await supabase.from("competitions").update(competitionPayload as any).eq("id", existingId);
+        const { error } = await supabase.from("competitions").update(competitionPayload as never).eq("id", existingId);
         if (error) throw error;
         competitionId = existingId;
       } else {
-        const { data: inserted, error } = await supabase.from("competitions").insert({ ...competitionPayload, status: "draft" as any, organizer_id: user?.id || "" } as any).select("id").single();
+        const { data: inserted, error } = await supabase.from("competitions").insert({ ...competitionPayload, status: "draft" as any, organizer_id: user?.id || "" } as never).select("id").single();
         if (error) throw error;
         competitionId = inserted.id;
       }

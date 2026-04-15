@@ -79,7 +79,7 @@ export const AIRequirementsSuggest = memo(function AIRequirementsSuggest({ compe
           status: "pending",
         }));
       if (items.length === 0) return;
-      const { error } = await supabase.from("requirement_list_items").insert(items as any);
+      const { error } = await supabase.from("requirement_list_items").insert(items as never);
       if (error) throw error;
     },
     onSuccess: () => {
