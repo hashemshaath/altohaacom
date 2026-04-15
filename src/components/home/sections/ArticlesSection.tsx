@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Clock, Newspaper, BookOpen } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -50,7 +51,7 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
   const showSubtitle = config?.show_subtitle ?? true;
   const showViewAll = config?.show_view_all ?? true;
 
-  const { data: articles = [] } = useQuery({
+  const { data: articles = [], isLoading } = useQuery({
     queryKey: ["home-articles-minimal", itemCount],
     queryFn: async () => {
       const { data } = await supabase
@@ -66,7 +67,7 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
     refetchOnWindowFocus: false,
   });
 
-  if (articles.length === 0) return null;
+  if (!isLoading && articles.length === 0) return null;
 
   return (
     <section dir={isAr ? "rtl" : "ltr"}>
@@ -81,7 +82,20 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
         />
 
         <HorizontalScrollRow isAr={isAr}>
-          {articles.map((article) => {
+          {isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="snap-start shrink-0 w-[75vw] sm:w-[45vw] md:w-[32vw] lg:w-[24vw] xl:w-[20vw] animate-pulse">
+                  <div className="rounded-2xl border border-border/30 bg-card overflow-hidden">
+                    <Skeleton className="aspect-[16/10]" />
+                    <div className="p-4 space-y-2">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-full" />
+                      <Skeleton className="h-3 w-1/3" />
+                    </div>
+                  </div>
+                </div>
+              ))
+            : articles.map((article) => {
             const readTime = estimateReadTime(article.excerpt || article.excerpt_ar);
             const typeLabel = article.type && TYPE_LABELS[article.type];
             const typeColor = article.type && TYPE_COLORS[article.type];
@@ -131,6 +145,7 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
                 </div>
               </Link>
             );
+          })}
           })}
         </HorizontalScrollRow>
       </div>
