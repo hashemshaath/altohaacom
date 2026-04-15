@@ -48,7 +48,7 @@ import { ar, enUS } from "date-fns/locale";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
-
+import { FormField, SubmitButton } from "@/components/form";
 interface SupportTicket {
   id: string;
   ticket_number: string;
@@ -269,53 +269,65 @@ export default function SupportTickets() {
                     </DialogDescription>
                   </DialogHeader>
                   <div className="space-y-4">
-                    <Input
-                      placeholder={isAr ? "الموضوع" : "Subject"}
-                      value={newSubject}
-                      onChange={e => setNewSubject(e.target.value)}
-                    />
-                    <Textarea
-                      placeholder={isAr ? "وصف المشكلة..." : "Describe your issue..."}
-                      rows={4}
-                      value={newDescription}
-                      onChange={e => setNewDescription(e.target.value)}
-                    />
+                    <FormField label={isAr ? "الموضوع" : "Subject"} htmlFor="ticket-subject" required error={!newSubject.trim() && createTicket.isError ? (isAr ? "الموضوع مطلوب" : "Subject is required") : undefined}>
+                      <Input
+                        id="ticket-subject"
+                        placeholder={isAr ? "الموضوع" : "Subject"}
+                        value={newSubject}
+                        onChange={e => setNewSubject(e.target.value)}
+                        state={!newSubject.trim() && createTicket.isError ? "error" : "default"}
+                      />
+                    </FormField>
+                    <FormField label={isAr ? "وصف المشكلة" : "Description"} htmlFor="ticket-desc" required error={!newDescription.trim() && createTicket.isError ? (isAr ? "الوصف مطلوب" : "Description is required") : undefined}>
+                      <Textarea
+                        id="ticket-desc"
+                        placeholder={isAr ? "وصف المشكلة..." : "Describe your issue..."}
+                        rows={4}
+                        value={newDescription}
+                        onChange={e => setNewDescription(e.target.value)}
+                        state={!newDescription.trim() && createTicket.isError ? "error" : "default"}
+                      />
+                    </FormField>
                     <div className="grid grid-cols-2 gap-4">
-                      <Select value={newCategory} onValueChange={setNewCategory}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {CATEGORIES.map(c => (
-                            <SelectItem key={c.value} value={c.value}>
-                              {isAr ? c.ar : c.en}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Select value={newPriority} onValueChange={setNewPriority}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {PRIORITIES.map(p => (
-                            <SelectItem key={p.value} value={p.value}>
-                              {isAr ? p.ar : p.en}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormField label={isAr ? "التصنيف" : "Category"}>
+                        <Select value={newCategory} onValueChange={setNewCategory}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {CATEGORIES.map(c => (
+                              <SelectItem key={c.value} value={c.value}>
+                                {isAr ? c.ar : c.en}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormField>
+                      <FormField label={isAr ? "الأولوية" : "Priority"}>
+                        <Select value={newPriority} onValueChange={setNewPriority}>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {PRIORITIES.map(p => (
+                              <SelectItem key={p.value} value={p.value}>
+                                {isAr ? p.ar : p.en}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormField>
                     </div>
                   </div>
                   <DialogFooter>
-                    <Button
+                    <SubmitButton
+                      loading={createTicket.isPending}
+                      loadingText={isAr ? "جاري الإنشاء..." : "Creating..."}
+                      disabled={!newSubject.trim() || !newDescription.trim()}
                       onClick={() => createTicket.mutate()}
-                      disabled={!newSubject.trim() || !newDescription.trim() || createTicket.isPending}
                     >
-                      {createTicket.isPending
-                        ? isAr ? "جاري الإنشاء..." : "Creating..."
-                        : isAr ? "إرسال التذكرة" : "Submit Ticket"}
-                    </Button>
+                      {isAr ? "إرسال التذكرة" : "Submit Ticket"}
+                    </SubmitButton>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>

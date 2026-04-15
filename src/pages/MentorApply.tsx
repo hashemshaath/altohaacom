@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useApplyAsMentor, useMentorshipPrograms, useMyMentorApplication } from "@/hooks/useMentorship";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
 import { HandHeart, Send, CheckCircle, Clock, X } from "lucide-react";
+import { FormField, FormErrorSummary, SubmitButton } from "@/components/form";
+import { useFormValidation, rules } from "@/hooks/useFormValidation";
 
 const EXPERTISE_OPTIONS = [
   "French Cuisine", "Italian Cuisine", "Asian Cuisine", "Middle Eastern Cuisine",
@@ -33,6 +34,16 @@ export default function MentorApply() {
   const [years, setYears] = useState("");
   const [expertise, setExpertise] = useState<string[]>([]);
   const [programId, setProgramId] = useState("");
+
+  const fieldConfig = useMemo(() => ({
+    years: { rules: [rules.required(isAr ? "سنوات الخبرة" : "Years of experience", "سنوات الخبرة")] },
+    bio: { rules: [rules.required(isAr ? "نبذة عنك" : "About you", "نبذة عنك"), rules.minLength(20)] },
+  }), [isAr]);
+
+  const { errors, errorList, onBlur, onChange, validateAll, getError } = useFormValidation({
+    fields: fieldConfig,
+    isAr,
+  });
 
   if (appLoading) return null;
 
@@ -68,8 +79,9 @@ export default function MentorApply() {
   }
 
   const handleSubmit = () => {
-    if (!bio || expertise.length === 0 || !years) {
-      toast({ variant: "destructive", title: isAr ? "يرجى ملء جميع الحقول" : "Please fill all fields" });
+    if (!validateAll({ years, bio })) return;
+    if (expertise.length === 0) {
+      toast({ variant: "destructive", title: isAr ? "يرجى اختيار مجال خبرة واحد على الأقل" : "Please select at least one area of expertise" });
       return;
     }
     applyMutation.mutate(
@@ -90,6 +102,12 @@ export default function MentorApply() {
     setExpertise(prev => prev.includes(item) ? prev.filter(e => e !== item) : [...prev, item]);
   };
 
+  const handleChange = (field: "years" | "bio", value: string) => {
+    if (field === "years") setYears(value);
+    else setBio(value);
+    onChange(field);
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <SEOHead title={isAr ? "تقدم كمرشد - الطهاة" : "Apply as Mentor - Altoha"} description="Apply to become a mentor" />
@@ -107,57 +125,77 @@ export default function MentorApply() {
             </p>
           </CardHeader>
           <CardContent className="space-y-6">
+            <FormErrorSummary errors={errorList} />
+
             {programs.length > 0 && (
               <div className="space-y-2">
-                <Label>{isAr ? "البرنامج (اختياري)" : "Program (optional)"}</Label>
-                <Select value={programId} onValueChange={setProgramId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder={isAr ? "اختر برنامج" : "Select a program"} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {programs.map(p => (
-                      <SelectItem key={p.id} value={p.id}>{isAr ? p.title_ar || p.title : p.title}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormField label={isAr ? "البرنامج (اختياري)" : "Program (optional)"} htmlFor="program">
+                  <Select value={programId} onValueChange={setProgramId}>
+                    <SelectTrigger id="program">
+                      <SelectValue placeholder={isAr ? "اختر برنامج" : "Select a program"} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {programs.map(p => (
+                        <SelectItem key={p.id} value={p.id}>{isAr ? p.title_ar || p.title : p.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormField>
               </div>
             )}
 
-            <div className="space-y-2">
-              <Label>{isAr ? "سنوات الخبرة" : "Years of Experience"} *</Label>
-              <Input type="number" min="1" value={years} onChange={e => setYears(e.target.value)} placeholder="e.g. 10" />
-            </div>
+            <FormField label={isAr ? "سنوات الخبرة" : "Years of Experience"} htmlFor="years" required error={getError("years")}>
+              <Input
+                id="years"
+                type="number"
+                min="1"
+                value={years}
+                onChange={e => handleChange("years", e.target.value)}
+                onBlur={() => onBlur("years", years)}
+                state={errors.years ? "error" : "default"}
+                placeholder="e.g. 10"
+              />
+            </FormField>
 
             <div className="space-y-2">
-              <Label>{isAr ? "مجالات الخبرة" : "Areas of Expertise"} *</Label>
-              <div className="flex flex-wrap gap-2">
-                {EXPERTISE_OPTIONS.map(item => (
-                  <Badge
-                    key={item}
-                    variant={expertise.includes(item) ? "default" : "outline"}
-                    className="cursor-pointer transition-colors"
-                    onClick={() => toggleExpertise(item)}
-                  >
-                    {item}
-                  </Badge>
-                ))}
-              </div>
+              <FormField label={isAr ? "مجالات الخبرة" : "Areas of Expertise"} required error={expertise.length === 0 && errorList.length > 0 ? (isAr ? "يرجى اختيار مجال واحد على الأقل" : "Select at least one area") : undefined}>
+                <div className="flex flex-wrap gap-2">
+                  {EXPERTISE_OPTIONS.map(item => (
+                    <Badge
+                      key={item}
+                      variant={expertise.includes(item) ? "default" : "outline"}
+                      className="cursor-pointer transition-colors"
+                      onClick={() => toggleExpertise(item)}
+                    >
+                      {item}
+                    </Badge>
+                  ))}
+                </div>
+              </FormField>
             </div>
 
-            <div className="space-y-2">
-              <Label>{isAr ? "نبذة عنك" : "About You"} *</Label>
+            <FormField label={isAr ? "نبذة عنك" : "About You"} htmlFor="bio" required error={getError("bio")}>
               <Textarea
+                id="bio"
                 value={bio}
-                onChange={e => setBio(e.target.value)}
+                onChange={e => handleChange("bio", e.target.value)}
+                onBlur={() => onBlur("bio", bio)}
+                state={errors.bio ? "error" : "default"}
                 placeholder={isAr ? "اكتب نبذة عن خبرتك وما يمكنك تقديمه..." : "Tell us about your experience and what you can offer..."}
                 rows={5}
+                maxCharacters={1000}
               />
-            </div>
+            </FormField>
 
-            <Button onClick={handleSubmit} disabled={applyMutation.isPending} className="w-full gap-2">
-              <Send className="h-4 w-4" />
-              {applyMutation.isPending ? (isAr ? "جاري الإرسال..." : "Submitting...") : (isAr ? "تقديم الطلب" : "Submit Application")}
-            </Button>
+            <SubmitButton
+              loading={applyMutation.isPending}
+              loadingText={isAr ? "جاري الإرسال..." : "Submitting..."}
+              icon={<Send className="h-4 w-4" />}
+              className="w-full"
+              onClick={handleSubmit}
+            >
+              {isAr ? "تقديم الطلب" : "Submit Application"}
+            </SubmitButton>
           </CardContent>
         </Card>
       </main>

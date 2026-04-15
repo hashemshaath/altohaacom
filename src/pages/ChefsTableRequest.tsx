@@ -14,9 +14,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { 
   ArrowLeft, ArrowRight, ChefHat, Building2, Package, MapPin, Send, 
-  Globe, Image, Sparkles, CheckCircle2, Users, FileText, Camera,
+  Globe, Sparkles, CheckCircle2, Users, FileText,
   Utensils, Flame, Leaf
 } from "lucide-react";
+import { SubmitButton } from "@/components/form";
 import { toast } from "sonner";
 import { ProductImageUpload } from "@/components/chefs-table/ProductImageUpload";
 
@@ -327,15 +328,17 @@ export default function ChefsTableRequest() {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             ) : (
-              <Button
-                onClick={handleSubmit}
-                disabled={isSubmitting || !canProceed()}
+              <SubmitButton
+                loading={isSubmitting}
+                loadingText={isAr ? "جاري الإرسال..." : "Submitting..."}
+                icon={<Send className="h-5 w-5" />}
+                disabled={!canProceed()}
                 size="lg"
                 className="gap-2 rounded-2xl px-8 font-bold shadow-lg shadow-primary/30"
+                onClick={handleSubmit}
               >
-                <Send className="h-5 w-5" />
-                {isSubmitting ? (isAr ? "جاري الإرسال..." : "Submitting...") : (isAr ? "إرسال الطلب" : "Submit Request")}
-              </Button>
+                {isAr ? "إرسال الطلب" : "Submit Request"}
+              </SubmitButton>
             )}
           </div>
         </main>

@@ -3,12 +3,12 @@ import { useState, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
-import { Loader2, AlertCircle, CheckCircle, Lock, Eye, EyeOff } from "lucide-react";
+import { CheckCircle, Lock, Eye, EyeOff } from "lucide-react";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import { FormField, FormErrorSummary, SubmitButton } from "@/components/form";
 
 interface ChangePasswordDialogProps {
   open: boolean;
@@ -115,8 +115,9 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
 
         {step === "form" && (
           <div className="space-y-4 pt-2">
-            <div className="space-y-1.5">
-              <Label htmlFor="current-pwd" className="text-xs">{isAr ? "كلمة المرور الحالية" : "Current Password"}</Label>
+            {error && <FormErrorSummary errors={[error]} />}
+
+            <FormField label={isAr ? "كلمة المرور الحالية" : "Current Password"} htmlFor="current-pwd" required>
               <div className="relative">
                 <Input
                   id="current-pwd"
@@ -131,10 +132,9 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
                   {showCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
-            </div>
+            </FormField>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="new-pwd" className="text-xs">{isAr ? "كلمة المرور الجديدة" : "New Password"}</Label>
+            <FormField label={isAr ? "كلمة المرور الجديدة" : "New Password"} htmlFor="new-pwd" required>
               <div className="relative">
                 <Input
                   id="new-pwd"
@@ -150,10 +150,9 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
                 </button>
               </div>
               {newPassword && <PasswordStrengthMeter password={newPassword} />}
-            </div>
+            </FormField>
 
-            <div className="space-y-1.5">
-              <Label htmlFor="confirm-pwd" className="text-xs">{isAr ? "تأكيد كلمة المرور الجديدة" : "Confirm New Password"}</Label>
+            <FormField label={isAr ? "تأكيد كلمة المرور الجديدة" : "Confirm New Password"} htmlFor="confirm-pwd" required>
               <Input
                 id="confirm-pwd"
                 type="password"
@@ -162,20 +161,16 @@ export const ChangePasswordDialog = memo(function ChangePasswordDialog({ open, o
                 onChange={(e) => { setConfirmPassword(e.target.value); setError(""); }}
                 placeholder="••••••••"
               />
-            </div>
+            </FormField>
 
-            {error && (
-              <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2">
-                <p className="flex items-center gap-1.5 text-xs text-destructive">
-                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />{error}
-                </p>
-              </div>
-            )}
-
-            <Button className="w-full" onClick={handleSubmit} disabled={loading}>
-              {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
+            <SubmitButton
+              loading={loading}
+              loadingText={isAr ? "جاري التغيير..." : "Changing..."}
+              className="w-full"
+              onClick={handleSubmit}
+            >
               {isAr ? "تغيير كلمة المرور" : "Change Password"}
-            </Button>
+            </SubmitButton>
           </div>
         )}
 
