@@ -1,5 +1,5 @@
-import { CACHE } from "@/lib/queryConfig";
 import { useMemo, memo } from "react";
+import { CACHE } from "@/lib/queryConfig";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
