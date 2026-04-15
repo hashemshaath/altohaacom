@@ -9,6 +9,7 @@ import { Target, Users, TrendingUp, UserCheck, Ticket, MessageSquare, Clock, Che
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays, differenceInHours } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -20,10 +21,10 @@ export const CRMLiveStatsWidget = memo(function CRMLiveStatsWidget() {
     queryKey: ["crmLiveStats"],
     queryFn: async () => {
       const [ticketsRes, leadsRes, segmentsRes, commsRes] = await Promise.all([
-        supabase.from("support_tickets").select("id, status, priority, created_at, resolved_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("leads").select("id, status, created_at, source").order("created_at", { ascending: false }).limit(500),
-        supabase.from("audience_segments").select("id, is_active, estimated_reach").limit(5000),
-        supabase.from("company_communications").select("id, direction, created_at").order("created_at", { ascending: false }).limit(500),
+        supabase.from("support_tickets").select("id, status, priority, created_at, resolved_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("leads").select("id, status, created_at, source").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("audience_segments").select("id, is_active, estimated_reach").limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_communications").select("id, direction, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
       ]);
 
       const tickets = ticketsRes.data || [];
@@ -81,7 +82,7 @@ export const CRMLiveStatsWidget = memo(function CRMLiveStatsWidget() {
         conversionRate: leads.length > 0 ? Math.round((leads.filter(l => l.status === "converted" || l.status === "won").length / leads.length) * 100) : 0,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

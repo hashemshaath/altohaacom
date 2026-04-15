@@ -10,6 +10,7 @@ import { Monitor, Smartphone, Globe, Shield, Clock, Activity } from "lucide-reac
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const AdminSessionTracker = memo(function AdminSessionTracker() {
   const { language } = useLanguage();
@@ -27,7 +28,7 @@ export const AdminSessionTracker = memo(function AdminSessionTracker() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
   });
 
   const { data: recentEvents = [] } = useQuery({
@@ -41,7 +42,7 @@ export const AdminSessionTracker = memo(function AdminSessionTracker() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
   });
 
   const getSeverityColor = (severity: string) => {

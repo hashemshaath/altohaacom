@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Wallet, Coins, ArrowUpRight, ArrowDownRight, Gift, Star, Users, TrendingUp } from "lucide-react";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWidget() {
   const { language } = useLanguage();
@@ -22,10 +22,10 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
         { count: rewardRedemptions },
       ] = await Promise.all([
         supabase.from("user_wallets").select("balance, points_balance").limit(1000),
-        supabase.from("wallet_transactions").select("type, amount, created_at").limit(5000)
-          .gte("created_at", new Date(Date.now() - MS_PER_WEEK).toISOString()).limit(500),
-        supabase.from("points_ledger").select("points, action_type, created_at").limit(5000)
-          .gte("created_at", new Date(Date.now() - 30 * MS_PER_DAY).toISOString()).limit(500),
+        supabase.from("wallet_transactions").select("type, amount, created_at").limit(QUERY_LIMIT_LARGE)
+          .gte("created_at", new Date(Date.now() - MS_PER_WEEK).toISOString()).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("points_ledger").select("points, action_type, created_at").limit(QUERY_LIMIT_LARGE)
+          .gte("created_at", new Date(Date.now() - 30 * MS_PER_DAY).toISOString()).limit(QUERY_LIMIT_MEDIUM),
         supabase.from("points_ledger").select("id", { count: "exact", head: true })
           .lt("points", 0),
       ]);
@@ -59,7 +59,7 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
         walletUtilization, actionCounts,
       };
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   if (!data) return null;

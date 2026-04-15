@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { ShoppingBag, Package, DollarSign, Clock, Truck, AlertCircle, Tag } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
+import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget() {
   const { language } = useLanguage();
@@ -17,8 +18,8 @@ export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget()
     queryKey: ["shop-orders-overview-widget"],
     queryFn: async () => {
       const [{ data: orders }, { data: products }] = await Promise.all([
-        supabase.from("shop_orders").select("status, total_amount, currency, payment_status, created_at").limit(500),
-        supabase.from("shop_products").select("is_active, price, stock_quantity, category").limit(500),
+        supabase.from("shop_orders").select("status, total_amount, currency, payment_status, created_at").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("shop_products").select("is_active, price, stock_quantity, category").limit(QUERY_LIMIT_MEDIUM),
       ]);
 
       const totalOrders = orders?.length || 0;
@@ -45,7 +46,7 @@ export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget()
         categoryCounts, fulfillmentRate,
       };
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   if (!data) return null;

@@ -9,6 +9,7 @@ import { DollarSign, ShoppingBag, TrendingUp, Package, CreditCard, ArrowUpRight,
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
   const { language } = useLanguage();
@@ -18,10 +19,10 @@ export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
     queryKey: ["orders-revenue-widget"],
     queryFn: async () => {
       const [ordersRes, shopRes, txRes, invoicesRes] = await Promise.all([
-        supabase.from("company_orders").select("id, status, total_amount, currency, direction, category, created_at, order_date").limit(5000),
-        supabase.from("shop_orders").select("id, status, total_amount, currency, created_at").limit(5000),
-        supabase.from("company_transactions").select("id, type, amount, created_at").limit(5000),
-        supabase.from("invoices").select("id, status, amount, created_at").limit(5000),
+        supabase.from("company_orders").select("id, status, total_amount, currency, direction, category, created_at, order_date").limit(QUERY_LIMIT_LARGE),
+        supabase.from("shop_orders").select("id, status, total_amount, currency, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_transactions").select("id, type, amount, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("invoices").select("id, status, amount, created_at").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const orders = ordersRes.data || [];

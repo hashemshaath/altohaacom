@@ -35,6 +35,7 @@ import { NewsBreakingTicker } from "@/components/news/NewsBreakingTicker";
 import { NewsReadingStats } from "@/components/news/NewsReadingStats";
 import { NewsWeeklyDigest } from "@/components/news/NewsWeeklyDigest";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 interface Category {
   id: string;
@@ -155,7 +156,7 @@ export default function News() {
   const { data: categories = [] } = useQuery({
     queryKey: ["news-categories"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").limit(500);
+      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").limit(QUERY_LIMIT_MEDIUM);
       return (data || []) as Category[];
     },
     staleTime: CACHE.long.staleTime,
@@ -164,7 +165,7 @@ export default function News() {
   const { data: tags = [] } = useQuery({
     queryKey: ["news-tags"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name").limit(5000);
+      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name").limit(QUERY_LIMIT_LARGE);
       return (data || []) as ContentTag[];
     },
     staleTime: CACHE.long.staleTime,
@@ -173,7 +174,7 @@ export default function News() {
   const { data: articleTagMap = {} } = useQuery({
     queryKey: ["article-tag-map"],
     queryFn: async () => {
-      const { data } = await supabase.from("article_tags").select("article_id, tag_id").limit(5000);
+      const { data } = await supabase.from("article_tags").select("article_id, tag_id").limit(QUERY_LIMIT_LARGE);
       const map: Record<string, string[]> = {};
       (data || []).forEach((row) => {
         if (!map[row.article_id]) map[row.article_id] = [];

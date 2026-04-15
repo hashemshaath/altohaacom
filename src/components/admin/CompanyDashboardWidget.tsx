@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, BAR_RADIUS } from "@/lib/chartConfig";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
   const { language } = useLanguage();
@@ -39,7 +40,7 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
         supabase.from("company_orders").select("id, total_amount", { count: "exact" }).gte("created_at", sevenDaysAgo),
         supabase.from("company_orders").select("id", { count: "exact", head: true }).gte("created_at", fourteenDaysAgo).lt("created_at", sevenDaysAgo),
         supabase.from("companies").select("id, name, name_ar, type, status, total_reviews").order("total_reviews", { ascending: false }).limit(5),
-        supabase.from("company_orders").select("created_at").gte("created_at", subDays(new Date(), 14).toISOString()).order("created_at", { ascending: true }).limit(5000),
+        supabase.from("company_orders").select("created_at").gte("created_at", subDays(new Date(), 14).toISOString()).order("created_at", { ascending: true }).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const trendMap: Record<string, number> = {};

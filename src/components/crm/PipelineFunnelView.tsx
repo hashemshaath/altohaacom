@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Filter, ArrowDown } from "lucide-react";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const STAGES = [
   { key: "new", en: "New", ar: "جديد", color: "bg-primary" },
@@ -22,7 +23,7 @@ export const PipelineFunnelView = memo(function PipelineFunnelView() {
   const { data: leadsByStage } = useQuery({
     queryKey: ["crmPipelineFunnel"],
     queryFn: async () => {
-      const { data } = await supabase.from("leads").select("id, status").limit(5000);
+      const { data } = await supabase.from("leads").select("id, status").limit(QUERY_LIMIT_LARGE);
       const leads = data || [];
       const map: Record<string, { count: number; value: number }> = {};
       STAGES.forEach(s => { map[s.key] = { count: 0, value: 0 }; });

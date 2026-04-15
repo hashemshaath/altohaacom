@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import {
+import { STALE_TIME_DEFAULT } from "@/lib/constants";
   Zap, Trophy, FileText, Users, ShoppingBag,
   MessageSquare, ArrowRight, Flame, TrendingUp, Clock,
 } from "lucide-react";
@@ -54,7 +55,7 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
       };
     },
     enabled: !!user,
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const actions: QuickAction[] = [

@@ -31,6 +31,7 @@ import {
   Play,
 } from "lucide-react";
 import {
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
   BarChart,
   Bar,
   XAxis,
@@ -107,7 +108,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
             { data: records },
           ] = await Promise.all([
             supabase.from(metric.table as any).select("id", { count: "exact", head: true }),
-            supabase.from(metric.table as any).select("created_at").order("created_at", { ascending: true }).limit(5000),
+            supabase.from(metric.table as any).select("created_at").order("created_at", { ascending: true }).limit(QUERY_LIMIT_LARGE),
           ]);
 
           const months: Record<string, number> = {};

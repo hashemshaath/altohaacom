@@ -13,6 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Save, Trash2, Plus, X, Archive, Eye, EyeOff, Tag, Shield, HelpCircle, Edit } from "lucide-react";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 interface Props { companyId: string; }
 
@@ -45,7 +46,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
     queryFn: async () => {
       const itemIds = items.map(i => i.id);
       if (!itemIds.length) return [];
-      const { data } = await supabase.from("product_qa").select("*").in("catalog_item_id", itemIds).order("created_at", { ascending: false }).limit(5000);
+      const { data } = await supabase.from("product_qa").select("*").in("catalog_item_id", itemIds).order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_qa select("*") returns dynamic columns
       return (data || []) as any[];
     },
@@ -56,7 +57,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
   const { data: badges = [] } = useQuery({
     queryKey: ["admin-trust-badges", companyId],
     queryFn: async () => {
-      const { data } = await supabase.from("product_trust_badges").select("*").eq("company_id", companyId).order("sort_order").limit(500);
+      const { data } = await supabase.from("product_trust_badges").select("*").eq("company_id", companyId).order("sort_order").limit(QUERY_LIMIT_MEDIUM);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_trust_badges select("*") returns dynamic columns
       return (data || []) as any[];
     },

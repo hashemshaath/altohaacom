@@ -12,6 +12,7 @@ import { Download, TrendingUp, Users, Ticket, DollarSign, BarChart3, Eye, Star, 
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays, differenceInDays } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 interface Props { exhibitionId: string; exhibitionTitle: string; isAr: boolean; }
 
@@ -20,7 +21,7 @@ const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4
 export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibitionTitle, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
-  const visibleInterval = useVisibleRefetchInterval(60000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
   const { data, isLoading } = useQuery({
     queryKey: ["organizer-advanced-reports", exhibitionId],

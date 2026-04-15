@@ -16,7 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell,
 } from "recharts";
 import { cn } from "@/lib/utils";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_LARGE } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 // Friendly page labels
@@ -98,7 +98,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
         .select("path, session_id, duration_seconds, created_at")
         .gte("created_at", since)
         .order("created_at", { ascending: true })
-        .limit(5000);
+        .limit(QUERY_LIMIT_LARGE);
 
       if (error) throw error;
       return views || [];

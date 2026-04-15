@@ -9,6 +9,7 @@ import { Package, DollarSign, Clock, CheckCircle, TrendingUp, FileText, Shopping
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 import { format, subDays } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -20,9 +21,9 @@ export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
     queryKey: ["ordersLiveStats"],
     queryFn: async () => {
       const [ordersRes, shopRes, invoicesRes] = await Promise.all([
-        supabase.from("company_orders").select("id, status, total_amount, currency, created_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("shop_orders").select("id, status, total_amount, currency, created_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("invoices").select("id, status, amount, currency, created_at").order("created_at", { ascending: false }).limit(500),
+        supabase.from("company_orders").select("id, status, total_amount, currency, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("shop_orders").select("id, status, total_amount, currency, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("invoices").select("id, status, amount, currency, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
       ]);
 
       const orders = ordersRes.data || [];
@@ -73,7 +74,7 @@ export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
         avgOrderValue: totalOrders > 0 ? Math.round(totalRevenue / totalOrders) : 0,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

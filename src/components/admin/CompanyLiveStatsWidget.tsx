@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -21,10 +22,10 @@ export const CompanyLiveStatsWidget = memo(function CompanyLiveStatsWidget() {
     queryKey: ["companyLiveStats"],
     queryFn: async () => {
       const [companiesRes, establishmentsRes, entitiesRes, contactsRes] = await Promise.all([
-        supabase.from("companies").select("id, status, type, country_code, is_verified, created_at, total_reviews, rating").limit(5000),
-        supabase.from("establishments").select("id, type, country_code, created_at, is_active").limit(5000),
-        supabase.from("culinary_entities").select("id, status, entity_type, country_code, created_at").limit(5000),
-        supabase.from("company_contacts").select("id, company_id, role").limit(5000),
+        supabase.from("companies").select("id, status, type, country_code, is_verified, created_at, total_reviews, rating").limit(QUERY_LIMIT_LARGE),
+        supabase.from("establishments").select("id, type, country_code, created_at, is_active").limit(QUERY_LIMIT_LARGE),
+        supabase.from("culinary_entities").select("id, status, entity_type, country_code, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_contacts").select("id, company_id, role").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const companies = companiesRes.data || [];
@@ -87,7 +88,7 @@ export const CompanyLiveStatsWidget = memo(function CompanyLiveStatsWidget() {
         verificationRate: totalCompanies > 0 ? Math.round((verifiedCompanies / totalCompanies) * 100) : 0,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

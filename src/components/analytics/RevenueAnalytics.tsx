@@ -17,6 +17,7 @@ import { linearRegression, forecast, type DataPoint } from "@/lib/trendPredictio
 import { translateStatus, getTooltipStyle } from "@/lib/chartConfig";
 import { TrendForecastChart } from "./TrendForecastChart";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--chart-2))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))", "hsl(var(--primary))"];
 
@@ -32,9 +33,9 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
         { data: transactions },
         { data: wallets },
       ] = await Promise.all([
-        supabase.from("invoices").select("id, amount, currency, status, created_at, due_date, paid_at").order("created_at", { ascending: true }).limit(5000),
-        supabase.from("company_transactions").select("amount, type, created_at").limit(5000),
-        supabase.from("user_wallets").select("balance, points_balance").limit(5000),
+        supabase.from("invoices").select("id, amount, currency, status, created_at, due_date, paid_at").order("created_at", { ascending: true }).limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_transactions").select("amount, type, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("user_wallets").select("balance, points_balance").limit(QUERY_LIMIT_LARGE),
       ]);
 
       // Invoice aging buckets

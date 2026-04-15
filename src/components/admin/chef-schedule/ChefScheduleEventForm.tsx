@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { X, Save, Plus } from "lucide-react";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 interface Props {
   event?: ChefScheduleEvent | null;
@@ -35,7 +36,7 @@ const ChefScheduleEventForm = memo(function ChefScheduleEventForm({ event, onClo
       const { data } = await supabase
         .from("profiles")
         .select("user_id, full_name, full_name_ar")
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
   });

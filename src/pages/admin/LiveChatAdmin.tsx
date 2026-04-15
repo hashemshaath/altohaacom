@@ -31,6 +31,7 @@ import { formatDistanceToNow, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
+import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
 
 export default function LiveChatAdmin() {
   const { user } = useAuth();
@@ -38,7 +39,7 @@ export default function LiveChatAdmin() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const isAr = language === "ar";
-  const chatRefetchInterval = useVisibleRefetchInterval(30000);
+  const chatRefetchInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_FAST);
 
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");

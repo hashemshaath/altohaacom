@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Building2, CheckCircle, Clock, Star, TrendingUp, DollarSign } from "lucide-react";
+import { QUERY_LIMIT_LARGE, STALE_TIME_LONG } from "@/lib/constants";
 
 export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
   const { language } = useLanguage();
@@ -19,7 +20,7 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "active"),
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("companies").select("id", { count: "exact", head: true }).eq("status", "suspended"),
-        supabase.from("companies").select("type").limit(5000),
+        supabase.from("companies").select("type").limit(QUERY_LIMIT_LARGE),
         supabase.from("company_orders").select("id, total_amount, status").order("created_at", { ascending: false }).limit(100),
       ]);
 
@@ -43,7 +44,7 @@ export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {
         totalOrders: orders.length,
       };
     },
-    staleTime: 3 * 60 * 1000,
+    staleTime: STALE_TIME_LONG,
   });
 
   if (!stats) return null;

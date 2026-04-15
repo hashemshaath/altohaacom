@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Award, FileCheck, Send, Clock, ShieldCheck, Download, PenTool } from "lucide-react";
+import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget() {
   const { language } = useLanguage();
@@ -15,7 +16,7 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
     queryKey: ["certificate-issuance-widget"],
     queryFn: async () => {
       const [{ data: certs }, { count: templateCount }, { count: verificationCount }] = await Promise.all([
-        supabase.from("certificates").select("status, type, downloaded_count, sent_at").limit(500),
+        supabase.from("certificates").select("status, type, downloaded_count, sent_at").limit(QUERY_LIMIT_MEDIUM),
         supabase.from("certificate_templates").select("id", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("certificate_verifications").select("id", { count: "exact", head: true }),
       ]);
@@ -40,7 +41,7 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
         typeCounts, issuanceRate,
       };
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   if (!data) return null;

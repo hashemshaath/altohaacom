@@ -11,6 +11,7 @@ import { format, subDays } from "date-fns";
 import { translateRole, getTooltipStyle } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -23,8 +24,8 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
     queryFn: async () => {
       const [profilesRes, rolesRes, membershipsRes] = await Promise.all([
         supabase.from("profiles").select("user_id, account_status, account_type, is_verified, country_code, created_at, membership_tier").order("created_at", { ascending: false }).limit(1000),
-        supabase.from("user_roles").select("user_id, role").limit(5000),
-        supabase.from("membership_cards").select("id, card_status").limit(5000),
+        supabase.from("user_roles").select("user_id, role").limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_cards").select("id, card_status").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const profiles = profilesRes.data || [];
@@ -79,7 +80,7 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
         uniqueRoles: Object.keys(roleMap).length,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

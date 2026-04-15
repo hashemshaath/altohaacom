@@ -15,6 +15,7 @@ import { OnlineCountBadge } from "./PresenceIndicator";
 import { ProfileCompletionCard } from "@/components/onboarding/ProfileCompletionCard";
 import { useUserFeatures } from "@/hooks/useMembershipFeatures";
 import { CACHE } from "@/lib/queryConfig";
+import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live" | "bookmarks";
 
@@ -42,7 +43,7 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
       return data;
     },
     enabled: !!user,
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const { data: stats = { members: 0, groups: 0, recipes: 0, posts: 0 } } = useQuery({

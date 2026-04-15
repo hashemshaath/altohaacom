@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCountries } from "@/hooks/useCountries";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import type { OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
 import type { VenueValue } from "@/components/admin/VenueSearchSelector";
 import type { Database } from "@/integrations/supabase/types";
@@ -69,7 +69,7 @@ export function useExhibitionEditForm(exhibition: any | undefined, onClose: () =
   const { data: seriesList } = useQuery({
     queryKey: ["event-series-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("event_series").select("id, name, name_ar, series_type, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, cover_image_url, tags, website_url").eq("is_active", true).order("name").limit(500);
+      const { data } = await supabase.from("event_series").select("id, name, name_ar, series_type, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, cover_image_url, tags, website_url").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
   });

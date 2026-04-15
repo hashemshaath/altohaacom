@@ -14,6 +14,7 @@ import {
   CalendarDays, Zap
 } from "lucide-react";
 import { differenceInDays, subDays, format } from "date-fns";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 type Period = "7d" | "14d" | "30d";
 
@@ -41,14 +42,14 @@ const MembershipDigestPanel = memo(function MembershipDigestPanel() {
         { data: prevGifts },
         { data: featureUsage },
       ] = await Promise.all([
-        supabase.from("profiles").select("membership_tier, membership_status, membership_expires_at, created_at").limit(5000),
-        supabase.from("membership_history").select("new_tier, previous_tier, created_at, reason").gte("created_at", periodStart).limit(5000),
-        supabase.from("membership_history").select("new_tier, previous_tier, created_at, reason").gte("created_at", prevPeriodStart).lt("created_at", periodStart).limit(5000),
-        supabase.from("membership_cancellation_requests").select("id, created_at").gte("created_at", periodStart).limit(5000),
-        supabase.from("membership_cancellation_requests").select("id, created_at").gte("created_at", prevPeriodStart).lt("created_at", periodStart).limit(5000),
-        supabase.from("membership_gifts").select("id, created_at").gte("created_at", periodStart).limit(5000),
-        supabase.from("membership_gifts").select("id, created_at").gte("created_at", prevPeriodStart).lt("created_at", periodStart).limit(5000),
-        supabase.from("membership_feature_usage").select("id, access_count, created_at").gte("created_at", periodStart).limit(5000),
+        supabase.from("profiles").select("membership_tier, membership_status, membership_expires_at, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_history").select("new_tier, previous_tier, created_at, reason").gte("created_at", periodStart).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_history").select("new_tier, previous_tier, created_at, reason").gte("created_at", prevPeriodStart).lt("created_at", periodStart).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_cancellation_requests").select("id, created_at").gte("created_at", periodStart).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_cancellation_requests").select("id, created_at").gte("created_at", prevPeriodStart).lt("created_at", periodStart).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_gifts").select("id, created_at").gte("created_at", periodStart).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_gifts").select("id, created_at").gte("created_at", prevPeriodStart).lt("created_at", periodStart).limit(QUERY_LIMIT_LARGE),
+        supabase.from("membership_feature_usage").select("id, access_count, created_at").gte("created_at", periodStart).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const tierOrder: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };

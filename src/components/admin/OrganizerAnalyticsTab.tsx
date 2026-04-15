@@ -12,6 +12,7 @@ import {
 } from "recharts";
 import { format, subMonths, parseISO, startOfMonth } from "date-fns";
 import {
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
   Landmark, Eye, Star, Ticket, MapPin, TrendingUp,
   Users, BarChart3, Globe,
 } from "lucide-react";
@@ -43,7 +44,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
 
       const [ticketsRes, reviewsRes, followersRes] = await Promise.all([
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).in("exhibition_id", exIds),
-        supabase.from("exhibition_reviews").select("id, rating").in("exhibition_id", exIds).limit(5000),
+        supabase.from("exhibition_reviews").select("id, rating").in("exhibition_id", exIds).limit(QUERY_LIMIT_LARGE),
         supabase.from("exhibition_followers").select("id", { count: "exact", head: true }).in("exhibition_id", exIds),
       ]);
 

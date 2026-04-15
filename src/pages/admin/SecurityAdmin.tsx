@@ -32,6 +32,7 @@ import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const CHART_COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -259,7 +260,7 @@ const SessionsTab = memo(function SessionsTab() {
     queryFn: async () => {
       const [sessionsRes, blockedRes] = await Promise.all([
         supabase.from("user_sessions").select("id, user_id, device_info, ip_address, is_active, created_at, last_active_at").order("last_active_at", { ascending: false }).limit(100),
-        supabase.from("ip_blocklist").select("id, ip_address, reason, is_active, created_at").eq("is_active", true).limit(5000),
+        supabase.from("ip_blocklist").select("id, ip_address, reason, is_active, created_at").eq("is_active", true).limit(QUERY_LIMIT_LARGE),
       ]);
       const sessions = sessionsRes.data || [];
       const blocked = blockedRes.data || [];
@@ -505,8 +506,8 @@ const AnalyticsTab = memo(function AnalyticsTab() {
     queryKey: ["security-analytics-full"],
     queryFn: async () => {
       const [eventsRes, actionsRes, sessionsRes] = await Promise.all([
-        supabase.from("security_events").select("id, event_type, severity, created_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(500),
+        supabase.from("security_events").select("id, event_type, severity, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("admin_actions").select("id, action_type, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
         supabase.from("user_sessions").select("id, is_active, created_at").limit(200),
       ]);
       const events = eventsRes.data || [];

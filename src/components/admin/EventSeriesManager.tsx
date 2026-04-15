@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "@/hooks/use-toast";
 import {
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
   Plus, Pencil, Trash2, ChevronDown, Layers, Calendar, Copy, Loader2, X,
   Landmark, Trophy, Shuffle,
 } from "lucide-react";
@@ -91,8 +92,8 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
     queryKey: ["event-series-edition-counts"],
     queryFn: async () => {
       const [exh, comp] = await Promise.all([
-        supabase.from("exhibitions").select("series_id, edition_year").not("series_id", "is", "null").limit(5000),
-        supabase.from("competitions").select("series_id, edition_year").not("series_id", "is", "null").limit(5000),
+        supabase.from("exhibitions").select("series_id, edition_year").not("series_id", "is", "null").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competitions").select("series_id, edition_year").not("series_id", "is", "null").limit(QUERY_LIMIT_LARGE),
       ]);
       const counts: Record<string, { exhibitions: number; competitions: number; years: number[] }> = {};
       (exh.data || []).forEach((r) => {

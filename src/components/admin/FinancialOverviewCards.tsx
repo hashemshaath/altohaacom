@@ -10,6 +10,7 @@ import { DollarSign, TrendingUp, FileText, CreditCard, AlertTriangle } from "luc
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
   const { language } = useLanguage();
@@ -21,9 +22,9 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
       const thirtyDaysAgo = subDays(new Date(), 30).toISOString();
 
       const [invoicesRes, ordersRes, transactionsRes] = await Promise.all([
-        supabase.from("invoices").select("status, amount, currency, created_at").limit(5000),
-        supabase.from("company_orders").select("status, total_amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
-        supabase.from("company_transactions").select("type, amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
+        supabase.from("invoices").select("status, amount, currency, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_orders").select("status, total_amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_transactions").select("type, amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const invoices = invoicesRes.data || [];

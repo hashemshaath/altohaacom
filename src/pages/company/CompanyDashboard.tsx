@@ -36,6 +36,7 @@ import { CompanyRecentOrdersWidget } from "@/components/company/CompanyRecentOrd
 import { CompanyQuickActions } from "@/components/company/CompanyQuickActions";
 import { CompanyActivityFeed } from "@/components/company/CompanyActivityFeed";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
@@ -49,10 +50,10 @@ export default function CompanyPortalDashboard() {
       if (!companyId) return null;
 
       const [ordersRes, invitationsRes, transactionsRes, contactsRes] = await Promise.all([
-        supabase.from("company_orders").select("id, status").eq("company_id", companyId).limit(5000),
-        supabase.from("company_invitations").select("id, status").eq("company_id", companyId).limit(5000),
-        supabase.from("company_transactions").select("id, amount, type").eq("company_id", companyId).limit(5000),
-        supabase.from("company_contacts").select("id").eq("company_id", companyId).limit(5000),
+        supabase.from("company_orders").select("id, status").eq("company_id", companyId).limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_invitations").select("id, status").eq("company_id", companyId).limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_transactions").select("id, amount, type").eq("company_id", companyId).limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_contacts").select("id").eq("company_id", companyId).limit(QUERY_LIMIT_LARGE),
       ]);
 
       return {

@@ -8,6 +8,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -22,9 +23,9 @@ const FinancialReports = memo(function FinancialReports() {
         { data: transactions },
         { data: sponsors },
       ] = await Promise.all([
-        supabase.from("company_orders").select("total_amount, status, created_at, category").limit(5000),
-        supabase.from("company_transactions").select("amount, type, created_at").limit(5000),
-        supabase.from("competition_sponsors").select("amount_paid, tier, status").limit(5000),
+        supabase.from("company_orders").select("total_amount, status, created_at, category").limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_transactions").select("amount, type, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_sponsors").select("amount_paid, tier, status").limit(QUERY_LIMIT_LARGE),
       ]);
 
       // Total order revenue

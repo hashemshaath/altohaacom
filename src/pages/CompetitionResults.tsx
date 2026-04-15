@@ -16,6 +16,7 @@ import { SocialShareButtons } from "@/components/competitions/SocialShareButtons
 import { SEOHead } from "@/components/SEOHead";
 import { ResultReveal } from "@/components/ui/result-reveal";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface Winner {
   rank: number;
@@ -87,7 +88,7 @@ export default function CompetitionResults() {
       const { data: profiles } = await supabase.from("profiles").select("user_id, full_name, avatar_url, username").in("user_id", participantIds);
       const categoryIds = registrations.map((r) => r.category_id).filter(Boolean) as string[];
       const { data: cats } = categoryIds.length > 0
-        ? await supabase.from("competition_categories").select("id, name, name_ar").in("id", categoryIds).limit(5000)
+        ? await supabase.from("competition_categories").select("id, name, name_ar").in("id", categoryIds).limit(QUERY_LIMIT_LARGE)
         : { data: [] };
       const catMap = new Map((cats || []).map((c) => [c.id, c]));
 

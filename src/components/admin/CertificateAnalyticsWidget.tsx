@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { PieChart, Pie, Cell } from "recharts";
 import { Award, FileText, CheckCircle, PenTool, Send, ShieldCheck } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -21,9 +22,9 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
     queryKey: ["admin-certificate-analytics-widget"],
     queryFn: async () => {
       const [certificates, templates, verifications] = await Promise.all([
-        supabase.from("certificates").select("id, status, type, issued_at, sent_at, downloaded_count, created_at").limit(5000),
-        supabase.from("certificate_templates").select("id, name, type, is_active").limit(500),
-        supabase.from("certificate_verifications").select("id, verified_at").limit(5000),
+        supabase.from("certificates").select("id, status, type, issued_at, sent_at, downloaded_count, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("certificate_templates").select("id, name, type, is_active").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("certificate_verifications").select("id, verified_at").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const allCerts = certificates.data || [];
@@ -58,7 +59,7 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
         typeDist,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

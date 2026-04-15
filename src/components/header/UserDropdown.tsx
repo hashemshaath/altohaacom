@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+import { STALE_TIME_DEFAULT } from "@/lib/constants";
   User, LogOut, MessageSquare, Settings,
   HelpCircle, Shield, LayoutDashboard, Crown, ChevronDown,
 } from "lucide-react";
@@ -46,7 +47,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
       return data;
     },
     enabled: !!user,
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const displayName = getDisplayName(profile, isAr, user?.email?.split("@")[0] || "");

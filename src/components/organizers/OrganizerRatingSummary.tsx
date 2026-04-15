@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Star, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
+import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface Props {
   exhibitionIds: string[];
@@ -44,7 +45,7 @@ export const OrganizerRatingSummary = memo(function OrganizerRatingSummary({ exh
       };
     },
     enabled: exhibitionIds.length > 0,
-    staleTime: 300000,
+    staleTime: STALE_TIME_SHORT0,
   });
 
   if (!data) return null;

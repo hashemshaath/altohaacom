@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useToast } from "@/hooks/use-toast";
 import {
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
   Zap, Plus, Bell, Mail, Megaphone, Clock, Pencil, Trash2,
   Play, Pause, BarChart3, Shield, Users, Trophy, FileText,
   ShoppingCart, Calendar, UserPlus, AlertCircle,
@@ -100,7 +101,7 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
         .from("notification_rule_logs")
         .select("rule_id")
         .order("triggered_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data || [];
     },

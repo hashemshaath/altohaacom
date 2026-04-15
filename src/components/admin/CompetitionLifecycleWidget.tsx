@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Users, Gavel, Medal, Calendar, MapPin, TrendingUp, AlertTriangle } from "lucide-react";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, STALE_TIME_SHORT } from "@/lib/constants";
 
 export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidget() {
   const { language } = useLanguage();
@@ -26,8 +26,8 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
         supabase.from("competitions").select("id, title, title_ar, status, competition_start, competition_end, max_participants, country_code, city").limit(200),
         supabase.from("competition_registrations").select("competition_id, status").limit(1000),
         supabase.from("competition_scores").select("registration_id, judge_id").limit(1000),
-        supabase.from("competition_roles").select("competition_id, role, status").eq("role", "judge").eq("status", "active").limit(500),
-        supabase.from("competition_rounds").select("competition_id, status").limit(500),
+        supabase.from("competition_roles").select("competition_id, role, status").eq("role", "judge").eq("status", "active").limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("competition_rounds").select("competition_id, status").limit(QUERY_LIMIT_MEDIUM),
       ]);
 
       // Status distribution
@@ -100,7 +100,7 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
         totalRounds: rounds?.length || 0,
       };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   if (!data) return null;

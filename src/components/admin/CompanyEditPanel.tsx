@@ -19,6 +19,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import {
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
   Building2, Save, X, Edit, Sparkles, Upload, Image, CheckCircle,
   Globe, Mail, Phone, MapPin, FileText, CreditCard, Shield, Send,
   Star, ExternalLink, Navigation,
@@ -74,7 +75,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
   const { data: mediaItems = [] } = useQuery({
     queryKey: ["company-media-logos", companyId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, category, file_type, created_at").limit(5000)
+      const { data, error } = await supabase.from("company_media").select("id, company_id, file_url, filename, category, file_type, created_at").limit(QUERY_LIMIT_LARGE)
         .eq("company_id", companyId).in("category", ["logo", "product_images"]).order("created_at", { ascending: false });
       if (error) throw error;
       return data || [];

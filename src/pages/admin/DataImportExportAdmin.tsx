@@ -25,6 +25,7 @@ import {
   Filter, BookmarkPlus, Layers, Package,
 } from "lucide-react";
 import { format as fmtDate } from "date-fns";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 /* ─── Export Module Configs ─── */
 interface ExportModule {
@@ -242,7 +243,7 @@ const ExportTab = memo(function ExportTab() {
     setExporting(true);
     try {
       const cols = Array.from(selectedColumns).join(", ");
-      const { data, error } = await supabase.from(currentModule.table as any).select(cols).limit(5000);
+      const { data, error } = await supabase.from(currentModule.table as any).select(cols).limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       if (!data?.length) {
         toast({ title: t("No data found", "لا توجد بيانات") });

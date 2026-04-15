@@ -9,6 +9,7 @@ import { format, subDays, startOfDay } from "date-fns";
 import { getDeviceType } from "@/lib/deviceType";
 import { useSearchParams } from "react-router-dom";
 import { PUBLIC_ROUTES, DEFAULT_ROBOTS_TXT, NAV_GROUPS, type SectionKey, resolveSectionParam } from "./seoDashboardTypes";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export function useSEODashboardData(isAr: boolean) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -74,7 +75,7 @@ export function useSEODashboardData(isAr: boolean) {
   const { data: crawlerVisits, error: crawlerVisitsError } = useQuery({
     queryKey: ["seo-crawler-visits", range],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_crawler_visits").select("path, crawler_name, crawler_type, created_at").gte("created_at", fromDate).order("created_at", { ascending: false }).limit(500);
+      const { data, error } = await supabase.from("seo_crawler_visits").select("path, crawler_name, crawler_type, created_at").gte("created_at", fromDate).order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data || [];
     },
@@ -83,7 +84,7 @@ export function useSEODashboardData(isAr: boolean) {
   const { data: trackedKeywords, refetch: refetchKeywords, error: trackedKeywordsError } = useQuery({
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_tracked_keywords").select("*").order("created_at", { ascending: false }).limit(5000);
+      const { data, error } = await supabase.from("seo_tracked_keywords").select("*").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       return data || [];
     },
@@ -92,7 +93,7 @@ export function useSEODashboardData(isAr: boolean) {
   const { data: indexingStatus, refetch: refetchIndexing, error: indexingStatusError } = useQuery({
     queryKey: ["seo-indexing-status"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("seo_indexing_status").select("*").order("updated_at", { ascending: false }).limit(5000);
+      const { data, error } = await supabase.from("seo_indexing_status").select("*").order("updated_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       return data || [];
     },

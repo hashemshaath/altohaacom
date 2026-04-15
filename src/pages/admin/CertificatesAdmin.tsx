@@ -43,6 +43,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 type CertificateType = "participation" | "winner_gold" | "winner_silver" | "winner_bronze" | "appreciation" | "organizer" | "judge" | "sponsor" | "volunteer";
 type CertificateStatus = "draft" | "pending_signature" | "signed" | "issued" | "revoked";
@@ -113,7 +114,7 @@ export default function CertificatesAdmin() {
   const { data: certificates = [], isLoading } = useQuery({
     queryKey: ["certificates", searchQuery, statusFilter, typeFilter],
     queryFn: async () => {
-      let query = supabase.from("certificates").select("id, certificate_number, verification_code, recipient_name, recipient_name_ar, recipient_email, recipient_id, type, status, event_name, event_name_ar, event_date, event_location, event_location_ar, achievement, achievement_ar, issued_at, signed_at, signed_by, sent_at, created_at, competition_id").order("created_at", { ascending: false }).limit(5000);
+      let query = supabase.from("certificates").select("id, certificate_number, verification_code, recipient_name, recipient_name_ar, recipient_email, recipient_id, type, status, event_name, event_name_ar, event_date, event_location, event_location_ar, achievement, achievement_ar, issued_at, signed_at, signed_by, sent_at, created_at, competition_id").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (searchQuery) query = query.or(`recipient_name.ilike.%${searchQuery}%,certificate_number.ilike.%${searchQuery}%,verification_code.ilike.%${searchQuery}%`);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as any);
       if (typeFilter !== "all") query = query.eq("type", typeFilter as any);
@@ -127,7 +128,7 @@ export default function CertificatesAdmin() {
   const { data: templates = [] } = useQuery({
     queryKey: ["certificate-templates"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").eq("is_active", true).order("name").limit(500);
+      const { data, error } = await supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },

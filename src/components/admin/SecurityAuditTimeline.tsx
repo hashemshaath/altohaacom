@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ShieldAlert, ShieldCheck, Shield, Lock, LogIn, LogOut, UserX, KeyRound, AlertTriangle } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const SEVERITY_CONFIG = {
   critical: { color: "text-destructive", bg: "bg-destructive/10", icon: AlertTriangle },
@@ -51,7 +52,7 @@ export const SecurityAuditTimeline = memo(function SecurityAuditTimeline() {
       if (error) throw error;
       return data || [];
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
   });
 
   const stats = useMemo(() => ({

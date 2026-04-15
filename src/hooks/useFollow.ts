@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export function useFollowStats(userId: string | undefined) {
   return useQuery({
@@ -214,7 +214,7 @@ export function useFollowRecommendations() {
 
       // Get current user's following list + their own profile
       const [followingRes, profileRes] = await Promise.all([
-        supabase.from("user_follows").select("following_id").eq("follower_id", user.id).limit(5000),
+        supabase.from("user_follows").select("following_id").eq("follower_id", user.id).limit(QUERY_LIMIT_LARGE),
         supabase.from("profiles").select("specialization, country_code").eq("user_id", user.id).single(),
       ]);
 

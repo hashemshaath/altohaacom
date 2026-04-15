@@ -7,12 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { MessageSquare, Ticket, Bell, TrendingUp, Users, Clock } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { REFETCH_INTERVAL_DEFAULT, STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const visibleInterval = useVisibleRefetchInterval(60000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
   const { data } = useQuery({
     queryKey: ["messaging-admin-overview"],
@@ -68,7 +69,7 @@ export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
         messagesToday: messagesToday || 0,
       };
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
     refetchInterval: visibleInterval,
   });
 

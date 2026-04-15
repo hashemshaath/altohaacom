@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { format } from "date-fns";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface Segment {
   id: string;
@@ -97,7 +98,7 @@ export function useNotificationsData() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("notification_templates").select("id, name, title, title_ar, body, body_ar, channels, variables, created_at")
-        .order("created_at", { ascending: false }).limit(5000);
+        .order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       return data || [];
     },

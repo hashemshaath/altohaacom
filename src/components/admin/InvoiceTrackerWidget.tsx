@@ -9,6 +9,7 @@ import { FileText, DollarSign, Clock, CheckCircle, AlertTriangle, Send, XCircle 
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "hsl(var(--muted-foreground))",
@@ -30,7 +31,7 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
         .from("invoices")
         .select("id, status, amount, currency, due_date, created_at")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
 
       const all = invoices || [];
@@ -62,7 +63,7 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
         currency: all[0]?.currency || "SAR",
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

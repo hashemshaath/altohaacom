@@ -7,6 +7,7 @@ import { Printer } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { getVerificationUrl } from "@/lib/qrCode";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface InvoiceItem {
   name: string;
@@ -73,7 +74,7 @@ const PrintableInvoice = memo(function PrintableInvoice({ invoice, company, show
       if (error) return null;
       return data;
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const cfg = settings || {} as Record<string, any>;

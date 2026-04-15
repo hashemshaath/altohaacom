@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Ticket, Users, CheckCircle2, TrendingUp, Clock, CreditCard } from "lucide-react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { CACHE } from "@/lib/queryConfig";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 interface Props {
   exhibitionId: string;
@@ -17,7 +18,7 @@ interface Props {
 export const ExhibitionTicketSummary = memo(function ExhibitionTicketSummary({ exhibitionId, maxAttendees, isAr }: Props) {
   const t = (en: string, ar: string) => isAr ? ar : en;
 
-  const visibleInterval = useVisibleRefetchInterval(60000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
   const { data } = useQuery({
     queryKey: ["exhibition-ticket-summary", exhibitionId],

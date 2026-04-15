@@ -75,6 +75,7 @@ import {
 } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface Lead {
   id: string;
@@ -159,7 +160,7 @@ export default function LeadManagement() {
   const { data: stats } = useQuery({
     queryKey: ["leadStats"],
     queryFn: async () => {
-      const { data: allLeads } = await supabase.from("leads").select("status, type").limit(5000);
+      const { data: allLeads } = await supabase.from("leads").select("status, type").limit(QUERY_LIMIT_LARGE);
       const total = allLeads?.length || 0;
       const newLeads = allLeads?.filter(l => l.status === "new").length || 0;
       const qualified = allLeads?.filter(l => l.status === "qualified").length || 0;

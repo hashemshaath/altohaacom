@@ -10,6 +10,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { Users, Trophy, Building2, Award, Globe } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 interface CountryStats {
   code: string;
@@ -42,10 +43,10 @@ export const CountryOverviewDashboard = memo(function CountryOverviewDashboard()
 
       // Parallel count queries
       const [usersRes, compsRes, companiesRes, certsRes] = await Promise.all([
-        supabase.from("profiles").select("country_code").in("country_code", codes).limit(5000),
-        supabase.from("competitions").select("country_code").in("country_code", codes).limit(5000),
-        supabase.from("companies").select("country_code").not("country_code", "is", null).in("country_code", codes).limit(5000),
-        supabase.from("certificates").select("id").limit(5000),
+        supabase.from("profiles").select("country_code").in("country_code", codes).limit(QUERY_LIMIT_LARGE),
+        supabase.from("competitions").select("country_code").in("country_code", codes).limit(QUERY_LIMIT_LARGE),
+        supabase.from("companies").select("country_code").not("country_code", "is", null).in("country_code", codes).limit(QUERY_LIMIT_LARGE),
+        supabase.from("certificates").select("id").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const countBy = (data: { country_code: string | null }[] | null, code: string) =>

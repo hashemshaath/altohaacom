@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Coins, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 export const WalletAdminOverview = memo(function WalletAdminOverview() {
@@ -20,9 +20,9 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
       const last7d = new Date(now.getTime() - MS_PER_WEEK).toISOString();
 
       const [walletsRes, txnRes, recentTxnRes, pointsRes] = await Promise.all([
-        supabase.from("user_wallets").select("balance, points_balance").limit(5000),
+        supabase.from("user_wallets").select("balance, points_balance").limit(QUERY_LIMIT_LARGE),
         supabase.from("wallet_transactions").select("id", { count: "exact", head: true }),
-        supabase.from("wallet_transactions").select("type, amount").gte("created_at", last7d).limit(5000),
+        supabase.from("wallet_transactions").select("type, amount").gte("created_at", last7d).limit(QUERY_LIMIT_LARGE),
         supabase.from("points_ledger").select("id", { count: "exact", head: true }).gte("created_at", last7d),
       ]);
 

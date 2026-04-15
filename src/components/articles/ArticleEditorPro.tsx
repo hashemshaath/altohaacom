@@ -21,6 +21,7 @@ import { ArticleSEOPanel } from "./ArticleSEOPanel";
 import { AITextOptimizer } from "@/components/admin/AITextOptimizer";
 import { cn } from "@/lib/utils";
 import {
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
   ArrowLeft, Save, Eye, Calendar, Star, Loader2, CheckCircle2, Globe,
   Sparkles, Link2, Tag, FolderOpen, Wand2, RotateCcw, Languages, Search,
 } from "lucide-react";
@@ -104,7 +105,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
   const { data: categories } = useQuery({
     queryKey: ["content-categories"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").order("name").limit(5000);
+      const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").order("name").limit(QUERY_LIMIT_LARGE);
       return data || [];
     },
   });
@@ -112,7 +113,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
   const { data: tags } = useQuery({
     queryKey: ["content-tags"],
     queryFn: async () => {
-      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name").limit(5000);
+      const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name").limit(QUERY_LIMIT_LARGE);
       return data || [];
     },
   });

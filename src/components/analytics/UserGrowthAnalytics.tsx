@@ -12,6 +12,7 @@ import { TrendForecastChart } from "./TrendForecastChart";
 import type { DataPoint } from "@/lib/trendPrediction";
 import { linearRegression } from "@/lib/trendPrediction";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
@@ -31,8 +32,8 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "active"),
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("account_status", "suspended"),
-        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(5000),
-        supabase.from("user_roles").select("role").limit(5000),
+        supabase.from("profiles").select("created_at").order("created_at", { ascending: true }).limit(QUERY_LIMIT_LARGE),
+        supabase.from("user_roles").select("role").limit(QUERY_LIMIT_LARGE),
       ]);
 
       // Signups by month

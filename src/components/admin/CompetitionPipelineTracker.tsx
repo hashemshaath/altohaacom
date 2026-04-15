@@ -10,6 +10,7 @@ import { Trophy, Users, Gavel, CheckCircle, Clock, TrendingUp } from "lucide-rea
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const CompetitionPipelineTracker = memo(function CompetitionPipelineTracker() {
   const { language } = useLanguage();
@@ -19,8 +20,8 @@ export const CompetitionPipelineTracker = memo(function CompetitionPipelineTrack
     queryKey: ["competition-pipeline"],
     queryFn: async () => {
       const [comps, regs] = await Promise.all([
-        supabase.from("competitions").select("id, status, title, title_ar, competition_start, max_participants").limit(5000),
-        supabase.from("competition_registrations").select("competition_id, status").limit(5000),
+        supabase.from("competitions").select("id, status, title, title_ar, competition_start, max_participants").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_registrations").select("competition_id, status").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const competitions = comps.data || [];

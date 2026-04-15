@@ -16,6 +16,7 @@ import UsersTab from "@/components/admin/roles/UsersTab";
 import OverridesTab from "@/components/admin/roles/OverridesTab";
 import ActivityTab from "@/components/admin/roles/ActivityTab";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function RoleManagement() {
   const { language } = useLanguage();
@@ -32,7 +33,7 @@ export default function RoleManagement() {
   const { data: roleStats = [] } = useQuery({
     queryKey: ["roleStats"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("user_roles").select("role").limit(5000);
+      const { data, error } = await supabase.from("user_roles").select("role").limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       const counts: Record<string, number> = {};
       data?.forEach((r) => { counts[r.role] = (counts[r.role] || 0) + 1; });

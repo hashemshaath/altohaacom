@@ -13,6 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Link as LinkIcon, Plus, X, Search, Calendar, MapPin, Building2, Unlink } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 interface OrganizerExhibitionsPanelProps {
   open: boolean;
@@ -69,7 +70,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
         .from("exhibitions")
         .select("id, title, title_ar, slug, start_date, city, country, status, cover_image_url")
         .order("start_date", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
     enabled: showAddPanel,

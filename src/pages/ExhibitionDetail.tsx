@@ -28,6 +28,7 @@ import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
 import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/ExhibitionMobileActionBar";
 import { ExhibitionInteractiveStats } from "@/components/exhibitions/detail/ExhibitionInteractiveStats";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 // Lazy-loaded components
 const ExhibitionOverviewTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionOverviewTab").then(m => ({ default: m.ExhibitionOverviewTab })));
@@ -266,7 +267,7 @@ export default function ExhibitionDetail() {
         supabase.from("exhibition_reviews").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_schedule_items").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id),
         supabase.from("exhibition_tickets").select("id", { count: "exact", head: true }).eq("exhibition_id", exhibition!.id).eq("status", "confirmed"),
-        supabase.from("exhibition_reviews").select("rating").eq("exhibition_id", exhibition!.id).limit(5000),
+        supabase.from("exhibition_reviews").select("rating").eq("exhibition_id", exhibition!.id).limit(QUERY_LIMIT_LARGE),
       ]);
       const ratings = reviewRatings.data || [];
       const avgRating = ratings.length > 0 ? ratings.reduce((s, r) => s + ((r as unknown as Record<string, number>).rating || 0), 0) / ratings.length : 0;

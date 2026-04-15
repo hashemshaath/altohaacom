@@ -11,6 +11,7 @@ import { Zap, Users, Target, Activity, CheckCircle2, Clock } from "lucide-react"
 import { subDays, format } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -18,7 +19,7 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  const visibleInterval = useVisibleRefetchInterval(60000);
+  const visibleInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin-marketing-overview-widget"],
@@ -27,9 +28,9 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
       const sevenDaysAgo = subDays(now, 7).toISOString();
 
       const [segments, runs, rules] = await Promise.all([
-        supabase.from("audience_segments").select("id, name, estimated_reach, is_active, last_used_at").limit(5000),
+        supabase.from("audience_segments").select("id, name, estimated_reach, is_active, last_used_at").limit(QUERY_LIMIT_LARGE),
         supabase.from("automation_runs").select("id, action, status, started_at, completed_at").order("started_at", { ascending: false }).limit(200),
-        supabase.from("notification_rules").select("id, is_active, channels, trigger_event").limit(5000),
+        supabase.from("notification_rules").select("id, is_active, channels, trigger_event").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const allSegments = segments.data || [];

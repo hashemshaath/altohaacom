@@ -30,6 +30,7 @@ import { format, subDays, isAfter } from "date-fns";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 interface AdminAction {
   id: string;
@@ -70,7 +71,7 @@ export default function AuditLog() {
         .from("admin_actions")
         .select("id, admin_id, action_type, target_user_id, details, created_at")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data as AdminAction[];
     },
@@ -83,7 +84,7 @@ export default function AuditLog() {
         .from("content_audit_log")
         .select("id, entity_type, entity_id, action_type, user_id, author_id, reason, reason_ar, content_snapshot, image_urls, metadata, created_at")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data as ContentAuditEntry[];
     },

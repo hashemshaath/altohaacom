@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, A
 import { format, subDays, differenceInMinutes } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget() {
   const { language } = useLanguage();
@@ -19,9 +20,9 @@ export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget()
     queryKey: ["communicationsLiveStats"],
     queryFn: async () => {
       const [commsRes, notifRes, templatesRes] = await Promise.all([
-        supabase.from("company_communications").select("id, direction, priority, created_at, status").order("created_at", { ascending: false }).limit(500),
-        supabase.from("notifications").select("id, type, is_read, channel, created_at").order("created_at", { ascending: false }).limit(500),
-        supabase.from("communication_templates").select("id, is_active").limit(5000),
+        supabase.from("company_communications").select("id, direction, priority, created_at, status").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("notifications").select("id, type, is_read, channel, created_at").order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
+        supabase.from("communication_templates").select("id, is_active").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const comms = commsRes.data || [];
@@ -73,7 +74,7 @@ export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget()
         channelData,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

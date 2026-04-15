@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { Activity, Trophy, Clock, Users, ArrowRight, Flame } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface LiveCompetition {
   id: string;
@@ -72,7 +73,7 @@ export const LiveCompetitionsWidget = memo(function LiveCompetitionsWidget() {
         user_registered: userRegs.includes(c.id),
       })) as LiveCompetition[];
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const getStatusBadge = (status: string) => {

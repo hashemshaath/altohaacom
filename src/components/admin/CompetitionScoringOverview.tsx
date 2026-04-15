@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Gavel, Trophy, Users, Target, Medal, Star, BarChart3 } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -21,7 +22,7 @@ export const CompetitionScoringOverview = memo(function CompetitionScoringOvervi
     queryFn: async () => {
       const [scoresRes, judgesRes, regsRes, compsRes] = await Promise.all([
         supabase.from("competition_scores").select("id, score, judge_id, registration_id").limit(1000),
-        supabase.from("competition_roles").select("id, user_id, competition_id, role, status").eq("role", "judge").eq("status", "active").limit(5000),
+        supabase.from("competition_roles").select("id, user_id, competition_id, role, status").eq("role", "judge").eq("status", "active").limit(QUERY_LIMIT_LARGE),
         supabase.from("competition_registrations").select("id, competition_id, status").limit(1000),
         supabase.from("competitions").select("id, title, title_ar, status").in("status", ["in_progress", "judging", "registration_closed", "completed"]).limit(50),
       ]);
@@ -76,7 +77,7 @@ export const CompetitionScoringOverview = memo(function CompetitionScoringOvervi
 
       return { totalScores, totalJudges, activeComps, avgScore, scoreRanges, compProgress };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 

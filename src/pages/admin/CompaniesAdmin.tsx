@@ -47,6 +47,7 @@ import { format } from "date-fns";
 
 import { CompanyDetailView } from "./companies/CompanyDetailView";
 import { type Company, type CompanyType, type CompanyStatus, COMPANY_TYPES, getTypeLabel, getStatusLabel } from "./companies/companiesAdminTypes";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export default function CompaniesAdmin() {
   const { language } = useLanguage();
@@ -77,7 +78,7 @@ export default function CompaniesAdmin() {
   const { data: companies = [], isLoading } = useQuery({
     queryKey: ["companies", searchQuery, typeFilter, statusFilter],
     queryFn: async () => {
-      let query = supabase.from("companies").select("id, name, name_ar, type, status, company_number, email, phone, city, country, country_code, operating_countries, logo_url, created_at, import_source, rating, neighborhood, google_maps_url, latitude, longitude").order("created_at", { ascending: false }).limit(5000);
+      let query = supabase.from("companies").select("id, name, name_ar, type, status, company_number, email, phone, city, country, country_code, operating_countries, logo_url, created_at, import_source, rating, neighborhood, google_maps_url, latitude, longitude").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       if (searchQuery) query = query.or(`name.ilike.%${searchQuery}%,name_ar.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       if (typeFilter !== "all") query = query.eq("type", typeFilter as CompanyType);
       if (statusFilter !== "all") query = query.eq("status", statusFilter as CompanyStatus);

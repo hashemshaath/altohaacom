@@ -7,6 +7,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export interface Country {
   id: string;
@@ -87,7 +88,7 @@ export function useCountriesData() {
   const { data: countries = [], isLoading } = useQuery({
     queryKey: ["admin-countries"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("countries").select("id, code, code_alpha3, name, name_ar, name_local, flag_emoji, continent, region, default_language, supported_languages, currency_code, currency_symbol, currency_name, currency_name_ar, timezone, date_format, phone_code, phone_format, is_active, is_featured, launch_date, sort_order, tax_rate, tax_name, tax_name_ar, requires_tax_number, data_residency_notes, features, support_email, support_phone, local_office_address, local_office_address_ar, metadata, created_at, updated_at").order("sort_order").order("name").limit(5000);
+      const { data, error } = await supabase.from("countries").select("id, code, code_alpha3, name, name_ar, name_local, flag_emoji, continent, region, default_language, supported_languages, currency_code, currency_symbol, currency_name, currency_name_ar, timezone, date_format, phone_code, phone_format, is_active, is_featured, launch_date, sort_order, tax_rate, tax_name, tax_name_ar, requires_tax_number, data_residency_notes, features, support_email, support_phone, local_office_address, local_office_address_ar, metadata, created_at, updated_at").order("sort_order").order("name").limit(QUERY_LIMIT_LARGE);
       if (error) throw error;
       return (data || []) as Country[];
     },

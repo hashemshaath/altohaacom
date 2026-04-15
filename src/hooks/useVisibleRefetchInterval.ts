@@ -3,10 +3,11 @@
  * Use this in useQuery options to save bandwidth when user isn't looking.
  *
  * Usage:
- *   const refetchInterval = useVisibleRefetchInterval(60000);
+ *   const refetchInterval = useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT);
  *   useQuery({ ..., refetchInterval });
  */
 import { useState, useEffect } from "react";
+import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 function usePageVisibility(): boolean {
   const [visible, setVisible] = useState(!document.hidden);

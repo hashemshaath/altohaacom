@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
 import { GrowthAreaChart, DonutChart, ComparisonBarChart, ActivityHeatmap } from "@/components/admin/AdminDashboardCharts";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
 const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
@@ -173,7 +174,7 @@ export default function AdminDashboard() {
       const fullEnd = ranges[ranges.length - 1].end;
       const tableData = await Promise.all(
         tables.map((table) =>
-          supabase.from(table).select("created_at", { count: "exact" }).gte("created_at", fullStart).lte("created_at", fullEnd).order("created_at", { ascending: true }).limit(500).then(({ data }) => data || [])
+          supabase.from(table).select("created_at", { count: "exact" }).gte("created_at", fullStart).lte("created_at", fullEnd).order("created_at", { ascending: true }).limit(QUERY_LIMIT_MEDIUM).then(({ data }) => data || [])
         )
       );
       return ranges.map((range) => {
@@ -192,9 +193,9 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const now = new Date().toISOString();
       const [{ data: exh }, { data: comp }] = await Promise.all([
-        supabase.from("exhibitions").select("id, title, title_ar, start_date, end_date, city, country, status, slug, edition_year").limit(5000)
+        supabase.from("exhibitions").select("id, title, title_ar, start_date, end_date, city, country, status, slug, edition_year").limit(QUERY_LIMIT_LARGE)
           .gte("start_date", now).in("status", ["upcoming", "active"]).order("start_date").limit(6),
-        supabase.from("competitions").select("id, title, title_ar, competition_start, competition_end, city, country, status, edition_year").limit(5000)
+        supabase.from("competitions").select("id, title, title_ar, competition_start, competition_end, city, country, status, edition_year").limit(QUERY_LIMIT_LARGE)
           .gte("competition_start", now).in("status", ["upcoming", "registration_open", "in_progress"]).order("competition_start").limit(6),
       ]);
       return [
@@ -211,9 +212,9 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const since = subDays(new Date(), 28).toISOString();
       const { data: posts } = await supabase
-        .from("posts").select("created_at").gte("created_at", since).limit(500);
+        .from("posts").select("created_at").gte("created_at", since).limit(QUERY_LIMIT_MEDIUM);
       const { data: users } = await supabase
-        .from("profiles").select("created_at").gte("created_at", since).limit(500);
+        .from("profiles").select("created_at").gte("created_at", since).limit(QUERY_LIMIT_MEDIUM);
       const all = [...(posts || []), ...(users || [])];
       const grid: { day: number; hour: number; value: number }[] = [];
       for (let d = 0; d < 7; d++) {

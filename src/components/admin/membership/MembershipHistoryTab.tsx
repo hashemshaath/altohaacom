@@ -20,6 +20,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
 } from "recharts";
 
@@ -52,7 +53,7 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
         .from("membership_history")
         .select("id, user_id, previous_tier, new_tier, reason, changed_by, created_at")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
 
       // Fetch profiles for all user_ids

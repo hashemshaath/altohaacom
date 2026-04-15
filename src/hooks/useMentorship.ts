@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export interface MentorshipProgram {
   id: string;
@@ -546,11 +547,11 @@ export function useMentorshipAnalytics() {
     queryKey: ["mentorshipAnalytics"],
     queryFn: async () => {
       const [programs, matches, applications, sessions, enrollments] = await Promise.all([
-        supabase.from("mentorship_programs").select("id, status, created_at").limit(5000),
-        supabase.from("mentorship_matches").select("id, status, matched_at, completed_at").limit(5000),
-        supabase.from("mentor_applications").select("id, status, created_at").limit(5000),
-        supabase.from("mentorship_sessions").select("id, status, mentor_rating, mentee_rating").limit(5000),
-        supabase.from("mentee_enrollments").select("id, status, created_at").limit(5000),
+        supabase.from("mentorship_programs").select("id, status, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("mentorship_matches").select("id, status, matched_at, completed_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("mentor_applications").select("id, status, created_at").limit(QUERY_LIMIT_LARGE),
+        supabase.from("mentorship_sessions").select("id, status, mentor_rating, mentee_rating").limit(QUERY_LIMIT_LARGE),
+        supabase.from("mentee_enrollments").select("id, status, created_at").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const matchesData = matches.data || [];

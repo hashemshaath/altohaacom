@@ -19,6 +19,7 @@ import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
 import { EntityLeadershipPanel } from "@/components/entities/EntityLeadershipPanel";
 import { Image, Languages, Loader2, MapPin, Search, Upload, X } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];
@@ -126,7 +127,7 @@ const EntityFormTabs = memo(function EntityFormTabs({ form, editingId, selectedM
   const { data: managers } = useQuery({
     queryKey: ["admin-users-for-manager"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("id, full_name").order("full_name").limit(500);
+      const { data, error } = await supabase.from("profiles").select("id, full_name").order("full_name").limit(QUERY_LIMIT_MEDIUM);
       if (error) throw error;
       return data;
     },

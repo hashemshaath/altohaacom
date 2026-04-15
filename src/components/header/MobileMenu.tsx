@@ -16,6 +16,7 @@ import {
   Settings, Crown,
 } from "lucide-react";
 import { useState, useCallback, memo, forwardRef, useEffect } from "react";
+import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface NavLink {
   to: string;
@@ -110,7 +111,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
       return data;
     },
     enabled: !!user,
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const displayName = getDisplayName(profile, isAr, user?.email?.split("@")[0] || "");

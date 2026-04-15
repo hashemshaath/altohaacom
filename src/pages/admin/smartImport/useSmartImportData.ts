@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_LARGE } from "@/lib/constants";
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import {
   type SearchResultItem, type ExistingRecord, type Step,
@@ -213,12 +213,12 @@ export function useSmartImportData(isAr: boolean) {
       const titleOrStr = [...new Set(titleOrConditions)].join(",");
 
       const [entRes, compRes, estRes, exhRes, compResComp, orgRes] = await Promise.all([
-        orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
-        orStr ? supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
-        orStr ? supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("culinary_entities").select("id, name, name_ar, entity_number, type, city, phone, email, website").or(orStr).limit(QUERY_LIMIT_LARGE) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("companies").select("id, name, name_ar, company_number, type, city, phone, email, website").or(orStr).limit(QUERY_LIMIT_LARGE) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("establishments").select("id, name, name_ar, type, city, phone, email, website").or(orStr).limit(QUERY_LIMIT_LARGE) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as never as { from: (t: string) => { select: (s: string) => { or: (o: string) => Promise<{ data: Record<string, unknown>[] }> } } }).from("exhibitions").select("id, title, title_ar, type, city, organizer_email, website_url, slug").or(titleOrStr) : Promise.resolve({ data: [] }),
         titleOrStr ? (supabase as never as { from: (t: string) => { select: (s: string) => { or: (o: string) => Promise<{ data: Record<string, unknown>[] }> } } }).from("competitions").select("id, title, title_ar, city, country_code, status, competition_number").or(titleOrStr) : Promise.resolve({ data: [] }),
-        orStr ? supabase.from("organizers").select("id, name, name_ar, organizer_number, city, phone, email, website, status").or(orStr).limit(5000) : Promise.resolve({ data: [] }),
+        orStr ? supabase.from("organizers").select("id, name, name_ar, organizer_number, city, phone, email, website, status").or(orStr).limit(QUERY_LIMIT_LARGE) : Promise.resolve({ data: [] }),
       ]);
 
       const records: ExistingRecord[] = [];

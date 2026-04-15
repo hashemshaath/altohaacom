@@ -9,6 +9,7 @@ import {
   ArrowRight, Search, BookOpen, Loader2, Zap, Eye,
 } from "lucide-react";
 import {
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip,
   ResponsiveContainer, Cell, ScatterChart, Scatter, ZAxis,
 } from "recharts";
@@ -54,7 +55,7 @@ export const SEOKeywordGapAnalyzer = memo(function SEOKeywordGapAnalyzer({ isAr 
   const { data: keywords = [] } = useQuery({
     queryKey: ["seo-tracked-keywords"],
     queryFn: async () => {
-      const { data } = await supabase.from("seo_tracked_keywords").select("*").order("current_position", { ascending: true }).limit(5000);
+      const { data } = await supabase.from("seo_tracked_keywords").select("*").order("current_position", { ascending: true }).limit(QUERY_LIMIT_LARGE);
       return (data || []) as unknown as TrackedKeyword[];
     },
   });

@@ -8,6 +8,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Gavel, Users, CheckCircle, Clock, Trophy, Star } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
   const { language } = useLanguage();
@@ -17,10 +18,10 @@ export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
     queryKey: ["admin-judging-overview"],
     queryFn: async () => {
       const [judgesRes, regsRes, competitionsRes, roundsRes] = await Promise.all([
-        supabase.from("competition_roles").select("id, competition_id, user_id, role, status").eq("role", "judge").limit(5000),
-        supabase.from("competition_registrations").select("id, competition_id, status").limit(5000),
-        supabase.from("competitions").select("id, title, title_ar, status, max_participants").in("status", ["judging", "in_progress"]).limit(5000),
-        supabase.from("competition_rounds").select("id, competition_id, round_number, name, name_ar, status").limit(5000),
+        supabase.from("competition_roles").select("id, competition_id, user_id, role, status").eq("role", "judge").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_registrations").select("id, competition_id, status").limit(QUERY_LIMIT_LARGE),
+        supabase.from("competitions").select("id, title, title_ar, status, max_participants").in("status", ["judging", "in_progress"]).limit(QUERY_LIMIT_LARGE),
+        supabase.from("competition_rounds").select("id, competition_id, round_number, name, name_ar, status").limit(QUERY_LIMIT_LARGE),
       ]);
 
       const judges = judgesRes.data || [];

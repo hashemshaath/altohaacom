@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT, STALE_TIME_SHORT } from "@/lib/constants";
 
 export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
   const { language } = useLanguage();
@@ -27,7 +28,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         .from("abandoned_carts")
         .select("id, total_amount, recovery_status, created_at")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       const all = carts || [];
       const abandoned = all.filter(c => c.recovery_status === "abandoned");
       const recovered = all.filter(c => c.recovery_status === "recovered");
@@ -42,7 +43,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         recoveredValue,
       };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   // User behavior stats (top pages, engagement)
@@ -89,7 +90,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         deviceDistribution: Object.fromEntries(deviceCounts),
       };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   // Conversion events stats
@@ -100,7 +101,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         .from("conversion_events")
         .select("event_name, event_value, created_at")
         .order("created_at", { ascending: false })
-        .limit(500);
+        .limit(QUERY_LIMIT_MEDIUM);
       const events = data || [];
       const signups = events.filter(e => e.event_name === "sign_up").length;
       const purchases = events.filter(e => e.event_name === "purchase");
@@ -113,7 +114,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         topEvents: [...new Map<string, number>()].slice(0, 5),
       };
     },
-    staleTime: 30000,
+    staleTime: STALE_TIME_SHORT,
   });
 
   // Top interests
@@ -127,7 +128,7 @@ export const BehaviorAnalytics = memo(function BehaviorAnalytics() {
         .limit(10);
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: STALE_TIME_DEFAULT,
   });
 
   const categoryLabels: Record<string, { en: string; ar: string }> = {

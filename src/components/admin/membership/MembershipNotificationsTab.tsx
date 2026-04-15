@@ -23,7 +23,7 @@ import {
   Loader2, CheckCheck, Filter,
 } from "lucide-react";
 import { format } from "date-fns";
-import { MS_PER_DAY } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
   const { language } = useLanguage();
@@ -122,7 +122,7 @@ const MembershipNotificationsTab = memo(function MembershipNotificationsTab() {
     mutationFn: async () => {
       if (!broadcastTitle && !broadcastTitleAr) throw new Error("Title required");
 
-      let query = supabase.from("profiles").select("user_id").limit(5000);
+      let query = supabase.from("profiles").select("user_id").limit(QUERY_LIMIT_LARGE);
       if (broadcastTarget === "professional") query = query.eq("membership_tier", "professional");
       else if (broadcastTarget === "enterprise") query = query.eq("membership_tier", "enterprise");
       else if (broadcastTarget === "paid") query = query.in("membership_tier", ["professional", "enterprise"]);

@@ -11,6 +11,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Building2, DollarSign, FileText, TrendingUp, CreditCard, Receipt } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { QUERY_LIMIT_LARGE, REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -26,9 +27,9 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
 
       const [companies, invoices, transactions, orders] = await Promise.all([
         supabase.from("companies").select("id, status, type").limit(1000),
-        supabase.from("invoices").select("id, status, amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
-        supabase.from("company_transactions").select("id, type, amount, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
-        supabase.from("company_orders").select("id, status, total_amount, created_at").gte("created_at", thirtyDaysAgo).limit(5000),
+        supabase.from("invoices").select("id, status, amount, currency, created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_transactions").select("id, type, amount, created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
+        supabase.from("company_orders").select("id, status, total_amount, created_at").gte("created_at", thirtyDaysAgo).limit(QUERY_LIMIT_LARGE),
       ]);
 
       const allCompanies = companies.data || [];
@@ -82,7 +83,7 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
         dailyVolume,
       };
     },
-    refetchInterval: useVisibleRefetchInterval(60000),
+    refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
     staleTime: CACHE.short.staleTime,
   });
 
