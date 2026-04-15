@@ -366,7 +366,7 @@ export default function ProSupplierDetail() {
             <div className="flex flex-col gap-5 md:flex-row md:items-start">
               {/* Logo */}
               <div className="relative">
-                <div className="flex h-[88px] w-[88px] shrink-0 items-center justify-center rounded-[1.75rem] bg-white border-2 border-border/30 shadow-xl">
+                <div className="flex h-[88px] w-[88px] shrink-0 items-center justify-center rounded-[1.75rem] bg-background border-2 border-border/30 shadow-xl">
                   {company.logo_url ? (
                     <img loading="eager" src={company.logo_url} className="h-14 w-14 object-contain" alt={companyName} />
                   ) : (

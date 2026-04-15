@@ -175,7 +175,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
       {/* Drawer */}
       <div
         className={cn(
-          "fixed top-0 z-[100] h-[100dvh] bg-[var(--bg-white)] transition-transform duration-280",
+          "fixed top-0 z-[100] h-[100dvh] bg-[var(--bg-background)] transition-transform duration-280",
           isAr ? "right-0" : "left-0",
           open
             ? "translate-x-0"
@@ -294,7 +294,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
           </nav>
 
           {/* Bottom CTA — pinned */}
-          <div className="shrink-0 border-t border-[var(--color-border-light)] bg-[var(--bg-white)] p-4" style={{ paddingBottom: "calc(16px + env(safe-area-inset-bottom))" }}>
+          <div className="shrink-0 border-t border-[var(--color-border-light)] bg-[var(--bg-background)] p-4" style={{ paddingBottom: "calc(16px + env(safe-area-inset-bottom))" }}>
             {user ? (
               <button
                 onClick={() => { signOut(); closeMenu(); }}

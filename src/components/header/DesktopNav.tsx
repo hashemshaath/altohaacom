@@ -124,7 +124,7 @@ export const DesktopNav = forwardRef<HTMLElement, DesktopNavProps>(function Desk
           onMouseLeave={closeMega}
         >
           <div
-            className="w-[680px] rounded-b-[16px] border border-[var(--color-border-light)] border-t-0 bg-[var(--bg-white)] p-6"
+            className="w-[680px] rounded-b-[16px] border border-[var(--color-border-light)] border-t-0 bg-[var(--bg-background)] p-6"
             style={{
               boxShadow: "0 8px 32px rgba(0,0,0,0.10)",
             }}

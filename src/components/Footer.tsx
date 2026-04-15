@@ -172,7 +172,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                 onChange={(e) => setNlEmail(e.target.value)}
                 placeholder={l("your@email.com", "بريدك الإلكتروني")}
                 required
-                className="flex-1 h-10 rounded-xl border-border bg-white dark:bg-background text-sm"
+                className="flex-1 h-10 rounded-xl border-border bg-background dark:bg-background text-sm"
               />
               <Button type="submit" disabled={nlLoading} size="sm" className="h-10 px-5 rounded-xl gap-1.5 shrink-0">
                 <Send className="h-3.5 w-3.5" />

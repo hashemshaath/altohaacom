@@ -74,7 +74,7 @@ export const VisibilityTab = memo(function VisibilityTab({
                     <span className="text-xs font-medium select-none">{section.label}</span>
                   </div>
                   <div className={`relative h-7 w-12 rounded-full transition-colors duration-200 ${isOn ? "bg-primary" : "bg-muted-foreground/20"}`}>
-                    <div className={`absolute top-0.5 h-6 w-6 rounded-full bg-white shadow-md transition-transform duration-200 ${isOn ? "translate-x-5 rtl:-translate-x-5" : "translate-x-0.5 rtl:-translate-x-0.5"}`} />
+                    <div className={`absolute top-0.5 h-6 w-6 rounded-full bg-background shadow-md transition-transform duration-200 ${isOn ? "translate-x-5 rtl:-translate-x-5" : "translate-x-0.5 rtl:-translate-x-0.5"}`} />
                   </div>
                 </button>
               );
