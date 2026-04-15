@@ -1,4 +1,3 @@
-import { X_AXIS_PROPS } from "@/lib/chartConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
