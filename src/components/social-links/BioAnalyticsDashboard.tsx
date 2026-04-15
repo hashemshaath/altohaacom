@@ -33,7 +33,7 @@ const CHART_COLORS = [
 
 type Period = "7d" | "14d" | "30d";
 
-function TrendBadge({ value }: { value: number;: boolean }) {
+function TrendBadge({ value }: { value: number }) {
   const isAr = useIsAr();
   if (value === 0) return <Badge variant="secondary" className="text-[12px] gap-0.5"><Minus className="h-2.5 w-2.5" />0%</Badge>;
   const positive = value > 0;

@@ -141,7 +141,7 @@ function getCompletionInfo(settings: Record<string, any>) {
   return { configured, total: categories.length, percent: Math.round((configured / categories.length) * 100) };
 }
 
-function QuickStatsCards({ settings, completion }: { settings: Record<string, any>; completion: { percent: number };: boolean }) {
+function QuickStatsCards({ settings, completion }: { settings: Record<string, any>; completion: { percent: number } }) {
   const isAr = useIsAr();
   const { getStyle } = useStaggeredReveal(4, 80);
   const items = [
