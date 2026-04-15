@@ -1,3 +1,4 @@
+import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -37,6 +38,7 @@ interface Report {
 
 export default function ContentModeration() {
   const { t, language } = useLanguage();
+  const isAr = useIsAr();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();

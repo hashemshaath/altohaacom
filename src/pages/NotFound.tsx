@@ -95,6 +95,7 @@ function getSuggestedLinks(pathname: string) {
 }
 
 const NotFound = () => {
+  const isAr = useIsAr();
   const location = useLocation();
   const navigate = useNavigate();
 
