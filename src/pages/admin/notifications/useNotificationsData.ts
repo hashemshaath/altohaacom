@@ -302,10 +302,10 @@ export function useNotificationsData() {
     filename: "notifications",
   });
 
-  const refreshQueue = () => {
+  const refreshQueue = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["notification-queue-items"] });
     queryClient.invalidateQueries({ queryKey: ["notification-queue-stats"] });
-  };
+  }, [queryClient]);
 
   return {
     isAr,
