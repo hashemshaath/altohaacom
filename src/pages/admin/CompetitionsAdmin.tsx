@@ -174,7 +174,7 @@ export default function CompetitionsAdmin() {
 
       return (data || []).map(c => {
         const exh = c.exhibition as any;
-        let derivedOrganizer: Record<string, unknown> | null = null;
+        let derivedOrganizer: Record<string, any> | null = null;
         if (exh?.organizer_entity_id && entityMap[exh.organizer_entity_id]) {
           const ent = entityMap[exh.organizer_entity_id];
           derivedOrganizer = { name: ent.name, name_ar: ent.name_ar, logo_url: ent.logo_url, type: "entity" };
