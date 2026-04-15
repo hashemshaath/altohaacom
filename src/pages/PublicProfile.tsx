@@ -48,6 +48,7 @@ import { CAREER_SECTIONS, categorizeCareerRecords } from "@/components/public-pr
 export default function PublicProfile() {
   const { username } = useParams<{ username: string }>();
   const { t, language } = useLanguage();
+  const isAr = language === "ar";
   const { user } = useAuth();
   const { data: allCountries = [] } = useAllCountries();
   const [followListOpen, setFollowListOpen] = useState<"followers" | "following" | null>(null);
