@@ -18,7 +18,7 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
     queryKey: ["community-upcoming-events"],
     queryFn: async () => {
       const now = new Date().toISOString();
-      const { data } = await (supabase as any)
+      const { data } = await supabase
         .from("exhibitions")
         .select("id, title, title_ar, slug, start_date, end_date, city, country, cover_image_url, status")
         .eq("status", "active")

@@ -97,13 +97,13 @@ export function useGlobalEventsCalendar(filters?: {
         .select("id, title, title_ar, start_date, end_date, country, city, venue, venue_ar, status, slug, cover_image_url, logo_url, organizer_name, organizer_name_ar");
       if (filters?.country) exhQuery = exhQuery.eq("country", filters.country);
 
-      const chefQuery = (supabase as any)
+      const chefQuery = supabase
         .from("chef_schedule_events")
         .select("id, event_type, title, title_ar, start_date, end_date, all_day, city, country_code, venue, venue_ar, status, participation_type, channel_name, program_name, broadcast_type, is_recurring")
         .eq("visibility", "public")
         .neq("status", "cancelled");
 
-      const globalQuery = (supabase as any)
+      const globalQuery = supabase
         .from("global_events")
         .select("id, title, title_ar, type, start_date, end_date, all_day, city, country_code, venue, venue_ar, status, is_international, is_recurring, link, image_url, organizer, organizer_ar")
         .eq("status", "active");

@@ -44,7 +44,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
   const { data: venues, isLoading } = useQuery({
     queryKey: ["venue-search", search],
     queryFn: async () => {
-      let query = (supabase as any)
+      let query = supabase
         .from("exhibition_venues")
         .select("id, name, name_ar, city, city_ar, country, address, address_ar, capacity, logo_url, cover_image_url, map_url, phone, email, website, is_verified")
         .eq("is_active", true).order("name").limit(20);
@@ -210,7 +210,7 @@ function InlineCreateVenueForm({ isAr, initialSearch, onCreated, onCancel }: {
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from("exhibition_venues")
         .insert({ ...form, capacity: form.capacity ? parseInt(form.capacity) : null })
         .select("*").single();
