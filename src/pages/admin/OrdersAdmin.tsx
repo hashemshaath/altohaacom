@@ -1,3 +1,4 @@
+import { defaultOrderForm } from "./orders/ordersAdminTypes";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
