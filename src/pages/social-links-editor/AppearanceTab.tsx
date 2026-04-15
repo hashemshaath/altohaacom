@@ -37,7 +37,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
               <button key={t.id} onClick={() => updateForm({ theme: t.id })}
                 className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 transition-all duration-200 ${form.theme === t.id ? "border-primary ring-2 ring-primary/15 shadow-sm" : "border-transparent hover:border-border"}`}>
                 <div className={`w-full h-10 rounded-xl ${t.preview} shadow-inner`} />
-                <span className="text-[12px] font-medium">{isAr ? t.labelAr : t.label}</span>
+                <span className="text-xs font-medium">{isAr ? t.labelAr : t.label}</span>
               </button>
             ))}
           </div>
@@ -53,10 +53,10 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
             </div>
             {isAr ? "جدولة مظهر الصفحة" : "Scheduled Themes"}
             {(extra.scheduled_themes?.length || 0) > 0 && (
-              <Badge variant="secondary" className="text-[12px] ms-auto">{extra.scheduled_themes.length}</Badge>
+              <Badge variant="secondary" className="text-xs ms-auto">{extra.scheduled_themes.length}</Badge>
             )}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">{isAr ? "تغيير الثيم تلقائياً حسب التاريخ أو المناسبة" : "Auto-switch theme based on date or occasion"}</p>
+          <p className="text-xs text-muted-foreground">{isAr ? "تغيير الثيم تلقائياً حسب التاريخ أو المناسبة" : "Auto-switch theme based on date or occasion"}</p>
         </CardHeader>
         <CardContent className="space-y-3 pt-3">
           {(extra.scheduled_themes || []).map((sched, idx) => {
@@ -65,7 +65,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
             const isPast = new Date(sched.end_date) < now;
             return (
               <div key={sched.id} className={`relative rounded-xl border p-3 space-y-2 transition-all ${isActive ? "border-primary/40 bg-primary/5" : isPast ? "border-border/30 opacity-60" : "border-border/50"}`}>
-                {isActive && <Badge className="absolute -top-2 end-2 text-[12px] px-1.5 py-0">{isAr ? "نشط الآن" : "Active"}</Badge>}
+                {isActive && <Badge className="absolute -top-2 end-2 text-xs px-1.5 py-0">{isAr ? "نشط الآن" : "Active"}</Badge>}
                 <div className="flex items-center gap-2">
                   <div className={`w-5 h-5 rounded-md shadow-inner ${THEMES.find(t => t.id === sched.theme_id)?.preview || "bg-muted"}`} />
                   <Input value={isAr ? sched.label_ar : sched.label} onChange={e => {
@@ -97,7 +97,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
                 </Select>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <Label className="text-[12px] mb-0.5 block">{isAr ? "من" : "Start"}</Label>
+                    <Label className="text-xs mb-0.5 block">{isAr ? "من" : "Start"}</Label>
                     <Input type="date" value={sched.start_date} onChange={e => {
                       const updated = [...extra.scheduled_themes];
                       updated[idx] = { ...updated[idx], start_date: e.target.value };
@@ -105,7 +105,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
                     }} className="h-7 text-xs" dir="ltr" />
                   </div>
                   <div>
-                    <Label className="text-[12px] mb-0.5 block">{isAr ? "إلى" : "End"}</Label>
+                    <Label className="text-xs mb-0.5 block">{isAr ? "إلى" : "End"}</Label>
                     <Input type="date" value={sched.end_date} onChange={e => {
                       const updated = [...extra.scheduled_themes];
                       updated[idx] = { ...updated[idx], end_date: e.target.value };
@@ -143,7 +143,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
         </CardHeader>
         <CardContent className="space-y-4 pt-3">
           <div>
-            <Label className="text-[12px] mb-2 block font-medium">{isAr ? "نوع الخط" : "Font Family"}</Label>
+            <Label className="text-xs mb-2 block font-medium">{isAr ? "نوع الخط" : "Font Family"}</Label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               {FONT_FAMILIES.map(f => (
                 <button key={f.id} onClick={() => updateForm({ font_family: f.id })}
@@ -156,7 +156,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
           </div>
           <Separator />
           <div>
-            <Label className="text-[12px] mb-2 block font-medium">{isAr ? "حجم الخط" : "Font Size"}</Label>
+            <Label className="text-xs mb-2 block font-medium">{isAr ? "حجم الخط" : "Font Size"}</Label>
             <div className="grid grid-cols-4 gap-1.5">
               {FONT_SIZES.map(s => (
                 <button key={s.id} onClick={() => updateExtra({ font_size: s.id })}
@@ -181,7 +181,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
         </CardHeader>
         <CardContent className="space-y-4 pt-3">
           <div>
-            <Label className="text-[12px] mb-2 block font-medium">{isAr ? "محاذاة النص" : "Text Alignment"}</Label>
+            <Label className="text-xs mb-2 block font-medium">{isAr ? "محاذاة النص" : "Text Alignment"}</Label>
             <div className="grid grid-cols-3 gap-1.5">
               {([
                 { id: "start" as const, label: isAr ? "بداية" : "Start", icon: AlignLeft },
@@ -197,7 +197,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
           </div>
           <Separator />
           <div>
-            <Label className="text-[12px] mb-2 block font-medium">{isAr ? "اتجاه النص" : "Text Direction"}</Label>
+            <Label className="text-xs mb-2 block font-medium">{isAr ? "اتجاه النص" : "Text Direction"}</Label>
             <div className="grid grid-cols-3 gap-1.5">
               {([
                 { id: "auto" as const, label: isAr ? "تلقائي" : "Auto", icon: ArrowLeftRight },
@@ -213,7 +213,7 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
           </div>
           <Separator />
           <div>
-            <Label className="text-[12px] mb-2 block font-medium">{isAr ? "تخطيط الروابط" : "Link Layout"}</Label>
+            <Label className="text-xs mb-2 block font-medium">{isAr ? "تخطيط الروابط" : "Link Layout"}</Label>
             <div className="grid grid-cols-2 gap-1.5">
               {([
                 { id: "list" as const, label: isAr ? "قائمة" : "List", icon: LayoutList },
@@ -250,14 +250,14 @@ export const AppearanceTab = memo(function AppearanceTab({ form, updateForm, ext
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label className="text-[12px] mb-1.5 block font-medium">{isAr ? "لون الأزرار" : "Button Color"}</Label>
+              <Label className="text-xs mb-1.5 block font-medium">{isAr ? "لون الأزرار" : "Button Color"}</Label>
               <div className="flex gap-2 items-center">
                 <input type="color" value={form.button_color} onChange={e => updateForm({ button_color: e.target.value })} className="h-9 w-12 rounded-xl cursor-pointer border border-border/30" />
                 <Input value={form.button_color} onChange={e => updateForm({ button_color: e.target.value })} className="text-xs font-mono h-9" dir="ltr" />
               </div>
             </div>
             <div>
-              <Label className="text-[12px] mb-1.5 block font-medium">{isAr ? "لون النص" : "Text Color"}</Label>
+              <Label className="text-xs mb-1.5 block font-medium">{isAr ? "لون النص" : "Text Color"}</Label>
               <div className="flex gap-2 items-center">
                 <input type="color" value={form.text_color} onChange={e => updateForm({ text_color: e.target.value })} className="h-9 w-12 rounded-xl cursor-pointer border border-border/30" />
                 <Input value={form.text_color} onChange={e => updateForm({ text_color: e.target.value })} className="text-xs font-mono h-9" dir="ltr" />

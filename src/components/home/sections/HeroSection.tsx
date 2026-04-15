@@ -124,7 +124,7 @@ function FallbackHero() {
                   ].map((s) => (
                     <div key={s.l} className="text-center">
                       <div className="h-6 w-12 mx-auto rounded bg-muted/50 animate-pulse mb-1" />
-                      <p className="text-[11px] text-muted-foreground">{s.l}</p>
+                      <p className="text-[0.6875rem] text-muted-foreground">{s.l}</p>
                     </div>
                   ))}
                 </div>
@@ -272,11 +272,11 @@ export function HeroSection() {
         {/* Content overlay */}
         <div className="container relative flex h-full items-end pb-12 sm:pb-16 lg:pb-20">
           <div key={slide.id} className="max-w-xl space-y-3" style={isFirstRender ? undefined : { animation: "heroFadeUp 0.8s cubic-bezier(0.16,1,0.3,1) forwards" }}>
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-1.5 text-xs font-bold uppercase tracking-widest text-white">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-1.5 text-xs font-bold uppercase tracking-widest text-primary-foreground">
               <Sparkles className="h-3 w-3" />
               {isAr ? "مميّز" : "Featured"}
             </span>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1] text-white drop-shadow-lg">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.1] text-primary-foreground drop-shadow-lg">
               {isAr ? slide.title_ar || slide.title : slide.title}
             </h1>
             {(slide.subtitle || slide.subtitle_ar) && (
@@ -301,10 +301,10 @@ export function HeroSection() {
               <span className="text-white/40">/</span>
               <span className="text-white/60">{String(slides.length).padStart(2, "0")}</span>
             </div>
-            <button onClick={prev} className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl text-white transition-all hover:bg-white/30 active:scale-95" aria-label="Previous">
+            <button onClick={prev} className="absolute start-3 sm:start-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl text-primary-foreground transition-all hover:bg-white/30 active:scale-95" aria-label="Previous">
               <ChevronLeft className="h-5 w-5 rtl:rotate-180" />
             </button>
-            <button onClick={next} className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl text-white transition-all hover:bg-white/30 active:scale-95" aria-label="Next">
+            <button onClick={next} className="absolute end-3 sm:end-5 top-1/2 -translate-y-1/2 hidden sm:flex h-11 w-11 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl text-primary-foreground transition-all hover:bg-white/30 active:scale-95" aria-label="Next">
               <ChevronRight className="h-5 w-5 rtl:rotate-180" />
             </button>
             <div className="absolute bottom-4 sm:bottom-6 start-1/2 -translate-x-1/2 flex items-center gap-2 rounded-full bg-black/30 backdrop-blur-xl px-3 py-2" role="tablist">

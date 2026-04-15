@@ -119,7 +119,7 @@ function getStatus(s: any, t: (en: string, ar: string) => string) {
 
 function DifficultyBadge({ difficulty }: { difficulty: string }) {
   const map: Record<string, string> = { beginner: "bg-chart-3/10 text-chart-3", intermediate: "bg-chart-4/10 text-chart-4", advanced: "bg-destructive/10 text-destructive" };
-  return <Badge className={`${map[difficulty] || map.intermediate} text-[12px]`}>{difficulty}</Badge>;
+  return <Badge className={`${map[difficulty] || map.intermediate} text-xs`}>{difficulty}</Badge>;
 }
 
 /* ---- Session Detail View ---- */
@@ -163,7 +163,7 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <Badge className={`${st.cls} text-[12px] gap-1 mb-2`}>{st.icon}{st.label}</Badge>
+              <Badge className={`${st.cls} text-xs gap-1 mb-2`}>{st.icon}{st.label}</Badge>
               <CardTitle className="text-lg">{isAr ? session.title_ar || session.title : session.title}</CardTitle>
               <p className="text-xs text-muted-foreground mt-1">
                 {format(new Date(session.scheduled_start), "MMM d, HH:mm")} — {format(new Date(session.scheduled_end), "HH:mm")}
@@ -177,7 +177,7 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
                 </Avatar>
                 <div className="text-end">
                   <p className="text-sm font-medium">{chef.full_name || chef.username}</p>
-                  <p className="text-[12px] text-muted-foreground">{t("Chef", "شيف")}</p>
+                  <p className="text-xs text-muted-foreground">{t("Chef", "شيف")}</p>
                 </div>
               </div>
             )}
@@ -190,7 +190,7 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
             <div>
               <p className="text-xs font-semibold mb-1.5 flex items-center gap-1"><Utensils className="h-3 w-3" /> {t("Ingredients", "المكونات")}</p>
               <div className="flex flex-wrap gap-1">
-                {session.ingredients.map((i: string) => <Badge key={i} variant="outline" className="text-[12px]">{i}</Badge>)}
+                {session.ingredients.map((i: string) => <Badge key={i} variant="outline" className="text-xs">{i}</Badge>)}
               </div>
             </div>
           )}
@@ -208,7 +208,7 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
                 disabled={!user || session.status !== "live"}
                 onClick={() => sendInteraction.mutate({ type: "reaction", emoji: r.emoji })}
               >
-                {r.emoji} {reactionCounts[r.emoji] ? <span className="text-[12px] text-muted-foreground">{reactionCounts[r.emoji]}</span> : null}
+                {r.emoji} {reactionCounts[r.emoji] ? <span className="text-xs text-muted-foreground">{reactionCounts[r.emoji]}</span> : null}
               </Button>
             ))}
           </div>
@@ -222,9 +222,9 @@ function SessionDetailView({ session, profiles, interactions, isAr, onBack }: {
                   <MessageCircle className="h-3 w-3 mt-0.5 text-primary shrink-0" />
                   <div className="flex-1">
                     <p>{q.content}</p>
-                    <p className="text-[12px] text-muted-foreground">{format(new Date(q.created_at), "HH:mm")}</p>
+                    <p className="text-xs text-muted-foreground">{format(new Date(q.created_at), "HH:mm")}</p>
                   </div>
-                  {q.is_pinned && <Badge variant="outline" className="text-[12px]">📌</Badge>}
+                  {q.is_pinned && <Badge variant="outline" className="text-xs">📌</Badge>}
                 </div>
               ))}
               {questions.length === 0 && <p className="text-xs text-muted-foreground text-center py-4">{t("No questions yet", "لا أسئلة بعد")}</p>}
@@ -265,11 +265,11 @@ function SessionCard({ session, profiles, isRegistered, isAr, onSelect, onRegist
     <Card className={`cursor-pointer transition-all hover:shadow-md ${session.status === "live" ? "border-destructive/50 ring-1 ring-destructive/20" : "border-border/40"}`} onClick={onSelect}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <Badge className={`${st.cls} text-[12px] gap-1`}>{st.icon}{st.label}</Badge>
+          <Badge className={`${st.cls} text-xs gap-1`}>{st.icon}{st.label}</Badge>
           {session.difficulty && <DifficultyBadge difficulty={session.difficulty} />}
         </div>
         <h3 className="font-semibold text-sm mb-1">{isAr ? session.title_ar || session.title : session.title}</h3>
-        <p className="text-[12px] text-muted-foreground mb-3 line-clamp-2">{isAr ? session.description_ar || session.description : session.description}</p>
+        <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{isAr ? session.description_ar || session.description : session.description}</p>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -277,23 +277,23 @@ function SessionCard({ session, profiles, isRegistered, isAr, onSelect, onRegist
               <div className="flex items-center gap-1.5">
                 <Avatar className="h-6 w-6">
                   <AvatarImage src={chef.avatar_url} />
-                  <AvatarFallback className="text-[12px]"><ChefHat className="h-3 w-3" /></AvatarFallback>
+                  <AvatarFallback className="text-xs"><ChefHat className="h-3 w-3" /></AvatarFallback>
                 </Avatar>
-                <span className="text-[12px] font-medium">{chef.full_name || chef.username}</span>
+                <span className="text-xs font-medium">{chef.full_name || chef.username}</span>
               </div>
             )}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-[12px] text-muted-foreground flex items-center gap-0.5">
+            <span className="text-xs text-muted-foreground flex items-center gap-0.5">
               <Clock className="h-2.5 w-2.5" />
               {format(new Date(session.scheduled_start), "HH:mm")}
             </span>
             {session.status === "scheduled" && user && !isRegistered && (
-              <Button size="sm" variant="outline" className="h-6 text-[12px]" onClick={(e) => { e.stopPropagation(); onRegister(); }}>
+              <Button size="sm" variant="outline" className="h-6 text-xs" onClick={(e) => { e.stopPropagation(); onRegister(); }}>
                 <UserPlus className="h-2.5 w-2.5 me-1" />{t("Join", "انضم")}
               </Button>
             )}
-            {isRegistered && <Badge variant="outline" className="text-[12px] text-chart-3"><Check className="h-2.5 w-2.5 me-0.5" />{t("Joined", "مسجل")}</Badge>}
+            {isRegistered && <Badge variant="outline" className="text-xs text-chart-3"><Check className="h-2.5 w-2.5 me-0.5" />{t("Joined", "مسجل")}</Badge>}
           </div>
         </div>
       </CardContent>

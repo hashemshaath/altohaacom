@@ -219,7 +219,7 @@ export default function ChefScheduleAdmin() {
               </div>
               <div>
                 <p className="text-lg font-black tabular-nums leading-tight">{kpi.value}</p>
-                <p className="text-[12px] text-muted-foreground font-medium">{kpi.label}</p>
+                <p className="text-xs text-muted-foreground font-medium">{kpi.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -331,7 +331,7 @@ export default function ChefScheduleAdmin() {
                         </TableCell>
                         <TableCell className="text-xs font-medium">{isAr && chef?.full_name_ar ? chef.full_name_ar : chef?.full_name || "—"}</TableCell>
                         <TableCell>
-                          <Badge className={`text-[12px] border gap-1 ${config.color}`}>
+                          <Badge className={`text-xs border gap-1 ${config.color}`}>
                             <Icon className="h-3 w-3" />{isAr ? config.ar : config.en}
                           </Badge>
                         </TableCell>
@@ -345,7 +345,7 @@ export default function ChefScheduleAdmin() {
                         </TableCell>
                         <TableCell className="text-xs text-muted-foreground">{ev.city || ev.location || "—"}</TableCell>
                         <TableCell>
-                          <Badge variant={ev.status === "confirmed" ? "default" : ev.status === "cancelled" ? "destructive" : "outline"} className="text-[12px]">
+                          <Badge variant={ev.status === "confirmed" ? "default" : ev.status === "cancelled" ? "destructive" : "outline"} className="text-xs">
                             {ev.status}
                           </Badge>
                         </TableCell>
@@ -433,9 +433,9 @@ export default function ChefScheduleAdmin() {
                   <div className="flex items-end gap-1.5 h-32">
                     {entries.map(([month, count]) => (
                       <div key={month} className="flex-1 flex flex-col items-center gap-1">
-                        <span className="text-[12px] font-bold tabular-nums">{count}</span>
+                        <span className="text-xs font-bold tabular-nums">{count}</span>
                         <div className="w-full rounded-t bg-primary/70 transition-all" style={{ height: `${(count / maxCount) * 100}%`, minHeight: 4 }} />
-                        <span className="text-[12px] text-muted-foreground whitespace-nowrap">{month.split(" ")[0]}</span>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">{month.split(" ")[0]}</span>
                       </div>
                     ))}
                   </div>
@@ -450,7 +450,7 @@ export default function ChefScheduleAdmin() {
               <CardTitle className="text-sm flex items-center gap-2">
                 <Briefcase className="h-4 w-4 text-primary" />
                 {isAr ? "الأحداث التعاقدية" : "Contracted Events"}
-                <Badge variant="outline" className="ms-auto text-[12px]">{allEvents.filter(e => e.is_contracted).length}</Badge>
+                <Badge variant="outline" className="ms-auto text-xs">{allEvents.filter(e => e.is_contracted).length}</Badge>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -467,7 +467,7 @@ export default function ChefScheduleAdmin() {
                           <p className="text-sm font-medium truncate">{ev.title}</p>
                           <p className="text-xs text-muted-foreground">{chef?.full_name || "—"} · {format(parseISO(ev.start_date), "MMM d, yyyy")}</p>
                         </div>
-                        <Badge className={`text-[12px] border ${config.color}`}>{isAr ? config.ar : config.en}</Badge>
+                        <Badge className={`text-xs border ${config.color}`}>{isAr ? config.ar : config.en}</Badge>
                         {ev.fee_amount ? (
                           <span className="text-sm font-bold text-primary tabular-nums">{ev.fee_amount.toLocaleString()} {ev.fee_currency}</span>
                         ) : null}

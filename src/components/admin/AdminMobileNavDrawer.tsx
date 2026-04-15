@@ -73,7 +73,7 @@ export const AdminMobileNavDrawer = memo(function AdminMobileNavDrawer() {
               {filteredSections.map((section, idx) => (
                 <Collapsible key={section.titleEn} defaultOpen={idx === 0 || !!search}>
                   <CollapsibleTrigger className={cn(
-                    "flex w-full items-center justify-between rounded-xl px-3 py-2 text-[12px] font-bold uppercase tracking-widest transition-all duration-200",
+                    "flex w-full items-center justify-between rounded-xl px-3 py-2 text-xs font-bold uppercase tracking-widest transition-all duration-200",
                     "text-muted-foreground hover:bg-muted/40 hover:text-foreground"
                   )}>
                     <span>{isAr ? section.titleAr : section.titleEn}</span>

@@ -58,7 +58,7 @@ function GiftCard({ gift, type, isAr }: { gift: any; type: "sent" | "received"; 
             <div className="min-w-0 space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <Badge variant="outline" className="capitalize text-xs">{tierName}</Badge>
-                <Badge variant={status.variant} className="text-[12px]">
+                <Badge variant={status.variant} className="text-xs">
                   {isAr ? status.ar : status.en}
                 </Badge>
               </div>
@@ -73,7 +73,7 @@ function GiftCard({ gift, type, isAr }: { gift: any; type: "sent" | "received"; 
               {gift.personal_message && (
                 <p className="text-xs text-muted-foreground italic line-clamp-2">"{gift.personal_message}"</p>
               )}
-              <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span>{new Date(gift.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US")}</span>
                 {gift.amount > 0 && (
                   <span className="font-medium">{gift.amount} {isAr ? "ر.س" : "SAR"}</span>
@@ -83,7 +83,7 @@ function GiftCard({ gift, type, isAr }: { gift: any; type: "sent" | "received"; 
                 )}
               </div>
               {gift.redeemed_at && (
-                <p className="text-[12px] text-primary">
+                <p className="text-xs text-primary">
                   {isAr ? "تم الاسترداد:" : "Redeemed:"} {new Date(gift.redeemed_at).toLocaleDateString(isAr ? "ar-SA" : "en-US")}
                 </p>
               )}
@@ -106,7 +106,7 @@ function GiftCard({ gift, type, isAr }: { gift: any; type: "sent" | "received"; 
           <div className="mt-3 pt-3 border-t">
             <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 rounded-xl p-2">
               <Gift className="h-3.5 w-3.5 shrink-0" />
-              <span className="font-mono text-[12px] select-all">{gift.gift_code}</span>
+              <span className="font-mono text-xs select-all">{gift.gift_code}</span>
             </div>
           </div>
         )}
@@ -179,19 +179,19 @@ export default function MembershipGiftsHistory() {
         <Card>
           <CardContent className="pt-4 pb-3 text-center">
             <p className="text-2xl font-bold">{sentGifts.length}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "مرسلة" : "Sent"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "مرسلة" : "Sent"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4 pb-3 text-center">
             <p className="text-2xl font-bold text-primary">{sentRedeemed}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "تم استردادها" : "Redeemed"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "تم استردادها" : "Redeemed"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-4 pb-3 text-center">
             <p className="text-2xl font-bold">{receivedGifts.length}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "مستلمة" : "Received"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "مستلمة" : "Received"}</p>
           </CardContent>
         </Card>
       </div>

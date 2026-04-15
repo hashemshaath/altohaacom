@@ -329,12 +329,12 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
                           )}
                           <div>
                             <p className="text-sm font-semibold">{isAr && s.name_ar ? s.name_ar : s.name}</p>
-                            {s.default_city && <p className="text-[12px] text-muted-foreground">{s.default_city}{s.default_country ? `, ${s.default_country}` : ""}</p>}
+                            {s.default_city && <p className="text-xs text-muted-foreground">{s.default_city}{s.default_country ? `, ${s.default_country}` : ""}</p>}
                           </div>
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary" className="text-[12px] gap-1">
+                        <Badge variant="secondary" className="text-xs gap-1">
                           <Icon className="h-2.5 w-2.5" />
                           {s.series_type === "exhibition" ? t("Exhibition", "معرض") : s.series_type === "competition" ? t("Competition", "مسابقة") : t("Mixed", "مختلط")}
                         </Badge>
@@ -342,10 +342,10 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
                       <TableCell>
                         <div className="flex gap-2 text-xs">
                           {(counts?.exhibitions || 0) > 0 && (
-                            <Badge variant="outline" className="text-[12px]"><Landmark className="h-2.5 w-2.5 me-1" />{counts!.exhibitions}</Badge>
+                            <Badge variant="outline" className="text-xs"><Landmark className="h-2.5 w-2.5 me-1" />{counts!.exhibitions}</Badge>
                           )}
                           {(counts?.competitions || 0) > 0 && (
-                            <Badge variant="outline" className="text-[12px]"><Trophy className="h-2.5 w-2.5 me-1" />{counts!.competitions}</Badge>
+                            <Badge variant="outline" className="text-xs"><Trophy className="h-2.5 w-2.5 me-1" />{counts!.competitions}</Badge>
                           )}
                           {!counts && <span className="text-muted-foreground">0</span>}
                         </div>
@@ -353,7 +353,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
                       <TableCell>
                         <div className="flex gap-1 flex-wrap">
                           {years.map(y => (
-                            <Badge key={y} variant="secondary" className="text-[12px] font-bold">+{y}</Badge>
+                            <Badge key={y} variant="secondary" className="text-xs font-bold">+{y}</Badge>
                           ))}
                           {years.length === 0 && <span className="text-xs text-muted-foreground">—</span>}
                         </div>

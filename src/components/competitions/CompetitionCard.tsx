@@ -80,7 +80,7 @@ export function getTabBucket(comp: Competition): "upcoming" | "active" | "past" 
 /* ─── Status Badge (reusable) ─── */
 const StatusBadge = forwardRef<HTMLDivElement, { derived: ReturnType<typeof getDerivedStatus>; isAr: boolean; className?: string }>(function StatusBadge({ derived, isAr, className = "" }, ref) {
   return (
-    <Badge className={`px-2.5 py-1 text-[12px] font-black uppercase tracking-wider border-0 shadow-lg backdrop-blur-md rounded-xl ${derived.color} ring-1 ring-white/10 ${className}`}>
+    <Badge className={`px-2.5 py-1 text-xs font-black uppercase tracking-wider border-0 shadow-lg backdrop-blur-md rounded-xl ${derived.color} ring-1 ring-white/10 ${className}`}>
       {derived.color.includes("chart-3") ? (
         <span className="relative me-1.5 flex h-1.5 w-1.5">
           <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -139,21 +139,21 @@ export const CompetitionCard = memo(
                 <div className="flex flex-col gap-1.5">
                   <StatusBadge derived={derived} isAr={isAr} />
                   {competition.edition_year && (
-                    <Badge className="bg-background/80 text-foreground backdrop-blur-md shadow-lg border-0 text-[12px] font-black py-1 px-2.5">
+                    <Badge className="bg-background/80 text-foreground backdrop-blur-md shadow-lg border-0 text-xs font-black py-1 px-2.5">
                       🏷️ {isAr ? `النسخة ${competition.edition_year}` : `Edition ${competition.edition_year}`}
                     </Badge>
                   )}
                 </div>
                 <div className="flex flex-col items-end gap-1.5">
                   {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 30 && (
-                    <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-[12px] font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-xl">
+                    <Badge variant="secondary" className="gap-1 px-2 py-0.5 text-xs font-bold bg-background/80 backdrop-blur-md shadow-lg border-0 text-foreground rounded-xl">
                       <Clock className="h-2.5 w-2.5 text-primary" />
                       {isAr ? <><AnimatedCounter value={derived.daysLeft} className="inline" /> يوم</> : <><AnimatedCounter value={derived.daysLeft} className="inline" />D</>}
                     </Badge>
                   )}
                   {/* Past event indicator */}
                   {derived.status === "ended" && (
-                    <Badge className="bg-muted/80 text-muted-foreground backdrop-blur-md border-0 text-[12px] font-bold py-1 px-2.5">
+                    <Badge className="bg-muted/80 text-muted-foreground backdrop-blur-md border-0 text-xs font-bold py-1 px-2.5">
                       {isAr ? "منتهية" : "Ended"}
                     </Badge>
                   )}
@@ -163,14 +163,14 @@ export const CompetitionCard = memo(
               {/* Bottom overlay with date & participants */}
               <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
                 <div className="flex items-end justify-between gap-2">
-                  <span className="flex items-center gap-1.5 text-[12px] font-bold text-foreground">
+                  <span className="flex items-center gap-1.5 text-xs font-bold text-foreground">
                     <div className="flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-xl bg-background/70 backdrop-blur-sm">
                       <Calendar className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary" />
                     </div>
                     <span className="drop-shadow-md">{toEnglishDigits(format(new Date(competition.competition_start), "MMM d, yyyy"))}</span>
                   </span>
                   {maxP && (
-                    <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-[12px] font-bold bg-primary/10 backdrop-blur-md border-0 text-primary rounded-xl">
+                    <Badge variant="secondary" className="gap-1 px-1.5 py-0.5 text-xs font-bold bg-primary/10 backdrop-blur-md border-0 text-primary rounded-xl">
                       <Users className="h-2.5 w-2.5" />
                       <AnimatedCounter value={regCount} className="inline" />/{toEnglishDigits(maxP)}
                     </Badge>
@@ -186,20 +186,20 @@ export const CompetitionCard = memo(
               </h3>
               {/* New badge for upcoming competitions starting within 7 days */}
               {derived.status === "registration_open" && derived.daysLeft && derived.daysLeft <= 14 && derived.daysLeft > 7 && (
-                <Badge variant="secondary" className="w-fit text-[12px] px-1.5 py-0 h-4 rounded-lg mb-1.5 bg-chart-3/10 text-chart-3 border-0">
+                <Badge variant="secondary" className="w-fit text-xs px-1.5 py-0 h-4 rounded-lg mb-1.5 bg-chart-3/10 text-chart-3 border-0">
                   ✨ {isAr ? "جديد" : "New"}
                 </Badge>
               )}
               {/* Registration urgency */}
               {derived.status === "registration_closing_soon" && derived.daysLeft && derived.daysLeft <= 7 && (
-                <p className="text-[12px] font-bold text-destructive mb-1.5 flex items-center gap-1 animate-pulse">
+                <p className="text-xs font-bold text-destructive mb-1.5 flex items-center gap-1 animate-pulse">
                   <Flame className="h-2.5 w-2.5" />
                   {isAr ? `آخر ${derived.daysLeft} أيام للتسجيل!` : `Only ${derived.daysLeft} days to register!`}
                 </p>
               )}
               {/* Judging indicator */}
               {competition.status === "judging" && (
-                <p className="text-[12px] font-bold text-chart-4 mb-1.5 flex items-center gap-1">
+                <p className="text-xs font-bold text-chart-4 mb-1.5 flex items-center gap-1">
                   <span className="relative flex h-1.5 w-1.5 me-0.5"><span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-chart-4 opacity-75" /><span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-chart-4" /></span>
                   {isAr ? "التحكيم جارٍ الآن" : "Judging in progress"}
                 </p>
@@ -208,13 +208,13 @@ export const CompetitionCard = memo(
               {/* Registration stats row */}
               {regCount > 0 && (
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <Users className="h-3 w-3 text-chart-3" />
                     <span className="font-semibold text-foreground"><AnimatedCounter value={regCount} className="inline" /></span>
                     <span>{isAr ? "مسجل" : "registered"}</span>
                   </div>
                   {maxP && fillPct >= 80 && (
-                    <Badge variant="destructive" className="text-[12px] px-1.5 py-0 h-4 rounded-lg animate-pulse">
+                    <Badge variant="destructive" className="text-xs px-1.5 py-0 h-4 rounded-lg animate-pulse">
                       {isAr ? "يمتلئ!" : "Filling up!"}
                     </Badge>
                   )}
@@ -224,7 +224,7 @@ export const CompetitionCard = memo(
               {/* Capacity Bar */}
               {maxP && maxP > 0 && (
                 <div className="mb-3 space-y-1">
-                  <div className="flex items-center justify-between text-[12px] font-bold uppercase tracking-wider text-muted-foreground">
+                  <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-muted-foreground">
                     <span>{isAr ? "السعة" : "Capacity"}</span>
                     <span className={`tabular-nums ${fillPct > 80 ? "text-destructive" : "text-primary"}`}><AnimatedCounter value={fillPct} className="inline" />%</span>
                   </div>
@@ -239,9 +239,9 @@ export const CompetitionCard = memo(
 
               {/* Footer: location + type badges + arrow */}
               <div className="flex items-center justify-between mt-auto pt-1">
-                <div className="flex items-center gap-1.5 text-[12px] font-medium text-muted-foreground min-w-0">
+                <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground min-w-0">
                   {competition.is_virtual && (
-                    <Badge variant="secondary" className="text-[12px] h-4 px-1.5 rounded-lg border-0 bg-chart-3/10 text-chart-3">
+                    <Badge variant="secondary" className="text-xs h-4 px-1.5 rounded-lg border-0 bg-chart-3/10 text-chart-3">
                       {isAr ? "عن بُعد" : "Online"}
                     </Badge>
                   )}
@@ -302,7 +302,7 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
             )}
             <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-60 md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-background/40" />
             <div className="absolute start-4 top-4 sm:start-5 sm:top-5">
-              <Badge className="gap-1.5 bg-primary px-3 py-1.5 text-[12px] font-bold shadow-xl ring-2 ring-primary/20 rounded-xl">
+              <Badge className="gap-1.5 bg-primary px-3 py-1.5 text-xs font-bold shadow-xl ring-2 ring-primary/20 rounded-xl">
                 <Flame className="h-3 w-3" />
                 {isAr ? "مسابقة مميزة" : "Featured"}
               </Badge>
@@ -313,9 +313,9 @@ export const FeaturedCompetitionCard = memo(function FeaturedCompetitionCard({
           <div className="flex flex-1 flex-col justify-between p-5 sm:p-6 md:p-8 lg:p-10">
             <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-2 flex-wrap">
-                <StatusBadge derived={derived} isAr={isAr} className="px-3 py-1 text-[12px]" />
+                <StatusBadge derived={derived} isAr={isAr} className="px-3 py-1 text-xs" />
                 {derived.daysLeft && derived.daysLeft > 0 && derived.daysLeft <= 60 && (
-                  <Badge variant="outline" className="gap-1.5 text-[12px] font-bold bg-background/40 backdrop-blur-md border-border/30 rounded-xl">
+                  <Badge variant="outline" className="gap-1.5 text-xs font-bold bg-background/40 backdrop-blur-md border-border/30 rounded-xl">
                     <Clock className="h-3 w-3 text-primary" />
                     {isAr ? <><AnimatedCounter value={derived.daysLeft} className="inline" /> يوم</> : <><AnimatedCounter value={derived.daysLeft} className="inline" /> DAYS LEFT</>}
                   </Badge>

@@ -126,7 +126,7 @@ export function LiveCountdownStrip({ targetDate, label, labelAr, isAr }: { targe
         {units.map((u) => (
           <div key={u.en} className="text-center">
             <div className="text-2xl sm:text-3xl font-bold tabular-nums text-foreground leading-none">{String(u.value).padStart(2, "0")}</div>
-            <p className="text-[11px] sm:text-xs text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
+            <p className="text-[0.6875rem] sm:text-xs text-muted-foreground mt-1 font-medium">{isAr ? u.ar : u.en}</p>
           </div>
         ))}
       </div>

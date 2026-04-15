@@ -93,7 +93,7 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
         <CardTitle className="text-sm flex items-center gap-2">
           <Trophy className="h-4 w-4 text-chart-4" />
           {t("Exhibition Rewards", "مكافآت المعرض")}
-          <Badge variant="secondary" className="ms-auto text-[12px]">
+          <Badge variant="secondary" className="ms-auto text-xs">
             {totalEarned}/{totalPossible} {t("pts", "نقطة")}
           </Badge>
         </CardTitle>
@@ -126,7 +126,7 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
                   <p className={`text-xs font-medium ${completed ? "text-chart-3" : "text-foreground"}`}>
                     {isAr ? action.ar : action.en}
                   </p>
-                  <p className="text-[12px] text-muted-foreground">+{action.points} {t("points", "نقطة")}</p>
+                  <p className="text-xs text-muted-foreground">+{action.points} {t("points", "نقطة")}</p>
                 </div>
                 {completed ? (
                   <CheckCircle2 className="h-4 w-4 text-chart-3 shrink-0" />
@@ -134,7 +134,7 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
                   <Button
                     size="sm"
                     variant="outline"
-                    className="h-7 text-[12px]"
+                    className="h-7 text-xs"
                     onClick={async () => {
                       if (navigator.share) {
                         try { await navigator.share({ url: window.location.href }); } catch { return; }
@@ -147,7 +147,7 @@ export const ExhibitionLoyaltyWidget = memo(function ExhibitionLoyaltyWidget({ e
                     <Share2 className="h-3 w-3 me-1" /> {t("Share", "شارك")}
                   </Button>
                 ) : (
-                  <Badge variant="outline" className="text-[12px] text-muted-foreground">
+                  <Badge variant="outline" className="text-xs text-muted-foreground">
                     {t("Pending", "قيد الانتظار")}
                   </Badge>
                 )}

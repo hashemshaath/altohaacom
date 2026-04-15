@@ -100,15 +100,15 @@ export const EntityCard = memo(function EntityCard({
         {/* Badges */}
         <div className="absolute end-2.5 top-2.5 flex gap-1.5">
           {featured && (
-            <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-md border-0 text-[10px] px-2 py-0.5 rounded-lg shadow-sm font-bold">
+            <Badge className="bg-primary/90 text-primary-foreground backdrop-blur-md border-0 text-[0.625rem] px-2 py-0.5 rounded-lg shadow-sm font-bold">
               ★ {isAr ? "مميز" : "Featured"}
             </Badge>
           )}
-          <Badge variant="secondary" className="text-[10px] backdrop-blur-md bg-background/70 border-0 font-bold px-2 py-0.5 rounded-lg shadow-sm">
+          <Badge variant="secondary" className="text-[0.625rem] backdrop-blur-md bg-background/70 border-0 font-bold px-2 py-0.5 rounded-lg shadow-sm">
             {isAr ? tLabel?.ar : tLabel?.en}
           </Badge>
           {entity.is_verified && (
-            <Badge className="bg-chart-3/20 text-chart-3 backdrop-blur-md border-0 text-[10px] px-1.5 py-0.5 rounded-lg shadow-sm">
+            <Badge className="bg-chart-3/20 text-chart-3 backdrop-blur-md border-0 text-[0.625rem] px-1.5 py-0.5 rounded-lg shadow-sm">
               <ShieldCheck className="h-2.5 w-2.5" />
             </Badge>
           )}
@@ -124,11 +124,11 @@ export const EntityCard = memo(function EntityCard({
               featured ? "text-base" : "text-sm"
             )}>{name}</h3>
             {entity.abbreviation && (
-              <p className="text-[11px] text-muted-foreground/60 mt-0.5 font-medium">({entity.abbreviation})</p>
+              <p className="text-[0.6875rem] text-muted-foreground/60 mt-0.5 font-medium">({entity.abbreviation})</p>
             )}
           </div>
           {sLabel && (
-            <Badge variant="outline" className="shrink-0 text-[10px] rounded-lg border-border/30 font-bold px-2 py-0.5">
+            <Badge variant="outline" className="shrink-0 text-[0.625rem] rounded-lg border-border/30 font-bold px-2 py-0.5">
               {isAr ? sLabel.ar : sLabel.en}
             </Badge>
           )}
@@ -150,13 +150,13 @@ export const EntityCard = memo(function EntityCard({
           {entity.email && (
             <div className="flex items-center gap-2 text-xs">
               <Mail className="h-3 w-3 shrink-0 text-primary/50" />
-              <a href={`mailto:${entity.email}`} className="text-primary hover:underline truncate text-[11px]">{entity.email}</a>
+              <a href={`mailto:${entity.email}`} className="text-primary hover:underline truncate text-[0.6875rem]">{entity.email}</a>
             </div>
           )}
           {entity.website && (
             <div className="flex items-center gap-2 text-xs">
               <Globe className="h-3 w-3 shrink-0 text-primary/50" />
-              <a href={entity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate text-[11px]">
+              <a href={entity.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline truncate text-[0.6875rem]">
                 {entity.website.replace(/^https?:\/\//, "")}
               </a>
             </div>
@@ -167,10 +167,10 @@ export const EntityCard = memo(function EntityCard({
         {entity.specializations && (entity.specializations as string[]).length > 0 && (
           <div className="flex flex-wrap gap-1">
             {(entity.specializations as string[]).slice(0, 3).map(s => (
-              <Badge key={s} variant="secondary" className="text-[10px] rounded-md px-1.5 py-0 font-medium">{s}</Badge>
+              <Badge key={s} variant="secondary" className="text-[0.625rem] rounded-md px-1.5 py-0 font-medium">{s}</Badge>
             ))}
             {(entity.specializations as string[]).length > 3 && (
-              <Badge variant="secondary" className="text-[10px] rounded-md px-1.5 py-0">
+              <Badge variant="secondary" className="text-[0.625rem] rounded-md px-1.5 py-0">
                 +{(entity.specializations as string[]).length - 3}
               </Badge>
             )}
@@ -179,7 +179,7 @@ export const EntityCard = memo(function EntityCard({
 
         {/* Footer */}
         <div className="flex items-center justify-between pt-2.5 border-t border-border/15">
-          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+          <div className="flex items-center gap-1.5 text-[0.6875rem] text-muted-foreground">
             <Users className="h-3 w-3" />
             <span className="font-medium tabular-nums">{followerCount}</span>
             <span>{isAr ? "متابع" : "followers"}</span>
@@ -192,7 +192,7 @@ export const EntityCard = memo(function EntityCard({
             )}
           </div>
           {entity.founded_year && (
-            <span className="text-[10px] text-muted-foreground/50 font-medium tabular-nums">
+            <span className="text-[0.625rem] text-muted-foreground/50 font-medium tabular-nums">
               {isAr ? "تأسست" : "Est."} {entity.founded_year}
             </span>
           )}

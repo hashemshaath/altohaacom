@@ -188,7 +188,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
                       {u.username ? `@${u.username}` : u.account_number}
                     </p>
                   </div>
-                  <Badge variant="outline" className="text-[12px] shrink-0 capitalize">
+                  <Badge variant="outline" className="text-xs shrink-0 capitalize">
                     {u.membership_tier || "basic"}
                   </Badge>
                 </button>
@@ -335,12 +335,12 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
                           </p>
                           <Badge
                             variant={override.granted ? "default" : "destructive"}
-                            className="text-[12px] h-4"
+                            className="text-xs h-4"
                           >
                             {override.granted ? (isAr ? "ممنوح" : "Granted") : (isAr ? "محجوب" : "Revoked")}
                           </Badge>
                           {isExpired && (
-                            <Badge variant="outline" className="text-[12px] h-4 text-destructive">
+                            <Badge variant="outline" className="text-xs h-4 text-destructive">
                               {isAr ? "منتهي" : "Expired"}
                             </Badge>
                           )}

@@ -50,7 +50,7 @@ function SlideDots({ total, active, onSelect }: { total: number; active: number;
           key={i}
           onClick={() => onSelect(i)}
           className={`h-1.5 rounded-full transition-all duration-500 ${
-            i === active ? "w-6 bg-white" : "w-1.5 bg-white/40 hover:bg-white/60"
+            i === active ? "w-6 bg-background" : "w-1.5 bg-white/40 hover:bg-white/60"
           }`}
         />
       ))}
@@ -137,7 +137,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
       <div className="relative z-10 p-8 xl:p-12">
         <div className="flex items-center gap-3 group cursor-pointer">
           <img loading="lazy" decoding="async" src="/altoha-logo.png" alt="Altoha" className="h-12 w-auto drop-shadow-2xl transition-transform group-hover:scale-110" />
-          <span className="font-serif text-2xl font-black text-white tracking-tighter drop-shadow-lg">Altoha</span>
+          <span className="font-serif text-2xl font-black text-primary-foreground tracking-tighter drop-shadow-lg">Altoha</span>
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export const AuthHeroPanel = memo(function AuthHeroPanel({
       <div className="relative z-10 flex flex-1 flex-col justify-center px-8 xl:px-12">
         <div className={`space-y-5 transition-all duration-500 ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
           {title && (
-            <h2 className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-black xl:text-5xl leading-[1.1] text-white drop-shadow-2xl tracking-tight`}>
+            <h2 className={`${isAr ? "font-sans" : "font-serif"} text-3xl font-black xl:text-5xl leading-[1.1] text-primary-foreground drop-shadow-2xl tracking-tight`}>
               {title}
             </h2>
           )}

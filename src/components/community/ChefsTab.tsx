@@ -136,7 +136,7 @@ export const ChefsTab = memo(function ChefsTab() {
       </div>
 
       {/* Results count */}
-      <p className="text-[13px] text-muted-foreground font-medium">
+      <p className="text-[0.8125rem] text-muted-foreground font-medium">
         {isAr ? `${filtered.length} طاهٍ` : `${filtered.length} chef${filtered.length !== 1 ? "s" : ""}`}
       </p>
 
@@ -165,7 +165,7 @@ export const ChefsTab = memo(function ChefsTab() {
                   </AvatarFallback>
                 </Avatar>
                 {chef.is_verified && (
-                  <div className="absolute -bottom-0.5 -end-0.5 h-4.5 w-4.5 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] ring-2 ring-card">
+                  <div className="absolute -bottom-0.5 -end-0.5 h-4.5 w-4.5 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[0.625rem] ring-2 ring-card">
                     ✓
                   </div>
                 )}
@@ -179,12 +179,12 @@ export const ChefsTab = memo(function ChefsTab() {
 
               {/* Spec */}
               {displaySpec && (
-                <p className="text-[11px] text-muted-foreground mt-0.5 truncate w-full">{displaySpec}</p>
+                <p className="text-[0.6875rem] text-muted-foreground mt-0.5 truncate w-full">{displaySpec}</p>
               )}
 
               {/* Location */}
               {(cityName || flag) && (
-                <p className="text-[11px] text-muted-foreground/60 mt-0.5 flex items-center gap-1 justify-center">
+                <p className="text-[0.6875rem] text-muted-foreground/60 mt-0.5 flex items-center gap-1 justify-center">
                   {flag && <span className="text-xs">{flag}</span>}
                   {cityName && <span className="truncate max-w-[80px]">{cityName}</span>}
                 </p>
@@ -211,7 +211,7 @@ export const ChefsTab = memo(function ChefsTab() {
               ? (isAr ? "لا توجد نتائج للبحث" : "No results found")
               : (isAr ? "اكتشف الطهاة في المجتمع" : "Discover chefs in the community")}
           </p>
-          <p className="text-[13px] text-muted-foreground">
+          <p className="text-[0.8125rem] text-muted-foreground">
             {searchQuery
               ? (isAr ? "جرب كلمات بحث مختلفة" : "Try different search terms")
               : (isAr ? "سيظهر الطهاة هنا عند انضمامهم" : "Chefs will appear here as they join")}

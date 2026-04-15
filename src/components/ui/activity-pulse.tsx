@@ -31,7 +31,7 @@ export const ActivityPulse = memo(function ActivityPulse({ status = "live", labe
         <span className={cn(ringSize, "rounded-full absolute inset-0", s.ring, status === "live" && "animate-ping")} />
         <span className={cn(dotSize, "rounded-full relative", s.dot)} />
       </span>
-      {label && <span className={cn("text-[12px] font-semibold", s.label)}>{label}</span>}
+      {label && <span className={cn("text-xs font-semibold", s.label)}>{label}</span>}
     </span>
   );
 });

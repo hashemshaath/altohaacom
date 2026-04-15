@@ -271,7 +271,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
                 <kpi.icon className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-xs text-muted-foreground">{kpi.label}</p>
                 <AnimatedCounter value={kpi.value} className="text-lg font-bold" />
               </div>
             </CardContent>
@@ -287,7 +287,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
               <TabsTrigger key={tab.value} value={tab.value} className="gap-1 shrink-0 whitespace-nowrap text-xs rounded-xl data-[state=active]:shadow-sm">
                 <tab.icon className="h-3.5 w-3.5" />
                 {tab.label}
-                {tab.badge ? <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-[12px]">{tab.badge}</Badge> : null}
+                {tab.badge ? <Badge variant="destructive" className="ms-0.5 h-4 px-1 text-xs">{tab.badge}</Badge> : null}
               </TabsTrigger>
             ))}
           </TabsList>

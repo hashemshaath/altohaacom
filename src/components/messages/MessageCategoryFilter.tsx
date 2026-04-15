@@ -46,13 +46,13 @@ export const MessageCategoryFilter = memo(function MessageCategoryFilter({ activ
             key={f.key}
             variant={isActive ? "default" : "ghost"}
             size="sm"
-            className="h-7 text-[12px] shrink-0 gap-1"
+            className="h-7 text-xs shrink-0 gap-1"
             onClick={() => onChange(f.key)}
           >
             <Icon className="h-3 w-3" />
             {f.label}
             {f.count > 0 && (
-              <Badge variant={isActive ? "secondary" : "outline"} className="h-4 min-w-4 text-[12px] px-1 ms-0.5">
+              <Badge variant={isActive ? "secondary" : "outline"} className="h-4 min-w-4 text-xs px-1 ms-0.5">
                 {f.count}
               </Badge>
             )}

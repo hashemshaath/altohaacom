@@ -903,17 +903,17 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <Badge variant="outline" className="text-[12px]">{msg.direction === "outgoing" ? (isAr ? "من الشركة" : "From Company") : (isAr ? "من الإدارة" : "From Admin")}</Badge>
-                            {msg.priority === "urgent" && <Badge variant="destructive" className="text-[12px]">{isAr ? "عاجل" : "Urgent"}</Badge>}
-                            {msg.priority === "high" && <Badge className="bg-chart-4 text-[12px]">{isAr ? "مرتفع" : "High"}</Badge>}
+                            <Badge variant="outline" className="text-xs">{msg.direction === "outgoing" ? (isAr ? "من الشركة" : "From Company") : (isAr ? "من الإدارة" : "From Admin")}</Badge>
+                            {msg.priority === "urgent" && <Badge variant="destructive" className="text-xs">{isAr ? "عاجل" : "Urgent"}</Badge>}
+                            {msg.priority === "high" && <Badge className="bg-chart-4 text-xs">{isAr ? "مرتفع" : "High"}</Badge>}
                             <span className="text-xs text-muted-foreground">{format(new Date(msg.created_at), "yyyy-MM-dd HH:mm")}</span>
                           </div>
                           <p className="font-medium text-sm">{msg.subject}</p>
                           <p className="text-sm text-muted-foreground mt-1">{msg.message}</p>
-                          {msg.parent_id && <Badge variant="secondary" className="mt-1 text-[12px]">{isAr ? "رد" : "Reply"}</Badge>}
+                          {msg.parent_id && <Badge variant="secondary" className="mt-1 text-xs">{isAr ? "رد" : "Reply"}</Badge>}
                         </div>
                         <div className="flex items-center gap-1">
-                          <Badge variant={msg.status === "unread" ? "default" : "secondary"} className="text-[12px]">{msg.status === "unread" ? (isAr ? "جديد" : "New") : (isAr ? "مقروءة" : "Read")}</Badge>
+                          <Badge variant={msg.status === "unread" ? "default" : "secondary"} className="text-xs">{msg.status === "unread" ? (isAr ? "جديد" : "New") : (isAr ? "مقروءة" : "Read")}</Badge>
                           <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => { setReplyTarget(msg.id); setReplyMessage(""); }}><Send className="h-3 w-3 me-1" />{isAr ? "رد" : "Reply"}</Button>
                         </div>
                       </div>
@@ -965,7 +965,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
             const CatIcon = cat.icon;
             return (
               <Card key={cat.value}>
-                <CardHeader className="pb-3"><CardTitle className="text-sm flex items-center gap-2"><CatIcon className="h-4 w-4 text-primary" />{isAr ? cat.labelAr : cat.label}<Badge variant="secondary" className="text-[12px]">{catMedia.length}</Badge></CardTitle></CardHeader>
+                <CardHeader className="pb-3"><CardTitle className="text-sm flex items-center gap-2"><CatIcon className="h-4 w-4 text-primary" />{isAr ? cat.labelAr : cat.label}<Badge variant="secondary" className="text-xs">{catMedia.length}</Badge></CardTitle></CardHeader>
                 {catMedia.length > 0 && (
                   <CardContent>
                     <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
@@ -976,7 +976,7 @@ export const CompanyDetailView = memo(function CompanyDetailView({ companyId, on
                           ) : (
                             <div className="flex h-32 w-full items-center justify-center bg-muted"><File className="h-8 w-8 text-muted-foreground" /></div>
                           )}
-                          <div className="p-2"><p className="text-xs font-medium truncate">{item.title || item.filename}</p>{item.file_size && <p className="text-[12px] text-muted-foreground">{(item.file_size / 1024).toFixed(0)} KB</p>}</div>
+                          <div className="p-2"><p className="text-xs font-medium truncate">{item.title || item.filename}</p>{item.file_size && <p className="text-xs text-muted-foreground">{(item.file_size / 1024).toFixed(0)} KB</p>}</div>
                           <Button variant="ghost" size="icon" className="absolute top-1 end-1 h-6 w-6 opacity-0 group-hover:opacity-100 bg-background/80" onClick={() => deleteMediaMutation.mutate(item.id)}><Trash2 className="h-3 w-3 text-destructive" /></Button>
                         </div>
                       ))}

@@ -174,7 +174,7 @@ export default function CompetitionsAdmin() {
 
       return (data || []).map(c => {
         const exh = c.exhibition as any;
-        let derivedOrganizer: any = null;
+        let derivedOrganizer: Record<string, unknown> | null = null;
         if (exh?.organizer_entity_id && entityMap[exh.organizer_entity_id]) {
           const ent = entityMap[exh.organizer_entity_id];
           derivedOrganizer = { name: ent.name, name_ar: ent.name_ar, logo_url: ent.logo_url, type: "entity" };
@@ -217,7 +217,7 @@ export default function CompetitionsAdmin() {
   });
 
   const uniqueExhibitions = competitions?.reduce((acc, c) => {
-    if (c.exhibition && !acc.find((e: any) => e.id === c.exhibition.id)) acc.push(c.exhibition);
+    if (c.exhibition && !acc.find((e) => e.id === c.exhibition.id)) acc.push(c.exhibition);
     return acc;
   }, [] as any[]) || [];
 
@@ -235,7 +235,7 @@ export default function CompetitionsAdmin() {
   });
 
   const approveCompetition = useMutation({
-    mutationFn: async (comp: any) => {
+    mutationFn: async (comp: Record<string, unknown>) => {
       const { error } = await supabase.from("competitions").update({ status: "draft" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_competition", details: { competition_id: comp.id } });
@@ -245,7 +245,7 @@ export default function CompetitionsAdmin() {
   });
 
   const rejectCompetition = useMutation({
-    mutationFn: async (comp: any) => {
+    mutationFn: async (comp: Record<string, unknown>) => {
       const { error } = await supabase.from("competitions").update({ status: "cancelled" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_competition", details: { competition_id: comp.id } });
@@ -255,7 +255,7 @@ export default function CompetitionsAdmin() {
   });
 
   const duplicateMutation = useMutation({
-    mutationFn: async (comp: any) => {
+    mutationFn: async (comp: Record<string, unknown>) => {
       const { id, created_at, updated_at, organizer, exhibition, competition_number, slug, view_count, ...rest } = comp;
       const { error } = await supabase.from("competitions").insert({ ...rest, title: `${rest.title} (Copy)`, title_ar: rest.title_ar ? `${rest.title_ar} (نسخة)` : null, status: "draft" as CompetitionStatus, view_count: 0 } as any);
       if (error) throw error;
@@ -445,7 +445,7 @@ export default function CompetitionsAdmin() {
           >
             <m.icon className={cn("h-4 w-4 shrink-0", m.color)} />
             <AnimatedCounter value={m.value} className="text-lg font-bold leading-none" />
-            <span className="text-[10px] text-muted-foreground font-medium">{m.label}</span>
+            <span className="text-[0.625rem] text-muted-foreground font-medium">{m.label}</span>
           </button>
         ))}
       </div>
@@ -457,7 +457,7 @@ export default function CompetitionsAdmin() {
             {TAB_GROUPS.map((group) => (
               <div key={group.labelEn} className="flex flex-col">
                 <div className="px-3 py-1 bg-muted/40 border-b border-border/40">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="text-[0.625rem] font-semibold uppercase tracking-wider text-muted-foreground">
                     {isAr ? group.labelAr : group.labelEn}
                   </span>
                 </div>
@@ -470,7 +470,7 @@ export default function CompetitionsAdmin() {
                         key={tab.id}
                         onClick={() => handleTabChange(tab.id)}
                         className={cn(
-                          "flex items-center gap-1 rounded-xl px-2.5 py-1.5 text-[12px] font-medium transition-all active:scale-95 whitespace-nowrap",
+                          "flex items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-medium transition-all active:scale-95 whitespace-nowrap",
                           isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -513,7 +513,7 @@ export default function CompetitionsAdmin() {
                     <SelectTrigger className="w-[140px] h-8 text-xs rounded-xl"><SelectValue placeholder={isAr ? "المعرض" : "Exhibition"} /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
-                      {uniqueExhibitions.map((ex: any) => <SelectItem key={ex.id} value={ex.id}>{isAr && ex.title_ar ? ex.title_ar : ex.title}</SelectItem>)}
+                      {uniqueExhibitions.map((ex) => <SelectItem key={ex.id} value={ex.id}>{isAr && ex.title_ar ? ex.title_ar : ex.title}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 )}
@@ -580,10 +580,10 @@ export default function CompetitionsAdmin() {
                                 </p>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                   {comp.edition_year && (
-                                    <Badge variant="outline" className="text-[10px] h-4 px-1 font-mono">{comp.edition_year}</Badge>
+                                    <Badge variant="outline" className="text-[0.625rem] h-4 px-1 font-mono">{comp.edition_year}</Badge>
                                   )}
                                   {comp.competition_number && (
-                                    <span className="text-[10px] text-muted-foreground font-mono">{comp.competition_number}</span>
+                                    <span className="text-[0.625rem] text-muted-foreground font-mono">{comp.competition_number}</span>
                                   )}
                                 </div>
                               </div>
@@ -598,10 +598,10 @@ export default function CompetitionsAdmin() {
                                   )}
                                   <span className="text-xs truncate max-w-[100px]">{isAr && comp.derivedOrganizer.name_ar ? comp.derivedOrganizer.name_ar : comp.derivedOrganizer.name}</span>
                                 </div>
-                              ) : <span className="text-[11px] text-muted-foreground">—</span>}
+                              ) : <span className="text-[0.6875rem] text-muted-foreground">—</span>}
                             </TableCell>
                             <TableCell>
-                              <Badge className={`text-[11px] font-normal border-0 rounded-lg ${statusConfig[comp.status as CompetitionStatus].bg}`}>
+                              <Badge className={`text-[0.6875rem] font-normal border-0 rounded-lg ${statusConfig[comp.status as CompetitionStatus].bg}`}>
                                 <span className={`me-1 inline-block h-1.5 w-1.5 rounded-full ${statusConfig[comp.status as CompetitionStatus].dot}`} />
                                 {isAr ? statusConfig[comp.status as CompetitionStatus].labelAr : statusConfig[comp.status as CompetitionStatus].label}
                               </Badge>
@@ -610,9 +610,9 @@ export default function CompetitionsAdmin() {
                               {comp.competition_start ? (
                                 <div>
                                   <span className="text-xs tabular-nums">{format(new Date(comp.competition_start), "MMM d, yyyy")}</span>
-                                  {comp.city && <p className="text-[10px] text-muted-foreground">{comp.city}</p>}
+                                  {comp.city && <p className="text-[0.625rem] text-muted-foreground">{comp.city}</p>}
                                 </div>
-                              ) : <span className="text-[11px] text-muted-foreground">—</span>}
+                              ) : <span className="text-[0.6875rem] text-muted-foreground">—</span>}
                             </TableCell>
                             <TableCell className="hidden xl:table-cell">
                               <div className="min-w-[70px]">
@@ -735,7 +735,7 @@ export default function CompetitionsAdmin() {
 }
 
 // ── Judging Panel ──────────────────────────
-function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
+function JudgingPanel({ competitions, isAr }: { competitions: Record<string, unknown>[]; isAr: boolean }) {
   const judgingComps = useMemo(() => competitions.filter(c => ["judging", "in_progress"].includes(c.status)), [competitions]);
 
   const { data: judgingData = [] } = useQuery({
@@ -771,9 +771,9 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
-                <p className="text-[11px] text-muted-foreground font-mono">{comp.competition_number}</p>
+                <p className="text-[0.6875rem] text-muted-foreground font-mono">{comp.competition_number}</p>
               </div>
-              <Badge className={`text-[11px] border-0 rounded-lg ${statusConfig[comp.status as CompetitionStatus]?.bg}`}>
+              <Badge className={`text-[0.6875rem] border-0 rounded-lg ${statusConfig[comp.status as CompetitionStatus]?.bg}`}>
                 {isAr ? statusConfig[comp.status as CompetitionStatus]?.labelAr : statusConfig[comp.status as CompetitionStatus]?.label}
               </Badge>
             </div>
@@ -785,12 +785,12 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
               ].map(s => (
                 <div key={s.label} className="text-center p-2 rounded-xl bg-muted/30">
                   <p className={cn("text-lg font-bold", s.color)}>{s.value}</p>
-                  <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                  <p className="text-[0.625rem] text-muted-foreground">{s.label}</p>
                 </div>
               ))}
             </div>
             <div className="space-y-1">
-              <div className="flex justify-between text-[11px] text-muted-foreground">
+              <div className="flex justify-between text-[0.6875rem] text-muted-foreground">
                 <span>{isAr ? "التقدم" : "Progress"}</span>
                 <span className="font-bold">{progress}%</span>
               </div>
@@ -804,7 +804,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
 }
 
 // ── Results Panel ──────────────────────────
-function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boolean }) {
+function ResultsPanel({ competitions, isAr }: { competitions: Record<string, unknown>[]; isAr: boolean }) {
   const completedComps = useMemo(() => competitions.filter(c => c.status === "completed"), [competitions]);
 
   const { data: resultsData = [] } = useQuery({
@@ -837,7 +837,7 @@ function ResultsPanel({ competitions, isAr }: { competitions: any[]; isAr: boole
           <div key={comp.id} className="rounded-xl border border-border/60 bg-card p-4 space-y-3 transition-all hover:shadow-sm hover:border-primary/20">
             <div className="flex items-center justify-between">
               <p className="text-sm font-semibold">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
-              <Badge variant="secondary" className="text-[11px] rounded-lg">{compResults.length} {isAr ? "نتيجة" : "results"}</Badge>
+              <Badge variant="secondary" className="text-[0.6875rem] rounded-lg">{compResults.length} {isAr ? "نتيجة" : "results"}</Badge>
             </div>
             {compResults.length > 0 ? (
               <div className="space-y-1.5">

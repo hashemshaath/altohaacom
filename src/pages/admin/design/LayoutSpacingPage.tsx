@@ -114,14 +114,14 @@ export default function LayoutSpacingPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-xs">{isAr ? "قيمة مخصصة" : "Custom Value"}</Label>
-                <Badge variant="outline" className="text-[12px] font-mono">{layout.containerWidth}px</Badge>
+                <Badge variant="outline" className="text-xs font-mono">{layout.containerWidth}px</Badge>
               </div>
               <Slider value={[layout.containerWidth]} onValueChange={([v]) => setLayout({ ...layout, containerWidth: v })} min={768} max={1920} step={16} />
             </div>
             {/* Visual preview */}
             <div className="relative h-8 rounded-lg border border-border/30 bg-muted/20 overflow-hidden">
               <div className="absolute inset-y-0 start-1/2 -translate-x-1/2 bg-primary/15 border-x border-primary/30" style={{ width: `${(layout.containerWidth / 1920) * 100}%` }} />
-              <span className="absolute inset-0 flex items-center justify-center text-[12px] text-muted-foreground">{layout.containerWidth}px / 1920px</span>
+              <span className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">{layout.containerWidth}px / 1920px</span>
             </div>
           </CardContent>
         </Card>
@@ -155,14 +155,14 @@ export default function LayoutSpacingPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-xs">{isAr ? "قيمة مخصصة" : "Custom Value"}</Label>
-                <Badge variant="outline" className="text-[12px] font-mono">{layout.borderRadius}px</Badge>
+                <Badge variant="outline" className="text-xs font-mono">{layout.borderRadius}px</Badge>
               </div>
               <Slider value={[layout.borderRadius]} onValueChange={([v]) => setLayout({ ...layout, borderRadius: v })} min={0} max={32} step={1} />
             </div>
             {/* Visual preview */}
             <div className="flex gap-3 items-center justify-center py-2">
               <div className="h-16 w-24 bg-primary/15 border border-primary/30" style={{ borderRadius: layout.borderRadius }} />
-              <div className="h-8 w-20 bg-primary/20 border border-primary/30 flex items-center justify-center text-[12px] text-primary" style={{ borderRadius: Math.max(layout.borderRadius / 2, 4) }}>
+              <div className="h-8 w-20 bg-primary/20 border border-primary/30 flex items-center justify-center text-xs text-primary" style={{ borderRadius: Math.max(layout.borderRadius / 2, 4) }}>
                 {isAr ? "زر" : "Button"}
               </div>
             </div>
@@ -191,7 +191,7 @@ export default function LayoutSpacingPage() {
                   )}
                 >
                   <div className={cn("h-10 w-10 rounded-lg bg-card border border-border/20", p.class)} />
-                  <span className="text-[12px]">{isAr ? p.ar : p.en}</span>
+                  <span className="text-xs">{isAr ? p.ar : p.en}</span>
                 </button>
               ))}
             </div>
@@ -220,7 +220,7 @@ export default function LayoutSpacingPage() {
                   )}
                 >
                   <span className="font-medium">{isAr ? s.ar : s.en}</span>
-                  <span className="text-[12px] text-muted-foreground block">×{s.multiplier}</span>
+                  <span className="text-xs text-muted-foreground block">×{s.multiplier}</span>
                 </button>
               ))}
             </div>
@@ -228,14 +228,14 @@ export default function LayoutSpacingPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-xs">{isAr ? "تباعد الأقسام" : "Section Gap"}</Label>
-                  <Badge variant="outline" className="text-[12px] font-mono">{layout.sectionGap}px</Badge>
+                  <Badge variant="outline" className="text-xs font-mono">{layout.sectionGap}px</Badge>
                 </div>
                 <Slider value={[layout.sectionGap]} onValueChange={([v]) => setLayout({ ...layout, sectionGap: v })} min={16} max={96} step={4} />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-xs">{isAr ? "حشو البطاقات" : "Card Padding"}</Label>
-                  <Badge variant="outline" className="text-[12px] font-mono">{layout.cardPadding}px</Badge>
+                  <Badge variant="outline" className="text-xs font-mono">{layout.cardPadding}px</Badge>
                 </div>
                 <Slider value={[layout.cardPadding]} onValueChange={([v]) => setLayout({ ...layout, cardPadding: v })} min={8} max={48} step={4} />
               </div>

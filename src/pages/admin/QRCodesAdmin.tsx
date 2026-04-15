@@ -139,7 +139,7 @@ export default function QRCodesAdmin() {
             <CardContent className="flex items-center gap-2.5 p-3 sm:p-4">
               <div className={`flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-xl shrink-0 transition-transform duration-300 group-hover:scale-110 ${s.bg} ${s.color}`}>{s.icon}</div>
               <div className="min-w-0">
-                <p className="text-[12px] sm:text-xs text-muted-foreground">{s.label}</p>
+                <p className="text-xs sm:text-xs text-muted-foreground">{s.label}</p>
                 <p className="text-sm sm:text-lg font-bold truncate">{s.value}</p>
               </div>
             </CardContent>
@@ -204,14 +204,14 @@ export default function QRCodesAdmin() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="font-mono text-xs tracking-wider truncate">{qr.code}</span>
-                        <Badge variant={qr.is_active ? "default" : "destructive"} className="text-[12px] px-1.5 py-0 shrink-0">
+                        <Badge variant={qr.is_active ? "default" : "destructive"} className="text-xs px-1.5 py-0 shrink-0">
                           {qr.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Off")}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <Badge variant="outline" className="text-[12px] px-1.5 py-0">{qr.entity_type}</Badge>
-                        <Badge variant="secondary" className="text-[12px] px-1.5 py-0">{categoryLabel(qr.category)}</Badge>
-                        <span className="text-[12px] text-muted-foreground">{qr.scan_count} scans</span>
+                        <Badge variant="outline" className="text-xs px-1.5 py-0">{qr.entity_type}</Badge>
+                        <Badge variant="secondary" className="text-xs px-1.5 py-0">{categoryLabel(qr.category)}</Badge>
+                        <span className="text-xs text-muted-foreground">{qr.scan_count} scans</span>
                       </div>
                     </div>
                     <div className="flex gap-0.5 shrink-0">
@@ -254,14 +254,14 @@ export default function QRCodesAdmin() {
                         <TableCell>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="text-[12px]">{qr.entity_type}</Badge>
+                          <Badge variant="outline" className="text-xs">{qr.entity_type}</Badge>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="secondary" className="text-[12px]">{categoryLabel(qr.category)}</Badge>
+                          <Badge variant="secondary" className="text-xs">{categoryLabel(qr.category)}</Badge>
                         </TableCell>
                         <TableCell className="text-center font-medium">{qr.scan_count}</TableCell>
                         <TableCell>
-                          <Badge variant={qr.is_active ? "default" : "destructive"} className="text-[12px]">
+                          <Badge variant={qr.is_active ? "default" : "destructive"} className="text-xs">
                             {qr.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "معطل" : "Inactive")}
                           </Badge>
                         </TableCell>

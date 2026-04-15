@@ -112,7 +112,7 @@ export const BookmarkCollections = memo(function BookmarkCollections({ postId }:
         <Button
           variant="ghost"
           size="sm"
-          className="h-7 gap-1 rounded-full px-2 text-[12px] text-muted-foreground hover:text-primary hover:bg-primary/10"
+          className="h-7 gap-1 rounded-full px-2 text-xs text-muted-foreground hover:text-primary hover:bg-primary/10"
         >
           <FolderPlus className="h-3.5 w-3.5" />
         </Button>

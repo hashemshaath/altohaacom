@@ -90,7 +90,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-chart-3 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-chart-3" />
           </span>
-          <span className="text-[10px] font-semibold text-chart-3">{isAr ? "متصل" : "Online"}</span>
+          <span className="text-[0.625rem] font-semibold text-chart-3">{isAr ? "متصل" : "Online"}</span>
         </div>
       </div>
 
@@ -106,25 +106,25 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
               <h3 className="text-sm font-bold truncate">{name || profile.username}</h3>
               {profile.is_verified && <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" />}
             </div>
-            {jobTitle && <p className="text-[11px] text-muted-foreground truncate">{jobTitle}</p>}
-            {profile.username && <p className="text-[11px] text-muted-foreground/70">@{profile.username}</p>}
+            {jobTitle && <p className="text-[0.6875rem] text-muted-foreground truncate">{jobTitle}</p>}
+            {profile.username && <p className="text-[0.6875rem] text-muted-foreground/70">@{profile.username}</p>}
           </div>
         </div>
 
         {/* Badges */}
         <div className="flex flex-wrap gap-1.5 mb-3">
           <MembershipBadge tier={profile.membership_tier} isAr={isAr} size="sm" />
-          <Badge variant="outline" className="text-[10px] gap-1 px-1.5 py-0.5">
+          <Badge variant="outline" className="text-[0.625rem] gap-1 px-1.5 py-0.5">
             {isPro ? <Briefcase className="h-2.5 w-2.5" /> : <Users className="h-2.5 w-2.5" />}
             {isPro ? (isAr ? "محترف" : "Pro") : (isAr ? "عادي" : "Regular")}
           </Badge>
           {spec && (
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 truncate max-w-[120px]">
+            <Badge variant="secondary" className="text-[0.625rem] px-1.5 py-0.5 truncate max-w-[120px]">
               {spec}
             </Badge>
           )}
           {profile.city && (
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 gap-0.5">
+            <Badge variant="secondary" className="text-[0.625rem] px-1.5 py-0.5 gap-0.5">
               <MapPin className="h-2 w-2" />{profile.city}
             </Badge>
           )}
@@ -137,7 +137,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
               <div className="text-sm font-bold tabular-nums group-hover/stat:text-primary transition-colors">
                 <AnimatedCounter value={s.value} />
               </div>
-              <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
+              <div className="text-[0.625rem] text-muted-foreground uppercase font-semibold tracking-wide">{s.label}</div>
             </div>
           ))}
         </div>
@@ -151,7 +151,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
                 <div key={s.label} className="flex flex-col items-center gap-0.5 bg-muted/20 rounded-xl py-2 border border-border/20 hover:bg-muted/40 transition-all">
                   <Icon className={`h-3 w-3 ${s.color}`} />
                   <span className="text-xs font-bold tabular-nums">{s.value}</span>
-                  <span className="text-[10px] text-muted-foreground uppercase tracking-wide">{s.label}</span>
+                  <span className="text-[0.625rem] text-muted-foreground uppercase tracking-wide">{s.label}</span>
                 </div>
               );
             })}
@@ -163,13 +163,13 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
           {(profile as any).years_of_experience > 0 && (
             <div className="flex-1 flex items-center gap-1.5 bg-accent/10 rounded-xl px-2.5 py-1.5 border border-accent/15">
               <ChefHat className="h-3 w-3 text-accent-foreground/70" />
-              <span className="text-[10px] font-bold">{(profile as any).years_of_experience} {isAr ? "سنة خبرة" : "yrs exp"}</span>
+              <span className="text-[0.625rem] font-bold">{(profile as any).years_of_experience} {isAr ? "سنة خبرة" : "yrs exp"}</span>
             </div>
           )}
           {(profile.loyalty_points || 0) > 0 && (
             <div className="flex-1 flex items-center gap-1.5 bg-chart-4/10 rounded-xl px-2.5 py-1.5 border border-chart-4/15">
               <Star className="h-3 w-3 text-chart-4" />
-              <span className="text-[10px] font-bold"><AnimatedCounter value={profile.loyalty_points || 0} /> {isAr ? "نقطة" : "pts"}</span>
+              <span className="text-[0.625rem] font-bold"><AnimatedCounter value={profile.loyalty_points || 0} /> {isAr ? "نقطة" : "pts"}</span>
             </div>
           )}
         </div>

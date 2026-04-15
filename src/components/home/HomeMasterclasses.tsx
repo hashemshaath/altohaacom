@@ -152,19 +152,19 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
                     )}
                     <div className="absolute end-2 top-2 flex gap-1.5 flex-wrap justify-end">
                       {mc.is_free && (
-                        <Badge className="bg-chart-2/90 text-[12px] shadow-sm">
+                        <Badge className="bg-chart-2/90 text-xs shadow-sm">
                           {isAr ? "مجاني" : "Free"}
                         </Badge>
                       )}
                       {levelLabel && (
-                        <Badge variant="outline" className={cn("text-[12px] border", levelLabel.color)}>
+                        <Badge variant="outline" className={cn("text-xs border", levelLabel.color)}>
                           {isAr ? levelLabel.ar : levelLabel.en}
                         </Badge>
                       )}
                     </div>
                     {!mc.is_free && mc.price && (
                       <div className="absolute start-2 bottom-2">
-                        <Badge variant="outline" className="bg-background/80 backdrop-blur-sm text-[12px] font-bold shadow-sm">
+                        <Badge variant="outline" className="bg-background/80 backdrop-blur-sm text-xs font-bold shadow-sm">
                           {mc.currency || "$"} {mc.price}
                         </Badge>
                       </div>
@@ -172,13 +172,13 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
                   </div>
                   <CardContent className="p-3">
                     <div className="mb-1.5">
-                      {mc.category && <Badge variant="outline" className="text-[12px] mb-1">{(() => {
+                      {mc.category && <Badge variant="outline" className="text-xs mb-1">{(() => {
                         const cl = MC_CAT_LABELS[mc.category.toLowerCase()];
                         return cl ? (isAr ? cl.ar : cl.en) : mc.category;
                       })()}</Badge>}
                       <h3 className="line-clamp-2 text-sm font-bold text-foreground group-hover:text-primary transition-colors leading-snug">{title}</h3>
                     </div>
-                    <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
                       {mc.duration_hours && (
                         <span className="flex items-center gap-1">
                           <Clock className="h-3 w-3 text-primary/50" />
@@ -186,7 +186,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
                         </span>
                       )}
                       {mc.status === "upcoming" && (
-                        <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
+                        <Badge variant="secondary" className="text-xs px-1.5 py-0">
                           {isAr ? "قريباً" : "Coming Soon"}
                         </Badge>
                       )}

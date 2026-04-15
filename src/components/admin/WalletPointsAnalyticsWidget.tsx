@@ -76,7 +76,7 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
             </div>
             {isAr ? "المحافظ والنقاط" : "Wallets & Points"}
           </CardTitle>
-          <Badge variant="outline" className="text-[12px] rounded-lg">{data.totalWallets} {isAr ? "محفظة" : "wallets"}</Badge>
+          <Badge variant="outline" className="text-xs rounded-lg">{data.totalWallets} {isAr ? "محفظة" : "wallets"}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-3 space-y-3">
@@ -90,10 +90,10 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
             <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
-                <span className="text-[12px] text-muted-foreground">{m.label}</span>
+                <span className="text-xs text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-sm font-bold">{m.value}</p>
-              {m.sub && <p className="text-[12px] text-muted-foreground">{m.sub}</p>}
+              {m.sub && <p className="text-xs text-muted-foreground">{m.sub}</p>}
             </div>
           ))}
         </div>
@@ -101,14 +101,14 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
         {/* Wallet utilization */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[12px] text-muted-foreground">{isAr ? "نسبة المحافظ النشطة" : "Active Wallet Rate"}</span>
-            <span className="text-[12px] font-medium">{data.walletUtilization}%</span>
+            <span className="text-xs text-muted-foreground">{isAr ? "نسبة المحافظ النشطة" : "Active Wallet Rate"}</span>
+            <span className="text-xs font-medium">{data.walletUtilization}%</span>
           </div>
           <Progress value={data.walletUtilization} className="h-1.5" />
         </div>
 
         {/* Points stats */}
-        <div className="flex flex-wrap gap-2 text-[12px]">
+        <div className="flex flex-wrap gap-2 text-xs">
           <span className="flex items-center gap-1 text-chart-2"><Star className="h-3 w-3" /> {fmt(data.pointsEarned)} {isAr ? "نقطة مكتسبة (30ي)" : "earned (30d)"}</span>
           <span className="flex items-center gap-1 text-chart-4"><Gift className="h-3 w-3" /> {fmt(data.pointsRedeemed)} {isAr ? "مستبدلة" : "redeemed"}</span>
           <span className="flex items-center gap-1 text-primary"><Users className="h-3 w-3" /> {data.activeWallets} {isAr ? "نشطة" : "active"}</span>
@@ -118,7 +118,7 @@ export const WalletPointsAnalyticsWidget = memo(function WalletPointsAnalyticsWi
         {Object.keys(data.actionCounts).length > 0 && (
           <div className="flex flex-wrap gap-1">
             {Object.entries(data.actionCounts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([type, count]) => (
-              <Badge key={type} variant="outline" className="text-[12px] gap-0.5">
+              <Badge key={type} variant="outline" className="text-xs gap-0.5">
                 {type}: {count}
               </Badge>
             ))}

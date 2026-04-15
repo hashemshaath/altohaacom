@@ -147,10 +147,10 @@ export function SEOAuditPanel() {
               <div className="flex gap-2 text-xs">
                 {latestAudit.summary && (
                   <>
-                    <Badge variant="destructive" className="text-[12px]">
+                    <Badge variant="destructive" className="text-xs">
                       {(latestAudit.summary as any).errors || 0} {isAr ? "أخطاء" : "errors"}
                     </Badge>
-                    <Badge className="text-[12px] bg-amber-500/10 text-amber-700 border-amber-500/20">
+                    <Badge className="text-xs bg-amber-500/10 text-amber-700 border-amber-500/20">
                       {(latestAudit.summary as any).warnings || 0} {isAr ? "تحذيرات" : "warnings"}
                     </Badge>
                   </>
@@ -206,7 +206,7 @@ export function SEOAuditPanel() {
                       <p className="text-xs font-medium">
                         {audit.completed_at ? format(new Date(audit.completed_at), "MMM d, yyyy HH:mm") : "Running..."}
                       </p>
-                      <p className="text-[12px] text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {String(summary?.pages_audited || 0)} {isAr ? "صفحة" : "pages"} · {audit.issues_found || 0} {isAr ? "مشكلة" : "issues"}
                       </p>
                     </div>
@@ -232,10 +232,10 @@ export function SEOAuditPanel() {
                           <Icon className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
-                              <code className="text-[12px] font-mono bg-background/50 px-1.5 py-0.5 rounded">
+                              <code className="text-xs font-mono bg-background/50 px-1.5 py-0.5 rounded">
                                 {issue.page_path}
                               </code>
-                              <Badge variant="outline" className="text-[12px] h-4">
+                              <Badge variant="outline" className="text-xs h-4">
                                 {issue.issue_type.replace(/_/g, " ")}
                               </Badge>
                             </div>

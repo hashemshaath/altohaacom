@@ -23,7 +23,7 @@ export const ExhibitionWinningDishesTab = memo(function ExhibitionWinningDishesT
                 <img src={dish.dish_image_url} alt={dish.dish_name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                 <div className="absolute top-3 start-3"><Badge className="bg-chart-4/90 text-chart-4-foreground text-sm font-bold shadow-md">{medal}</Badge></div>
-                <div className="absolute bottom-3 start-3 end-3"><p className="font-bold text-lg leading-tight text-white drop-shadow-md">{dish.dish_name}</p></div>
+                <div className="absolute bottom-3 start-3 end-3"><p className="font-bold text-lg leading-tight text-primary-foreground drop-shadow-md">{dish.dish_name}</p></div>
               </div>
             ) : (
               <div className="relative h-32 bg-gradient-to-br from-chart-4/20 via-chart-4/10 to-background flex items-center justify-center">
@@ -39,7 +39,7 @@ export const ExhibitionWinningDishesTab = memo(function ExhibitionWinningDishesT
                 <span className="text-sm font-medium truncate">{participantName}</span>
               </div>
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-[12px]">{compTitle}</Badge>
+                <Badge variant="outline" className="text-xs">{compTitle}</Badge>
                 <span className="text-xs font-bold text-chart-4">{dish.totalScore.toFixed(1)} {isAr ? "نقطة" : "pts"}</span>
               </div>
             </CardContent>

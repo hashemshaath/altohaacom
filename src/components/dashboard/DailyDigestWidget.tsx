@@ -108,7 +108,7 @@ export const DailyDigestWidget = memo(function DailyDigestWidget() {
         <CardTitle className="text-sm flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
           {isAr ? "ملخصك اليوم" : "Your Daily Digest"}
-          <Badge variant="secondary" className="text-[12px] px-1.5 ms-auto">
+          <Badge variant="secondary" className="text-xs px-1.5 ms-auto">
             {items.length} {isAr ? "عنصر" : "items"}
           </Badge>
         </CardTitle>

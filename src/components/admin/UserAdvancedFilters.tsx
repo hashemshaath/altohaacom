@@ -50,7 +50,7 @@ export const UserAdvancedFilters = memo(function UserAdvancedFilters({ filters, 
           <Filter className="h-3.5 w-3.5" />
           {isAr ? "فلاتر متقدمة" : "Advanced Filters"}
           {activeCount > 0 && (
-            <Badge variant="default" className="ms-1 h-5 w-5 rounded-full p-0 text-[12px] flex items-center justify-center">
+            <Badge variant="default" className="ms-1 h-5 w-5 rounded-full p-0 text-xs flex items-center justify-center">
               {activeCount}
             </Badge>
           )}

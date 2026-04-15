@@ -123,13 +123,13 @@ export const CompanyActivityFeed = memo(function CompanyActivityFeed({ companyId
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{activity.title}</p>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="text-[12px] text-muted-foreground">
+                      <span className="text-xs text-muted-foreground">
                         {formatDistanceToNow(new Date(activity.time), { addSuffix: true, locale: isAr ? ar : enUS })}
                       </span>
                     </div>
                   </div>
                   {activity.status && (
-                    <Badge variant="outline" className={`text-[12px] ${getStatusColor(activity.status)}`}>
+                    <Badge variant="outline" className={`text-xs ${getStatusColor(activity.status)}`}>
                       {activity.status}
                     </Badge>
                   )}

@@ -27,7 +27,7 @@ const CHART_COLORS = [
 
 interface Props {
   organizerId: string;
-  exhibitions: any[];
+  exhibitions: Record<string, unknown>[];
 }
 
 const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId, exhibitions }: Props) {
@@ -143,7 +143,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
       {eventsOverTime.length > 0 && (
         <Card className="rounded-2xl border-border/40">
           <CardContent className="p-3">
-            <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               {isAr ? "المعارض شهرياً (12 شهر)" : "Events per Month (12m)"}
             </p>
             <ResponsiveContainer width="100%" height={140}>
@@ -162,7 +162,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
       {viewsTrend.length > 1 && (
         <Card className="rounded-2xl border-border/40">
           <CardContent className="p-3">
-            <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
               {isAr ? "اتجاه المشاهدات" : "Views Trend"}
             </p>
             <ResponsiveContainer width="100%" height={120}>
@@ -183,7 +183,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
         {statusDist.length > 0 && (
           <Card className="rounded-2xl border-border/40">
             <CardContent className="p-3">
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                 {isAr ? "توزيع الحالة" : "Status"}
               </p>
               <ResponsiveContainer width="100%" height={100}>
@@ -198,7 +198,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
               </ResponsiveContainer>
               <div className="flex flex-wrap gap-1 mt-1">
                 {statusDist.map((s, i) => (
-                  <Badge key={s.name} variant="outline" className="text-[12px] gap-0.5">
+                  <Badge key={s.name} variant="outline" className="text-xs gap-0.5">
                     <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
                     {s.name} ({s.value})
                   </Badge>
@@ -211,15 +211,15 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
         {countryDist.length > 0 && (
           <Card className="rounded-2xl border-border/40">
             <CardContent className="p-3">
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                 {isAr ? "التوزيع الجغرافي" : "Geography"}
               </p>
               <div className="space-y-1.5">
                 {countryDist.map((c, i) => (
                   <div key={c.name} className="flex items-center gap-2">
                     <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
-                    <span className="text-[12px] truncate flex-1">{c.name}</span>
-                    <Badge variant="secondary" className="text-[12px] h-4">{c.value}</Badge>
+                    <span className="text-xs truncate flex-1">{c.name}</span>
+                    <Badge variant="secondary" className="text-xs h-4">{c.value}</Badge>
                   </div>
                 ))}
               </div>

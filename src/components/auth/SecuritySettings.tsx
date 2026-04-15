@@ -230,7 +230,7 @@ export const SecuritySettings = memo(function SecuritySettings() {
                             {s.device_name || (isAr ? "جهاز غير معروف" : "Unknown Device")}
                           </p>
                           {isCurrent && (
-                            <Badge variant="default" className="text-[12px] px-1.5 py-0">
+                            <Badge variant="default" className="text-xs px-1.5 py-0">
                               {isAr ? "الحالية" : "Current"}
                             </Badge>
                           )}
@@ -239,12 +239,12 @@ export const SecuritySettings = memo(function SecuritySettings() {
                           {s.device_os && <span>{s.device_os}</span>}
                           {s.ip_address && <span>• {s.ip_address}</span>}
                           {s.login_method && (
-                            <Badge variant="outline" className="text-[12px] px-1 py-0">
+                            <Badge variant="outline" className="text-xs px-1 py-0">
                               {s.login_method}
                             </Badge>
                           )}
                         </div>
-                        <p className="text-[12px] text-muted-foreground mt-0.5">
+                        <p className="text-xs text-muted-foreground mt-0.5">
                           {isAr ? "آخر نشاط: " : "Last active: "}
                           {formatDistanceToNow(new Date(s.last_active_at), {
                             addSuffix: true,

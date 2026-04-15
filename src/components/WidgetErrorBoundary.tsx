@@ -62,7 +62,7 @@ export class WidgetErrorBoundary extends React.Component<Props, State> {
               {isAr ? "تعذّر تحميل هذا القسم" : "This section couldn't load"}
             </p>
             {this.props.name && (
-              <p className="text-[12px] text-muted-foreground/50">{this.props.name}</p>
+              <p className="text-xs text-muted-foreground/50">{this.props.name}</p>
             )}
             <Button
               variant="outline"

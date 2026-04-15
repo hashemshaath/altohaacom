@@ -162,7 +162,7 @@ export const CreateGroupDialog = memo(function CreateGroupDialog({ open, onOpenC
                       <p className="text-sm font-medium truncate">{u.display_name || u.full_name || "Unknown"}</p>
                       {u.username && <p className="text-xs text-muted-foreground">@{u.username}</p>}
                     </div>
-                    {selected && <Badge className="text-[12px]">{isAr ? "محدد" : "Added"}</Badge>}
+                    {selected && <Badge className="text-xs">{isAr ? "محدد" : "Added"}</Badge>}
                   </button>
                 );
               })}

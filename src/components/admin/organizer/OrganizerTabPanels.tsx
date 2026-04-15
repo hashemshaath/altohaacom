@@ -39,14 +39,14 @@ export const ImagesTab = memo(function ImagesTab({ form, setForm, isAr, d }: Tab
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-xs font-medium flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-primary" />{isAr ? "الشعار" : "Logo"}</Label>
-              {form.logo_url && <Badge variant="outline" className="text-[12px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
+              {form.logo_url && <Badge variant="outline" className="text-xs h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
             </div>
             <input ref={d.logoRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) d.handleImageUpload(file, "logo"); }} />
             {form.logo_url ? (
               <div className="flex items-center gap-4">
                 <img src={form.logo_url} alt="Logo" className="h-20 w-20 rounded-2xl object-cover shrink-0 border shadow-sm" loading="lazy" />
                 <div className="flex-1 min-w-0 space-y-2">
-                  <p className="text-[12px] text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
+                  <p className="text-xs text-muted-foreground truncate">{form.logo_url.split("/").pop()}</p>
                   <div className="flex gap-2">
                     <Button type="button" variant="outline" size="sm" className="h-7 text-xs rounded-lg" onClick={() => d.logoRef.current?.click()}>{isAr ? "تغيير" : "Change"}</Button>
                     <Button type="button" variant="ghost" size="sm" className="h-7 text-xs text-destructive rounded-lg" onClick={() => setForm(f => ({ ...f, logo_url: "" }))}><X className="h-3.5 w-3.5" /></Button>
@@ -69,7 +69,7 @@ export const ImagesTab = memo(function ImagesTab({ form, setForm, isAr, d }: Tab
           <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between">
               <Label className="text-xs font-medium flex items-center gap-1.5"><ImageIcon className="h-3.5 w-3.5 text-primary" />{isAr ? "صورة الغلاف" : "Cover Image"}</Label>
-              {form.cover_image_url && <Badge variant="outline" className="text-[12px] h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
+              {form.cover_image_url && <Badge variant="outline" className="text-xs h-4"><FileCheck className="h-2.5 w-2.5 me-1" />{isAr ? "مرفوع" : "Uploaded"}</Badge>}
             </div>
             <input ref={d.coverRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) d.handleImageUpload(file, "cover"); }} />
             {form.cover_image_url ? (
@@ -96,7 +96,7 @@ export const ImagesTab = memo(function ImagesTab({ form, setForm, isAr, d }: Tab
       <Card className="rounded-2xl">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
-            <Label className="text-xs font-medium">{isAr ? "معرض الصور" : "Photo Gallery"} <Badge variant="outline" className="text-[12px] h-4 ms-1">{form.gallery_urls.length}</Badge></Label>
+            <Label className="text-xs font-medium">{isAr ? "معرض الصور" : "Photo Gallery"} <Badge variant="outline" className="text-xs h-4 ms-1">{form.gallery_urls.length}</Badge></Label>
             <input ref={d.galleryRef} type="file" accept="image/*" className="hidden" onChange={e => { const file = e.target.files?.[0]; if (file) d.handleImageUpload(file, "gallery"); }} />
             <Button type="button" variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-lg" onClick={() => d.galleryRef.current?.click()} disabled={d.uploadingGallery}>
               {d.uploadingGallery ? <Loader2 className="h-3 w-3 animate-spin" /> : <Plus className="h-3 w-3" />}
@@ -118,7 +118,7 @@ export const ImagesTab = memo(function ImagesTab({ form, setForm, isAr, d }: Tab
           ) : (
             <div className="rounded-xl border-2 border-dashed border-border/40 p-6 text-center text-muted-foreground/60">
               <ImageIcon className="h-6 w-6 mx-auto mb-1" />
-              <p className="text-[12px]">{isAr ? "لا توجد صور في المعرض" : "No gallery photos yet"}</p>
+              <p className="text-xs">{isAr ? "لا توجد صور في المعرض" : "No gallery photos yet"}</p>
             </div>
           )}
         </CardContent>
@@ -149,7 +149,7 @@ export const ContactTab = memo(function ContactTab({ form, setForm, formErrors, 
       {(form.email || form.phone || form.website) && (
         <Card className="rounded-2xl bg-muted/30">
           <CardContent className="p-4">
-            <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معاينة سريعة" : "Quick Preview"}</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معاينة سريعة" : "Quick Preview"}</p>
             <div className="flex flex-wrap gap-3">
               {form.email && <a href={`mailto:${form.email}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline"><Mail className="h-3.5 w-3.5" />{form.email}</a>}
               {form.phone && <a href={`tel:${form.phone}`} className="flex items-center gap-1.5 text-xs text-primary hover:underline"><Phone className="h-3.5 w-3.5" />{form.phone}</a>}
@@ -240,7 +240,7 @@ export const TeamTab = memo(function TeamTab({ form, isAr, d }: TabProps) {
                   <div className="flex items-center gap-2">
                     <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center"><Users className="h-3.5 w-3.5 text-primary" /></div>
                     <span className="text-xs font-medium">{c.name || c.name_ar || `${isAr ? "جهة اتصال" : "Contact"} ${i + 1}`}</span>
-                    {c.role && <Badge variant="outline" className="text-[12px] h-4">{c.role}</Badge>}
+                    {c.role && <Badge variant="outline" className="text-xs h-4">{c.role}</Badge>}
                   </div>
                   <Button type="button" variant="ghost" size="icon" className="h-7 w-7 text-destructive rounded-lg" onClick={() => d.removeContact(i)}><Trash2 className="h-3.5 w-3.5" /></Button>
                 </div>
@@ -287,7 +287,7 @@ export const SocialTab = memo(function SocialTab({ form, setForm, isAr, d }: Tab
                   <s.icon className={cn("h-4 w-4", val ? "text-primary" : "text-muted-foreground")} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <Label className="text-[12px] font-medium text-muted-foreground">{s.label}</Label>
+                  <Label className="text-xs font-medium text-muted-foreground">{s.label}</Label>
                   <Input value={val} onChange={e => setForm(f => ({ ...f, [s.key]: e.target.value }))} placeholder={s.ph} dir="ltr" className="h-8 text-xs mt-1" />
                 </div>
                 {val && <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />}
@@ -296,7 +296,7 @@ export const SocialTab = memo(function SocialTab({ form, setForm, isAr, d }: Tab
           );
         })}
       </div>
-      <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+      <div className="flex items-center gap-2 text-xs text-muted-foreground">
         <Progress value={(d.socialProfiles / 8) * 100} className="h-1.5 w-20" />
         {d.socialProfiles}/8 {isAr ? "حسابات مرتبطة" : "profiles linked"}
       </div>
@@ -337,7 +337,7 @@ export const SettingsTab = memo(function SettingsTab({ form, setForm, isAr }: Ta
               </div>
               <div>
                 <Label className="text-xs font-medium">{isAr ? "موثق" : "Verified"}</Label>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "جهة موثقة رسمياً" : "Officially verified"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "جهة موثقة رسمياً" : "Officially verified"}</p>
               </div>
             </div>
             <Switch checked={form.is_verified} onCheckedChange={v => setForm(f => ({ ...f, is_verified: v }))} />
@@ -351,7 +351,7 @@ export const SettingsTab = memo(function SettingsTab({ form, setForm, isAr }: Ta
               </div>
               <div>
                 <Label className="text-xs font-medium">{isAr ? "مميز" : "Featured"}</Label>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "يظهر في الواجهة" : "Appears prominently"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "يظهر في الواجهة" : "Appears prominently"}</p>
               </div>
             </div>
             <Switch checked={form.is_featured} onCheckedChange={v => setForm(f => ({ ...f, is_featured: v }))} />

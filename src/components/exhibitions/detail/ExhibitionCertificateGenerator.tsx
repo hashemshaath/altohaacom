@@ -117,25 +117,25 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
             </div>
             <div>
               <CardTitle className="text-sm">{t("Exhibition Certificates", "شهادات المعرض")}</CardTitle>
-              <p className="text-[12px] text-muted-foreground">{t("Auto-generate for checked-in attendees", "إنشاء تلقائي للحضور المسجلين")}</p>
+              <p className="text-xs text-muted-foreground">{t("Auto-generate for checked-in attendees", "إنشاء تلقائي للحضور المسجلين")}</p>
             </div>
           </div>
-          <Badge variant="secondary" className="text-[12px]">{existingCerts.length} {t("issued", "صادرة")}</Badge>
+          <Badge variant="secondary" className="text-xs">{existingCerts.length} {t("issued", "صادرة")}</Badge>
         </div>
       </CardHeader>
       <CardContent className="px-4 pb-4 space-y-3">
         {/* Stats */}
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className="text-[12px] gap-1">
+          <Badge variant="outline" className="text-xs gap-1">
             <CheckCircle2 className="h-2.5 w-2.5 text-chart-3" />
             {checkedInTickets.length} {t("checked in", "حضور مسجل")}
           </Badge>
-          <Badge variant="outline" className="text-[12px] gap-1">
+          <Badge variant="outline" className="text-xs gap-1">
             <Award className="h-2.5 w-2.5 text-chart-4" />
             {existingCerts.length} {t("certificates issued", "شهادة صادرة")}
           </Badge>
           {eligibleAttendees.length > 0 && (
-            <Badge className="bg-primary/10 text-primary text-[12px] gap-1">
+            <Badge className="bg-primary/10 text-primary text-xs gap-1">
               <AlertCircle className="h-2.5 w-2.5" />
               {eligibleAttendees.length} {t("eligible for new certificates", "مؤهل لشهادة جديدة")}
             </Badge>

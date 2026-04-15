@@ -257,11 +257,11 @@ export default function CostCenterAdmin() {
           <div className="flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-lg font-bold">{selectedEstimate.title}</h2>
-              <Badge className={`text-[12px] ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
-              <Badge variant="outline" className="text-[12px]">{isAr ? mt.ar : mt.en}</Badge>
+              <Badge className={`text-xs ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
+              <Badge variant="outline" className="text-xs">{isAr ? mt.ar : mt.en}</Badge>
               <span className="text-xs text-muted-foreground font-mono">{selectedEstimate.estimate_number}</span>
               {selectedEstimate.version > 1 && (
-                <Badge variant="secondary" className="text-[12px]">v{selectedEstimate.version}</Badge>
+                <Badge variant="secondary" className="text-xs">v{selectedEstimate.version}</Badge>
               )}
             </div>
             {selectedEstimate.module_title && (
@@ -328,7 +328,7 @@ export default function CostCenterAdmin() {
           ].map((s, i) => (
             <Card key={i} className={`border-border/40 ${s.highlight ? "border-primary/30 bg-primary/5" : ""}`}>
               <CardContent className="p-4 text-center">
-                <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">{s.label}</p>
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{s.label}</p>
                 <p className={`text-xl font-black tabular-nums mt-1 ${s.highlight ? "text-primary" : ""}`}>
                   {s.value.toLocaleString()} <span className="text-xs">{selectedEstimate.currency}</span>
                 </p>
@@ -343,7 +343,7 @@ export default function CostCenterAdmin() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm flex items-center gap-2">
                 <FileText className="h-4 w-4" />{isAr ? "بنود التكلفة" : "Cost Items"}
-                <Badge variant="outline" className="text-[12px]">{selectedItems.length}</Badge>
+                <Badge variant="outline" className="text-xs">{selectedItems.length}</Badge>
               </CardTitle>
               <div className="flex items-center gap-1.5 print:hidden">
                 {templates.length > 0 && selectedEstimate.status === "draft" && (
@@ -377,7 +377,7 @@ export default function CostCenterAdmin() {
               <div className="p-4 border-b border-border/40 bg-muted/20 space-y-3">
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                   <div>
-                    <Label className="text-[12px]">{isAr ? "الفئة" : "Category"}</Label>
+                    <Label className="text-xs">{isAr ? "الفئة" : "Category"}</Label>
                     <Select value={editingItem.category || "miscellaneous"} onValueChange={v => setEditingItem(p => ({ ...p!, category: v as CostItemCategory }))}>
                       <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
@@ -388,33 +388,33 @@ export default function CostCenterAdmin() {
                     </Select>
                   </div>
                   <div className="md:col-span-2">
-                    <Label className="text-[12px]">{isAr ? "الوصف" : "Description"}</Label>
+                    <Label className="text-xs">{isAr ? "الوصف" : "Description"}</Label>
                     <Input className="h-8 text-xs" value={editingItem.title || ""} onChange={e => setEditingItem(p => ({ ...p!, title: e.target.value }))} />
                   </div>
                   <div>
-                    <Label className="text-[12px]">{isAr ? "الكمية" : "Qty"}</Label>
+                    <Label className="text-xs">{isAr ? "الكمية" : "Qty"}</Label>
                     <Input className="h-8 text-xs" type="number" min={0.1} step={0.5} value={editingItem.quantity || 1}
                       onChange={e => setEditingItem(p => ({ ...p!, quantity: +e.target.value }))} />
                   </div>
                   <div>
-                    <Label className="text-[12px]">{isAr ? "سعر الوحدة" : "Unit Price"}</Label>
+                    <Label className="text-xs">{isAr ? "سعر الوحدة" : "Unit Price"}</Label>
                     <Input className="h-8 text-xs" type="number" value={editingItem.unit_price || 0}
                       onChange={e => setEditingItem(p => ({ ...p!, unit_price: +e.target.value }))} />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   <div>
-                    <Label className="text-[12px]">{isAr ? "الوحدة" : "Unit"}</Label>
+                    <Label className="text-xs">{isAr ? "الوحدة" : "Unit"}</Label>
                     <Input className="h-8 text-xs" value={editingItem.unit || ""} placeholder={isAr ? "يوم/قطعة/ساعة" : "day/piece/hour"}
                       onChange={e => setEditingItem(p => ({ ...p!, unit: e.target.value }))} />
                   </div>
                   <div>
-                    <Label className="text-[12px]">{isAr ? "الدور" : "Role"}</Label>
+                    <Label className="text-xs">{isAr ? "الدور" : "Role"}</Label>
                     <Input className="h-8 text-xs" value={editingItem.person_role || ""} onChange={e => setEditingItem(p => ({ ...p!, person_role: e.target.value }))} />
                   </div>
                   <div className="md:col-span-2 flex items-end gap-2">
                     <div className="rounded-xl bg-primary/10 px-3 py-1 text-center flex-1">
-                      <span className="text-[12px] text-primary font-bold">{isAr ? "الإجمالي" : "Total"}: </span>
+                      <span className="text-xs text-primary font-bold">{isAr ? "الإجمالي" : "Total"}: </span>
                       <span className="font-black text-primary tabular-nums">
                         {((editingItem.quantity || 1) * (editingItem.unit_price || 0)).toLocaleString()} SAR
                       </span>
@@ -442,7 +442,7 @@ export default function CostCenterAdmin() {
                   return (
                     <div key={cat}>
                       <div className="px-4 py-2 bg-muted/30 border-y border-border/20 flex items-center justify-between">
-                        <span className="text-[12px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                           {isAr ? catMeta.ar : catMeta.en}
                         </span>
                         <span className="text-xs font-bold tabular-nums">{catTotal.toLocaleString()} SAR</span>
@@ -489,7 +489,7 @@ export default function CostCenterAdmin() {
             <CardContent className="p-0">
               <Table>
                 <TableHeader>
-                  <TableRow className="text-[12px]">
+                  <TableRow className="text-xs">
                     <TableHead>{isAr ? "الإجراء" : "Action"}</TableHead>
                     <TableHead>{isAr ? "التعليقات" : "Comments"}</TableHead>
                     <TableHead>{isAr ? "التاريخ" : "Date"}</TableHead>
@@ -499,7 +499,7 @@ export default function CostCenterAdmin() {
                   {approvalLog.map(log => (
                     <TableRow key={log.id} className="text-xs">
                       <TableCell>
-                        <Badge variant="outline" className="text-[12px] capitalize">{log.action}</Badge>
+                        <Badge variant="outline" className="text-xs capitalize">{log.action}</Badge>
                       </TableCell>
                       <TableCell className="text-muted-foreground">{log.comments || "—"}</TableCell>
                       <TableCell className="tabular-nums">{format(new Date(log.created_at), "MMM d, yyyy HH:mm")}</TableCell>
@@ -545,7 +545,7 @@ export default function CostCenterAdmin() {
             <CardContent className="p-4">
               <div className="flex items-center gap-2 mb-2">
                 <s.icon className={`h-4 w-4 ${s.color} ${(s as any).pulse ? "animate-pulse" : ""}`} />
-                <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">{s.label}</span>
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{s.label}</span>
               </div>
               <p className="text-lg font-black tabular-nums">{s.value}</p>
             </CardContent>
@@ -570,7 +570,7 @@ export default function CostCenterAdmin() {
             >
               <Icon className="h-4 w-4 mx-auto mb-1 text-muted-foreground transition-transform duration-300 group-hover:scale-110" />
               <p className="text-lg font-black tabular-nums">{count}</p>
-              <p className="text-[12px] text-muted-foreground font-bold uppercase tracking-wider">{isAr ? val.ar : val.en}</p>
+              <p className="text-xs text-muted-foreground font-bold uppercase tracking-wider">{isAr ? val.ar : val.en}</p>
             </button>
           );
         })}
@@ -583,7 +583,7 @@ export default function CostCenterAdmin() {
           </TabsTrigger>
           <TabsTrigger value="estimates" className="gap-1.5">
             <FileText className="h-3.5 w-3.5" />{isAr ? "التقديرات" : "Estimates"}
-            {stats.pending > 0 && <Badge variant="destructive" className="ms-1 h-5 min-w-5 px-1.5 text-[12px]">{stats.pending}</Badge>}
+            {stats.pending > 0 && <Badge variant="destructive" className="ms-1 h-5 min-w-5 px-1.5 text-xs">{stats.pending}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="budget" className="gap-1.5">
             <DollarSign className="h-3.5 w-3.5" />{isAr ? "تتبع الميزانية" : "Budget Tracking"}
@@ -746,9 +746,9 @@ export default function CostCenterAdmin() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <h3 className="font-bold text-sm truncate">{est.title}</h3>
-                            <Badge className={`text-[12px] ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
-                            <Badge variant="outline" className="text-[12px]">{isAr ? mt.ar : mt.en}</Badge>
-                            {est.version > 1 && <Badge variant="secondary" className="text-[12px]">v{est.version}</Badge>}
+                            <Badge className={`text-xs ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
+                            <Badge variant="outline" className="text-xs">{isAr ? mt.ar : mt.en}</Badge>
+                            {est.version > 1 && <Badge variant="secondary" className="text-xs">v{est.version}</Badge>}
                           </div>
                           <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
                             <span className="font-mono">{est.estimate_number}</span>
@@ -758,7 +758,7 @@ export default function CostCenterAdmin() {
                         </div>
                         <div className="text-end shrink-0">
                           <p className="text-lg font-black tabular-nums text-primary">{est.total_amount.toLocaleString()}</p>
-                          <p className="text-[12px] text-muted-foreground">{est.currency}</p>
+                          <p className="text-xs text-muted-foreground">{est.currency}</p>
                         </div>
                         <Eye className="h-4 w-4 text-muted-foreground shrink-0" />
                       </div>
@@ -807,21 +807,21 @@ export default function CostCenterAdmin() {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h4 className="font-bold text-sm">{isAr && t.name_ar ? t.name_ar : t.name}</h4>
-                          <Badge variant="outline" className="text-[12px] mt-1 gap-1">
+                          <Badge variant="outline" className="text-xs mt-1 gap-1">
                             <ModIcon className="h-2.5 w-2.5" />{isAr ? mt.ar : mt.en}
                           </Badge>
                         </div>
                         <div className="text-end">
                           <p className="text-sm font-black tabular-nums text-primary">{totalValue.toLocaleString()}</p>
-                          <p className="text-[12px] text-muted-foreground">SAR</p>
+                          <p className="text-xs text-muted-foreground">SAR</p>
                         </div>
                       </div>
                       {t.description && <p className="text-xs text-muted-foreground mt-2">{isAr && t.description_ar ? t.description_ar : t.description}</p>}
                       <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/20">
-                        <p className="text-[12px] text-muted-foreground">{t.items.length} {isAr ? "بنود" : "items"}</p>
+                        <p className="text-xs text-muted-foreground">{t.items.length} {isAr ? "بنود" : "items"}</p>
                         <div className="flex gap-1 flex-wrap">
                           {[...new Set(t.items.map(i => i.category))].slice(0, 3).map(cat => (
-                            <Badge key={cat} variant="secondary" className="text-[12px]">
+                            <Badge key={cat} variant="secondary" className="text-xs">
                               {isAr ? COST_ITEM_CATEGORIES[cat as CostItemCategory]?.ar : COST_ITEM_CATEGORIES[cat as CostItemCategory]?.en}
                             </Badge>
                           ))}

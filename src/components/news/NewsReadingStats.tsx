@@ -81,7 +81,7 @@ export const NewsReadingStats = memo(function NewsReadingStats({ isAr }: { isAr:
               <Trophy className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-semibold">{isAr ? level.titleAr : level.title}</span>
             </div>
-            <Badge variant="outline" className="text-[12px] px-1.5 border-primary/20 text-primary">
+            <Badge variant="outline" className="text-xs px-1.5 border-primary/20 text-primary">
               Lv.{level.level}
             </Badge>
           </div>
@@ -91,7 +91,7 @@ export const NewsReadingStats = memo(function NewsReadingStats({ isAr }: { isAr:
               style={{ width: `${level.progress}%` }}
             />
           </div>
-          <p className="text-[12px] text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-1">
             {level.progress < 100
               ? (isAr ? `${level.next - stats.articlesRead} مقال للمستوى التالي` : `${level.next - stats.articlesRead} articles to next level`)
               : (isAr ? "أعلى مستوى! 🎉" : "Max level! 🎉")}
@@ -103,28 +103,28 @@ export const NewsReadingStats = memo(function NewsReadingStats({ isAr }: { isAr:
           <div className="rounded-lg bg-muted/30 p-2.5 text-center">
             <BookOpen className="h-3.5 w-3.5 mx-auto text-muted-foreground mb-1" />
             <p className="text-lg font-bold tabular-nums">{stats.articlesRead}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "مقالات مقروءة" : "Articles Read"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "مقالات مقروءة" : "Articles Read"}</p>
           </div>
           <div className="rounded-lg bg-muted/30 p-2.5 text-center">
             <Clock className="h-3.5 w-3.5 mx-auto text-muted-foreground mb-1" />
             <p className="text-lg font-bold tabular-nums">{stats.totalMinutes}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "دقائق قراءة" : "Minutes Read"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "دقائق قراءة" : "Minutes Read"}</p>
           </div>
           <div className="rounded-lg bg-muted/30 p-2.5 text-center">
             <Flame className="h-3.5 w-3.5 mx-auto text-muted-foreground mb-1" />
             <p className="text-lg font-bold tabular-nums">{stats.streak}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "أيام متتالية" : "Day Streak"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "أيام متتالية" : "Day Streak"}</p>
           </div>
           <div className="rounded-lg bg-muted/30 p-2.5 text-center">
             <Target className="h-3.5 w-3.5 mx-auto text-muted-foreground mb-1" />
             <p className="text-lg font-bold tabular-nums">{(stats.totalWords / 1000).toFixed(1)}k</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "كلمات مقروءة" : "Words Read"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "كلمات مقروءة" : "Words Read"}</p>
           </div>
         </div>
 
         {/* Favorite type */}
         {stats.favoriteType && (
-          <div className="mt-2.5 flex items-center gap-2 text-[12px] text-muted-foreground">
+          <div className="mt-2.5 flex items-center gap-2 text-xs text-muted-foreground">
             <TrendingUp className="h-3 w-3" />
             {isAr ? "نوع مفضل:" : "Favorite:"} <span className="font-medium text-foreground capitalize">{stats.favoriteType}</span>
           </div>

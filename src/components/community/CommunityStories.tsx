@@ -61,7 +61,7 @@ export const CommunityStories = memo(function CommunityStories() {
                 <Plus className="h-3 w-3 text-primary-foreground" />
               </div>
             </div>
-            <span className="text-[10px] text-muted-foreground/70 font-medium w-14 text-center truncate">
+            <span className="text-[0.625rem] text-muted-foreground/70 font-medium w-14 text-center truncate">
               {isAr ? "قصتك" : "Your Story"}
             </span>
           </button>
@@ -83,7 +83,7 @@ export const CommunityStories = memo(function CommunityStories() {
                   {(name || "C")[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-[10px] text-muted-foreground/70 font-medium w-14 text-center truncate">
+              <span className="text-[0.625rem] text-muted-foreground/70 font-medium w-14 text-center truncate">
                 {name?.split(" ")[0] || "Chef"}
               </span>
             </button>

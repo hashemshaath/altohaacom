@@ -30,7 +30,7 @@ function StatCard({ icon: Icon, label, value, iconBg = "bg-primary/10", iconColo
           <div className="flex items-baseline gap-1.5">
             <AnimatedCounter value={value} className="text-xl sm:text-2xl font-black leading-none tracking-tight text-foreground tabular-nums group-hover:text-primary transition-colors" />
           </div>
-          <p className="mt-1 truncate text-[10px] sm:text-[11px] font-bold uppercase tracking-widest text-muted-foreground/80">{label}</p>
+          <p className="mt-1 truncate text-[0.625rem] sm:text-[0.6875rem] font-bold uppercase tracking-widest text-muted-foreground/80">{label}</p>
         </div>
       </CardContent>
     </Card>

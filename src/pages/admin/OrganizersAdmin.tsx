@@ -106,7 +106,7 @@ export default function OrganizersAdmin() {
       const matchVerified = verifiedFilter === "all" || (verifiedFilter === "verified" ? o.is_verified : !o.is_verified);
       return matchSearch && matchStatus && matchCountry && matchVerified;
     });
-    return list.sort((a: any, b: any) => {
+    return list.sort((a, b) => {
       let av = a[sortKey], bv = b[sortKey];
       if (typeof av === "string") av = av.toLowerCase();
       if (typeof bv === "string") bv = bv.toLowerCase();
@@ -123,22 +123,22 @@ export default function OrganizersAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: "Number", accessor: (o: any) => o.organizer_number },
-      { header: "Name", accessor: (o: any) => o.name },
-      { header: "Name (AR)", accessor: (o: any) => o.name_ar },
-      { header: "Email", accessor: (o: any) => o.email },
-      { header: "Phone", accessor: (o: any) => o.phone },
-      { header: "Website", accessor: (o: any) => o.website },
-      { header: "City", accessor: (o: any) => o.city },
-      { header: "Country", accessor: (o: any) => o.country },
-      { header: "Status", accessor: (o: any) => o.status },
-      { header: "Verified", accessor: (o: any) => o.is_verified ? "Yes" : "No" },
-      { header: "Featured", accessor: (o: any) => o.is_featured ? "Yes" : "No" },
-      { header: "Events", accessor: (o: any) => o.total_exhibitions || 0 },
-      { header: "Views", accessor: (o: any) => o.total_views || 0 },
-      { header: "Rating", accessor: (o: any) => o.average_rating || 0 },
-      { header: "Services", accessor: (o: any) => (o.services || []).join("; ") },
-      { header: "Founded", accessor: (o: any) => o.founded_year },
+      { header: "Number", accessor: (o) => o.organizer_number },
+      { header: "Name", accessor: (o) => o.name },
+      { header: "Name (AR)", accessor: (o) => o.name_ar },
+      { header: "Email", accessor: (o) => o.email },
+      { header: "Phone", accessor: (o) => o.phone },
+      { header: "Website", accessor: (o) => o.website },
+      { header: "City", accessor: (o) => o.city },
+      { header: "Country", accessor: (o) => o.country },
+      { header: "Status", accessor: (o) => o.status },
+      { header: "Verified", accessor: (o) => o.is_verified ? "Yes" : "No" },
+      { header: "Featured", accessor: (o) => o.is_featured ? "Yes" : "No" },
+      { header: "Events", accessor: (o) => o.total_exhibitions || 0 },
+      { header: "Views", accessor: (o) => o.total_views || 0 },
+      { header: "Rating", accessor: (o) => o.average_rating || 0 },
+      { header: "Services", accessor: (o) => (o.services || []).join("; ") },
+      { header: "Founded", accessor: (o) => o.founded_year },
     ],
     filename: "organizers",
   });
@@ -239,7 +239,7 @@ export default function OrganizersAdmin() {
     return sortDir === "asc" ? <ArrowUp className="h-3 w-3 text-primary" /> : <ArrowDown className="h-3 w-3 text-primary" />;
   };
 
-  const getProfileCompleteness = (org: any): number => {
+  const getProfileCompleteness = (org: NonNullable<typeof organizers>[number]): number => {
     let score = 0;
     const checks = [org.name, org.name_ar, org.email, org.phone, org.website, org.logo_url, org.cover_image_url, org.description, org.city, org.country, org.services?.length > 0, org.founded_year, org.social_links && Object.keys(org.social_links).length > 0];
     checks.forEach(c => { if (c) score++; });
@@ -378,7 +378,7 @@ export default function OrganizersAdmin() {
                 </SelectContent>
               </Select>
             )}
-            <Select value={verifiedFilter} onValueChange={(v) => setVerifiedFilter(v as any)}>
+            <Select value={verifiedFilter} onValueChange={(v) => setVerifiedFilter(v as "all" | "verified" | "unverified")}>
               <SelectTrigger className="w-28 h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>
@@ -425,7 +425,7 @@ export default function OrganizersAdmin() {
                       <div className="relative h-24 bg-gradient-to-br from-primary/20 to-primary/5">
                         {org.cover_image_url && <img src={org.cover_image_url} alt={org.name || "Organizer"} className="w-full h-full object-cover" loading="lazy" />}
                         <div className="absolute top-2 end-2 flex gap-1">
-                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[11px] h-5 capitalize">{org.status}</Badge>
+                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[0.6875rem] h-5 capitalize">{org.status}</Badge>
                         </div>
                         <div className="absolute -bottom-5 start-4">
                           <Avatar className="h-10 w-10 rounded-xl border-2 border-background shadow-md">
@@ -442,7 +442,7 @@ export default function OrganizersAdmin() {
                               {org.is_verified && <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />}
                               {org.is_featured && <Star className="h-3.5 w-3.5 text-chart-4 shrink-0" />}
                             </div>
-                            {org.organizer_number && <Badge variant="outline" className="text-[10px] h-4 font-mono px-1 mt-0.5">{org.organizer_number}</Badge>}
+                            {org.organizer_number && <Badge variant="outline" className="text-[0.625rem] h-4 font-mono px-1 mt-0.5">{org.organizer_number}</Badge>}
                           </div>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -461,7 +461,7 @@ export default function OrganizersAdmin() {
                         </div>
 
                         {(org.city || org.country) && (
-                          <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <div className="flex items-center gap-1 text-[0.6875rem] text-muted-foreground">
                             <MapPin className="h-3 w-3 shrink-0" />
                             <span className="truncate">{isAr ? `${org.city_ar || org.city || ""}${org.country_ar ? `, ${org.country_ar}` : org.country ? `, ${org.country}` : ""}` : `${org.city || ""}${org.country ? `, ${org.country}` : ""}`}</span>
                           </div>
@@ -475,13 +475,13 @@ export default function OrganizersAdmin() {
                           ].map(s => (
                             <div key={s.l} className="rounded-lg bg-muted/40 p-1.5 text-center">
                               <p className="text-xs font-bold">{s.v}</p>
-                              <p className="text-[10px] text-muted-foreground">{s.l}</p>
+                              <p className="text-[0.625rem] text-muted-foreground">{s.l}</p>
                             </div>
                           ))}
                         </div>
 
                         <div className="space-y-1">
-                          <div className="flex items-center justify-between text-[11px]">
+                          <div className="flex items-center justify-between text-[0.6875rem]">
                             <span className="text-muted-foreground">{isAr ? "اكتمال الملف" : "Profile"}</span>
                             <span className={cn("font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-chart-4" : "text-muted-foreground")}>{pct}%</span>
                           </div>
@@ -540,7 +540,7 @@ export default function OrganizersAdmin() {
                                 {org.is_verified && <CheckCircle2 className="h-3 w-3 text-primary shrink-0" />}
                                 {org.is_featured && <Star className="h-3 w-3 text-chart-4 shrink-0" />}
                               </div>
-                              {org.organizer_number && <span className="text-[11px] text-muted-foreground font-mono">{org.organizer_number}</span>}
+                              {org.organizer_number && <span className="text-[0.6875rem] text-muted-foreground font-mono">{org.organizer_number}</span>}
                             </div>
                           </div>
                         </TableCell>
@@ -555,14 +555,14 @@ export default function OrganizersAdmin() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[11px] capitalize">{org.status}</Badge>
+                          <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[0.6875rem] capitalize">{org.status}</Badge>
                         </TableCell>
                         <TableCell className="text-center text-sm font-medium">{org.total_exhibitions || 0}</TableCell>
                         <TableCell className="text-center text-sm text-muted-foreground">{(org.total_views || 0).toLocaleString()}</TableCell>
                         <TableCell className="text-center">
                           <div className="inline-flex items-center gap-1.5">
                             <Progress value={pct} className="h-1 w-10" />
-                            <span className={cn("text-[11px] font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-chart-4" : "text-muted-foreground")}>{pct}%</span>
+                            <span className={cn("text-[0.6875rem] font-medium", pct >= 80 ? "text-chart-2" : pct >= 50 ? "text-chart-4" : "text-muted-foreground")}>{pct}%</span>
                           </div>
                         </TableCell>
                         <TableCell onClick={e => e.stopPropagation()}>

@@ -85,14 +85,14 @@ export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidg
                       <h4 className="text-sm font-bold tracking-tight line-clamp-1 group-hover/item:text-primary transition-colors">{title}</h4>
                       <Badge
                         variant={competition.status === "registration_open" ? "default" : "secondary"}
-                        className={`shrink-0 text-[12px] font-bold tracking-wider uppercase px-2 py-0.5 shadow-sm ${
+                        className={`shrink-0 text-xs font-bold tracking-wider uppercase px-2 py-0.5 shadow-sm ${
                           competition.status === "registration_open" ? "animate-pulse" : ""
                         }`}
                       >
                         {competition.status === "registration_open" ? t("registrationOpen") : t("upcoming")}
                       </Badge>
                     </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] text-muted-foreground">
+                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {format(new Date(competition.competition_start), "MMM d, yyyy")}

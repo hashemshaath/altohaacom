@@ -241,13 +241,13 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
             <h1 className="font-serif text-base font-bold">
               {articleId ? t("Edit Article", "تعديل المقال") : t("New Article", "مقال جديد")}
             </h1>
-            {form.status === "draft" && <Badge variant="secondary" className="rounded-xl text-[12px]">{t("Draft", "مسودة")}</Badge>}
-            {form.status === "published" && <Badge className="rounded-xl bg-chart-2/10 text-chart-2 border-chart-2/20 text-[12px]">{t("Published", "منشور")}</Badge>}
+            {form.status === "draft" && <Badge variant="secondary" className="rounded-xl text-xs">{t("Draft", "مسودة")}</Badge>}
+            {form.status === "published" && <Badge className="rounded-xl bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs">{t("Published", "منشور")}</Badge>}
           </div>
         </div>
         <div className="flex items-center gap-2">
           {articleId && (
-            <div className="hidden sm:flex items-center gap-1.5 text-[12px] text-muted-foreground">
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground">
               {autoSaving ? (
                 <><Loader2 className="h-3 w-3 animate-spin" />{t("Saving...", "جاري الحفظ...")}</>
               ) : lastSaved ? (
@@ -255,7 +255,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
               ) : null}
             </div>
           )}
-          <span className="hidden md:inline text-[12px] text-muted-foreground tabular-nums">{wordCount} {t("كلمة", "words")}</span>
+          <span className="hidden md:inline text-xs text-muted-foreground tabular-nums">{wordCount} {t("كلمة", "words")}</span>
           <Button variant="outline" size="sm" className="rounded-xl gap-1.5 text-xs h-8" onClick={() => window.open(`/news/${form.slug}`, "_blank", "noopener,noreferrer")} disabled={!form.slug}>
             <Eye className="h-3.5 w-3.5" /> <span className="hidden sm:inline">{t("Preview", "معاينة")}</span>
           </Button>
@@ -288,7 +288,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                   <Globe className="h-3 w-3" /> العربية
                 </TabsTrigger>
               </TabsList>
-              <Badge variant="outline" className="text-[12px] rounded-lg gap-1">
+              <Badge variant="outline" className="text-xs rounded-lg gap-1">
                 <Languages className="h-2.5 w-2.5" />
                 {t("AI Translation Active", "الترجمة الآلية مفعّلة")}
               </Badge>
@@ -316,7 +316,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                   className="rounded-xl text-lg font-serif font-bold h-12 border-border/40"
                 />
                 {form.title && (
-                  <p className="text-[12px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {form.title.length}/60 {t("chars", "حرف")} {form.title.length > 60 && <span className="text-destructive font-medium">⚠ {t("Too long for SEO", "طويل جداً للسيو")}</span>}
                   </p>
                 )}
@@ -327,7 +327,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                 <div className="flex items-center justify-between">
                   <Label className="text-xs font-medium">{t("Excerpt / Meta Description", "المقتطف / الوصف التعريفي")}</Label>
                   <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" className="h-6 text-[12px] gap-1 rounded-lg" onClick={() => handleAutoExcerpt("en")} disabled={!form.content}>
+                    <Button variant="ghost" size="sm" className="h-6 text-xs gap-1 rounded-lg" onClick={() => handleAutoExcerpt("en")} disabled={!form.content}>
                       <Wand2 className="h-3 w-3" /> {t("Auto", "تلقائي")}
                     </Button>
                     <AITextOptimizer
@@ -383,7 +383,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                   className="rounded-xl text-lg font-serif font-bold h-12 border-border/40"
                 />
                 {form.title_ar && (
-                  <p className="text-[12px] text-muted-foreground" dir="rtl">
+                  <p className="text-xs text-muted-foreground" dir="rtl">
                     {form.title_ar.length}/60 حرف {form.title_ar.length > 60 && <span className="text-destructive font-medium">⚠ طويل جداً للسيو</span>}
                   </p>
                 )}
@@ -394,7 +394,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                 <div className="flex items-center justify-between">
                   <Label className="text-xs font-medium">{t("Excerpt (Arabic)", "المقتطف (عربي)")}</Label>
                   <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" className="h-6 text-[12px] gap-1 rounded-lg" onClick={() => handleAutoExcerpt("ar")} disabled={!form.content_ar}>
+                    <Button variant="ghost" size="sm" className="h-6 text-xs gap-1 rounded-lg" onClick={() => handleAutoExcerpt("ar")} disabled={!form.content_ar}>
                       <Wand2 className="h-3 w-3" /> {t("Auto", "تلقائي")}
                     </Button>
                     <AITextOptimizer
@@ -451,7 +451,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                 <CardContent className="p-4 space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
-                      <Label className="text-[12px] text-muted-foreground">{t("Type", "النوع")}</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Type", "النوع")}</Label>
                       <Select value={form.type} onValueChange={v => update("type", v)}>
                         <SelectTrigger className="rounded-xl text-xs h-8"><SelectValue /></SelectTrigger>
                         <SelectContent className="rounded-xl">
@@ -463,7 +463,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                       </Select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-[12px] text-muted-foreground">{t("Status", "الحالة")}</Label>
+                      <Label className="text-xs text-muted-foreground">{t("Status", "الحالة")}</Label>
                       <Select value={form.status} onValueChange={v => update("status", v)}>
                         <SelectTrigger className="rounded-xl text-xs h-8"><SelectValue /></SelectTrigger>
                         <SelectContent className="rounded-xl">
@@ -475,7 +475,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <Label className="text-[12px] text-muted-foreground flex items-center gap-1">
+                    <Label className="text-xs text-muted-foreground flex items-center gap-1">
                       <Calendar className="h-3 w-3" /> {t("Schedule", "جدولة")}
                     </Label>
                     <Input
@@ -513,10 +513,10 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                     </SelectContent>
                   </Select>
                   <div className="space-y-1.5">
-                    <Label className="text-[12px] text-muted-foreground flex items-center gap-1">
+                    <Label className="text-xs text-muted-foreground flex items-center gap-1">
                       <Tag className="h-2.5 w-2.5" /> {t("Tags", "الوسوم")}
                       {selectedTags.length > 0 && (
-                        <Badge variant="secondary" className="text-[12px] rounded px-1 ms-1">{selectedTags.length}</Badge>
+                        <Badge variant="secondary" className="text-xs rounded px-1 ms-1">{selectedTags.length}</Badge>
                       )}
                     </Label>
                     <div className="flex flex-wrap gap-1 max-h-28 overflow-y-auto">
@@ -525,7 +525,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                           key={tag.id}
                           variant={selectedTags.includes(tag.id) ? "default" : "outline"}
                           className={cn(
-                            "text-[12px] cursor-pointer rounded-lg transition-all hover:scale-105",
+                            "text-xs cursor-pointer rounded-lg transition-all hover:scale-105",
                             selectedTags.includes(tag.id) && "shadow-sm"
                           )}
                           onClick={() => toggleTag(tag.id)}
@@ -534,7 +534,7 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                         </Badge>
                       ))}
                       {(!tags || tags.length === 0) && (
-                        <p className="text-[12px] text-muted-foreground italic">{t("No tags available", "لا توجد وسوم")}</p>
+                        <p className="text-xs text-muted-foreground italic">{t("No tags available", "لا توجد وسوم")}</p>
                       )}
                     </div>
                   </div>
@@ -566,9 +566,9 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                       <TooltipContent>{t("Regenerate from title", "إعادة توليد من العنوان")}</TooltipContent>
                     </Tooltip>
                   </div>
-                  <p className="text-[12px] text-muted-foreground truncate font-mono">/news/{form.slug || "..."}</p>
+                  <p className="text-xs text-muted-foreground truncate font-mono">/news/{form.slug || "..."}</p>
                   {form.slug && ARABIC_REGEX.test(form.title_ar || "") && !ARABIC_REGEX.test(form.slug) && (
-                    <Badge variant="secondary" className="text-[12px] rounded-lg">
+                    <Badge variant="secondary" className="text-xs rounded-lg">
                       <Sparkles className="h-2 w-2 me-1" /> {t("Auto-transliterated", "ترجمة صوتية تلقائية")}
                     </Badge>
                   )}
@@ -585,11 +585,11 @@ export function ArticleEditorPro({ articleId, initialData, onBack }: Props) {
                 </CardHeader>
                 <CardContent className="px-4 pb-4">
                   <div className="rounded-xl border border-border/30 bg-card p-3 space-y-0.5">
-                    <p className="text-[12px] text-chart-2 font-mono truncate">altoha.lovable.app/news/{form.slug || "..."}</p>
+                    <p className="text-xs text-chart-2 font-mono truncate">altoha.lovable.app/news/{form.slug || "..."}</p>
                     <p className="text-sm text-primary font-medium truncate leading-tight">
                       {currentTitle || t("Article Title", "عنوان المقال")}
                     </p>
-                    <p className="text-[12px] text-muted-foreground line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                       {currentExcerpt || t("Add a meta description to improve click-through rates.", "أضف وصفاً تعريفياً لتحسين معدلات النقر.")}
                     </p>
                   </div>

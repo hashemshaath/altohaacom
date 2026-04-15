@@ -102,7 +102,7 @@ export const EventCreationGate = memo(function EventCreationGate({ children, eve
                 <p className="text-sm font-medium">{isAr ? "العضوية" : "Membership"}</p>
                 <p className="text-xs text-muted-foreground">
                   {isAr ? "الخطة الحالية:" : "Current plan:"}{" "}
-                  <Badge variant="secondary" className="text-[12px] ms-1">
+                  <Badge variant="secondary" className="text-xs ms-1">
                     {tier === "professional" ? (isAr ? "احترافي" : "Professional")
                       : tier === "enterprise" ? (isAr ? "مؤسسي" : "Enterprise")
                       : (isAr ? "أساسي" : "Basic")}

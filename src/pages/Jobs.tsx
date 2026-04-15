@@ -294,7 +294,7 @@ export default function Jobs() {
                       }`}>
                         {(job.is_featured || isNew) && (
                           <div className="absolute top-3 end-3 z-10">
-                            <Badge className={`text-[12px] font-bold px-2 h-5 rounded-lg ${
+                            <Badge className={`text-xs font-bold px-2 h-5 rounded-lg ${
                               job.is_featured ? "bg-primary text-primary-foreground" : "bg-[hsl(var(--chart-2))] text-primary-foreground"
                             }`}>
                               {job.is_featured ? (isAr ? "مميزة" : "Featured") : (isAr ? "جديدة" : "New")}
@@ -314,19 +314,19 @@ export default function Jobs() {
                           </div>
 
                           <div className="flex flex-wrap gap-1.5">
-                            {typeLabel && <Badge variant="secondary" className="text-[12px] rounded-lg">{isAr ? typeLabel.ar : typeLabel.en}</Badge>}
-                            {location && <Badge variant="outline" className="text-[12px] rounded-lg gap-0.5"><MapPin className="h-2.5 w-2.5" />{location}</Badge>}
+                            {typeLabel && <Badge variant="secondary" className="text-xs rounded-lg">{isAr ? typeLabel.ar : typeLabel.en}</Badge>}
+                            {location && <Badge variant="outline" className="text-xs rounded-lg gap-0.5"><MapPin className="h-2.5 w-2.5" />{location}</Badge>}
                           </div>
 
                           {job.is_salary_visible && job.salary_min && (
                             <div className="flex items-center gap-1.5">
                               <DollarSign className="h-3.5 w-3.5 text-primary" />
                               <span className="text-sm font-bold">{job.salary_min.toLocaleString()}{job.salary_max ? ` - ${job.salary_max.toLocaleString()}` : "+"}</span>
-                              <span className="text-[12px] text-muted-foreground">{job.salary_currency} / {isAr ? "شهرياً" : "mo"}</span>
+                              <span className="text-xs text-muted-foreground">{job.salary_currency} / {isAr ? "شهرياً" : "mo"}</span>
                             </div>
                           )}
 
-                          <div className="flex items-center justify-between text-[12px] text-muted-foreground/50 pt-1">
+                          <div className="flex items-center justify-between text-xs text-muted-foreground/50 pt-1">
                             <span className="flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{daysAgo === 0 ? (isAr ? "اليوم" : "Today") : `${daysAgo}d`}</span>
                             <span className="text-primary font-semibold opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5">
                               {isAr ? "تفاصيل" : "View"} <ArrowRight className="h-2.5 w-2.5" />
@@ -441,7 +441,7 @@ export default function Jobs() {
                     </div>
                     <div>
                       <h3 className="font-bold">{isAr ? "الأساسية" : "Basic"}</h3>
-                      <p className="text-[12px] text-muted-foreground">{isAr ? "مثالية للبدء" : "Perfect to get started"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "مثالية للبدء" : "Perfect to get started"}</p>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -458,7 +458,7 @@ export default function Jobs() {
 
               {/* Premium */}
               <Card className="rounded-2xl border-primary/25 hover:shadow-xl transition-all duration-300 ring-1 ring-primary/10 relative">
-                <div className="absolute top-0 end-0 bg-primary text-primary-foreground text-[12px] font-bold px-4 py-1.5 rounded-es-xl">{isAr ? "الأكثر شعبية" : "Most Popular"}</div>
+                <div className="absolute top-0 end-0 bg-primary text-primary-foreground text-xs font-bold px-4 py-1.5 rounded-es-xl">{isAr ? "الأكثر شعبية" : "Most Popular"}</div>
                 <CardContent className="p-7 space-y-6">
                   <div className="flex items-center gap-3">
                     <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
@@ -466,7 +466,7 @@ export default function Jobs() {
                     </div>
                     <div>
                       <h3 className="font-bold text-primary">{isAr ? "المميزة" : "Premium"}</h3>
-                      <p className="text-[12px] text-muted-foreground">{isAr ? "وظف 10x أسرع" : "Hire 10x faster"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "وظف 10x أسرع" : "Hire 10x faster"}</p>
                     </div>
                   </div>
                   <div className="space-y-3">
@@ -483,7 +483,7 @@ export default function Jobs() {
               </Card>
             </div>
 
-            <p className="text-center text-[12px] text-muted-foreground/50 mt-6">
+            <p className="text-center text-xs text-muted-foreground/50 mt-6">
               {isAr ? "جميع الأسعار تخضع لضريبة القيمة المضافة. لا تجديد تلقائي." : "All prices subject to VAT. No auto-renewal."}
             </p>
           </div>
@@ -506,7 +506,7 @@ export default function Jobs() {
               </Card>
               <Card className="rounded-2xl border-primary/25 p-5 space-y-4 ring-1 ring-primary/10 relative shadow-lg">
                 <div className="absolute -top-3 start-1/2 -translate-x-1/2">
-                  <Badge className="bg-primary text-primary-foreground rounded-full px-3 py-0.5 text-[12px]">{isAr ? "منصتنا" : "Our Platform"}</Badge>
+                  <Badge className="bg-primary text-primary-foreground rounded-full px-3 py-0.5 text-xs">{isAr ? "منصتنا" : "Our Platform"}</Badge>
                 </div>
                 <h4 className="font-bold text-xs text-primary mt-2">Altoha</h4>
                 <div className="space-y-2.5">
@@ -672,7 +672,7 @@ function ComparisonItem({ positive, negative, text }: { positive?: boolean; nega
     <div className="flex items-start gap-2">
       {positive && <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 shrink-0 text-[hsl(var(--chart-2))]" />}
       {negative && <XCircle className="h-3.5 w-3.5 mt-0.5 shrink-0 text-destructive/50" />}
-      <span className="text-[12px] text-muted-foreground">{text}</span>
+      <span className="text-xs text-muted-foreground">{text}</span>
     </div>
   );
 }
@@ -692,7 +692,7 @@ function TestimonialCard({ quote, name, company, rating }: { quote: string; name
         </Avatar>
         <div>
           <p className="text-xs font-bold">{name}</p>
-          <p className="text-[12px] text-muted-foreground">{company}</p>
+          <p className="text-xs text-muted-foreground">{company}</p>
         </div>
       </div>
     </Card>

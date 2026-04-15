@@ -452,8 +452,8 @@ export default function CompaniesAdmin() {
                           {company.company_number && <p className="text-xs text-muted-foreground font-mono">{company.company_number}</p>}
                           {(isAr ? company.name : company.name_ar) && <p className="text-sm text-muted-foreground" dir={isAr ? "ltr" : "rtl"}>{isAr ? company.name : company.name_ar}</p>}
                           <div className="flex items-center gap-1.5 mt-0.5">
-                            {company.import_source === 'smart_import' && (<Badge variant="outline" className="text-[12px] px-1 py-0 h-4 gap-0.5 bg-primary/5 text-primary border-primary/20"><Sparkles className="h-2.5 w-2.5" />{isAr ? "ذكي" : "Smart"}</Badge>)}
-                            {company.rating && (<Badge variant="outline" className="text-[12px] px-1 py-0 h-4 gap-0.5 bg-chart-4/5 text-chart-4 border-chart-4/20"><Star className="h-2.5 w-2.5" />{Number(company.rating).toFixed(1)}</Badge>)}
+                            {company.import_source === 'smart_import' && (<Badge variant="outline" className="text-xs px-1 py-0 h-4 gap-0.5 bg-primary/5 text-primary border-primary/20"><Sparkles className="h-2.5 w-2.5" />{isAr ? "ذكي" : "Smart"}</Badge>)}
+                            {company.rating && (<Badge variant="outline" className="text-xs px-1 py-0 h-4 gap-0.5 bg-chart-4/5 text-chart-4 border-chart-4/20"><Star className="h-2.5 w-2.5" />{Number(company.rating).toFixed(1)}</Badge>)}
                           </div>
                         </div>
                       </div>

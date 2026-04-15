@@ -94,12 +94,12 @@ export const UpcomingExhibitionsWidget = memo(function UpcomingExhibitionsWidget
                     <div className="flex items-start justify-between gap-2">
                       <h4 className="text-sm font-bold tracking-tight line-clamp-1 group-hover/item:text-chart-3 transition-colors">{title}</h4>
                       {tLabel && (
-                        <Badge variant="secondary" className="shrink-0 text-[12px]">
+                        <Badge variant="secondary" className="shrink-0 text-xs">
                           {isAr ? tLabel.ar : tLabel.en}
                         </Badge>
                       )}
                     </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[12px] text-muted-foreground">
+                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {format(new Date(exhibition.start_date), "MMM d, yyyy")}

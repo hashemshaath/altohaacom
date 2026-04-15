@@ -36,7 +36,7 @@ export const HeroSlideCardHeader = memo(function HeroSlideCardHeader({
     <div className="flex items-center gap-3 p-3">
       <div className="flex flex-col items-center gap-0.5 shrink-0 cursor-grab active:cursor-grabbing">
         <GripVertical className="h-4 w-4 text-muted-foreground/40" />
-        <span className="text-[12px] text-muted-foreground/50 font-mono">{idx + 1}</span>
+        <span className="text-xs text-muted-foreground/50 font-mono">{idx + 1}</span>
       </div>
 
       <div
@@ -55,23 +55,23 @@ export const HeroSlideCardHeader = memo(function HeroSlideCardHeader({
       <div className="flex-1 min-w-0 cursor-pointer" onClick={onExpand}>
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-sm font-semibold truncate">{slide.title || <span className="text-muted-foreground italic">Untitled</span>}</span>
-          <Badge variant="outline" className="text-[12px] px-1.5 py-0 shrink-0">{tpl.label}</Badge>
+          <Badge variant="outline" className="text-xs px-1.5 py-0 shrink-0">{tpl.label}</Badge>
           {isDirty && (
-            <Badge variant="outline" className="text-[12px] px-1.5 py-0 shrink-0 border-amber-300 text-amber-600">
+            <Badge variant="outline" className="text-xs px-1.5 py-0 shrink-0 border-amber-300 text-amber-600">
               {isAr ? "غير محفوظ" : "Unsaved"}
             </Badge>
           )}
         </div>
-        <p className="text-[12px] text-muted-foreground truncate mt-0.5">
+        <p className="text-xs text-muted-foreground truncate mt-0.5">
           {slide.subtitle || slide.image_url || "—"}
         </p>
         <div className="flex items-center gap-2 mt-1">
-          <span className="text-[12px] text-muted-foreground/60 font-mono">
+          <span className="text-xs text-muted-foreground/60 font-mono">
             {HEIGHT_PRESETS[slide.height_preset]?.label ?? slide.height_preset}
             {slide.height_preset === "custom" && slide.custom_height ? ` · ${slide.custom_height}px` : ""}
           </span>
           {slide.animation_effect !== "none" && (
-            <span className="text-[12px] text-muted-foreground/60">
+            <span className="text-xs text-muted-foreground/60">
               · {ANIMATION_EFFECTS.find(a => a.value === slide.animation_effect)?.label}
             </span>
           )}

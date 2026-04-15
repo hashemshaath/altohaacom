@@ -224,7 +224,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
               <div>
                 <span className="text-base font-bold">{isAr ? "سلة التسوق" : "Shopping Cart"}</span>
                 {cart.totalItems > 0 && (
-                  <Badge variant="secondary" className="ms-2 text-[11px] px-1.5 py-0 h-5">
+                  <Badge variant="secondary" className="ms-2 text-[0.6875rem] px-1.5 py-0 h-5">
                     {cart.totalItems} {isAr ? "منتج" : "items"}
                   </Badge>
                 )}
@@ -310,7 +310,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
                           {formatCurrency(item.price, lang)}
                         </span>
                         {hasDiscount && (
-                          <span className="text-[11px] text-muted-foreground line-through">
+                          <span className="text-[0.6875rem] text-muted-foreground line-through">
                             {formatCurrency(item.compare_at_price!, lang)}
                           </span>
                         )}
@@ -422,7 +422,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-base font-bold">{isAr ? "الإجمالي" : "Total"}</span>
-                  <p className="text-[11px] text-muted-foreground">{isAr ? "شامل الضريبة" : "VAT included"}</p>
+                  <p className="text-[0.6875rem] text-muted-foreground">{isAr ? "شامل الضريبة" : "VAT included"}</p>
                 </div>
                 <span className="text-xl font-black text-primary tabular-nums">
                   {(subtotalBeforeVat + vatAmount - cart.discountAmount).toLocaleString()} {isAr ? "ر.س" : "SAR"}
@@ -436,7 +436,7 @@ export const CartSheet = memo(function CartSheet({ open, onOpenChange, cart }: C
                   { icon: Truck, label: isAr ? "شحن سريع" : "Fast Shipping" },
                   { icon: FileText, label: isAr ? "فاتورة" : "Invoice" },
                 ].map(({ icon: Icon, label }) => (
-                  <div key={label} className="flex items-center gap-1 text-[10px] text-muted-foreground">
+                  <div key={label} className="flex items-center gap-1 text-[0.625rem] text-muted-foreground">
                     <Icon className="h-3 w-3" />
                     <span>{label}</span>
                   </div>

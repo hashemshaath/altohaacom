@@ -83,7 +83,7 @@ export const ApprovalMessage = memo(function ApprovalMessage({ messageId, sender
       <div className="flex items-center gap-2">
         <StatusIcon className={`h-5 w-5 ${config.color}`} />
         <span className="text-sm font-semibold flex-1">{title}</span>
-        <Badge variant={config.badge} className="text-[12px]">{config.label}</Badge>
+        <Badge variant={config.badge} className="text-xs">{config.label}</Badge>
       </div>
 
       {description && (

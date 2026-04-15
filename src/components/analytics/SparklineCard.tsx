@@ -26,7 +26,7 @@ export const SparklineCard = memo(function SparklineCard({ icon: Icon, label, va
             <p className="text-xs text-muted-foreground">{label}</p>
             <p className="text-2xl font-bold tracking-tight">{typeof value === "number" ? <AnimatedCounter value={value} /> : value}</p>
             {trend !== undefined && (
-              <span className={`flex items-center gap-0.5 text-[12px] ${trendColor}`}>
+              <span className={`flex items-center gap-0.5 text-xs ${trendColor}`}>
                 <TrendIcon className="h-3 w-3" />
                 {trend > 0 ? "+" : ""}{trend}%
               </span>

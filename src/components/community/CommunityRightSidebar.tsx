@@ -77,7 +77,7 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
           {/* Who to Follow */}
           {suggestedUsers.length > 0 && (
             <div className="rounded-xl bg-muted/15 overflow-hidden">
-              <h3 className="px-3 pt-3 pb-1.5 text-[13px] font-semibold flex items-center gap-1.5">
+              <h3 className="px-3 pt-3 pb-1.5 text-[0.8125rem] font-semibold flex items-center gap-1.5">
                 <Sparkles className="h-3.5 w-3.5 text-chart-4" />
                 {isAr ? "من تتابع" : "Who to Follow"}
               </h3>
@@ -96,22 +96,22 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
                     >
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={profile.avatar_url || undefined} />
-                        <AvatarFallback className="text-[11px] font-semibold bg-muted/40">
+                        <AvatarFallback className="text-[0.6875rem] font-semibold bg-muted/40">
                           {(name || "U")[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-semibold truncate flex items-center gap-1">
+                        <p className="text-xs font-semibold truncate flex items-center gap-1">
                           {name}
                           {profile.is_verified && (
                             <span className="inline-flex h-3.5 w-3.5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[7px]">✓</span>
                           )}
                         </p>
-                        <p className="text-[10px] text-muted-foreground/60 truncate">
+                        <p className="text-[0.625rem] text-muted-foreground/60 truncate">
                           {profile.specialization || (isAr ? "طاهٍ" : "Chef")}
                         </p>
                       </div>
-                      <Button variant="ghost" size="sm" className="h-6 text-[10px] rounded-md px-2 text-primary hover:bg-primary/10 font-semibold">
+                      <Button variant="ghost" size="sm" className="h-6 text-[0.625rem] rounded-md px-2 text-primary hover:bg-primary/10 font-semibold">
                         <UserPlus className="h-3 w-3 me-0.5" />
                         {isAr ? "تابع" : "Follow"}
                       </Button>
@@ -125,7 +125,7 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
           <AdBanner placementSlug="sidebar" className="rounded-xl overflow-hidden" />
 
           <div className="px-3 py-2">
-            <p className="text-[10px] text-muted-foreground/30 leading-relaxed">
+            <p className="text-[0.625rem] text-muted-foreground/30 leading-relaxed">
               {isAr ? "الشروط · الخصوصية · حول" : "Terms · Privacy · About"}
               {" "}© {new Date().getFullYear()} Altoha
             </p>

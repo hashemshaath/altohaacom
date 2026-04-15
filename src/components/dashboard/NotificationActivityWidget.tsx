@@ -43,7 +43,7 @@ export const NotificationActivityWidget = memo(function NotificationActivityWidg
             {isAr ? "نشاط الإشعارات" : "Notification Activity"}
           </span>
           {unreadCount > 0 && (
-            <Badge variant="secondary" className="text-[12px] h-5 px-1.5 animate-pulse">
+            <Badge variant="secondary" className="text-xs h-5 px-1.5 animate-pulse">
               {unreadCount} {isAr ? "جديد" : "new"}
             </Badge>
           )}

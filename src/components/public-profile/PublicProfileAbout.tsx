@@ -24,7 +24,7 @@ export const PublicProfileAbout = memo(function PublicProfileAbout({ profile, bi
           <>
             {bio && <Separator className="bg-border/20" />}
             <div>
-              <h4 className="text-[12px] font-semibold text-muted-foreground mb-2 uppercase tracking-widest flex items-center gap-1.5">
+              <h4 className="text-xs font-semibold text-muted-foreground mb-2 uppercase tracking-widest flex items-center gap-1.5">
                 <ChefHat className="h-3 w-3 text-primary" />
                 {isAr ? "التخصص" : "Specialization"}
               </h4>
@@ -32,7 +32,7 @@ export const PublicProfileAbout = memo(function PublicProfileAbout({ profile, bi
               {userSpecialties.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {userSpecialties.map((us) => (
-                    <Badge key={us.id} variant="secondary" className="text-[12px] h-5 rounded-xl">
+                    <Badge key={us.id} variant="secondary" className="text-xs h-5 rounded-xl">
                       {isAr ? us.specialties?.name_ar || us.specialties?.name : us.specialties?.name}
                     </Badge>
                   ))}
@@ -54,7 +54,7 @@ export const PublicProfileAbout = memo(function PublicProfileAbout({ profile, bi
                   {isAr ? "متاح للعمل والخدمات" : "Available for Services"}
                   <Sparkles className="h-3 w-3 text-primary" />
                 </p>
-                <p className="text-[12px] text-muted-foreground mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {isAr ? (profile.services_description_ar || profile.services_description || "متاح للعمل")
                     : (profile.services_description || "Available for hire")}
                 </p>

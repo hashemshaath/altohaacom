@@ -144,9 +144,9 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
       />
 
       {/* Secondary bar */}
-      <div className="flex items-center gap-2 px-3 py-1.5 border-x border-border/40 bg-muted/20 text-[12px] text-muted-foreground">
+      <div className="flex items-center gap-2 px-3 py-1.5 border-x border-border/40 bg-muted/20 text-xs text-muted-foreground">
         {toc.length > 0 && (
-          <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[12px] rounded gap-1" onClick={() => setShowOutline(!showOutline)}>
+          <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-xs rounded gap-1" onClick={() => setShowOutline(!showOutline)}>
             <Hash className="h-2.5 w-2.5" />
             {isAr ? `${toc.length} أقسام` : `${toc.length} sections`}
           </Button>
@@ -167,7 +167,7 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
               type="button"
               variant="ghost"
               size="sm"
-              className="h-5 px-2 text-[12px] rounded gap-1 text-primary hover:text-primary"
+              className="h-5 px-2 text-xs rounded gap-1 text-primary hover:text-primary"
               onClick={handleTranslateAll}
               disabled={translating}
             >
@@ -185,7 +185,7 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
         {/* Outline Panel */}
         {showOutline && toc.length > 0 && (
           <div className="w-48 shrink-0 border border-t-0 border-e-0 border-border/40 bg-muted/10 overflow-y-auto">
-            <p className="px-3 py-2 text-[12px] font-medium text-muted-foreground uppercase tracking-wider border-b border-border/30">
+            <p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-b border-border/30">
               {isAr ? "فهرس المحتوى" : "Outline"}
             </p>
             <div className="p-1">
@@ -193,7 +193,7 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
                 <button
                   key={i}
                   className={cn(
-                    "w-full text-start px-2 py-1 text-[12px] rounded-lg hover:bg-muted/50 transition-colors truncate flex items-center gap-1",
+                    "w-full text-start px-2 py-1 text-xs rounded-lg hover:bg-muted/50 transition-colors truncate flex items-center gap-1",
                     item.level === 1 && "font-semibold",
                     item.level === 2 && "ps-4",
                     item.level === 3 && "ps-6 text-muted-foreground",

@@ -213,7 +213,7 @@ export default function Organizers() {
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">{isAr ? "تصفية" : "Filters"}</span>
                 {hasActiveFilters && (
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[12px] font-bold text-primary-foreground">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                     {(countryFilter !== "all" ? 1 : 0) + (categoryFilter !== "all" ? 1 : 0)}
                   </span>
                 )}
@@ -402,7 +402,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollo
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
           {featured && (
             <div className="absolute top-2.5 end-2.5">
-              <Badge className="text-[12px] gap-1 bg-primary text-primary-foreground border-0 shadow-sm">
+              <Badge className="text-xs gap-1 bg-primary text-primary-foreground border-0 shadow-sm">
                 <Star className="h-2.5 w-2.5 fill-current" />{isAr ? "مميز" : "Featured"}
               </Badge>
             </div>
@@ -432,7 +432,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollo
               </h3>
               {secondaryName && secondaryName !== primaryName && (
                 <p
-                  className="text-[12px] text-muted-foreground/50 font-medium mt-0.5 leading-snug"
+                  className="text-xs text-muted-foreground/50 font-medium mt-0.5 leading-snug"
                   dir={isAr ? "ltr" : "rtl"}
                   style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
                 >
@@ -446,13 +446,13 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollo
             <div className="flex items-center gap-1.5 mt-3 px-2.5 py-1.5 rounded-lg bg-muted/40 border border-border/20">
               {flag && <span className="text-base leading-none">{flag}</span>}
               <MapPin className="h-3 w-3 shrink-0 text-primary/60" />
-              <span className="text-[12px] text-muted-foreground font-medium">{locationText}</span>
+              <span className="text-xs text-muted-foreground font-medium">{locationText}</span>
             </div>
           )}
 
           {desc && (
             <p
-              className="text-[12px] text-muted-foreground/70 mt-2.5 line-clamp-2 leading-relaxed"
+              className="text-xs text-muted-foreground/70 mt-2.5 line-clamp-2 leading-relaxed"
               dir={isAr && org.description_ar ? "rtl" : "ltr"}
               style={isAr && org.description_ar ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
             >
@@ -464,26 +464,26 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollo
             <div className="flex flex-col items-center gap-0.5 py-1.5 rounded-lg bg-muted/30">
               <Landmark className="h-3.5 w-3.5 text-emerald-500" />
               <span className="text-sm font-bold text-foreground">{org.total_exhibitions || 0}</span>
-              <span className="text-[12px] text-muted-foreground">{isAr ? "معرض" : "Events"}</span>
+              <span className="text-xs text-muted-foreground">{isAr ? "معرض" : "Events"}</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 py-1.5 rounded-lg bg-muted/30">
               <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
               <span className="text-sm font-bold text-foreground">{org.average_rating > 0 ? org.average_rating.toFixed(1) : "—"}</span>
-              <span className="text-[12px] text-muted-foreground">{isAr ? "التقييم" : "Rating"}</span>
+              <span className="text-xs text-muted-foreground">{isAr ? "التقييم" : "Rating"}</span>
             </div>
             <div className="flex flex-col items-center gap-0.5 py-1.5 rounded-lg bg-muted/30">
               <Eye className="h-3.5 w-3.5 text-muted-foreground" />
               <span className="text-sm font-bold text-foreground">{(org.total_views || 0).toLocaleString()}</span>
-              <span className="text-[12px] text-muted-foreground">{isAr ? "مشاهدة" : "Views"}</span>
+              <span className="text-xs text-muted-foreground">{isAr ? "مشاهدة" : "Views"}</span>
             </div>
           </div>
 
           {org.categories && org.categories.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2.5">
               {org.categories.slice(0, 3).map((c: string) => (
-                <Badge key={c} variant="secondary" className="text-[12px] rounded-full px-2 py-0 h-4 font-normal">{c}</Badge>
+                <Badge key={c} variant="secondary" className="text-xs rounded-full px-2 py-0 h-4 font-normal">{c}</Badge>
               ))}
-              {org.categories.length > 3 && <Badge variant="outline" className="text-[12px] rounded-full px-2 py-0 h-4">+{org.categories.length - 3}</Badge>}
+              {org.categories.length > 3 && <Badge variant="outline" className="text-xs rounded-full px-2 py-0 h-4">+{org.categories.length - 3}</Badge>}
             </div>
           )}
 
@@ -499,7 +499,7 @@ const OrganizerCard = memo(function OrganizerCard({ org, isAr, featured, isFollo
               {onToggleFollow && (
                 <button
                   onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleFollow(org.id); }}
-                  className={`flex items-center gap-1 text-[12px] font-medium rounded-lg px-2 py-1 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"}`}
+                  className={`flex items-center gap-1 text-xs font-medium rounded-lg px-2 py-1 transition-colors ${isFollowed ? "text-rose-500" : "text-muted-foreground hover:text-rose-500 hover:bg-rose-500/10"}`}
                 >
                   <Heart className={`h-3 w-3 ${isFollowed ? "fill-current" : ""}`} />
                 </button>
@@ -550,14 +550,14 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
                 {primaryName}
               </h3>
               {featured && (
-                <Badge className="text-[12px] gap-0.5 bg-amber-500 text-white border-0 h-4">
+                <Badge className="text-xs gap-0.5 bg-amber-500 text-primary-foreground border-0 h-4">
                   <Star className="h-2 w-2 fill-current" />{isAr ? "مميز" : "Featured"}
                 </Badge>
               )}
             </div>
             {secondaryName && secondaryName !== primaryName && (
               <p
-                className="text-[12px] text-muted-foreground/50 font-medium leading-snug ms-6"
+                className="text-xs text-muted-foreground/50 font-medium leading-snug ms-6"
                 dir={isAr ? "ltr" : "rtl"}
                 style={!isAr ? { fontFamily: "'Noto Sans Arabic', sans-serif" } : undefined}
               >
@@ -565,14 +565,14 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
               </p>
             )}
             {locationText && (
-              <p className="text-[12px] text-muted-foreground flex items-center gap-1 mt-0.5">
+              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
                 <MapPin className="h-3 w-3 shrink-0 text-primary/50" />
                 {locationText}
               </p>
             )}
             {desc && (
               <p
-                className="text-[12px] text-muted-foreground/70 mt-1 line-clamp-1"
+                className="text-xs text-muted-foreground/70 mt-1 line-clamp-1"
                 dir={isAr && org.description_ar ? "rtl" : "ltr"}
               >
                 {desc}
@@ -583,12 +583,12 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
           <div className="hidden sm:flex items-center gap-4 shrink-0">
             <div className="text-center px-2">
               <p className="text-sm font-bold text-foreground">{org.total_exhibitions || 0}</p>
-              <p className="text-[12px] text-muted-foreground">{isAr ? "معرض" : "Events"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "معرض" : "Events"}</p>
             </div>
             {org.average_rating > 0 && (
               <div className="text-center px-2">
                 <p className="text-sm font-bold flex items-center justify-center gap-0.5"><Star className="h-3 w-3 text-amber-500 fill-amber-500" />{org.average_rating.toFixed(1)}</p>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "التقييم" : "Rating"}</p>
               </div>
             )}
           </div>

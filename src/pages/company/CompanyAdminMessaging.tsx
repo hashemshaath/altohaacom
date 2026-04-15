@@ -208,7 +208,7 @@ export default function CompanyAdminMessaging() {
                     <div key={msg.id}>
                       {showDate && (
                         <div className="flex items-center justify-center py-3">
-                          <Badge variant="secondary" className="text-[12px] font-normal">
+                          <Badge variant="secondary" className="text-xs font-normal">
                             {toEnglishDigits(new Date(msg.created_at).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric", year: "numeric" }))}
                           </Badge>
                         </div>
@@ -226,7 +226,7 @@ export default function CompanyAdminMessaging() {
                           )}
                           <p className="text-sm whitespace-pre-wrap">{msg.message}</p>
                           <div className={`flex items-center gap-1.5 mt-1.5 ${isCompany ? "justify-end" : "justify-start"}`}>
-                            <span className={`text-[12px] ${isCompany ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+                            <span className={`text-xs ${isCompany ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
                               {toEnglishDigits(formatDistanceToNow(new Date(msg.created_at), { addSuffix: true, locale: isAr ? ar : enUS }))}
                             </span>
                             {isCompany ? (

@@ -126,7 +126,7 @@ export const AdminColorStyleSelector = memo(function AdminColorStyleSelector() {
                     <span className="text-sm font-semibold text-foreground">
                       {isAr ? template.nameAr : template.nameEn}
                     </span>
-                    <p className="text-[12px] text-muted-foreground mt-0.5 leading-tight">
+                    <p className="text-xs text-muted-foreground mt-0.5 leading-tight">
                       {isAr ? template.descAr : template.descEn}
                     </p>
                   </div>
@@ -147,7 +147,7 @@ export const AdminColorStyleSelector = memo(function AdminColorStyleSelector() {
                           style={{ backgroundColor: `hsl(${color})` }}
                         />
                       </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-[12px] px-2 py-1">
+                      <TooltipContent side="bottom" className="text-xs px-2 py-1">
                         {labels[i]}
                       </TooltipContent>
                     </Tooltip>

@@ -209,7 +209,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
             <Trophy className="h-4.5 w-4.5 text-primary" />
           </div>
           {isAr ? "لوحة المتصدرين" : "Leaderboard"}
-          <Badge variant="secondary" className="ms-auto text-[12px] font-bold tabular-nums">
+          <Badge variant="secondary" className="ms-auto text-xs font-bold tabular-nums">
             {filteredLeaderboard.length} {isAr ? "متسابق" : "entries"}
           </Badge>
         </CardTitle>
@@ -298,7 +298,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
                   </span>
                 </div>
                 {entry.category_name && (
-                  <Badge variant="outline" className="mt-1.5 text-[12px] px-1.5 py-0 rounded-md">
+                  <Badge variant="outline" className="mt-1.5 text-xs px-1.5 py-0 rounded-md">
                     {isAr && entry.category_name_ar ? entry.category_name_ar : entry.category_name}
                   </Badge>
                 )}
@@ -309,7 +309,7 @@ export const CompetitionLeaderboard = memo(function CompetitionLeaderboard({
                 <p className={`text-2xl font-black tabular-nums ${isTop3 ? config!.text : "text-primary"}`}>
                   {entry.total_weighted_score.toFixed(1)}
                 </p>
-                <p className="text-[12px] text-muted-foreground font-medium">
+                <p className="text-xs text-muted-foreground font-medium">
                   {entry.scores_count > 0
                     ? `${entry.scores_count} ${isAr ? "تقييم" : "scores"}`
                     : isAr ? "لا تقييمات" : "No scores"}

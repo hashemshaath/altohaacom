@@ -35,7 +35,7 @@ export const ExhibitionInteractiveStats = memo(function ExhibitionInteractiveSta
           <p className={`text-sm font-bold tabular-nums ${s.color} sm:text-lg`}>
             {typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}
           </p>
-          <p className="text-[10px] font-medium text-muted-foreground sm:text-xs leading-tight">{s.label}</p>
+          <p className="text-[0.625rem] font-medium text-muted-foreground sm:text-xs leading-tight">{s.label}</p>
         </div>
       ))}
     </div>

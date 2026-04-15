@@ -37,7 +37,7 @@ export default function RoleStatsCards({ roleStats, allRolePerms, totalPerms, ac
               <p className="text-xs font-semibold truncate">{isAr ? meta.labelAr : meta.labelEn}</p>
               <AnimatedCounter value={count} className="text-lg font-bold leading-none" />
               <Progress value={permPercent} className="h-1 mt-1" />
-              <p className="text-[12px] text-muted-foreground">{permCount}/{totalPerms}</p>
+              <p className="text-xs text-muted-foreground">{permCount}/{totalPerms}</p>
             </CardContent>
           </Card>
         );

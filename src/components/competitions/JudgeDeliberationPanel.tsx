@@ -150,11 +150,11 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{d.topic}</p>
-                      <p className="text-[12px] text-muted-foreground mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         {format(new Date(d.created_at), "MMM d, h:mm a")}
                       </p>
                     </div>
-                    <Badge className={`text-[12px] shrink-0 ${d.status === "resolved" ? "bg-chart-5/10 text-chart-5" : "bg-chart-4/10 text-chart-4"}`}>
+                    <Badge className={`text-xs shrink-0 ${d.status === "resolved" ? "bg-chart-5/10 text-chart-5" : "bg-chart-4/10 text-chart-4"}`}>
                       {d.status === "resolved" ? <CheckCircle className="h-2.5 w-2.5 me-1" /> : <Clock className="h-2.5 w-2.5 me-1" />}
                       {d.status === "resolved" ? (isAr ? "محلول" : "Resolved") : (isAr ? "مفتوح" : "Open")}
                     </Badge>
@@ -175,7 +175,7 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 text-[12px]"
+                    className="h-7 text-xs"
                     onClick={() => resolveDeliberation.mutate(activeDeliberation)}
                   >
                     <CheckCircle className="me-1 h-3 w-3" />{isAr ? "حل" : "Resolve"}
@@ -190,7 +190,7 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
                   messages.map(msg => (
                     <div key={msg.id} className={`rounded-xl p-2.5 ${msg.sender_id === user?.id ? "bg-primary/10 ms-6" : "bg-muted/50 me-6"}`}>
                       <p className="text-xs">{msg.message}</p>
-                      <p className="text-[12px] text-muted-foreground mt-1">{format(new Date(msg.created_at), "h:mm a")}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{format(new Date(msg.created_at), "h:mm a")}</p>
                     </div>
                   ))
                 )}

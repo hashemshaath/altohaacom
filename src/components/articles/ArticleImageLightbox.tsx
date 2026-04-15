@@ -77,7 +77,7 @@ export const ArticleImageLightbox = memo(function ArticleImageLightbox({
       {hasPrev && (
         <button
           onClick={(e) => { e.stopPropagation(); onNavigate(currentIndex - 1); }}
-          className="absolute start-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/25 flex items-center justify-center transition-all text-white active:scale-90"
+          className="absolute start-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/25 flex items-center justify-center transition-all text-primary-foreground active:scale-90"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
@@ -85,7 +85,7 @@ export const ArticleImageLightbox = memo(function ArticleImageLightbox({
       {hasNext && (
         <button
           onClick={(e) => { e.stopPropagation(); onNavigate(currentIndex + 1); }}
-          className="absolute end-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/25 flex items-center justify-center transition-all text-white active:scale-90"
+          className="absolute end-3 top-1/2 -translate-y-1/2 h-11 w-11 rounded-2xl bg-white/10 hover:bg-white/25 flex items-center justify-center transition-all text-primary-foreground active:scale-90"
         >
           <ChevronRight className="h-5 w-5" />
         </button>

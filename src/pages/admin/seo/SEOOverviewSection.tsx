@@ -76,15 +76,15 @@ export function SEOOverviewSection({
                 <div className="flex items-end gap-2">
                   <p className="text-2xl font-bold tabular-nums"><AnimatedCounter value={kpi.value} />{kpi.suffix && <span className="text-sm font-normal text-muted-foreground ms-0.5">{kpi.suffix}</span>}</p>
                   {kpi.prev > 0 && diff !== 0 && (
-                    <span className={`inline-flex items-center gap-0.5 text-[12px] font-medium mb-1 ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
+                    <span className={`inline-flex items-center gap-0.5 text-xs font-medium mb-1 ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
                       {isPositive ? <ArrowUp className="h-2.5 w-2.5" /> : <ArrowDown className="h-2.5 w-2.5" />}
                       {Math.abs(pctChange)}%
                     </span>
                   )}
                 </div>
-                {kpi.sub && <p className="text-[12px] text-muted-foreground mt-0.5">{kpi.sub}</p>}
+                {kpi.sub && <p className="text-xs text-muted-foreground mt-0.5">{kpi.sub}</p>}
                 {kpi.badge && (
-                  <Badge variant={kpi.badge as "destructive" | "secondary" | "default"} className="text-[12px] mt-1">{kpi.badgeText}</Badge>
+                  <Badge variant={kpi.badge as "destructive" | "secondary" | "default"} className="text-xs mt-1">{kpi.badgeText}</Badge>
                 )}
               </CardContent>
             </Card>
@@ -114,11 +114,11 @@ export function SEOOverviewSection({
             <Card key={metric} className="relative overflow-hidden border-border/40">
               {status && <div className={`absolute top-0 inset-x-0 h-0.5 ${status === "good" ? "bg-chart-2" : status === "needs-improvement" ? "bg-chart-4" : "bg-destructive"}`} />}
               <CardContent className="p-3 pt-4 text-center">
-                <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{metric.toUpperCase()}</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">{metric.toUpperCase()}</p>
                 {val != null ? (
                   <p className={`text-xl font-bold tabular-nums mt-1 ${status === "good" ? "text-chart-2" : status === "needs-improvement" ? "text-chart-4" : "text-destructive"}`}>
                     {metric === "cls" ? val.toFixed(3) : Math.round(val)}
-                    <span className="text-[12px] font-normal text-muted-foreground ms-0.5">{metric === "cls" ? "" : "ms"}</span>
+                    <span className="text-xs font-normal text-muted-foreground ms-0.5">{metric === "cls" ? "" : "ms"}</span>
                   </p>
                 ) : (
                   <p className="text-sm text-muted-foreground mt-1">{isAr ? "لا بيانات" : "No data"}</p>

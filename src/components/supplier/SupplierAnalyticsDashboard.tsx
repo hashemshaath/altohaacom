@@ -158,7 +158,7 @@ export const SupplierAnalyticsDashboard = memo(function SupplierAnalyticsDashboa
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <s.icon className={`h-5 w-5 ${s.color}`} />
-                <Badge variant="outline" className="text-[12px]">{s.label}</Badge>
+                <Badge variant="outline" className="text-xs">{s.label}</Badge>
               </div>
               <p className="mt-3 text-3xl font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
               <p className="text-xs text-muted-foreground mt-1">{s.sub}</p>

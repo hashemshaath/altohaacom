@@ -61,11 +61,11 @@ export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold truncate">{order.order_number}</span>
-                    <Badge variant="secondary" className={`text-[12px] px-1.5 py-0 ${cfg.color}`}>
+                    <Badge variant="secondary" className={`text-xs px-1.5 py-0 ${cfg.color}`}>
                       {isAr ? cfg.ar : cfg.en}
                     </Badge>
                   </div>
-                  <div className="text-[12px] text-muted-foreground">
+                  <div className="text-xs text-muted-foreground">
                     {order.currency || "SAR"} {(order.total_amount || 0).toFixed(0)}
                   </div>
                 </div>

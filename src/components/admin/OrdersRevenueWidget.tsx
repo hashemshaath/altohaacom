@@ -105,7 +105,7 @@ export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
               <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
               <span className="text-xs text-muted-foreground">{kpi.label}</span>
             </div>
-            <p className="text-2xl font-bold">{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} className="text-2xl font-bold" /> <span className="text-[12px] font-normal text-muted-foreground">SAR</span></> : <>{kpi.value} <span className="text-[12px] font-normal text-muted-foreground">SAR</span></>}</p>
+            <p className="text-2xl font-bold">{typeof kpi.value === "number" ? <><AnimatedCounter value={kpi.value} className="text-2xl font-bold" /> <span className="text-xs font-normal text-muted-foreground">SAR</span></> : <>{kpi.value} <span className="text-xs font-normal text-muted-foreground">SAR</span></>}</p>
           </CardContent>
         </Card>
       ))}
@@ -165,10 +165,10 @@ export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
           {Object.entries(data.catDist).sort(([, a], [, b]) => b - a).slice(0, 5).map(([cat, count], i) => (
             <div key={cat} className="flex items-center justify-between text-xs">
               <span className="capitalize">{cat}</span>
-              <Badge variant="secondary" className="text-[12px]">{count}</Badge>
+              <Badge variant="secondary" className="text-xs">{count}</Badge>
             </div>
           ))}
-          <div className="pt-2 border-t border-border/40 text-[12px] text-muted-foreground flex justify-between">
+          <div className="pt-2 border-t border-border/40 text-xs text-muted-foreground flex justify-between">
             <span>{isAr ? "إجمالي الفواتير" : "Total Invoiced"}</span>
             <span>{(data.totalInvoiced / 1000).toFixed(1)}K SAR</span>
           </div>

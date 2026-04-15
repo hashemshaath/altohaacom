@@ -548,7 +548,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {details.activities_en?.length ? (
               <div className="space-y-1.5">
-                <span className="text-[12px] font-medium text-muted-foreground uppercase">English</span>
+                <span className="text-xs font-medium text-muted-foreground uppercase">English</span>
                 <ul className="space-y-1">
                   {details.activities_en.map((a, i) => (
                     <li key={i} className="text-sm flex items-start gap-2">
@@ -560,7 +560,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
             ) : null}
             {details.activities_ar?.length ? (
               <div className="space-y-1.5" dir="rtl">
-                <span className="text-[12px] font-medium text-muted-foreground uppercase">عربي</span>
+                <span className="text-xs font-medium text-muted-foreground uppercase">عربي</span>
                 <ul className="space-y-1">
                   {details.activities_ar.map((a, i) => (
                     <li key={i} className="text-sm flex items-start gap-2">
@@ -626,7 +626,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
                   <p className="text-sm font-medium truncate">{s.name}</p>
                   {s.name_ar && <p className="text-xs text-muted-foreground truncate" dir="rtl">{s.name_ar}</p>}
                   {s.tier && (
-                    <Badge variant="outline" className="text-[12px] mt-0.5 capitalize">{s.tier}</Badge>
+                    <Badge variant="outline" className="text-xs mt-0.5 capitalize">{s.tier}</Badge>
                   )}
                 </div>
                 {s.website_url && (
@@ -723,7 +723,7 @@ const EventTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
               <div key={i} className="p-2.5 rounded-xl border text-center">
                 <p className="text-lg font-bold text-primary">{h.value}</p>
                 <p className="text-xs text-muted-foreground">{h.label}</p>
-                {h.label_ar && <p className="text-[12px] text-muted-foreground" dir="rtl">{h.label_ar}</p>}
+                {h.label_ar && <p className="text-xs text-muted-foreground" dir="rtl">{h.label_ar}</p>}
               </div>
             ))}
           </div>
@@ -855,7 +855,7 @@ const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: Ta
                   <p className="text-sm font-medium">{v.name}</p>
                   {v.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{v.name_ar}</p>}
                   {v.description && <p className="text-xs text-muted-foreground mt-1">{v.description}</p>}
-                  {v.max_participants && <Badge variant="outline" className="text-[12px] mt-1">{isAr ? `${v.max_participants} مشارك` : `${v.max_participants} participants`}</Badge>}
+                  {v.max_participants && <Badge variant="outline" className="text-xs mt-1">{isAr ? `${v.max_participants} مشارك` : `${v.max_participants} participants`}</Badge>}
                 </div>
               ))}
             </div>
@@ -900,7 +900,7 @@ const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: Ta
                   <p className="text-sm font-medium truncate">{j.name}</p>
                   {j.name_ar && <p className="text-xs text-muted-foreground truncate" dir="rtl">{j.name_ar}</p>}
                   {j.title && <p className="text-xs text-muted-foreground truncate">{j.title}</p>}
-                  {j.role && <Badge variant="outline" className="text-[12px] mt-1">{j.role}</Badge>}
+                  {j.role && <Badge variant="outline" className="text-xs mt-1">{j.role}</Badge>}
                 </div>
               ))}
             </div>
@@ -917,7 +917,7 @@ const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: Ta
               {details.prizes.map((p, i) => (
                 <div key={i} className="p-3 rounded-xl border text-center">
                   <p className="text-xs text-muted-foreground">{p.place}</p>
-                  {p.place_ar && <p className="text-[12px] text-muted-foreground" dir="rtl">{p.place_ar}</p>}
+                  {p.place_ar && <p className="text-xs text-muted-foreground" dir="rtl">{p.place_ar}</p>}
                   <p className="text-sm font-bold mt-1">{p.prize}</p>
                   {p.prize_ar && <p className="text-xs text-muted-foreground" dir="rtl">{p.prize_ar}</p>}
                   {p.value && <Badge variant="secondary" className="mt-1">{details.currency || '$'}{p.value.toLocaleString()}</Badge>}
@@ -942,7 +942,7 @@ const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: Ta
                     {r.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{r.name_ar}</p>}
                     {r.description && <p className="text-xs text-muted-foreground mt-0.5">{r.description}</p>}
                   </div>
-                  {r.duration && <Badge variant="outline" className="shrink-0 text-[12px]">{r.duration}</Badge>}
+                  {r.duration && <Badge variant="outline" className="shrink-0 text-xs">{r.duration}</Badge>}
                 </div>
               ))}
             </div>
@@ -976,9 +976,9 @@ const CompetitionTab = React.memo(({ details, isAr, editing, onFieldUpdate }: Ta
                   <p className="text-lg font-bold text-primary">{ed.year}</p>
                   {ed.label_en && <p className="text-xs text-muted-foreground">{ed.label_en}</p>}
                   <div className="mt-2 space-y-0.5">
-                    {ed.visitors && <p className="text-[12px]">{isAr ? "زوار:" : "Visitors:"} {ed.visitors.toLocaleString()}</p>}
-                    {ed.exhibitors && <p className="text-[12px]">{isAr ? "عارضون:" : "Exhibitors:"} {ed.exhibitors}</p>}
-                    {ed.countries && <p className="text-[12px]">{isAr ? "دول:" : "Countries:"} {ed.countries}</p>}
+                    {ed.visitors && <p className="text-xs">{isAr ? "زوار:" : "Visitors:"} {ed.visitors.toLocaleString()}</p>}
+                    {ed.exhibitors && <p className="text-xs">{isAr ? "عارضون:" : "Exhibitors:"} {ed.exhibitors}</p>}
+                    {ed.countries && <p className="text-xs">{isAr ? "دول:" : "Countries:"} {ed.countries}</p>}
                   </div>
                 </div>
               ))}
@@ -1135,7 +1135,7 @@ const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
           <CardTitle className="text-sm flex items-center gap-1.5">
             <ImageIcon className="h-4 w-4" />
             {isAr ? "معرض الصور" : "Gallery"} 
-            <Badge variant="secondary" className="text-[12px]">{details.gallery_urls.length}</Badge>
+            <Badge variant="secondary" className="text-xs">{details.gallery_urls.length}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -1144,7 +1144,7 @@ const MediaTab = React.memo(({ details, isAr, editing, onFieldUpdate }: TabProps
               <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="group relative aspect-video rounded-xl overflow-hidden border bg-accent/20 hover:ring-2 hover:ring-primary/30 transition-all">
                 <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                  <ExternalLink className="h-5 w-5 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                  <ExternalLink className="h-5 w-5 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
                 </div>
               </a>
             ))}

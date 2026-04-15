@@ -128,7 +128,7 @@ export const NotificationPreferencesWidget = memo(function NotificationPreferenc
                 <Badge
                   key={cat.key}
                   variant={muted ? "secondary" : "outline"}
-                  className={`cursor-pointer text-[12px] transition-all ${muted ? "opacity-50 line-through" : "hover:bg-primary/10"}`}
+                  className={`cursor-pointer text-xs transition-all ${muted ? "opacity-50 line-through" : "hover:bg-primary/10"}`}
                   onClick={() => toggleCategory(cat.key)}
                 >
                   {isAr ? cat.labelAr : cat.labelEn}

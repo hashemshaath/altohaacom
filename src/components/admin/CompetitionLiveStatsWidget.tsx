@@ -153,7 +153,7 @@ export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidg
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
             {data.statusData.slice(0, 4).map((s, i) => (
-              <Badge key={s.name} variant="outline" className="text-[12px] gap-1">
+              <Badge key={s.name} variant="outline" className="text-xs gap-1">
                 <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                 {s.name}: {s.value}
               </Badge>
@@ -174,11 +174,11 @@ export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidg
           {data.topCountries.map(([code, count]) => (
             <div key={code} className="flex items-center justify-between text-xs">
               <span className="font-medium">{code}</span>
-              <Badge variant="secondary" className="text-[12px]">{count}</Badge>
+              <Badge variant="secondary" className="text-xs">{count}</Badge>
             </div>
           ))}
           <div className="pt-2 border-t border-border/40">
-            <div className="flex justify-between text-[12px] text-muted-foreground mb-1">
+            <div className="flex justify-between text-xs text-muted-foreground mb-1">
               <span>{isAr ? "نسبة الامتلاء" : "Capacity Utilization"}</span>
               <span>{data.utilization}%</span>
             </div>

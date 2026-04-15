@@ -227,7 +227,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
                         />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{name || "—"}</p>
-                          <p className="text-[12px] text-muted-foreground">
+                          <p className="text-xs text-muted-foreground">
                             {item.quantity} {item.unit}
                             {item.estimated_cost ? <> · $<AnimatedCounter value={Math.round(Number(item.estimated_cost))} className="inline" /></> : ""}
                           </p>
@@ -321,7 +321,7 @@ export const QuoteRequestPanel = memo(function QuoteRequestPanel({ competitionId
                       <Building2 className="h-5 w-5 text-muted-foreground shrink-0" />
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">{req.title}</p>
-                        <p className="text-[12px] text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {companyName} · {new Date(req.created_at || "").toLocaleDateString()}
                           {req.total_estimated_cost ? <> · $<AnimatedCounter value={Math.round(Number(req.total_estimated_cost))} className="inline" /></> : ""}
                         </p>

@@ -226,7 +226,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs flex items-center gap-1">
-            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[12px] font-bold text-primary">ع</span>
+            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-xs font-bold text-primary">ع</span>
             {isAr ? labelAr : labelEn} (AR)
           </Label>
           <div className="flex gap-0.5">
@@ -243,7 +243,7 @@ export const CompanyEditPanel = memo(function CompanyEditPanel({ companyId, comp
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label className="text-xs flex items-center gap-1">
-            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[12px] font-bold text-muted-foreground">EN</span>
+            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-xs font-bold text-muted-foreground">EN</span>
             {isAr ? labelAr : labelEn} (EN)
           </Label>
           <div className="flex gap-0.5">

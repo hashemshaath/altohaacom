@@ -164,7 +164,7 @@ export default function DesignIdentityAdmin() {
                 <p className="text-xl font-bold tabular-nums">
                   <AnimatedCounter value={item.value} />{item.suffix}
                 </p>
-                <p className="text-[12px] text-muted-foreground truncate">{item.label}</p>
+                <p className="text-xs text-muted-foreground truncate">{item.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -183,7 +183,7 @@ export default function DesignIdentityAdmin() {
             <Progress value={completionPercent} className="h-2" />
             <div className="flex items-center justify-between">
               <p className="text-xs font-medium">{isAr ? "صحة التصميم" : "Design Health"}</p>
-              <Badge variant={auditScore >= 80 ? "secondary" : auditScore >= 50 ? "outline" : "destructive"} className="text-[12px]">
+              <Badge variant={auditScore >= 80 ? "secondary" : auditScore >= 50 ? "outline" : "destructive"} className="text-xs">
                 {auditScore}%
               </Badge>
             </div>
@@ -208,7 +208,7 @@ export default function DesignIdentityAdmin() {
                   ) : (
                     <AlertTriangle className="h-3 w-3 text-amber-500 shrink-0" />
                   )}
-                  <span className={cn("text-[12px] truncate", check.pass ? "text-muted-foreground" : "text-foreground font-medium")}>
+                  <span className={cn("text-xs truncate", check.pass ? "text-muted-foreground" : "text-foreground font-medium")}>
                     {isAr ? check.ar : check.en}
                   </span>
                 </div>
@@ -232,7 +232,7 @@ export default function DesignIdentityAdmin() {
             <div className="rounded-xl border border-border/40 overflow-hidden bg-[hsl(0_0%_100%)]">
               <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-border/20 bg-[hsl(0_0%_98%)]">
                 <Sun className="h-3 w-3 text-amber-500" />
-                <span className="text-[12px] font-medium text-[hsl(0_0%_10%)]">{isAr ? "فاتح" : "Light"}</span>
+                <span className="text-xs font-medium text-[hsl(0_0%_10%)]">{isAr ? "فاتح" : "Light"}</span>
               </div>
               <div className="p-3 space-y-2">
                 <div className="h-3 w-3/4 rounded bg-[hsl(0_0%_90%)]" />
@@ -248,7 +248,7 @@ export default function DesignIdentityAdmin() {
             <div className="rounded-xl border border-border/40 overflow-hidden bg-[hsl(0_0%_8%)]">
               <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-[hsl(0_0%_15%)] bg-[hsl(0_0%_6%)]">
                 <Moon className="h-3 w-3 text-blue-400" />
-                <span className="text-[12px] font-medium text-[hsl(0_0%_90%)]">{isAr ? "داكن" : "Dark"}</span>
+                <span className="text-xs font-medium text-[hsl(0_0%_90%)]">{isAr ? "داكن" : "Dark"}</span>
               </div>
               <div className="p-3 space-y-2">
                 <div className="h-3 w-3/4 rounded bg-[hsl(0_0%_18%)]" />
@@ -280,16 +280,16 @@ export default function DesignIdentityAdmin() {
                     <ArrowRight className="h-3.5 w-3.5 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary rtl:rotate-180 rtl:group-hover:-translate-x-1" />
                   </div>
                   <p className="text-sm font-semibold mb-0.5">{isAr ? section.arTitle : section.enTitle}</p>
-                  <p className="text-[12px] text-muted-foreground leading-relaxed line-clamp-2 mb-2">
+                  <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2 mb-2">
                     {isAr ? section.arDesc : section.enDesc}
                   </p>
                   {isConfigured ? (
-                    <Badge variant="secondary" className="text-[12px] gap-1 py-0">
+                    <Badge variant="secondary" className="text-xs gap-1 py-0">
                       <CheckCircle2 className="h-2.5 w-2.5" />
                       {isAr ? "مهيأ" : "Configured"}
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="text-[12px] gap-1 py-0 text-muted-foreground">
+                    <Badge variant="outline" className="text-xs gap-1 py-0 text-muted-foreground">
                       <Circle className="h-2.5 w-2.5" />
                       {isAr ? "غير مهيأ" : "Not Set"}
                     </Badge>
@@ -319,7 +319,7 @@ export default function DesignIdentityAdmin() {
                   <action.icon className="h-4 w-4 text-primary" />
                   <div className="text-start">
                     <p className="text-xs font-medium">{isAr ? action.ar : action.en}</p>
-                    <p className="text-[12px] text-muted-foreground">{isAr ? action.descAr : action.descEn}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? action.descAr : action.descEn}</p>
                   </div>
                 </Link>
               </Button>

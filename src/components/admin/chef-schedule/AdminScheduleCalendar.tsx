@@ -80,7 +80,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
           </Label>
         </div>
         {showGlobal && (
-          <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-chart-1" /> {isAr ? "مسابقات" : "Competitions"}</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-chart-3" /> {isAr ? "معارض" : "Exhibitions"}</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-chart-4" /> {isAr ? "فعاليات" : "Events"}</span>
@@ -99,7 +99,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
         {/* Day names */}
         <div className="grid grid-cols-7 border-b border-border/20">
           {dayNames.map(d => (
-            <div key={d} className="text-[12px] font-semibold text-muted-foreground text-center py-1.5">{d}</div>
+            <div key={d} className="text-xs font-semibold text-muted-foreground text-center py-1.5">{d}</div>
           ))}
         </div>
 
@@ -123,7 +123,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
                 onClick={() => handleDayClick(day, format(day, "yyyy-MM-dd"))}
               >
                 <div className={cn(
-                  "text-[12px] font-medium mb-0.5 w-6 h-6 flex items-center justify-center rounded-full",
+                  "text-xs font-medium mb-0.5 w-6 h-6 flex items-center justify-center rounded-full",
                   isToday && "bg-primary text-primary-foreground",
                 )}>
                   {day.getDate()}
@@ -137,7 +137,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
                       return (
                         <div
                           key={sev.id}
-                          className={cn("text-[12px] px-1 py-0.5 rounded truncate cursor-pointer border", config.color)}
+                          className={cn("text-xs px-1 py-0.5 rounded truncate cursor-pointer border", config.color)}
                           onClick={(e) => { e.stopPropagation(); onEventClick(sev as ChefScheduleEvent); }}
                           title={`${sev.title} - ${chef?.full_name || ""}`}
                         >
@@ -150,7 +150,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
                       return (
                         <div
                           key={gev.id}
-                          className={cn("text-[12px] px-1 py-0.5 rounded truncate border flex items-center gap-0.5", colors?.bg, colors?.text, colors?.border)}
+                          className={cn("text-xs px-1 py-0.5 rounded truncate border flex items-center gap-0.5", colors?.bg, colors?.text, colors?.border)}
                           title={`🌐 ${gev.title}`}
                         >
                           <Globe className="h-2 w-2 shrink-0" />
@@ -160,7 +160,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
                     }
                   })}
                   {allDayEvents.length > 3 && (
-                    <div className="text-[12px] text-muted-foreground text-center">+{allDayEvents.length - 3}</div>
+                    <div className="text-xs text-muted-foreground text-center">+{allDayEvents.length - 3}</div>
                   )}
                 </div>
               </div>
@@ -176,7 +176,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
 
           {selectedScheduleEvents.length > 0 && (
             <div className="space-y-1.5">
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "أحداث الطهاة" : "Chef Events"}</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "أحداث الطهاة" : "Chef Events"}</p>
               {selectedScheduleEvents.map(ev => {
                 const config = EVENT_TYPE_CONFIG[ev.event_type as ScheduleEventType] || EVENT_TYPE_CONFIG.other;
                 const chef = profileMap[ev.chef_id];
@@ -184,9 +184,9 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
                   <div key={ev.id} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && onEventClick(ev)} className={cn("flex items-center gap-2 p-2 rounded-xl border cursor-pointer hover:bg-muted/30 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none", config.color)} onClick={() => onEventClick(ev)}>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{ev.title}</p>
-                      <p className="text-[12px] text-muted-foreground">{chef?.full_name || "—"} · {ev.city || ev.location || ""}</p>
+                      <p className="text-xs text-muted-foreground">{chef?.full_name || "—"} · {ev.city || ev.location || ""}</p>
                     </div>
-                    <Badge className={`text-[12px] border ${config.color}`}>{isAr ? config.ar : config.en}</Badge>
+                    <Badge className={`text-xs border ${config.color}`}>{isAr ? config.ar : config.en}</Badge>
                   </div>
                 );
               })}
@@ -195,7 +195,7 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
 
           {showGlobal && selectedGlobalEvents.length > 0 && (
             <div className="space-y-1.5">
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                 <Globe className="h-3 w-3" /> {isAr ? "مسابقات ومعارض وفعاليات" : "Competitions, Exhibitions & Events"}
               </p>
               {selectedGlobalEvents.map(gev => {
@@ -207,13 +207,13 @@ const AdminScheduleCalendar = memo(function AdminScheduleCalendar({ events, prof
                     <GIcon className={cn("h-4 w-4 shrink-0", colors?.text)} />
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{isAr && gev.title_ar ? gev.title_ar : gev.title}</p>
-                      <p className="text-[12px] text-muted-foreground">{gev.city || ""}{gev.city && gev.country_code ? `, ${gev.country_code}` : gev.country_code || ""} · {gev.venue || ""}</p>
+                      <p className="text-xs text-muted-foreground">{gev.city || ""}{gev.city && gev.country_code ? `, ${gev.country_code}` : gev.country_code || ""} · {gev.venue || ""}</p>
                     </div>
-                    <Badge className={cn("text-[12px] border", colors?.bg, colors?.text, colors?.border)}>
+                    <Badge className={cn("text-xs border", colors?.bg, colors?.text, colors?.border)}>
                       {isAr ? label?.ar : label?.en}
                     </Badge>
                     {gev.link && (
-                      <Link to={gev.link} className="text-[12px] text-primary hover:underline" onClick={e => e.stopPropagation()}>
+                      <Link to={gev.link} className="text-xs text-primary hover:underline" onClick={e => e.stopPropagation()}>
                         {isAr ? "عرض" : "View"}
                       </Link>
                     )}

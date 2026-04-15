@@ -65,7 +65,7 @@ export const OrderSearchFilter = memo(function OrderSearchFilter({
         <div className="flex items-center gap-2">
           {showStatus && onStatusChange && (
             <Select value={statusFilter} onValueChange={onStatusChange}>
-              <SelectTrigger className="h-8 w-28 text-[12px]">
+              <SelectTrigger className="h-8 w-28 text-xs">
                 <Filter className="me-1 h-3 w-3 shrink-0" />
                 <SelectValue />
               </SelectTrigger>
@@ -82,7 +82,7 @@ export const OrderSearchFilter = memo(function OrderSearchFilter({
 
           {showCategory && onCategoryChange && (
             <Select value={categoryFilter} onValueChange={onCategoryChange}>
-              <SelectTrigger className="h-8 w-32 text-[12px]">
+              <SelectTrigger className="h-8 w-32 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -102,24 +102,24 @@ export const OrderSearchFilter = memo(function OrderSearchFilter({
       {hasFilters && (
         <div className="flex items-center gap-1.5 flex-wrap">
           {resultCount !== undefined && (
-            <span className="text-[12px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               {resultCount} {isAr ? "نتيجة" : "results"}
             </span>
           )}
           {searchQuery && (
-            <Badge variant="secondary" className="text-[12px] gap-1 h-5">
+            <Badge variant="secondary" className="text-xs gap-1 h-5">
               "{searchQuery}"
               <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => onSearchChange("")} />
             </Badge>
           )}
           {statusFilter !== "all" && (
-            <Badge variant="secondary" className="text-[12px] gap-1 h-5">
+            <Badge variant="secondary" className="text-xs gap-1 h-5">
               {isAr ? ITEM_STATUS_LABELS[statusFilter]?.ar : ITEM_STATUS_LABELS[statusFilter]?.en}
               <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => onStatusChange?.("all")} />
             </Badge>
           )}
           {categoryFilter !== "all" && (
-            <Badge variant="secondary" className="text-[12px] gap-1 h-5">
+            <Badge variant="secondary" className="text-xs gap-1 h-5">
               {(() => {
                 const cat = ORDER_CATEGORIES.find(c => c.value === categoryFilter);
                 return isAr ? cat?.labelAr : cat?.label;
@@ -127,7 +127,7 @@ export const OrderSearchFilter = memo(function OrderSearchFilter({
               <X className="h-2.5 w-2.5 cursor-pointer" onClick={() => onCategoryChange?.("all")} />
             </Badge>
           )}
-          <button onClick={clearAll} className="text-[12px] text-primary hover:underline">
+          <button onClick={clearAll} className="text-xs text-primary hover:underline">
             {isAr ? "مسح الكل" : "Clear all"}
           </button>
         </div>

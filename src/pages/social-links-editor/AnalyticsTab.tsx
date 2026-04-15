@@ -35,7 +35,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
             </div>
             {isAr ? "أداء الروابط" : "Link Performance"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">{isAr ? "تحليل النقرات على كل رابط" : "Click analysis for each link"}</p>
+          <p className="text-xs text-muted-foreground">{isAr ? "تحليل النقرات على كل رابط" : "Click analysis for each link"}</p>
         </CardHeader>
         <CardContent className="pt-3">
           {items.length === 0 ? (
@@ -65,15 +65,15 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
               <div className="grid grid-cols-3 gap-3 text-center">
                 <div>
                   <p className="text-lg font-bold tabular-nums">{totalClicks}</p>
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي النقرات" : "Total Clicks"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "إجمالي النقرات" : "Total Clicks"}</p>
                 </div>
                 <div>
                   <p className="text-lg font-bold tabular-nums">{items.length > 0 ? Math.round(totalClicks / items.length) : 0}</p>
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "متوسط/رابط" : "Avg per Link"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "متوسط/رابط" : "Avg per Link"}</p>
                 </div>
                 <div>
                   <p className="text-lg font-bold tabular-nums">{items.filter(i => (i.click_count || 0) > 0).length}/{items.length}</p>
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "روابط نشطة" : "Active Links"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "روابط نشطة" : "Active Links"}</p>
                 </div>
               </div>
             </div>
@@ -99,7 +99,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                   <div className={`h-7 w-7 rounded-xl flex items-center justify-center text-xs font-bold ${i === 0 ? "bg-chart-2/10 text-chart-2" : i === 1 ? "bg-chart-3/10 text-chart-3" : "bg-muted text-muted-foreground"}`}>{i + 1}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{item.icon && <span className="me-1">{item.icon}</span>}{item.title}</p>
-                    <p className="text-[12px] text-muted-foreground">{totalClicks > 0 ? Math.round(((item.click_count || 0) / totalClicks) * 100) : 0}% {isAr ? "من النقرات" : "of clicks"}</p>
+                    <p className="text-xs text-muted-foreground">{totalClicks > 0 ? Math.round(((item.click_count || 0) / totalClicks) * 100) : 0}% {isAr ? "من النقرات" : "of clicks"}</p>
                   </div>
                   <span className="text-sm font-bold tabular-nums">{item.click_count || 0}</span>
                 </div>
@@ -118,9 +118,9 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                 <BarChart3 className="h-3.5 w-3.5 text-destructive" />
               </div>
               {isAr ? "خريطة حرارية للنقرات" : "Click Heatmap"}
-              {visitorStats && <Badge variant="secondary" className="text-[12px] ms-auto">CTR: {visitorStats.total > 0 ? ((totalClicks / visitorStats.total) * 100).toFixed(1) : "0"}%</Badge>}
+              {visitorStats && <Badge variant="secondary" className="text-xs ms-auto">CTR: {visitorStats.total > 0 ? ((totalClicks / visitorStats.total) * 100).toFixed(1) : "0"}%</Badge>}
             </CardTitle>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "كثافة النقرات لكل رابط مقارنة بالمجموع" : "Click intensity per link relative to total"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "كثافة النقرات لكل رابط مقارنة بالمجموع" : "Click intensity per link relative to total"}</p>
           </CardHeader>
           <CardContent className="pt-3">
             <div className="space-y-1.5">
@@ -136,8 +136,8 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                       <span className="text-xs w-5 shrink-0">{item.icon || "🔗"}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-0.5">
-                          <span className="text-[12px] font-medium truncate max-w-[60%]">{item.title}</span>
-                          <span className="text-[12px] text-muted-foreground tabular-nums">{clicks} <span className="text-[12px]">({sharePct}%)</span></span>
+                          <span className="text-xs font-medium truncate max-w-[60%]">{item.title}</span>
+                          <span className="text-xs text-muted-foreground tabular-nums">{clicks} <span className="text-xs">({sharePct}%)</span></span>
                         </div>
                         <div className="h-2 rounded-full bg-muted/40 overflow-hidden">
                           <div className={`h-full rounded-full transition-all duration-500 ${heat}`} style={{ width: `${Math.max(pct, 2)}%` }} />
@@ -149,7 +149,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
               })}
             </div>
             {visitorStats && visitorStats.total > 0 && (
-              <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between text-[12px] text-muted-foreground">
+              <div className="mt-3 pt-3 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
                 <span>{isAr ? "إجمالي الزيارات" : "Total Visits"}: <strong className="text-foreground">{visitorStats.total}</strong></span>
                 <span>{isAr ? "إجمالي النقرات" : "Total Clicks"}: <strong className="text-foreground">{totalClicks}</strong></span>
                 <span>CTR: <strong className="text-foreground">{((totalClicks / visitorStats.total) * 100).toFixed(1)}%</strong></span>
@@ -168,9 +168,9 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                 <Clock className="h-3.5 w-3.5 text-chart-2" />
               </div>
               {isAr ? "أفضل أوقات النقر" : "Best Click Times"}
-              <Badge variant="secondary" className="text-[12px] ms-auto">{clickAnalytics.total} {isAr ? "نقرة" : "clicks"}</Badge>
+              <Badge variant="secondary" className="text-xs ms-auto">{clickAnalytics.total} {isAr ? "نقرة" : "clicks"}</Badge>
             </CardTitle>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {isAr
                 ? `أفضل وقت: ${["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"][clickAnalytics.bestDay]} الساعة ${clickAnalytics.bestHour}:00`
                 : `Peak: ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][clickAnalytics.bestDay]} at ${clickAnalytics.bestHour}:00`}
@@ -178,7 +178,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
           </CardHeader>
           <CardContent className="pt-3 space-y-4">
             <div>
-              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات حسب الساعة" : "Clicks by Hour"}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات حسب الساعة" : "Clicks by Hour"}</p>
               <div className="h-32 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={clickAnalytics.hourlyAgg.map((v: number, h: number) => ({ hour: `${h}`, clicks: v }))} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -197,7 +197,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
 
             {/* Weekly Heatmap */}
             <div>
-              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "خريطة الحرارة الأسبوعية" : "Weekly Heatmap"}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "خريطة الحرارة الأسبوعية" : "Weekly Heatmap"}</p>
               <div className="overflow-x-auto">
                 <div className="grid grid-cols-[auto_repeat(24,1fr)] gap-[2px] min-w-[400px]">
                   <div className="text-[7px] text-muted-foreground" />
@@ -206,7 +206,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                   ))}
                   {(isAr ? ["أحد","إثن","ثلا","أرب","خمي","جمع","سبت"] : ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"]).map((day, d) => (
                     <div key={d} className="contents">
-                      <div className="text-[12px] text-muted-foreground pe-1 flex items-center">{day}</div>
+                      <div className="text-xs text-muted-foreground pe-1 flex items-center">{day}</div>
                       {clickAnalytics.heatmap[d].map((val: number, h: number) => {
                         const maxH = Math.max(...clickAnalytics.heatmap.flat(), 1);
                         const intensity = val / maxH;
@@ -225,7 +225,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
 
             {/* Daily Clicks Chart */}
             <div>
-              <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات اليومية (14 يوم)" : "Daily Clicks (14 days)"}</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "النقرات اليومية (14 يوم)" : "Daily Clicks (14 days)"}</p>
               <div className="h-32 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={clickAnalytics.dailyClicks} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -257,7 +257,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
               </div>
               {isAr ? "مقارنة أداء الروابط" : "Link Performance Comparison"}
             </CardTitle>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "النقرات اليومية لكل رابط" : "Daily clicks per link"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "النقرات اليومية لكل رابط" : "Daily clicks per link"}</p>
           </CardHeader>
           <CardContent className="pt-3">
             <div className="space-y-3">
@@ -274,7 +274,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                   <div key={item.id} className="flex items-center gap-3">
                     <span className="text-xs w-5 shrink-0">{item.icon || "🔗"}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="text-[12px] font-medium truncate">{item.title}</p>
+                      <p className="text-xs font-medium truncate">{item.title}</p>
                     </div>
                     <div className="flex items-end gap-[2px] h-4 shrink-0">
                       {sparkData.map((v, i) => (
@@ -283,7 +283,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                         />
                       ))}
                     </div>
-                    <span className="text-[12px] font-bold tabular-nums w-8 text-end">{item.click_count || 0}</span>
+                    <span className="text-xs font-bold tabular-nums w-8 text-end">{item.click_count || 0}</span>
                   </div>
                 );
               })}
@@ -301,16 +301,16 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                 <Eye className="h-3.5 w-3.5 text-chart-3" />
               </div>
               {isAr ? "إحصائيات الزوار" : "Visitor Analytics"}
-              <Badge variant="secondary" className="text-[12px] ms-auto">{visitorStats.total} {isAr ? "زيارة" : "visits"}</Badge>
+              <Badge variant="secondary" className="text-xs ms-auto">{visitorStats.total} {isAr ? "زيارة" : "visits"}</Badge>
             </CardTitle>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {isAr ? `${visitorStats.recent7d} زيارة في آخر 7 أيام` : `${visitorStats.recent7d} visits in the last 7 days`}
             </p>
           </CardHeader>
           <CardContent className="pt-3 space-y-4">
             {visitorStats.dailyVisits?.length > 0 && (
               <div>
-                <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الزيارات اليومية (14 يوم)" : "Daily Visits (14 days)"}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الزيارات اليومية (14 يوم)" : "Daily Visits (14 days)"}</p>
                 <div className="h-40 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <AreaChart data={visitorStats.dailyVisits} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
@@ -331,10 +331,10 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
             )}
             {Object.keys(visitorStats.devices).length > 0 && (
               <div>
-                <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الأجهزة" : "Devices"}</p>
                 <div className="flex flex-wrap gap-1.5">
                   {Object.entries(visitorStats.devices).sort((a, b) => (b[1] as number) - (a[1] as number)).map(([device, count]) => (
-                    <Badge key={device} variant="outline" className="text-[12px] gap-1">
+                    <Badge key={device} variant="outline" className="text-xs gap-1">
                       <Smartphone className="h-2.5 w-2.5" />{device} <span className="font-bold">{count}</span>
                     </Badge>
                   ))}
@@ -343,7 +343,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
             )}
             {Object.keys(visitorStats.countries).length > 0 && (
               <div>
-                <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الدول" : "Countries"}</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "الدول" : "Countries"}</p>
                 <div className="space-y-1">
                   {Object.entries(visitorStats.countries).sort((a, b) => (b[1] as number) - (a[1] as number)).slice(0, 5).map(([country, count]) => {
                     const pct = Math.round(((count as number) / visitorStats.total) * 100);
@@ -353,7 +353,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                         <div className="flex-1 h-1.5 rounded-full bg-muted/50 overflow-hidden">
                           <div className="h-full rounded-full bg-chart-1/60" style={{ width: `${pct}%` }} />
                         </div>
-                        <span className="text-[12px] font-bold tabular-nums w-6 text-end">{count}</span>
+                        <span className="text-xs font-bold tabular-nums w-6 text-end">{count}</span>
                       </div>
                     );
                   })}
@@ -387,7 +387,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
               const maxCat = sorted[0]?.[1].count || 1;
               return (
                 <div>
-                  <p className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "مصادر الزيارات" : "Traffic Sources"}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">{isAr ? "مصادر الزيارات" : "Traffic Sources"}</p>
                   <div className="space-y-2">
                     {sorted.map(([cat, { count, sources }]) => {
                       const info = catLabels[cat] || catLabels.other;
@@ -397,8 +397,8 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                         <div key={cat}>
                           <div className="flex items-center gap-2 mb-0.5">
                             <span className="text-xs">{info.emoji}</span>
-                            <span className="text-[12px] font-medium flex-1">{isAr ? info.ar : info.en}</span>
-                            <span className="text-[12px] font-bold tabular-nums">{count} <span className="text-muted-foreground font-normal">({pct}%)</span></span>
+                            <span className="text-xs font-medium flex-1">{isAr ? info.ar : info.en}</span>
+                            <span className="text-xs font-bold tabular-nums">{count} <span className="text-muted-foreground font-normal">({pct}%)</span></span>
                           </div>
                           <div className="h-2 rounded-full bg-muted/40 overflow-hidden mb-1">
                             <div className={`h-full rounded-full transition-all duration-500 ${info.color}`} style={{ width: `${Math.max(barW, 3)}%` }} />
@@ -406,7 +406,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                           {Object.keys(sources).length > 1 && (
                             <div className="ps-5 space-y-0.5">
                               {Object.entries(sources).sort((a, b) => (b[1] as number) - (a[1] as number)).slice(0, 4).map(([src, cnt]) => (
-                                <div key={src} className="flex items-center justify-between text-[12px] text-muted-foreground">
+                                <div key={src} className="flex items-center justify-between text-xs text-muted-foreground">
                                   <span className="truncate max-w-[70%]">{src}</span>
                                   <span className="tabular-nums font-medium">{cnt}</span>
                                 </div>
@@ -480,10 +480,10 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
             </div>
             {isAr ? "الإشعارات" : "Notifications"}
             {bioNotifications && bioNotifications.filter(n => !n.is_read).length > 0 && (
-              <Badge variant="destructive" className="text-[12px] h-4 px-1.5 ms-auto">{bioNotifications.filter(n => !n.is_read).length}</Badge>
+              <Badge variant="destructive" className="text-xs h-4 px-1.5 ms-auto">{bioNotifications.filter(n => !n.is_read).length}</Badge>
             )}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">{isAr ? "مشتركون جدد وإنجازات" : "New subscribers & milestones"}</p>
+          <p className="text-xs text-muted-foreground">{isAr ? "مشتركون جدد وإنجازات" : "New subscribers & milestones"}</p>
         </CardHeader>
         <CardContent className="pt-3">
           {!bioNotifications || bioNotifications.length === 0 ? (
@@ -510,9 +510,9 @@ export const AnalyticsTab = memo(function AnalyticsTab({ items, isAr, visitorSta
                     <span className="text-base mt-0.5 shrink-0">{icon}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium leading-snug">{isAr ? n.title_ar : n.title}</p>
-                      <p className="text-[12px] text-muted-foreground mt-0.5 truncate">{isAr ? n.body_ar : n.body}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">{isAr ? n.body_ar : n.body}</p>
                     </div>
-                    <span className="text-[12px] text-muted-foreground shrink-0 tabular-nums">{timeAgo}</span>
+                    <span className="text-xs text-muted-foreground shrink-0 tabular-nums">{timeAgo}</span>
                   </div>
                 );
               })}

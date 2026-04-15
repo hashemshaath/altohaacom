@@ -382,14 +382,14 @@ export default function CRMCustomerDetail() {
                 <h3 className="font-semibold text-lg">{profile.full_name || "—"}</h3>
                 <p className="text-xs text-muted-foreground">@{profile.username}</p>
                 {profile.is_verified && (
-                  <Badge variant="secondary" className="mt-1 gap-1 text-[12px]">
+                  <Badge variant="secondary" className="mt-1 gap-1 text-xs">
                     <ShieldCheck className="h-3 w-3" /> {isAr ? "موثق" : "Verified"}
                   </Badge>
                 )}
               </div>
               <div className="flex flex-wrap gap-1 justify-center">
                 {roles.map((r) => (
-                  <Badge key={r.role} variant="outline" className="text-[12px] capitalize">{r.role}</Badge>
+                  <Badge key={r.role} variant="outline" className="text-xs capitalize">{r.role}</Badge>
                 ))}
               </div>
             </div>
@@ -425,7 +425,7 @@ export default function CRMCustomerDetail() {
                   <p className="text-xs text-muted-foreground">{isAr ? "لا توجد مجموعات" : "No groups"}</p>
                 )}
                 {userGroups.map((ug) => (
-                  <Badge key={ug.id} variant="outline" className="text-[12px] gap-1">
+                  <Badge key={ug.id} variant="outline" className="text-xs gap-1">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: ug.customer_groups?.color || "#6366f1" }} />
                     {isAr ? ug.customer_groups?.name_ar || ug.customer_groups?.name : ug.customer_groups?.name}
                   </Badge>
@@ -511,7 +511,7 @@ export default function CRMCustomerDetail() {
                               </div>
                               <div className="text-end">
                                 <p className="font-medium">{(order.total_amount || 0).toFixed(2)} SAR</p>
-                                <Badge variant="outline" className="text-[12px]">{order.status}</Badge>
+                                <Badge variant="outline" className="text-xs">{order.status}</Badge>
                               </div>
                             </div>
                           ))}
@@ -644,7 +644,7 @@ export default function CRMCustomerDetail() {
                             </p>
                             <p className="text-xs text-muted-foreground">{reg.registration_number}</p>
                           </div>
-                          <Badge variant="outline" className="text-[12px]">{reg.status}</Badge>
+                          <Badge variant="outline" className="text-xs">{reg.status}</Badge>
                         </div>
                       ))}
                     </div>
@@ -690,7 +690,7 @@ function StatCard({ label, value, icon: Icon }: { label: string; value: string |
     <div className="rounded-xl border p-4 text-center space-y-1">
       <Icon className="h-5 w-5 text-muted-foreground mx-auto" />
       <p className="text-lg font-bold">{value}</p>
-      <p className="text-[12px] text-muted-foreground">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

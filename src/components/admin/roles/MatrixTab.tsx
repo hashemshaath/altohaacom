@@ -11,8 +11,8 @@ import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
 import { format } from "date-fns";
 
 interface Props {
-  permissions: any[];
-  allRolePerms: any[];
+  permissions: Record<string, unknown>[];
+  allRolePerms: Record<string, unknown>[];
   isAr: boolean;
   t: (en: string, ar: string) => string;
 }
@@ -82,7 +82,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
                 const selected = compareRoles.includes(role);
                 return (
                   <Button key={role} variant={selected ? "default" : "outline"} size="sm"
-                    className={`h-7 text-[12px] gap-1 rounded-xl active:scale-[0.98] touch-manipulation ${!selected ? "opacity-50 hover:opacity-80" : ""}`}
+                    className={`h-7 text-xs gap-1 rounded-xl active:scale-[0.98] touch-manipulation ${!selected ? "opacity-50 hover:opacity-80" : ""}`}
                     onClick={() => toggleCompareRole(role)}>
                     <Icon className="h-3 w-3" />
                     {isAr ? meta.labelAr : meta.labelEn}
@@ -91,7 +91,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
               })}
             </div>
             {compareRoles.length > 0 && (
-              <Button variant="ghost" size="sm" className="h-7 text-[12px] gap-1" onClick={() => setCompareRoles([])}>
+              <Button variant="ghost" size="sm" className="h-7 text-xs gap-1" onClick={() => setCompareRoles([])}>
                 <RotateCcw className="h-3 w-3" /> {t("Reset", "إعادة")}
               </Button>
             )}
@@ -121,7 +121,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
             <CardTitle className="text-sm flex items-center gap-2">
               <Grid3X3 className="h-4 w-4 text-primary" />
               {t("Role-Permission Matrix", "مصفوفة الصلاحيات لكل دور")}
-              <Badge variant="secondary" className="text-[12px]">{permissions.length} {t("total", "إجمالي")}</Badge>
+              <Badge variant="secondary" className="text-xs">{permissions.length} {t("total", "إجمالي")}</Badge>
             </CardTitle>
             <div className="flex gap-2">
               <div className="relative">
@@ -152,7 +152,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
                             <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${meta.color}`}>
                               <Icon className="h-3.5 w-3.5" />
                             </div>
-                            <span className="text-[12px] font-medium">{isAr ? meta.labelAr : meta.labelEn}</span>
+                            <span className="text-xs font-medium">{isAr ? meta.labelAr : meta.labelEn}</span>
                           </div>
                         </TableHead>
                       );
@@ -176,7 +176,7 @@ export default function MatrixTab({ permissions, allRolePerms, isAr, t }: Props)
                                   <span className="text-xs cursor-help">{isAr ? perm.name_ar || perm.name : perm.name}</span>
                                 </TooltipTrigger>
                                 <TooltipContent side="right">
-                                  <span className="font-mono text-[12px]">{perm.code}</span>
+                                  <span className="font-mono text-xs">{perm.code}</span>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>

@@ -94,10 +94,10 @@ export const CommunicationsOverviewWidget = memo(function CommunicationsOverview
             <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
-                <span className="text-[12px] text-muted-foreground">{m.label}</span>
+                <span className="text-xs text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-sm font-bold"><AnimatedCounter value={m.value} /></p>
-              <p className="text-[12px] text-muted-foreground">{m.sub}</p>
+              <p className="text-xs text-muted-foreground">{m.sub}</p>
             </div>
           ))}
         </div>
@@ -105,14 +105,14 @@ export const CommunicationsOverviewWidget = memo(function CommunicationsOverview
         {/* Delivery rate */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[12px] text-muted-foreground">{isAr ? "معدل التوصيل" : "Delivery Rate"}</span>
-            <span className="text-[12px] font-medium">{data.deliveryRate}%</span>
+            <span className="text-xs text-muted-foreground">{isAr ? "معدل التوصيل" : "Delivery Rate"}</span>
+            <span className="text-xs font-medium">{data.deliveryRate}%</span>
           </div>
           <Progress value={data.deliveryRate} className="h-1.5" />
         </div>
 
         {/* Status indicators */}
-        <div className="flex flex-wrap gap-2 text-[12px]">
+        <div className="flex flex-wrap gap-2 text-xs">
           <span className="flex items-center gap-1 text-chart-4"><Clock className="h-3 w-3" /> {data.unreadNotifs} {isAr ? "غير مقروء" : "unread"}</span>
           <span className="flex items-center gap-1 text-chart-2"><CheckCircle className="h-3 w-3" /> {data.queueSent} {isAr ? "مُرسل" : "sent"}</span>
           {data.queueFailed > 0 && (

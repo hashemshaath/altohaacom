@@ -52,24 +52,24 @@ export const NewsListCard = memo(function NewsListCard({ article, isAr, formatDa
             <div className="flex flex-1 flex-col justify-between min-w-0">
               <div>
                 <div className="flex items-center gap-2 mb-1.5">
-                  <Badge variant="secondary" className="text-[10px] rounded-md gap-0.5 px-1.5 py-0 h-4 bg-muted/50">
+                  <Badge variant="secondary" className="text-[0.625rem] rounded-md gap-0.5 px-1.5 py-0 h-4 bg-muted/50">
                     <TypeIcon className="h-2.5 w-2.5" />
                     {typeBadgeLabel(article.type)}
                   </Badge>
-                  <span className="text-[10px] text-muted-foreground/40 flex items-center gap-0.5">
+                  <span className="text-[0.625rem] text-muted-foreground/40 flex items-center gap-0.5">
                     <BookOpen className="h-2.5 w-2.5" /> {readTime} {isAr ? "د" : "min"}
                   </span>
                   {(article.view_count ?? 0) >= 100 && (
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 rounded-md gap-0.5 bg-chart-4/8 text-chart-4 border-0">
+                    <Badge variant="secondary" className="text-[0.625rem] px-1.5 py-0 h-4 rounded-md gap-0.5 bg-chart-4/8 text-chart-4 border-0">
                       🔥
                     </Badge>
                   )}
                 </div>
                 <h3 className="text-[14px] font-semibold line-clamp-1 group-hover:text-primary transition-colors mb-1 leading-snug">{title}</h3>
-                {excerpt && <p className="text-[12px] text-muted-foreground/50 line-clamp-2 leading-relaxed">{excerpt}</p>}
+                {excerpt && <p className="text-xs text-muted-foreground/50 line-clamp-2 leading-relaxed">{excerpt}</p>}
               </div>
               <div className="flex items-center justify-between mt-2">
-                <div className="flex items-center gap-2.5 text-[10px] text-muted-foreground/40">
+                <div className="flex items-center gap-2.5 text-[0.625rem] text-muted-foreground/40">
                   <span className="flex items-center gap-0.5"><Calendar className="h-2.5 w-2.5" />{formatDate(article.published_at || article.created_at)}</span>
                   <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{article.view_count}</span>
                 </div>

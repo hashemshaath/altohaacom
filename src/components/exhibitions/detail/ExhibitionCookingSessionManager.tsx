@@ -151,7 +151,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
       cancelled: { cls: "bg-destructive/20 text-destructive", icon: Trash2 },
     };
     const cfg = map[status] || map.scheduled;
-    return <Badge className={`${cfg.cls} text-[12px] gap-1`}><cfg.icon className="h-2.5 w-2.5" />{status}</Badge>;
+    return <Badge className={`${cfg.cls} text-xs gap-1`}><cfg.icon className="h-2.5 w-2.5" />{status}</Badge>;
   };
 
   return (
@@ -220,7 +220,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
                 {sessions.map((s) => (
                   <TableRow key={s.id}>
                     <TableCell className="text-xs font-medium">{isAr ? s.title_ar || s.title : s.title}</TableCell>
-                    <TableCell className="text-[12px] text-muted-foreground">
+                    <TableCell className="text-xs text-muted-foreground">
                       {format(new Date(s.scheduled_start), "MMM d, HH:mm")}
                     </TableCell>
                     <TableCell>{statusBadge(s.status)}</TableCell>
@@ -233,12 +233,12 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
                     <TableCell>
                       <div className="flex items-center gap-1">
                         {s.status === "scheduled" && (
-                          <Button size="sm" variant="outline" className="h-6 text-[12px]" onClick={() => statusMut.mutate({ id: s.id, status: "live" })}>
+                          <Button size="sm" variant="outline" className="h-6 text-xs" onClick={() => statusMut.mutate({ id: s.id, status: "live" })}>
                             <Radio className="h-2.5 w-2.5 me-0.5" />{t("Go Live", "بث")}
                           </Button>
                         )}
                         {s.status === "live" && (
-                          <Button size="sm" variant="outline" className="h-6 text-[12px]" onClick={() => statusMut.mutate({ id: s.id, status: "completed" })}>
+                          <Button size="sm" variant="outline" className="h-6 text-xs" onClick={() => statusMut.mutate({ id: s.id, status: "completed" })}>
                             <Check className="h-2.5 w-2.5 me-0.5" />{t("End", "إنهاء")}
                           </Button>
                         )}

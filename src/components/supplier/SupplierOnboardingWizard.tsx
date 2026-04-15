@@ -130,7 +130,7 @@ export const SupplierOnboardingWizard = memo(function SupplierOnboardingWizard({
               <button
                 key={s.key}
                 onClick={() => i <= step && setStep(i)}
-                className={`flex items-center gap-1 rounded-full px-2 py-1 text-[12px] font-medium transition-colors ${
+                className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${
                   i === step
                     ? "bg-primary text-primary-foreground"
                     : i < step

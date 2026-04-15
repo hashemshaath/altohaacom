@@ -135,7 +135,7 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
                 <s.icon className={`h-4 w-4 ${s.color}`} />
               </div>
               <AnimatedCounter value={s.value} className="text-lg font-bold tabular-nums" />
-              <p className="text-[12px] text-muted-foreground mt-0.5">{s.label}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
             </CardContent>
           </Card>
         ))}
@@ -199,7 +199,7 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
                       <p className="text-sm font-medium">
                         {label ? (isAr ? label.ar : label.en) : tx.action_type?.replace(/_/g, " ")}
                       </p>
-                      <p className="text-[12px] text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {format(new Date(tx.created_at), "MMM d, HH:mm", { locale: isAr ? ar : enUS })}
                       </p>
                     </div>
@@ -209,7 +209,7 @@ export const ProfileWalletTab = memo(function ProfileWalletTab({ userId }: Profi
                       {isPositive ? "+" : ""}{tx.points.toLocaleString()}
                     </p>
                     {tx.balance_after != null && (
-                      <p className="text-[12px] text-muted-foreground tabular-nums">
+                      <p className="text-xs text-muted-foreground tabular-nums">
                         {isAr ? "الرصيد:" : "Bal:"} {tx.balance_after.toLocaleString()}
                       </p>
                     )}

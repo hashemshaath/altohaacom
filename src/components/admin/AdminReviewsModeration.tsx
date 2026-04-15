@@ -162,7 +162,7 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
                     <TableCell className="text-center">
                       <Badge
                         variant={r.status === "published" ? "secondary" : r.status === "flagged" ? "destructive" : "outline"}
-                        className="text-[12px]"
+                        className="text-xs"
                       >
                         {r.status}
                       </Badge>

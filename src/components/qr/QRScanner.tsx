@@ -109,7 +109,7 @@ export const QRScanner = memo(function QRScanner({ onScan }: QRScannerProps) {
   return (
     <Card className="mt-4 overflow-hidden">
       <CardContent className="p-0 relative">
-        <div className="relative bg-black aspect-video max-h-[300px]">
+        <div className="relative bg-foreground aspect-video max-h-[300px]">
           <video
             ref={videoRef}
             className="w-full h-full object-cover"

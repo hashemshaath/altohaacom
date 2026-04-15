@@ -50,7 +50,7 @@ export const DetailsTab = memo(function DetailsTab({ form, setForm, formErrors, 
             </FieldGroup>
           </div>
           {form.founded_year && (
-            <p className="text-[12px] text-muted-foreground flex items-center gap-1">
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               {isAr ? `تأسست منذ ${new Date().getFullYear() - parseInt(form.founded_year)} سنة` : `Established ${new Date().getFullYear() - parseInt(form.founded_year)} years ago`}
             </p>
@@ -70,10 +70,10 @@ export const DetailsTab = memo(function DetailsTab({ form, setForm, formErrors, 
           </div>
           {(form.services || form.targeted_sectors) && (
             <div className="pt-2">
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-2">{isAr ? "العلامات" : "Tags Preview"}</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase mb-2">{isAr ? "العلامات" : "Tags Preview"}</p>
               <div className="flex flex-wrap gap-1.5">
-                {form.services.split(",").filter(Boolean).map((s, i) => <Badge key={`s-${i}`} variant="secondary" className="text-[12px]">{s.trim()}</Badge>)}
-                {form.targeted_sectors.split(",").filter(Boolean).map((s, i) => <Badge key={`t-${i}`} variant="outline" className="text-[12px]">{s.trim()}</Badge>)}
+                {form.services.split(",").filter(Boolean).map((s, i) => <Badge key={`s-${i}`} variant="secondary" className="text-xs">{s.trim()}</Badge>)}
+                {form.targeted_sectors.split(",").filter(Boolean).map((s, i) => <Badge key={`t-${i}`} variant="outline" className="text-xs">{s.trim()}</Badge>)}
               </div>
             </div>
           )}
@@ -100,7 +100,7 @@ export const ExhibitionsTab = memo(function ExhibitionsTab({ isAr, organizerId, 
 
       {d.linkedCompetitions && d.linkedCompetitions.length > 0 && (
         <div>
-          <h4 className="text-xs font-semibold mb-3 flex items-center gap-2"><BarChart3 className="h-3.5 w-3.5 text-primary" />{isAr ? "المسابقات" : "Competitions"} <Badge variant="outline" className="text-[12px] h-4">{d.linkedCompetitions.length}</Badge></h4>
+          <h4 className="text-xs font-semibold mb-3 flex items-center gap-2"><BarChart3 className="h-3.5 w-3.5 text-primary" />{isAr ? "المسابقات" : "Competitions"} <Badge variant="outline" className="text-xs h-4">{d.linkedCompetitions.length}</Badge></h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {d.linkedCompetitions.map((comp: any) => (
               <Link key={comp.id} to={`/competitions/${comp.slug || comp.id}`} target="_blank" className="block">
@@ -109,7 +109,7 @@ export const ExhibitionsTab = memo(function ExhibitionsTab({ isAr, organizerId, 
                     {comp.cover_image_url ? <img src={comp.cover_image_url} alt="" className="h-10 w-10 rounded-lg object-cover border shrink-0" loading="lazy" /> : <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><BarChart3 className="h-4 w-4 text-primary" /></div>}
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-medium truncate">{isAr ? (comp.title_ar || comp.title) : comp.title}</p>
-                      <div className="flex items-center gap-1.5"><Badge variant="outline" className="text-[12px] h-3.5 capitalize">{comp.status}</Badge>{comp.edition_year && <span className="text-[12px] text-muted-foreground">{comp.edition_year}</span>}</div>
+                      <div className="flex items-center gap-1.5"><Badge variant="outline" className="text-xs h-3.5 capitalize">{comp.status}</Badge>{comp.edition_year && <span className="text-xs text-muted-foreground">{comp.edition_year}</span>}</div>
                     </div>
                     <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                   </CardContent>
@@ -122,7 +122,7 @@ export const ExhibitionsTab = memo(function ExhibitionsTab({ isAr, organizerId, 
 
       {d.exhibitionGroups.length > 0 ? (
         <div className="space-y-3">
-          <h4 className="text-xs font-semibold flex items-center gap-2"><Calendar className="h-3.5 w-3.5 text-primary" />{isAr ? "المعارض والمؤتمرات" : "Exhibitions & Conferences"} <Badge variant="outline" className="text-[12px] h-4">{d.linkedExhibitions?.length || 0}</Badge></h4>
+          <h4 className="text-xs font-semibold flex items-center gap-2"><Calendar className="h-3.5 w-3.5 text-primary" />{isAr ? "المعارض والمؤتمرات" : "Exhibitions & Conferences"} <Badge variant="outline" className="text-xs h-4">{d.linkedExhibitions?.length || 0}</Badge></h4>
           {d.exhibitionGroups.map((group: any) => {
             const isExpanded = d.expandedGroup === group.baseName;
             return (
@@ -133,8 +133,8 @@ export const ExhibitionsTab = memo(function ExhibitionsTab({ isAr, organizerId, 
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold truncate">{isAr ? group.baseNameAr : group.baseName}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <Badge variant="outline" className="text-[12px] h-4">{group.editions.length} {isAr ? "نسخة" : "editions"}</Badge>
-                        {group.editions[0]?.edition_year && <span className="text-[12px] text-muted-foreground">{group.editions[group.editions.length - 1]?.edition_year} — {group.editions[0].edition_year}</span>}
+                        <Badge variant="outline" className="text-xs h-4">{group.editions.length} {isAr ? "نسخة" : "editions"}</Badge>
+                        {group.editions[0]?.edition_year && <span className="text-xs text-muted-foreground">{group.editions[group.editions.length - 1]?.edition_year} — {group.editions[0].edition_year}</span>}
                       </div>
                     </div>
                     <ChevronRight className={cn("h-4 w-4 text-muted-foreground transition-transform shrink-0", isExpanded && "rotate-90")} />
@@ -148,12 +148,12 @@ export const ExhibitionsTab = memo(function ExhibitionsTab({ isAr, organizerId, 
                               <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0"><span className="text-xs font-bold text-primary">{ed.edition_year || "—"}</span></div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-xs font-medium truncate">{isAr ? (ed.title_ar || ed.title) : ed.title}</p>
-                                {ed.edition_number && <span className="text-[12px] text-muted-foreground">{isAr ? `النسخة ${ed.edition_number}` : `Edition #${ed.edition_number}`}</span>}
+                                {ed.edition_number && <span className="text-xs text-muted-foreground">{isAr ? `النسخة ${ed.edition_number}` : `Edition #${ed.edition_number}`}</span>}
                               </div>
                               <div className="flex items-center gap-1.5 mt-0.5">
-                                <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-[12px] h-3.5 capitalize">{ed.status}</Badge>
-                                {ed.start_date && <span className="text-[12px] text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
-                                {ed.view_count ? <span className="text-[12px] text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
+                                <Badge variant={ed.status === "active" ? "default" : ed.status === "completed" ? "secondary" : "outline"} className="text-xs h-3.5 capitalize">{ed.status}</Badge>
+                                {ed.start_date && <span className="text-xs text-muted-foreground">{new Date(ed.start_date).toLocaleDateString()}</span>}
+                                {ed.view_count ? <span className="text-xs text-muted-foreground flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ed.view_count}</span> : null}
                               </div>
                               <ExternalLink className="h-3 w-3 text-muted-foreground opacity-0 group-hover/ed:opacity-100 transition-opacity shrink-0" />
                             </div>
@@ -204,7 +204,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ form, isAr, organizerId
             <CardContent className="p-4">
               <div className="flex items-center gap-3 mb-2">
                 <div className={cn("h-9 w-9 rounded-xl flex items-center justify-center shrink-0", s.bg)}><s.icon className={cn("h-4 w-4", s.color)} /></div>
-                <p className="text-[12px] text-muted-foreground">{s.label}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
               <p className="text-2xl font-bold">{s.value}</p>
             </CardContent>
@@ -223,7 +223,7 @@ export const AnalyticsTab = memo(function AnalyticsTab({ form, isAr, organizerId
               { label: isAr ? "حسابات التواصل" : "Social Profiles", value: d.socialProfiles },
             ].map(m => (
               <div key={m.label} className="rounded-xl bg-muted/40 p-3">
-                <p className="text-[12px] text-muted-foreground mb-1">{m.label}</p>
+                <p className="text-xs text-muted-foreground mb-1">{m.label}</p>
                 <p className="text-lg font-bold">{m.value}</p>
               </div>
             ))}
@@ -290,7 +290,7 @@ export const NotesTab = memo(function NotesTab({ form, setForm, isAr, organizerI
       {organizerId && orgData && (
         <Card className="rounded-2xl">
           <CardContent className="p-4">
-            <p className="text-[12px] font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معلومات السجل" : "Record Info"}</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase mb-3">{isAr ? "معلومات السجل" : "Record Info"}</p>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: "ID", value: organizerId.slice(0, 8) + "...", copyable: organizerId },
@@ -299,7 +299,7 @@ export const NotesTab = memo(function NotesTab({ form, setForm, isAr, organizerI
                 { label: isAr ? "آخر حفظ" : "Last Saved", value: d.lastSaved ? d.lastSaved.toLocaleTimeString(isAr ? "ar-SA" : "en-US") : "—" },
               ].map(r => (
                 <div key={r.label} className="rounded-xl bg-muted/40 p-3">
-                  <p className="text-[12px] text-muted-foreground mb-1">{r.label}</p>
+                  <p className="text-xs text-muted-foreground mb-1">{r.label}</p>
                   <div className="flex items-center gap-1">
                     <p className="text-xs font-mono font-medium truncate">{r.value}</p>
                     {"copyable" in r && r.copyable && (

@@ -85,7 +85,7 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">{isAr ? "طلبات الإعلانات" : "Ad Requests"}</CardTitle>
-            <Badge variant="secondary" className="text-[12px]">{filteredRequests.length}/{requests.length}</Badge>
+            <Badge variant="secondary" className="text-xs">{filteredRequests.length}/{requests.length}</Badge>
           </div>
         </CardHeader>
         <CardContent>
@@ -124,14 +124,14 @@ export const AdRequestsTab = memo(function AdRequestsTab({ requests, onApprove, 
                         <div>
                           <span className="text-xs font-medium">{isAr ? req.title_ar || req.title : req.title}</span>
                           {req.description && (
-                            <p className="text-[12px] text-muted-foreground truncate max-w-[200px]">{isAr ? req.description_ar || req.description : req.description}</p>
+                            <p className="text-xs text-muted-foreground truncate max-w-[200px]">{isAr ? req.description_ar || req.description : req.description}</p>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[12px]">{req.request_type}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-xs">{req.request_type}</Badge></TableCell>
                       <TableCell className="font-mono text-xs">{req.budget ? `${req.budget} ${req.currency || "SAR"}` : "—"}</TableCell>
                       <TableCell className="text-xs">{req.desired_placements?.length || 0} {isAr ? "موقع" : "slots"}</TableCell>
-                      <TableCell className="text-[12px] text-muted-foreground">
+                      <TableCell className="text-xs text-muted-foreground">
                         {req.desired_start_date && req.desired_end_date
                           ? `${new Date(req.desired_start_date).toLocaleDateString()} → ${new Date(req.desired_end_date).toLocaleDateString()}`
                           : "—"}

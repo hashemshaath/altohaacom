@@ -15,11 +15,11 @@ import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
 
 interface RecommendationData {
-  competitions: any[];
-  recipes: any[];
-  articles: any[];
-  chefs: any[];
-  exhibitions: any[];
+  competitions: Record<string, unknown>[];
+  recipes: Record<string, unknown>[];
+  articles: Record<string, unknown>[];
+  chefs: Record<string, unknown>[];
+  exhibitions: Record<string, unknown>[];
   tip: string;
   tip_ar: string;
 }
@@ -59,12 +59,12 @@ export default function ForYou() {
               )}
               <div className="p-3 space-y-1.5">
                 <p className="text-sm font-semibold line-clamp-2">{isAr ? c.title_ar || c.title : c.title}</p>
-                <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
-                  {c.category && <Badge variant="outline" className="text-[12px]">{c.category}</Badge>}
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  {c.category && <Badge variant="outline" className="text-xs">{c.category}</Badge>}
                   {c.country_code && <span>{c.country_code}</span>}
                 </div>
                 {c._reason && (
-                  <p className="text-[12px] text-primary/80 flex items-center gap-1">
+                  <p className="text-xs text-primary/80 flex items-center gap-1">
                     <Sparkles className="h-2.5 w-2.5" /> {c._reason}
                   </p>
                 )}
@@ -92,12 +92,12 @@ export default function ForYou() {
               )}
               <div className="p-3 space-y-1.5">
                 <p className="text-sm font-semibold line-clamp-2">{isAr ? e.title_ar || e.title : e.title}</p>
-                <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   {e.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{e.city}</span>}
                   {e.start_date && <span className="flex items-center gap-0.5"><Calendar className="h-2.5 w-2.5" />{format(new Date(e.start_date), "MMM d")}</span>}
                 </div>
                 {e._reason && (
-                  <p className="text-[12px] text-chart-5/80 flex items-center gap-1">
+                  <p className="text-xs text-chart-5/80 flex items-center gap-1">
                     <Sparkles className="h-2.5 w-2.5" /> {e._reason}
                   </p>
                 )}
@@ -126,11 +126,11 @@ export default function ForYou() {
               <div className="p-3 space-y-1.5">
                 <p className="text-sm font-semibold line-clamp-2">{isAr ? r.title_ar || r.title : r.title}</p>
                 <div className="flex items-center gap-1.5">
-                  <Badge variant="outline" className="text-[12px]">{r.difficulty || "easy"}</Badge>
-                  {r.cuisine_type && <span className="text-[12px] text-muted-foreground">{r.cuisine_type}</span>}
+                  <Badge variant="outline" className="text-xs">{r.difficulty || "easy"}</Badge>
+                  {r.cuisine_type && <span className="text-xs text-muted-foreground">{r.cuisine_type}</span>}
                 </div>
                 {r._reason && (
-                  <p className="text-[12px] text-chart-4/80 flex items-center gap-1">
+                  <p className="text-xs text-chart-4/80 flex items-center gap-1">
                     <Sparkles className="h-2.5 w-2.5" /> {r._reason}
                   </p>
                 )}
@@ -158,9 +158,9 @@ export default function ForYou() {
               )}
               <div className="p-3 space-y-1.5">
                 <p className="text-sm font-semibold line-clamp-2">{isAr ? a.title_ar || a.title : a.title}</p>
-                <Badge variant="secondary" className="text-[12px]">{a.type}</Badge>
+                <Badge variant="secondary" className="text-xs">{a.type}</Badge>
                 {a._reason && (
-                  <p className="text-[12px] text-chart-2/80 flex items-center gap-1">
+                  <p className="text-xs text-chart-2/80 flex items-center gap-1">
                     <Sparkles className="h-2.5 w-2.5" /> {a._reason}
                   </p>
                 )}
@@ -187,11 +187,11 @@ export default function ForYou() {
               </Avatar>
               <div>
                 <p className="text-sm font-semibold">{isAr ? c.full_name_ar || c.full_name : c.full_name}</p>
-                <p className="text-[12px] text-muted-foreground">{c.specialization || (isAr ? "طاهي" : "Chef")}</p>
+                <p className="text-xs text-muted-foreground">{c.specialization || (isAr ? "طاهي" : "Chef")}</p>
               </div>
-              {c.is_verified && <Badge variant="secondary" className="text-[12px]">✓ {isAr ? "موثق" : "Verified"}</Badge>}
+              {c.is_verified && <Badge variant="secondary" className="text-xs">✓ {isAr ? "موثق" : "Verified"}</Badge>}
               {c._reason && (
-                <p className="text-[12px] text-chart-3/80 flex items-center gap-1">
+                <p className="text-xs text-chart-3/80 flex items-center gap-1">
                   <Sparkles className="h-2.5 w-2.5" /> {c._reason}
                 </p>
               )}
@@ -263,7 +263,7 @@ export default function ForYou() {
                     <Icon className={`h-3.5 w-3.5 ${section.color}`} />
                   </div>
                   <h2 className="text-base font-bold">{section.title}</h2>
-                  <Badge variant="secondary" className="text-[12px]">{section.items.length}</Badge>
+                  <Badge variant="secondary" className="text-xs">{section.items.length}</Badge>
                 </div>
                 <div className={`grid gap-3 ${section.key === "chefs" ? "grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5" : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"}`}>
                   {section.items.map(section.renderItem)}

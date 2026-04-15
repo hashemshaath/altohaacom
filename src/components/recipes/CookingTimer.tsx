@@ -105,7 +105,7 @@ export const CookingTimer = memo(function CookingTimer({ prepMinutes, cookMinute
             {hasPrep && (
               <Badge
                 variant={phase === "prep" ? "default" : "outline"}
-                className="text-[12px] cursor-pointer"
+                className="text-xs cursor-pointer"
                 onClick={() => switchPhase("prep")}
               >
                 {isAr ? "تحضير" : "Prep"}
@@ -114,7 +114,7 @@ export const CookingTimer = memo(function CookingTimer({ prepMinutes, cookMinute
             {hasCook && (
               <Badge
                 variant={phase === "cook" ? "default" : "outline"}
-                className="text-[12px] cursor-pointer"
+                className="text-xs cursor-pointer"
                 onClick={() => switchPhase("cook")}
               >
                 {isAr ? "طبخ" : "Cook"}

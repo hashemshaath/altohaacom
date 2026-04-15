@@ -155,15 +155,15 @@ export const BatchDuplicateScanner = memo(function BatchDuplicateScanner({
                     <div className="flex items-center gap-2">
                       <Avatar className="h-7 w-7">
                         <AvatarImage src={group.primary.logo_url || ""} />
-                        <AvatarFallback className="text-[12px]">{group.primary.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
+                        <AvatarFallback className="text-xs">{group.primary.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <span className="text-sm font-semibold truncate block">{group.primary.name}</span>
-                        <span className="text-[12px] text-muted-foreground">
+                        <span className="text-xs text-muted-foreground">
                           {group.primary.identifier} • {group.primary.city || group.primary.country || "—"}
                         </span>
                       </div>
-                      <Badge variant="secondary" className="text-[12px]">
+                      <Badge variant="secondary" className="text-xs">
                         {isAr ? "الأساسي" : "Primary"}
                       </Badge>
                     </div>
@@ -176,17 +176,17 @@ export const BatchDuplicateScanner = memo(function BatchDuplicateScanner({
                       >
                         <Avatar className="h-6 w-6">
                           <AvatarImage src={m.record.logo_url || ""} />
-                          <AvatarFallback className="text-[12px]">{m.record.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
+                          <AvatarFallback className="text-xs">{m.record.name?.slice(0, 2)?.toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <span className="text-xs font-medium truncate block">{m.record.name}</span>
                           <div className="flex gap-1 flex-wrap">
                             {m.reasons.slice(0, 2).map((r, ri) => (
-                              <span key={ri} className="text-[12px] bg-muted px-1 py-0.5 rounded">{r}</span>
+                              <span key={ri} className="text-xs bg-muted px-1 py-0.5 rounded">{r}</span>
                             ))}
                           </div>
                         </div>
-                        <Badge variant="outline" className="text-[12px]">
+                        <Badge variant="outline" className="text-xs">
                           {m.table_name !== table
                             ? TABLE_OPTIONS.find(t => t.value === m.table_name)?.[isAr ? "label_ar" : "label_en"]
                             : ""}

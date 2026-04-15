@@ -136,7 +136,7 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
               <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
               <div>
                 <p className="text-sm font-bold">{s.value}</p>
-                <p className="text-[12px] text-muted-foreground">{s.label}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             </div>
           ))}
@@ -145,7 +145,7 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
         {/* Status distribution */}
         <div className="flex flex-wrap gap-1">
           {Object.entries(data.statusCounts).sort((a, b) => b[1] - a[1]).map(([status, count]) => (
-            <Badge key={status} variant="outline" className={`text-[12px] gap-0.5 ${statusColors[status] || ""}`}>
+            <Badge key={status} variant="outline" className={`text-xs gap-0.5 ${statusColors[status] || ""}`}>
               {status}: {count}
             </Badge>
           ))}
@@ -153,7 +153,7 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
 
         {/* Registration stats */}
         {data.pendingRegs > 0 && (
-          <div className="flex items-center gap-2 text-[12px]">
+          <div className="flex items-center gap-2 text-xs">
             <AlertTriangle className="h-3 w-3 text-chart-4" />
             <span className="text-chart-4 font-medium">{data.pendingRegs} {isAr ? "تسجيل معلق" : "pending registrations"}</span>
           </div>
@@ -162,13 +162,13 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
         {/* Active competition progress */}
         {data.activeProgress.length > 0 && (
           <div>
-            <p className="text-[12px] text-muted-foreground mb-1.5 font-medium">{isAr ? "تقدم المسابقات النشطة" : "Active Competition Progress"}</p>
+            <p className="text-xs text-muted-foreground mb-1.5 font-medium">{isAr ? "تقدم المسابقات النشطة" : "Active Competition Progress"}</p>
             <div className="space-y-2">
               {data.activeProgress.map(c => (
                 <div key={c.id}>
                   <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-[12px] font-medium truncate max-w-[60%]">{c.title}</span>
-                    <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                    <span className="text-xs font-medium truncate max-w-[60%]">{c.title}</span>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <span>{c.participants} <Users className="inline h-2.5 w-2.5" /></span>
                       <span>{c.judges} <Gavel className="inline h-2.5 w-2.5" /></span>
                       <span className="font-medium">{c.progress}%</span>

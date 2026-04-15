@@ -277,12 +277,12 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
                     <p className="font-medium text-sm">{isAr && comp.title_ar ? comp.title_ar : comp.title}</p>
                     <div className="flex items-center gap-2 mt-2">
                       {comp.competition_start && (
-                        <Badge variant="outline" className="text-[12px]">
+                        <Badge variant="outline" className="text-xs">
                           <Calendar className="h-3 w-3 me-1" />
                           {format(new Date(comp.competition_start), "MMM yyyy")}
                         </Badge>
                       )}
-                      <Badge variant="secondary" className="text-[12px]">{comp.status}</Badge>
+                      <Badge variant="secondary" className="text-xs">{comp.status}</Badge>
                     </div>
                   </CardContent>
                 </Card>

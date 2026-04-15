@@ -67,17 +67,17 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
               <h2 className="text-sm font-bold truncate">
                 {isAr ? (form.name_ar || form.name || "منظم جديد") : (form.name || form.name_ar || "New Organizer")}
               </h2>
-              <div className="flex items-center gap-2 text-[12px] text-muted-foreground flex-wrap">
-                {organizerId && orgData?.organizer_number && <Badge variant="outline" className="text-[12px] h-4 font-mono px-1.5">{orgData.organizer_number}</Badge>}
-                <Badge variant={form.status === "active" ? "default" : form.status === "pending" ? "outline" : "secondary"} className="text-[12px] h-4 capitalize">{form.status}</Badge>
-                {form.is_verified && <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-primary/30"><CheckCircle2 className="h-2.5 w-2.5 text-primary" />{isAr ? "موثق" : "Verified"}</Badge>}
-                {form.is_featured && <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-amber-500/30"><Star className="h-2.5 w-2.5 text-amber-500" />{isAr ? "مميز" : "Featured"}</Badge>}
-                {d.hasUnsavedChanges && <Badge variant="outline" className="text-[12px] h-4 px-1.5 border-amber-500/50 text-amber-600 animate-pulse">{isAr ? "غير محفوظ" : "Unsaved"}</Badge>}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
+                {organizerId && orgData?.organizer_number && <Badge variant="outline" className="text-xs h-4 font-mono px-1.5">{orgData.organizer_number}</Badge>}
+                <Badge variant={form.status === "active" ? "default" : form.status === "pending" ? "outline" : "secondary"} className="text-xs h-4 capitalize">{form.status}</Badge>
+                {form.is_verified && <Badge variant="outline" className="text-xs h-4 px-1.5 gap-0.5 border-primary/30"><CheckCircle2 className="h-2.5 w-2.5 text-primary" />{isAr ? "موثق" : "Verified"}</Badge>}
+                {form.is_featured && <Badge variant="outline" className="text-xs h-4 px-1.5 gap-0.5 border-amber-500/30"><Star className="h-2.5 w-2.5 text-amber-500" />{isAr ? "مميز" : "Featured"}</Badge>}
+                {d.hasUnsavedChanges && <Badge variant="outline" className="text-xs h-4 px-1.5 border-amber-500/50 text-amber-600 animate-pulse">{isAr ? "غير محفوظ" : "Unsaved"}</Badge>}
               </div>
             </div>
           </div>
           <div className="flex items-center gap-1.5">
-            {d.lastSaved && <span className="text-[12px] text-muted-foreground hidden lg:flex items-center gap-1"><Clock className="h-3 w-3" />{d.lastSaved.toLocaleTimeString()}</span>}
+            {d.lastSaved && <span className="text-xs text-muted-foreground hidden lg:flex items-center gap-1"><Clock className="h-3 w-3" />{d.lastSaved.toLocaleTimeString()}</span>}
             <ProgressRing pct={d.completePct} />
             {organizerId && orgData?.slug && (
               <TooltipProvider><Tooltip><TooltipTrigger asChild>
@@ -110,18 +110,18 @@ export default function OrganizerEditForm({ organizerId, onClose }: OrganizerEdi
         <div className={cn("shrink-0 border-e border-border/40 transition-all duration-300 hidden lg:block", d.showSideNav ? "w-48 pe-4 pt-5" : "w-0 pe-0 overflow-hidden")}>
           {d.showSideNav && (
             <nav aria-label={isAr ? "أقسام النموذج" : "Form sections"} className="sticky top-20 space-y-0.5">
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">{isAr ? "الأقسام" : "Sections"}</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-2">{isAr ? "الأقسام" : "Sections"}</p>
               {TABS.map(tab => (
                 <QuickNavItem key={tab.id} icon={TAB_ICONS[tab.id] || StickyNote} label={isAr ? tab.ar : tab.en} status={d.getTabStatus(tab.id)} active={d.activeTab === tab.id} onClick={() => d.setActiveTab(tab.id)} />
               ))}
               <Separator className="my-3" />
               <div className="px-3 space-y-2">
-                <div className="flex items-center justify-between text-[12px]">
+                <div className="flex items-center justify-between text-xs">
                   <span className="text-muted-foreground">{isAr ? "الاكتمال" : "Complete"}</span>
                   <span className={cn("font-bold", d.completePct >= 80 ? "text-chart-2" : d.completePct >= 50 ? "text-amber-600" : "text-primary")}>{d.completePct}%</span>
                 </div>
                 <Progress value={d.completePct} className="h-1.5" />
-                <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-1">
+                <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
                   <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-chart-2" />{TABS.filter(t => d.getTabStatus(t.id) === "complete").length}</span>
                   <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-amber-500" />{TABS.filter(t => d.getTabStatus(t.id) === "partial").length}</span>
                   <span className="flex items-center gap-1"><div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/30" />{TABS.filter(t => d.getTabStatus(t.id) === "empty").length}</span>

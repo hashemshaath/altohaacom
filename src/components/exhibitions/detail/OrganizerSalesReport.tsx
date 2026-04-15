@@ -68,14 +68,14 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: t("Ticket Number", "رقم التذكرة"), accessor: (r: any) => r.ticket_number },
-      { header: t("Name", "الاسم"), accessor: (r: any) => r.attendee_name },
-      { header: t("Email", "البريد"), accessor: (r: any) => r.attendee_email },
-      { header: t("Phone", "الهاتف"), accessor: (r: any) => r.attendee_phone },
-      { header: t("Status", "الحالة"), accessor: (r: any) => r.status },
-      { header: t("Ticket Type", "نوع التذكرة"), accessor: (r: any) => r.ticket_type },
-      { header: t("Check-in", "الدخول"), accessor: (r: any) => r.checked_in_at ? format(new Date(r.checked_in_at), "yyyy-MM-dd HH:mm") : "" },
-      { header: t("Booked", "الحجز"), accessor: (r: any) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
+      { header: t("Ticket Number", "رقم التذكرة"), accessor: (r) => r.ticket_number },
+      { header: t("Name", "الاسم"), accessor: (r) => r.attendee_name },
+      { header: t("Email", "البريد"), accessor: (r) => r.attendee_email },
+      { header: t("Phone", "الهاتف"), accessor: (r) => r.attendee_phone },
+      { header: t("Status", "الحالة"), accessor: (r) => r.status },
+      { header: t("Ticket Type", "نوع التذكرة"), accessor: (r) => r.ticket_type },
+      { header: t("Check-in", "الدخول"), accessor: (r) => r.checked_in_at ? format(new Date(r.checked_in_at), "yyyy-MM-dd HH:mm") : "" },
+      { header: t("Booked", "الحجز"), accessor: (r) => format(new Date(r.created_at), "yyyy-MM-dd HH:mm") },
     ],
     filename: `${exhibitionTitle}_tickets`,
   });
@@ -100,7 +100,7 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
               </div>
               <div>
                 <p className={`text-base font-bold ${s.color}`}>{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
-                <p className="text-[12px] text-muted-foreground">{s.label}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -136,7 +136,7 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
                     <span className="font-mono font-medium truncate">{tk.ticket_number}</span>
                     <span className="text-muted-foreground truncate">{tk.attendee_name || tk.attendee_email || ""}</span>
                   </div>
-                  <Badge variant="secondary" className="text-[12px] shrink-0">
+                  <Badge variant="secondary" className="text-xs shrink-0">
                     {tk.checked_in_at ? t("In", "دخل") : tk.status}
                   </Badge>
                 </div>

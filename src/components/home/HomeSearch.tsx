@@ -73,7 +73,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                   key={cat.key}
                   onClick={() => setActiveCategory(cat.key)}
                   className={cn(
-                    "inline-flex shrink-0 items-center gap-1 rounded-md px-2.5 py-1 text-[12px] font-semibold transition-all duration-200 touch-manipulation",
+                    "inline-flex shrink-0 items-center gap-1 rounded-md px-2.5 py-1 text-xs font-semibold transition-all duration-200 touch-manipulation",
                     activeCategory === cat.key
                       ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
                       : "bg-muted/30 text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -96,7 +96,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                 onChange={(e) => { setQuery(e.target.value); setShowSuggestions(true); }}
                 onFocus={() => setShowSuggestions(true)}
                 placeholder={isAr ? "ابحث عن مسابقات، طهاة، معارض..." : "Search competitions, chefs, exhibitions..."}
-                className="ps-9 h-9 text-[13px] rounded-md border-border/30 bg-muted/20 focus:bg-background transition-colors"
+                className="ps-9 h-9 text-[0.8125rem] rounded-md border-border/30 bg-muted/20 focus:bg-background transition-colors"
               />
               {query && (
                 <button
@@ -108,14 +108,14 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                 </button>
               )}
             </div>
-            <Button type="submit" size="sm" className="h-9 px-4 shadow-sm shadow-primary/10 rounded-md shrink-0 font-semibold text-[12px]">
+            <Button type="submit" size="sm" className="h-9 px-4 shadow-sm shadow-primary/10 rounded-md shrink-0 font-semibold text-xs">
               {isAr ? "بحث" : "Search"}
             </Button>
           </form>
 
           {showSuggestions && !query && trending.length > 0 && (
             <div className="mt-1.5 rounded-lg border border-border/30 bg-card p-2.5 shadow-lg animate-in fade-in-0 slide-in-from-top-1 duration-200">
-              <div className="flex items-center gap-1.5 mb-2 text-[12px] font-bold uppercase tracking-wider text-muted-foreground">
+              <div className="flex items-center gap-1.5 mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 <TrendingUp className="h-3 w-3" />
                 {isAr ? "الأكثر رواجاً" : "Trending"}
               </div>
@@ -133,7 +133,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
                     <Search className="h-3 w-3 text-muted-foreground/40 shrink-0" />
                     <span className="truncate text-foreground">{isAr ? item.title_ar || item.title : item.title}</span>
                     {item.type && (
-                      <Badge variant="outline" className="ms-auto shrink-0 text-[12px]">
+                      <Badge variant="outline" className="ms-auto shrink-0 text-xs">
                         {item.type}
                       </Badge>
                     )}

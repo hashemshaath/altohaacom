@@ -216,7 +216,7 @@ Return ONLY valid JSON array of objects with fields: keyword, type, estimatedTra
                 <m.icon className="h-4 w-4" />
               </div>
               <div>
-                <p className="text-[12px] text-muted-foreground">{m.label}</p>
+                <p className="text-xs text-muted-foreground">{m.label}</p>
                 <p className="text-lg font-bold">{m.value.toLocaleString()}</p>
               </div>
             </CardContent>
@@ -288,14 +288,14 @@ Return ONLY valid JSON array of objects with fields: keyword, type, estimatedTra
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-medium text-sm">{op.keyword}</p>
-                      <Badge variant="secondary" className="text-[12px]">{isAr ? typeInfo?.ar : typeInfo?.en}</Badge>
-                      <Badge variant={op.difficulty === "easy" ? "default" : op.difficulty === "medium" ? "secondary" : "destructive"} className="text-[12px]">
+                      <Badge variant="secondary" className="text-xs">{isAr ? typeInfo?.ar : typeInfo?.en}</Badge>
+                      <Badge variant={op.difficulty === "easy" ? "default" : op.difficulty === "medium" ? "secondary" : "destructive"} className="text-xs">
                         {op.difficulty}
                       </Badge>
-                      {op.currentPos && <span className="text-[12px] text-muted-foreground">#{op.currentPos}</span>}
+                      {op.currentPos && <span className="text-xs text-muted-foreground">#{op.currentPos}</span>}
                     </div>
                     <p className="text-xs text-muted-foreground mt-1">{isAr ? op.suggestedActionAr : op.suggestedAction}</p>
-                    <div className="flex items-center gap-3 mt-1.5 text-[12px] text-muted-foreground">
+                    <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
                       <span className="flex items-center gap-1"><Eye className="h-3 w-3" /> ~{op.estimatedTraffic.toLocaleString()} {isAr ? "زيارة/شهر" : "visits/mo"}</span>
                     </div>
                   </div>

@@ -109,7 +109,7 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
           <CalendarClock className="h-3.5 w-3.5 text-primary" />
         </div>
         <h3 className="text-sm font-semibold">{t("Event Schedule", "جدول الفعاليات")}</h3>
-        <Badge variant="secondary" className="text-[12px] h-4 px-1.5">{items.length}</Badge>
+        <Badge variant="secondary" className="text-xs h-4 px-1.5">{items.length}</Badge>
       </div>
 
       {/* Day selector */}
@@ -125,7 +125,7 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
                 onClick={() => setSelectedDay(d.date)}
               >
                 {d.label}
-                <Badge variant="secondary" className="ms-1.5 h-4 px-1 text-[12px] rounded-full bg-background/20 text-current">{d.items.length}</Badge>
+                <Badge variant="secondary" className="ms-1.5 h-4 px-1 text-xs rounded-full bg-background/20 text-current">{d.items.length}</Badge>
               </Button>
             ))}
           </div>
@@ -147,13 +147,13 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
                   {/* Time column */}
                   <div className="shrink-0 text-center w-14">
                     <p className="text-xs font-bold text-primary">{format(parseISO(item.start_time), "HH:mm")}</p>
-                    <p className="text-[12px] text-muted-foreground">{format(parseISO(item.end_time), "HH:mm")}</p>
+                    <p className="text-xs text-muted-foreground">{format(parseISO(item.end_time), "HH:mm")}</p>
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-1">
-                      <Badge className={`text-[12px] h-4 px-1.5 ${catColor} border-0`}>
+                      <Badge className={`text-xs h-4 px-1.5 ${catColor} border-0`}>
                         <CatIcon className="me-0.5 h-2 w-2" />
                         {item.category}
                       </Badge>
@@ -161,19 +161,19 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
                     </div>
                     <p className="text-sm font-semibold">{isAr && item.title_ar ? item.title_ar : item.title}</p>
                     {(item.description || item.description_ar) && (
-                      <p className="text-[12px] text-muted-foreground line-clamp-2 mt-0.5">
+                      <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                         {isAr && item.description_ar ? item.description_ar : item.description}
                       </p>
                     )}
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2">
                       {item.speaker_name && (
-                        <span className="flex items-center gap-1 text-[12px] text-foreground font-medium">
+                        <span className="flex items-center gap-1 text-xs text-foreground font-medium">
                           <Mic className="h-2.5 w-2.5 text-primary" />
                           {isAr && item.speaker_name_ar ? item.speaker_name_ar : item.speaker_name}
                         </span>
                       )}
                       {item.location && (
-                        <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
                           <MapPin className="h-2.5 w-2.5" />
                           {isAr && item.location_ar ? item.location_ar : item.location}
                         </span>

@@ -78,7 +78,7 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
           size={size}
           onClick={handleOptimize}
           disabled={optimizing || disabled}
-          className={compact ? "h-6 w-6" : "gap-1 text-[12px] h-6 px-2"}
+          className={compact ? "h-6 w-6" : "gap-1 text-xs h-6 px-2"}
           title={isAr ? "تحسين SEO" : "Optimize SEO"}
         >
           {optimizing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
@@ -92,7 +92,7 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
           size={size}
           onClick={handleTranslate}
           disabled={translating || disabled}
-          className={compact ? "h-6 w-6" : "gap-1 text-[12px] h-6 px-2"}
+          className={compact ? "h-6 w-6" : "gap-1 text-xs h-6 px-2"}
           title={isAr ? "ترجمة عكسية" : "Translate"}
         >
           {translating ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}

@@ -184,7 +184,7 @@ export default function ArticlesAdmin() {
       exhibition: { bg: "bg-chart-5/10 text-chart-5 border-chart-5/20", label: "Exhibition", labelAr: "معرض" },
     };
     const c = config[type] || { bg: "", label: type, labelAr: type };
-    return <Badge variant="outline" className={cn("text-[12px]", c.bg)}>{isAr ? c.labelAr : c.label}</Badge>;
+    return <Badge variant="outline" className={cn("text-xs", c.bg)}>{isAr ? c.labelAr : c.label}</Badge>;
   };
 
   // Editor view
@@ -233,7 +233,7 @@ export default function ArticlesAdmin() {
               </div>
               <div>
                 <AnimatedCounter value={stat.value} className="text-lg font-bold leading-none" />
-                <p className="text-[12px] text-muted-foreground mt-0.5">{stat.label}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -246,17 +246,17 @@ export default function ArticlesAdmin() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <TabsList className="rounded-xl h-9">
               <TabsTrigger value="all" className="rounded-lg text-xs px-3">
-                {t("الكل", "All")} <span className="ms-1 text-[12px] opacity-60">({stats.total})</span>
+                {t("الكل", "All")} <span className="ms-1 text-xs opacity-60">({stats.total})</span>
               </TabsTrigger>
               <TabsTrigger value="published" className="rounded-lg text-xs px-3">
-                {t("منشور", "Published")} <span className="ms-1 text-[12px] opacity-60">({stats.published})</span>
+                {t("منشور", "Published")} <span className="ms-1 text-xs opacity-60">({stats.published})</span>
               </TabsTrigger>
               <TabsTrigger value="draft" className="rounded-lg text-xs px-3">
-                {t("مسودات", "Drafts")} <span className="ms-1 text-[12px] opacity-60">({stats.drafts})</span>
+                {t("مسودات", "Drafts")} <span className="ms-1 text-xs opacity-60">({stats.drafts})</span>
               </TabsTrigger>
               <TabsTrigger value="featured" className="rounded-lg text-xs px-3">
                 <Sparkles className="h-3 w-3 me-1" />
-                {t("مميز", "Featured")} <span className="ms-1 text-[12px] opacity-60">({stats.featured})</span>
+                {t("مميز", "Featured")} <span className="ms-1 text-xs opacity-60">({stats.featured})</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -362,11 +362,11 @@ export default function ArticlesAdmin() {
                             {article.is_featured && <Star className="h-3 w-3 text-chart-1 fill-chart-1 shrink-0" />}
                           </div>
                           <div className="flex items-center gap-2">
-                            <a href={`/news/${article.slug}`} target="_blank" rel="noopener noreferrer" className="text-[12px] text-muted-foreground hover:text-primary transition-colors truncate max-w-[180px]">
+                            <a href={`/news/${article.slug}`} target="_blank" rel="noopener noreferrer" className="text-xs text-muted-foreground hover:text-primary transition-colors truncate max-w-[180px]">
                               /{article.slug}
                             </a>
                             {isScheduled && (
-                              <Badge variant="outline" className="text-[12px] gap-0.5 px-1 py-0 text-chart-4 border-chart-4/30">
+                              <Badge variant="outline" className="text-xs gap-0.5 px-1 py-0 text-chart-4 border-chart-4/30">
                                 <Timer className="h-2 w-2" />{t("مجدول", "Scheduled")}
                               </Badge>
                             )}
@@ -383,7 +383,7 @@ export default function ArticlesAdmin() {
                       <div className="text-xs text-muted-foreground">
                         {format(new Date(article.created_at), "MMM d, yyyy")}
                         {article.published_at && article.status === "published" && (
-                          <p className="text-[12px] text-chart-2">{t("نُشر", "Published")} {format(new Date(article.published_at), "MMM d")}</p>
+                          <p className="text-xs text-chart-2">{t("نُشر", "Published")} {format(new Date(article.published_at), "MMM d")}</p>
                         )}
                       </div>
                     </TableCell>

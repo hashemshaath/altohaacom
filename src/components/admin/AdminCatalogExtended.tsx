@@ -47,7 +47,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
       if (!itemIds.length) return [];
       const { data } = await supabase.from("product_qa").select("*").in("catalog_item_id", itemIds).order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_qa select("*") returns dynamic columns
-      return (data || []) as any[];
+      return (data || []) as Record<string, unknown>[];
     },
     enabled: items.length > 0,
   });
@@ -58,7 +58,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
     queryFn: async () => {
       const { data } = await supabase.from("product_trust_badges").select("*").eq("company_id", companyId).order("sort_order").limit(QUERY_LIMIT_MEDIUM);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_trust_badges select("*") returns dynamic columns
-      return (data || []) as any[];
+      return (data || []) as Record<string, unknown>[];
     },
   });
 
@@ -175,7 +175,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
                     <>
                       <TableCell>{item.warranty_years ? `${item.warranty_years}y` : "–"}</TableCell>
                       <TableCell>{item.platform_discount_pct ? `${item.platform_discount_pct}%` : "–"}</TableCell>
-                      <TableCell>{item.coupon_code ? <Badge variant="outline" className="text-[10px]"><Tag className="h-2.5 w-2.5 me-1" />{item.coupon_code} ({item.coupon_discount_pct}%)</Badge> : "–"}</TableCell>
+                      <TableCell>{item.coupon_code ? <Badge variant="outline" className="text-[0.625rem]"><Tag className="h-2.5 w-2.5 me-1" />{item.coupon_code} ({item.coupon_discount_pct}%)</Badge> : "–"}</TableCell>
                       <TableCell>{item.original_price ? `${Number(item.original_price).toLocaleString()}` : "–"}</TableCell>
                       <TableCell><Switch checked={item.is_active} onCheckedChange={v => toggleActiveMut.mutate({ id: item.id, active: v })} /></TableCell>
                       <TableCell><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => archiveMut.mutate({ id: item.id, archived: !item.is_archived })}><Archive className={`h-3 w-3 ${item.is_archived ? "text-chart-4" : "text-muted-foreground"}`} /></Button></TableCell>
@@ -235,7 +235,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
                       <TableCell className="text-xs font-medium">{prod?.name || "–"}</TableCell>
                       <TableCell className="text-xs max-w-[200px] truncate">{isAr ? (qa.question_ar || qa.question) : qa.question}</TableCell>
                       <TableCell className="text-xs max-w-[200px] truncate">{isAr ? (qa.answer_ar || qa.answer) : (qa.answer || "–")}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[10px]">{qa.helpful_count}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[0.625rem]">{qa.helpful_count}</Badge></TableCell>
                       <TableCell><Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteQaMut.mutate(qa.id)}><Trash2 className="h-3 w-3 text-destructive" /></Button></TableCell>
                     </TableRow>
                   );
@@ -273,7 +273,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
                   <div className="flex-1">
                     <p className="text-sm font-semibold">{b.label}</p>
                     {b.label_ar && <p className="text-xs text-muted-foreground" dir="rtl">{b.label_ar}</p>}
-                    <p className="text-[10px] text-muted-foreground mt-0.5">Icon: {b.icon_name} · {b.color_class}</p>
+                    <p className="text-[0.625rem] text-muted-foreground mt-0.5">Icon: {b.icon_name} · {b.color_class}</p>
                   </div>
                   <Switch checked={b.is_active} onCheckedChange={v => toggleBadgeMut.mutate({ id: b.id, active: v })} />
                   <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteBadgeMut.mutate(b.id)}><Trash2 className="h-3 w-3 text-destructive" /></Button>

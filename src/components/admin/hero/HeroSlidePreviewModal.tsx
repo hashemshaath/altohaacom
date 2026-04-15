@@ -23,7 +23,7 @@ export const HeroSlidePreviewModal = memo(function HeroSlidePreviewModal({
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/40 bg-card/80 backdrop-blur-sm shrink-0">
         <div className="flex items-center gap-2">
           <p className="text-sm font-semibold truncate max-w-[200px]">{slide.title}</p>
-          <Badge variant="outline" className="text-[12px]">
+          <Badge variant="outline" className="text-xs">
             {HERO_TEMPLATES.find(t => t.id === slide.template)?.label}
           </Badge>
         </div>
@@ -51,7 +51,7 @@ export const HeroSlidePreviewModal = memo(function HeroSlidePreviewModal({
       </div>
 
       <div className="px-4 py-2 border-t border-border/40 bg-card/60 backdrop-blur-sm shrink-0">
-        <div className="flex items-center justify-center gap-4 text-[12px] text-muted-foreground">
+        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
           <span>Template: {templateLabels[slide.template]}</span>
           <span>·</span>
           <span>Height: {HEIGHT_PRESETS[slide.height_preset]?.label ?? slide.height_preset}</span>

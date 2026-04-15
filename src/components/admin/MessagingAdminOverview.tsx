@@ -94,9 +94,9 @@ export const MessagingAdminOverview = memo(function MessagingAdminOverview() {
             </div>
             <div className="min-w-0">
               <p className="text-lg font-bold leading-none"><AnimatedCounter value={typeof c.value === "number" ? c.value : 0} /></p>
-              <p className="text-[12px] text-muted-foreground truncate mt-0.5">{c.label}</p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">{c.label}</p>
               {"total" in c && c.total ? (
-                <p className="text-[12px] text-muted-foreground">/ {c.total} {isAr ? "إجمالي" : "total"}</p>
+                <p className="text-xs text-muted-foreground">/ {c.total} {isAr ? "إجمالي" : "total"}</p>
               ) : null}
             </div>
           </CardContent>

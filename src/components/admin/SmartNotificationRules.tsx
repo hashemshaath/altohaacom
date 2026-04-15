@@ -295,7 +295,7 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="font-medium text-sm">{isAr && rule.name_ar ? rule.name_ar : rule.name}</p>
-                            <Badge variant={rule.is_active ? "default" : "secondary"} className="text-[12px]">
+                            <Badge variant={rule.is_active ? "default" : "secondary"} className="text-xs">
                               {rule.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "متوقف" : "Paused")}
                             </Badge>
                           </div>
@@ -303,24 +303,24 @@ export const SmartNotificationRules = memo(function SmartNotificationRules() {
                             {isAr && rule.description_ar ? rule.description_ar : rule.description || (isAr ? trigger?.labelAr : trigger?.label)}
                           </p>
                           <div className="flex flex-wrap gap-2 mt-2">
-                            <Badge variant="outline" className="text-[12px] gap-1">
+                            <Badge variant="outline" className="text-xs gap-1">
                               <TriggerIcon className="h-3 w-3" />
                               {isAr ? trigger?.labelAr : trigger?.label}
                             </Badge>
                             {rule.channels.map(ch => (
-                              <Badge key={ch} variant="secondary" className="text-[12px] gap-1">
+                              <Badge key={ch} variant="secondary" className="text-xs gap-1">
                                 {ch === "email" ? <Mail className="h-3 w-3" /> : ch === "push" ? <Megaphone className="h-3 w-3" /> : <Bell className="h-3 w-3" />}
                                 {ch}
                               </Badge>
                             ))}
                             {rule.delay_minutes > 0 && (
-                              <Badge variant="secondary" className="text-[12px] gap-1">
+                              <Badge variant="secondary" className="text-xs gap-1">
                                 <Clock className="h-3 w-3" />
                                 {rule.delay_minutes}m {isAr ? "تأخير" : "delay"}
                               </Badge>
                             )}
                             {fireCount > 0 && (
-                              <Badge variant="outline" className="text-[12px] gap-1 bg-chart-2/5 text-chart-2 border-chart-2/20">
+                              <Badge variant="outline" className="text-xs gap-1 bg-chart-2/5 text-chart-2 border-chart-2/20">
                                 <BarChart3 className="h-3 w-3" />
                                 {fireCount} {isAr ? "مرة" : "fires"}
                               </Badge>

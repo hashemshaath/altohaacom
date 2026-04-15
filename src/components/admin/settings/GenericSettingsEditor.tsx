@@ -134,7 +134,7 @@ export const GenericSettingsEditor = memo(function GenericSettingsEditor({
           <CardTitle className="flex items-center gap-2 text-base">
             <Database className="h-4.5 w-4.5 text-primary" />
             {isAr ? "الإعدادات المحفوظة" : "Saved Settings"}
-            <Badge variant="secondary" className="text-[12px]">{allKeys.length}</Badge>
+            <Badge variant="secondary" className="text-xs">{allKeys.length}</Badge>
           </CardTitle>
           <div className="pt-2">
             <Input

@@ -91,13 +91,13 @@ export const AdminCommandBar = memo(function AdminCommandBar() {
                 <div className={cn("flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110", a.color)}>
                   <a.icon className="h-4 w-4" />
                 </div>
-                <span className="text-[12px] font-semibold text-muted-foreground group-hover:text-foreground line-clamp-1">
+                <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground line-clamp-1">
                   {isAr ? a.labelAr : a.label}
                 </span>
                 {a.count != null && a.count > 0 && (
                   <Badge
                     variant={a.urgent ? "destructive" : "secondary"}
-                    className="absolute -top-1 -end-1 h-5 min-w-5 text-[12px] px-1 rounded-full"
+                    className="absolute -top-1 -end-1 h-5 min-w-5 text-xs px-1 rounded-full"
                   >
                     <AnimatedCounter value={a.count} className="inline" />
                   </Badge>

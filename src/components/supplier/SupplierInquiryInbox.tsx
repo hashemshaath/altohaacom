@@ -85,13 +85,13 @@ export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "unread":
-        return <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-[12px]">{isAr ? "جديد" : "New"}</Badge>;
+        return <Badge className="bg-destructive/10 text-destructive border-destructive/20 text-xs">{isAr ? "جديد" : "New"}</Badge>;
       case "read":
-        return <Badge className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-[12px]">{isAr ? "مقروء" : "Read"}</Badge>;
+        return <Badge className="bg-chart-4/10 text-chart-4 border-chart-4/20 text-xs">{isAr ? "مقروء" : "Read"}</Badge>;
       case "replied":
-        return <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[12px]">{isAr ? "تم الرد" : "Replied"}</Badge>;
+        return <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-xs">{isAr ? "تم الرد" : "Replied"}</Badge>;
       default:
-        return <Badge variant="outline" className="text-[12px]">{status}</Badge>;
+        return <Badge variant="outline" className="text-xs">{status}</Badge>;
     }
   };
 
@@ -136,7 +136,7 @@ export const SupplierInquiryInbox = memo(function SupplierInquiryInbox() {
                   </div>
                   {getStatusBadge(inq.status)}
                 </div>
-                <p className="text-[12px] text-muted-foreground mt-2">
+                <p className="text-xs text-muted-foreground mt-2">
                   {format(new Date(inq.created_at), "MMM d, yyyy HH:mm")}
                 </p>
               </CardContent>

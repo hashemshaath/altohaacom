@@ -89,7 +89,7 @@ export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotifica
           {unreadCount > 0 && (
             <Badge
               variant="destructive"
-              className="absolute -top-1 -end-1 h-4 min-w-4 text-[12px] p-0 flex items-center justify-center animate-in zoom-in"
+              className="absolute -top-1 -end-1 h-4 min-w-4 text-xs p-0 flex items-center justify-center animate-in zoom-in"
             >
               {unreadCount > 9 ? "9+" : unreadCount}
             </Badge>
@@ -102,7 +102,7 @@ export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotifica
             {isAr ? "الأحداث الفورية" : "Live Events"}
           </h4>
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" className="h-6 text-[12px] px-2" onClick={markAllRead}>
+            <Button variant="ghost" size="sm" className="h-6 text-xs px-2" onClick={markAllRead}>
               <CheckCircle2 className="h-3 w-3 me-1" />
               {isAr ? "تحديد الكل كمقروء" : "Mark all read"}
             </Button>
@@ -113,7 +113,7 @@ export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotifica
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
               <Bell className="h-8 w-8 mb-2 opacity-30" />
               <p className="text-xs">{isAr ? "لا توجد أحداث بعد" : "No events yet"}</p>
-              <p className="text-[12px] mt-1">{isAr ? "ستظهر هنا فور حدوثها" : "Events will appear here in real-time"}</p>
+              <p className="text-xs mt-1">{isAr ? "ستظهر هنا فور حدوثها" : "Events will appear here in real-time"}</p>
             </div>
           ) : (
             <div className="divide-y divide-border/30">
@@ -130,7 +130,7 @@ export const AdminRealtimeNotificationBell = memo(function AdminRealtimeNotifica
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="font-medium truncate">{isAr ? event.titleAr : event.title}</p>
-                    <p className="text-[12px] text-muted-foreground mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-0.5">
                       {formatDistanceToNow(event.time, { addSuffix: true, locale: isAr ? ar : enUS })}
                     </p>
                   </div>

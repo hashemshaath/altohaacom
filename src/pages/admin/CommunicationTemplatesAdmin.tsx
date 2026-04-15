@@ -371,22 +371,22 @@ export default function CommunicationTemplatesAdmin() {
                       </div>
                       <div>
                         <p className="font-medium text-sm">{isAr && t.name_ar ? t.name_ar : t.name}</p>
-                        <p className="text-[12px] text-muted-foreground font-mono">{t.slug}</p>
+                        <p className="text-xs text-muted-foreground font-mono">{t.slug}</p>
                       </div>
                     </div>
                     <Switch checked={t.is_active} onCheckedChange={(checked) => toggleActiveMutation.mutate({ id: t.id, is_active: checked })} />
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Badge variant="outline" className="text-[12px]">{getCategoryLabel(t.category)}</Badge>
-                    <Badge variant="secondary" className="text-[12px]">{isAr ? ch?.labelAr : ch?.label}</Badge>
+                    <Badge variant="outline" className="text-xs">{getCategoryLabel(t.category)}</Badge>
+                    <Badge variant="secondary" className="text-xs">{isAr ? ch?.labelAr : ch?.label}</Badge>
                   </div>
                   {(t.variables || []).length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {(t.variables || []).slice(0, 3).map(v => (
-                        <Badge key={v} variant="secondary" className="text-[12px] font-mono">{`{{${v}}}`}</Badge>
+                        <Badge key={v} variant="secondary" className="text-xs font-mono">{`{{${v}}}`}</Badge>
                       ))}
                       {(t.variables || []).length > 3 && (
-                        <Badge variant="secondary" className="text-[12px]">+{(t.variables || []).length - 3}</Badge>
+                        <Badge variant="secondary" className="text-xs">+{(t.variables || []).length - 3}</Badge>
                       )}
                     </div>
                   )}
@@ -469,10 +469,10 @@ export default function CommunicationTemplatesAdmin() {
                       <TableCell>
                         <div className="flex flex-wrap gap-1">
                           {(t.variables || []).slice(0, 3).map((v) => (
-                            <Badge key={v} variant="secondary" className="text-[12px] font-mono">{`{{${v}}}`}</Badge>
+                            <Badge key={v} variant="secondary" className="text-xs font-mono">{`{{${v}}}`}</Badge>
                           ))}
                           {(t.variables || []).length > 3 && (
-                            <Badge variant="secondary" className="text-[12px]">+{(t.variables || []).length - 3}</Badge>
+                            <Badge variant="secondary" className="text-xs">+{(t.variables || []).length - 3}</Badge>
                           )}
                         </div>
                       </TableCell>

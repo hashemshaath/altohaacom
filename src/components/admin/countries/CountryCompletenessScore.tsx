@@ -78,7 +78,7 @@ export const CountryCompletenessScore = memo(function CountryCompletenessScore({
             <p className="text-xs font-medium mb-1.5">{isAr ? "اكتمال التكوين" : "Config Completeness"}: {passed}/{total}</p>
             <div className="grid grid-cols-2 gap-1">
               {items.map(it => (
-                <div key={it.key} className="flex items-center gap-1 text-[12px]">
+                <div key={it.key} className="flex items-center gap-1 text-xs">
                   {it.passed ? <CheckCircle className="h-3 w-3 text-chart-3" /> : <AlertCircle className="h-3 w-3 text-muted-foreground" />}
                   {isAr ? it.labelAr : it.label}
                 </div>

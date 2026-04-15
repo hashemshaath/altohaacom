@@ -34,7 +34,7 @@ function FieldRow({ label, children }: { label: string; children: React.ReactNod
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground/70 mb-2">
+    <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/70 mb-2">
       {children}
     </p>
   );
@@ -68,13 +68,13 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
         <div>
           <Tabs defaultValue="content" className="space-y-3">
             <TabsList className="h-8 flex-wrap gap-0.5 h-auto">
-              <TabsTrigger value="content"    className="h-7 px-2 text-[12px] gap-1"><Type className="h-3 w-3" />{isAr ? "المحتوى" : "Content"}</TabsTrigger>
-              <TabsTrigger value="template"   className="h-7 px-2 text-[12px] gap-1"><LayoutTemplate className="h-3 w-3" />{isAr ? "القالب" : "Template"}</TabsTrigger>
-              <TabsTrigger value="design"     className="h-7 px-2 text-[12px] gap-1"><Palette className="h-3 w-3" />{isAr ? "التصميم" : "Design"}</TabsTrigger>
-              <TabsTrigger value="image"      className="h-7 px-2 text-[12px] gap-1"><Image className="h-3 w-3" />{isAr ? "الصورة" : "Image"}</TabsTrigger>
-              <TabsTrigger value="dimensions" className="h-7 px-2 text-[12px] gap-1"><Monitor className="h-3 w-3" />{isAr ? "الأبعاد" : "Size"}</TabsTrigger>
-              <TabsTrigger value="links"      className="h-7 px-2 text-[12px] gap-1"><Link2 className="h-3 w-3" />{isAr ? "الروابط" : "Links"}</TabsTrigger>
-              <TabsTrigger value="animation"  className="h-7 px-2 text-[12px] gap-1"><Zap className="h-3 w-3" />{isAr ? "الحركة" : "Motion"}</TabsTrigger>
+              <TabsTrigger value="content"    className="h-7 px-2 text-xs gap-1"><Type className="h-3 w-3" />{isAr ? "المحتوى" : "Content"}</TabsTrigger>
+              <TabsTrigger value="template"   className="h-7 px-2 text-xs gap-1"><LayoutTemplate className="h-3 w-3" />{isAr ? "القالب" : "Template"}</TabsTrigger>
+              <TabsTrigger value="design"     className="h-7 px-2 text-xs gap-1"><Palette className="h-3 w-3" />{isAr ? "التصميم" : "Design"}</TabsTrigger>
+              <TabsTrigger value="image"      className="h-7 px-2 text-xs gap-1"><Image className="h-3 w-3" />{isAr ? "الصورة" : "Image"}</TabsTrigger>
+              <TabsTrigger value="dimensions" className="h-7 px-2 text-xs gap-1"><Monitor className="h-3 w-3" />{isAr ? "الأبعاد" : "Size"}</TabsTrigger>
+              <TabsTrigger value="links"      className="h-7 px-2 text-xs gap-1"><Link2 className="h-3 w-3" />{isAr ? "الروابط" : "Links"}</TabsTrigger>
+              <TabsTrigger value="animation"  className="h-7 px-2 text-xs gap-1"><Zap className="h-3 w-3" />{isAr ? "الحركة" : "Motion"}</TabsTrigger>
             </TabsList>
 
             {/* CONTENT */}
@@ -104,7 +104,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
               <div className="flex items-center justify-between rounded-xl border border-border/50 p-3">
                 <div>
                   <p className="text-xs font-medium">{isAr ? "تفعيل الشريحة" : "Active"}</p>
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "إخفاء الشريحة من الموقع" : "Show this slide publicly"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "إخفاء الشريحة من الموقع" : "Show this slide publicly"}</p>
                 </div>
                 <Switch checked={slide.is_active} onCheckedChange={v => update(slide.id, "is_active", v)} />
               </div>
@@ -137,10 +137,10 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
                     </div>
                     <div className="flex items-start justify-between gap-1">
                       <div>
-                        <p className="text-[12px] font-semibold">{tpl.label}</p>
-                        <p className="text-[12px] text-muted-foreground leading-tight mt-0.5 line-clamp-2">{tpl.description}</p>
+                        <p className="text-xs font-semibold">{tpl.label}</p>
+                        <p className="text-xs text-muted-foreground leading-tight mt-0.5 line-clamp-2">{tpl.description}</p>
                       </div>
-                      {slide.template === tpl.id && <Badge className="text-[12px] px-1.5 shrink-0">✓</Badge>}
+                      {slide.template === tpl.id && <Badge className="text-xs px-1.5 shrink-0">✓</Badge>}
                     </div>
                   </button>
                 ))}
@@ -154,7 +154,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
                 <Label className="text-xs text-muted-foreground">{isAr ? "إعدادات مسبقة" : "Quick Overlay Presets"}</Label>
                 <div className="flex flex-wrap gap-1.5">
                   {OVERLAY_PRESETS.map(p => (
-                    <button key={p.label} onClick={() => { update(slide.id, "overlay_color", p.color); update(slide.id, "overlay_opacity", p.opacity); }} className="flex items-center gap-1.5 rounded-xl border border-border/50 px-2.5 py-1 text-[12px] font-medium hover:border-primary/50 transition-all">
+                    <button key={p.label} onClick={() => { update(slide.id, "overlay_color", p.color); update(slide.id, "overlay_opacity", p.opacity); }} className="flex items-center gap-1.5 rounded-xl border border-border/50 px-2.5 py-1 text-xs font-medium hover:border-primary/50 transition-all">
                       <span className="h-3 w-3 rounded-full border border-border/50" style={{ background: p.color, opacity: p.opacity / 100 + 0.3 }} />
                       {p.label}
                     </button>
@@ -171,7 +171,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
                 </div>
                 <FieldRow label={`Overlay Opacity: ${slide.overlay_opacity}%`}>
                   <Slider value={[slide.overlay_opacity]} onValueChange={([v]) => update(slide.id, "overlay_opacity", v)} min={0} max={90} step={5} className="w-full mt-3" />
-                  <div className="flex justify-between text-[12px] text-muted-foreground mt-1">
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
                     <span>0% Transparent</span><span>90% Very Dark</span>
                   </div>
                 </FieldRow>
@@ -216,7 +216,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
               {slide.image_url && (
                 <div className="h-36 rounded-xl overflow-hidden border border-border/50 relative">
                   <img src={slide.image_url} alt={isAr ? "معاينة الشريحة" : "Slide preview"} className="h-full w-full" loading="lazy" style={{ objectFit: slide.object_fit as React.CSSProperties["objectFit"], objectPosition: slide.object_position }} />
-                  <div className="absolute top-2 end-2 rounded-md bg-background/70 backdrop-blur-sm px-2 py-1 text-[12px] font-mono">{slide.object_fit} · {slide.object_position}</div>
+                  <div className="absolute top-2 end-2 rounded-md bg-background/70 backdrop-blur-sm px-2 py-1 text-xs font-mono">{slide.object_fit} · {slide.object_position}</div>
                 </div>
               )}
               <div className="grid gap-3 sm:grid-cols-2">
@@ -248,7 +248,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
                   <button key={key} onClick={() => update(slide.id, "height_preset", key)} className={cn("rounded-xl border-2 p-3 text-start transition-all hover:border-primary/50", slide.height_preset === key ? "border-primary bg-primary/5" : "border-border/50 bg-card")}>
                     <p className="text-lg mb-1">{preset.icon}</p>
                     <p className="text-xs font-semibold">{preset.label}</p>
-                    <p className="text-[12px] text-muted-foreground mt-0.5">{preset.desc}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{preset.desc}</p>
                   </button>
                 ))}
               </div>
@@ -258,18 +258,18 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
                     <Input type="number" value={slide.custom_height ?? 520} onChange={e => update(slide.id, "custom_height", Number(e.target.value))} min={200} max={1200} className="text-xs" />
                     <span className="text-xs text-muted-foreground shrink-0">px</span>
                   </div>
-                  {slide.custom_height && <p className="text-[12px] text-muted-foreground">≈ {(slide.custom_height / 1080 * 100).toFixed(0)}% of typical 1080p screen</p>}
+                  {slide.custom_height && <p className="text-xs text-muted-foreground">≈ {(slide.custom_height / 1080 * 100).toFixed(0)}% of typical 1080p screen</p>}
                 </FieldRow>
               )}
               <div className="rounded-xl border border-border/40 bg-muted/30 p-3 space-y-2">
-                <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wide">{isAr ? "المعايير الموصى بها" : "Industry Standards"}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{isAr ? "المعايير الموصى بها" : "Industry Standards"}</p>
                 <div className="grid sm:grid-cols-3 gap-2">
                   {[
                     { icon: <Monitor className="h-3 w-3" />, label: "Desktop", spec: "16:9 · 1920×1080" },
                     { icon: <Tablet className="h-3 w-3" />, label: "Tablet", spec: "4:3 · 1024×768" },
                     { icon: <Smartphone className="h-3 w-3" />, label: "Mobile", spec: "9:16 · 390×844" },
                   ].map(d => (
-                    <div key={d.label} className="flex items-center gap-2 text-[12px] text-muted-foreground">{d.icon}<span>{d.label}: {d.spec}</span></div>
+                    <div key={d.label} className="flex items-center gap-2 text-xs text-muted-foreground">{d.icon}<span>{d.label}: {d.spec}</span></div>
                   ))}
                 </div>
                 <div className="grid sm:grid-cols-3 gap-2">
@@ -278,7 +278,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
                     { label: "Editorial", spec: "~800px tall" },
                     { label: "Full Viewport", spec: "100vh" },
                   ].map(d => (
-                    <div key={d.label} className="text-[12px] text-muted-foreground"><span className="font-medium text-foreground/70">{d.label}:</span> {d.spec}</div>
+                    <div key={d.label} className="text-xs text-muted-foreground"><span className="font-medium text-foreground/70">{d.label}:</span> {d.spec}</div>
                   ))}
                 </div>
               </div>
@@ -310,7 +310,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
                   <button key={anim.value} onClick={() => update(slide.id, "animation_effect", anim.value)} className={cn("rounded-xl border-2 p-3 text-start transition-all hover:border-primary/50", slide.animation_effect === anim.value ? "border-primary bg-primary/5" : "border-border/50 bg-card")}>
                     <Zap className={cn("h-4 w-4 mb-1.5", slide.animation_effect === anim.value ? "text-primary" : "text-muted-foreground/50")} />
                     <p className="text-xs font-semibold">{anim.label}</p>
-                    <p className="text-[12px] text-muted-foreground mt-0.5">{anim.desc}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{anim.desc}</p>
                   </button>
                 ))}
               </div>
@@ -322,7 +322,7 @@ export const HeroSlideEditor = memo(function HeroSlideEditor({
         {livePreview && (
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground">{isAr ? "معاينة مباشرة" : "Live Preview"}</p>
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{isAr ? "معاينة مباشرة" : "Live Preview"}</p>
               <div className="flex items-center gap-1">
                 {(["desktop", "tablet", "mobile"] as const).map(d => (
                   <Button key={d} size="icon" variant={previewDevice === d ? "default" : "ghost"} className="h-6 w-6" onClick={() => setPreviewDevice(d)}>

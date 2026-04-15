@@ -223,7 +223,7 @@ export const EvaluationReport = memo(function EvaluationReport({ session, evalua
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
                     <span className={`text-3xl font-black ${getScoreColor(overallAvg)}`}>{overallAvg.toFixed(1)}</span>
-                    <span className="text-[12px] text-muted-foreground">/10</span>
+                    <span className="text-xs text-muted-foreground">/10</span>
                   </div>
                 </div>
                 <Badge className="mt-2 font-bold">{getScoreLabel(overallAvg, isAr)}</Badge>
@@ -234,17 +234,17 @@ export const EvaluationReport = memo(function EvaluationReport({ session, evalua
                 <div className="rounded-xl bg-muted/30 p-4 text-center">
                   <ChefHat className="mx-auto h-6 w-6 text-primary mb-1" />
                   <span className="text-2xl font-black">{submitted.length}</span>
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "طاهٍ مقيّم" : "Chef Evaluators"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "طاهٍ مقيّم" : "Chef Evaluators"}</p>
                 </div>
                 <div className="rounded-xl bg-chart-5/10 p-4 text-center">
                   <ThumbsUp className="mx-auto h-6 w-6 text-chart-5 mb-1" />
                   <span className="text-2xl font-black text-chart-5">{recRate}%</span>
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "نسبة التوصية" : "Recommendation Rate"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "نسبة التوصية" : "Recommendation Rate"}</p>
                 </div>
                 <div className="rounded-xl bg-muted/30 p-4 text-center">
                   <Star className="mx-auto h-6 w-6 text-chart-4 mb-1" />
                   <span className="text-2xl font-black">{scoreLabels.length}</span>
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "معيار تقييم" : "Evaluation Criteria"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "معيار تقييم" : "Evaluation Criteria"}</p>
                 </div>
               </div>
             </div>
@@ -368,7 +368,7 @@ export const EvaluationReport = memo(function EvaluationReport({ session, evalua
               <div className="space-y-2">
                 {allSuggestions.map((s, i) => (
                   <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-muted/30">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-chart-4/10 text-[12px] font-black text-chart-4 mt-0.5">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-chart-4/10 text-xs font-black text-chart-4 mt-0.5">
                       {i + 1}
                     </span>
                     <p className="text-sm">{s}</p>

@@ -85,7 +85,7 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
         <CardTitle className="text-sm flex items-center gap-2">
           <Tag className="h-4 w-4 text-primary" />
           {t("Discount Codes", "أكواد الخصم")}
-          {codes.length > 0 && <Badge variant="secondary" className="text-[12px] h-5">{codes.length}</Badge>}
+          {codes.length > 0 && <Badge variant="secondary" className="text-xs h-5">{codes.length}</Badge>}
         </CardTitle>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -139,11 +139,11 @@ export const ExhibitionDiscountCodes = memo(function ExhibitionDiscountCodes({ e
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <code className="text-xs font-bold text-foreground">{dc.code}</code>
-                    <Badge variant={dc.is_active ? "default" : "secondary"} className="text-[12px] h-4">
+                    <Badge variant={dc.is_active ? "default" : "secondary"} className="text-xs h-4">
                       {dc.is_active ? t("Active", "فعال") : t("Inactive", "غير فعال")}
                     </Badge>
                   </div>
-                  <p className="text-[12px] text-muted-foreground mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {dc.discount_type === "percentage" ? `${dc.discount_value}%` : `${dc.discount_value} SAR`}
                     {dc.max_uses && ` · ${dc.used_count}/${dc.max_uses} ${t("used", "مستخدم")}`}
                   </p>

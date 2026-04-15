@@ -100,7 +100,7 @@ export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
               <div className="text-lg font-bold">{s.value}</div>
-              <div className="text-[12px] text-muted-foreground">{s.label}</div>
+              <div className="text-xs text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -147,17 +147,17 @@ export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <CheckCircle className="h-3 w-3 mx-auto mb-1 text-chart-2" />
             <div className="text-sm font-bold">{data.paidInvoices}</div>
-            <div className="text-[12px] text-muted-foreground">{isAr ? "فواتير مدفوعة" : "Paid Invoices"}</div>
+            <div className="text-xs text-muted-foreground">{isAr ? "فواتير مدفوعة" : "Paid Invoices"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <ArrowUpDown className="h-3 w-3 mx-auto mb-1 text-chart-3" />
             <div className="text-sm font-bold">{data.avgOrderValue}</div>
-            <div className="text-[12px] text-muted-foreground">{isAr ? "متوسط الطلب" : "Avg Order"}</div>
+            <div className="text-xs text-muted-foreground">{isAr ? "متوسط الطلب" : "Avg Order"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <TrendingUp className="h-3 w-3 mx-auto mb-1 text-destructive" />
             <div className="text-sm font-bold">{data.unpaidInvoices}</div>
-            <div className="text-[12px] text-muted-foreground">{isAr ? "غير مدفوعة" : "Unpaid"}</div>
+            <div className="text-xs text-muted-foreground">{isAr ? "غير مدفوعة" : "Unpaid"}</div>
           </div>
         </div>
       </CardContent>

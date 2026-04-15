@@ -177,35 +177,35 @@ export default function ProSupplierDetail() {
   }, [countries, isAr]);
 
   const categories = useMemo(() => {
-    const cats = new Set(products.map((p: any) => p.category || "other"));
+    const cats = new Set(products.map((p) => p.category || "other"));
     return Array.from(cats);
   }, [products]);
 
   const filteredProducts = useMemo(() => {
     let filtered = [...products];
-    if (selectedCategory !== "all") filtered = filtered.filter((p: any) => (p.category || "other") === selectedCategory);
+    if (selectedCategory !== "all") filtered = filtered.filter((p) => (p.category || "other") === selectedCategory);
     if (productSearch.trim()) {
       const q = productSearch.toLowerCase();
-      filtered = filtered.filter((p: any) =>
+      filtered = filtered.filter((p) =>
         (p.name || "").toLowerCase().includes(q) ||
         (p.name_ar || "").toLowerCase().includes(q) ||
         (p.sku || "").toLowerCase().includes(q)
       );
     }
-    if (productSort === "price_asc") filtered.sort((a: any, b: any) => (a.unit_price || 0) - (b.unit_price || 0));
-    else if (productSort === "price_desc") filtered.sort((a: any, b: any) => (b.unit_price || 0) - (a.unit_price || 0));
-    else filtered.sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""));
+    if (productSort === "price_asc") filtered.sort((a, b) => (a.unit_price || 0) - (b.unit_price || 0));
+    else if (productSort === "price_desc") filtered.sort((a, b) => (b.unit_price || 0) - (a.unit_price || 0));
+    else filtered.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
     return filtered;
   }, [products, selectedCategory, productSearch, productSort]);
 
-  const productsByCategory = products.reduce<Record<string, any[]>>((acc, p: any) => {
+  const productsByCategory = products.reduce<Record<string, unknown[]>>((acc, p: any) => {
     const cat = p.category || "other";
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(p);
     return acc;
   }, {});
 
-  const handleAddToCart = useCallback((product: any, qty = 1) => {
+  const handleAddToCart = useCallback((product: Record<string, unknown>, qty = 1) => {
     addItem({
       product_id: product.id,
       title: product.name,
@@ -374,7 +374,7 @@ export default function ProSupplierDetail() {
                   )}
                 </div>
                 {company.is_verified && (
-                  <div className="absolute -bottom-1 -end-1 flex h-7 w-7 items-center justify-center rounded-full bg-chart-5 text-white shadow-lg">
+                  <div className="absolute -bottom-1 -end-1 flex h-7 w-7 items-center justify-center rounded-full bg-chart-5 text-primary-foreground shadow-lg">
                     <CheckCircle className="h-4 w-4" />
                   </div>
                 )}
@@ -462,7 +462,7 @@ export default function ProSupplierDetail() {
                   <Icon className="h-4 w-4" />
                   {isAr ? tab.labelAr : tab.labelEn}
                   {count !== undefined && count > 0 && (
-                    <span className={cn("text-[11px] rounded-full px-1.5 py-0.5 min-w-[20px] text-center", isActive ? "bg-white/20" : "bg-muted-foreground/10")}>
+                    <span className={cn("text-[0.6875rem] rounded-full px-1.5 py-0.5 min-w-[20px] text-center", isActive ? "bg-white/20" : "bg-muted-foreground/10")}>
                       {count}
                     </span>
                   )}
@@ -627,7 +627,7 @@ export default function ProSupplierDetail() {
                       </Button>
                     </div>
                     <div className="grid gap-3 grid-cols-2 lg:grid-cols-4">
-                      {products.slice(0, 4).map((p: any) => (
+                      {products.slice(0, 4).map((p) => (
                         <SupplierProductCard
                           key={p.id}
                           product={p}
@@ -668,7 +668,7 @@ export default function ProSupplierDetail() {
                 {selectedProduct ? (
                   <SupplierProductDetail
                     product={selectedProduct}
-                    relatedProducts={products.filter((p: any) => p.id !== selectedProduct.id && p.category === selectedProduct.category)}
+                    relatedProducts={products.filter((p) => p.id !== selectedProduct.id && p.category === selectedProduct.category)}
                     onBack={() => setSelectedProduct(null)}
                     onAddToCart={handleAddToCart}
                     onViewProduct={(p) => setSelectedProduct(p)}
@@ -752,7 +752,7 @@ export default function ProSupplierDetail() {
                       </div>
                     ) : (
                       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                        {filteredProducts.map((p: any) => (
+                        {filteredProducts.map((p) => (
                           <SupplierProductCard
                             key={p.id}
                             product={p}
@@ -821,7 +821,7 @@ export default function ProSupplierDetail() {
 
                             {/* Tier Badge */}
                             <div className="absolute top-2 start-2">
-                              <Badge className={cn("backdrop-blur-md border text-[10px] font-bold uppercase tracking-wider gap-0.5 py-0 px-1.5", tierInfo.color)}>
+                              <Badge className={cn("backdrop-blur-md border text-[0.625rem] font-bold uppercase tracking-wider gap-0.5 py-0 px-1.5", tierInfo.color)}>
                                 <Crown className="h-2.5 w-2.5" />
                                 {isAr ? tierInfo.ar : tierInfo.en}
                               </Badge>
@@ -830,7 +830,7 @@ export default function ProSupplierDetail() {
                             {/* Edition & Year */}
                             <div className="absolute top-2 end-2 flex items-center gap-1">
                               {comp?.edition_year && (
-                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-white text-[10px] py-0 px-1.5">
+                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground text-[0.625rem] py-0 px-1.5">
                                   {comp.edition_year}
                                 </Badge>
                               )}
@@ -838,13 +838,13 @@ export default function ProSupplierDetail() {
 
                             {/* Title overlay */}
                             <div className="absolute bottom-2 start-2 end-2">
-                              <h4 className="text-xs font-bold text-white line-clamp-1 drop-shadow-md">{title}</h4>
+                              <h4 className="text-xs font-bold text-primary-foreground line-clamp-1 drop-shadow-md">{title}</h4>
                             </div>
                           </div>
 
                           {/* Details */}
                           <CardContent className="p-2.5 space-y-1.5">
-                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.6875rem] text-muted-foreground">
                               {comp?.city && (
                                 <span className="flex items-center gap-1">
                                   {comp.country_code && <span>{countryFlag(comp.country_code)}</span>}
@@ -852,7 +852,7 @@ export default function ProSupplierDetail() {
                                 </span>
                               )}
                               {editionLabel && (
-                                <span className="text-[10px] text-muted-foreground/60">{editionLabel}</span>
+                                <span className="text-[0.625rem] text-muted-foreground/60">{editionLabel}</span>
                               )}
                             </div>
                           </CardContent>
@@ -875,7 +875,7 @@ export default function ProSupplierDetail() {
                           <CardContent className="p-4">
                             <p className="font-medium text-sm">{isAr && c.name_ar ? c.name_ar : c.name}</p>
                             <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                              <Badge variant="secondary" className="text-[11px] rounded-lg">{c.status}</Badge>
+                              <Badge variant="secondary" className="text-[0.6875rem] rounded-lg">{c.status}</Badge>
                               {c.start_date && <span>{new Date(c.start_date).toLocaleDateString()}</span>}
                             </div>
                           </CardContent>

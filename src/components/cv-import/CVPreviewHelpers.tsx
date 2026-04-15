@@ -52,7 +52,7 @@ export const LocationDisplay = ({ city, countryCode }: { city?: string; countryC
   const flag = getFlag(countryCode);
   const parts = [city, countryCode?.toUpperCase()].filter(Boolean).join(", ");
   return (
-    <span className="text-[12px] text-muted-foreground inline-flex items-center gap-1">
+    <span className="text-xs text-muted-foreground inline-flex items-center gap-1">
       {flag && <span>{flag}</span>}{parts}
     </span>
   );
@@ -87,7 +87,7 @@ export function EditableText({ value, onChange, label, multiline, className = ""
       onClick={() => { setDraft(value); setEditing(true); }}
       title={label || "Click to edit"}
     >
-      {value || <span className="text-muted-foreground/50 italic text-[12px]">—</span>}
+      {value || <span className="text-muted-foreground/50 italic text-xs">—</span>}
       <Edit3 className="h-2.5 w-2.5 opacity-0 group-hover/edit:opacity-50 shrink-0" />
     </span>
   );
@@ -114,7 +114,7 @@ export const CollapsibleSection = React.forwardRef<HTMLDivElement, {
               <button className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                 <div className={`flex h-8 w-8 items-center justify-center rounded-xl ${colorClass}`}>{icon}</div>
                 <span className="text-sm font-semibold">{isAr ? titleAr : titleEn}</span>
-                <Badge variant="secondary" className="text-[12px] h-5">{count}</Badge>
+                <Badge variant="secondary" className="text-xs h-5">{count}</Badge>
                 {open ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" /> : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />}
               </button>
             </CollapsibleTrigger>

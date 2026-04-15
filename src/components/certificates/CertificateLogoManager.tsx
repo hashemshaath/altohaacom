@@ -101,7 +101,7 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
                   <img src={lib.logo_url} alt={lib.name} className="w-full h-10 object-contain" loading="lazy" />
                   <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <Select onValueChange={pos => addFromLibrary(lib, pos as LogoItem["position"])}>
-                      <SelectTrigger className="h-6 text-[12px] w-full border-0 bg-transparent">
+                      <SelectTrigger className="h-6 text-xs w-full border-0 bg-transparent">
                         <Plus className="h-3 w-3" />
                       </SelectTrigger>
                       <SelectContent>
@@ -113,7 +113,7 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
                       </SelectContent>
                     </Select>
                   </div>
-                  <p className="text-[12px] text-center text-muted-foreground truncate mt-1">
+                  <p className="text-xs text-center text-muted-foreground truncate mt-1">
                     {language === "ar" && lib.name_ar ? lib.name_ar : lib.name}
                   </p>
                 </div>
@@ -133,7 +133,7 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
         return (
           <div key={pos} className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Badge variant="outline" className="text-[12px]">
+              <Badge variant="outline" className="text-xs">
                 {language === "ar" ? positionLabels[pos].ar : positionLabels[pos].en}
               </Badge>
             </div>
@@ -155,14 +155,14 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
                   />
                   <div className="grid grid-cols-2 gap-1">
                     <div className="flex items-center gap-1">
-                      <Label className="text-[12px] shrink-0">W:</Label>
+                      <Label className="text-xs shrink-0">W:</Label>
                       <Slider value={[logo.width]} onValueChange={([v]) => updateLogo(logo.id, { width: v })} min={20} max={150} step={5} />
-                      <span className="text-[12px] w-6 text-end">{logo.width}</span>
+                      <span className="text-xs w-6 text-end">{logo.width}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Label className="text-[12px] shrink-0">H:</Label>
+                      <Label className="text-xs shrink-0">H:</Label>
                       <Slider value={[logo.height]} onValueChange={([v]) => updateLogo(logo.id, { height: v })} min={20} max={150} step={5} />
-                      <span className="text-[12px] w-6 text-end">{logo.height}</span>
+                      <span className="text-xs w-6 text-end">{logo.height}</span>
                     </div>
                   </div>
                 </div>
@@ -178,7 +178,7 @@ export const CertificateLogoManager = memo(function CertificateLogoManager({ log
       {/* Add Logo Buttons */}
       <div className="grid grid-cols-2 gap-1.5">
         {positions.map(pos => (
-          <Button key={pos} variant="outline" size="sm" className="h-7 text-[12px]" onClick={() => addLogo(pos)}>
+          <Button key={pos} variant="outline" size="sm" className="h-7 text-xs" onClick={() => addLogo(pos)}>
             <Plus className="h-3 w-3 me-0.5" />
             {language === "ar" ? positionLabels[pos].ar : positionLabels[pos].en}
           </Button>

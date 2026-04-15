@@ -39,7 +39,7 @@ export const BulkActionBar = memo(function BulkActionBar({
 
         {/* Bulk Status */}
         <Select value={bulkStatus} onValueChange={(v) => { setBulkStatus(v); onBulkStatusChange(v); setBulkStatus(""); }}>
-          <SelectTrigger className="h-7 w-28 text-[12px]">
+          <SelectTrigger className="h-7 w-28 text-xs">
             <RefreshCw className="me-1 h-3 w-3" />
             <SelectValue placeholder={isAr ? "تغيير الحالة" : "Set status"} />
           </SelectTrigger>
@@ -55,7 +55,7 @@ export const BulkActionBar = memo(function BulkActionBar({
         {/* Bulk Vendor */}
         {onBulkVendorAssign && vendors && vendors.length > 0 && (
           <Select value={bulkVendor} onValueChange={(v) => { setBulkVendor(v); onBulkVendorAssign(v); setBulkVendor(""); }}>
-            <SelectTrigger className="h-7 w-32 text-[12px]">
+            <SelectTrigger className="h-7 w-32 text-xs">
               <Truck className="me-1 h-3 w-3" />
               <SelectValue placeholder={isAr ? "تعيين مورد" : "Assign vendor"} />
             </SelectTrigger>
@@ -70,7 +70,7 @@ export const BulkActionBar = memo(function BulkActionBar({
         )}
 
         <div className="ms-auto">
-          <Button variant="ghost" size="sm" onClick={onClearSelection} className="h-7 text-[12px]" disabled={isLoading}>
+          <Button variant="ghost" size="sm" onClick={onClearSelection} className="h-7 text-xs" disabled={isLoading}>
             <X className="me-1 h-3 w-3" />
             {isAr ? "إلغاء" : "Cancel"}
           </Button>

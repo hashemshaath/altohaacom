@@ -138,7 +138,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
               </div>
               <div>
                 <p className="text-lg font-bold tabular-nums leading-tight">{stat.value}</p>
-                <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{stat.label}</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -171,7 +171,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
       </div>
 
       {/* Results count */}
-      <p className="text-[12px] text-muted-foreground uppercase tracking-wider">
+      <p className="text-xs text-muted-foreground uppercase tracking-wider">
         {isAr ? `${filtered.length} مسابقة` : `${filtered.length} competition${filtered.length !== 1 ? "s" : ""}`}
       </p>
 
@@ -198,7 +198,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
 
                   {/* Floating badges */}
                   <div className="absolute top-2 end-2 flex gap-1">
-                    <Badge className={cn("text-[12px] px-1.5 py-0 border-none shadow-sm", compStatus.bg, compStatus.color)}>
+                    <Badge className={cn("text-xs px-1.5 py-0 border-none shadow-sm", compStatus.bg, compStatus.color)}>
                       {isAr ? compStatus.labelAr : compStatus.label}
                     </Badge>
                   </div>
@@ -217,7 +217,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
                     {isAr && reg.competition?.title_ar ? reg.competition.title_ar : reg.competition?.title}
                   </h4>
 
-                  <div className="flex items-center gap-3 mt-2 text-[12px] text-muted-foreground">
+                  <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Calendar className="h-3 w-3" />
                       {reg.competition?.competition_start && format(new Date(reg.competition.competition_start), "MMM yyyy")}
@@ -229,7 +229,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
                   </div>
 
                   <div className="flex items-center justify-between mt-3 pt-2 border-t border-border/30">
-                    <span className="text-[12px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       {isAr ? "تسجيل:" : "Registered:"} {format(new Date(reg.registered_at), "dd MMM yyyy")}
                     </span>
                     <ChevronRight className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors rtl:rotate-180" />

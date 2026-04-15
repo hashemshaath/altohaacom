@@ -288,7 +288,7 @@ export const CriteriaManager = memo(function CriteriaManager() {
                             <p className="text-xs text-muted-foreground">
                               {catCriteria.length} {isAr ? "معايير" : "criteria"} · {totalWeight}% {isAr ? "وزن" : "weight"}
                               {cat.product_category && (
-                                <Badge variant="outline" className="ms-2 text-[12px]">{cat.product_category}</Badge>
+                                <Badge variant="outline" className="ms-2 text-xs">{cat.product_category}</Badge>
                               )}
                             </p>
                           </div>
@@ -339,7 +339,7 @@ export const CriteriaManager = memo(function CriteriaManager() {
                                     <div className="flex items-center gap-2">
                                       <p className="text-sm font-medium">{isAr && criterion.name_ar ? criterion.name_ar : criterion.name}</p>
                                       {criterion.is_required && (
-                                        <Badge variant="destructive" className="text-[12px] h-4 px-1">{isAr ? "مطلوب" : "Required"}</Badge>
+                                        <Badge variant="destructive" className="text-xs h-4 px-1">{isAr ? "مطلوب" : "Required"}</Badge>
                                       )}
                                     </div>
                                     {criterion.description && (

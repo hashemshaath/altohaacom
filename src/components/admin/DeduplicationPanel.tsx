@@ -71,7 +71,7 @@ export const DeduplicationPanel = memo(function DeduplicationPanel({
           >
             <Avatar className="h-8 w-8 shrink-0">
               <AvatarImage src={dup.record.logo_url || ""} />
-              <AvatarFallback className="text-[12px]">
+              <AvatarFallback className="text-xs">
                 {dup.record.name?.slice(0, 2)?.toUpperCase()}
               </AvatarFallback>
             </Avatar>
@@ -84,22 +84,22 @@ export const DeduplicationPanel = memo(function DeduplicationPanel({
                 )}
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">
-                <Badge variant="outline" className="text-[12px] h-4">
+                <Badge variant="outline" className="text-xs h-4">
                   {TABLE_LABELS[dup.table_name]?.[isAr ? "ar" : "en"] || dup.table_name}
                 </Badge>
                 {dup.record.identifier && (
-                  <Badge variant="secondary" className="text-[12px] h-4 font-mono">
+                  <Badge variant="secondary" className="text-xs h-4 font-mono">
                     {dup.record.identifier}
                   </Badge>
                 )}
                 {dup.record.city && (
-                  <span className="text-[12px] text-muted-foreground">{dup.record.city}</span>
+                  <span className="text-xs text-muted-foreground">{dup.record.city}</span>
                 )}
               </div>
               {!compact && (
                 <div className="flex gap-1 flex-wrap mt-1">
                   {dup.reasons.map((r, i) => (
-                    <span key={i} className="text-[12px] text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                    <span key={i} className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
                       {r}
                     </span>
                   ))}
@@ -108,7 +108,7 @@ export const DeduplicationPanel = memo(function DeduplicationPanel({
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
-              <Badge className={`text-[12px] h-5 ${getScoreColor(dup.score)}`}>
+              <Badge className={`text-xs h-5 ${getScoreColor(dup.score)}`}>
                 {Math.round(dup.score)}%
               </Badge>
               {onMerge && (

@@ -117,20 +117,20 @@ export default function Tastings() {
                   )}
                   <CardContent className="p-6">
                     <div className="mb-4 flex items-center gap-2 flex-wrap">
-                      <Badge variant="outline" className={`${statusColors[session.status] || ""} font-bold text-[12px] uppercase tracking-wider px-2.5 py-0.5`}>
+                      <Badge variant="outline" className={`${statusColors[session.status] || ""} font-bold text-xs uppercase tracking-wider px-2.5 py-0.5`}>
                         {session.status}
                       </Badge>
                       {session.competition_id ? (
-                        <Badge variant="default" className="text-[12px] gap-1.5 font-bold uppercase tracking-wider">
+                        <Badge variant="default" className="text-xs gap-1.5 font-bold uppercase tracking-wider">
                           <Trophy className="h-3 w-3" />
                           {isAr ? "مسابقة" : "Competition"}
                         </Badge>
                       ) : (
-                        <Badge variant="secondary" className="text-[12px] font-bold uppercase tracking-wider">
+                        <Badge variant="secondary" className="text-xs font-bold uppercase tracking-wider">
                           {isAr ? "تذوق مستقل" : "Standalone"}
                         </Badge>
                       )}
-                      <Badge variant="secondary" className="text-[12px] font-bold uppercase tracking-wider">
+                      <Badge variant="secondary" className="text-xs font-bold uppercase tracking-wider">
                         {session.eval_method === "numeric" ? (isAr ? "رقمي" : "Numeric") :
                          session.eval_method === "stars" ? (isAr ? "نجوم" : "Stars") :
                          isAr ? "نجاح/رسوب" : "Pass/Fail"}
@@ -162,7 +162,7 @@ export default function Tastings() {
                     </div>
                     {session.is_blind_tasting && (
                       <div className="mt-3">
-                        <Badge variant="outline" className="text-[12px] gap-1.5 font-bold uppercase tracking-wider border-primary/20 bg-primary/5 text-primary">
+                        <Badge variant="outline" className="text-xs gap-1.5 font-bold uppercase tracking-wider border-primary/20 bg-primary/5 text-primary">
                           <Eye className="h-3 w-3" />
                           {isAr ? "تذوق أعمى" : "Blind Tasting"}
                         </Badge>

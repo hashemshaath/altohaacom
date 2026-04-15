@@ -71,16 +71,16 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
           </div>
           {isAr ? "قائمة المتابعة" : "Event Watchlist"}
           {watchlist.length > 0 && (
-            <Badge variant="secondary" className="text-[12px] h-4 px-1.5">{watchlist.length}</Badge>
+            <Badge variant="secondary" className="text-xs h-4 px-1.5">{watchlist.length}</Badge>
           )}
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <Tabs value={tab} onValueChange={setTab}>
           <TabsList className="h-7 w-full bg-muted/50 p-0.5">
-            <TabsTrigger value="all" className="text-[12px] h-6 flex-1">{isAr ? "الكل" : "All"}</TabsTrigger>
-            <TabsTrigger value="competitions" className="text-[12px] h-6 flex-1">{isAr ? "مسابقات" : "Competitions"}</TabsTrigger>
-            <TabsTrigger value="exhibitions" className="text-[12px] h-6 flex-1">{isAr ? "معارض" : "Exhibitions"}</TabsTrigger>
+            <TabsTrigger value="all" className="text-xs h-6 flex-1">{isAr ? "الكل" : "All"}</TabsTrigger>
+            <TabsTrigger value="competitions" className="text-xs h-6 flex-1">{isAr ? "مسابقات" : "Competitions"}</TabsTrigger>
+            <TabsTrigger value="exhibitions" className="text-xs h-6 flex-1">{isAr ? "معارض" : "Exhibitions"}</TabsTrigger>
           </TabsList>
 
           <div className="mt-3">
@@ -108,7 +108,7 @@ export const FanEventWatchlist = memo(function FanEventWatchlist() {
                       </div>
                       <Link to={href} className="flex-1 min-w-0">
                         <p className="text-xs font-semibold truncate">{isAr ? e.title_ar || e.title : e.title}</p>
-                        <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-0.5">
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
                           {e.start_date && (
                             <span className="flex items-center gap-0.5"><Calendar className="h-2.5 w-2.5" />{new Date(e.start_date).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric" })}</span>
                           )}

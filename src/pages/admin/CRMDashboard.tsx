@@ -285,7 +285,7 @@ export default function CRMDashboard() {
               <p className="text-xs text-muted-foreground">{isAr ? "تذاكر مفتوحة" : "Open Tickets"}</p>
               <AnimatedCounter value={ticketStats?.open ?? 0} className="text-2xl font-bold" />
               {ticketStats?.urgent ? (
-                <p className="text-[12px] text-destructive font-medium">
+                <p className="text-xs text-destructive font-medium">
                   {ticketStats.urgent} {isAr ? "عاجلة" : "urgent"}
                 </p>
               ) : null}
@@ -305,7 +305,7 @@ export default function CRMDashboard() {
               <p className="text-xs text-muted-foreground">{isAr ? "محادثات نشطة" : "Active Chats"}</p>
               <AnimatedCounter value={(chatStats?.waiting ?? 0) + (chatStats?.active ?? 0)} className="text-2xl font-bold" />
               {chatStats?.waiting ? (
-                <p className="text-[12px] text-chart-4 font-medium">
+                <p className="text-xs text-chart-4 font-medium">
                   {chatStats.waiting} {isAr ? "في الانتظار" : "waiting"}
                 </p>
               ) : null}
@@ -324,7 +324,7 @@ export default function CRMDashboard() {
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{isAr ? "عملاء محتملين" : "Active Leads"}</p>
               <AnimatedCounter value={leadStats?.total ?? 0} className="text-2xl font-bold" />
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {leadStats?.new ?? 0} {isAr ? "جديد" : "new"}
               </p>
             </div>
@@ -342,7 +342,7 @@ export default function CRMDashboard() {
             <div className="flex-1">
               <p className="text-xs text-muted-foreground">{isAr ? "شرائح الجمهور" : "Segments"}</p>
               <AnimatedCounter value={segmentStats?.total ?? 0} className="text-2xl font-bold" />
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 <AnimatedCounter value={segmentStats?.totalReach ?? 0} className="inline" format /> {isAr ? "مستخدم" : "reach"}
               </p>
             </div>
@@ -375,13 +375,13 @@ export default function CRMDashboard() {
             <div className="grid grid-cols-2 gap-3 text-center">
               <div className="rounded-xl border p-2">
                 <p className="text-lg font-bold text-chart-5">{chatStats?.avgRating ?? "—"}</p>
-                <p className="text-[12px] text-muted-foreground flex items-center justify-center gap-1">
+                <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
                   <Star className="h-3 w-3" /> {isAr ? "متوسط التقييم" : "Avg. Rating"}
                 </p>
               </div>
               <div className="rounded-xl border p-2">
                 <AnimatedCounter value={ticketStats?.today ?? 0} className="text-lg font-bold" />
-                <p className="text-[12px] text-muted-foreground flex items-center justify-center gap-1">
+                <p className="text-xs text-muted-foreground flex items-center justify-center gap-1">
                   <Zap className="h-3 w-3" /> {isAr ? "تذاكر اليوم" : "Today"}
                 </p>
               </div>
@@ -410,7 +410,7 @@ export default function CRMDashboard() {
                   <Link to={action.to}>
                     <action.icon className={`h-5 w-5 ${action.color}`} />
                     <span className="text-xs font-medium">{action.label}</span>
-                    <span className="text-[12px] text-muted-foreground">{action.desc}</span>
+                    <span className="text-xs text-muted-foreground">{action.desc}</span>
                   </Link>
                 </Button>
               ))}
@@ -437,21 +437,21 @@ export default function CRMDashboard() {
             <Ticket className="h-3.5 w-3.5" />
             {isAr ? "التذاكر" : "Tickets"}
             {(ticketStats?.open ?? 0) > 0 && (
-              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[12px] rounded-lg">{ticketStats?.open}</Badge>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-xs rounded-lg">{ticketStats?.open}</Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="chats" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <Headphones className="h-3.5 w-3.5" />
             {isAr ? "المحادثات" : "Chats"}
             {(chatStats?.waiting ?? 0) > 0 && (
-              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[12px] rounded-lg">{chatStats?.waiting}</Badge>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-xs rounded-lg">{chatStats?.waiting}</Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="leads" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
             <UserSearch className="h-3.5 w-3.5" />
             {isAr ? "العملاء المحتملين" : "Leads"}
             {(leadStats?.new ?? 0) > 0 && (
-              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-[12px] rounded-lg">{leadStats?.new}</Badge>
+              <Badge variant="secondary" className="h-5 min-w-5 px-1 text-xs rounded-lg">{leadStats?.new}</Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="behavior" className="gap-1.5 text-xs rounded-xl data-[state=active]:shadow-sm transition-all duration-300">
@@ -500,10 +500,10 @@ export default function CRMDashboard() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium truncate">{ticket.subject}</p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <Badge variant="outline" className="text-[12px] px-1.5 py-0">
+                            <Badge variant="outline" className="text-xs px-1.5 py-0">
                               {ticket.ticket_number}
                             </Badge>
-                            <span className="text-[12px] text-muted-foreground">
+                            <span className="text-xs text-muted-foreground">
                               {formatDistanceToNow(new Date(ticket.created_at), {
                                 addSuffix: true,
                                 locale: isAr ? ar : enUS,
@@ -512,11 +512,11 @@ export default function CRMDashboard() {
                           </div>
                         </div>
                         <div className="flex flex-col items-end gap-1">
-                          <Badge variant="outline" className={`text-[12px] ${getStatusColor(ticket.status)}`}>
+                          <Badge variant="outline" className={`text-xs ${getStatusColor(ticket.status)}`}>
                             {getStatusLabel(ticket.status)}
                           </Badge>
                           {ticket.priority === "urgent" && (
-                            <Badge variant="destructive" className="text-[12px]">
+                            <Badge variant="destructive" className="text-xs">
                               {isAr ? "عاجل" : "Urgent"}
                             </Badge>
                           )}
@@ -577,11 +577,11 @@ export default function CRMDashboard() {
                           <p className="text-sm font-medium truncate">
                             {profile?.full_name || "Unknown"}
                           </p>
-                          <p className="text-[12px] text-muted-foreground truncate">
+                          <p className="text-xs text-muted-foreground truncate">
                             {chat.subject}
                           </p>
                         </div>
-                        <Badge variant="outline" className={`text-[12px] ${getStatusColor(chat.status)}`}>
+                        <Badge variant="outline" className={`text-xs ${getStatusColor(chat.status)}`}>
                           {getStatusLabel(chat.status)}
                         </Badge>
                       </Link>
@@ -630,9 +630,9 @@ export default function CRMDashboard() {
                         <p className="text-sm font-medium truncate">{lead.contact_name}</p>
                         <div className="flex items-center gap-2 mt-0.5">
                           {lead.company_name && (
-                            <span className="text-[12px] text-muted-foreground truncate">{lead.company_name}</span>
+                            <span className="text-xs text-muted-foreground truncate">{lead.company_name}</span>
                           )}
-                          <span className="text-[12px] text-muted-foreground">
+                          <span className="text-xs text-muted-foreground">
                             {formatDistanceToNow(new Date(lead.created_at), {
                               addSuffix: true,
                               locale: isAr ? ar : enUS,
@@ -641,7 +641,7 @@ export default function CRMDashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="outline" className={`text-[12px] ${getStatusColor(lead.status || "new")}`}>
+                        <Badge variant="outline" className={`text-xs ${getStatusColor(lead.status || "new")}`}>
                           {getStatusLabel(lead.status || "new")}
                         </Badge>
                         <div className="flex gap-1">
@@ -714,7 +714,7 @@ export default function CRMDashboard() {
               <div key={item.label} className="text-center rounded-xl border p-3 hover:shadow-sm transition-shadow">
                 <item.icon className={`mx-auto h-5 w-5 ${item.color} mb-1`} />
                 {'numValue' in item ? <AnimatedCounter value={item.numValue as number} className="text-xl font-bold" format /> : <p className="text-xl font-bold">{(item as any).strValue}</p>}
-                <p className="text-[12px] text-muted-foreground">{item.label}</p>
+                <p className="text-xs text-muted-foreground">{item.label}</p>
               </div>
             ))}
           </div>

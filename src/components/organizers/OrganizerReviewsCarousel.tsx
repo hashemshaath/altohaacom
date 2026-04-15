@@ -81,7 +81,7 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
             <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8 rounded-lg">
                 {r.avatar_url && <AvatarImage src={r.avatar_url} />}
-                <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-[12px] font-bold">
+                <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-bold">
                   {r.user_name?.charAt(0)}
                 </AvatarFallback>
               </Avatar>
@@ -98,17 +98,17 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
               </div>
             </div>
 
-            <p className="text-[12px] text-muted-foreground leading-relaxed line-clamp-3">
+            <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3">
               "{r.content}"
             </p>
 
             {(r.exhibition_title || r.organizer_name) && (
               <div className="pt-2 border-t border-border/20">
                 {r.exhibition_title && (
-                  <p className="text-[12px] text-muted-foreground truncate">{r.exhibition_title}</p>
+                  <p className="text-xs text-muted-foreground truncate">{r.exhibition_title}</p>
                 )}
                 {r.organizer_name && (
-                  <p className="text-[12px] text-primary/70 font-medium truncate">{isAr ? "بواسطة" : "by"} {r.organizer_name}</p>
+                  <p className="text-xs text-primary/70 font-medium truncate">{isAr ? "بواسطة" : "by"} {r.organizer_name}</p>
                 )}
               </div>
             )}

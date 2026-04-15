@@ -87,7 +87,7 @@ const ReactionButton = memo(function ReactionButton({
     >
       <Icon className={cn("h-4 w-4", active && "fill-primary")} />
       <span>{label}</span>
-      {count > 0 && <span className="text-[12px] opacity-60 tabular-nums">{count}</span>}
+      {count > 0 && <span className="text-xs opacity-60 tabular-nums">{count}</span>}
     </button>
   );
 });
@@ -342,31 +342,31 @@ export default function ArticleDetail() {
                 <div className="container max-w-5xl mx-auto px-5 sm:px-8 pb-10 md:pb-14">
                   {/* Breadcrumb trail */}
                   <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
-                    <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all backdrop-blur-sm">
+                    <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-primary-foreground hover:bg-white/10 active:scale-95 transition-all backdrop-blur-sm">
                       <Link to="/blog">
                         <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
                         {isAr ? "المقالات" : "Articles"}
                       </Link>
                     </Button>
                     <span className="text-white/25 text-sm">/</span>
-                    <Badge className={cn("capitalize rounded-xl text-[12px] px-2.5 py-0.5 border backdrop-blur-sm", typeMeta.color)}>
+                    <Badge className={cn("capitalize rounded-xl text-xs px-2.5 py-0.5 border backdrop-blur-sm", typeMeta.color)}>
                       {isAr ? typeMeta.ar : typeMeta.en}
                     </Badge>
                     {article.is_featured && (
-                      <Badge className="rounded-xl text-[12px] px-2.5 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30 gap-1 backdrop-blur-sm">
+                      <Badge className="rounded-xl text-xs px-2.5 py-0.5 bg-chart-4/20 text-chart-4 border-chart-4/30 gap-1 backdrop-blur-sm">
                         <Sparkles className="h-2.5 w-2.5" />
                         {isAr ? "مميز" : "Featured"}
                       </Badge>
                     )}
                     {(article.view_count || 0) >= 100 && (
-                      <Badge className="rounded-xl text-[12px] px-2.5 py-0.5 bg-orange-500/20 text-orange-300 border-orange-500/30 gap-1 backdrop-blur-sm">
+                      <Badge className="rounded-xl text-xs px-2.5 py-0.5 bg-orange-500/20 text-orange-300 border-orange-500/30 gap-1 backdrop-blur-sm">
                         🔥 {isAr ? "رائج" : "Trending"}
                       </Badge>
                     )}
                   </nav>
 
                   {/* Title */}
-                  <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-white text-balance mb-5 max-w-4xl drop-shadow-2xl">
+                  <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-primary-foreground text-balance mb-5 max-w-4xl drop-shadow-2xl">
                     {title}
                   </h1>
 
@@ -379,20 +379,20 @@ export default function ArticleDetail() {
 
                   {/* Meta row */}
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-                    <span className="inline-flex items-center gap-1.5 text-[13px] text-white/75">
+                    <span className="inline-flex items-center gap-1.5 text-[0.8125rem] text-white/75">
                       <Calendar className="h-3.5 w-3.5" />
                       {formatDate(article.published_at || article.created_at)}
                     </span>
-                    <span className="hidden sm:inline-flex items-center gap-1.5 text-[13px] text-white/60" title={formatDate(article.published_at || article.created_at)}>
+                    <span className="hidden sm:inline-flex items-center gap-1.5 text-[0.8125rem] text-white/60" title={formatDate(article.published_at || article.created_at)}>
                       ({relativeDate(article.published_at || article.created_at)})
                     </span>
                     <span className="w-1 h-1 rounded-full bg-white/25 hidden sm:block" />
-                    <span className="inline-flex items-center gap-1.5 text-[13px] text-white/75">
+                    <span className="inline-flex items-center gap-1.5 text-[0.8125rem] text-white/75">
                       <BookOpen className="h-3.5 w-3.5" />
                       {readingTime} {isAr ? "دقيقة قراءة" : "min read"}
                     </span>
                     <span className="w-1 h-1 rounded-full bg-white/25 hidden sm:block" />
-                    <span className="inline-flex items-center gap-1.5 text-[13px] text-white/75">
+                    <span className="inline-flex items-center gap-1.5 text-[0.8125rem] text-white/75">
                       <Eye className="h-3.5 w-3.5" />
                       {(article.view_count || 0).toLocaleString()} {isAr ? "مشاهدة" : "views"}
                     </span>
@@ -414,11 +414,11 @@ export default function ArticleDetail() {
                     </Link>
                   </Button>
                   <span className="text-muted-foreground/30 text-sm">/</span>
-                  <Badge className={cn("capitalize rounded-xl text-[12px] px-2.5 py-0.5 border", typeMeta.color)}>
+                  <Badge className={cn("capitalize rounded-xl text-xs px-2.5 py-0.5 border", typeMeta.color)}>
                     {isAr ? typeMeta.ar : typeMeta.en}
                   </Badge>
                   {article.is_featured && (
-                    <Badge className="rounded-xl text-[12px] px-2.5 py-0.5 bg-chart-4/10 text-chart-4 border-chart-4/20 gap-1">
+                    <Badge className="rounded-xl text-xs px-2.5 py-0.5 bg-chart-4/10 text-chart-4 border-chart-4/20 gap-1">
                       <Sparkles className="h-2.5 w-2.5" />
                       {isAr ? "مميز" : "Featured"}
                     </Badge>
@@ -527,7 +527,7 @@ export default function ArticleDetail() {
                     key={label}
                     onClick={() => setFontSizeIdx(idx)}
                     className={cn(
-                      "h-8 w-8 flex items-center justify-center text-[12px] font-medium transition-colors",
+                      "h-8 w-8 flex items-center justify-center text-xs font-medium transition-colors",
                       idx === fontSizeIdx
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground hover:bg-muted/60"
@@ -632,7 +632,7 @@ export default function ArticleDetail() {
                     <h3 className="font-semibold mb-5 flex items-center gap-2 not-prose text-sm">
                       <Sparkles className="h-4 w-4 text-primary" />
                       {isAr ? "معرض الصور" : "Photo Gallery"}
-                      <span className="text-[12px] text-muted-foreground ms-1">({article.gallery_urls.length})</span>
+                      <span className="text-xs text-muted-foreground ms-1">({article.gallery_urls.length})</span>
                     </h3>
                     <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 not-prose">
                       {article.gallery_urls.map((url, i) => (
@@ -648,7 +648,7 @@ export default function ArticleDetail() {
                             decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                            <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                            <ZoomIn className="h-6 w-6 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
                           </div>
                         </button>
                       ))}
@@ -666,7 +666,7 @@ export default function ArticleDetail() {
                       <Badge
                         key={tag.id}
                         variant="secondary"
-                        className="rounded-xl text-[12px] px-3 py-1.5 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
+                        className="rounded-xl text-xs px-3 py-1.5 hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
                       >
                         {isAr && tag.name_ar ? tag.name_ar : tag.name}
                       </Badge>
@@ -805,13 +805,13 @@ export default function ArticleDetail() {
                         )}
                         <CardContent className="p-4 sm:p-5 flex-1 flex flex-col justify-between min-w-0">
                           <div>
-                            <Badge className={cn("text-[12px] rounded-lg px-2 py-0.5 mb-2.5 capitalize border", TYPE_LABELS[r.type]?.color || typeMeta.color)}>
+                            <Badge className={cn("text-xs rounded-lg px-2 py-0.5 mb-2.5 capitalize border", TYPE_LABELS[r.type]?.color || typeMeta.color)}>
                               {isAr ? (TYPE_LABELS[r.type]?.ar || r.type) : (TYPE_LABELS[r.type]?.en || r.type)}
                             </Badge>
                             <h3 className="font-semibold line-clamp-2 mb-1.5 group-hover:text-primary transition-colors text-sm">{rTitle}</h3>
                             {rExcerpt && <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{rExcerpt}</p>}
                           </div>
-                          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border/20 text-[12px] text-muted-foreground">
+                          <div className="flex items-center gap-3 mt-3 pt-3 border-t border-border/20 text-xs text-muted-foreground">
                             {r.published_at && (
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-2.5 w-2.5" />

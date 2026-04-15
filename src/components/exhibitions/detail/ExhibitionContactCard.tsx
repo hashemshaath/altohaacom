@@ -37,7 +37,7 @@ export const ExhibitionContactCard = memo(forwardRef<HTMLDivElement, Props>(func
               </div>
             )}
             <div>
-              <p className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
                 {isAr ? "المنظم" : "Organizer"}
               </p>
               <p className="text-sm font-bold">{organizerName}</p>

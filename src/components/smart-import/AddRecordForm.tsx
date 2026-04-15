@@ -66,7 +66,7 @@ export const AddRecordForm = React.memo(({
             {details?.founded_year && <span className="flex items-center gap-0.5"><Calendar className="h-3 w-3" />{details.founded_year}</span>}
             {details?.phone && <span className="flex items-center gap-0.5"><Phone className="h-3 w-3" />{details.phone}</span>}
           </div>
-          <p className="text-[12px] text-muted-foreground/70 mt-1">
+          <p className="text-xs text-muted-foreground/70 mt-1">
             {isAr ? `سيتم استيراد ${countFields(details)} حقل بيانات` : `${countFields(details)} data fields will be imported`}
           </p>
         </div>
@@ -91,7 +91,7 @@ export const AddRecordForm = React.memo(({
                   <span className={`text-xs font-medium ${isSelected ? 'text-primary' : ''}`}>
                     {isAr ? opt.label_ar : opt.label_en}
                   </span>
-                  <span className="text-[12px] text-muted-foreground leading-tight">
+                  <span className="text-xs text-muted-foreground leading-tight">
                     {isAr ? opt.description_ar : opt.description_en}
                   </span>
                 </button>

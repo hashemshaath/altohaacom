@@ -220,7 +220,7 @@ export default function CompanySponsorships() {
             <Sparkles className="h-3.5 w-3.5" />
             {isAr ? "الفرص المتاحة" : "Opportunities"}
             {availableOpportunities.length > 0 && (
-              <Badge variant="secondary" className="ms-1 text-[12px] px-1.5">{availableOpportunities.length}</Badge>
+              <Badge variant="secondary" className="ms-1 text-xs px-1.5">{availableOpportunities.length}</Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="my-sponsorships" className="gap-1.5">
@@ -231,7 +231,7 @@ export default function CompanySponsorships() {
             <Send className="h-3.5 w-3.5" />
             {isAr ? "الدعوات" : "Invitations"}
             {pendingInvitations.length > 0 && (
-              <Badge variant="destructive" className="ms-1 text-[12px] px-1.5">{pendingInvitations.length}</Badge>
+              <Badge variant="destructive" className="ms-1 text-xs px-1.5">{pendingInvitations.length}</Badge>
             )}
           </TabsTrigger>
           <TabsTrigger value="packages" className="gap-1.5">
@@ -432,7 +432,7 @@ export default function CompanySponsorships() {
                       </ul>
                     )}
                     {pkg.logo_on_certificates && (
-                      <Badge variant="outline" className="mt-3 text-[12px]">
+                      <Badge variant="outline" className="mt-3 text-xs">
                         📜 {isAr ? "على الشهادات" : "On Certificates"}
                       </Badge>
                     )}

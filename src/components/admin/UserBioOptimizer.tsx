@@ -113,7 +113,7 @@ export const UserBioOptimizer = memo(function UserBioOptimizer({ bio, onBioChang
             : "A brief summary of the user's professional culinary background, expertise, and achievements..."
         }
       />
-      <p className="text-[12px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         {isAr
           ? "يُعرض في الملف الشخصي العام ونتائج البحث — استخدم زر التحسين لتعزيز ظهوره في محركات البحث"
           : "Displayed on public profile and search results — use Optimize to enhance SEO visibility"}

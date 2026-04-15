@@ -107,7 +107,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
               <button
                 onClick={() => toggleSection(idx)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-[12px] font-semibold uppercase tracking-wider transition-colors select-none",
+                  "flex w-full items-center justify-between gap-2 rounded-md px-2.5 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors select-none",
                   hasActiveItem
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"
@@ -127,7 +127,7 @@ export const AdminSidebarNav = memo(function AdminSidebarNav({ collapsed = false
                       onClick={onItemClick}
                       className={({ isActive }) =>
                         cn(
-                          "group relative flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-all duration-150",
+                          "group relative flex items-center gap-2 rounded-md px-2.5 py-1.5 text-[0.8125rem] font-medium transition-all duration-150",
                           isActive
                             ? "bg-primary/10 text-primary font-semibold"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"

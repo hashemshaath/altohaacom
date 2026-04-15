@@ -58,7 +58,7 @@ export const NewsArchiveWidget = forwardRef<HTMLDivElement, Props>(function News
               >
                 <span className="group-hover:text-primary transition-colors capitalize">{month.label}</span>
                 <span className="flex items-center gap-1 text-muted-foreground">
-                  <span className="tabular-nums text-[12px] bg-muted rounded-md px-1.5 py-0.5">{month.count}</span>
+                  <span className="tabular-nums text-xs bg-muted rounded-md px-1.5 py-0.5">{month.count}</span>
                   <ChevronRight className="h-3 w-3 opacity-0 group-hover:opacity-60 transition-opacity rtl:rotate-180" />
                 </span>
               </button>

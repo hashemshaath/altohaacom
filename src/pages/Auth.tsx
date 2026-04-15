@@ -203,7 +203,7 @@ export default function Auth() {
                   </div>
                   <div>
                     <p className={`text-sm font-bold ${auth.accountType === "professional" ? "text-primary" : "text-foreground"}`}>{isAr ? "محترف" : "Professional"}</p>
-                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">{isAr ? "طاهٍ أو محترف في مجال الطهي" : "Chef or culinary professional"}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground leading-tight">{isAr ? "طاهٍ أو محترف في مجال الطهي" : "Chef or culinary professional"}</p>
                   </div>
                 </button>
                 <button type="button" onClick={() => auth.setAccountType("fan")} className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-200 ${auth.accountType === "fan" ? "border-primary bg-primary/5 shadow-md shadow-primary/10" : "border-border/50 hover:border-primary/30 hover:bg-muted/50"}`}>
@@ -212,7 +212,7 @@ export default function Auth() {
                   </div>
                   <div>
                     <p className={`text-sm font-bold ${auth.accountType === "fan" ? "text-primary" : "text-foreground"}`}>{isAr ? "مستخدم عادي" : "Regular User"}</p>
-                    <p className="mt-0.5 text-[12px] text-muted-foreground leading-tight">{isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground leading-tight">{isAr ? "تابع الطهاة والمسابقات والمعارض" : "Follow chefs, competitions & events"}</p>
                   </div>
                 </button>
               </div>
@@ -228,7 +228,7 @@ export default function Auth() {
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
                 <Input id="email" type="email" value={auth.email} onChange={(e) => auth.setEmail(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
-                <p className="text-[12px] text-muted-foreground">{isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "مطلوب لإنشاء الحساب وإرسال الإشعارات" : "Required for account creation and notifications"}</p>
                 {auth.errors.email && <p className="text-xs text-destructive">{auth.errors.email}</p>}
               </div>
             )}
@@ -268,7 +268,7 @@ export default function Auth() {
                   {auth.usernameStatus === "taken" && <XCircle className="h-4 w-4 text-destructive" />}
                 </div>
               </div>
-              <p className="text-[12px] text-muted-foreground">altoha.com/<span className="font-medium">{auth.username || "username"}</span></p>
+              <p className="text-xs text-muted-foreground">altoha.com/<span className="font-medium">{auth.username || "username"}</span></p>
               {auth.errors.username && <p className="text-xs text-destructive">{auth.errors.username}</p>}
               {auth.usernameStatus === "taken" && <UsernameSuggestions baseUsername={auth.username} onSelect={(s) => auth.setUsername(s)} />}
             </div>
@@ -291,7 +291,7 @@ export default function Auth() {
               <div className="space-y-1.5">
                 <Label htmlFor="refCode" className="text-xs">{isAr ? "كود الإحالة (اختياري)" : "Referral Code (optional)"}</Label>
                 <Input id="refCode" value={auth.manualRefCode} onChange={(e) => auth.setManualRefCode(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ""))} placeholder={isAr ? "أدخل كود الإحالة" : "Enter referral code"} className="font-mono tracking-wider" dir="ltr" maxLength={8} />
-                <p className="text-[12px] text-muted-foreground">{isAr ? "إذا أحالك أحد الأصدقاء، أدخل الكود هنا" : "If a friend referred you, enter their code here"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "إذا أحالك أحد الأصدقاء، أدخل الكود هنا" : "If a friend referred you, enter their code here"}</p>
               </div>
             )}
 
@@ -448,7 +448,7 @@ export default function Auth() {
               {auth.signUpMethod === "phone" ? (
                 <>
                   <PhoneInputWithFlag phone={auth.phoneInput} onPhoneChange={auth.setPhoneInput} countryCode={auth.countryCode} phoneCode={auth.phoneCode} onCountryChange={(code, pc) => { auth.setCountryCode(code); auth.setPhoneCode(pc); }} error={auth.errors.phone} label={isAr ? "رقم الهاتف" : "Phone Number"} isAr={isAr} />
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "سيتم إرسال رمز التحقق إلى هذا الرقم" : "A verification code will be sent to this number"}</p>
                 </>
               ) : (
                 <>
@@ -458,7 +458,7 @@ export default function Auth() {
                     <Label htmlFor="emailInput" className="text-xs">{isAr ? "البريد الإلكتروني" : "Email"} *</Label>
                     <Input id="emailInput" type="email" value={auth.emailInput} onChange={(e) => auth.setEmailInput(e.target.value)} placeholder={isAr ? "البريد الإلكتروني" : "Email address"} />
                     {auth.errors.email && <p className="text-xs text-destructive">{auth.errors.email}</p>}
-                    <p className="text-[12px] text-muted-foreground">{isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "سيتم إرسال رابط التحقق إلى هذا البريد" : "A verification link will be sent to this email"}</p>
                   </div>
                 </>
               )}
@@ -512,7 +512,7 @@ export default function Auth() {
                   )}
                   {auth.loginAttempts > 0 && auth.loginAttempts < MAX_LOGIN_ATTEMPTS && !auth.isLockedOut && (
                     <div className="rounded-xl border border-chart-4/30 bg-chart-4/5 px-3 py-2 text-center animate-in fade-in">
-                      <p className="text-[12px] text-chart-4 font-medium">
+                      <p className="text-xs text-chart-4 font-medium">
                         {isAr ? `${MAX_LOGIN_ATTEMPTS - auth.loginAttempts} محاولات متبقية قبل القفل المؤقت` : `${MAX_LOGIN_ATTEMPTS - auth.loginAttempts} attempts remaining before temporary lock`}
                       </p>
                     </div>
@@ -527,7 +527,7 @@ export default function Auth() {
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="signInPassword" className="text-xs">{isAr ? "كلمة المرور" : "Password"}</Label>
-                      <button type="button" className="text-[12px] text-primary hover:underline" onClick={() => auth.setForgotOpen(true)}>{isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}</button>
+                      <button type="button" className="text-xs text-primary hover:underline" onClick={() => auth.setForgotOpen(true)}>{isAr ? "نسيت كلمة المرور؟" : "Forgot password?"}</button>
                     </div>
                     <Input id="signInPassword" type="password" value={auth.signInPassword} onChange={(e) => { auth.setSignInPassword(e.target.value); if (auth.errors.signInPassword) auth.setErrors((prev) => ({ ...prev, signInPassword: "" })); if (auth.formError) auth.setFormError(""); }} placeholder="••••••••" onKeyDown={(e) => e.key === "Enter" && auth.handleSignInEmail()} maxLength={128} autoComplete="current-password" disabled={auth.isLockedOut} />
                     {auth.errors.signInPassword && <p className="text-xs text-destructive">{auth.errors.signInPassword}</p>}

@@ -226,9 +226,9 @@ export const TypesCategoriesStep = memo(function TypesCategoriesStep({
                   {cat.name ? (
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium truncate">{isAr && cat.name_ar ? cat.name_ar : cat.name}</span>
-                      <Badge variant="outline" className="text-[12px]">{categoryBadgeText(cat.gender, undefined, isAr)}</Badge>
+                      <Badge variant="outline" className="text-xs">{categoryBadgeText(cat.gender, undefined, isAr)}</Badge>
                       {cat.max_participants && (
-                        <Badge variant="outline" className="text-[12px]">
+                        <Badge variant="outline" className="text-xs">
                           {isAr ? `الحد: ${cat.max_participants}` : `Max: ${cat.max_participants}`}
                         </Badge>
                       )}
@@ -253,7 +253,7 @@ export const TypesCategoriesStep = memo(function TypesCategoriesStep({
                 </div>
                 <div className="flex items-center gap-1.5 shrink-0">
                   <Select value={cat.gender === "mixed" ? "open" : (cat.gender || "open")} onValueChange={(v) => updateCategory(index, "gender", v)}>
-                    <SelectTrigger className="h-7 w-24 text-[12px]"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="h-7 w-24 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {GENDER_OPTIONS.map(opt => (
                         <SelectItem key={opt.value} value={opt.value} className="text-xs">

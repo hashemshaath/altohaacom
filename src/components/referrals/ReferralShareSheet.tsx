@@ -138,7 +138,7 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
       {/* Prominent Referral Code */}
       <div className="relative overflow-hidden rounded-xl border-2 border-dashed border-primary/30 bg-gradient-to-br from-primary/5 via-background to-chart-4/5 p-4 text-center">
         <div className="pointer-events-none absolute -end-12 -top-12 h-28 w-28 rounded-full bg-primary/8 blur-[50px]" />
-        <p className="text-[12px] uppercase tracking-widest text-muted-foreground mb-1.5">
+        <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1.5">
           {isAr ? "كود الإحالة" : "Referral Code"}
         </p>
         <div className="relative inline-flex items-center gap-2 rounded-xl bg-background/80 border border-primary/20 px-5 py-2.5 shadow-sm">
@@ -157,7 +157,7 @@ export const ReferralShareSheet = memo(function ReferralShareSheet({ referralLin
             <Copy className="h-3.5 w-3.5" />
           </Button>
         </div>
-        <p className="text-[12px] text-muted-foreground mt-2">
+        <p className="text-xs text-muted-foreground mt-2">
           {isAr ? "يستخدمه الأصدقاء أثناء التسجيل" : "Friends use this during sign-up"}
         </p>
       </div>

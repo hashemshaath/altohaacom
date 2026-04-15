@@ -137,7 +137,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
           <div className="flex items-center gap-3 px-4 py-3">
             <Calendar className="h-4 w-4 text-muted-foreground shrink-0" />
             <div className="min-w-0">
-              <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">{isAr ? "التاريخ" : "Date"}</p>
               <p className="text-sm font-medium">{format(start, "MMM d")} – {format(end, "MMM d, yyyy")}</p>
             </div>
           </div>
@@ -147,7 +147,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
               <div className="flex items-center gap-3 px-4 py-3">
                 <Clock className="h-4 w-4 text-destructive shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{isAr ? "آخر موعد للتسجيل" : "Registration Deadline"}</p>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{isAr ? "آخر موعد للتسجيل" : "Registration Deadline"}</p>
                   <p className="text-sm font-medium">{format(new Date(exhibition.registration_deadline), "MMM d, yyyy")}</p>
                 </div>
               </div>
@@ -159,7 +159,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
               <div className="flex items-center gap-3 px-4 py-3">
                 <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
                   <p className="text-sm font-medium">{isAr ? "حدث افتراضي" : "Virtual Event"}</p>
                   {exhibition.virtual_link && !hasEnded && <a href={exhibition.virtual_link} target="_blank" rel="noopener noreferrer" className="text-xs text-primary underline">{isAr ? "رابط الدخول" : "Join Link"}</a>}
                 </div>
@@ -171,7 +171,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
               <div className="flex items-center gap-3 px-4 py-3">
                 <MapPin className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{isAr ? "الموقع" : "Location"}</p>
                   <p className="text-sm font-medium">{countryFlag} {venue}{exhibition.city && <><br />{exhibition.city}</>}{exhibition.country && `, ${exhibition.country}`}</p>
                 </div>
               </div>
@@ -181,7 +181,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
           <div className="flex items-center gap-3 px-4 py-3">
             <Ticket className="h-4 w-4 text-muted-foreground shrink-0" />
             <div>
-              <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{isAr ? "التذاكر" : "Tickets"}</p>
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">{isAr ? "التذاكر" : "Tickets"}</p>
               <p className="text-sm font-medium">{exhibition.is_free ? (isAr ? "دخول مجاني" : "Free Entry") : (isAr && exhibition.ticket_price_ar ? exhibition.ticket_price_ar : exhibition.ticket_price || (isAr ? "راجع الموقع" : "See website"))}</p>
             </div>
           </div>
@@ -191,7 +191,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
               <div className="flex items-center gap-3 px-4 py-3">
                 <Users className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div>
-                  <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{isAr ? "السعة" : "Capacity"}</p>
+                  <p className="text-xs uppercase tracking-wider text-muted-foreground">{isAr ? "السعة" : "Capacity"}</p>
                   <p className="text-sm font-medium"><AnimatedCounter value={exhibition.max_attendees} className="inline" /> {isAr ? "مقعد" : "attendees"}</p>
                 </div>
               </div>
@@ -216,7 +216,7 @@ export const ExhibitionSidebar = memo(function ExhibitionSidebar({
             </h3>
           </div>
           <CardContent className="p-4">
-            <div className="flex flex-wrap gap-1.5">{tags.map((tag) => <Badge key={tag} variant="secondary" className="text-[12px]">{tag}</Badge>)}</div>
+            <div className="flex flex-wrap gap-1.5">{tags.map((tag) => <Badge key={tag} variant="secondary" className="text-xs">{tag}</Badge>)}</div>
           </CardContent>
         </Card>
       )}

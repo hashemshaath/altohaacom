@@ -102,7 +102,7 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
         <h3 className="font-bold text-sm flex items-center gap-2">
           <BookmarkCheck className="h-4 w-4 text-primary" />
           {t("My Personal Schedule", "جدولي الشخصي")}
-          <Badge variant="outline" className="text-[12px]">{mySchedule.length}</Badge>
+          <Badge variant="outline" className="text-xs">{mySchedule.length}</Badge>
         </h3>
         <Button size="sm" variant="outline" onClick={() => setAddOpen(true)}>
           <Plus className="me-1 h-3.5 w-3.5" /> {t("Add", "إضافة")}
@@ -135,24 +135,24 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
                     <p className="text-sm font-medium truncate">{itemTitle}</p>
                     <div className="flex flex-wrap gap-2 mt-1">
                       {scheduleItem?.start_time && (
-                        <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
                           <Clock className="h-2.5 w-2.5" />
                           {format(new Date(scheduleItem.start_time), "MMM d, HH:mm")}
                         </span>
                       )}
                       {scheduleItem?.location && (
-                        <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                        <span className="flex items-center gap-1 text-xs text-muted-foreground">
                           <MapPin className="h-2.5 w-2.5" />
                           {scheduleItem.location}
                         </span>
                       )}
                       {booth && (
-                        <Badge variant="outline" className="text-[12px]">
+                        <Badge variant="outline" className="text-xs">
                           {t("Booth", "جناح")} {booth.booth_number}
                         </Badge>
                       )}
                     </div>
-                    {item.custom_notes && <p className="text-[12px] text-muted-foreground mt-1">{item.custom_notes}</p>}
+                    {item.custom_notes && <p className="text-xs text-muted-foreground mt-1">{item.custom_notes}</p>}
                   </div>
                   <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0 text-destructive/60 hover:text-destructive" onClick={() => removeFromSchedule.mutate(item.id)}>
                     <Trash2 className="h-3.5 w-3.5" />
@@ -184,11 +184,11 @@ export default memo(function ExhibitionAttendeeSchedule({ exhibitionId, isAr }: 
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium truncate">{isAr && item.title_ar ? item.title_ar : item.title}</p>
                             <div className="flex gap-2 mt-0.5">
-                              {item.start_time && <span className="text-[12px] text-muted-foreground">{format(new Date(item.start_time), "MMM d, HH:mm")}</span>}
-                              {item.speaker_name && <span className="text-[12px] text-muted-foreground">🎤 {item.speaker_name}</span>}
+                              {item.start_time && <span className="text-xs text-muted-foreground">{format(new Date(item.start_time), "MMM d, HH:mm")}</span>}
+                              {item.speaker_name && <span className="text-xs text-muted-foreground">🎤 {item.speaker_name}</span>}
                             </div>
                           </div>
-                          <Button size="sm" variant={isSaved ? "secondary" : "default"} className="text-[12px] h-7" disabled={isSaved || addToSchedule.isPending} onClick={() => addToSchedule.mutate({ schedule_item_id: item.id })}>
+                          <Button size="sm" variant={isSaved ? "secondary" : "default"} className="text-xs h-7" disabled={isSaved || addToSchedule.isPending} onClick={() => addToSchedule.mutate({ schedule_item_id: item.id })}>
                             {isSaved ? t("Added", "مضاف") : t("Add", "أضف")}
                           </Button>
                         </CardContent>

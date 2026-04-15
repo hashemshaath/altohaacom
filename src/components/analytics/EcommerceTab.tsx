@@ -48,11 +48,11 @@ export const EcommerceTab = memo(function EcommerceTab({ isAr, ecomMetrics }: Ec
             <CardContent className="p-2.5 text-center">
               <kpi.icon className={`h-3.5 w-3.5 mx-auto mb-0.5 ${kpi.color}`} />
               <div className="text-sm font-bold leading-tight">
-                {kpi.prefix && <span className="text-[12px] text-muted-foreground">{kpi.prefix}</span>}
+                {kpi.prefix && <span className="text-xs text-muted-foreground">{kpi.prefix}</span>}
                 <AnimatedCounter value={kpi.value} />
-                {kpi.suffix && <span className="text-[12px] text-muted-foreground ms-0.5">{kpi.suffix}</span>}
+                {kpi.suffix && <span className="text-xs text-muted-foreground ms-0.5">{kpi.suffix}</span>}
               </div>
-              <div className="text-[12px] text-muted-foreground leading-tight mt-0.5">{kpi.label}</div>
+              <div className="text-xs text-muted-foreground leading-tight mt-0.5">{kpi.label}</div>
             </CardContent>
           </Card>
         ))}
@@ -80,7 +80,7 @@ export const EcommerceTab = memo(function EcommerceTab({ isAr, ecomMetrics }: Ec
                     <div key={i}>
                       <div className="flex items-center justify-between text-xs mb-1">
                         <span className="font-medium">{isAr ? stage.stageAr : stage.stage}</span>
-                        <span className="text-muted-foreground">{stage.value} <span className="text-[12px]">({pct}%)</span></span>
+                        <span className="text-muted-foreground">{stage.value} <span className="text-xs">({pct}%)</span></span>
                       </div>
                       <div className="relative h-7 bg-muted rounded-lg overflow-hidden">
                         <div
@@ -89,7 +89,7 @@ export const EcommerceTab = memo(function EcommerceTab({ isAr, ecomMetrics }: Ec
                         />
                       </div>
                       {i > 0 && dropOff > 0 && (
-                        <div className="flex items-center gap-1 mt-0.5 text-[12px] text-destructive/70">
+                        <div className="flex items-center gap-1 mt-0.5 text-xs text-destructive/70">
                           <ArrowDownRight className="h-2.5 w-2.5" />
                           {dropOff}% {isAr ? "انخفاض" : "drop-off"}
                         </div>
@@ -98,7 +98,7 @@ export const EcommerceTab = memo(function EcommerceTab({ isAr, ecomMetrics }: Ec
                   );
                 })}
                 <Separator />
-                <div className="flex justify-between text-[12px] text-muted-foreground">
+                <div className="flex justify-between text-xs text-muted-foreground">
                   <span>{isAr ? "معدل التحويل الإجمالي" : "Overall Conversion"}: <strong className="text-foreground">{ecomMetrics.overallConversion}%</strong></span>
                   <span>{isAr ? "سلة → دفع" : "Cart → Pay"}: <strong className="text-foreground">{ecomMetrics.checkoutToPayRate}%</strong></span>
                 </div>
@@ -177,7 +177,7 @@ export const EcommerceTab = memo(function EcommerceTab({ isAr, ecomMetrics }: Ec
               { label: isAr ? "إجمالي التحويل" : "Overall", value: ecomMetrics.overallConversion },
             ].map((r, i) => (
               <div key={i}>
-                <div className="flex justify-between text-[12px] mb-1">
+                <div className="flex justify-between text-xs mb-1">
                   <span className="text-muted-foreground">{r.label}</span>
                   <span className="font-bold">{r.value}%</span>
                 </div>
@@ -208,7 +208,7 @@ export const EcommerceTab = memo(function EcommerceTab({ isAr, ecomMetrics }: Ec
                   <span>{item.icon}</span>
                   <span className="text-muted-foreground">{item.label}</span>
                 </span>
-                <Badge variant="secondary" className="text-[12px] font-bold">{item.value}</Badge>
+                <Badge variant="secondary" className="text-xs font-bold">{item.value}</Badge>
               </div>
             ))}
           </CardContent>

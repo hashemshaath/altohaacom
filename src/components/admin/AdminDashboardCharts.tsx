@@ -27,7 +27,7 @@ function ChartTooltip({ active, payload, label }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
   return (
     <div className="rounded-lg border border-border bg-popover px-3 py-2 shadow-lg">
-      {label && <p className="text-[11px] font-medium text-muted-foreground mb-1">{label}</p>}
+      {label && <p className="text-[0.6875rem] font-medium text-muted-foreground mb-1">{label}</p>}
       {payload.map((p, i: number) => (
         <div key={i} className="flex items-center gap-2">
           <div className="h-2 w-2 rounded-full" style={{ background: p.color || p.fill }} />
@@ -50,7 +50,7 @@ export const GrowthAreaChart = memo(function GrowthAreaChart({
   return (
     <Card className={cn("rounded-lg", className)}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pb-3">
         <ResponsiveContainer width="100%" height={220}>
@@ -94,7 +94,7 @@ export const DonutChart = memo(function DonutChart({
   return (
     <Card className={cn("rounded-lg", className)}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pb-3">
         <div className="flex items-center gap-4">
@@ -128,7 +128,7 @@ export const DonutChart = memo(function DonutChart({
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-lg font-bold tabular-nums">{activeIndex !== null ? data[activeIndex].value : total}</span>
-              <span className="text-[10px] text-muted-foreground">{activeIndex !== null ? data[activeIndex].name : "Total"}</span>
+              <span className="text-[0.625rem] text-muted-foreground">{activeIndex !== null ? data[activeIndex].name : "Total"}</span>
             </div>
           </div>
           <div className="flex-1 space-y-2">
@@ -146,7 +146,7 @@ export const DonutChart = memo(function DonutChart({
                   <div className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: d.color }} />
                   <span className="text-xs flex-1 truncate">{d.name}</span>
                   <span className="text-xs font-semibold tabular-nums">{d.value}</span>
-                  <span className="text-[10px] text-muted-foreground tabular-nums w-8 text-end">{pct}%</span>
+                  <span className="text-[0.625rem] text-muted-foreground tabular-nums w-8 text-end">{pct}%</span>
                 </div>
               );
             })}
@@ -168,7 +168,7 @@ export const ComparisonBarChart = memo(function ComparisonBarChart({
   return (
     <Card className={cn("rounded-lg", className)}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pb-3">
         <ResponsiveContainer width="100%" height={220}>
@@ -226,14 +226,14 @@ export const ActivityHeatmap = memo(function ActivityHeatmap({
   return (
     <Card className={cn("rounded-lg", className)}>
       <CardHeader className="pb-2">
-        <CardTitle className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
+        <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{title}</CardTitle>
       </CardHeader>
       <CardContent className="pb-3 overflow-x-auto">
         <div className="min-w-[500px]">
           {/* Hour labels */}
           <div className="flex items-center gap-0.5 mb-1 ps-14">
             {HOURS.filter(h => h % 3 === 0).map(h => (
-              <span key={h} className="text-[10px] text-muted-foreground tabular-nums" style={{ width: `${(3 / 24) * 100}%` }}>
+              <span key={h} className="text-[0.625rem] text-muted-foreground tabular-nums" style={{ width: `${(3 / 24) * 100}%` }}>
                 {String(h).padStart(2, "0")}
               </span>
             ))}
@@ -241,7 +241,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap({
           {/* Grid */}
           {days.map((dayLabel, dayIdx) => (
             <div key={dayIdx} className="flex items-center gap-0.5 mb-0.5">
-              <span className="text-[10px] text-muted-foreground w-12 text-end shrink-0 pe-2">{dayLabel}</span>
+              <span className="text-[0.625rem] text-muted-foreground w-12 text-end shrink-0 pe-2">{dayLabel}</span>
               <div className="flex-1 flex gap-0.5">
                 {HOURS.map(hour => {
                   const val = getVal(dayIdx, hour);
@@ -265,11 +265,11 @@ export const ActivityHeatmap = memo(function ActivityHeatmap({
           ))}
           {/* Legend */}
           <div className="flex items-center justify-end gap-1.5 mt-2">
-            <span className="text-[10px] text-muted-foreground">{isAr ? "أقل" : "Less"}</span>
+            <span className="text-[0.625rem] text-muted-foreground">{isAr ? "أقل" : "Less"}</span>
             {["bg-muted/30", "bg-primary/15", "bg-primary/30", "bg-primary/50", "bg-primary/80"].map((c, i) => (
               <div key={i} className={cn("h-2.5 w-2.5 rounded-sm", c)} />
             ))}
-            <span className="text-[10px] text-muted-foreground">{isAr ? "أكثر" : "More"}</span>
+            <span className="text-[0.625rem] text-muted-foreground">{isAr ? "أكثر" : "More"}</span>
           </div>
         </div>
       </CardContent>

@@ -129,8 +129,8 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
                   {org.is_featured && <Star className="h-4 w-4 text-amber-500 shrink-0" />}
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  {org.organizer_number && <Badge variant="outline" className="text-[12px] font-mono h-4">{org.organizer_number}</Badge>}
-                  <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[12px] capitalize h-4">{org.status}</Badge>
+                  {org.organizer_number && <Badge variant="outline" className="text-xs font-mono h-4">{org.organizer_number}</Badge>}
+                  <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-xs capitalize h-4">{org.status}</Badge>
                 </div>
               </div>
             </div>
@@ -143,7 +143,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
             <div key={k.label} className="text-center p-2 rounded-xl bg-muted/50">
               <k.icon className="h-4 w-4 mx-auto text-primary mb-1" />
               <p className="text-sm font-bold">{k.value}</p>
-              <p className="text-[12px] text-muted-foreground">{k.label}</p>
+              <p className="text-xs text-muted-foreground">{k.label}</p>
             </div>
           ))}
         </div>
@@ -159,7 +159,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
               </TabsTrigger>
               <TabsTrigger value="exhibitions" className="text-xs gap-1">
                 <Landmark className="h-3 w-3" />{isAr ? "المعارض" : "Events"}
-                <Badge variant="secondary" className="text-[12px] h-3.5 px-1 ms-0.5">{exhibitions.length}</Badge>
+                <Badge variant="secondary" className="text-xs h-3.5 px-1 ms-0.5">{exhibitions.length}</Badge>
               </TabsTrigger>
               <TabsTrigger value="analytics" className="text-xs gap-1">
                 <BarChart3 className="h-3 w-3" />{isAr ? "التحليلات" : "Analytics"}
@@ -173,7 +173,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
             <TabsContent value="info" className="space-y-4 mt-0">
               {/* Contact */}
               <div className="space-y-2">
-                <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "التواصل" : "Contact"}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "التواصل" : "Contact"}</p>
                 {org.email && (
                   <div className="flex items-center gap-2 text-sm">
                     <Mail className="h-3.5 w-3.5 text-muted-foreground" />
@@ -201,7 +201,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
 
               {/* Location */}
               <div className="space-y-2">
-                <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الموقع" : "Location"}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الموقع" : "Location"}</p>
                 {(org.city || org.country) && (
                   <div className="flex items-center gap-2 text-sm">
                     <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
@@ -209,14 +209,14 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
                   </div>
                 )}
                 {org.address && <p className="text-xs text-muted-foreground ps-5">{org.address}</p>}
-                {org.country_code && <Badge variant="outline" className="text-[12px] ms-5">{org.country_code}</Badge>}
+                {org.country_code && <Badge variant="outline" className="text-xs ms-5">{org.country_code}</Badge>}
               </div>
 
               <Separator />
 
               {/* Details */}
               <div className="space-y-2">
-                <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "التفاصيل" : "Details"}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "التفاصيل" : "Details"}</p>
                 {org.founded_year && (
                   <div className="flex items-center gap-2 text-sm">
                     <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
@@ -228,12 +228,12 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
                 )}
                 {org.services && org.services.length > 0 && (
                   <div className="flex flex-wrap gap-1">
-                    {org.services.map((s: string) => <Badge key={s} variant="secondary" className="text-[12px]">{s}</Badge>)}
+                    {org.services.map((s: string) => <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>)}
                   </div>
                 )}
                 {org.categories && org.categories.length > 0 && (
                   <div className="flex flex-wrap gap-1">
-                    {org.categories.map((c: string) => <Badge key={c} variant="outline" className="text-[12px]">{c}</Badge>)}
+                    {org.categories.map((c: string) => <Badge key={c} variant="outline" className="text-xs">{c}</Badge>)}
                   </div>
                 )}
               </div>
@@ -243,7 +243,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
               {/* Key Contacts */}
               {org.key_contacts && Array.isArray(org.key_contacts) && org.key_contacts.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "جهات الاتصال" : "Key Contacts"}</p>
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "جهات الاتصال" : "Key Contacts"}</p>
                   {(org.key_contacts as Record<string, string>[]).map((c, i) => (
                     <div key={i} className="flex items-center gap-2 text-sm">
                       <UserCircle2 className="h-3.5 w-3.5 text-muted-foreground" />
@@ -286,15 +286,15 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
                           <h4 className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
                             {isAr && ex.title_ar ? ex.title_ar : ex.title}
                           </h4>
-                          <p className="text-[12px] text-muted-foreground">
+                          <p className="text-xs text-muted-foreground">
                             {ex.start_date && format(new Date(ex.start_date), "dd MMM yyyy")}
                             {ex.city && ` • ${ex.city}`}
                           </p>
                           <div className="flex items-center gap-1.5 mt-0.5">
-                            <Badge variant="outline" className="text-[12px] h-3.5 capitalize">{ex.role}</Badge>
-                            <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-[12px] h-3.5 capitalize">{ex.status}</Badge>
+                            <Badge variant="outline" className="text-xs h-3.5 capitalize">{ex.role}</Badge>
+                            <Badge variant={ex.status === "active" ? "default" : "secondary"} className="text-xs h-3.5 capitalize">{ex.status}</Badge>
                             {(ex.view_count || 0) > 0 && (
-                              <span className="text-[12px] text-muted-foreground flex items-center gap-0.5">
+                              <span className="text-xs text-muted-foreground flex items-center gap-0.5">
                                 <Eye className="h-2.5 w-2.5" />{ex.view_count}
                               </span>
                             )}
@@ -335,15 +335,15 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
 
               {/* Flags */}
               <div className="space-y-2">
-                <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "العلامات" : "Flags"}</p>
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "العلامات" : "Flags"}</p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant={org.is_verified ? "default" : "outline"} className="text-[12px] gap-1">
+                  <Badge variant={org.is_verified ? "default" : "outline"} className="text-xs gap-1">
                     <Shield className="h-3 w-3" />{isAr ? (org.is_verified ? "موثق" : "غير موثق") : (org.is_verified ? "Verified" : "Not Verified")}
                   </Badge>
-                  <Badge variant={org.is_featured ? "default" : "outline"} className="text-[12px] gap-1">
+                  <Badge variant={org.is_featured ? "default" : "outline"} className="text-xs gap-1">
                     <Star className="h-3 w-3" />{isAr ? (org.is_featured ? "مميز" : "غير مميز") : (org.is_featured ? "Featured" : "Not Featured")}
                   </Badge>
-                  <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-[12px] capitalize">{org.status}</Badge>
+                  <Badge variant={org.status === "active" ? "default" : "secondary"} className="text-xs capitalize">{org.status}</Badge>
                 </div>
               </div>
             </TabsContent>

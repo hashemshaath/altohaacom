@@ -106,7 +106,7 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
             <CardContent className="p-3 flex items-center gap-2">
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} /></div>
               <div className="min-w-0">
-                <p className="text-[12px] text-muted-foreground truncate">{kpi.label}</p>
+                <p className="text-xs text-muted-foreground truncate">{kpi.label}</p>
                 <p className="text-base font-bold">{kpi.value}</p>
               </div>
             </CardContent>
@@ -135,14 +135,14 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
         <div className="space-y-4">
           <Card>
             <CardContent className="p-3">
-              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "أنواع الشركات" : "Company Types"}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">{isAr ? "أنواع الشركات" : "Company Types"}</p>
               <div className="flex items-center gap-3">
                 <PieChart width={60} height={60}>
                   <Pie data={data.typeDist} dataKey="value" cx={28} cy={28} innerRadius={16} outerRadius={28} strokeWidth={0}>
                     {data.typeDist.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                 </PieChart>
-                <div className="text-[12px] space-y-1">
+                <div className="text-xs space-y-1">
                   {data.typeDist.map((t, i) => (
                     <div key={t.name} className="flex items-center gap-1.5">
                       <span className="h-2 w-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
@@ -156,11 +156,11 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
 
           <Card>
             <CardContent className="p-3">
-              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "حالات الشركات" : "Company Status"}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">{isAr ? "حالات الشركات" : "Company Status"}</p>
               <div className="space-y-1.5">
                 {data.statusDist.map(s => (
                   <div key={s.name} className="space-y-0.5">
-                    <div className="flex justify-between text-[12px]">
+                    <div className="flex justify-between text-xs">
                       <span className="capitalize">{s.name}</span>
                       <span className="text-muted-foreground">{s.value}</span>
                     </div>

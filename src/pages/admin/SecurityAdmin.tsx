@@ -103,7 +103,7 @@ const SecurityKPIStrip = memo(function SecurityKPIStrip() {
               {isLoading ? <Skeleton className="h-6 w-10 rounded-xl" /> : (
                 <AnimatedCounter value={item.value || 0} className="text-lg font-black leading-none tracking-tight" />
               )}
-              <p className="text-[12px] text-muted-foreground truncate mt-0.5">{item.label}</p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">{item.label}</p>
             </div>
           </CardContent>
         </Card>
@@ -194,10 +194,10 @@ const EventsTab = memo(function EventsTab() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-sm font-medium">{event.event_type?.replace(/_/g, " ")}</span>
-                              <Badge className={cn("text-[11px] border-0", isCritical ? "bg-destructive/10 text-destructive" : event.severity === "warning" ? "bg-chart-4/10 text-chart-4" : "bg-primary/10 text-primary")}>{event.severity}</Badge>
+                              <Badge className={cn("text-[0.6875rem] border-0", isCritical ? "bg-destructive/10 text-destructive" : event.severity === "warning" ? "bg-chart-4/10 text-chart-4" : "bg-primary/10 text-primary")}>{event.severity}</Badge>
                             </div>
                             <p className="text-xs text-muted-foreground mt-0.5 truncate">{isAr ? event.description_ar || event.description : event.description}</p>
-                            <div className="flex items-center gap-3 mt-1 text-[11px] text-muted-foreground">
+                            <div className="flex items-center gap-3 mt-1 text-[0.6875rem] text-muted-foreground">
                               <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{new Date(event.created_at).toLocaleString(isAr ? "ar" : "en")}</span>
                               {event.ip_address && <span className="flex items-center gap-1"><Globe className="h-3 w-3" /> {event.ip_address}</span>}
                             </div>
@@ -232,7 +232,7 @@ const EventsTab = memo(function EventsTab() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-0.5">
                       <span className="text-xs capitalize">{type.replace(/_/g, " ")}</span>
-                      <Badge variant="outline" className="text-[11px]">{count}</Badge>
+                      <Badge variant="outline" className="text-[0.6875rem]">{count}</Badge>
                     </div>
                     <div className="h-1 bg-muted rounded-full overflow-hidden">
                       <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${(count / maxCount) * 100}%` }} />
@@ -290,7 +290,7 @@ const SessionsTab = memo(function SessionsTab() {
           <CardTitle className="text-sm flex items-center gap-2">
             <Monitor className="h-4 w-4 text-chart-2" />
             {isAr ? "الجلسات النشطة" : "Active Sessions"} ({data?.activeSessions.length || 0})
-            <Badge variant="default" className="ms-auto animate-pulse text-[11px]"><Wifi className="h-2.5 w-2.5 me-1" />{isAr ? "مباشر" : "Live"}</Badge>
+            <Badge variant="default" className="ms-auto animate-pulse text-[0.6875rem]"><Wifi className="h-2.5 w-2.5 me-1" />{isAr ? "مباشر" : "Live"}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
@@ -347,7 +347,7 @@ const SessionsTab = memo(function SessionsTab() {
             )}
             <div className="flex flex-wrap gap-2 justify-center mt-1">
               {data?.deviceData?.map((d, i) => (
-                <span key={d.name} className="text-[11px] flex items-center gap-1">
+                <span key={d.name} className="text-[0.6875rem] flex items-center gap-1">
                   <span className="h-2 w-2 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
                   {d.name} ({d.value})
                 </span>
@@ -367,7 +367,7 @@ const SessionsTab = memo(function SessionsTab() {
                 <s.icon className={cn("h-4 w-4", s.color)} />
                 <div>
                   <p className="text-sm font-bold">{s.value}</p>
-                  <p className="text-[11px] text-muted-foreground">{s.label}</p>
+                  <p className="text-[0.6875rem] text-muted-foreground">{s.label}</p>
                 </div>
               </div>
             ))}
@@ -445,7 +445,7 @@ const PermissionsTab = memo(function PermissionsTab() {
                     <span className="font-medium">{translateRole(role, isAr)}</span>
                     <div className="flex items-center gap-2">
                       <span className="text-muted-foreground">{count}</span>
-                      {data?.permPerRole?.[role] && <Badge variant="outline" className="text-[11px] px-1">{data.permPerRole[role]} {isAr ? "صلاحية" : "perms"}</Badge>}
+                      {data?.permPerRole?.[role] && <Badge variant="outline" className="text-[0.6875rem] px-1">{data.permPerRole[role]} {isAr ? "صلاحية" : "perms"}</Badge>}
                     </div>
                   </div>
                   <Progress value={(count / maxRole) * 100} className="h-1.5" />
@@ -474,7 +474,7 @@ const PermissionsTab = memo(function PermissionsTab() {
               {data?.overrides.map(o => (
                 <div key={o.id} className="p-2 rounded-xl bg-muted/30 text-xs space-y-1">
                   <div className="flex items-center gap-2">
-                    <Badge className={cn("text-[11px] border-0", o.granted ? "bg-chart-2/10 text-chart-2" : "bg-destructive/10 text-destructive")}>
+                    <Badge className={cn("text-[0.6875rem] border-0", o.granted ? "bg-chart-2/10 text-chart-2" : "bg-destructive/10 text-destructive")}>
                       {o.granted ? (isAr ? "ممنوحة" : "Granted") : (isAr ? "مسحوبة" : "Revoked")}
                     </Badge>
                     <span className="font-mono truncate">{o.user_id?.substring(0, 8)}...</span>
@@ -621,7 +621,7 @@ const AnalyticsTab = memo(function AnalyticsTab() {
                 </div>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {data.severityData.map((d, i) => (
-                    <span key={d.name} className="text-[11px] flex items-center gap-1">
+                    <span key={d.name} className="text-[0.6875rem] flex items-center gap-1">
                       <span className="h-2 w-2 rounded-full" style={{ backgroundColor: SEVERITY_COLORS[d.name] || CHART_COLORS[i] }} />
                       {d.name} ({d.value})
                     </span>

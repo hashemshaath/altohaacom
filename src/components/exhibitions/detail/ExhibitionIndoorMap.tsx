@@ -154,7 +154,7 @@ export const ExhibitionIndoorMap = memo(function ExhibitionIndoorMap({ exhibitio
                     }`}>
                       <Icon className="h-4 w-4" />
                     </div>
-                    <span className={`text-[12px] font-medium px-1 rounded whitespace-nowrap max-w-[60px] truncate ${
+                    <span className={`text-xs font-medium px-1 rounded whitespace-nowrap max-w-[60px] truncate ${
                       isSelected ? "text-primary" : "text-muted-foreground"
                     }`}>
                       {isAr ? wp.name_ar || wp.name : wp.name}

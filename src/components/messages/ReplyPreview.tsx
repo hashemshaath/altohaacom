@@ -18,8 +18,8 @@ export const ReplyPreview = memo(function ReplyPreview({ replyToMessage, onClear
       <div className="flex items-center gap-1.5 mb-1 rounded-xl bg-muted/40 px-2.5 py-1.5 border-s-2 border-primary/50">
         <Reply className="h-3 w-3 text-primary/70 shrink-0 scale-x-[-1]" />
         <div className="min-w-0 flex-1">
-          <p className="text-[12px] font-semibold text-primary/80 truncate">{replyToMessage.senderName}</p>
-          <p className="text-[12px] text-muted-foreground truncate leading-tight">{replyToMessage.content}</p>
+          <p className="text-xs font-semibold text-primary/80 truncate">{replyToMessage.senderName}</p>
+          <p className="text-xs text-muted-foreground truncate leading-tight">{replyToMessage.content}</p>
         </div>
       </div>
     );
@@ -31,7 +31,7 @@ export const ReplyPreview = memo(function ReplyPreview({ replyToMessage, onClear
         <Reply className="h-4 w-4 text-primary scale-x-[-1]" />
       </div>
       <div className="min-w-0 flex-1 border-s-2 border-primary/30 ps-2.5">
-        <p className="text-[12px] font-bold text-primary">{replyToMessage.senderName}</p>
+        <p className="text-xs font-bold text-primary">{replyToMessage.senderName}</p>
         <p className="text-xs text-muted-foreground truncate leading-snug">{replyToMessage.content}</p>
       </div>
       <button

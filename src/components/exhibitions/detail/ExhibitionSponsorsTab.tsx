@@ -53,7 +53,7 @@ export const ExhibitionSponsorsTab = memo(function ExhibitionSponsorsTab({ spons
             {config ? <config.icon className="h-3.5 w-3.5" /> : <Star className="h-3.5 w-3.5" />}
           </div>
           {tierLabel}
-          <Badge variant="outline" className="text-[12px] ms-1">{tierSponsors.length}</Badge>
+          <Badge variant="outline" className="text-xs ms-1">{tierSponsors.length}</Badge>
         </h3>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {tierSponsors.map((sponsor, i) => (

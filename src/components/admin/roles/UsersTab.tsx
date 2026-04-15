@@ -92,7 +92,7 @@ export default function UsersTab({ isAr, t }: Props) {
             <CardTitle className="text-sm flex items-center gap-2">
               <UserCog className="h-4 w-4 text-primary" />
               {t("Assign Roles to Users", "تعيين الأدوار للمستخدمين")}
-              <Badge variant="secondary" className="text-[12px]">{filteredUsers.length}</Badge>
+              <Badge variant="secondary" className="text-xs">{filteredUsers.length}</Badge>
             </CardTitle>
             <CardDescription className="text-xs">
               {t("Search for a user and assign or remove roles directly", "ابحث عن مستخدم وعيّن أو أزل الأدوار مباشرة")}
@@ -117,7 +117,7 @@ export default function UsersTab({ isAr, t }: Props) {
         {/* Role filter chips */}
         <div className="flex flex-wrap gap-1.5">
           <Button variant={roleFilter === "all" ? "default" : "outline"} size="sm"
-            className="h-7 text-[12px] gap-1 rounded-xl" onClick={() => setRoleFilter("all")}>
+            className="h-7 text-xs gap-1 rounded-xl" onClick={() => setRoleFilter("all")}>
             <Filter className="h-3 w-3" /> {t("All", "الكل")}
           </Button>
           {ALL_ROLES.map(role => {
@@ -126,11 +126,11 @@ export default function UsersTab({ isAr, t }: Props) {
             const count = usersForAssignment.filter(u => u.roles.includes(role)).length;
             return (
               <Button key={role} variant={roleFilter === role ? "default" : "outline"} size="sm"
-                className={`h-7 text-[12px] gap-1 rounded-xl ${roleFilter !== role ? "opacity-60 hover:opacity-90" : ""}`}
+                className={`h-7 text-xs gap-1 rounded-xl ${roleFilter !== role ? "opacity-60 hover:opacity-90" : ""}`}
                 onClick={() => setRoleFilter(role)}>
                 <Icon className="h-3 w-3" />
                 {isAr ? meta.labelAr : meta.labelEn}
-                {count > 0 && <span className="text-[12px] opacity-70">({count})</span>}
+                {count > 0 && <span className="text-xs opacity-70">({count})</span>}
               </Button>
             );
           })}
@@ -151,7 +151,7 @@ export default function UsersTab({ isAr, t }: Props) {
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <p className="text-sm font-medium truncate">{isAr ? user.full_name_ar || user.full_name : user.full_name}</p>
-                    <p className="text-[12px] text-muted-foreground" dir="ltr">@{user.username} · {user.account_number}</p>
+                    <p className="text-xs text-muted-foreground" dir="ltr">@{user.username} · {user.account_number}</p>
                   </div>
                   <div className="flex flex-wrap gap-1">
                     {ALL_ROLES.map((role) => {

@@ -103,10 +103,10 @@ export default function ThemeAppearancePage() {
                       </div>
                       <div>
                         <p className="text-sm font-semibold">{isAr ? opt.labelAr : opt.labelEn}</p>
-                        <p className="text-[12px] text-muted-foreground mt-1">{isAr ? opt.descAr : opt.descEn}</p>
+                        <p className="text-xs text-muted-foreground mt-1">{isAr ? opt.descAr : opt.descEn}</p>
                       </div>
                       {isActive && (
-                        <Badge variant="secondary" className="text-[12px]">
+                        <Badge variant="secondary" className="text-xs">
                           {isAr ? "نشط" : "Active"}
                         </Badge>
                       )}

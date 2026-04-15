@@ -45,7 +45,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
           <div className="rounded-full bg-destructive/10 p-5 ring-4 ring-destructive/5 animate-pulse [animation-duration:3s]">
             <AlertTriangle className="h-10 w-10 text-destructive" />
           </div>
-          <div className="rounded-xl bg-destructive/5 px-3 py-1 text-[12px] font-mono text-destructive/70">
+          <div className="rounded-xl bg-destructive/5 px-3 py-1 text-xs font-mono text-destructive/70">
             {isAr ? "رمز الخطأ: ERR_RENDER" : "Error Code: ERR_RENDER"}
           </div>
           <div className="space-y-2">

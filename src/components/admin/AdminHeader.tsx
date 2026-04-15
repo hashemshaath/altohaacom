@@ -45,12 +45,12 @@ export const AdminHeader = memo(function AdminHeader() {
             </span>
           </Link>
           {roleBadge ? (
-            <Badge variant="outline" className={`hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold ${roleBadge.className}`}>
+            <Badge variant="outline" className={`hidden sm:inline-flex items-center gap-1 text-[0.6875rem] font-semibold ${roleBadge.className}`}>
               <roleBadge.icon className="h-3 w-3" />
               {roleBadge.label}
             </Badge>
           ) : (
-            <span className="hidden rounded bg-primary/10 px-2 py-0.5 text-[12px] font-semibold uppercase tracking-wider text-primary sm:inline-block">
+            <span className="hidden rounded bg-primary/10 px-2 py-0.5 text-xs font-semibold uppercase tracking-wider text-primary sm:inline-block">
               {language === "ar" ? "الإدارة" : "Admin"}
             </span>
           )}

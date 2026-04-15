@@ -48,8 +48,8 @@ export const ImportHistory = React.memo(({ open, onOpenChange, loading, history,
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{log.entity_name || 'Unknown'}</p>
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                        <Badge variant="outline" className="text-[12px] h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
-                        <Badge variant="secondary" className="text-[12px] h-4">{log.entity_type}</Badge>
+                        <Badge variant="outline" className="text-xs h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
+                        <Badge variant="secondary" className="text-xs h-4">{log.entity_type}</Badge>
                         <span>{log.action === 'create' ? (isAr ? 'إضافة' : 'Created') : (isAr ? 'تحديث' : 'Updated')}</span>
                       </div>
                     </div>

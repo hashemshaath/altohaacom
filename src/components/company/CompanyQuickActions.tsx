@@ -35,7 +35,7 @@ export const CompanyQuickActions = memo(function CompanyQuickActions() {
                 <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${action.color} transition-transform group-hover:scale-110 group-active:scale-95`}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className="text-[12px] font-medium text-muted-foreground group-hover:text-foreground text-center leading-tight transition-colors">
+                <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground text-center leading-tight transition-colors">
                   {isAr ? action.labelAr : action.labelEn}
                 </span>
               </CardContent>

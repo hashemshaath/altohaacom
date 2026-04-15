@@ -41,9 +41,9 @@ export const IdentityTab = memo(function IdentityTab({
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-base truncate">{isAr ? (form.name_ar || form.name) : (form.name || form.name_ar)}</p>
                 <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  {orgData.organizer_number && <span className="text-[12px] text-muted-foreground font-mono"><Hash className="h-3 w-3 inline" /> {orgData.organizer_number}</span>}
-                  {form.city && <span className="text-[12px] text-muted-foreground"><MapPin className="h-3 w-3 inline" /> {isAr ? (form.city_ar || form.city) : form.city}</span>}
-                  {form.founded_year && <span className="text-[12px] text-muted-foreground"><Calendar className="h-3 w-3 inline" /> {form.founded_year}</span>}
+                  {orgData.organizer_number && <span className="text-xs text-muted-foreground font-mono"><Hash className="h-3 w-3 inline" /> {orgData.organizer_number}</span>}
+                  {form.city && <span className="text-xs text-muted-foreground"><MapPin className="h-3 w-3 inline" /> {isAr ? (form.city_ar || form.city) : form.city}</span>}
+                  {form.founded_year && <span className="text-xs text-muted-foreground"><Calendar className="h-3 w-3 inline" /> {form.founded_year}</span>}
                 </div>
               </div>
               <div className="hidden sm:flex gap-2">
@@ -54,7 +54,7 @@ export const IdentityTab = memo(function IdentityTab({
                 ].map(s => (
                   <div key={s.l} className="text-center px-3">
                     <p className="text-sm font-bold">{s.v}</p>
-                    <p className="text-[12px] text-muted-foreground">{s.l}</p>
+                    <p className="text-xs text-muted-foreground">{s.l}</p>
                   </div>
                 ))}
               </div>
@@ -71,7 +71,7 @@ export const IdentityTab = memo(function IdentityTab({
         translateField={translateField} context={translateCtx}
         placeholder_ar="اسم المنظم بالعربية" placeholder_en="Organizer name in English"
       />
-      {formErrors.name && <p className="text-[12px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
+      {formErrors.name && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{formErrors.name}</p>}
 
       <FieldGroup label="Slug" hint={form.slug ? `${window.location.origin}/organizers/${form.slug}` : undefined}>
         <div className="flex gap-2">
@@ -94,7 +94,7 @@ export const IdentityTab = memo(function IdentityTab({
         placeholder_ar="وصف المنظم بالعربية..." placeholder_en="Describe the organizer..."
       />
 
-      <div className="flex justify-between text-[12px] text-muted-foreground">
+      <div className="flex justify-between text-xs text-muted-foreground">
         <span>{form.description_ar.length} {isAr ? "حرف (عربي)" : "chars (AR)"}</span>
         <span>{form.description.length} {isAr ? "حرف (إنجليزي)" : "chars (EN)"}</span>
       </div>

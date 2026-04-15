@@ -169,7 +169,7 @@ export default function ProSuppliers() {
                   <s.icon className="h-4 w-4" />
                 </div>
                 <span className="text-xl font-black tabular-nums">{s.num}</span>
-                <span className="text-[11px] text-muted-foreground font-medium">{isAr ? s.ar : s.en}</span>
+                <span className="text-[0.6875rem] text-muted-foreground font-medium">{isAr ? s.ar : s.en}</span>
               </div>
             ))}
           </div>
@@ -285,7 +285,7 @@ export default function ProSuppliers() {
                         <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-30" alt={company.name} loading="lazy" />
                       )}
                       <div className="absolute top-3 end-3">
-                        <Badge className="bg-chart-4 text-white gap-1 text-[10px]">
+                        <Badge className="bg-chart-4 text-primary-foreground gap-1 text-[0.625rem]">
                           <Crown className="h-3 w-3" />
                           {isAr ? "متميز" : "Featured"}
                         </Badge>
@@ -303,21 +303,21 @@ export default function ProSuppliers() {
                     <CardContent className="pt-9 pb-5">
                       <h3 className="font-bold text-sm truncate">{isAr && company.name_ar ? company.name_ar : company.name}</h3>
                       {(company.tagline || company.tagline_ar) && (
-                        <p className="mt-0.5 text-[11px] text-primary/80 truncate">{isAr && company.tagline_ar ? company.tagline_ar : company.tagline}</p>
+                        <p className="mt-0.5 text-[0.6875rem] text-primary/80 truncate">{isAr && company.tagline_ar ? company.tagline_ar : company.tagline}</p>
                       )}
                       <div className="mt-2.5 flex flex-wrap gap-1.5">
                         {company.is_verified && (
-                          <Badge variant="secondary" className="text-[10px] gap-0.5 bg-chart-5/10 text-chart-5 border-chart-5/20">
+                          <Badge variant="secondary" className="text-[0.625rem] gap-0.5 bg-chart-5/10 text-chart-5 border-chart-5/20">
                             <CheckCircle2 className="h-3 w-3" /> {isAr ? "موثق" : "Verified"}
                           </Badge>
                         )}
                         {company.supplier_category && (
-                          <Badge variant="outline" className="text-[10px]">
+                          <Badge variant="outline" className="text-[0.625rem]">
                             {SUPPLIER_CATEGORIES.find(c => c.value === company.supplier_category)?.[isAr ? "ar" : "en"] || company.supplier_category}
                           </Badge>
                         )}
                         {productCount > 0 && (
-                          <Badge variant="outline" className="text-[10px] gap-0.5">
+                          <Badge variant="outline" className="text-[0.625rem] gap-0.5">
                             <Package className="h-2.5 w-2.5" /> {productCount}
                           </Badge>
                         )}
@@ -388,7 +388,7 @@ export default function ProSuppliers() {
                         </div>
                         <div className="absolute end-3 top-3 flex items-center gap-1.5">
                           {isFeatured && (
-                            <Badge className="bg-chart-4/90 text-white text-[10px] gap-0.5">
+                            <Badge className="bg-chart-4/90 text-primary-foreground text-[0.625rem] gap-0.5">
                               <Star className="h-3 w-3" /> {isAr ? "مميز" : "Featured"}
                             </Badge>
                           )}
@@ -409,7 +409,7 @@ export default function ProSuppliers() {
                       <CardContent className="pt-10 pb-5">
                         <h3 className="font-bold text-sm truncate">{isAr && company.name_ar ? company.name_ar : company.name}</h3>
                         {(company.tagline || company.tagline_ar) && (
-                          <p className="mt-0.5 text-[11px] text-primary/80 truncate">{isAr && company.tagline_ar ? company.tagline_ar : company.tagline}</p>
+                          <p className="mt-0.5 text-[0.6875rem] text-primary/80 truncate">{isAr && company.tagline_ar ? company.tagline_ar : company.tagline}</p>
                         )}
                         <p className="mt-2 text-xs text-muted-foreground line-clamp-2">
                           {isAr && company.description_ar ? company.description_ar : company.description || (isAr ? "لا يوجد وصف" : "No description")}
@@ -417,17 +417,17 @@ export default function ProSuppliers() {
 
                         <div className="mt-3 flex flex-wrap items-center gap-1.5">
                           {company.supplier_category && (
-                            <Badge variant="secondary" className="text-[10px]">
+                            <Badge variant="secondary" className="text-[0.625rem]">
                               {SUPPLIER_CATEGORIES.find(c => c.value === company.supplier_category)?.[isAr ? "ar" : "en"] || company.supplier_category}
                             </Badge>
                           )}
                           {company.country_code && (
-                            <Badge variant="outline" className="text-[10px]">
+                            <Badge variant="outline" className="text-[0.625rem]">
                               {countryFlag(company.country_code)} {company.city || company.country_code}
                             </Badge>
                           )}
                           {productCount > 0 && (
-                            <Badge variant="outline" className="text-[10px] gap-0.5">
+                            <Badge variant="outline" className="text-[0.625rem] gap-0.5">
                               <Package className="h-2.5 w-2.5" /> {productCount} {isAr ? "منتج" : "products"}
                             </Badge>
                           )}
@@ -442,7 +442,7 @@ export default function ProSuppliers() {
                         <div className="mt-4 flex items-center justify-between">
                           <div className="flex flex-wrap gap-1">
                             {(company.specializations || []).slice(0, 3).map((s: string) => (
-                              <span key={s} className="rounded-md bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">{s}</span>
+                              <span key={s} className="rounded-md bg-muted px-2 py-0.5 text-[0.625rem] text-muted-foreground">{s}</span>
                             ))}
                           </div>
                           <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />

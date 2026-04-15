@@ -300,11 +300,11 @@ th{background:#f5f5f5;font-weight:600}
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <Badge variant="outline" className="text-[10px] uppercase tracking-widest font-bold">
+                  <Badge variant="outline" className="text-[0.625rem] uppercase tracking-widest font-bold">
                     {isAr ? "تقرير جلسة التذوق" : "Tasting Session Report"}
                   </Badge>
                   {session.evaluation_category && (
-                    <Badge className="text-[10px]">{session.evaluation_category}</Badge>
+                    <Badge className="text-[0.625rem]">{session.evaluation_category}</Badge>
                   )}
                 </div>
                 <h1 className="text-2xl font-black leading-tight">{isAr && session.title_ar ? session.title_ar : session.title}</h1>
@@ -315,7 +315,7 @@ th{background:#f5f5f5;font-weight:600}
                 )}
               </div>
               <div className="text-end shrink-0">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">{isAr ? "النتيجة الكلية" : "Overall"}</p>
+                <p className="text-[0.625rem] text-muted-foreground uppercase tracking-widest font-bold mb-1">{isAr ? "النتيجة الكلية" : "Overall"}</p>
                 <p className={`text-5xl font-black tabular-nums ${getScoreColor(sessionOverallPct)}`}>{sessionOverallPct}%</p>
                 <Badge variant="secondary" className={`mt-1 ${getScoreColor(sessionOverallPct)} font-bold`}>
                   {getScoreLabel(sessionOverallPct, isAr)}
@@ -338,7 +338,7 @@ th{background:#f5f5f5;font-weight:600}
                     <item.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-bold">{item.label}</p>
+                    <p className="text-[0.625rem] text-muted-foreground uppercase tracking-wider font-bold">{item.label}</p>
                     <p className="text-sm font-bold">{item.value}</p>
                   </div>
                 </div>
@@ -364,7 +364,7 @@ th{background:#f5f5f5;font-weight:600}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-bold truncate">{e.name}</p>
-                          {e.category && <Badge variant="outline" className="text-[10px]">{e.category}</Badge>}
+                          {e.category && <Badge variant="outline" className="text-[0.625rem]">{e.category}</Badge>}
                         </div>
                         {e.chef && <p className="text-xs text-muted-foreground">{e.chef}</p>}
                         <div className="mt-2">
@@ -376,7 +376,7 @@ th{background:#f5f5f5;font-weight:600}
                           <Trend.icon className={`h-4 w-4 ${Trend.color}`} />
                           <span className={`text-2xl font-black tabular-nums ${getScoreColor(e.overallPct)}`}>{e.overallPct}%</span>
                         </div>
-                        <p className="text-[10px] text-muted-foreground">{e.judgeCount} {isAr ? "محكم" : "judges"} · {e.totalScores} {isAr ? "تقييم" : "scores"}</p>
+                        <p className="text-[0.625rem] text-muted-foreground">{e.judgeCount} {isAr ? "محكم" : "judges"} · {e.totalScores} {isAr ? "تقييم" : "scores"}</p>
                       </div>
                     </div>
                   );
@@ -390,7 +390,7 @@ th{background:#f5f5f5;font-weight:600}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Bar chart */}
               <div>
-                <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                <h3 className="text-[0.625rem] font-bold text-muted-foreground uppercase tracking-wider mb-3">
                   {isAr ? "مقارنة العينات" : "Entry Comparison"}
                 </h3>
                 <div className="h-56">
@@ -411,7 +411,7 @@ th{background:#f5f5f5;font-weight:600}
               {/* Radar chart */}
               {radarData && (
                 <div>
-                  <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                  <h3 className="text-[0.625rem] font-bold text-muted-foreground uppercase tracking-wider mb-3">
                     {isAr ? "التحليل الراداري — الأفضل" : "Radar Analysis — Top Entry"}
                   </h3>
                   <div className="h-56">
@@ -432,7 +432,7 @@ th{background:#f5f5f5;font-weight:600}
             {scoreDistribution.length > 0 && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                  <h3 className="text-[0.625rem] font-bold text-muted-foreground uppercase tracking-wider mb-3">
                     {isAr ? "توزيع النتائج" : "Score Distribution"}
                   </h3>
                   <div className="h-44">
@@ -447,7 +447,7 @@ th{background:#f5f5f5;font-weight:600}
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                  <h3 className="text-[0.625rem] font-bold text-muted-foreground uppercase tracking-wider mb-3">
                     {isAr ? "ملخص التوزيع" : "Distribution Summary"}
                   </h3>
                   <div className="space-y-3 mt-4">
@@ -481,7 +481,7 @@ th{background:#f5f5f5;font-weight:600}
                       <div className="flex items-center gap-2">
                         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-black text-primary">{ei + 1}</span>
                         <h3 className="text-sm font-bold">{e.name}</h3>
-                        {e.chef && <Badge variant="secondary" className="text-[10px]">{e.chef}</Badge>}
+                        {e.chef && <Badge variant="secondary" className="text-[0.625rem]">{e.chef}</Badge>}
                       </div>
                       <span className={`text-lg font-black tabular-nums ${getScoreColor(e.overallPct)}`}>{e.overallPct}%</span>
                     </div>
@@ -489,12 +489,12 @@ th{background:#f5f5f5;font-weight:600}
                       {e.criteriaResults.map((c, ci) => (
                         <div key={ci} className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground flex-1 min-w-0 truncate">{c.name}</span>
-                          {c.stage && <Badge variant="outline" className="text-[10px] shrink-0">{c.stage}</Badge>}
+                          {c.stage && <Badge variant="outline" className="text-[0.625rem] shrink-0">{c.stage}</Badge>}
                           <div className="w-28 shrink-0"><Progress value={c.pct} className="h-1.5" /></div>
                           <span className={`text-xs font-bold tabular-nums w-12 text-end ${getScoreColor(c.pct)}`}>
                             {c.avg}/{c.maxVal}
                           </span>
-                          <span className="text-[10px] text-muted-foreground w-8 text-end">{c.weight}%</span>
+                          <span className="text-[0.625rem] text-muted-foreground w-8 text-end">{c.weight}%</span>
                         </div>
                       ))}
                     </div>
@@ -559,7 +559,7 @@ th{background:#f5f5f5;font-weight:600}
             </div>
 
             {/* Footer */}
-            <div className="pt-4 border-t border-border/30 flex items-center justify-between text-[10px] text-muted-foreground">
+            <div className="pt-4 border-t border-border/30 flex items-center justify-between text-[0.625rem] text-muted-foreground">
               <span>Altoha — {isAr ? "تقرير جلسة التذوق" : "Tasting Session Report"}</span>
               <span>{reportId}</span>
               <span>{new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>

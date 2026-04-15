@@ -32,7 +32,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
         <div className="flex items-center gap-2.5 mb-2">
           <Badge
             variant="secondary"
-            className="gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-lg bg-primary/8 text-primary border-primary/15"
+            className="gap-1.5 px-3 py-1.5 text-[0.6875rem] font-bold uppercase tracking-widest rounded-lg bg-primary/8 text-primary border-primary/15"
           >
             <Icon className="h-3.5 w-3.5" />
             {badge}
@@ -51,7 +51,7 @@ export const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(func
               {title}
             </h2>
             {subtitle && (
-              <p className="mt-1.5 text-[13px] sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
+              <p className="mt-1.5 text-[0.8125rem] sm:text-sm text-muted-foreground leading-relaxed max-w-2xl">
                 {subtitle}
               </p>
             )}

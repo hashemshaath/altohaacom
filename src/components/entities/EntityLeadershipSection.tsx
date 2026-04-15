@@ -160,9 +160,9 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">{displayName}</p>
-            <Badge variant="secondary" className="mt-1 text-[12px] font-medium">{title}</Badge>
+            <Badge variant="secondary" className="mt-1 text-xs font-medium">{title}</Badge>
             {profile?.experience_level && (
-              <p className="mt-0.5 text-[12px] text-muted-foreground capitalize">{profile.experience_level}</p>
+              <p className="mt-0.5 text-xs text-muted-foreground capitalize">{profile.experience_level}</p>
             )}
           </div>
         </CardContent>
@@ -189,7 +189,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
             <Icon className="h-7 w-7 text-chart-4/60" />
           </div>
           <div className="flex-1 min-w-0">
-            <Badge className="mb-1 bg-chart-4/15 text-chart-4 border-chart-4/20 text-[12px]">{role}</Badge>
+            <Badge className="mb-1 bg-chart-4/15 text-chart-4 border-chart-4/20 text-xs">{role}</Badge>
             <p className="font-semibold truncate">{name}</p>
           </div>
         </CardContent>
@@ -206,7 +206,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
             {icon}
           </div>
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{title}</p>
-          <Badge variant="outline" className="text-[12px] h-5">{items.length}</Badge>
+          <Badge variant="outline" className="text-xs h-5">{items.length}</Badge>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           {items.map(renderMemberCard)}

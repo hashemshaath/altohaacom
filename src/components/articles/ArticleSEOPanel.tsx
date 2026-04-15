@@ -138,14 +138,14 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({
           <div className="flex-1">
             <Progress value={seo.score} className="h-2" />
           </div>
-          <Badge variant="secondary" className={cn("text-[12px] rounded-lg", scoreBg, scoreColor)}>
+          <Badge variant="secondary" className={cn("text-xs rounded-lg", scoreBg, scoreColor)}>
             {scoreLabel}
           </Badge>
         </div>
         <CardContent className="p-3 space-y-0.5">
           {seo.checks.map((check) => (
             <div key={check.label} className="group">
-              <div className="flex items-center gap-2 text-[12px] py-0.5">
+              <div className="flex items-center gap-2 text-xs py-0.5">
                 {check.passed ? (
                   <CheckCircle2 className="h-3 w-3 text-chart-2 shrink-0" />
                 ) : (
@@ -156,7 +156,7 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({
                 </span>
               </div>
               {!check.passed && (check.tip || check.tipAr) && (
-                <p className="text-[12px] text-muted-foreground/60 ps-5 pb-0.5 italic">
+                <p className="text-xs text-muted-foreground/60 ps-5 pb-0.5 italic">
                   💡 {isAr ? (check.tipAr || check.tip) : check.tip}
                 </p>
               )}
@@ -171,20 +171,20 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-xl bg-muted/40 p-2 text-center">
               <p className="text-lg font-bold tabular-nums">{wordCount.toLocaleString()}</p>
-              <p className="text-[12px] text-muted-foreground">{t("Words", "كلمات")}</p>
+              <p className="text-xs text-muted-foreground">{t("Words", "كلمات")}</p>
             </div>
             <div className="rounded-xl bg-muted/40 p-2 text-center">
               <p className="text-lg font-bold tabular-nums flex items-center justify-center gap-0.5">
                 <Clock className="h-3 w-3 text-muted-foreground" />{readingTime}
               </p>
-              <p className="text-[12px] text-muted-foreground">{t("min", "دقيقة")}</p>
+              <p className="text-xs text-muted-foreground">{t("min", "دقيقة")}</p>
             </div>
             <div className="rounded-xl bg-muted/40 p-2 text-center">
               <p className="text-lg font-bold tabular-nums">{content.split("\n").filter(l => /^#{1,6}\s/.test(l)).length}</p>
-              <p className="text-[12px] text-muted-foreground">{t("Headings", "عناوين")}</p>
+              <p className="text-xs text-muted-foreground">{t("Headings", "عناوين")}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-[12px] text-muted-foreground mt-2 pt-2 border-t border-border/30">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2 pt-2 border-t border-border/30">
             <span className="flex items-center gap-0.5"><Image className="h-2.5 w-2.5" /> {(content.match(/!\[/g) || []).length}</span>
             <span className="flex items-center gap-0.5"><Link2 className="h-2.5 w-2.5" /> {(content.match(/\[.*?\]\(.*?\)/g) || []).length}</span>
             <span className="flex items-center gap-0.5"><Tag className="h-2.5 w-2.5" /> {tags?.length || 0}</span>
@@ -204,15 +204,15 @@ export const ArticleSEOPanel = memo(function ArticleSEOPanel({
           <CardContent className="px-3 pb-3">
             <div className="space-y-1.5">
               {keywords.map(kw => (
-                <div key={kw.keyword} className="flex items-center gap-2 text-[12px]">
-                  <span className="font-mono bg-muted/50 px-1.5 py-0.5 rounded text-[12px] shrink-0">{kw.keyword}</span>
+                <div key={kw.keyword} className="flex items-center gap-2 text-xs">
+                  <span className="font-mono bg-muted/50 px-1.5 py-0.5 rounded text-xs shrink-0">{kw.keyword}</span>
                   <Progress value={Math.min(kw.density * 20, 100)} className="flex-1 h-1" />
-                  <span className={cn("text-[12px] font-medium tabular-nums w-7 text-end", kw.density >= 1 && kw.density <= 3 ? "text-chart-2" : "text-muted-foreground")}>
+                  <span className={cn("text-xs font-medium tabular-nums w-7 text-end", kw.density >= 1 && kw.density <= 3 ? "text-chart-2" : "text-muted-foreground")}>
                     {kw.density}%
                   </span>
                 </div>
               ))}
-              <p className="text-[12px] text-muted-foreground flex items-center gap-1 mt-1">
+              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
                 <Lightbulb className="h-2 w-2" />
                 {t("Target 1-3% density per keyword", "استهدف 1-3% لكل كلمة")}
               </p>

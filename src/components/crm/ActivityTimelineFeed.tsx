@@ -109,15 +109,15 @@ export const ActivityTimelineFeed = memo(function ActivityTimelineFeed() {
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium truncate">{item.title}</p>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <Badge variant="outline" className={`text-[12px] px-1 py-0 ${config.bg} ${config.color}`}>
+                        <Badge variant="outline" className={`text-xs px-1 py-0 ${config.bg} ${config.color}`}>
                           {isAr ? config.labelAr : config.label}
                         </Badge>
                         {item.subtitle && (
-                          <span className="text-[12px] text-muted-foreground truncate">{item.subtitle}</span>
+                          <span className="text-xs text-muted-foreground truncate">{item.subtitle}</span>
                         )}
                       </div>
                     </div>
-                    <span className="text-[12px] text-muted-foreground whitespace-nowrap">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
                       {formatDistanceToNow(new Date(item.timestamp), {
                         addSuffix: true,
                         locale: isAr ? ar : enUS,

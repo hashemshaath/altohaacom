@@ -37,7 +37,7 @@ export function CompanyInfoSummaryCard({ company, isAr }: Props) {
           <Separator className="bg-border/10" />
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">{isAr ? "النوع" : "Type"}</span>
-            <Badge variant="secondary" className="rounded-lg text-[12px] capitalize">{company.type}</Badge>
+            <Badge variant="secondary" className="rounded-lg text-xs capitalize">{company.type}</Badge>
           </div>
           <Separator className="bg-border/10" />
           <div className="flex items-center justify-between">
@@ -45,7 +45,7 @@ export function CompanyInfoSummaryCard({ company, isAr }: Props) {
               <Shield className="h-3 w-3" />
               {isAr ? "الحالة" : "Status"}
             </span>
-            <Badge variant={statusColor} className="rounded-lg text-[12px] capitalize">
+            <Badge variant={statusColor} className="rounded-lg text-xs capitalize">
               {company.status || "active"}
             </Badge>
           </div>
@@ -55,7 +55,7 @@ export function CompanyInfoSummaryCard({ company, isAr }: Props) {
               <CheckCircle2 className="h-3 w-3" />
               {isAr ? "التوثيق" : "Verification"}
             </span>
-            <Badge variant={verifiedColor} className="rounded-lg text-[12px]">
+            <Badge variant={verifiedColor} className="rounded-lg text-xs">
               {company.is_verified
                 ? (isAr ? "✅ موثّق" : "✅ Verified")
                 : (isAr ? "غير موثّق" : "Not Verified")}

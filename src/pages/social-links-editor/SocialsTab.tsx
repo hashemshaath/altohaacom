@@ -38,7 +38,7 @@ export const SocialsTab = memo(function SocialsTab({
           {activeSocials.map(p => {
             const Icon = p.icon;
             return (
-              <Badge key={p.key} variant="secondary" className="gap-1 py-0.5 px-2 text-[12px]">
+              <Badge key={p.key} variant="secondary" className="gap-1 py-0.5 px-2 text-xs">
                 <Icon className="h-2.5 w-2.5" />
                 {isAr ? p.labelAr : p.label}
                 <Check className="h-2.5 w-2.5 text-chart-1" />
@@ -48,7 +48,7 @@ export const SocialsTab = memo(function SocialsTab({
           {activeContacts.map(c => {
             const Icon = c.icon;
             return (
-              <Badge key={c.key} variant="secondary" className="gap-1 py-0.5 px-2 text-[12px]">
+              <Badge key={c.key} variant="secondary" className="gap-1 py-0.5 px-2 text-xs">
                 <Icon className="h-2.5 w-2.5" />
                 {isAr ? c.labelAr : c.label}
                 <Check className="h-2.5 w-2.5 text-chart-1" />
@@ -67,7 +67,7 @@ export const SocialsTab = memo(function SocialsTab({
             </div>
             {isAr ? "حسابات التواصل الاجتماعي" : "Social Media Accounts"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "أدخل اسم المستخدم فقط — سيتم إنشاء الرابط تلقائياً" : "Just enter your username — links auto-complete on blur"}
           </p>
         </CardHeader>
@@ -80,14 +80,14 @@ export const SocialsTab = memo(function SocialsTab({
               return (
                 <div key={platform.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                   <div className="flex items-center gap-3 p-3">
-                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + platform.color + " text-primary-foreground shadow-md" : "bg-muted/80"}`}>
                       <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <Label className="text-xs font-semibold mb-1 block">{isAr ? platform.labelAr : platform.label}</Label>
                       {platform.prefix ? (
                         <div className="flex items-center gap-0">
-                          <span className="text-[12px] text-muted-foreground/60 font-mono bg-muted/40 px-1.5 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none" dir="ltr">
+                          <span className="text-xs text-muted-foreground/60 font-mono bg-muted/40 px-1.5 py-1 rounded-s-lg border border-e-0 border-border/30 h-8 flex items-center shrink-0 select-none" dir="ltr">
                             {platform.prefix.replace("https://", "")}
                           </span>
                           <Input
@@ -120,7 +120,7 @@ export const SocialsTab = memo(function SocialsTab({
                         />
                       )}
                       {isActive && platform.prefix && rawValue.startsWith("http") && (
-                        <p className="text-[12px] text-muted-foreground/50 mt-0.5 font-mono truncate" dir="ltr">{rawValue}</p>
+                        <p className="text-xs text-muted-foreground/50 mt-0.5 font-mono truncate" dir="ltr">{rawValue}</p>
                       )}
                     </div>
                     {isActive && (
@@ -145,7 +145,7 @@ export const SocialsTab = memo(function SocialsTab({
             </div>
             {isAr ? "أرقام الاتصال" : "Contact Numbers"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "واتساب + رقمين هاتف — اختر رمز الدولة ثم أدخل الرقم" : "WhatsApp + up to 2 phone numbers — select country code then enter number"}
           </p>
         </CardHeader>
@@ -160,7 +160,7 @@ export const SocialsTab = memo(function SocialsTab({
               return (
                 <div key={field.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                   <div className="flex items-center gap-3 p-3">
-                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + field.color + " text-primary-foreground shadow-md" : "bg-muted/80"}`}>
                       <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -169,7 +169,7 @@ export const SocialsTab = memo(function SocialsTab({
                         <select
                           value={cc}
                           onChange={e => setContactCountryCodes(prev => ({ ...prev, [field.key]: e.target.value }))}
-                          className="h-8 text-[12px] font-mono rounded-s-lg border border-e-0 border-border/30 bg-muted/30 px-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30 appearance-none cursor-pointer min-w-[90px] text-muted-foreground"
+                          className="h-8 text-xs font-mono rounded-s-lg border border-e-0 border-border/30 bg-muted/30 px-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30 appearance-none cursor-pointer min-w-[90px] text-muted-foreground"
                           dir="ltr"
                         >
                           {(countries || []).map(c => (

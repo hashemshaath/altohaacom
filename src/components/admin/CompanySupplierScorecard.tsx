@@ -166,11 +166,11 @@ export const CompanySupplierScorecard = memo(function CompanySupplierScorecard()
                           )}
                           <div>
                             <p className="font-medium text-sm">{isAr ? company.name_ar || company.name : company.name}</p>
-                            {company.city && <p className="text-[12px] text-muted-foreground">{company.city}</p>}
+                            {company.city && <p className="text-xs text-muted-foreground">{company.city}</p>}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[12px] capitalize">{company.type}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-xs capitalize">{company.type}</Badge></TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <span className={`font-bold text-sm ${getScoreColor(score)}`}>{score}%</span>

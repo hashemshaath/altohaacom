@@ -130,7 +130,7 @@ export const DatesLocationStep = memo(function DatesLocationStep({ data, onChang
             <div className="space-y-1.5">
               <Label className="text-xs">{isAr ? "رمز الدولة" : "Country Code"}</Label>
               <Input value={data.countryCode} readOnly className="bg-muted/50" />
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {competitionNumber
                   ? `${isAr ? "الحالي" : "Current"}: ${competitionNumber}`
                   : isAr ? "يتم تعبئته تلقائياً" : "Auto-filled from country"}

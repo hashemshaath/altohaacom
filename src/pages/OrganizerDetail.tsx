@@ -137,11 +137,11 @@ export default function OrganizerDetail() {
                       </h1>
                       {orgRecord?.is_verified && (
                         <TooltipProvider><Tooltip><TooltipTrigger asChild>
-                          <span><Badge variant="secondary" className="gap-1 text-[12px]"><Check className="h-3 w-3 text-primary" />{isAr ? "موثق" : "Verified"}</Badge></span>
+                          <span><Badge variant="secondary" className="gap-1 text-xs"><Check className="h-3 w-3 text-primary" />{isAr ? "موثق" : "Verified"}</Badge></span>
                         </TooltipTrigger><TooltipContent>{isAr ? "منظم موثق من المنصة" : "Verified by platform"}</TooltipContent></Tooltip></TooltipProvider>
                       )}
                       {orgRecord?.organizer_number && (
-                        <Badge variant="outline" className="text-[12px] font-mono h-5">{orgRecord.organizer_number}</Badge>
+                        <Badge variant="outline" className="text-xs font-mono h-5">{orgRecord.organizer_number}</Badge>
                       )}
                     </div>
                     {orgNameSecondary && orgNameSecondary !== orgName && (
@@ -226,7 +226,7 @@ export default function OrganizerDetail() {
                     <s.icon className="h-5 w-5" />
                   </div>
                   <p className="text-xl font-bold"><AnimatedCounter value={s.value} /></p>
-                  <p className="text-[12px] text-muted-foreground">{s.label}</p>
+                  <p className="text-xs text-muted-foreground">{s.label}</p>
                 </CardContent>
               </Card>
             ))}
@@ -240,7 +240,7 @@ export default function OrganizerDetail() {
                   <CardContent className="p-3 text-center">
                     <Users className="h-5 w-5 mx-auto text-primary mb-1" />
                     <p className="text-lg font-bold">{editionStats.visitors.toLocaleString()}</p>
-                    <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي الزوار" : "Total Visitors"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الزوار" : "Total Visitors"}</p>
                   </CardContent>
                 </Card>
               )}
@@ -249,7 +249,7 @@ export default function OrganizerDetail() {
                   <CardContent className="p-3 text-center">
                     <Target className="h-5 w-5 mx-auto text-primary mb-1" />
                     <p className="text-lg font-bold">{editionStats.exhibitors.toLocaleString()}</p>
-                    <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي العارضين" : "Total Exhibitors"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "إجمالي العارضين" : "Total Exhibitors"}</p>
                   </CardContent>
                 </Card>
               )}
@@ -258,7 +258,7 @@ export default function OrganizerDetail() {
                   <CardContent className="p-3 text-center">
                     <Sparkles className="h-5 w-5 mx-auto text-primary mb-1" />
                     <p className="text-lg font-bold">{editionStats.area.toLocaleString()}</p>
-                    <p className="text-[12px] text-muted-foreground">{isAr ? "م² مساحة المعرض" : "m² Exhibition Area"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "م² مساحة المعرض" : "m² Exhibition Area"}</p>
                   </CardContent>
                 </Card>
               )}
@@ -274,11 +274,11 @@ export default function OrganizerDetail() {
                     <CalendarDays className="h-6 w-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-semibold text-primary uppercase tracking-wider">{isAr ? "الفعالية القادمة" : "Next Upcoming Event"}</p>
+                    <p className="text-xs font-semibold text-primary uppercase tracking-wider">{isAr ? "الفعالية القادمة" : "Next Upcoming Event"}</p>
                     <h3 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">
                       {isAr && nextEvent.title_ar ? nextEvent.title_ar : nextEvent.title}
                     </h3>
-                    <p className="text-[12px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {format(new Date(nextEvent.start_date), "dd MMM yyyy")}
                       {nextEvent.city && ` • ${nextEvent.city}`}
                       {" • "}
@@ -294,23 +294,23 @@ export default function OrganizerDetail() {
 
         {/* ═══════ Main Content Tabs ═══════ */}
         <div className="container max-w-6xl pb-12 space-y-6">
-          <OrganizerRatingSummary exhibitionIds={exhibitions.map((e: any) => e.id)} isAr={isAr} />
+          <OrganizerRatingSummary exhibitionIds={exhibitions.map((e) => e.id)} isAr={isAr} />
 
           <Tabs value={d.activeTab} onValueChange={d.setActiveTab} className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
               <TabsTrigger value="exhibitions" className="gap-1.5">
                 <Landmark className="h-3.5 w-3.5" />{isAr ? "المعارض" : "Events"}
-                <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{totalExhibitions}</Badge>
+                <Badge variant="secondary" className="ms-1 text-xs h-4 px-1.5">{totalExhibitions}</Badge>
               </TabsTrigger>
               {upcoming.length > 0 && (
                 <TabsTrigger value="upcoming" className="gap-1.5">
                   <CalendarDays className="h-3.5 w-3.5" />{isAr ? "القادمة" : "Upcoming"}
-                  <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{upcoming.length}</Badge>
+                  <Badge variant="secondary" className="ms-1 text-xs h-4 px-1.5">{upcoming.length}</Badge>
                 </TabsTrigger>
               )}
               <TabsTrigger value="gallery" className="gap-1.5">
                 <ImageIcon className="h-3.5 w-3.5" />{isAr ? "المعرض" : "Gallery"}
-                {uniqueGallery.length > 0 && <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{uniqueGallery.length}</Badge>}
+                {uniqueGallery.length > 0 && <Badge variant="secondary" className="ms-1 text-xs h-4 px-1.5">{uniqueGallery.length}</Badge>}
               </TabsTrigger>
               <TabsTrigger value="profile" className="gap-1.5">
                 <Building2 className="h-3.5 w-3.5" />{isAr ? "الملف التعريفي" : "Profile"}
@@ -326,13 +326,13 @@ export default function OrganizerDetail() {
               {allSponsors.length > 0 && (
                 <TabsTrigger value="partners" className="gap-1.5">
                   <Award className="h-3.5 w-3.5" />{isAr ? "الشركاء" : "Partners"}
-                  <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{allSponsors.length}</Badge>
+                  <Badge variant="secondary" className="ms-1 text-xs h-4 px-1.5">{allSponsors.length}</Badge>
                 </TabsTrigger>
               )}
               {articles.length > 0 && (
                 <TabsTrigger value="news" className="gap-1.5">
                   <Newspaper className="h-3.5 w-3.5" />{isAr ? "الأخبار" : "News"}
-                  <Badge variant="secondary" className="ms-1 text-[12px] h-4 px-1.5">{articles.length}</Badge>
+                  <Badge variant="secondary" className="ms-1 text-xs h-4 px-1.5">{articles.length}</Badge>
                 </TabsTrigger>
               )}
             </TabsList>
@@ -343,13 +343,13 @@ export default function OrganizerDetail() {
             <TabsContent value="exhibitions" className="space-y-6 mt-4">
               <div className="flex items-center justify-between">
                 <div className="flex gap-2 text-xs">
-                  <Badge variant={upcoming.length ? "default" : "outline"} className="text-[12px]">{upcoming.length} {isAr ? "قادمة" : "Upcoming"}</Badge>
-                  <Badge variant={active.length ? "default" : "outline"} className="text-[12px]">{active.length} {isAr ? "جارية" : "Active"}</Badge>
-                  <Badge variant="outline" className="text-[12px]">{past.length} {isAr ? "سابقة" : "Past"}</Badge>
+                  <Badge variant={upcoming.length ? "default" : "outline"} className="text-xs">{upcoming.length} {isAr ? "قادمة" : "Upcoming"}</Badge>
+                  <Badge variant={active.length ? "default" : "outline"} className="text-xs">{active.length} {isAr ? "جارية" : "Active"}</Badge>
+                  <Badge variant="outline" className="text-xs">{past.length} {isAr ? "سابقة" : "Past"}</Badge>
                 </div>
                 <div className="flex gap-1">
-                  <Button variant={d.viewMode === "grid" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-[12px]" onClick={() => d.setViewMode("grid")}>{isAr ? "شبكة" : "Grid"}</Button>
-                  <Button variant={d.viewMode === "timeline" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-[12px]" onClick={() => d.setViewMode("timeline")}>{isAr ? "جدول زمني" : "Timeline"}</Button>
+                  <Button variant={d.viewMode === "grid" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-xs" onClick={() => d.setViewMode("grid")}>{isAr ? "شبكة" : "Grid"}</Button>
+                  <Button variant={d.viewMode === "timeline" ? "default" : "ghost"} size="sm" className="h-7 px-2 text-xs" onClick={() => d.setViewMode("timeline")}>{isAr ? "جدول زمني" : "Timeline"}</Button>
                 </div>
               </div>
 
@@ -363,7 +363,7 @@ export default function OrganizerDetail() {
                         <span className="text-sm text-muted-foreground">{byYear[year].length} {isAr ? "فعالية" : "events"}</span>
                       </div>
                       <div className="ms-16 space-y-3">
-                        {byYear[year].map((ex: any) => {
+                        {byYear[year].map((ex) => {
                           const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
                           return (
                             <Link key={ex.id} to={`/exhibitions/${ex.slug}`} className="group block">
@@ -372,9 +372,9 @@ export default function OrganizerDetail() {
                                   {ex.cover_image_url && <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} loading="lazy" className="h-16 w-24 rounded-xl object-cover shrink-0" decoding="async" />}
                                   <div className="flex-1 min-w-0">
                                     <h4 className="font-semibold text-sm truncate group-hover:text-primary transition-colors">{isAr && ex.title_ar ? ex.title_ar : ex.title}</h4>
-                                    <p className="text-[12px] text-muted-foreground">{format(new Date(ex.start_date), "dd MMM")}{ex.end_date && ` – ${format(new Date(ex.end_date), "dd MMM")}`}{ex.city && ` • ${ex.city}`}</p>
+                                    <p className="text-xs text-muted-foreground">{format(new Date(ex.start_date), "dd MMM")}{ex.end_date && ` – ${format(new Date(ex.end_date), "dd MMM")}`}{ex.city && ` • ${ex.city}`}</p>
                                     <div className="flex gap-1 mt-1">
-                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium ${derived.color}`}>
+                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${derived.color}`}>
                                         <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />{isAr ? derived.labelAr : derived.label}
                                       </span>
                                     </div>
@@ -394,10 +394,10 @@ export default function OrganizerDetail() {
                   <div key={year}>
                     <div className="flex items-center gap-2 mb-3">
                       <h3 className="text-lg font-bold">{year}</h3>
-                      <Badge variant="outline" className="text-[12px]">{byYear[year].length} {isAr ? "فعالية" : "events"}</Badge>
+                      <Badge variant="outline" className="text-xs">{byYear[year].length} {isAr ? "فعالية" : "events"}</Badge>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {byYear[year].map((ex: any) => {
+                      {byYear[year].map((ex) => {
                         const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
                         const edStats = ex.edition_stats ? (typeof ex.edition_stats === 'string' ? JSON.parse(ex.edition_stats) : ex.edition_stats) : null;
                         return (
@@ -408,7 +408,7 @@ export default function OrganizerDetail() {
                                   <img src={ex.cover_image_url} alt={isAr && ex.title_ar ? ex.title_ar : ex.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" decoding="async" />
                                   <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                                   <div className="absolute bottom-2 start-2 end-2 flex items-center justify-between">
-                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium backdrop-blur-sm ${derived.color}`}>
+                                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium backdrop-blur-sm ${derived.color}`}>
                                       <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />{isAr ? derived.labelAr : derived.label}
                                     </span>
                                   </div>
@@ -416,23 +416,23 @@ export default function OrganizerDetail() {
                               )}
                               <CardContent className="p-3 space-y-2">
                                 <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">{isAr && ex.title_ar ? ex.title_ar : ex.title}</h4>
-                                <p className="text-[12px] text-muted-foreground">{format(new Date(ex.start_date), "dd MMM yyyy")}{ex.end_date && ` → ${format(new Date(ex.end_date), "dd MMM yyyy")}`}</p>
-                                <div className="flex flex-wrap gap-2 text-[12px] text-muted-foreground">
+                                <p className="text-xs text-muted-foreground">{format(new Date(ex.start_date), "dd MMM yyyy")}{ex.end_date && ` → ${format(new Date(ex.end_date), "dd MMM yyyy")}`}</p>
+                                <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
                                   {ex.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{ex.city}</span>}
                                   {(ex.view_count || 0) > 0 && <span className="flex items-center gap-0.5"><Eye className="h-2.5 w-2.5" />{ex.view_count}</span>}
                                   {ex.max_attendees && <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{ex.max_attendees}</span>}
                                 </div>
                                 {edStats && (
                                   <div className="grid grid-cols-3 gap-1 pt-1 border-t border-border/40">
-                                    {edStats.visitors && <div className="text-center"><p className="text-[12px] font-semibold">{Number(edStats.visitors).toLocaleString()}</p><p className="text-[12px] text-muted-foreground">{isAr ? "زائر" : "Visitors"}</p></div>}
-                                    {edStats.exhibitors && <div className="text-center"><p className="text-[12px] font-semibold">{Number(edStats.exhibitors).toLocaleString()}</p><p className="text-[12px] text-muted-foreground">{isAr ? "عارض" : "Exhibitors"}</p></div>}
-                                    {edStats.area && <div className="text-center"><p className="text-[12px] font-semibold">{Number(edStats.area).toLocaleString()}</p><p className="text-[12px] text-muted-foreground">m²</p></div>}
+                                    {edStats.visitors && <div className="text-center"><p className="text-xs font-semibold">{Number(edStats.visitors).toLocaleString()}</p><p className="text-xs text-muted-foreground">{isAr ? "زائر" : "Visitors"}</p></div>}
+                                    {edStats.exhibitors && <div className="text-center"><p className="text-xs font-semibold">{Number(edStats.exhibitors).toLocaleString()}</p><p className="text-xs text-muted-foreground">{isAr ? "عارض" : "Exhibitors"}</p></div>}
+                                    {edStats.area && <div className="text-center"><p className="text-xs font-semibold">{Number(edStats.area).toLocaleString()}</p><p className="text-xs text-muted-foreground">m²</p></div>}
                                   </div>
                                 )}
                                 <div className="flex flex-wrap gap-1 pt-1">
-                                  <Badge variant="secondary" className="text-[12px] capitalize">{ex.type.replace(/_/g, " ")}</Badge>
-                                  {ex.is_free && <Badge variant="outline" className="text-[12px]">{isAr ? "مجاني" : "Free"}</Badge>}
-                                  {ex.is_virtual && <Badge variant="outline" className="text-[12px]">{isAr ? "افتراضي" : "Virtual"}</Badge>}
+                                  <Badge variant="secondary" className="text-xs capitalize">{ex.type.replace(/_/g, " ")}</Badge>
+                                  {ex.is_free && <Badge variant="outline" className="text-xs">{isAr ? "مجاني" : "Free"}</Badge>}
+                                  {ex.is_virtual && <Badge variant="outline" className="text-xs">{isAr ? "افتراضي" : "Virtual"}</Badge>}
                                 </div>
                               </CardContent>
                             </Card>
@@ -453,7 +453,7 @@ export default function OrganizerDetail() {
                     <CalendarDays className="h-5 w-5 text-primary" />{isAr ? "جدول المعارض القادمة" : "Upcoming Events Schedule"}
                   </h3>
                   <div className="space-y-3">
-                    {upcoming.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()).map((ex: any) => {
+                    {upcoming.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()).map((ex) => {
                       const daysUntil = differenceInDays(new Date(ex.start_date), new Date());
                       const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
                       return (
@@ -463,21 +463,21 @@ export default function OrganizerDetail() {
                               <div className="flex flex-col items-center justify-center bg-primary/5 px-5 py-4 min-w-[80px] border-e border-border/20">
                                 <span className="text-2xl font-bold text-primary">{format(new Date(ex.start_date), "dd")}</span>
                                 <span className="text-xs font-medium text-muted-foreground uppercase">{format(new Date(ex.start_date), "MMM")}</span>
-                                <span className="text-[12px] text-muted-foreground">{format(new Date(ex.start_date), "yyyy")}</span>
+                                <span className="text-xs text-muted-foreground">{format(new Date(ex.start_date), "yyyy")}</span>
                               </div>
                               <div className="flex-1 p-4 min-w-0">
                                 <div className="flex items-start justify-between gap-3">
                                   <div className="min-w-0">
                                     <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">{isAr && ex.title_ar ? ex.title_ar : ex.title}</h4>
-                                    <div className="flex items-center gap-3 mt-1 text-[12px] text-muted-foreground">
+                                    <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                                       {ex.city && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{ex.city}</span>}
                                       {ex.venue && <span className="flex items-center gap-1"><Building2 className="h-3 w-3" />{isAr && ex.venue_ar ? ex.venue_ar : ex.venue}</span>}
                                     </div>
                                     <div className="flex items-center gap-2 mt-2">
-                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[12px] font-medium ${derived.color}`}>
+                                      <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${derived.color}`}>
                                         <span className={`h-1.5 w-1.5 rounded-full ${derived.dot}`} />{isAr ? derived.labelAr : derived.label}
                                       </span>
-                                      <Badge variant="outline" className="text-[12px]">
+                                      <Badge variant="outline" className="text-xs">
                                         <Clock className="h-3 w-3 me-1" />
                                         {daysUntil} {isAr ? "يوم" : "days"}
                                       </Badge>
@@ -502,14 +502,14 @@ export default function OrganizerDetail() {
                 <div className="space-y-4">
                   <h3 className="text-sm font-semibold flex items-center gap-2">
                     <ImageIcon className="h-4 w-4 text-primary" />{isAr ? "معرض الصور" : "Photo Gallery"}
-                    <Badge variant="outline" className="text-[12px]">{uniqueGallery.length} {isAr ? "صورة" : "photos"}</Badge>
+                    <Badge variant="outline" className="text-xs">{uniqueGallery.length} {isAr ? "صورة" : "photos"}</Badge>
                   </h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     {uniqueGallery.map((url: string, i: number) => (
                       <div key={i} className="relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer group" onClick={() => { d.setGalleryOpen(url); d.setGalleryIndex(i); }}>
                         <img loading="lazy" src={url} alt={`${orgName} ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" decoding="async" />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                          <Eye className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <Eye className="h-6 w-6 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                       </div>
                     ))}
@@ -544,11 +544,11 @@ export default function OrganizerDetail() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "الدول" : "Countries"}</p>
+                      <p className="text-xs font-medium text-muted-foreground mb-1.5">{isAr ? "الدول" : "Countries"}</p>
                       <div className="flex flex-wrap gap-1.5">{countries.map(c => <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>)}</div>
                     </div>
-                    {cities.length > 0 && (<><Separator /><div><p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "المدن" : "Cities"}</p><div className="flex flex-wrap gap-1.5">{cities.map(c => <Badge key={c} variant="outline" className="text-xs">{c}</Badge>)}</div></div></>)}
-                    {venues.length > 0 && (<><Separator /><div><p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "الأماكن" : "Venues"}</p><div className="space-y-1.5">{venues.map(v => <div key={v} className="flex items-center gap-2 text-sm"><Landmark className="h-3 w-3 text-muted-foreground shrink-0" /><span>{v}</span></div>)}</div></div></>)}
+                    {cities.length > 0 && (<><Separator /><div><p className="text-xs font-medium text-muted-foreground mb-1.5">{isAr ? "المدن" : "Cities"}</p><div className="flex flex-wrap gap-1.5">{cities.map(c => <Badge key={c} variant="outline" className="text-xs">{c}</Badge>)}</div></div></>)}
+                    {venues.length > 0 && (<><Separator /><div><p className="text-xs font-medium text-muted-foreground mb-1.5">{isAr ? "الأماكن" : "Venues"}</p><div className="space-y-1.5">{venues.map(v => <div key={v} className="flex items-center gap-2 text-sm"><Landmark className="h-3 w-3 text-muted-foreground shrink-0" /><span>{v}</span></div>)}</div></div></>)}
                   </CardContent>
                 </Card>
 
@@ -559,13 +559,13 @@ export default function OrganizerDetail() {
                   <CardContent className="space-y-3">
                     <div className="space-y-2">
                       {types.map(t => {
-                        const count = exhibitions.filter((e: any) => e.type === t).length;
+                        const count = exhibitions.filter((e) => e.type === t).length;
                         const pct = Math.round((count / totalExhibitions) * 100);
                         return (
                           <div key={t}>
                             <div className="flex items-center justify-between text-sm mb-1">
                               <span className="capitalize text-xs">{t.replace(/_/g, " ")}</span>
-                              <span className="text-[12px] text-muted-foreground">{count} ({pct}%)</span>
+                              <span className="text-xs text-muted-foreground">{count} ({pct}%)</span>
                             </div>
                             <Progress value={pct} className="h-1.5" />
                           </div>
@@ -574,9 +574,9 @@ export default function OrganizerDetail() {
                     </div>
                     <Separator />
                     <div className="flex flex-wrap gap-1.5">
-                      {services.competitions && <Badge variant="secondary" className="text-[12px] gap-1"><Swords className="h-3 w-3" />{isAr ? "مسابقات" : "Competitions"}</Badge>}
-                      {services.training && <Badge variant="secondary" className="text-[12px] gap-1"><GraduationCap className="h-3 w-3" />{isAr ? "تدريب" : "Training"}</Badge>}
-                      {services.seminars && <Badge variant="secondary" className="text-[12px] gap-1"><Mic2 className="h-3 w-3" />{isAr ? "ندوات" : "Seminars"}</Badge>}
+                      {services.competitions && <Badge variant="secondary" className="text-xs gap-1"><Swords className="h-3 w-3" />{isAr ? "مسابقات" : "Competitions"}</Badge>}
+                      {services.training && <Badge variant="secondary" className="text-xs gap-1"><GraduationCap className="h-3 w-3" />{isAr ? "تدريب" : "Training"}</Badge>}
+                      {services.seminars && <Badge variant="secondary" className="text-xs gap-1"><Mic2 className="h-3 w-3" />{isAr ? "ندوات" : "Seminars"}</Badge>}
                     </div>
                   </CardContent>
                 </Card>
@@ -587,9 +587,9 @@ export default function OrganizerDetail() {
                       <CardTitle className="text-sm flex items-center gap-2"><Target className="h-4 w-4 text-primary" />{isAr ? "القطاعات المستهدفة" : "Target Sectors"}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3">
-                      {allSectors.size > 0 && <div><p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "القطاعات" : "Sectors"}</p><div className="flex flex-wrap gap-1.5">{[...allSectors].map(s => <Badge key={s} variant="secondary" className="text-[12px]">{s}</Badge>)}</div></div>}
-                      {allCategories.size > 0 && (<><Separator /><div><p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "التصنيفات" : "Categories"}</p><div className="flex flex-wrap gap-1.5">{[...allCategories].map(c => <Badge key={c} variant="outline" className="text-[12px]">{c}</Badge>)}</div></div></>)}
-                      {allTags.size > 0 && (<><Separator /><div><p className="text-[12px] font-medium text-muted-foreground mb-1.5">{isAr ? "العلامات" : "Tags"}</p><div className="flex flex-wrap gap-1.5">{[...allTags].slice(0, 15).map(t => <Badge key={t} variant="outline" className="text-[12px]">{t}</Badge>)}{allTags.size > 15 && <Badge variant="outline" className="text-[12px]">+{allTags.size - 15}</Badge>}</div></div></>)}
+                      {allSectors.size > 0 && <div><p className="text-xs font-medium text-muted-foreground mb-1.5">{isAr ? "القطاعات" : "Sectors"}</p><div className="flex flex-wrap gap-1.5">{[...allSectors].map(s => <Badge key={s} variant="secondary" className="text-xs">{s}</Badge>)}</div></div>}
+                      {allCategories.size > 0 && (<><Separator /><div><p className="text-xs font-medium text-muted-foreground mb-1.5">{isAr ? "التصنيفات" : "Categories"}</p><div className="flex flex-wrap gap-1.5">{[...allCategories].map(c => <Badge key={c} variant="outline" className="text-xs">{c}</Badge>)}</div></div></>)}
+                      {allTags.size > 0 && (<><Separator /><div><p className="text-xs font-medium text-muted-foreground mb-1.5">{isAr ? "العلامات" : "Tags"}</p><div className="flex flex-wrap gap-1.5">{[...allTags].slice(0, 15).map(t => <Badge key={t} variant="outline" className="text-xs">{t}</Badge>)}{allTags.size > 15 && <Badge variant="outline" className="text-xs">+{allTags.size - 15}</Badge>}</div></div></>)}
                     </CardContent>
                   </Card>
                 )}
@@ -613,7 +613,7 @@ export default function OrganizerDetail() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold flex items-center gap-2"><UserCircle2 className="h-5 w-5 text-primary" />{isAr ? "فريق العمل وجهات الاتصال" : "Team & Key Contacts"}</h3>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {orgKeyContacts.map((c: any, i: number) => (
+                    {orgKeyContacts.map((c: Record<string, unknown>, i: number) => (
                       <Card key={i} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
                         <CardContent className="p-5">
                           <div className="flex items-center gap-4 mb-3">
@@ -623,9 +623,9 @@ export default function OrganizerDetail() {
                             </Avatar>
                             <div className="min-w-0 flex-1">
                               <p className="font-semibold text-sm">{c.name}</p>
-                              {c.name_ar && <p className="text-[12px] text-muted-foreground" dir="rtl">{c.name_ar}</p>}
-                              {c.title && <p className="text-[12px] text-primary font-medium mt-0.5">{c.title}</p>}
-                              {c.department && <p className="text-[12px] text-muted-foreground">{c.department}</p>}
+                              {c.name_ar && <p className="text-xs text-muted-foreground" dir="rtl">{c.name_ar}</p>}
+                              {c.title && <p className="text-xs text-primary font-medium mt-0.5">{c.title}</p>}
+                              {c.department && <p className="text-xs text-muted-foreground">{c.department}</p>}
                             </div>
                           </div>
                           {(c.email || c.phone) && (
@@ -643,7 +643,7 @@ export default function OrganizerDetail() {
                       <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 shrink-0"><Mail className="h-6 w-6 text-primary" /></div>
                       <div className="flex-1">
                         <p className="font-semibold text-sm">{isAr ? "تواصل مع المنظم" : "Contact this Organizer"}</p>
-                        <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "للاستفسارات والشراكات والمشاركة في المعارض" : "For inquiries, partnerships, and exhibition participation"}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{isAr ? "للاستفسارات والشراكات والمشاركة في المعارض" : "For inquiries, partnerships, and exhibition participation"}</p>
                       </div>
                       {contactEmail && <Button size="sm" asChild><a href={`mailto:${contactEmail}`}><Mail className="h-3.5 w-3.5 me-1.5" />{isAr ? "إرسال بريد" : "Send Email"}</a></Button>}
                     </CardContent>
@@ -666,7 +666,7 @@ export default function OrganizerDetail() {
                         )}
                         <div className="min-w-0">
                           <p className="text-sm font-medium truncate">{sponsor.name}</p>
-                          {sponsor.tier && <Badge variant="outline" className="text-[12px] mt-0.5 capitalize">{sponsor.tier}</Badge>}
+                          {sponsor.tier && <Badge variant="outline" className="text-xs mt-0.5 capitalize">{sponsor.tier}</Badge>}
                         </div>
                       </CardContent>
                     </Card>
@@ -679,7 +679,7 @@ export default function OrganizerDetail() {
             {articles.length > 0 && (
               <TabsContent value="news" className="mt-4">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {articles.map((article: any) => (
+                  {articles.map((article) => (
                     <Link key={article.id} to={`/articles/${article.slug}`} className="group">
                       <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                         {article.featured_image_url && (
@@ -688,12 +688,12 @@ export default function OrganizerDetail() {
                           </div>
                         )}
                         <CardContent className="p-3 space-y-2">
-                          <Badge variant="secondary" className="text-[12px] capitalize">{article.type}</Badge>
+                          <Badge variant="secondary" className="text-xs capitalize">{article.type}</Badge>
                           <h4 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">{isAr && article.title_ar ? article.title_ar : article.title}</h4>
                           {(article.excerpt || article.excerpt_ar) && (
-                            <p className="text-[12px] text-muted-foreground line-clamp-2">{isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt}</p>
+                            <p className="text-xs text-muted-foreground line-clamp-2">{isAr && article.excerpt_ar ? article.excerpt_ar : article.excerpt}</p>
                           )}
-                          {article.published_at && <p className="text-[12px] text-muted-foreground">{format(new Date(article.published_at), "dd MMM yyyy")}</p>}
+                          {article.published_at && <p className="text-xs text-muted-foreground">{format(new Date(article.published_at), "dd MMM yyyy")}</p>}
                         </CardContent>
                       </Card>
                     </Link>
@@ -709,12 +709,12 @@ export default function OrganizerDetail() {
         {/* Gallery Lightbox */}
         {d.galleryOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" onClick={() => d.setGalleryOpen(null)}>
-            <Button variant="ghost" size="icon" className="absolute top-4 end-4 text-white hover:bg-white/10 z-10" onClick={() => d.setGalleryOpen(null)}><X className="h-6 w-6" /></Button>
+            <Button variant="ghost" size="icon" className="absolute top-4 end-4 text-primary-foreground hover:bg-white/10 z-10" onClick={() => d.setGalleryOpen(null)}><X className="h-6 w-6" /></Button>
             {d.galleryIndex > 0 && (
-              <Button variant="ghost" size="icon" className="absolute start-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex - 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex - 1]); }}><ChevronLeft className="h-6 w-6" /></Button>
+              <Button variant="ghost" size="icon" className="absolute start-4 top-1/2 -translate-y-1/2 text-primary-foreground hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex - 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex - 1]); }}><ChevronLeft className="h-6 w-6" /></Button>
             )}
             {d.galleryIndex < uniqueGallery.length - 1 && (
-              <Button variant="ghost" size="icon" className="absolute end-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex + 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex + 1]); }}><ChevronRight className="h-6 w-6" /></Button>
+              <Button variant="ghost" size="icon" className="absolute end-4 top-1/2 -translate-y-1/2 text-primary-foreground hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex + 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex + 1]); }}><ChevronRight className="h-6 w-6" /></Button>
             )}
             <img src={d.galleryOpen} alt="" className="max-h-[85vh] max-w-[90vw] object-contain rounded-xl" onClick={e => e.stopPropagation()} />
             <p className="absolute bottom-4 text-white/60 text-sm">{d.galleryIndex + 1} / {uniqueGallery.length}</p>

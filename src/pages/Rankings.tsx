@@ -111,7 +111,7 @@ export default function Rankings() {
             <div className="space-y-2.5 max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1.5 ring-1 ring-primary/15">
                 <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-primary">
+                <span className="text-xs font-bold uppercase tracking-[0.15em] text-primary">
                   {isAr ? "التصنيف العالمي" : "Global Leaderboard"}
                 </span>
               </div>
@@ -132,7 +132,7 @@ export default function Rankings() {
                   <div key={i} className="group flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 ring-1 ring-border/40 shadow-sm transition-all hover:shadow-md hover:ring-primary/20">
                     <span className={stat.color}>{stat.icon}</span>
                     <AnimatedCounter value={stat.value} className="text-sm font-bold tabular-nums" />
-                    <span className="text-[12px] text-muted-foreground font-medium hidden sm:inline">{stat.label}</span>
+                    <span className="text-xs text-muted-foreground font-medium hidden sm:inline">{stat.label}</span>
                   </div>
                 ))}
               </div>
@@ -232,7 +232,7 @@ export default function Rankings() {
                             )}
                           </div>
                           <div className={cn(
-                            "absolute -bottom-2 start-1/2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-black text-white shadow-lg",
+                            "absolute -bottom-2 start-1/2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-black text-primary-foreground shadow-lg",
                             rankCircle(actualRank)
                           )}>
                             {actualRank}
@@ -246,7 +246,7 @@ export default function Rankings() {
                         {chef.country_code && <span className="text-sm">{countryFlag(chef.country_code)}</span>}
                         <Badge className={cn(
                           "font-bold border-0 shadow-sm",
-                          isFirst ? "bg-yellow-500/10 text-yellow-600 text-xs px-3" : "bg-muted text-muted-foreground text-[11px] px-2"
+                          isFirst ? "bg-yellow-500/10 text-yellow-600 text-xs px-3" : "bg-muted text-muted-foreground text-[0.6875rem] px-2"
                         )}>
                           <Sparkles className="h-3 w-3 me-1" />
                           {chef.total_points} pts
@@ -263,11 +263,11 @@ export default function Rankings() {
                             {chef.silver_medals > 0 && <span className="text-xs bg-background/60 rounded-full px-1.5 py-0.5">🥈{chef.silver_medals}</span>}
                             {chef.bronze_medals > 0 && <span className="text-xs bg-background/60 rounded-full px-1.5 py-0.5">🥉{chef.bronze_medals}</span>}
                           </div>
-                          <p className="text-[11px] text-muted-foreground font-medium">
+                          <p className="text-[0.6875rem] text-muted-foreground font-medium">
                             {chef.competitions_entered} {isAr ? "مسابقة" : "comp."}
                           </p>
                           {chef.competitions_won > 0 && (
-                            <p className="text-[11px] font-bold text-primary flex items-center gap-0.5">
+                            <p className="text-[0.6875rem] font-bold text-primary flex items-center gap-0.5">
                               <Trophy className="h-3 w-3" />{chef.competitions_won} {isAr ? "فوز" : "wins"}
                             </p>
                           )}
@@ -306,7 +306,7 @@ export default function Rankings() {
                           <Link to={chef.profile?.username ? `/${chef.profile.username}` : "#"} className="text-sm font-semibold hover:text-primary transition-colors truncate block">
                             {chef.profile?.full_name || "—"}
                           </Link>
-                          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                          <div className="flex items-center gap-1.5 text-[0.6875rem] text-muted-foreground">
                             {chef.country_code && <span>{countryFlag(chef.country_code)}</span>}
                             {chef.specialty && <span className="truncate">{chef.specialty}</span>}
                             <span className="hidden sm:inline">• {chef.competitions_entered} {isAr ? "مسابقة" : "comp."}</span>
@@ -322,7 +322,7 @@ export default function Rankings() {
                           {chef.bronze_medals > 0 && <span className="text-xs bg-amber-500/10 rounded-full px-1.5 py-0.5">🥉{chef.bronze_medals}</span>}
                         </div>
                         {chef.average_score > 0 && (
-                          <div className="hidden md:flex items-center gap-1 text-[11px] text-muted-foreground">
+                          <div className="hidden md:flex items-center gap-1 text-[0.6875rem] text-muted-foreground">
                             <Star className="h-3 w-3 text-chart-4" />
                             <span className="tabular-nums font-medium">{Number(chef.average_score).toFixed(1)}</span>
                           </div>
@@ -335,12 +335,12 @@ export default function Rankings() {
                           {chef.rank_change && chef.rank_change > 0 ? (
                             <div className="flex items-center gap-0.5 text-chart-2">
                               <TrendingUp className="h-3.5 w-3.5" />
-                              <span className="text-[11px] font-bold">+{chef.rank_change}</span>
+                              <span className="text-[0.6875rem] font-bold">+{chef.rank_change}</span>
                             </div>
                           ) : chef.rank_change && chef.rank_change < 0 ? (
                             <div className="flex items-center gap-0.5 text-destructive">
                               <TrendingDown className="h-3.5 w-3.5" />
-                              <span className="text-[11px] font-bold">{chef.rank_change}</span>
+                              <span className="text-[0.6875rem] font-bold">{chef.rank_change}</span>
                             </div>
                           ) : (
                             <Minus className="h-3.5 w-3.5 text-muted-foreground/40" />
@@ -372,7 +372,7 @@ export default function Rankings() {
                           <stat.icon className={cn("h-5 w-5", stat.color)} />
                         </div>
                         <AnimatedCounter value={stat.value} className="text-xl font-extrabold text-foreground sm:text-2xl tabular-nums" />
-                        <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold">{stat.label}</p>
+                        <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">{stat.label}</p>
                       </CardContent>
                     </Card>
                   ))}

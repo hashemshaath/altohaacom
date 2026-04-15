@@ -168,7 +168,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           isAr={isAr} checked={sections.personal} onToggle={() => toggle("personal")}
           defaultOpen={true}
           extraActions={
-            <Button variant="ghost" size="sm" className="h-7 text-[12px] gap-1 text-primary" onClick={handleTranslateAllPersonal} disabled={translatingKey?.startsWith("personal_")}>
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-primary" onClick={handleTranslateAllPersonal} disabled={translatingKey?.startsWith("personal_")}>
               {translatingKey?.startsWith("personal_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
               {isAr ? "ترجمة الكل" : "Translate All"}
             </Button>
@@ -183,7 +183,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                 return (
                   <TableRow key={key} className={`${rowBg(i)} border-border/10 hover:bg-accent/30`}>
                     <TableCell className="py-1.5 px-3 w-[140px]">
-                      <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">
+                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                         {isAr ? labelAr : labelEn}
                       </span>
                     </TableCell>
@@ -212,7 +212,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           {(pi.bio || pi.bio_ar) && (
             <div className="p-3 border-t border-border/20 bg-muted/10 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   {isAr ? "النبذة المهنية" : "Professional Summary"}
                 </span>
                 {pi.bio && !pi.bio_ar && (
@@ -238,7 +238,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           isAr={isAr} checked={sections.education} onToggle={() => toggle("education")}
           defaultOpen={true}
           extraActions={
-            <Button variant="ghost" size="sm" className="h-7 text-[12px] gap-1 text-chart-2" onClick={handleTranslateAllEducation} disabled={translatingKey?.startsWith("edu_")}>
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-chart-2" onClick={handleTranslateAllEducation} disabled={translatingKey?.startsWith("edu_")}>
               {translatingKey?.startsWith("edu_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
               {isAr ? "ترجمة الكل" : "Translate All"}
             </Button>
@@ -247,11 +247,11 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           <Table>
             <TableHeader>
               <TableRow className="bg-chart-2/5 border-border/10">
-                <TableHead className="text-[12px] py-1.5 h-auto">English</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">العربية</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto w-14"></TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto w-14"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -266,10 +266,10 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                             onClick={() => translate(edu.degree, "en", (t) => updateEduItem(i, "degree_ar", t), `edu_degree_${i}`)} />
                         )}
                       </div>
-                      <span className="text-[12px] text-muted-foreground block">{edu.institution || ""}</span>
-                      {edu.field_of_study && <span className="text-[12px] text-muted-foreground/70 block">{edu.field_of_study}</span>}
+                      <span className="text-xs text-muted-foreground block">{edu.institution || ""}</span>
+                      {edu.field_of_study && <span className="text-xs text-muted-foreground/70 block">{edu.field_of_study}</span>}
                       {edu.education_level && (
-                        <Badge variant="outline" className="text-[12px] h-4 mt-0.5">
+                        <Badge variant="outline" className="text-xs h-4 mt-0.5">
                           {EDUCATION_LEVEL_LABELS[edu.education_level]?.en || edu.education_level}
                         </Badge>
                       )}
@@ -277,18 +277,18 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                   </TableCell>
                   <TableCell className="py-2 px-3" dir="rtl">
                     <div className="space-y-0.5">
-                      <span className="text-xs font-semibold">{edu.degree_ar || <span className="text-muted-foreground/40 italic text-[12px]">—</span>}</span>
-                      <span className="text-[12px] text-muted-foreground block">{edu.institution_ar || ""}</span>
-                      {edu.field_of_study_ar && <span className="text-[12px] text-muted-foreground/70 block">{edu.field_of_study_ar}</span>}
+                      <span className="text-xs font-semibold">{edu.degree_ar || <span className="text-muted-foreground/40 italic text-xs">—</span>}</span>
+                      <span className="text-xs text-muted-foreground block">{edu.institution_ar || ""}</span>
+                      {edu.field_of_study_ar && <span className="text-xs text-muted-foreground/70 block">{edu.field_of_study_ar}</span>}
                       {edu.education_level && (
-                        <Badge variant="outline" className="text-[12px] h-4 mt-0.5">
+                        <Badge variant="outline" className="text-xs h-4 mt-0.5">
                           {EDUCATION_LEVEL_LABELS[edu.education_level]?.ar || edu.education_level}
                         </Badge>
                       )}
                     </div>
                   </TableCell>
                   <TableCell className="py-2 px-3">
-                    <span className="text-[12px] text-muted-foreground whitespace-nowrap">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
                       {formatDate(edu.start_date)} — {edu.is_current ? (isAr ? "الحالي" : "Present") : formatDate(edu.end_date)}
                     </span>
                   </TableCell>
@@ -316,7 +316,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           isAr={isAr} checked={sections.work} onToggle={() => toggle("work")}
           defaultOpen={true}
           extraActions={
-            <Button variant="ghost" size="sm" className="h-7 text-[12px] gap-1 text-chart-3" onClick={handleTranslateAllWork} disabled={translatingKey?.startsWith("work_")}>
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-chart-3" onClick={handleTranslateAllWork} disabled={translatingKey?.startsWith("work_")}>
               {translatingKey?.startsWith("work_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
               {isAr ? "ترجمة الكل" : "Translate All"}
             </Button>
@@ -325,12 +325,12 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           <Table>
             <TableHeader>
               <TableRow className="bg-chart-3/5 border-border/10">
-                <TableHead className="text-[12px] py-1.5 h-auto">English</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">العربية</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto w-14"></TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "الفترة" : "Period"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto w-14"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -346,31 +346,31 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                         )}
                       </div>
                       <div className="flex items-start gap-1">
-                        <span className="text-[12px] text-muted-foreground">{work.company || ""}</span>
+                        <span className="text-xs text-muted-foreground">{work.company || ""}</span>
                         {work.company && !work.company_ar && (
                           <TranslateBtn small loading={translatingKey === `work_company_${i}`}
                             onClick={() => translate(work.company, "en", (t) => updateWorkItem(i, "company_ar", t), `work_company_${i}`)} />
                         )}
                       </div>
-                      {work.department && <span className="text-[12px] text-muted-foreground/70 block">{work.department}</span>}
+                      {work.department && <span className="text-xs text-muted-foreground/70 block">{work.department}</span>}
                     </div>
                   </TableCell>
                   <TableCell className="py-2 px-3" dir="rtl">
                     <div className="space-y-0.5">
-                      <span className="text-xs font-semibold">{work.title_ar || <span className="text-muted-foreground/40 italic text-[12px]">—</span>}</span>
-                      <span className="text-[12px] text-muted-foreground block">{work.company_ar || ""}</span>
-                      {work.department_ar && <span className="text-[12px] text-muted-foreground/70 block">{work.department_ar}</span>}
+                      <span className="text-xs font-semibold">{work.title_ar || <span className="text-muted-foreground/40 italic text-xs">—</span>}</span>
+                      <span className="text-xs text-muted-foreground block">{work.company_ar || ""}</span>
+                      {work.department_ar && <span className="text-xs text-muted-foreground/70 block">{work.department_ar}</span>}
                     </div>
                   </TableCell>
                   <TableCell className="py-2 px-3">
                     {work.employment_type && (
-                      <Badge variant="outline" className="text-[12px] h-4">
+                      <Badge variant="outline" className="text-xs h-4">
                         {isAr ? (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.ar || work.employment_type) : (EMPLOYMENT_TYPE_LABELS[work.employment_type]?.en || work.employment_type)}
                       </Badge>
                     )}
                   </TableCell>
                   <TableCell className="py-2 px-3">
-                    <span className="text-[12px] text-muted-foreground whitespace-nowrap">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">
                       {formatDate(work.start_date)} — {work.is_current ? (isAr ? "الحالي" : "Present") : formatDate(work.end_date)}
                     </span>
                   </TableCell>
@@ -388,30 +388,30 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           </Table>
           {data.work_experience!.some(w => (w.tasks?.length || 0) > 0 || (w.achievements?.length || 0) > 0 || (w.tasks_ar?.length || 0) > 0 || (w.achievements_ar?.length || 0) > 0) && (
             <div className="border-t border-border/20 p-3 space-y-1">
-              <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "التفاصيل والإنجازات" : "Details & Achievements"}</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "التفاصيل والإنجازات" : "Details & Achievements"}</p>
               {data.work_experience!.map((work, i) => {
                 const tasksToShow = isAr ? (work.tasks_ar || []) : (work.tasks || []);
                 const achievementsToShow = isAr ? (work.achievements_ar || []) : (work.achievements || []);
                 if (!(tasksToShow.length || achievementsToShow.length)) return null;
                 return (
                   <details key={i} className={`rounded-xl ${rowBg(i)} border border-border/10`}>
-                    <summary className="cursor-pointer p-2.5 text-[12px] font-semibold text-foreground select-none hover:bg-accent/20 rounded-xl transition-colors">
+                    <summary className="cursor-pointer p-2.5 text-xs font-semibold text-foreground select-none hover:bg-accent/20 rounded-xl transition-colors">
                       {isAr ? (work.title_ar || work.title) : work.title} — {isAr ? (work.company_ar || work.company) : work.company}
                     </summary>
                     <div className="px-2.5 pb-2.5">
                       {tasksToShow.length > 0 && (
                         <div className="mt-1.5 space-y-0.5">
-                          <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "المهام الرئيسية" : "Key Responsibilities"}</p>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "المهام الرئيسية" : "Key Responsibilities"}</p>
                           {tasksToShow.map((t, j) => (
-                            <p key={j} className="text-[12px] text-foreground/80 ps-3 relative before:content-['•'] before:absolute before:start-0 before:text-primary">{t}</p>
+                            <p key={j} className="text-xs text-foreground/80 ps-3 relative before:content-['•'] before:absolute before:start-0 before:text-primary">{t}</p>
                           ))}
                         </div>
                       )}
                       {achievementsToShow.length > 0 && (
                         <div className="mt-1.5 space-y-0.5">
-                          <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الإنجازات البارزة" : "Notable Achievements"}</p>
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "الإنجازات البارزة" : "Notable Achievements"}</p>
                           {achievementsToShow.map((a, j) => (
-                            <p key={j} className="text-[12px] text-foreground/80 ps-3 relative before:content-['★'] before:absolute before:start-0 before:text-chart-4">{a}</p>
+                            <p key={j} className="text-xs text-foreground/80 ps-3 relative before:content-['★'] before:absolute before:start-0 before:text-chart-4">{a}</p>
                           ))}
                         </div>
                       )}
@@ -432,7 +432,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           count={data.competitions!.length} sectionKey="competitions" colorClass="bg-chart-4/10 text-chart-4"
           isAr={isAr} checked={sections.competitions} onToggle={() => toggle("competitions")}
           extraActions={
-            <Button variant="ghost" size="sm" className="h-7 text-[12px] gap-1 text-chart-4" onClick={handleTranslateAllCompetitions} disabled={translatingKey?.startsWith("comp_")}>
+            <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-chart-4" onClick={handleTranslateAllCompetitions} disabled={translatingKey?.startsWith("comp_")}>
               {translatingKey?.startsWith("comp_") ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
               {isAr ? "ترجمة الكل" : "Translate All"}
             </Button>
@@ -441,12 +441,12 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           <Table>
             <TableHeader>
               <TableRow className="bg-chart-4/5 border-border/10">
-                <TableHead className="text-[12px] py-1.5 h-auto">English</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">العربية</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "السنة" : "Year"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "الدور" : "Role"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto w-14"></TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "السنة" : "Year"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "الدور" : "Role"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "الموقع" : "Location"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto w-14"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -461,13 +461,13 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                             onClick={() => translate(comp.name, "en", (t) => updateData(d => ({ ...d, competitions: d.competitions?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `comp_name_${i}`)} />
                         )}
                       </div>
-                      {comp.achievement && <span className="text-[12px] text-muted-foreground block">🏆 {comp.achievement}</span>}
+                      {comp.achievement && <span className="text-xs text-muted-foreground block">🏆 {comp.achievement}</span>}
                     </div>
                   </TableCell>
                   <TableCell className="py-2 px-3" dir="rtl">
                     <div className="space-y-0.5">
-                      <span className="text-xs font-semibold">{comp.name_ar || <span className="text-muted-foreground/40 italic text-[12px]">—</span>}</span>
-                      {comp.achievement_ar && <span className="text-[12px] text-muted-foreground block">🏆 {comp.achievement_ar}</span>}
+                      <span className="text-xs font-semibold">{comp.name_ar || <span className="text-muted-foreground/40 italic text-xs">—</span>}</span>
+                      {comp.achievement_ar && <span className="text-xs text-muted-foreground block">🏆 {comp.achievement_ar}</span>}
                     </div>
                   </TableCell>
                   <TableCell className="py-2 px-3">
@@ -475,7 +475,7 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                   </TableCell>
                   <TableCell className="py-2 px-3">
                     {comp.role && (
-                      <Badge variant="secondary" className="text-[12px] h-4">
+                      <Badge variant="secondary" className="text-xs h-4">
                         {isAr ? (ROLE_LABELS[comp.role]?.ar || comp.role) : (ROLE_LABELS[comp.role]?.en || comp.role)}
                       </Badge>
                     )}
@@ -506,11 +506,11 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           <Table>
             <TableHeader>
               <TableRow className="bg-chart-5/5 border-border/10">
-                <TableHead className="text-[12px] py-1.5 h-auto">English</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">العربية</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "الجهة المانحة" : "Issuer"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto w-14"></TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">English</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">العربية</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "الجهة المانحة" : "Issuer"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto w-14"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -524,13 +524,13 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                           onClick={() => translate(cert.name, "en", (t) => updateData(d => ({ ...d, certifications: d.certifications?.map((c, ci) => ci === i ? { ...c, name_ar: t } : c) })), `cert_name_${i}`)} />
                       )}
                     </div>
-                    {cert.description && <span className="text-[12px] text-muted-foreground block mt-0.5">{cert.description}</span>}
+                    {cert.description && <span className="text-xs text-muted-foreground block mt-0.5">{cert.description}</span>}
                   </TableCell>
                   <TableCell className="py-2 px-3" dir="rtl">
-                    <span className="text-xs font-medium">{cert.name_ar || <span className="text-muted-foreground/40 italic text-[12px]">—</span>}</span>
+                    <span className="text-xs font-medium">{cert.name_ar || <span className="text-muted-foreground/40 italic text-xs">—</span>}</span>
                   </TableCell>
                   <TableCell className="py-2 px-3"><span className="text-xs">{cert.issuer || "—"}</span></TableCell>
-                  <TableCell className="py-2 px-3"><span className="text-[12px] text-muted-foreground">{formatDate(cert.date)}</span></TableCell>
+                  <TableCell className="py-2 px-3"><span className="text-xs text-muted-foreground">{formatDate(cert.date)}</span></TableCell>
                   <TableCell className="py-2 px-1">
                     <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeCertItem(i)}>
                       <Trash2 className="h-3 w-3 text-destructive" />
@@ -554,14 +554,14 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
           <Table>
             <TableHeader>
               <TableRow className="bg-chart-1/5 border-border/10">
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">Channel (EN)</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto" dir="rtl">القناة (AR)</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">Program (EN)</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto" dir="rtl">البرنامج (AR)</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto">{isAr ? "البلد" : "Country"}</TableHead>
-                <TableHead className="text-[12px] py-1.5 h-auto w-8"></TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "النوع" : "Type"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">Channel (EN)</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto" dir="rtl">القناة (AR)</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">Program (EN)</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto" dir="rtl">البرنامج (AR)</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "التاريخ" : "Date"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto">{isAr ? "البلد" : "Country"}</TableHead>
+                <TableHead className="text-xs py-1.5 h-auto w-8"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -569,19 +569,19 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                 <TableRow key={i} className={`${rowBg(i)} border-border/10 group hover:bg-accent/30`}>
                   <TableCell className="py-2 px-3">
                     <span className="text-sm">{m.type ? (MEDIA_TYPE_LABELS[m.type]?.icon || "📺") : "📺"}</span>
-                    {m.type && <span className="text-[12px] text-muted-foreground ms-1">{isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}</span>}
+                    {m.type && <span className="text-xs text-muted-foreground ms-1">{isAr ? (MEDIA_TYPE_LABELS[m.type]?.ar || m.type) : (MEDIA_TYPE_LABELS[m.type]?.en || m.type)}</span>}
                   </TableCell>
                   <TableCell className="py-2 px-3"><EditableText value={m.channel_name || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, channel_name: v } : x) }))} className="text-xs font-medium" /></TableCell>
                   <TableCell className="py-2 px-3" dir="rtl"><EditableText value={m.channel_name_ar || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, channel_name_ar: v } : x) }))} className="text-xs font-medium" /></TableCell>
                   <TableCell className="py-2 px-3">
                     <EditableText value={m.program_name || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, program_name: v } : x) }))} className="text-xs" />
-                    {m.description && <span className="text-[12px] text-muted-foreground block mt-0.5">{m.description}</span>}
+                    {m.description && <span className="text-xs text-muted-foreground block mt-0.5">{m.description}</span>}
                   </TableCell>
                   <TableCell className="py-2 px-3" dir="rtl">
                     <EditableText value={m.program_name_ar || ""} onChange={v => updateData(d => ({ ...d, media_appearances: d.media_appearances?.map((x, xi) => xi === i ? { ...x, program_name_ar: v } : x) }))} className="text-xs" />
-                    {m.description_ar && <span className="text-[12px] text-muted-foreground block mt-0.5" dir="rtl">{m.description_ar}</span>}
+                    {m.description_ar && <span className="text-xs text-muted-foreground block mt-0.5" dir="rtl">{m.description_ar}</span>}
                   </TableCell>
-                  <TableCell className="py-2 px-3"><span className="text-[12px] text-muted-foreground">{formatDate(m.date)}</span></TableCell>
+                  <TableCell className="py-2 px-3"><span className="text-xs text-muted-foreground">{formatDate(m.date)}</span></TableCell>
                   <TableCell className="py-2 px-3">{m.country_code && <span>{getFlag(m.country_code)} {m.country_code}</span>}</TableCell>
                   <TableCell className="py-2 px-1">
                     <Button size="icon" variant="ghost" className="h-5 w-5 opacity-0 group-hover:opacity-100" onClick={() => removeMediaItem(i)}>
@@ -604,20 +604,20 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                 <p className="text-xs font-semibold mb-2 flex items-center gap-1"><Globe2 className="h-3.5 w-3.5 text-primary" />{isAr ? "المهارات" : "Skills"}</p>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <p className="text-[12px] text-muted-foreground mb-1">English</p>
+                    <p className="text-xs text-muted-foreground mb-1">English</p>
                     <div className="flex flex-wrap gap-1.5">
                       {data.skills!.map((s, i) => {
                         const name = typeof s === "string" ? s : s.name;
-                        return <Badge key={i} variant="secondary" className="text-[12px] h-5">{name}</Badge>;
+                        return <Badge key={i} variant="secondary" className="text-xs h-5">{name}</Badge>;
                       })}
                     </div>
                   </div>
                   <div dir="rtl">
-                    <p className="text-[12px] text-muted-foreground mb-1">العربية</p>
+                    <p className="text-xs text-muted-foreground mb-1">العربية</p>
                     <div className="flex flex-wrap gap-1.5">
                       {data.skills!.map((s, i) => {
                         const nameAr = typeof s === "string" ? "" : (s.name_ar || "");
-                        return nameAr ? <Badge key={i} variant="secondary" className="text-[12px] h-5">{nameAr}</Badge> : null;
+                        return nameAr ? <Badge key={i} variant="secondary" className="text-xs h-5">{nameAr}</Badge> : null;
                       })}
                     </div>
                   </div>
@@ -629,20 +629,20 @@ export const CVPreview = memo(function CVPreview({ data: initialData, targetUser
                 <p className="text-xs font-semibold mb-2 flex items-center gap-1"><Languages className="h-3.5 w-3.5 text-primary" />{isAr ? "اللغات" : "Languages"}</p>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <p className="text-[12px] text-muted-foreground mb-1">English</p>
+                    <p className="text-xs text-muted-foreground mb-1">English</p>
                     <div className="flex flex-wrap gap-1.5">
                       {data.languages!.map((l, i) => (
-                        <Badge key={i} variant="outline" className="text-[12px] h-5">
+                        <Badge key={i} variant="outline" className="text-xs h-5">
                           {l.language}{l.level ? ` (${l.level})` : ""}
                         </Badge>
                       ))}
                     </div>
                   </div>
                   <div dir="rtl">
-                    <p className="text-[12px] text-muted-foreground mb-1">العربية</p>
+                    <p className="text-xs text-muted-foreground mb-1">العربية</p>
                     <div className="flex flex-wrap gap-1.5">
                       {data.languages!.map((l, i) => (
-                        <Badge key={i} variant="outline" className="text-[12px] h-5">
+                        <Badge key={i} variant="outline" className="text-xs h-5">
                           {l.language_ar || l.language}{l.level_ar ? ` (${l.level_ar})` : ""}
                         </Badge>
                       ))}

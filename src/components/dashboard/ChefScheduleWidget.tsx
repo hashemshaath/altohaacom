@@ -62,7 +62,7 @@ export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
           <CardTitle className="text-sm flex items-center gap-2">
             <Calendar className="h-4 w-4 text-primary" />
             {isAr ? "جدولي القادم" : "My Schedule"}
-            <Badge variant="outline" className="text-[12px]">{upcoming.length}</Badge>
+            <Badge variant="outline" className="text-xs">{upcoming.length}</Badge>
           </CardTitle>
           <Link to="/profile?tab=schedule">
             <Button variant="ghost" size="sm" className="h-7 text-xs">{isAr ? "عرض الكل" : "View All"}</Button>
@@ -82,7 +82,7 @@ export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold truncate">{ev.title}</p>
-                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span className={`flex items-center gap-0.5 ${time.urgent ? "text-chart-4 font-semibold" : ""}`}>
                       {time.urgent && <Zap className="h-2.5 w-2.5" />}
                       <Clock className="h-2.5 w-2.5" />
@@ -91,7 +91,7 @@ export const ChefScheduleWidget = memo(function ChefScheduleWidget() {
                     {ev.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{ev.city}</span>}
                   </div>
                 </div>
-                <Badge variant={ev.status === "confirmed" ? "default" : "outline"} className="text-[12px]">{ev.status}</Badge>
+                <Badge variant={ev.status === "confirmed" ? "default" : "outline"} className="text-xs">{ev.status}</Badge>
               </div>
             );
           })}

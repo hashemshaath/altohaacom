@@ -170,9 +170,9 @@ export function SEOGSCPerformance({ isAr }: Props) {
     const isPositive = invert ? diff < 0 : diff > 0;
     const isNegative = invert ? diff > 0 : diff < 0;
 
-    if (diff === 0) return <span className="text-muted-foreground inline-flex items-center gap-0.5 text-[12px]"><Minus className="h-2.5 w-2.5" /> 0%</span>;
+    if (diff === 0) return <span className="text-muted-foreground inline-flex items-center gap-0.5 text-xs"><Minus className="h-2.5 w-2.5" /> 0%</span>;
     return (
-      <span className={`inline-flex items-center gap-0.5 text-[12px] font-medium ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
+      <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${isPositive ? "text-chart-2" : isNegative ? "text-destructive" : "text-muted-foreground"}`}>
         {isPositive ? <ArrowUp className="h-2.5 w-2.5" /> : <ArrowDown className="h-2.5 w-2.5" />}
         {Math.abs(pctChange)}%
       </span>
@@ -231,7 +231,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
                 </p>
                 {!kpi.noCompare && <ChangeIndicator current={kpi.value} previous={kpi.prev} invert={kpi.invert} />}
               </div>
-              <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "آخر 28 يوم" : "Last 28 days"}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{isAr ? "آخر 28 يوم" : "Last 28 days"}</p>
             </CardContent>
           </Card>
         ))}
@@ -260,7 +260,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
                       <span className="text-sm flex-1 truncate font-medium">{kw.keyword}</span>
                       <span className="text-sm font-bold tabular-nums">#{kw.current_position}</span>
                       {change != null && (
-                        <span className={`inline-flex items-center gap-0.5 text-[12px] font-medium ${change > 0 ? "text-chart-2" : change < 0 ? "text-destructive" : "text-muted-foreground"}`}>
+                        <span className={`inline-flex items-center gap-0.5 text-xs font-medium ${change > 0 ? "text-chart-2" : change < 0 ? "text-destructive" : "text-muted-foreground"}`}>
                           {change > 0 ? <ArrowUp className="h-2.5 w-2.5" /> : change < 0 ? <ArrowDown className="h-2.5 w-2.5" /> : <Minus className="h-2.5 w-2.5" />}
                           {Math.abs(change)}
                         </span>
@@ -345,7 +345,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
                         <td className="py-2 px-2 text-end tabular-nums">
                           <Badge
                             variant={page.bounceRate > 60 ? "destructive" : page.bounceRate > 40 ? "secondary" : "default"}
-                            className="text-[12px]"
+                            className="text-xs"
                           >
                             {page.bounceRate}%
                           </Badge>

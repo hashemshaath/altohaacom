@@ -35,7 +35,7 @@ export const CampaignPerformanceTracker = memo(function CampaignPerformanceTrack
         <CardTitle className="text-sm flex items-center gap-2">
           <TrendingUp className="h-4 w-4 text-primary" />
           {isAr ? "أداء الحملات النشطة" : "Active Campaign Performance"}
-          <Badge variant="secondary" className="text-[12px]">{campaigns.length}</Badge>
+          <Badge variant="secondary" className="text-xs">{campaigns.length}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -59,16 +59,16 @@ export const CampaignPerformanceTracker = memo(function CampaignPerformanceTrack
                 </div>
                 <div className="flex items-center gap-2">
                   {isOverBudget && <AlertTriangle className="h-3.5 w-3.5 text-destructive" />}
-                  <Badge variant="outline" className="text-[12px]">{c.billing_model}</Badge>
+                  <Badge variant="outline" className="text-xs">{c.billing_model}</Badge>
                 </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <Progress value={pct} className="h-1.5 flex-1" />
-                <span className="text-[12px] font-mono text-muted-foreground w-10 text-end">{pct}%</span>
+                <span className="text-xs font-mono text-muted-foreground w-10 text-end">{pct}%</span>
               </div>
 
-              <div className="grid grid-cols-3 gap-2 text-[12px]">
+              <div className="grid grid-cols-3 gap-2 text-xs">
                 <div className="flex items-center gap-1">
                   <DollarSign className="h-3 w-3 text-muted-foreground" />
                   <span className="text-muted-foreground">{isAr ? "مصروف" : "Spent"}:</span>

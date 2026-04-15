@@ -92,7 +92,7 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
 
       {data.topPosts.length > 0 && (
         <div className="px-4 pb-2">
-          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <p className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
             <Flame className="h-3 w-3 text-destructive" />
             {isAr ? "أفضل المنشورات" : "Top Posts"}
           </p>
@@ -103,7 +103,7 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
                 className="flex items-start gap-2 rounded-xl p-2 hover:bg-muted/30 transition-colors cursor-pointer group"
               >
                 <span className={cn(
-                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[10px] font-bold mt-0.5",
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-md text-[0.625rem] font-bold mt-0.5",
                   idx === 0 ? "bg-chart-4/15 text-chart-4" : "bg-muted text-muted-foreground"
                 )}>
                   {idx + 1}
@@ -119,10 +119,10 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
                         {(post.profile?.display_name || post.profile?.full_name || "C")[0]}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-[10px] text-muted-foreground truncate">
+                    <span className="text-[0.625rem] text-muted-foreground truncate">
                       {post.profile?.display_name || post.profile?.full_name || "Chef"}
                     </span>
-                    <div className="flex items-center gap-1.5 ms-auto text-[10px] text-muted-foreground">
+                    <div className="flex items-center gap-1.5 ms-auto text-[0.625rem] text-muted-foreground">
                       <span>💬 {post.replies_count}</span>
                       <span>🔄 {post.reposts_count}</span>
                     </div>
@@ -136,7 +136,7 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
 
       {data.topAuthors.length > 0 && (
         <div className="px-4 pb-3 pt-1 border-t border-border/20">
-          <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5 pt-2">
+          <p className="text-[0.6875rem] font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5 pt-2">
             <Star className="h-3 w-3 text-primary" />
             {isAr ? "الأكثر نشاطاً" : "Most Active"}
           </p>
@@ -150,11 +150,11 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
               >
                 <Avatar className="h-8 w-8 rounded-lg ring-2 ring-background transition-transform group-hover/member:scale-110 group-hover/member:ring-primary/40">
                   <AvatarImage src={profile?.avatar_url || undefined} className="rounded-lg" />
-                  <AvatarFallback className="rounded-lg text-[10px] font-bold bg-primary/10 text-primary">
+                  <AvatarFallback className="rounded-lg text-[0.625rem] font-bold bg-primary/10 text-primary">
                     {(profile?.display_name || profile?.full_name || "C")[0]}
                   </AvatarFallback>
                 </Avatar>
-                <Badge className="absolute -bottom-1 -end-1 h-4 min-w-4 px-1 rounded-full text-[10px] font-bold bg-primary text-primary-foreground border-2 border-background">
+                <Badge className="absolute -bottom-1 -end-1 h-4 min-w-4 px-1 rounded-full text-[0.625rem] font-bold bg-primary text-primary-foreground border-2 border-background">
                   {postCount}
                 </Badge>
               </Link>

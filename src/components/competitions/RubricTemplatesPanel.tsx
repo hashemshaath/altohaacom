@@ -297,14 +297,14 @@ export const RubricTemplatesPanel = memo(function RubricTemplatesPanel({ competi
                           {language === "ar" && rubric.name_ar ? rubric.name_ar : rubric.name}
                         </p>
                         <div className="flex items-center gap-1.5 mt-0.5">
-                          <Badge variant="outline" className="text-[12px] px-1.5 py-0">
+                          <Badge variant="outline" className="text-xs px-1.5 py-0">
                             {criteriaList.length} {language === "ar" ? "معايير" : "criteria"}
                           </Badge>
                           {rubric.competition_type && (
-                            <Badge variant="secondary" className="text-[12px] px-1.5 py-0">{rubric.competition_type}</Badge>
+                            <Badge variant="secondary" className="text-xs px-1.5 py-0">{rubric.competition_type}</Badge>
                           )}
                           {!rubric.is_active && (
-                            <Badge variant="destructive" className="text-[12px] px-1.5 py-0">Inactive</Badge>
+                            <Badge variant="destructive" className="text-xs px-1.5 py-0">Inactive</Badge>
                           )}
                         </div>
                       </div>

@@ -80,7 +80,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
                 <span className="text-xs font-bold text-muted-foreground w-5 text-center tabular-nums">{idx + 1}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-semibold group-hover:text-primary transition-colors">{topic.tag}</p>
-                  <p className="text-[12px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {topic.count} {isAr ? "منشور" : "posts"} · {topic.engagement} {isAr ? "تفاعل" : "engagements"}
                   </p>
                 </div>

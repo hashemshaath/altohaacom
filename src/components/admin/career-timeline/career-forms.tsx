@@ -18,7 +18,7 @@ import {
 // ── Career Form (Education / Work / Judging / Media / Organizing / Custom) ──
 
 export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
-  form: any; editingId: string | null; isAr: boolean; isPending: boolean;
+  form: Record<string, unknown>; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   const rt = form.record_type;
@@ -74,18 +74,18 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
       {isEdu && (
         <div className="grid gap-2 sm:grid-cols-3">
           <div className="space-y-1">
-            <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "المستوى" : "Level"}</Label>
+            <Label className="text-xs font-medium text-muted-foreground">{isAr ? "المستوى" : "Level"}</Label>
             <Select value={form.education_level} onValueChange={(v) => onUpdate("education_level", v)}>
               <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
               <SelectContent>{EDUCATION_LEVELS.map(l => <SelectItem key={l.value} value={l.value}>{isAr ? l.ar : l.en}</SelectItem>)}</SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
-            <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "التخصص" : "Field of Study"}</Label>
+            <Label className="text-xs font-medium text-muted-foreground">{isAr ? "التخصص" : "Field of Study"}</Label>
             <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الطهي" : "Culinary Arts"} />
           </div>
           <div className="space-y-1">
-            <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "المعدل" : "GPA"}</Label>
+            <Label className="text-xs font-medium text-muted-foreground">{isAr ? "المعدل" : "GPA"}</Label>
             <Input value={form.grade} onChange={(e) => onUpdate("grade", e.target.value)} className="h-8 text-xs" placeholder="4.0" />
           </div>
         </div>
@@ -94,7 +94,7 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
       {isWork && (
         <div className="grid gap-2 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
+            <Label className="text-xs font-medium text-muted-foreground">{isAr ? "نوع التوظيف" : "Employment Type"}</Label>
             <Select value={form.employment_type} onValueChange={(v) => onUpdate("employment_type", v)}>
               <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
               <SelectContent>{EMPLOYMENT_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
@@ -112,7 +112,7 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
       {isJudging && (
         <div className="grid gap-2 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "منصب التحكيم" : "Judging Position"}</Label>
+            <Label className="text-xs font-medium text-muted-foreground">{isAr ? "منصب التحكيم" : "Judging Position"}</Label>
             <Select value={form.employment_type || "judge"} onValueChange={(v) => onUpdate("employment_type", v)}>
               <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
               <SelectContent>{JUDGING_POSITIONS.map(p => <SelectItem key={p.value} value={p.value}>{isAr ? p.ar : p.en}</SelectItem>)}</SelectContent>
@@ -128,11 +128,11 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
         <>
           <div className="grid gap-2 sm:grid-cols-2">
             <div className="space-y-1">
-              <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "المقدم / المحاور" : "Host / Interviewer"}</Label>
+              <Label className="text-xs font-medium text-muted-foreground">{isAr ? "المقدم / المحاور" : "Host / Interviewer"}</Label>
               <Input value={form.department} onChange={(e) => onUpdate("department", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "اسم المقدم" : "Host name"} />
             </div>
             <div className="space-y-1">
-              <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "الضيف" : "Guest"}</Label>
+              <Label className="text-xs font-medium text-muted-foreground">{isAr ? "الضيف" : "Guest"}</Label>
               <Input value={form.field_of_study} onChange={(e) => onUpdate("field_of_study", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "اسم الضيف" : "Guest name"} />
             </div>
           </div>
@@ -157,11 +157,11 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
       {/* Location: city + country */}
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
           <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
         </div>
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
           <Select value={form.country_code} onValueChange={(v) => onUpdate("country_code", v)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر الدولة" : "Select country"} /></SelectTrigger>
             <SelectContent>{COUNTRIES.map(c => <SelectItem key={c.code} value={c.code}>{c.flag} {isAr ? c.ar : c.en}</SelectItem>)}</SelectContent>
@@ -176,14 +176,14 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
             <Switch checked={!form.is_current && !!form.end_date || form.is_current} onCheckedChange={(v) => {
               if (!v) { onUpdate("end_date", ""); onUpdate("is_current", false); }
             }} className="scale-90" id="date-range-toggle" />
-            <Label htmlFor="date-range-toggle" className="text-[12px] font-medium cursor-pointer">
+            <Label htmlFor="date-range-toggle" className="text-xs font-medium cursor-pointer">
               {isAr ? "فترة (من - إلى)" : "Date range (From - To)"}
             </Label>
           </div>
           {(!!form.end_date || form.is_current) && (
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-xl bg-muted/40">
               <Switch checked={form.is_current} onCheckedChange={(v) => { onUpdate("is_current", v); if (v) onUpdate("end_date", ""); }} className="scale-90" id="is-current-toggle" />
-              <Label htmlFor="is-current-toggle" className="text-[12px] font-medium cursor-pointer">
+              <Label htmlFor="is-current-toggle" className="text-xs font-medium cursor-pointer">
                 {isAr ? "لا يزال مستمراً" : "Still ongoing"}
               </Label>
             </div>
@@ -217,7 +217,7 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
 // ── Membership Form ──────────────────────────────────────
 
 export const MembershipForm = memo(function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
-  form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
+  form: Record<string, unknown>; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -238,7 +238,7 @@ export const MembershipForm = memo(function MembershipForm({ form, isAr, isPendi
 
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "نوع العضوية" : "Type"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "نوع العضوية" : "Type"}</Label>
           <Select value={form.membership_type} onValueChange={(v) => onUpdate("membership_type", v)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
             <SelectContent>{MEMBERSHIP_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>
@@ -257,7 +257,7 @@ export const MembershipForm = memo(function MembershipForm({ form, isAr, isPendi
 
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
           <Input value={form.notes?.split("|")[0] || ""} onChange={(e) => {
             const parts = (form.notes || "").split("|");
             parts[0] = e.target.value;
@@ -265,7 +265,7 @@ export const MembershipForm = memo(function MembershipForm({ form, isAr, isPendi
           }} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
         </div>
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
           <Input value={form.notes?.split("|")[1] || ""} onChange={(e) => {
             const parts = (form.notes || "").split("|");
             while (parts.length < 2) parts.push("");
@@ -284,7 +284,7 @@ export const MembershipForm = memo(function MembershipForm({ form, isAr, isPendi
 
 export const CompetitionAddForm = memo(function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendingLink, onSaveLink,
   careerForm, onUpdateCareer, isPendingManual, onSaveManual, onCancel }: {
-  competitions: any[]; selectedId: string; onSelect: (id: string) => void;
+  competitions: Record<string, unknown>[]; selectedId: string; onSelect: (id: string) => void;
   isAr: boolean; isPendingLink: boolean; onSaveLink: () => void;
   careerForm: any; onUpdateCareer: (key: string, value: unknown) => void;
   isPendingManual: boolean; onSaveManual: () => void; onCancel: () => void;
@@ -312,11 +312,11 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
       {/* Mode tabs */}
       <div className="flex gap-1 p-0.5 rounded-xl bg-muted/40">
         <button type="button" onClick={() => setMode("link")}
-          className={`flex-1 text-[12px] font-medium py-1.5 px-3 rounded-md transition-all ${mode === "link" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+          className={`flex-1 text-xs font-medium py-1.5 px-3 rounded-md transition-all ${mode === "link" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           {isAr ? "🔗 ربط بمسابقة موجودة" : "🔗 Link Existing"}
         </button>
         <button type="button" onClick={() => setMode("manual")}
-          className={`flex-1 text-[12px] font-medium py-1.5 px-3 rounded-md transition-all ${mode === "manual" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+          className={`flex-1 text-xs font-medium py-1.5 px-3 rounded-md transition-all ${mode === "manual" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"}`}>
           {isAr ? "✏️ إضافة يدوية" : "✏️ Add Manually"}
         </button>
       </div>
@@ -332,7 +332,7 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
                 className={`w-full flex items-center gap-2 rounded-xl px-2.5 py-2 text-start transition-all text-xs ${selectedId === c.id ? "bg-primary/10 border border-primary/30 text-primary" : "hover:bg-muted/50 border border-transparent"}`}>
                 <Trophy className="h-3.5 w-3.5 shrink-0 text-chart-4" />
                 <p className="flex-1 min-w-0 truncate font-medium">{isAr ? (c.title_ar || c.title) : c.title}</p>
-                {c.competition_start && <span className="text-[12px] text-muted-foreground shrink-0">{formatDateShort(c.competition_start, isAr)}</span>}
+                {c.competition_start && <span className="text-xs text-muted-foreground shrink-0">{formatDateShort(c.competition_start, isAr)}</span>}
                 {selectedId === c.id && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
               </button>
             ))}
@@ -351,7 +351,7 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
 // ── Competition Event Form (manual) ──────────────────────────────────────
 
 export const CompetitionEventForm = memo(function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
-  form: any; editingId: string | null; isAr: boolean; isPending: boolean;
+  form: Record<string, unknown>; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -381,14 +381,14 @@ export const CompetitionEventForm = memo(function CompetitionEventForm({ form, e
 
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "الدور" : "Role"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "الدور" : "Role"}</Label>
           <Select value={form.employment_type || "participant"} onValueChange={(v) => onUpdate("employment_type", v)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue /></SelectTrigger>
             <SelectContent>{COMPETITION_ROLES.map(r => <SelectItem key={r.value} value={r.value}>{isAr ? r.ar : r.en}</SelectItem>)}</SelectContent>
           </Select>
         </div>
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "الميدالية / الإنجاز" : "Medal / Achievement"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "الميدالية / الإنجاز" : "Medal / Achievement"}</Label>
           <Select value={form.grade || ""} onValueChange={(v) => onUpdate("grade", v)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
             <SelectContent>{MEDAL_TYPES.map(m => <SelectItem key={m.value} value={m.value}>{isAr ? m.ar : m.en}</SelectItem>)}</SelectContent>
@@ -398,11 +398,11 @@ export const CompetitionEventForm = memo(function CompetitionEventForm({ form, e
 
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "المدينة" : "City"}</Label>
           <Input value={form.location} onChange={(e) => onUpdate("location", e.target.value)} className="h-8 text-xs" placeholder={isAr ? "الرياض" : "Riyadh"} />
         </div>
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "الدولة" : "Country"}</Label>
           <Select value={form.country_code || ""} onValueChange={(v) => onUpdate("country_code", v)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
             <SelectContent>{COUNTRIES.map(c => <SelectItem key={c.code} value={c.code}>{c.flag} {isAr ? c.ar : c.en}</SelectItem>)}</SelectContent>
@@ -428,7 +428,7 @@ export const CompetitionEventForm = memo(function CompetitionEventForm({ form, e
 // ── Award Form ──────────────────────────────────────
 
 export const AwardAddForm = memo(function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
-  form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
+  form: Record<string, unknown>; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -460,7 +460,7 @@ export const AwardAddForm = memo(function AwardAddForm({ form, isAr, isPending, 
 
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1">
-          <Label className="text-[12px] font-medium text-muted-foreground">{isAr ? "النوع" : "Type"}</Label>
+          <Label className="text-xs font-medium text-muted-foreground">{isAr ? "النوع" : "Type"}</Label>
           <Select value={form.type} onValueChange={(v) => onUpdate("type", v)}>
             <SelectTrigger className="h-8 text-xs"><SelectValue placeholder={isAr ? "اختر" : "Select"} /></SelectTrigger>
             <SelectContent>{CERTIFICATE_TYPES.map(t => <SelectItem key={t.value} value={t.value}>{isAr ? t.ar : t.en}</SelectItem>)}</SelectContent>

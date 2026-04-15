@@ -79,7 +79,7 @@ export const ReferralLeaderboard = memo(function ReferralLeaderboard() {
                     <p className="text-sm font-medium truncate">
                       {name}
                       {isCurrentUser && (
-                        <Badge variant="outline" className="ms-2 text-[12px] py-0">
+                        <Badge variant="outline" className="ms-2 text-xs py-0">
                           {isAr ? "أنت" : "You"}
                         </Badge>
                       )}
@@ -89,7 +89,7 @@ export const ReferralLeaderboard = memo(function ReferralLeaderboard() {
                   {/* Stats */}
                   <div className="text-end shrink-0">
                     <p className="text-sm font-bold">{entry.conversions}</p>
-                    <p className="text-[12px] text-muted-foreground">{isAr ? "إحالة" : "referrals"}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? "إحالة" : "referrals"}</p>
                   </div>
                 </div>
               );

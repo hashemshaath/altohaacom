@@ -59,7 +59,7 @@ export const HeroSlideAdmin = memo(function HeroSlideAdmin() {
 
       {/* Quick-add template picker */}
       <div className="rounded-xl border border-border/50 bg-muted/20 p-3">
-        <p className="text-[12px] font-semibold uppercase tracking-widest text-muted-foreground mb-2.5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-2.5">
           {h.isAr ? "إضافة سريعة بقالب" : "Quick-add by template"}
         </p>
         <div className="flex flex-wrap gap-2">

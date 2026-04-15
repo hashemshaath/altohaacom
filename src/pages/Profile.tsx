@@ -136,7 +136,7 @@ export default function Profile() {
                   <Link
                     key={tab.id}
                     to={(tab as any).href}
-                    className="group relative flex items-center gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-[12px] sm:text-[12px] font-semibold transition-all duration-200 snap-start min-w-max hover:bg-muted/50 text-muted-foreground touch-manipulation active:scale-95"
+                    className="group relative flex items-center gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-xs sm:text-xs font-semibold transition-all duration-200 snap-start min-w-max hover:bg-muted/50 text-muted-foreground touch-manipulation active:scale-95"
                   >
                     <tab.icon className="h-3.5 w-3.5 shrink-0" />
                     <span>{tab.label}</span>
@@ -148,7 +148,7 @@ export default function Profile() {
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className={`group relative flex items-center gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-[12px] sm:text-[12px] font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/15 hover:bg-muted/50 active:scale-95 touch-manipulation ${locked ? "opacity-50" : ""}`}
+                  className={`group relative flex items-center gap-1 sm:gap-1.5 rounded-xl px-2.5 sm:px-3 py-2 text-xs sm:text-xs font-semibold transition-all duration-200 snap-start min-w-max data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md data-[state=active]:shadow-primary/15 hover:bg-muted/50 active:scale-95 touch-manipulation ${locked ? "opacity-50" : ""}`}
                 >
                   <tab.icon className="h-3.5 w-3.5 shrink-0" />
                   <span>{tab.label}</span>

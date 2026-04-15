@@ -59,7 +59,7 @@ export default function HomepageDesignPage() {
                 <stat.icon className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <p className="text-[12px] text-muted-foreground">{stat.label}</p>
+                <p className="text-xs text-muted-foreground">{stat.label}</p>
                 <p className="text-sm font-bold">{stat.value}</p>
               </div>
             </CardContent>
@@ -88,7 +88,7 @@ export default function HomepageDesignPage() {
           </div>
           <div>
             <p className="text-xs font-semibold">{isAr ? "شرائح البطل" : "Hero Slides"}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "قوالب احترافية" : "Professional templates"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "قوالب احترافية" : "Professional templates"}</p>
           </div>
           <Button size="sm" variant="default" className="h-7 text-xs gap-1 rounded-xl ms-2" asChild>
             <Link to="/admin/hero-slides">
@@ -104,7 +104,7 @@ export default function HomepageDesignPage() {
           </div>
           <div>
             <p className="text-xs font-semibold">{isAr ? "الإعلانات" : "Advertising"}</p>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {activeCampaigns > 0
                 ? `${activeCampaigns} ${isAr ? "حملة نشطة" : "active campaigns"}`
                 : (isAr ? "لا توجد حملات نشطة" : "No active campaigns")}

@@ -53,7 +53,7 @@ export const NewsMobileFilters = memo(function NewsMobileFilters({
           <SlidersHorizontal className="h-3.5 w-3.5" />
           {isAr ? "فلاتر" : "Filters"}
           {activeFilterCount > 0 && (
-            <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[12px] font-bold">
+            <span className="absolute -top-1.5 -end-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-xs font-bold">
               {activeFilterCount}
             </span>
           )}

@@ -33,7 +33,7 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleAct
             <Package className="h-4 w-4 text-chart-4" />
             <div>
               <p className="text-xs font-semibold">{isAr ? "بوابة المعلنين" : "Advertiser Portal"}</p>
-              <p className="text-[12px] text-muted-foreground">{isAr ? "الصفحة العامة لعرض الباقات" : "Public page for displaying packages"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "الصفحة العامة لعرض الباقات" : "Public page for displaying packages"}</p>
             </div>
           </div>
           <Button size="sm" variant="outline" className="h-7 text-xs rounded-xl gap-1" asChild>
@@ -61,7 +61,7 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleAct
                   {pkg.price.toLocaleString()}
                   <span className="text-xs text-muted-foreground ms-1">{pkg.currency || "SAR"}</span>
                 </p>
-                <p className="text-[12px] text-muted-foreground">{pkg.duration_days} {isAr ? "يوم" : "days"}</p>
+                <p className="text-xs text-muted-foreground">{pkg.duration_days} {isAr ? "يوم" : "days"}</p>
               </div>
 
               <div className="space-y-1.5 text-xs">
@@ -84,7 +84,7 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleAct
               </div>
 
               {pkg.description && (
-                <p className="text-[12px] text-muted-foreground border-t border-border/40 pt-2">
+                <p className="text-xs text-muted-foreground border-t border-border/40 pt-2">
                   {isAr ? pkg.description_ar || pkg.description : pkg.description}
                 </p>
               )}
@@ -95,7 +95,7 @@ export const AdPackagesTab = memo(function AdPackagesTab({ packages, onToggleAct
                     checked={pkg.is_active}
                     onCheckedChange={(checked) => onToggleActive?.(pkg.id, checked)}
                   />
-                  <span className="text-[12px] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     {pkg.is_active ? (isAr ? "مفعلة" : "Active") : (isAr ? "معطلة" : "Inactive")}
                   </span>
                 </div>

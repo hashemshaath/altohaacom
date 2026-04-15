@@ -59,12 +59,12 @@ export const FanRecommendationsWidget = memo(function FanRecommendationsWidget()
                 </p>
                 <div className="flex items-center gap-2 mt-1.5">
                   {recipe.cuisine && (
-                    <Badge variant="secondary" className="text-[12px] px-1.5">
+                    <Badge variant="secondary" className="text-xs px-1.5">
                       {recipe.cuisine}
                     </Badge>
                   )}
                   {recipe.difficulty && (
-                    <Badge variant="outline" className="text-[12px] px-1.5">
+                    <Badge variant="outline" className="text-xs px-1.5">
                       {recipe.difficulty}
                     </Badge>
                   )}

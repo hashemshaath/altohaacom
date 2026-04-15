@@ -116,7 +116,7 @@ export const LogoUploader = memo(forwardRef<HTMLDivElement, Props>(function Logo
         {uploading ? (
           <div className="flex flex-col items-center gap-2">
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
-            <span className="text-[12px] text-muted-foreground">{isAr ? "جارٍ الرفع..." : "Uploading..."}</span>
+            <span className="text-xs text-muted-foreground">{isAr ? "جارٍ الرفع..." : "Uploading..."}</span>
           </div>
         ) : value ? (
           <>
@@ -130,7 +130,7 @@ export const LogoUploader = memo(forwardRef<HTMLDivElement, Props>(function Logo
               }}
             />
             {isSvg && (
-              <span className="absolute top-2 start-2 text-[12px] font-mono bg-muted/80 text-muted-foreground px-1.5 py-0.5 rounded">
+              <span className="absolute top-2 start-2 text-xs font-mono bg-muted/80 text-muted-foreground px-1.5 py-0.5 rounded">
                 SVG
               </span>
             )}
@@ -172,8 +172,8 @@ export const LogoUploader = memo(forwardRef<HTMLDivElement, Props>(function Logo
         ) : (
           <div className="flex flex-col items-center gap-1.5 text-muted-foreground">
             <Upload className="h-5 w-5" />
-            <span className="text-[12px]">{isAr ? "انقر للرفع" : "Click to upload"}</span>
-            <span className="text-[12px] text-muted-foreground/60">PNG, JPG, SVG, WebP</span>
+            <span className="text-xs">{isAr ? "انقر للرفع" : "Click to upload"}</span>
+            <span className="text-xs text-muted-foreground/60">PNG, JPG, SVG, WebP</span>
           </div>
         )}
         <input
@@ -192,7 +192,7 @@ export const LogoUploader = memo(forwardRef<HTMLDivElement, Props>(function Logo
             type="button"
             variant="ghost"
             size="sm"
-            className="text-[12px] h-6 px-2 text-muted-foreground"
+            className="text-xs h-6 px-2 text-muted-foreground"
             onClick={() => setShowUrlInput(!showUrlInput)}
           >
             {isAr ? "أو أدخل رابط" : "or enter URL"}
@@ -226,7 +226,7 @@ export const LogoUploader = memo(forwardRef<HTMLDivElement, Props>(function Logo
               <img loading="lazy" decoding="async" src={value} alt={label} className="max-h-64 max-w-full object-contain" />
             )}
           </div>
-          <p className="text-[12px] text-muted-foreground break-all font-mono">{value}</p>
+          <p className="text-xs text-muted-foreground break-all font-mono">{value}</p>
         </DialogContent>
       </Dialog>
     </div>

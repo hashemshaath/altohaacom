@@ -62,7 +62,7 @@ export const EntityStatsStrip = memo(function EntityStatsStrip({
             <span className="text-xs font-bold">
               {typeof stat.value === "number" ? <AnimatedCounter value={stat.value} /> : stat.value}
             </span>
-            <span className="text-[12px] text-muted-foreground">{isAr ? stat.labelAr : stat.label}</span>
+            <span className="text-xs text-muted-foreground">{isAr ? stat.labelAr : stat.label}</span>
           </div>
         );
       })}

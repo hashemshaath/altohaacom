@@ -131,17 +131,17 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
                       <span className="absolute -bottom-1 -end-1 text-sm leading-none drop-shadow">{nationalityEmoji}</span>
                     )}
                   </div>
-                  <h3 className="text-[12px] sm:text-xs font-bold truncate text-foreground group-hover:text-primary transition-colors">
+                  <h3 className="text-xs sm:text-xs font-bold truncate text-foreground group-hover:text-primary transition-colors">
                     {name || (isAr ? "عضو جديد" : "New Member")}
                   </h3>
                   {spec && (
-                    <div className="mt-0.5 flex items-center justify-center gap-1 text-[12px] sm:text-[12px] text-muted-foreground">
+                    <div className="mt-0.5 flex items-center justify-center gap-1 text-xs sm:text-xs text-muted-foreground">
                       <ChefHat className="h-2.5 w-2.5 shrink-0" />
                       <span className="truncate">{spec}</span>
                     </div>
                   )}
                   {user.country_code && (
-                    <div className="mt-0.5 flex items-center justify-center gap-1 text-[12px] text-muted-foreground/70">
+                    <div className="mt-0.5 flex items-center justify-center gap-1 text-xs text-muted-foreground/70">
                       <MapPin className="h-2 w-2 shrink-0" />
                       <span className="truncate">{countryFlag(user.country_code)} {locationParts}</span>
                     </div>

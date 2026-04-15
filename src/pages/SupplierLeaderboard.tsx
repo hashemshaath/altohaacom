@@ -189,21 +189,21 @@ export default function SupplierLeaderboard() {
                         <Star className="h-3.5 w-3.5 fill-chart-4 text-chart-4" />
                         <span className="font-semibold">{s.avgRating > 0 ? s.avgRating.toFixed(1) : "—"}</span>
                       </div>
-                      <span className="text-[12px] text-muted-foreground">{s.reviewCount} {isAr ? "تقييم" : "reviews"}</span>
+                      <span className="text-xs text-muted-foreground">{s.reviewCount} {isAr ? "تقييم" : "reviews"}</span>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center gap-1">
                         <Package className="h-3.5 w-3.5 text-primary" />
                         <span className="font-semibold">{s.productCount}</span>
                       </div>
-                      <span className="text-[12px] text-muted-foreground">{isAr ? "منتج" : "products"}</span>
+                      <span className="text-xs text-muted-foreground">{isAr ? "منتج" : "products"}</span>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center gap-1">
                         <Eye className="h-3.5 w-3.5 text-muted-foreground" />
                         <span className="font-semibold">{s.viewCount}</span>
                       </div>
-                      <span className="text-[12px] text-muted-foreground">{isAr ? "مشاهدة" : "views"}</span>
+                      <span className="text-xs text-muted-foreground">{isAr ? "مشاهدة" : "views"}</span>
                     </div>
                   </div>
                 </CardContent>

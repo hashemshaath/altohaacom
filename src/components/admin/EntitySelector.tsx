@@ -185,7 +185,7 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
             </p>
           </div>
           {selectedEntity.status === "pending" && (
-            <Badge variant="secondary" className="text-[12px] h-5 shrink-0">{isAr ? "قيد المراجعة" : "Pending"}</Badge>
+            <Badge variant="secondary" className="text-xs h-5 shrink-0">{isAr ? "قيد المراجعة" : "Pending"}</Badge>
           )}
           <Button size="icon" variant="ghost" className="h-7 w-7 shrink-0" onClick={handleClear}>
             <X className="h-3.5 w-3.5" />
@@ -279,14 +279,14 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
                         <p className="font-medium text-xs truncate">
                           {isAr ? (entity.name_ar || entity.name) : entity.name}
                         </p>
-                        <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <span>{typeLabel(entity.type)}</span>
                           {entity.city && <><span>•</span><span>{entity.city}</span></>}
                           {entity.country && <><span>•</span><span>{entity.country}</span></>}
                         </div>
                       </div>
                       {entity.status === "pending" && (
-                        <Badge variant="secondary" className="text-[12px] h-5">{isAr ? "قيد المراجعة" : "Pending"}</Badge>
+                        <Badge variant="secondary" className="text-xs h-5">{isAr ? "قيد المراجعة" : "Pending"}</Badge>
                       )}
                     </button>
                   ))}
@@ -358,7 +358,7 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
                 <Input value={newWebsite} onChange={(e) => setNewWebsite(e.target.value)} className="h-8 text-sm" placeholder="https://..." dir="ltr" />
               </div>
 
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {isAr ? "⚠️ ستكون الجهة بحالة 'قيد المراجعة' حتى يتم اعتمادها من الإدارة" : "⚠️ The institution will be in 'Pending' status until approved by admin"}
               </p>
 

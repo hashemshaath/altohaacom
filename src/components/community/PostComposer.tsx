@@ -327,7 +327,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
 
           {/* Post type badge */}
           {postType !== "text" && !compact && (
-            <Badge variant="secondary" className={cn("mb-2 gap-1 text-[12px]", POST_TYPE_CONFIG[postType].color)}>
+            <Badge variant="secondary" className={cn("mb-2 gap-1 text-xs", POST_TYPE_CONFIG[postType].color)}>
               <TypeIcon className="h-3 w-3" />
               {postType === "competition" && (isAr ? "مشاركة مسابقة" : "Competition Entry")}
               {postType === "event" && (isAr ? "تسجيل فعالية" : "Event Attendance")}
@@ -503,7 +503,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
                 </span>
               )}
               {scheduledAt && (
-                <Badge variant="secondary" className="text-[12px] gap-1 text-chart-3">
+                <Badge variant="secondary" className="text-xs gap-1 text-chart-3">
                   <Clock className="h-3 w-3" />
                   {new Date(scheduledAt).toLocaleDateString(isAr ? "ar" : "en", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                 </Badge>

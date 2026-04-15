@@ -92,7 +92,7 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
         <CardTitle className="text-base flex items-center gap-2">
           <FileText className="h-4 w-4 text-primary" />
           {isAr ? "تتبع الفواتير والمدفوعات" : "Invoice & Payment Tracker"}
-          <Badge variant="secondary" className="ms-auto text-[12px]">
+          <Badge variant="secondary" className="ms-auto text-xs">
             {data.collectionRate}% {isAr ? "نسبة التحصيل" : "collection rate"}
           </Badge>
         </CardTitle>
@@ -103,7 +103,7 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color} transition-transform duration-300 group-hover:scale-110`} />
               <div className="text-sm font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</div>
-              <div className="text-[12px] text-muted-foreground">{s.label}</div>
+              <div className="text-xs text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>

@@ -73,11 +73,11 @@ function ClassicTemplate({ slide }: { slide: HeroSlide }) {
           <div className={cn("max-w-xl", pos.inner)}>
             {slide.badge_text && (
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 backdrop-blur-sm">
-                <Sparkles className="h-3.5 w-3.5 text-white" />
-                <span className="text-xs font-medium text-white">{slide.badge_text}</span>
+                <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+                <span className="text-xs font-medium text-primary-foreground">{slide.badge_text}</span>
               </div>
             )}
-            <h1 className="font-serif text-2xl font-bold text-white drop-shadow-lg sm:text-4xl md:text-5xl leading-tight">{slide.title}</h1>
+            <h1 className="font-serif text-2xl font-bold text-primary-foreground drop-shadow-lg sm:text-4xl md:text-5xl leading-tight">{slide.title}</h1>
             {slide.subtitle && <p className="mt-2 text-sm text-white/80 leading-relaxed sm:text-base line-clamp-2">{slide.subtitle}</p>}
             <div className="mt-5 flex flex-wrap gap-3" style={{ justifyContent: pos.inner.includes("center") ? "center" : pos.inner.includes("end") ? "flex-end" : "flex-start" }}>
               {slide.link_url && slide.link_label && (
@@ -86,7 +86,7 @@ function ClassicTemplate({ slide }: { slide: HeroSlide }) {
                 </Button>
               )}
               {slide.cta_secondary_url && slide.cta_secondary_label && (
-                <Button size="sm" variant="outline" className="border-white/30 bg-white/10 text-white hover:bg-white/20 px-6 backdrop-blur-sm" asChild>
+                <Button size="sm" variant="outline" className="border-white/30 bg-white/10 text-primary-foreground hover:bg-white/20 px-6 backdrop-blur-sm" asChild>
                   <Link to={slide.cta_secondary_url}>{slide.cta_secondary_label}</Link>
                 </Button>
               )}
@@ -113,7 +113,7 @@ function CenteredTemplate({ slide }: { slide: HeroSlide }) {
             {slide.badge_text}
           </Badge>
         )}
-        <h1 className="font-serif text-3xl font-bold text-white drop-shadow-xl sm:text-5xl md:text-6xl leading-tight">
+        <h1 className="font-serif text-3xl font-bold text-primary-foreground drop-shadow-xl sm:text-5xl md:text-6xl leading-tight">
           {slide.title}
         </h1>
         {slide.subtitle && (
@@ -126,7 +126,7 @@ function CenteredTemplate({ slide }: { slide: HeroSlide }) {
             </Button>
           )}
           {slide.cta_secondary_url && slide.cta_secondary_label && (
-            <Button size="lg" variant="outline" className="border-white/30 bg-white/10 text-white hover:bg-white/20 px-8 backdrop-blur-sm" asChild>
+            <Button size="lg" variant="outline" className="border-white/30 bg-white/10 text-primary-foreground hover:bg-white/20 px-8 backdrop-blur-sm" asChild>
               <Link to={slide.cta_secondary_url}>{slide.cta_secondary_label}</Link>
             </Button>
           )}
@@ -149,11 +149,11 @@ function SplitTemplate({ slide }: { slide: HeroSlide }) {
         <div className="px-8 sm:px-12 md:px-16 max-w-lg">
           {slide.badge_text && (
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 backdrop-blur-sm">
-              <Sparkles className="h-3.5 w-3.5 text-white" />
-              <span className="text-xs font-medium text-white">{slide.badge_text}</span>
+              <Sparkles className="h-3.5 w-3.5 text-primary-foreground" />
+              <span className="text-xs font-medium text-primary-foreground">{slide.badge_text}</span>
             </div>
           )}
-          <h1 className="font-serif text-2xl font-bold text-white sm:text-4xl md:text-5xl leading-tight">{slide.title}</h1>
+          <h1 className="font-serif text-2xl font-bold text-primary-foreground sm:text-4xl md:text-5xl leading-tight">{slide.title}</h1>
           {slide.subtitle && <p className="mt-3 text-sm text-white/80 leading-relaxed sm:text-base">{slide.subtitle}</p>}
           <div className="mt-3 h-0.5 w-12 bg-primary rounded" />
           <div className="mt-6 flex flex-wrap gap-3">
@@ -163,7 +163,7 @@ function SplitTemplate({ slide }: { slide: HeroSlide }) {
               </Button>
             )}
             {slide.cta_secondary_url && slide.cta_secondary_label && (
-              <Button size="sm" variant="ghost" className="text-white hover:bg-white/15 px-4" asChild>
+              <Button size="sm" variant="ghost" className="text-primary-foreground hover:bg-white/15 px-4" asChild>
                 <Link to={slide.cta_secondary_url}>{slide.cta_secondary_label}</Link>
               </Button>
             )}
@@ -185,10 +185,10 @@ function EditorialTemplate({ slide }: { slide: HeroSlide }) {
       <div className="absolute inset-x-0 bottom-0 z-10 pb-10 sm:pb-14">
         <div className="container text-center">
           {slide.badge_text && (
-            <p className="mb-2 text-[12px] font-semibold uppercase tracking-[0.25em] text-primary">{slide.badge_text}</p>
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.25em] text-primary">{slide.badge_text}</p>
           )}
           <div className="mx-auto mb-3 h-px w-16 bg-white/30" />
-          <h1 className="font-serif text-3xl font-bold text-white drop-shadow-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-none tracking-tight">
+          <h1 className="font-serif text-3xl font-bold text-primary-foreground drop-shadow-2xl sm:text-5xl md:text-6xl lg:text-7xl leading-none tracking-tight">
             {slide.title}
           </h1>
           {slide.subtitle && (
@@ -201,7 +201,7 @@ function EditorialTemplate({ slide }: { slide: HeroSlide }) {
               </Button>
             )}
             {slide.cta_secondary_url && slide.cta_secondary_label && (
-              <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/15 px-10 rounded-full" asChild>
+              <Button size="lg" variant="outline" className="border-white/30 text-primary-foreground hover:bg-white/15 px-10 rounded-full" asChild>
                 <Link to={slide.cta_secondary_url}>{slide.cta_secondary_label}</Link>
               </Button>
             )}
@@ -225,7 +225,7 @@ function MinimalTemplate({ slide }: { slide: HeroSlide }) {
         <div className="container flex items-center justify-between gap-4">
           <div className="min-w-0">
             {slide.badge_text && (
-              <Badge variant="secondary" className="mb-1.5 text-[12px]">{slide.badge_text}</Badge>
+              <Badge variant="secondary" className="mb-1.5 text-xs">{slide.badge_text}</Badge>
             )}
             <h1 className="font-semibold text-foreground text-base sm:text-xl md:text-2xl truncate">{slide.title}</h1>
             {slide.subtitle && (

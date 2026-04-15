@@ -51,9 +51,9 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
   const [step, setStep] = useState<ImportStep>("upload");
   const [loading, setLoading] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [parsedData, setParsedData] = useState<any>(null);
-  const [rows, setRows] = useState<any[]>([]);
-  const [errors, setErrors] = useState<any[]>([]);
+  const [parsedData, setParsedData] = useState<Record<string, unknown> | null>(null);
+  const [rows, setRows] = useState<Record<string, unknown>[]>([]);
+  const [errors, setErrors] = useState<Record<string, unknown>[]>([]);
   const [optimizing, setOptimizing] = useState(false);
   const [optimizeProgress, setOptimizeProgress] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -178,7 +178,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       const { data: { session } } = await supabase.auth.getSession();
       // Process in batches of 5
       const batchSize = 5;
-      const allOptimized: any[] = [];
+      const allOptimized: Record<string, unknown>[] = [];
 
       for (let i = 0; i < rows.length; i += batchSize) {
         const batch = rows.slice(i, i + batchSize);
@@ -552,7 +552,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                         </TableCell>
                       ))}
                       <TableCell>
-                        <Badge variant="outline" className="text-[12px]">
+                        <Badge variant="outline" className="text-xs">
                           {row._detected_language === "ar" ? "عربي" : "EN"}
                         </Badge>
                       </TableCell>
@@ -593,7 +593,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                   {t(`${rows.length} rows ready`, `${rows.length} صف جاهز`)}
                 </span>
                 {rows.some(r => r._ai_processed) && (
-                  <Badge className="bg-primary/10 text-primary text-[12px]">
+                  <Badge className="bg-primary/10 text-primary text-xs">
                     <Sparkles className="me-1 h-3 w-3" /> {t("AI Enhanced", "محسّن بـ AI")}
                   </Badge>
                 )}
@@ -649,7 +649,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                         {dupResults[idx] ? (
                           <Tooltip>
                             <TooltipTrigger>
-                              <Badge variant="destructive" className="text-[12px]">
+                              <Badge variant="destructive" className="text-xs">
                                 {Math.round(dupResults[idx].score)}%
                               </Badge>
                             </TooltipTrigger>

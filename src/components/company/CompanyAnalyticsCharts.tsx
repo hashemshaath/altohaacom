@@ -279,7 +279,7 @@ export const CompanyAnalyticsCharts = memo(function CompanyAnalyticsCharts({ com
                       </div>
                       <div className="text-end">
                         <p className="text-xs font-bold">{formatCurrency(inv.total, language as "en" | "ar")}</p>
-                        <p className="text-[12px] text-muted-foreground">{inv.count} {isAr ? "فاتورة" : "invoices"}</p>
+                        <p className="text-xs text-muted-foreground">{inv.count} {isAr ? "فاتورة" : "invoices"}</p>
                       </div>
                     </div>
                   ))}
@@ -303,11 +303,11 @@ function MiniKPI({
   return (
     <Card className="border-border/60 transition-all duration-200 hover:shadow-sm">
       <CardContent className="p-3">
-        <p className="text-[12px] text-muted-foreground uppercase tracking-wide">{label}</p>
+        <p className="text-xs text-muted-foreground uppercase tracking-wide">{label}</p>
         <div className="flex items-end justify-between mt-1">
           <p className={`font-bold ${isString ? "text-sm" : "text-lg"}`}>{value}</p>
           {change !== undefined && change !== 0 && (
-            <Badge variant="outline" className={`text-[12px] px-1.5 py-0 ${change > 0 ? "text-chart-5 border-chart-5/30" : "text-destructive border-destructive/30"}`}>
+            <Badge variant="outline" className={`text-xs px-1.5 py-0 ${change > 0 ? "text-chart-5 border-chart-5/30" : "text-destructive border-destructive/30"}`}>
               {change > 0 ? <ArrowUpRight className="h-3 w-3 me-0.5" /> : <ArrowDownRight className="h-3 w-3 me-0.5" />}
               {Math.abs(change)}%
             </Badge>

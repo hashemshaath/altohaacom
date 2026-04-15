@@ -444,7 +444,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
                           >
                             <div className="flex-1 min-w-0">
                               <p className="truncate font-medium">{isAr ? (item.name_ar || item.name) : item.name}</p>
-                              <p className="text-[12px] text-muted-foreground">{item.category} · {item.default_quantity} {item.unit}</p>
+                              <p className="text-xs text-muted-foreground">{item.category} · {item.default_quantity} {item.unit}</p>
                             </div>
                             {alreadyAdded ? (
                               <CheckCircle className="h-3.5 w-3.5 text-chart-5 shrink-0 ms-1" />
@@ -458,7 +458,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
                     <ScrollBar orientation="vertical" />
                   </ScrollArea>
                   {filteredSupermarket.length > 50 && (
-                    <p className="text-[12px] text-muted-foreground text-center">
+                    <p className="text-xs text-muted-foreground text-center">
                       {isAr ? `يعرض 50 من ${filteredSupermarket.length}` : `Showing 50 of ${filteredSupermarket.length}`}
                     </p>
                   )}
@@ -569,7 +569,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
             <ChefHat className="h-4 w-4 text-chart-3" />
             {isAr ? "قوالب الأطباق الجاهزة" : "Ready Dish Templates"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "اختر طبقاً لتحميل مكوناته كقالب جديد قابل للتعديل" : "Select a dish to load its ingredients as an editable new template"}
           </p>
         </CardHeader>
@@ -587,10 +587,10 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
                     <div className={`flex h-8 w-8 items-center justify-center rounded-xl bg-${dish.color}/10`}>
                       <Icon className={`h-4 w-4 text-${dish.color}`} />
                     </div>
-                    <span className="text-[12px] font-medium whitespace-nowrap">
+                    <span className="text-xs font-medium whitespace-nowrap">
                       {isAr ? dish.nameAr : dish.name}
                     </span>
-                    <span className="text-[12px] text-muted-foreground">
+                    <span className="text-xs text-muted-foreground">
                       {dish.ingredients.length} {isAr ? "عنصر" : "items"}
                     </span>
                   </button>
@@ -655,9 +655,9 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
                     </CardTitle>
                     <div className="flex items-center gap-1">
                       {tpl.is_public ? (
-                        <Badge variant="outline" className="text-[12px] h-4"><Globe className="h-2.5 w-2.5 me-0.5" />{isAr ? "عام" : "Public"}</Badge>
+                        <Badge variant="outline" className="text-xs h-4"><Globe className="h-2.5 w-2.5 me-0.5" />{isAr ? "عام" : "Public"}</Badge>
                       ) : (
-                        <Badge variant="outline" className="text-[12px] h-4"><Lock className="h-2.5 w-2.5 me-0.5" />{isAr ? "خاص" : "Private"}</Badge>
+                        <Badge variant="outline" className="text-xs h-4"><Lock className="h-2.5 w-2.5 me-0.5" />{isAr ? "خاص" : "Private"}</Badge>
                       )}
                     </div>
                   </div>
@@ -677,18 +677,18 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
                     )}
                   </div>
                   {tpl.description && (
-                    <p className="text-[12px] text-muted-foreground line-clamp-2 mb-2">{isAr && tpl.description_ar ? tpl.description_ar : tpl.description}</p>
+                    <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{isAr && tpl.description_ar ? tpl.description_ar : tpl.description}</p>
                   )}
                   {/* Preview items */}
                   {itemCount > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2">
                       {(tpl.items || []).slice(0, 4).map((it, i) => (
-                        <Badge key={i} variant="secondary" className="text-[12px] h-4">
+                        <Badge key={i} variant="secondary" className="text-xs h-4">
                           {isAr ? (it.custom_name_ar || it.custom_name) : it.custom_name}
                         </Badge>
                       ))}
                       {itemCount > 4 && (
-                        <Badge variant="secondary" className="text-[12px] h-4">+{itemCount - 4}</Badge>
+                        <Badge variant="secondary" className="text-xs h-4">+{itemCount - 4}</Badge>
                       )}
                     </div>
                   )}

@@ -114,7 +114,7 @@ export const DashboardStatusStrip = memo(function DashboardStatusStrip() {
                 <p className="text-lg font-extrabold tabular-nums leading-none">
                   <AnimatedCounter value={item.value} />
                 </p>
-                <p className="text-[11px] sm:text-xs text-muted-foreground/70 truncate mt-0.5 font-medium">{item.label}</p>
+                <p className="text-[0.6875rem] sm:text-xs text-muted-foreground/70 truncate mt-0.5 font-medium">{item.label}</p>
               </div>
               <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary transition-colors shrink-0 rtl:rotate-180" />
             </div>

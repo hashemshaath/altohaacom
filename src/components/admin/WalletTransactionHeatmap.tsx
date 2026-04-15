@@ -120,14 +120,14 @@ export const WalletTransactionHeatmap = memo(function WalletTransactionHeatmap()
             {data.topWallets.map((w, i) => (
               <div key={i} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-[12px] w-5 h-5 flex items-center justify-center rounded-full p-0">
+                  <Badge variant="outline" className="text-xs w-5 h-5 flex items-center justify-center rounded-full p-0">
                     {i + 1}
                   </Badge>
                   <span className="text-xs font-medium truncate max-w-[120px]">{w.name}</span>
                 </div>
                 <div className="text-end">
                   <p className="text-xs font-mono font-bold">{w.balance?.toFixed(2)} SAR</p>
-                  <p className="text-[12px] text-muted-foreground">{w.points_balance || 0} pts</p>
+                  <p className="text-xs text-muted-foreground">{w.points_balance || 0} pts</p>
                 </div>
               </div>
             ))}

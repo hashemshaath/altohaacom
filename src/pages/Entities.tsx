@@ -71,7 +71,7 @@ const StatCard = memo(function StatCard({ value, label, icon: Icon, accent }: { 
         <p className="text-2xl font-bold tabular-nums leading-none tracking-tight">
           <AnimatedCounter value={value} />
         </p>
-        <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">{label}</p>
+        <p className="text-[0.6875rem] text-muted-foreground mt-0.5 font-medium">{label}</p>
       </div>
     </div>
   );
@@ -249,7 +249,7 @@ export default function Entities() {
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 ring-1 ring-primary/15 shadow-xl backdrop-blur-sm">
                 <Building2 className="h-6 w-6 text-primary" />
               </div>
-              <Badge variant="secondary" className="backdrop-blur-xl bg-background/60 px-3.5 py-1 text-[10px] font-black uppercase tracking-[0.15em] border-0 shadow-sm">
+              <Badge variant="secondary" className="backdrop-blur-xl bg-background/60 px-3.5 py-1 text-[0.625rem] font-black uppercase tracking-[0.15em] border-0 shadow-sm">
                 <Sparkles className="h-2.5 w-2.5 me-1.5 text-primary" />
                 {isAr ? "الدليل المهني الرسمي" : "Official Professional Directory"}
               </Badge>
@@ -459,7 +459,7 @@ export default function Entities() {
 
         {/* Results count */}
         {filtered && filtered.length > 0 && (
-          <p className="text-center text-[11px] text-muted-foreground/50 font-medium">
+          <p className="text-center text-[0.6875rem] text-muted-foreground/50 font-medium">
             {isAr
               ? `عرض ${filtered.length} من ${entities?.length ?? 0} جهة`
               : `Showing ${filtered.length} of ${entities?.length ?? 0} entities`}

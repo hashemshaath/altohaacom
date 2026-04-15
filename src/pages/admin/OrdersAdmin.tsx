@@ -339,12 +339,12 @@ export default function OrdersAdmin() {
           <TabsTrigger value="company" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <Building2 className="h-3.5 w-3.5" />
             {isAr ? "طلبات الشركات" : "Company Orders"}
-            <Badge variant="secondary" className="ms-1 text-[12px]">{companyStats.total}</Badge>
+            <Badge variant="secondary" className="ms-1 text-xs">{companyStats.total}</Badge>
           </TabsTrigger>
           <TabsTrigger value="shop" className="gap-1.5 rounded-xl data-[state=active]:shadow-sm">
             <ShoppingBag className="h-3.5 w-3.5" />
             {isAr ? "طلبات المتجر" : "Shop Orders"}
-            <Badge variant="secondary" className="ms-1 text-[12px]">{shopStats.total}</Badge>
+            <Badge variant="secondary" className="ms-1 text-xs">{shopStats.total}</Badge>
           </TabsTrigger>
         </TabsList>
 
@@ -639,7 +639,7 @@ function StatCard({ value, label, color }: { value: number; label: string; color
       <CardContent className="pt-4 pb-3">
         <div className="text-center">
           <AnimatedCounter value={value} className={`text-2xl font-bold tabular-nums ${color || ""}`} />
-          <p className="text-[12px] uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
+          <p className="text-xs uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
         </div>
       </CardContent>
     </Card>

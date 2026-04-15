@@ -51,7 +51,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
           <div key={i} className="rounded-xl border border-border/30 bg-background p-3">
             <div className="flex items-center gap-1.5 mb-1">
               <item.icon className="h-3 w-3 text-muted-foreground" />
-              <span className="text-[12px] text-muted-foreground font-medium uppercase tracking-wider">{item.label}</span>
+              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{item.label}</span>
             </div>
             <p className="text-sm font-bold truncate">{item.value}</p>
           </div>
@@ -60,7 +60,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
 
       {session.description && (
         <div className="rounded-xl border border-border/30 bg-background p-4">
-          <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-2">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
             {isAr ? "الوصف" : "Description"}
           </p>
           <p className="text-sm leading-relaxed whitespace-pre-line">
@@ -71,7 +71,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
 
       {session.notes && (
         <div className="rounded-xl border border-chart-4/20 bg-chart-4/5 p-4">
-          <p className="text-[12px] font-bold text-chart-4 uppercase tracking-wider mb-2">
+          <p className="text-xs font-bold text-chart-4 uppercase tracking-wider mb-2">
             {isAr ? "ملاحظات" : "Notes"}
           </p>
           <p className="text-sm">{session.notes}</p>
@@ -88,7 +88,7 @@ export const ChefsTableSessionDetail = memo(function ChefsTableSessionDetail({ s
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
           <div className="flex items-center gap-2 mb-2">
             <Globe className="h-4 w-4 text-primary" />
-            <p className="text-[12px] font-bold text-primary uppercase tracking-wider">
+            <p className="text-xs font-bold text-primary uppercase tracking-wider">
               {isAr ? "رابط التقرير العام" : "Public Report Link"}
             </p>
           </div>

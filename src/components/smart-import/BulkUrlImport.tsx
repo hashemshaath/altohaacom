@@ -62,7 +62,7 @@ export const BulkUrlImport = React.memo(({ isAr, onComplete, userId }: BulkUrlIm
         <CardTitle className="text-base flex items-center gap-2">
           <Link2 className="h-5 w-5 text-primary" />
           {isAr ? "استيراد جماعي من روابط" : "Bulk URL Import"}
-          <Badge variant="secondary" className="text-[12px]">{isAr ? "جديد" : "NEW"}</Badge>
+          <Badge variant="secondary" className="text-xs">{isAr ? "جديد" : "NEW"}</Badge>
         </CardTitle>
         <CardDescription>
           {isAr
@@ -112,10 +112,10 @@ export const BulkUrlImport = React.memo(({ isAr, onComplete, userId }: BulkUrlIm
                 )}
                 <span className="truncate flex-1 font-mono text-xs">{r.url}</span>
                 {r.success && r.data?.name_en && (
-                  <Badge variant="outline" className="shrink-0 text-[12px]">{r.data.name_en}</Badge>
+                  <Badge variant="outline" className="shrink-0 text-xs">{r.data.name_en}</Badge>
                 )}
                 {r.suggested_target && (
-                  <Badge variant="secondary" className="shrink-0 text-[12px]">{r.suggested_target.sub_type}</Badge>
+                  <Badge variant="secondary" className="shrink-0 text-xs">{r.suggested_target.sub_type}</Badge>
                 )}
                 {!r.success && r.error && (
                   <span className="text-xs text-destructive truncate max-w-[150px]">{r.error}</span>

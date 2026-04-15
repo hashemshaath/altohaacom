@@ -41,8 +41,8 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
       const exhibition = exhibitionRes.data;
 
       // Revenue
-      const totalRevenue = tickets.reduce((s, t: any) => s + (t.price_paid || 0), 0);
-      const boothRevenue = booths.filter((b) => b.assigned_to).reduce((s, b: any) => s + (b.price || 0), 0);
+      const totalRevenue = tickets.reduce((s, t) => s + (t.price_paid || 0), 0);
+      const boothRevenue = booths.filter((b) => b.assigned_to).reduce((s, b) => s + (b.price || 0), 0);
       const currency = tickets[0]?.currency || booths[0]?.currency || "SAR";
 
       // Ticket stats
@@ -76,7 +76,7 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
       const boothCategories = Object.entries(catMap).map(([name, value]) => ({ name, value }));
 
       // Reviews
-      const avgRating = reviews.length > 0 ? (reviews.reduce((s, r: any) => s + r.rating, 0) / reviews.length).toFixed(1) : "0";
+      const avgRating = reviews.length > 0 ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : "0";
       const ratingDist = [1, 2, 3, 4, 5].map(star => ({ star: `${star}⭐`, count: reviews.filter((r) => r.rating === star).length }));
 
       // Follower growth (daily, last 14 days)
@@ -108,24 +108,24 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
 
   const { exportCSV: exportTickets } = useCSVExport({
     columns: [
-      { header: "ID", accessor: (r: any) => r.id },
-      { header: "Status", accessor: (r: any) => r.status },
-      { header: "Type", accessor: (r: any) => r.ticket_type || "standard" },
-      { header: "Amount", accessor: (r: any) => r.price_paid || 0 },
-      { header: "Checked In", accessor: (r: any) => r.checked_in_at ? "Yes" : "No" },
-      { header: "Created", accessor: (r: any) => r.created_at },
+      { header: "ID", accessor: (r) => r.id },
+      { header: "Status", accessor: (r) => r.status },
+      { header: "Type", accessor: (r) => r.ticket_type || "standard" },
+      { header: "Amount", accessor: (r) => r.price_paid || 0 },
+      { header: "Checked In", accessor: (r) => r.checked_in_at ? "Yes" : "No" },
+      { header: "Created", accessor: (r) => r.created_at },
     ],
     filename: `${exhibitionTitle}_tickets`,
   });
 
   const { exportCSV: exportBooths } = useCSVExport({
     columns: [
-      { header: "Status", accessor: (r: any) => r.status },
-      { header: "Category", accessor: (r: any) => r.category },
-      { header: "Hall", accessor: (r: any) => r.hall },
-      { header: "Price", accessor: (r: any) => r.price },
-      { header: "Size (sqm)", accessor: (r: any) => r.size_sqm },
-      { header: "Assigned", accessor: (r: any) => r.assigned_to ? "Yes" : "No" },
+      { header: "Status", accessor: (r) => r.status },
+      { header: "Category", accessor: (r) => r.category },
+      { header: "Hall", accessor: (r) => r.hall },
+      { header: "Price", accessor: (r) => r.price },
+      { header: "Size (sqm)", accessor: (r) => r.size_sqm },
+      { header: "Assigned", accessor: (r) => r.assigned_to ? "Yes" : "No" },
     ],
     filename: `${exhibitionTitle}_booths`,
   });
@@ -141,10 +141,10 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
           {t("Advanced Reports", "تقارير متقدمة")}
         </h3>
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" className="text-[12px]" onClick={() => exportTickets(data.tickets)}>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => exportTickets(data.tickets)}>
             <Download className="me-1 h-3 w-3" /> {t("Export Tickets", "تصدير التذاكر")}
           </Button>
-          <Button size="sm" variant="outline" className="text-[12px]" onClick={() => exportBooths(data.booths)}>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => exportBooths(data.booths)}>
             <Download className="me-1 h-3 w-3" /> {t("Export Booths", "تصدير الأجنحة")}
           </Button>
         </div>
@@ -164,15 +164,15 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
             <CardContent className="p-3">
               <div className="flex items-center gap-2 mb-1">
                 <kpi.icon className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[12px] text-muted-foreground">{kpi.label}</span>
+                <span className="text-xs text-muted-foreground">{kpi.label}</span>
               </div>
               <p className="text-base font-bold">
                 {'numValue' in kpi && kpi.numValue !== undefined
                   ? <><AnimatedCounter value={kpi.numValue} className="inline" />{kpi.suffix || ''}</>
                   : kpi.strValue}
               </p>
-              {kpi.sub && <p className="text-[12px] text-muted-foreground">{kpi.sub}</p>}
-              {'subValue' in kpi && (kpi as any).subValue != null && <p className="text-[12px] text-muted-foreground">+<AnimatedCounter value={Math.round((kpi as any).subValue)} className="inline" /> {isAr ? "أجنحة" : "booths"}</p>}
+              {kpi.sub && <p className="text-xs text-muted-foreground">{kpi.sub}</p>}
+              {'subValue' in kpi && (kpi as { subValue?: number }).subValue != null && <p className="text-xs text-muted-foreground">+<AnimatedCounter value={Math.round((kpi as { subValue?: number }).subValue)} className="inline" /> {isAr ? "أجنحة" : "booths"}</p>}
             </CardContent>
           </Card>
         ))}
@@ -262,14 +262,14 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
           <CardContent className="p-4 space-y-2">
             <p className="text-xs font-semibold">{t("Booth Occupancy", "إشغال الأجنحة")}</p>
             <Progress value={data.boothOccupancy} className="h-3" />
-            <p className="text-[12px] text-muted-foreground">{data.occupiedBooths} / {data.totalBooths} ({data.boothOccupancy}%)</p>
+            <p className="text-xs text-muted-foreground">{data.occupiedBooths} / {data.totalBooths} ({data.boothOccupancy}%)</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 space-y-2">
             <p className="text-xs font-semibold">{t("Check-in Rate", "معدل الدخول")}</p>
             <Progress value={data.checkInRate} className="h-3" />
-            <p className="text-[12px] text-muted-foreground">{data.checkedIn} / {data.confirmed} ({data.checkInRate}%)</p>
+            <p className="text-xs text-muted-foreground">{data.checkedIn} / {data.confirmed} ({data.checkInRate}%)</p>
           </CardContent>
         </Card>
       </div>

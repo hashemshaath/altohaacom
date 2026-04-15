@@ -199,7 +199,7 @@ export const MobileMenu = forwardRef<HTMLDivElement, MobileMenuProps>(function M
                 <div className="min-w-0">
                   <p className="text-[15px] font-semibold text-[var(--color-heading)] truncate">{displayName}</p>
                   {tierInfo && (
-                    <Badge variant="secondary" className={`text-[12px] h-[18px] px-1.5 ${tierInfo.color}`}>
+                    <Badge variant="secondary" className={`text-xs h-[18px] px-1.5 ${tierInfo.color}`}>
                       <Crown className="h-2.5 w-2.5 me-0.5" />
                       {isAr ? tierInfo.ar : tierInfo.en}
                     </Badge>

@@ -206,7 +206,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
           {isAr ? "فريق العمل" : "Support Team"}
           <Badge variant="secondary" className="ms-1">{members.length}</Badge>
           {members.length > 0 && (
-            <Badge variant="outline" className="ms-1 gap-1 text-[12px]">
+            <Badge variant="outline" className="ms-1 gap-1 text-xs">
               <CheckCircle className="h-2.5 w-2.5" />
               {checkedInCount}/{members.length}
             </Badge>
@@ -219,7 +219,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
               <SelectItem value="all">{isAr ? "الكل" : "All Roles"}</SelectItem>
               {ROLE_GROUPS.map((group) => (
                 <div key={group.group}>
-                  <div className="px-2 py-1.5 text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <div className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     {isAr ? group.groupAr : group.groupEn}
                   </div>
                   {group.roles.map((r) => (
@@ -275,7 +275,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
                   <SelectContent>
                     {ROLE_GROUPS.map((group) => (
                       <div key={group.group}>
-                        <div className="px-2 py-1.5 text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        <div className="px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                           {isAr ? group.groupAr : group.groupEn}
                         </div>
                         {group.roles.map((r) => (
@@ -336,7 +336,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
             if (groupMembers.length === 0) return null;
             return (
               <div key={roleGroup.group}>
-                <h4 className="text-[12px] uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2 font-semibold">
+                <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2 font-semibold">
                   {isAr ? roleGroup.groupAr : roleGroup.groupEn}
                   <span className="text-muted-foreground/50">({groupMembers.length})</span>
                 </h4>
@@ -344,8 +344,8 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
                   {grouped.filter((g) => roleGroup.roles.some(r => r.value === g.value)).map((group) => (
                     <div key={group.value}>
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant={roleColor(group.value)} className="text-[12px]">{isAr ? group.ar : group.en}</Badge>
-                        <span className="text-[12px] text-muted-foreground/60">({group.members.length})</span>
+                        <Badge variant={roleColor(group.value)} className="text-xs">{isAr ? group.ar : group.en}</Badge>
+                        <span className="text-xs text-muted-foreground/60">({group.members.length})</span>
                       </div>
                       <div className="grid gap-3 sm:grid-cols-2">
                 {group.members.map((member) => {
@@ -373,7 +373,7 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
                             {title && (
                               <p className="text-xs text-primary/80 font-medium truncate">{title}</p>
                             )}
-                            <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
                               {member.email && (
                                 <span className="flex items-center gap-1 truncate">
                                   <Mail className="h-3 w-3 shrink-0" />{member.email}
@@ -392,12 +392,12 @@ export const CompetitionTeamPanel = memo(function CompetitionTeamPanel({ competi
                         <div className="border-t bg-muted/20 px-4 py-2 flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
                             {member.is_checked_in ? (
-                              <Badge variant="default" className="text-[12px] h-5 gap-0.5">
+                              <Badge variant="default" className="text-xs h-5 gap-0.5">
                                 <CheckCircle className="h-2.5 w-2.5" />
                                 {isAr ? "حاضر" : "Checked In"}
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="text-[12px] h-5 gap-0.5">
+                              <Badge variant="outline" className="text-xs h-5 gap-0.5">
                                 <Clock className="h-2.5 w-2.5" />
                                 {isAr ? "لم يحضر" : "Not arrived"}
                               </Badge>

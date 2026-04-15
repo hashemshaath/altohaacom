@@ -209,8 +209,8 @@ export default function Establishments() {
                         <div className="min-w-0 flex-1">
                           <h3 className="font-bold truncate group-hover:text-primary transition-colors duration-300">{name}</h3>
                           <div className="mt-1.5 flex flex-wrap gap-1.5">
-                            <Badge variant="secondary" className="text-[12px] font-bold uppercase tracking-wider">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge>
-                            {est.is_verified && <Badge variant="outline" className="text-[12px] font-bold text-chart-3 border-chart-3/30 bg-chart-3/5">{isAr ? "موثق" : "Verified"}</Badge>}
+                            <Badge variant="secondary" className="text-xs font-bold uppercase tracking-wider">{isAr ? typeLabel?.ar : typeLabel?.en}</Badge>
+                            {est.is_verified && <Badge variant="outline" className="text-xs font-bold text-chart-3 border-chart-3/30 bg-chart-3/5">{isAr ? "موثق" : "Verified"}</Badge>}
                           </div>
                         </div>
                       </div>

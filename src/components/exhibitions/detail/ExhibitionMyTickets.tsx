@@ -59,7 +59,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
         </div>
         <div>
           <h3 className="text-sm font-bold">{t("My Tickets", "تذاكري")}</h3>
-          <p className="text-[12px] text-muted-foreground">{tickets.length} {t("ticket(s)", "تذكرة")}</p>
+          <p className="text-xs text-muted-foreground">{tickets.length} {t("ticket(s)", "تذكرة")}</p>
         </div>
       </div>
 
@@ -86,10 +86,10 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
                   </div>
                   <div>
                     <span className="text-sm font-bold font-mono tracking-wide">{ticket.ticket_number}</span>
-                    <p className="text-[12px] text-muted-foreground">{exhibitionTitle}</p>
+                    <p className="text-xs text-muted-foreground">{exhibitionTitle}</p>
                   </div>
                 </div>
-                <Badge className={`text-[12px] font-semibold uppercase tracking-wider ${isCheckedIn ? "bg-chart-3/15 text-chart-3 border-chart-3/25" : isConfirmed ? "bg-primary/15 text-primary border-primary/25" : "bg-chart-4/15 text-chart-4 border-chart-4/25"}`}>
+                <Badge className={`text-xs font-semibold uppercase tracking-wider ${isCheckedIn ? "bg-chart-3/15 text-chart-3 border-chart-3/25" : isConfirmed ? "bg-primary/15 text-primary border-primary/25" : "bg-chart-4/15 text-chart-4 border-chart-4/25"}`}>
                   {isCheckedIn ? t("Checked In", "تم الدخول") : isConfirmed ? t("Confirmed", "مؤكدة") : t("Pending", "معلقة")}
                 </Badge>
               </div>
@@ -104,7 +104,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
 
             <CardContent className="p-5 space-y-4">
               {/* Event Details */}
-              <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-[12px] text-muted-foreground">
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-muted-foreground">
                 {exhibitionDate && (
                   <span className="flex items-center gap-1.5">
                     <Calendar className="h-3 w-3" />
@@ -132,7 +132,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
 
               {/* Attendee Details */}
               {(ticket.attendee_name || ticket.attendee_email) && (
-                <div className="rounded-xl bg-muted/30 p-3 text-[12px] space-y-1 border border-border/30">
+                <div className="rounded-xl bg-muted/30 p-3 text-xs space-y-1 border border-border/30">
                   {ticket.attendee_name && <p><span className="text-muted-foreground font-medium">{t("Name", "الاسم")}:</span> {ticket.attendee_name}</p>}
                   {ticket.attendee_email && <p><span className="text-muted-foreground font-medium">{t("Email", "البريد")}:</span> {ticket.attendee_email}</p>}
                 </div>
@@ -148,7 +148,7 @@ export const ExhibitionMyTickets = memo(function ExhibitionMyTickets({ exhibitio
 
               {isCheckedIn && (
                 <div className="text-center rounded-xl bg-chart-3/5 py-2 border border-chart-3/15">
-                  <p className="text-[12px] text-chart-3 font-medium">
+                  <p className="text-xs text-chart-3 font-medium">
                     ✓ {t("Checked in at", "تم الدخول في")} {format(new Date(ticket.checked_in_at), "MMM d, HH:mm")}
                   </p>
                 </div>
