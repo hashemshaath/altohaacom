@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { InlinePanel } from "@/components/ui/InlinePanel";
 import { InlineConfirm } from "@/components/ui/InlineConfirm";
-// AlertDialog removed - using InlineConfirm instead
+
 import {
   Table,
   TableBody,
