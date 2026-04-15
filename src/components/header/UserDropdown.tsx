@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -16,7 +17,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 import {
   User, LogOut, MessageSquare, Settings,
   HelpCircle, Shield, LayoutDashboard, Crown, ChevronDown,
@@ -47,7 +47,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const displayName = getDisplayName(profile, isAr, user?.email?.split("@")[0] || "");

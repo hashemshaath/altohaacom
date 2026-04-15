@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, Shield, Crown, Loader2, X, UserCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface InlineUserSearchProps {
   onSelectUser: (userId: string) => void;
@@ -37,7 +37,7 @@ export const InlineUserSearch = memo(function InlineUserSearch({ onSelectUser, o
       return data || [];
     },
     enabled: query.length >= 2,
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   const handleSelect = useCallback((userId: string) => {

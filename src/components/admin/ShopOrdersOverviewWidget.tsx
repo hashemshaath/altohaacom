@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -8,7 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { ShoppingBag, Package, DollarSign, Clock, Truck, AlertCircle, Tag } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
-import { QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget() {
   const { language } = useLanguage();
@@ -46,7 +47,7 @@ export const ShopOrdersOverviewWidget = memo(function ShopOrdersOverviewWidget()
         categoryCounts, fulfillmentRate,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

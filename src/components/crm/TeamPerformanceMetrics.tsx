@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { UsersRound, Star, Ticket, MessageSquare, Clock } from "lucide-react";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 interface AgentMetrics {
   userId: string;
@@ -82,7 +82,7 @@ export const TeamPerformanceMetrics = memo(function TeamPerformanceMetrics() {
         } as AgentMetrics;
       }).sort((a, b) => (b.ticketsResolved + b.chatsHandled) - (a.ticketsResolved + a.chatsHandled));
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   return (

@@ -7,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export const CommunityStories = memo(function CommunityStories() {
   const { user } = useAuth();
@@ -41,7 +40,7 @@ export const CommunityStories = memo(function CommunityStories() {
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (profiles.length === 0 && !user) return null;

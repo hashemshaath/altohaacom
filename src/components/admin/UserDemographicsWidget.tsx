@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Globe, Users, Shield, UserCheck, Crown, Star, TrendingUp, Clock } from "lucide-react";
 import { translateRole } from "@/lib/chartConfig";
-import { MS_PER_DAY, MS_PER_WEEK, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 
 export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
   const { language } = useLanguage();
@@ -64,7 +65,7 @@ export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
         onlineRecent: onlineRecent || 0,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

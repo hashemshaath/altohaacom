@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,6 @@ import { Progress } from "@/components/ui/progress";
 import { Star, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
-import { STALE_TIME_SHORT } from "@/lib/constants";
 
 interface Props {
   exhibitionIds: string[];
@@ -45,7 +45,7 @@ export const OrganizerRatingSummary = memo(function OrganizerRatingSummary({ exh
       };
     },
     enabled: exhibitionIds.length > 0,
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

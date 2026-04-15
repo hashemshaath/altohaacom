@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -9,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, Circle, Camera, FileText, MapPin, Briefcase, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 const FIELDS = [
   { key: "avatar", labelEn: "Photo", labelAr: "صورة", icon: Camera, check: (p) => !!p?.avatar_url },
@@ -36,7 +36,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!user || !profile || profile.profile_completed) return null;

@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +15,6 @@ import { HomepageTemplateSwitcher } from "@/components/admin/settings/HomepageTe
 import { HomepageSectionsManager } from "@/components/admin/settings/HomepageSectionsManager";
 import { HomepageLivePreview } from "@/components/admin/settings/homepage/HomepageLivePreview";
 import { useHomepageSections } from "@/hooks/useHomepageSections";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 export default function HomepageDesignPage() {
   const { language } = useLanguage();
@@ -35,7 +35,7 @@ export default function HomepageDesignPage() {
       const { count } = await supabase.from("ad_campaigns").select("id", { count: "exact", head: true }).eq("status", "active");
       return count || 0;
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   return (

@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -21,7 +22,6 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { STALE_TIME_DEFAULT } from "@/lib/constants";
 
 const MAX_CHARS = 1000;
 const MAX_IMAGES = 4;
@@ -90,7 +90,7 @@ export const PostComposer = memo(function PostComposer({ onPosted, replyToPostId
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   useEffect(() => {

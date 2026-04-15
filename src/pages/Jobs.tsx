@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -24,7 +25,7 @@ import { format } from "date-fns";
 import heroImage from "@/assets/jobs-hero.jpg";
 import employerImage from "@/assets/jobs-employer.jpg";
 import chefImage from "@/assets/jobs-chef.jpg";
-import { MS_PER_DAY, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { MS_PER_DAY } from "@/lib/constants";
 
 const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   full_time: { en: "Full-time", ar: "دوام كامل" },
@@ -70,7 +71,7 @@ export default function Jobs() {
       ]);
       return { jobs: jobCount || 0, chefs: chefCount || 0, companies: companyCount || 0 };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   // Featured jobs for showcase
@@ -86,7 +87,7 @@ export default function Jobs() {
         .limit(6);
       return data || [];
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const handleHeroSearch = (e: React.FormEvent) => {

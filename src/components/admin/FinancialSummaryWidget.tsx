@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DollarSign, Receipt, Package, Wallet, TrendingUp, AlertCircle, CheckCircle, Clock } from "lucide-react";
-import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
   const { language } = useLanguage();
@@ -59,7 +60,7 @@ export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
         totalOrders: orders?.length || 0,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

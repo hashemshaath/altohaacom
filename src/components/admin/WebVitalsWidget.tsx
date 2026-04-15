@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Gauge, Smartphone, Monitor, Tablet, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_SLOW, STALE_TIME_DEFAULT } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_SLOW } from "@/lib/constants";
 
 interface VitalsRow {
   lcp: number | null;
@@ -102,7 +103,7 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
         slowestPages,
       };
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
     refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_SLOW),
   });
 

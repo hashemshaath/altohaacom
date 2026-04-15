@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, Users, Gavel, Medal, Calendar, MapPin, TrendingUp, AlertTriangle } from "lucide-react";
-import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, STALE_TIME_SHORT } from "@/lib/constants";
+import { MS_PER_DAY, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 
 export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidget() {
   const { language } = useLanguage();
@@ -100,7 +101,7 @@ export const CompetitionLifecycleWidget = memo(function CompetitionLifecycleWidg
         totalRounds: rounds?.length || 0,
       };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   if (!data) return null;

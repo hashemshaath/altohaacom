@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +14,7 @@ import {
   Megaphone, ShoppingCart, UserPlus, MousePointerClick, Eye,
   TrendingUp, ArrowDownToLine, Zap, Target, BarChart3, CalendarClock,
 } from "lucide-react";
-import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM, STALE_TIME_DEFAULT, STALE_TIME_SHORT } from "@/lib/constants";
+import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell,
@@ -83,7 +84,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
         dailyTrend, sourcePie,
       };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   const { data: cartData } = useQuery({
@@ -102,7 +103,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
       const recoveryRate = carts.length > 0 ? Math.round((recovered.length / carts.length) * 100) : 0;
       return { total: carts.length, abandoned: abandoned.length, recovered: recovered.length, lostRevenue, recoveredRevenue, recoveryRate };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   const { data: campaignData } = useQuery({
@@ -123,7 +124,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
       const roi = totalSpent > 0 ? (((Number(conversionData?.totalRevenue || 0) - totalSpent) / totalSpent) * 100).toFixed(1) : "0";
       return { campaigns, activeCampaigns, totalBudget, totalSpent, totalClicks, totalImpressions, avgCTR, roi };
     },
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
     enabled: conversionData !== undefined,
   });
 
@@ -133,7 +134,7 @@ export const MarketingAnalytics = memo(function MarketingAnalytics() {
       const { data } = await supabase.from("marketing_tracking_config").select("id, platform, tracking_id, is_active, created_at").order("created_at").limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const eventLabels: Record<string, { en: string; ar: string }> = {
