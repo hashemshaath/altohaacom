@@ -12,6 +12,7 @@ import { ThemeApplicator } from "@/components/ThemeApplicator";
 import { SkipToContent } from "@/components/a11y/SkipToContent";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { RouteAnnouncer } from "@/components/a11y/RouteAnnouncer";
 import { MaintenanceGuard } from "@/components/MaintenanceGuard";
 import { PageTransition } from "@/components/mobile/PageTransition";
@@ -87,7 +88,7 @@ const RouteSpinner = (
 /** All application routes */
 function AppRoutes() {
   return (
-    <ErrorBoundary>
+    <SectionErrorBoundary name="app-routes">
       <MaintenanceGuard>
         <Suspense fallback={RouteSpinner}>
           <div id="main-content" className="min-h-screen pb-16 md:pb-0">
@@ -103,14 +104,14 @@ function AppRoutes() {
           </div>
         </Suspense>
       </MaintenanceGuard>
-    </ErrorBoundary>
+    </SectionErrorBoundary>
   );
 }
 
 /** Non-critical overlays and global widgets */
 const AppOverlays = memo(function AppOverlays({ isHome }: { isHome: boolean }) {
   return (
-    <ErrorBoundary fallback={null}>
+    <SectionErrorBoundary name="overlays" variant="compact">
       <MobileBottomNav />
       {!isHome && <ScrollProgress />}
       <BackToTop />
@@ -119,7 +120,7 @@ const AppOverlays = memo(function AppOverlays({ isHome }: { isHome: boolean }) {
           <AIChatbot />
         </Suspense>
       )}
-    </ErrorBoundary>
+    </SectionErrorBoundary>
   );
 });
 
