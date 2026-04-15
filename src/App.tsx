@@ -156,8 +156,10 @@ function AppContent() {
       {/* ─── Global Tracking ─── */}
       <GoogleTrackingProvider />
       <PageTracker />
-      {!isHome && <AnnouncementBanner />}
-      <CommandPalette />
+      <Suspense fallback={null}>
+        {!isHome && <AnnouncementBanner />}
+        <CommandPalette />
+      </Suspense>
       <AppRoutes />
       <AppOverlays isHome={isHome} />
     </>
