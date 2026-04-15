@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, MapPin, Users, Plus, Check, X, BarChart3, CalendarDays, MessageSquare, Share2 } from "lucide-react";
@@ -16,47 +15,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
-import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
-
-interface CommunityEvent {
-  id: string;
-  title: string;
-  description: string | null;
-  event_type: string;
-  event_date: string | null;
-  location: string | null;
-  is_virtual: boolean;
-  max_attendees: number | null;
-  status: string;
-  organizer_id: string;
-  organizer_name: string | null;
-  attendees_count: number;
-  is_attending: boolean;
-}
-
-interface Poll {
-  id: string;
-  question: string;
-  options: { text: string }[];
-  expires_at: string | null;
-  is_active: boolean;
-  author_id: string;
-  author_name: string | null;
-  votes: Record<number, number>;
-  total_votes: number;
-  user_vote: number | null;
-}
+import { useEventsData } from "@/hooks/community/useEventsData";
 
 export const EventsTab = memo(function EventsTab() {
   const { user } = useAuth();
   const isAr = useIsAr();
   const { toast } = useToast();
-  const [events, setEvents] = useState<CommunityEvent[]>([]);
-  const [polls, setPolls] = useState<Poll[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    events, polls, isLoading, createEvent, createPoll, isCreating,
+    toggleAttendance, votePoll, optimisticToggleAttendance,
+  } = useEventsData();
+
   const [showEventForm, setShowEventForm] = useState(false);
   const [showPollForm, setShowPollForm] = useState(false);
-  const [creating, setCreating] = useState(false);
   const [registerDialog, setRegisterDialog] = useState<{ eventId: string; title: string } | null>(null);
   const [registerNote, setRegisterNote] = useState("");
   const [eventForm, setEventForm] = useState({
@@ -64,132 +35,56 @@ export const EventsTab = memo(function EventsTab() {
   });
   const [pollForm, setPollForm] = useState({ question: "", options: ["", ""] });
 
-  const fetchData = useCallback(async () => {
-    const [eventsRes, pollsRes] = await Promise.all([
-      supabase.from("community_events").select("id, title, title_ar, description, description_ar, event_date, event_end_date, event_type, location, location_ar, is_virtual, max_attendees, organizer_id, status, image_url, created_at").order("event_date", { ascending: true }).limit(QUERY_LIMIT_LARGE),
-      supabase.from("community_polls").select("id, question, question_ar, options, author_id, is_active, expires_at, created_at").eq("is_active", true).order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM),
-    ]);
-
-    const eventIds = eventsRes.data?.map((e) => e.id) || [];
-    const organizerIds = [...new Set(eventsRes.data?.map((e) => e.organizer_id) || [])];
-    const [profilesRes, attendeesRes, userAttendeesRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, full_name").in("user_id", [...organizerIds, ...(pollsRes.data?.map((p) => p.author_id) || [])]),
-      supabase.from("event_attendees").select("event_id").in("event_id", eventIds),
-      user ? supabase.from("event_attendees").select("event_id").eq("user_id", user.id).in("event_id", eventIds) : { data: [] },
-    ]);
-
-    const profileMap = new Map(profilesRes.data?.map((p) => [p.user_id, p.full_name]) || []);
-    const attendeesMap = new Map<string, number>();
-    attendeesRes.data?.forEach((a) => attendeesMap.set(a.event_id, (attendeesMap.get(a.event_id) || 0) + 1));
-    const userAttendingSet = new Set(userAttendeesRes.data?.map((a) => a.event_id) || []);
-
-    setEvents((eventsRes.data || []).map((e) => ({
-      id: e.id, title: e.title, description: e.description, event_type: e.event_type,
-      event_date: e.event_date, location: e.location, is_virtual: e.is_virtual || false,
-      max_attendees: e.max_attendees, status: e.status || "upcoming",
-      organizer_id: e.organizer_id, organizer_name: profileMap.get(e.organizer_id) || null,
-      attendees_count: attendeesMap.get(e.id) || 0,
-      is_attending: userAttendingSet.has(e.id),
-    })));
-
-    const pollIds = pollsRes.data?.map((p) => p.id) || [];
-    const [votesRes, userVotesRes] = await Promise.all([
-      supabase.from("poll_votes").select("poll_id, option_index").in("poll_id", pollIds),
-      user ? supabase.from("poll_votes").select("poll_id, option_index").eq("user_id", user.id).in("poll_id", pollIds) : { data: [] },
-    ]);
-
-    const votesMap = new Map<string, Record<number, number>>();
-    votesRes.data?.forEach((v) => {
-      const existing = votesMap.get(v.poll_id) || {};
-      existing[v.option_index] = (existing[v.option_index] || 0) + 1;
-      votesMap.set(v.poll_id, existing);
-    });
-    const userVoteMap = new Map<string, number>();
-    userVotesRes.data?.forEach((v) => userVoteMap.set(v.poll_id, v.option_index));
-
-    setPolls((pollsRes.data || []).map((p) => {
-      const votes = votesMap.get(p.id) || {};
-      const totalVotes = Object.values(votes).reduce((s, n) => s + n, 0);
-      return {
-        id: p.id, question: p.question, options: (p.options as { text: string }[]) || [],
-        expires_at: p.expires_at, is_active: p.is_active ?? true,
-        author_id: p.author_id, author_name: profileMap.get(p.author_id) || null,
-        votes, total_votes: totalVotes,
-        user_vote: userVoteMap.get(p.id) ?? null,
-      };
-    }));
-
-    setLoading(false);
-  }, [user?.id]);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchData().then(() => { if (cancelled) return; });
-    return () => { cancelled = true; };
-  }, [fetchData]);
-
   const handleCreateEvent = async () => {
     if (!user || !eventForm.title.trim()) return;
-    setCreating(true);
-    const { error } = await supabase.from("community_events").insert({
-      organizer_id: user.id,
-      title: eventForm.title.trim(),
-      description: eventForm.description.trim() || null,
-      event_date: eventForm.event_date || null,
-      location: eventForm.location.trim() || null,
-      is_virtual: eventForm.is_virtual,
-      max_attendees: eventForm.max_attendees ? parseInt(eventForm.max_attendees) : null,
-    });
-    setCreating(false);
-    if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); }
-    else { setShowEventForm(false); setEventForm({ title: "", description: "", event_date: "", location: "", is_virtual: false, max_attendees: "" }); fetchData(); }
+    try {
+      await createEvent(eventForm);
+      setShowEventForm(false);
+      setEventForm({ title: "", description: "", event_date: "", location: "", is_virtual: false, max_attendees: "" });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    }
   };
 
   const handleCreatePoll = async () => {
     if (!user || !pollForm.question.trim() || pollForm.options.filter(Boolean).length < 2) return;
-    setCreating(true);
-    const options = pollForm.options.filter(Boolean).map((text) => ({ text: text.trim() }));
-    const { error } = await supabase.from("community_polls").insert({
-      author_id: user.id, question: pollForm.question.trim(), options,
-    });
-    setCreating(false);
-    if (error) { toast({ variant: "destructive", title: "Error", description: error.message }); }
-    else { setShowPollForm(false); setPollForm({ question: "", options: ["", ""] }); fetchData(); }
+    try {
+      await createPoll({ question: pollForm.question, options: pollForm.options });
+      setShowPollForm(false);
+      setPollForm({ question: "", options: ["", ""] });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    }
   };
 
   const handleAttend = async (eventId: string, isAttending: boolean, note?: string) => {
     if (!user) return;
-    if (isAttending) {
-      await supabase.from("event_attendees").delete().eq("event_id", eventId).eq("user_id", user.id);
-    } else {
-      await supabase.from("event_attendees").insert({ event_id: eventId, user_id: user.id });
-      // If note provided, create a post about attending
-      if (note?.trim()) {
-        const event = events.find(e => e.id === eventId);
-        const postContent = `${note.trim()}\n\n${isAr ? "📅 سجلت في فعالية:" : "📅 Registered for event:"} ${event?.title || ""}\n\n#${isAr ? "فعالية" : "event"} #${isAr ? "تسجيل" : "registration"}`;
-        const { data: insertedPost } = await supabase.from("posts").insert({ author_id: user.id, content: postContent }).select("id").single();
-        if (insertedPost) {
-          try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.access_token) {
-              await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY }, body: JSON.stringify({ post_id: insertedPost.id, content: postContent, user_id: user.id }) });
-            }
-          } catch {}
-        }
+    optimisticToggleAttendance(eventId, isAttending);
+    toggleAttendance(eventId, isAttending);
+
+    if (!isAttending && note?.trim()) {
+      const event = events.find(e => e.id === eventId);
+      const postContent = `${note.trim()}\n\n${isAr ? "📅 سجلت في فعالية:" : "📅 Registered for event:"} ${event?.title || ""}\n\n#${isAr ? "فعالية" : "event"} #${isAr ? "تسجيل" : "registration"}`;
+      const { data: insertedPost } = await supabase.from("posts").insert({ author_id: user.id, content: postContent }).select("id").single();
+      if (insertedPost) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token) {
+            fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-content`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}`, apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY },
+              body: JSON.stringify({ post_id: insertedPost.id, content: postContent, user_id: user.id }),
+            });
+          }
+        } catch {}
       }
     }
-    setEvents((prev) => prev.map((e) => e.id === eventId ? { ...e, is_attending: !isAttending, attendees_count: isAttending ? e.attendees_count - 1 : e.attendees_count + 1 } : e));
+
     setRegisterDialog(null);
     setRegisterNote("");
   };
 
-  const handleVote = async (pollId: string, optionIndex: number) => {
-    if (!user) return;
-    const { error } = await supabase.from("poll_votes").insert({ poll_id: pollId, user_id: user.id, option_index: optionIndex });
-    if (!error) fetchData();
-  };
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-10 w-48" />
@@ -244,7 +139,6 @@ export const EventsTab = memo(function EventsTab() {
           )}
         </div>
 
-        {/* Event create form */}
         {showEventForm && (
           <Card className="mb-4">
             <CardHeader className="pb-3">
@@ -277,15 +171,14 @@ export const EventsTab = memo(function EventsTab() {
               </div>
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <Button variant="outline" onClick={() => setShowEventForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-                <Button onClick={handleCreateEvent} disabled={creating || !eventForm.title.trim()}>
-                  {creating ? "..." : isAr ? "إنشاء" : "Create"}
+                <Button onClick={handleCreateEvent} disabled={isCreating || !eventForm.title.trim()}>
+                  {isCreating ? "..." : isAr ? "إنشاء" : "Create"}
                 </Button>
               </div>
             </CardContent>
           </Card>
         )}
 
-        {/* Poll create form */}
         {showPollForm && (
           <Card className="mb-4">
             <CardHeader className="pb-3">
@@ -309,8 +202,8 @@ export const EventsTab = memo(function EventsTab() {
               )}
               <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <Button variant="outline" onClick={() => setShowPollForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-                <Button onClick={handleCreatePoll} disabled={creating || !pollForm.question.trim() || pollForm.options.filter(Boolean).length < 2}>
-                  {creating ? "..." : isAr ? "إنشاء" : "Create"}
+                <Button onClick={handleCreatePoll} disabled={isCreating || !pollForm.question.trim() || pollForm.options.filter(Boolean).length < 2}>
+                  {isCreating ? "..." : isAr ? "إنشاء" : "Create"}
                 </Button>
               </div>
             </CardContent>
@@ -439,7 +332,7 @@ export const EventsTab = memo(function EventsTab() {
                               ? "cursor-default"
                               : "cursor-pointer hover:bg-accent/50"
                           }`}
-                          onClick={() => !hasVoted && user && handleVote(poll.id, i)}
+                          onClick={() => !hasVoted && user && votePoll(poll.id, i)}
                           disabled={hasVoted || !user}
                         >
                           <div className="flex items-center justify-between">
@@ -477,7 +370,6 @@ export const EventsTab = memo(function EventsTab() {
         </TabsContent>
       </Tabs>
 
-      {/* Registration Dialog with note */}
       <Dialog open={!!registerDialog} onOpenChange={(open) => { if (!open) { setRegisterDialog(null); setRegisterNote(""); } }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
