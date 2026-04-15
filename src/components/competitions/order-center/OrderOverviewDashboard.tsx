@@ -36,7 +36,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: STALE_TIME_SHORT * 4,
+    ...CACHE.short,
   });
 
   const { data: allItems, isLoading: itemsLoading } = useQuery({
@@ -51,7 +51,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       return data;
     },
     enabled: !!lists?.length,
-    staleTime: STALE_TIME_DEFAULT,
+    ...CACHE.realtime,
   });
 
   const { data: quoteRequests } = useQuery({
@@ -64,7 +64,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: STALE_TIME_SHORT * 4,
+    ...CACHE.short,
   });
 
   const { data: suggestions } = useQuery({
@@ -77,7 +77,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: STALE_TIME_SHORT * 4,
+    ...CACHE.short,
   });
 
   const { data: itemRequests } = useQuery({
@@ -90,7 +90,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: STALE_TIME_SHORT * 4,
+    ...CACHE.short,
   });
 
   const stats = useMemo(() => calcOrderStats(allItems || []), [allItems]);

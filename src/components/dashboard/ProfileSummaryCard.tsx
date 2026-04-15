@@ -29,7 +29,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
       return data;
     },
     enabled: !!user,
-    staleTime: STALE_TIME_LONG * 2,
+    ...CACHE.medium,
   });
 
   const { data: stats } = useQuery({
@@ -55,7 +55,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
       };
     },
     enabled: !!user,
-    staleTime: STALE_TIME_LONG * 2,
+    ...CACHE.medium,
   });
 
   if (!profile) return null;

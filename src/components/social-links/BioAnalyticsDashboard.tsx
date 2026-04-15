@@ -132,7 +132,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       };
     },
     enabled: !!pageId,
-    staleTime: STALE_TIME_LONG * 2,
+    ...CACHE.medium,
   });
 
   // Click analytics — real data from social_link_clicks
@@ -201,7 +201,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       };
     },
     enabled: !!pageId,
-    staleTime: STALE_TIME_LONG * 2,
+    ...CACHE.medium,
   });
 
   // Link items for performance table

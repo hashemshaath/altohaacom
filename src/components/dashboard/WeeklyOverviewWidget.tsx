@@ -47,7 +47,7 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
       ] as StatItem[];
     },
     enabled: !!user,
-    staleTime: STALE_TIME_LONG * 2,
+    ...CACHE.medium,
   });
 
   if (!stats) return null;

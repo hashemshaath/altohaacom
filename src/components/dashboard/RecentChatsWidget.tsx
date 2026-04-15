@@ -54,7 +54,7 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
       });
     },
     enabled: !!user,
-    staleTime: STALE_TIME_SHORT,
+    ...CACHE.realtime,
   });
 
   if (!chats || chats.length === 0) return null;
