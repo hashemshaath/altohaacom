@@ -1,0 +1,27 @@
+// Barrel exports for UI atoms
+export { ActivityPulse } from "./activity-pulse";
+export { AnimatedCounter } from "./animated-counter";
+export { BackToTop } from "./back-to-top";
+export { Badge } from "./badge";
+export { Breadcrumbs } from "./Breadcrumbs";
+export { Button, buttonVariants } from "./button";
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
+export { ConfidenceBadge } from "./confidence-badge";
+export { ConfirmDialog } from "./ConfirmDialog";
+export { EmptyState } from "./empty-state";
+export { FlexibleDateInput } from "./flexible-date-input";
+export { InlineConfirm } from "./InlineConfirm";
+export { InlinePanel } from "./InlinePanel";
+export { OfflineIndicator } from "./OfflineIndicator";
+export { PageSkeleton } from "./page-skeleton";
+export { ResultReveal } from "./result-reveal";
+export { ScrollProgress } from "./scroll-progress";
+export { ScrollToTop } from "./ScrollToTop";
+export { SectionReveal } from "./section-reveal";
+export { ShareButton } from "./share-button";
+export { SkeletonTable, SkeletonCards } from "./skeleton-table";
+export { StatsCard } from "./stats-card";
+export { StepProgress } from "./step-progress";
+export { SuccessCelebration } from "./success-celebration";
+export { TrendIndicator } from "./trend-indicator";
+export { AddToCalendarButton } from "./AddToCalendarButton";
