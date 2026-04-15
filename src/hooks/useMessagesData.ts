@@ -12,6 +12,12 @@ import { uploadMessageAttachment } from "@/utils/storageUtils";
 import { CACHE } from "@/lib/queryConfig";
 import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
 
+export interface MessageMetadata {
+  reactions?: Record<string, string[]>;
+  location?: { lat: number; lng: number; label: string };
+  [key: string]: unknown;
+}
+
 export interface Message {
   id: string;
   sender_id: string;
@@ -26,8 +32,9 @@ export interface Message {
   category: string;
   is_starred: boolean;
   is_archived: boolean;
+  is_pinned: boolean;
   reply_to_id: string | null;
-  metadata: Record<string, any>;
+  metadata: MessageMetadata;
 }
 
 export interface ConversationPartner {
