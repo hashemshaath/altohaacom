@@ -1,6 +1,7 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { SEOHead } from "@/components/SEOHead";
+import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -130,7 +131,9 @@ export default function Shop() {
       padding="none"
     >
 
-      <ShopHero productCount={filtered.length} cart={cart} onCartOpen={() => setCartOpen(true)} />
+      <SectionErrorBoundary name="shop-hero" variant="compact">
+        <ShopHero productCount={filtered.length} cart={cart} onCartOpen={() => setCartOpen(true)} />
+      </SectionErrorBoundary>
 
       <main className="container flex-1 py-3 md:py-6">
         <ShopFilters

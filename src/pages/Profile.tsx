@@ -10,6 +10,7 @@ import { useProfileData } from "@/hooks/useProfileData";
 import { useAccountType } from "@/hooks/useAccountType";
 import { useUserFeatures } from "@/hooks/useMembershipFeatures";
 import { UpgradePrompt } from "@/components/membership/UpgradePrompt";
+import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 
 // Lazy-load heavy tabs for faster initial paint
 const ProfileOverviewTab = lazy(() => import("@/components/profile/ProfileOverviewTab").then(m => ({ default: m.ProfileOverviewTab })));
@@ -161,66 +162,90 @@ export default function Profile() {
 
         <Suspense fallback={<TabFallback />}>
           <TabsContent value="overview" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
+            <WidgetErrorBoundary name="profile-overview">
+              {profile && user && <ProfileOverviewTab profile={profile} userId={user.id} />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="competitions" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("competitions") ? (user && <CompetitionHistory userId={user.id} />) : <UpgradePrompt variant="card" featureName="Competitions" featureNameAr="المسابقات" />}
+            <WidgetErrorBoundary name="profile-competitions">
+              {isTabAllowed("competitions") ? (user && <CompetitionHistory userId={user.id} />) : <UpgradePrompt variant="card" featureName="Competitions" featureNameAr="المسابقات" />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="favorites" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("favorites") ? (user && <Suspense fallback={<TabFallback />}>
-              <div className="text-center py-16 space-y-4">
-                <div className="mx-auto h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
-                  <Heart className="h-7 w-7 text-muted-foreground/40" />
+            <WidgetErrorBoundary name="profile-favorites">
+              {isTabAllowed("favorites") ? (user && <Suspense fallback={<TabFallback />}>
+                <div className="text-center py-16 space-y-4">
+                  <div className="mx-auto h-16 w-16 rounded-2xl bg-muted/50 flex items-center justify-center">
+                    <Heart className="h-7 w-7 text-muted-foreground/40" />
+                  </div>
+                  <div>
+                    <p className="text-lg font-semibold">{isAr ? "المفضلة" : "Favorites"}</p>
+                    <p className="text-sm text-muted-foreground mt-1">{isAr ? "ستظهر هنا الطهاة والوصفات المفضلة لديك" : "Your favorite chefs & recipes will appear here"}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-lg font-semibold">{isAr ? "المفضلة" : "Favorites"}</p>
-                  <p className="text-sm text-muted-foreground mt-1">{isAr ? "ستظهر هنا الطهاة والوصفات المفضلة لديك" : "Your favorite chefs & recipes will appear here"}</p>
-                </div>
-              </div>
-            </Suspense>) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
+              </Suspense>) : <UpgradePrompt variant="card" featureName="Favorites" featureNameAr="المفضلة" />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
 
           <TabsContent value="membership" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {profile && user && <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={refetchProfile} />}
+            <WidgetErrorBoundary name="profile-membership">
+              {profile && user && <UnifiedMembershipTab profile={profile} userId={user.id} onMembershipChange={refetchProfile} />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="wallet" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("wallet") ? (user && <WalletDashboard userId={user.id} />) : <UpgradePrompt variant="card" featureName="Wallet" featureNameAr="المحفظة" />}
+            <WidgetErrorBoundary name="profile-wallet">
+              {isTabAllowed("wallet") ? (user && <WalletDashboard userId={user.id} />) : <UpgradePrompt variant="card" featureName="Wallet" featureNameAr="المحفظة" />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="orders" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("orders") ? (user && <ProfileOrdersTab userId={user.id} isAr={isAr} />) : <UpgradePrompt variant="card" featureName="Orders" featureNameAr="الطلبات" />}
+            <WidgetErrorBoundary name="profile-orders">
+              {isTabAllowed("orders") ? (user && <ProfileOrdersTab userId={user.id} isAr={isAr} />) : <UpgradePrompt variant="card" featureName="Orders" featureNameAr="الطلبات" />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="referrals" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("referrals") ? (user && <ProfileReferralsTab userId={user.id} />) : <UpgradePrompt variant="card" featureName="Referrals" featureNameAr="الإحالات" />}
+            <WidgetErrorBoundary name="profile-referrals">
+              {isTabAllowed("referrals") ? (user && <ProfileReferralsTab userId={user.id} />) : <UpgradePrompt variant="card" featureName="Referrals" featureNameAr="الإحالات" />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("analytics") ? (user && (
-              <div className="space-y-6">
-                <ProfileAnalyticsDashboard userId={user.id} />
-              </div>
-            )) : <UpgradePrompt variant="card" featureName="Analytics" featureNameAr="الإحصائيات" />}
+            <WidgetErrorBoundary name="profile-analytics">
+              {isTabAllowed("analytics") ? (user && (
+                <div className="space-y-6">
+                  <ProfileAnalyticsDashboard userId={user.id} />
+                </div>
+              )) : <UpgradePrompt variant="card" featureName="Analytics" featureNameAr="الإحصائيات" />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="invoices" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {isTabAllowed("invoices") ? (user && <ProfileInvoicesTab userId={user.id} />) : <UpgradePrompt variant="card" featureName="Invoices" featureNameAr="الفواتير" />}
+            <WidgetErrorBoundary name="profile-invoices">
+              {isTabAllowed("invoices") ? (user && <ProfileInvoicesTab userId={user.id} />) : <UpgradePrompt variant="card" featureName="Invoices" featureNameAr="الفواتير" />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="edit" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {profile && user && <ProfileEditForm profile={profile} userId={user.id} onSaved={refetchProfile} />}
+            <WidgetErrorBoundary name="profile-edit">
+              {profile && user && <ProfileEditForm profile={profile} userId={user.id} onSaved={refetchProfile} />}
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="security" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            <SecuritySettings />
+            <WidgetErrorBoundary name="profile-security">
+              <SecuritySettings />
+            </WidgetErrorBoundary>
           </TabsContent>
 
           <TabsContent value="privacy" className="mt-6 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-            {profile && user && <ProfilePrivacySettings profile={profile} userId={user.id} onSaved={refetchProfile} />}
+            <WidgetErrorBoundary name="profile-privacy">
+              {profile && user && <ProfilePrivacySettings profile={profile} userId={user.id} onSaved={refetchProfile} />}
+            </WidgetErrorBoundary>
           </TabsContent>
         </Suspense>
       </Tabs>

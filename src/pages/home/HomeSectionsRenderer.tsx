@@ -1,5 +1,5 @@
 import { Suspense, useMemo, useState, useEffect, useRef, forwardRef } from "react";
-import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { SectionKeyProvider } from "@/components/home/SectionKeyContext";
 import { HomepageSectionShell } from "@/components/home/HomepageSectionShell";
 import GenericHomepageSection from "@/components/home/sections/GenericHomepageSection";
@@ -31,12 +31,6 @@ const TimedSkeleton = forwardRef<HTMLDivElement, { index: number }>(function Tim
 
   return <HomeSectionSkeleton ref={ref} index={index} />;
 });
-
-const SECTION_ERROR_FALLBACK = (
-  <div className="container py-4">
-    <div className="min-h-[40px]" />
-  </div>
-);
 
 /** Number of sections to render immediately (above-fold) */
 const EAGER_SECTION_COUNT = 5;
@@ -134,7 +128,7 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
         const isAboveFold = index < EAGER_SECTION_COUNT;
 
         const sectionContent = (
-          <ErrorBoundary key={`${sectionKey}-${entry.sort_order}-${index}`} fallback={SECTION_ERROR_FALLBACK}>
+          <SectionErrorBoundary key={`${sectionKey}-${entry.sort_order}-${index}`} name={sectionKey} variant="compact">
             <Suspense fallback={<TimedSkeleton index={index} />}>
               <SectionKeyProvider sectionKey={sectionKey}>
                 <HomepageSectionShell visibleIndex={index}>
@@ -142,7 +136,7 @@ export function HomeSectionsRenderer({ sections }: HomeSectionsRendererProps) {
                 </HomepageSectionShell>
               </SectionKeyProvider>
             </Suspense>
-          </ErrorBoundary>
+          </SectionErrorBoundary>
         );
 
         // Above-fold sections render immediately; below-fold defer until near viewport
