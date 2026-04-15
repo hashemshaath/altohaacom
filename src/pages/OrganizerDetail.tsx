@@ -294,7 +294,7 @@ export default function OrganizerDetail() {
 
         {/* ═══════ Main Content Tabs ═══════ */}
         <div className="container max-w-6xl pb-12 space-y-6">
-          <OrganizerRatingSummary exhibitionIds={exhibitions.map((e: any) => e.id)} isAr={isAr} />
+          <OrganizerRatingSummary exhibitionIds={exhibitions.map((e) => e.id)} isAr={isAr} />
 
           <Tabs value={d.activeTab} onValueChange={d.setActiveTab} className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto flex-nowrap">
@@ -363,7 +363,7 @@ export default function OrganizerDetail() {
                         <span className="text-sm text-muted-foreground">{byYear[year].length} {isAr ? "فعالية" : "events"}</span>
                       </div>
                       <div className="ms-16 space-y-3">
-                        {byYear[year].map((ex: any) => {
+                        {byYear[year].map((ex) => {
                           const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
                           return (
                             <Link key={ex.id} to={`/exhibitions/${ex.slug}`} className="group block">
@@ -397,7 +397,7 @@ export default function OrganizerDetail() {
                       <Badge variant="outline" className="text-[12px]">{byYear[year].length} {isAr ? "فعالية" : "events"}</Badge>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {byYear[year].map((ex: any) => {
+                      {byYear[year].map((ex) => {
                         const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
                         const edStats = ex.edition_stats ? (typeof ex.edition_stats === 'string' ? JSON.parse(ex.edition_stats) : ex.edition_stats) : null;
                         return (
@@ -453,7 +453,7 @@ export default function OrganizerDetail() {
                     <CalendarDays className="h-5 w-5 text-primary" />{isAr ? "جدول المعارض القادمة" : "Upcoming Events Schedule"}
                   </h3>
                   <div className="space-y-3">
-                    {upcoming.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()).map((ex: any) => {
+                    {upcoming.sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime()).map((ex) => {
                       const daysUntil = differenceInDays(new Date(ex.start_date), new Date());
                       const derived = deriveExhibitionStatus({ dbStatus: ex.status, startDate: ex.start_date, endDate: ex.end_date, registrationDeadline: ex.registration_deadline });
                       return (
@@ -559,7 +559,7 @@ export default function OrganizerDetail() {
                   <CardContent className="space-y-3">
                     <div className="space-y-2">
                       {types.map(t => {
-                        const count = exhibitions.filter((e: any) => e.type === t).length;
+                        const count = exhibitions.filter((e) => e.type === t).length;
                         const pct = Math.round((count / totalExhibitions) * 100);
                         return (
                           <div key={t}>
@@ -613,7 +613,7 @@ export default function OrganizerDetail() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold flex items-center gap-2"><UserCircle2 className="h-5 w-5 text-primary" />{isAr ? "فريق العمل وجهات الاتصال" : "Team & Key Contacts"}</h3>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {orgKeyContacts.map((c: any, i: number) => (
+                    {orgKeyContacts.map((c: Record<string, unknown>, i: number) => (
                       <Card key={i} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
                         <CardContent className="p-5">
                           <div className="flex items-center gap-4 mb-3">
@@ -679,7 +679,7 @@ export default function OrganizerDetail() {
             {articles.length > 0 && (
               <TabsContent value="news" className="mt-4">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {articles.map((article: any) => (
+                  {articles.map((article) => (
                     <Link key={article.id} to={`/articles/${article.slug}`} className="group">
                       <Card className="overflow-hidden hover:shadow-md transition-all border-border/40 hover:border-primary/30 h-full rounded-2xl">
                         {article.featured_image_url && (

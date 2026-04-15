@@ -15,11 +15,11 @@ import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
 
 interface RecommendationData {
-  competitions: any[];
-  recipes: any[];
-  articles: any[];
-  chefs: any[];
-  exhibitions: any[];
+  competitions: Record<string, unknown>[];
+  recipes: Record<string, unknown>[];
+  articles: Record<string, unknown>[];
+  chefs: Record<string, unknown>[];
+  exhibitions: Record<string, unknown>[];
   tip: string;
   tip_ar: string;
 }

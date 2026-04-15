@@ -14,9 +14,9 @@ import {
 import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
 
 interface Props {
-  permissions: any[];
-  rolePerms: any[];
-  allRolePerms: any[];
+  permissions: Record<string, unknown>[];
+  rolePerms: Record<string, unknown>[];
+  allRolePerms: Record<string, unknown>[];
   rolePermsLoading: boolean;
   activeRole: AppRole;
   isAr: boolean;
@@ -64,7 +64,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
     });
   }, []);
 
-  const selectAllInCategory = useCallback((catPerms: any[]) => {
+  const selectAllInCategory = useCallback((catPerms: Record<string, unknown>[]) => {
     setSelectedPerms(prev => {
       const next = new Set(prev);
       catPerms.forEach(p => next.add(p.id));
@@ -72,7 +72,7 @@ export default function PermissionsTab({ permissions, rolePerms, allRolePerms, r
     });
   }, []);
 
-  const deselectAllInCategory = useCallback((catPerms: any[]) => {
+  const deselectAllInCategory = useCallback((catPerms: Record<string, unknown>[]) => {
     setSelectedPerms(prev => {
       const next = new Set(prev);
       catPerms.forEach(p => next.delete(p.id));
