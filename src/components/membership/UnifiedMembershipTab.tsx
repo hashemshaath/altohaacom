@@ -1,7 +1,5 @@
 import { memo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,14 +24,12 @@ import {
 import { QRCodeSVG } from "qrcode.react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
-import { useVerificationStatus } from "@/hooks/useVerification";
 import { Link } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import { useState, useRef } from "react";
 import { BenefitsUsageTracker } from "./BenefitsUsageTracker";
 import { MembershipHistory } from "./MembershipHistory";
 import { SubscriptionDetailsCard } from "./SubscriptionDetailsCard";
 import { MembershipInvoicesSection } from "./MembershipInvoicesSection";
+import { useMembershipTab } from "./useMembershipTab";
 
 interface UnifiedMembershipTabProps {
   profile: any;
@@ -42,19 +38,8 @@ interface UnifiedMembershipTabProps {
 }
 
 export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile, userId, onMembershipChange }: UnifiedMembershipTabProps) {
-  const { language } = useLanguage();
-  const isAr = language === "ar";
-  const { data: verificationStatus } = useVerificationStatus();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [showCode, setShowCode] = useState(false);
-  const [orientation, setOrientation] = useState<"horizontal" | "vertical">("horizontal");
-  const [cardTheme, setCardTheme] = useState<"glassy" | "classic">("classic");
-  const [showCancelDialog, setShowCancelDialog] = useState(false);
-  const [cancelReason, setCancelReason] = useState("");
-  const [cancelReasonType, setCancelReasonType] = useState("too_expensive");
-  const [cancelFeedback, setCancelFeedback] = useState("");
+  const d = useMembershipTab(profile, userId, onMembershipChange);
+  const { isAr } = d;
 
   // Fetch membership card
   const { data: card, isLoading: cardLoading } = useQuery({
