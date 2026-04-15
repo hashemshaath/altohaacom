@@ -77,7 +77,29 @@ const getTypeBadge = (type: string) => {
 
 // ─── Main Component ────────────────────────────────────────
 export default function NotificationsAdmin() {
-  const d = useNotificationsData();
+  const {
+    isAr,
+    isCreateOpen, setIsCreateOpen,
+    confirmBulkAction, setConfirmBulkAction,
+    recentSearch, setRecentSearch,
+    recentTypeFilter, setRecentTypeFilter,
+    recentChannelFilter, setRecentChannelFilter,
+    recentStatusFilter, setRecentStatusFilter,
+    expandedNotifId, setExpandedNotifId,
+    selectedQueueIds, setSelectedQueueIds,
+    queueStatusFilter, setQueueStatusFilter,
+    queueChannelFilter, setQueueChannelFilter,
+    newNotification, setNewNotification,
+    channelSettings, setChannelSettings,
+    loadingRecent, loadingQueue,
+    filteredRecent, filteredQueue,
+    bulkRecent, analytics,
+    queueStats, templates, segments, commTemplates,
+    sendMutation, retryQueueMutation, cancelQueueMutation, deleteQueueMutation,
+    toggleChannel, toggleQueueSelect,
+    exportNotifications, refreshQueue,
+    toast,
+  } = useNotificationsData();
 
   return (
     <div className="space-y-6">
