@@ -235,7 +235,7 @@ export default function CompetitionsAdmin() {
   });
 
   const approveCompetition = useMutation({
-    mutationFn: async (comp: Record<string, unknown>) => {
+    mutationFn: async (comp: Record<string, any>) => {
       const { error } = await supabase.from("competitions").update({ status: "draft" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_competition", details: { competition_id: comp.id } });
@@ -245,7 +245,7 @@ export default function CompetitionsAdmin() {
   });
 
   const rejectCompetition = useMutation({
-    mutationFn: async (comp: Record<string, unknown>) => {
+    mutationFn: async (comp: Record<string, any>) => {
       const { error } = await supabase.from("competitions").update({ status: "cancelled" as CompetitionStatus }).eq("id", comp.id);
       if (error) throw error;
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_competition", details: { competition_id: comp.id } });
@@ -255,7 +255,7 @@ export default function CompetitionsAdmin() {
   });
 
   const duplicateMutation = useMutation({
-    mutationFn: async (comp: Record<string, unknown>) => {
+    mutationFn: async (comp: Record<string, any>) => {
       const { id, created_at, updated_at, organizer, exhibition, competition_number, slug, view_count, ...rest } = comp;
       const { error } = await supabase.from("competitions").insert({ ...rest, title: `${rest.title} (Copy)`, title_ar: rest.title_ar ? `${rest.title_ar} (نسخة)` : null, status: "draft" as CompetitionStatus, view_count: 0 } as any);
       if (error) throw error;
@@ -735,7 +735,7 @@ export default function CompetitionsAdmin() {
 }
 
 // ── Judging Panel ──────────────────────────
-function JudgingPanel({ competitions, isAr }: { competitions: Record<string, unknown>[]; isAr: boolean }) {
+function JudgingPanel({ competitions, isAr }: { competitions: Record<string, any>[]; isAr: boolean }) {
   const judgingComps = useMemo(() => competitions.filter(c => ["judging", "in_progress"].includes(c.status)), [competitions]);
 
   const { data: judgingData = [] } = useQuery({
@@ -804,7 +804,7 @@ function JudgingPanel({ competitions, isAr }: { competitions: Record<string, unk
 }
 
 // ── Results Panel ──────────────────────────
-function ResultsPanel({ competitions, isAr }: { competitions: Record<string, unknown>[]; isAr: boolean }) {
+function ResultsPanel({ competitions, isAr }: { competitions: Record<string, any>[]; isAr: boolean }) {
   const completedComps = useMemo(() => competitions.filter(c => c.status === "completed"), [competitions]);
 
   const { data: resultsData = [] } = useQuery({
