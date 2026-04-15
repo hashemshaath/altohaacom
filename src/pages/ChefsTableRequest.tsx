@@ -15,7 +15,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { 
   ArrowLeft, ArrowRight, ChefHat, Building2, Package, MapPin, Send, 
   Globe, Sparkles, CheckCircle2, Users, FileText,
-  Utensils, Flame, Leaf
+  Utensils, Flame, Leaf, Camera
 } from "lucide-react";
 import { SubmitButton } from "@/components/form";
 import { toast } from "sonner";
