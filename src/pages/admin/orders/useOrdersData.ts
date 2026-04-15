@@ -19,13 +19,6 @@ type CompanyOrderStatus = Database["public"]["Tables"]["company_orders"]["Row"][
 type CompanyOrderDirection = Database["public"]["Tables"]["company_orders"]["Row"]["direction"];
 type CompanyOrderCategory = Database["public"]["Tables"]["company_orders"]["Row"]["category"];
 type ShopOrderStatus = Database["public"]["Tables"]["shop_orders"]["Row"]["status"];
-import {
-  type OrderStatus,
-  type OrderFormType,
-  defaultOrderForm,
-  getStatusLabel,
-  getCategoryLabel,
-} from "./ordersAdminTypes";
 
 export function useOrdersData() {
   const { language } = useLanguage();
