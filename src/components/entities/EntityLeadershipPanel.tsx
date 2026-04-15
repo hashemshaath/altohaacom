@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
 import { Plus, Trash2, Crown, User, GripVertical } from "lucide-react";
+import type { EntityPositionWithProfile } from "./entityTypes";
 
 const positionTypes = [
   { value: "president", en: "President", ar: "الرئيس" },
@@ -63,7 +64,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
         .eq("entity_id", entityId)
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return data as any[];
+      return data as EntityPositionWithProfile[];
     },
   });
 
@@ -150,7 +151,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
         </h4>
         <div className="grid gap-2 sm:grid-cols-2">
           {items.map(pos => {
-            const profile = pos.profiles as any;
+            const profile = pos.profiles;
             const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
             return (
               <Card key={pos.id} className={`transition-all hover:shadow-sm ${!pos.is_active ? "opacity-50" : ""}`}>

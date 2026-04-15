@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { Users, GraduationCap, Briefcase, Crown, User, LucideIcon } from "lucide-react";
+import type { EntityPositionWithProfile } from "./entityTypes";
 import { format } from "date-fns";
 
 const membershipTypeLabels: Record<string, { en: string; ar: string; icon: LucideIcon }> = {
@@ -64,7 +65,7 @@ export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Pro
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return data as any[];
+      return data as EntityPositionWithProfile[];
     },
   });
 
@@ -100,7 +101,7 @@ export const EntityMembersTab = memo(function EntityMembersTab({ entityId }: Pro
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             {positions.map((pos) => {
-              const profile = pos.profiles as any;
+              const profile = pos.profiles;
               const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
               const label = positionLabels[pos.position_type];
               const posTitle = pos.position_title

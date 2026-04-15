@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { Crown, User, Shield, Star, Users, Award } from "lucide-react";
+import type { EntityPositionWithProfile } from "./entityTypes";
 
 const positionLabels: Record<string, { en: string; ar: string }> = {
   president: { en: "President", ar: "الرئيس" },
@@ -54,7 +55,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return data as any[];
+      return data as EntityPositionWithProfile[];
     },
   });
 
@@ -93,7 +94,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
   };
 
   const renderFeaturedCard = (pos) => {
-    const profile = pos.profiles as any;
+    const profile = pos.profiles;
     const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
     const username = profile?.username;
     const title = getTitle(pos);
@@ -139,7 +140,7 @@ export const EntityLeadershipSection = memo(function EntityLeadershipSection({ e
   };
 
   const renderMemberCard = (pos) => {
-    const profile = pos.profiles as any;
+    const profile = pos.profiles;
     const displayName = isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—";
     const username = profile?.username;
     const title = getTitle(pos);
