@@ -12,6 +12,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EmptyState } from "@/components/ui/empty-state";
+import { StaleDataBanner } from "@/components/ui/stale-data-banner";
+import { ContentGridSkeleton } from "@/components/ui/content-skeletons";
 import {
   ChefHat, Clock, Users as UsersIcon, Star, Search, Flame,
   UtensilsCrossed, ArrowRight, Plus,
@@ -120,7 +123,7 @@ export default function Recipes() {
   const [sortBy, setSortBy] = useState("newest");
 
   const { data: cuisines = [] } = useDistinctCuisines();
-  const { data: recipes = [], isLoading } = useRecipes({
+  const { data: recipes = [], isLoading, isFetching } = useRecipes({
     search: search || undefined,
     cuisine: cuisine !== "all" ? cuisine : undefined,
     difficulty: difficulty !== "all" ? difficulty : undefined,
@@ -244,34 +247,30 @@ export default function Recipes() {
           </div>
 
           {/* Grid */}
+          <StaleDataBanner isRevalidating={isFetching && !isLoading} isAr={isAr} className="mb-4" />
+
           {isLoading ? (
-            <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <Card key={i} className="overflow-hidden">
-                  <Skeleton className="aspect-video w-full" />
-                  <div className="p-4 space-y-2">
-                    <Skeleton className="h-5 w-3/4" />
-                    <Skeleton className="h-3 w-full" />
-                    <Skeleton className="h-3 w-2/3" />
-                  </div>
-                </Card>
-              ))}
-            </div>
+            <ContentGridSkeleton count={6} columns="grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" />
           ) : recipes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-muted/60 ring-1 ring-border/50">
-                <UtensilsCrossed className="h-8 w-8 text-muted-foreground/40" />
-              </div>
-              <h3 className="mb-1 text-lg font-semibold">{isAr ? "لا توجد وصفات" : "No recipes found"}</h3>
-              <p className="max-w-sm text-sm text-muted-foreground">
-                {isAr ? "جرب تغيير معايير البحث" : "Try adjusting your search filters"}
-              </p>
-              {search && (
-                <Button variant="outline" size="sm" className="mt-4" onClick={() => setSearch("")}>
-                  {isAr ? "مسح البحث" : "Clear search"}
-                </Button>
-              )}
-            </div>
+            <EmptyState
+              icon={UtensilsCrossed}
+              title={isAr ? "لا توجد وصفات" : "No recipes found"}
+              description={isAr ? "جرب تغيير معايير البحث" : "Try adjusting your search filters"}
+              action={
+                search ? (
+                  <Button variant="outline" size="sm" onClick={() => setSearch("")}>
+                    {isAr ? "مسح البحث" : "Clear search"}
+                  </Button>
+                ) : user ? (
+                  <Button asChild>
+                    <Link to="/recipes/create">
+                      <Plus className="me-1.5 h-4 w-4" />
+                      {isAr ? "إضافة وصفة" : "Add Recipe"}
+                    </Link>
+                  </Button>
+                ) : undefined
+              }
+            />
           ) : (
             <div className="grid gap-3 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {sortedRecipes.map(recipe => (
