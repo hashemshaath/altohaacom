@@ -160,7 +160,7 @@ export default function CostCenterAdmin() {
       setTimeout(async () => {
         const { data: items } = await supabase.from("cost_estimate_items").select("id, estimate_id, description, quantity, unit_price, total_price, category, sort_order").eq("estimate_id", selectedEstimateId);
         if (items) {
-          const totals = recalcEstimateTotals(items, selectedEstimate?.tax_rate || 15, selectedEstimate?.discount_amount || 0);
+          const totals = recalcEstimateTotals(items as any, selectedEstimate?.tax_rate || 15, selectedEstimate?.discount_amount || 0);
           await updateEstimate.mutateAsync({ id: selectedEstimateId, ...totals } as any);
         }
       }, 200);

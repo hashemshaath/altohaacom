@@ -25,7 +25,7 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
       const r4 = await supabase.from("masterclass_enrollments").select("progress_percentage, completed_at").limit(QUERY_LIMIT_LARGE) as { data: { progress_percentage: number; completed_at: string | null }[] | null };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema columns
-      const r5 = await supabase.from("masterclasses").select("id, title, title_ar, enrollment_count, average_rating").limit(QUERY_LIMIT_LARGE)
+      const r5 = await (supabase.from("masterclasses").select("id, title, title_ar, enrollment_count, average_rating").limit(QUERY_LIMIT_LARGE) as any)
         .eq("is_published", true).order("enrollment_count", { ascending: false }).limit(5) as { data: { id: string; title: string; title_ar: string | null; enrollment_count: number; average_rating: number }[] | null };
 
       const totalCourses = r1.count || 0;

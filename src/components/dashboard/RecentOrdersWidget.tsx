@@ -25,7 +25,7 @@ export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
     queryKey: ["recent-orders-widget", user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data }: any = await supabase
+      const { data }: any = await (supabase as any)
         .from("shop_orders")
         .select("id, order_number, total_amount, currency, status, created_at")
         .eq("user_id", user.id)

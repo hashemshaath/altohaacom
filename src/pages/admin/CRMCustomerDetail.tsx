@@ -159,9 +159,9 @@ export default function CRMCustomerDetail() {
   const { data: registrations = [] } = useQuery({
     queryKey: ["crm-customer-registrations", userId],
     queryFn: async (): Promise<any[]> => {
-      const result = await supabase
+      const result = await (supabase
         .from("competition_registrations")
-        .select("*, competitions(name, name_ar)")
+        .select("*, competitions(name, name_ar)") as any)
         .eq("user_id", userId!);
       return result.data || [];
     },
