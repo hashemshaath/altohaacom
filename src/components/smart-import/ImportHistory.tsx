@@ -1,4 +1,5 @@
 import React from "react";
+import { formatSimpleDate, formatTime } from "@/lib/dateUtils";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -55,8 +56,8 @@ export const ImportHistory = React.memo(({ open, onOpenChange, loading, history,
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground shrink-0 text-end">
-                    <p>{new Date(log.created_at).toLocaleDateString()}</p>
-                    <p>{new Date(log.created_at).toLocaleTimeString()}</p>
+                    <p>{formatSimpleDate(log.created_at)}</p>
+                    <p>{formatTime(log.created_at)}</p>
                   </div>
                 </div>
               );

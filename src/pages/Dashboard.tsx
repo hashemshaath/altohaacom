@@ -1,4 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
+import { formatWeekdayShort } from "@/lib/dateUtils";
 import { lazy, Suspense, useEffect, useRef, memo } from "react";
 import { MembershipExpiryBanner } from "@/components/membership/MembershipExpiryBanner";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
@@ -353,7 +354,7 @@ const HeroWelcome = memo(function HeroWelcome({
                   )}
                   <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-muted/60 text-muted-foreground border border-border/30">
                     <Calendar className="h-3.5 w-3.5" />
-                    {new Date().toLocaleDateString(isAr ? "ar-SA" : "en-US", { weekday: "short", month: "short", day: "numeric" })}
+                    {formatWeekdayShort(new Date(), isAr)}
                   </span>
                 </div>
               </div>
