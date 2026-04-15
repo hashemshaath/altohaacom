@@ -87,29 +87,22 @@ window.addEventListener("vite:preloadError", (event: Event) => {
   handleBootFailure(message);
 });
 
-const cleanupLegacyRuntime = async () => {
-  const cleanups: Promise<unknown>[] = [];
+const isInIframe = (() => {
+  try { return window.self !== window.top; } catch { return true; }
+})();
 
+const isPreviewHost =
+  window.location.hostname.includes("id-preview--") ||
+  window.location.hostname.includes("lovableproject.com");
+
+if (isPreviewHost || isInIframe) {
+  // Unregister service workers in preview/iframe contexts
   if ("serviceWorker" in navigator) {
-    cleanups.push(
-      navigator.serviceWorker
-        .getRegistrations()
-        .then((registrations) => Promise.allSettled(registrations.map((registration) => registration.unregister())))
+    navigator.serviceWorker.getRegistrations().then((regs) =>
+      regs.forEach((r) => r.unregister())
     );
   }
-
-  if ("caches" in window) {
-    cleanups.push(
-      caches
-        .keys()
-        .then((keys) => Promise.allSettled(keys.map((key) => caches.delete(key))))
-    );
-  }
-
-  await Promise.allSettled(cleanups);
-};
-
-void cleanupLegacyRuntime();
+}
 
 if (!root) {
   console.error("[boot] #root element not found");
