@@ -1,3 +1,4 @@
+import { MS_PER_DAY } from "@/lib/constants";
 /**
  * Derive the real-time exhibition/event status from dates.
  * This is the single source of truth for exhibition status display across the app.
