@@ -39,7 +39,7 @@ import {
   Eye,
 } from "lucide-react";
 import { format } from "date-fns";
-import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
+import { useGlobalSearch, type SearchFilters, type ArticleResult, type MemberResult, type PostResult, type RecipeResult, type ExhibitionResult, type EntityResult } from "@/hooks/useGlobalSearch";
 import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
 import { SearchSuggestions } from "@/components/search/SearchSuggestions";
 import { HighlightText } from "@/components/search/HighlightText";
