@@ -299,7 +299,7 @@ export function useJobSearchData() {
     showSalaryOnly, setShowSalaryOnly,
     showFiltersPanel, setShowFiltersPanel,
     recentSearches, showRecentSearches, setShowRecentSearches,
-    visibleCount, setVisibleCount, copiedShare, savedJobs,
+    visibleCount, setVisibleCount, copiedShare, savedJobs, setSavedJobs,
     // Handlers
     handleSearchSubmit, toggleSaveJob, handleShareSearch, clearAllFilters,
     // Data

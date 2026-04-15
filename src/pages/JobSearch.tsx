@@ -43,7 +43,7 @@ export default function JobSearch() {
     showSalaryOnly, setShowSalaryOnly,
     showFiltersPanel, setShowFiltersPanel,
     recentSearches, showRecentSearches, setShowRecentSearches,
-    visibleCount, setVisibleCount, copiedShare, savedJobs,
+    visibleCount, setVisibleCount, copiedShare, savedJobs, setSavedJobs,
     handleSearchSubmit, toggleSaveJob, handleShareSearch, clearAllFilters,
     loadingPostings, loadingChefs,
     jobPostings, availableChefs,
