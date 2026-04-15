@@ -235,7 +235,7 @@ export default function CompanyPortalDashboard() {
             </Button>
           </div>
           <CardContent className="p-5">
-            <SponsorshipWidget companyId={companyId} language={language} />
+            <SponsorshipWidget companyId={companyId} />
           </CardContent>
         </Card>
       </div>
