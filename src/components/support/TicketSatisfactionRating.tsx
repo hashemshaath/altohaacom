@@ -51,7 +51,7 @@ export const TicketSatisfactionRating = memo(function TicketSatisfactionRating({
       await supabase.from("support_tickets").update({
         satisfaction_rating: rating,
         satisfaction_feedback: feedback || null,
-      } as never).eq("id", ticketId);
+      } as any).eq("id", ticketId);
       setSubmitted(true);
       toast.success(isAr ? "تم إرسال التقييم بنجاح" : "Rating submitted successfully");
     } catch {

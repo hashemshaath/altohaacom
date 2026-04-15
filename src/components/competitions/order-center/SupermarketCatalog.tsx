@@ -140,7 +140,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
   const saveMutation = useMutation({
     mutationFn: async (data: Record<string, any>) => {
       if (editId) {
-        const { error } = await supabase.from("requirement_items").update(data as never).eq("id", editId);
+        const { error } = await supabase.from("requirement_items").update(data as any).eq("id", editId);
         if (error) throw error;
       } else {
         const { error } = await supabase.from("requirement_items").insert({ ...data, created_by: user!.id } as any);
@@ -216,7 +216,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
         estimated_cost: item.estimated_cost,
         category: item.category,
       }));
-      const { error } = await supabase.from("requirement_templates" as never).insert({
+      const { error } = await supabase.from("requirement_templates" as any).insert({
         name: templateName,
         category: "general",
         items: templateItems,

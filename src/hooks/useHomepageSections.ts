@@ -74,7 +74,7 @@ export function useUpdateHomepageSection() {
     mutationFn: async ({ id, ...updates }: Partial<HomepageSection> & { id: string }) => {
       const { error } = await supabase
         .from("homepage_sections")
-        .update(updates as never)
+        .update(updates as any)
         .eq("id", id);
       if (error) throw error;
     },
@@ -89,7 +89,7 @@ export function useBulkUpdateHomepageSections() {
       for (const { id, ...updates } of sections) {
         const { error } = await supabase
           .from("homepage_sections")
-          .update(updates as never)
+          .update(updates as any)
           .eq("id", id);
         if (error) throw error;
       }
@@ -104,7 +104,7 @@ export function useCreateHomepageSection() {
     mutationFn: async (section: Omit<HomepageSection, "id" | "updated_at">) => {
       const { error } = await supabase
         .from("homepage_sections")
-        .insert(section as never);
+        .insert(section as any);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),

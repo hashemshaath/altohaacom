@@ -122,9 +122,9 @@ function createAsyncScript(src: string, attrs?: Record<string, string>): HTMLScr
 function ensureGtag() {
   if (typeof window.gtag === "function") return;
   window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag() {
-    // eslint-disable-next-line prefer-rest-params
-    window.dataLayer.push(arguments);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  window.gtag = function gtag(...args: any[]) {
+    window.dataLayer!.push(args as any);
   };
   window.gtag("js", new Date());
 }

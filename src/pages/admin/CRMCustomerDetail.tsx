@@ -67,9 +67,9 @@ export default function CRMCustomerDetail() {
   const { data: orders = [] } = useQuery({
     queryKey: ["crm-customer-orders", userId],
     queryFn: async (): Promise<any[]> => {
-      const result = await supabase
+      const result = await (supabase
         .from("shop_orders")
-        .select("id, order_number, user_id, status, total_amount, currency, payment_status, created_at")
+        .select("id, order_number, user_id, status, total_amount, currency, payment_status, created_at") as any)
         .eq("user_id", userId!)
         .order("created_at", { ascending: false });
       return result.data || [];
@@ -159,9 +159,9 @@ export default function CRMCustomerDetail() {
   const { data: registrations = [] } = useQuery({
     queryKey: ["crm-customer-registrations", userId],
     queryFn: async (): Promise<any[]> => {
-      const result = await supabase
+      const result = await (supabase
         .from("competition_registrations")
-        .select("*, competitions(name, name_ar)")
+        .select("*, competitions(name, name_ar)") as any)
         .eq("user_id", userId!);
       return result.data || [];
     },

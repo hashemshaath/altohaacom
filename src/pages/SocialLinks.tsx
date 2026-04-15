@@ -95,7 +95,7 @@ export default function SocialLinks() {
       const isTablet = /iPad|Tablet/i.test(ua);
       const deviceType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
       const browser = /Firefox/i.test(ua) ? "Firefox" : /Edg/i.test(ua) ? "Edge" : /Chrome/i.test(ua) ? "Chrome" : /Safari/i.test(ua) ? "Safari" : "Other";
-      supabase.from("social_link_clicks" as never).insert({ page_id: data.page.id, link_id: itemId, device_type: deviceType, browser, referrer: document.referrer || null } as any).then(null, () => {});
+      supabase.from("social_link_clicks" as any).insert({ page_id: data.page.id, link_id: itemId, device_type: deviceType, browser, referrer: document.referrer || null } as any).then(null, () => {});
     }
   }, [data?.page?.id]);
 

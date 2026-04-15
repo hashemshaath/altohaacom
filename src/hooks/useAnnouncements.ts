@@ -27,7 +27,7 @@ export function useAnnouncements() {
     queryKey: ["site-announcements"],
     queryFn: async () => {
       const { data, error } = await (supabase
-        .from("site_announcements" as never) as any)
+        .from("site_announcements" as any) as any)
         .select("id, title, title_ar, body, body_ar, type, link_url, link_text, link_text_ar, bg_color, is_dismissible, priority")
         .eq("is_active", true)
         .lte("starts_at", new Date().toISOString())
@@ -44,7 +44,7 @@ export function useAnnouncements() {
     queryKey: ["dismissed-announcements", user?.id],
     queryFn: async () => {
       const { data } = await (supabase
-        .from("dismissed_announcements" as never) as any)
+        .from("dismissed_announcements" as any) as any)
         .select("announcement_id")
         .eq("user_id", user!.id);
       return (data || []).map((d) => d.announcement_id) as string[];
@@ -56,7 +56,7 @@ export function useAnnouncements() {
   const dismiss = useMutation({
     mutationFn: async (announcementId: string) => {
       if (!user) return;
-      await (supabase.from("dismissed_announcements" as never) as never).insert({
+      await (supabase.from("dismissed_announcements" as any) as any).insert({
         user_id: user.id,
         announcement_id: announcementId,
       });

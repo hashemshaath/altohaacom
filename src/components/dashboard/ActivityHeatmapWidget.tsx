@@ -30,9 +30,9 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
       const since = subDays(new Date(), DAYS).toISOString();
 
       const [postsRes, recipesRes, commentsRes]: any[] = await Promise.all([
-        supabase.from("posts" as never).select("created_at").eq("author_id", user.id).gte("created_at", since),
-        supabase.from("recipes" as never).select("created_at").eq("author_id", user.id).gte("created_at", since),
-        supabase.from("post_comments" as never).select("created_at").eq("user_id", user.id).gte("created_at", since),
+        supabase.from("posts" as any).select("created_at").eq("author_id", user.id).gte("created_at", since),
+        supabase.from("recipes" as any).select("created_at").eq("author_id", user.id).gte("created_at", since),
+        supabase.from("post_comments" as any).select("created_at").eq("user_id", user.id).gte("created_at", since),
       ]);
 
       const allDates: string[] = [

@@ -59,7 +59,7 @@ export const OrderActivityLog = memo(function OrderActivityLog({ competitionId }
     queryFn: async () => {
       const { data, error } = await supabase
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-        .from("order_activity_log" as never)
+        .from("order_activity_log" as any)
         .select("id, competition_id, user_id, action_type, entity_type, entity_id, details, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false })

@@ -53,7 +53,7 @@ export async function executeEvaluationWorkflow(
 async function getSessionInfo(sessionId: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
   const { data } = await supabase
-    .from("chefs_table_sessions" as never)
+    .from("chefs_table_sessions" as any)
     .select("title, title_ar, product_name, product_name_ar, company_id")
     .eq("id", sessionId)
     .single();
@@ -182,7 +182,7 @@ async function handleSessionStatusChanged(ctx: EvaluationContext) {
   // Get assigned chefs
   const { data: registrations } = await supabase
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- non-schema table
-    .from("chef_evaluation_registrations" as never)
+    .from("chef_evaluation_registrations" as any)
     .select("chef_id")
     .eq("session_id", ctx.sessionId)
     .eq("status", "matched");

@@ -360,11 +360,11 @@ export default function CompetitionsAdmin() {
 
       let competitionId: string;
       if (mode === "update" && existingId) {
-        const { error } = await supabase.from("competitions").update(competitionPayload as never).eq("id", existingId);
+        const { error } = await supabase.from("competitions").update(competitionPayload as any).eq("id", existingId);
         if (error) throw error;
         competitionId = existingId;
       } else {
-        const { data: inserted, error } = await supabase.from("competitions").insert({ ...competitionPayload, status: "draft" as any, organizer_id: user?.id || "" } as never).select("id").single();
+        const { data: inserted, error } = await supabase.from("competitions").insert({ ...competitionPayload, status: "draft" as any, organizer_id: user?.id || "" } as any).select("id").single();
         if (error) throw error;
         competitionId = inserted.id;
       }
