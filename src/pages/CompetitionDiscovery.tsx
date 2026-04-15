@@ -26,6 +26,7 @@ import {
 
 export default function CompetitionDiscovery() {
   const isAr = useIsAr();
+  const { language } = useLanguage();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [countryFilter, setCountryFilter] = useState("all");

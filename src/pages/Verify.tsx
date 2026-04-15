@@ -342,6 +342,7 @@ function VerificationResult({
   code: string;
   onSaveContact: () => void;
 }) {
+  const isAr = useIsAr();
   const entityType = result.entity_type;
 
   const typeLabels: Record<string, { en: string; ar: string; icon: LucideIcon; color: string }> = {

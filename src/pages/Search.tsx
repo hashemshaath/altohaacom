@@ -379,7 +379,6 @@ export default function Search() {
               recentSearches={recentSearches}
               onRecentClick={handleRecentClick}
               onClear={handleClearRecent}
-              isAr={isAr}
             />
           ) : totalResults === 0 ? (
             <EmptySearch query={filters.query} />
@@ -394,10 +393,9 @@ export default function Search() {
                       title={isAr ? "المسابقات" : "Competitions"}
                       count={results.competitions.length}
                       onViewAll={() => updateFilter("type", "competitions")}
-                      isAr={isAr}
                     >
                       {results.competitions.slice(0, 5).map((c) => (
-                        <CompetitionRow key={c.id} data={c} isAr={isAr} getStatusLabel={getStatusLabel} />
+                        <CompetitionRow key={c.id} data={c} getStatusLabel={getStatusLabel} />
                       ))}
                     </ResultSection>
                   )}
@@ -407,10 +405,9 @@ export default function Search() {
                       title={isAr ? "المقالات" : "Articles"}
                       count={results.articles.length}
                       onViewAll={() => updateFilter("type", "articles")}
-                      isAr={isAr}
                     >
                       {results.articles.slice(0, 5).map((a) => (
-                        <ArticleRow key={a.id} data={a} isAr={isAr} />
+                        <ArticleRow key={a.id} data={a} />
                       ))}
                     </ResultSection>
                   )}
@@ -420,10 +417,9 @@ export default function Search() {
                       title={isAr ? "الأعضاء" : "Members"}
                       count={results.members.length}
                       onViewAll={() => updateFilter("type", "members")}
-                      isAr={isAr}
                     >
                       {results.members.slice(0, 5).map((m) => (
-                        <MemberRow key={m.id} data={m} isAr={isAr} />
+                        <MemberRow key={m.id} data={m} />
                       ))}
                     </ResultSection>
                   )}
@@ -433,10 +429,9 @@ export default function Search() {
                       title={isAr ? "الجهات والمؤسسات" : "Organizations"}
                       count={results.entities.length}
                       onViewAll={() => updateFilter("type", "entities")}
-                      isAr={isAr}
                     >
                       {results.entities.slice(0, 5).map((e) => (
-                        <EntityRow key={`${e.source}-${e.id}`} data={e} isAr={isAr} />
+                        <EntityRow key={`${e.source}-${e.id}`} data={e} />
                       ))}
                     </ResultSection>
                   )}
@@ -446,10 +441,9 @@ export default function Search() {
                       title={isAr ? "المنشورات" : "Posts"}
                       count={results.posts.length}
                       onViewAll={() => updateFilter("type", "posts")}
-                      isAr={isAr}
                     >
                       {results.posts.slice(0, 5).map((p) => (
-                        <PostRow key={p.id} data={p} isAr={isAr} />
+                        <PostRow key={p.id} data={p} />
                       ))}
                     </ResultSection>
                   )}
@@ -459,10 +453,9 @@ export default function Search() {
                       title={isAr ? "الوصفات" : "Recipes"}
                       count={results.recipes.length}
                       onViewAll={() => updateFilter("type", "recipes")}
-                      isAr={isAr}
                     >
                       {results.recipes.slice(0, 5).map((r) => (
-                        <RecipeRow key={r.id} data={r} isAr={isAr} />
+                        <RecipeRow key={r.id} data={r} />
                       ))}
                     </ResultSection>
                    )}
@@ -472,10 +465,9 @@ export default function Search() {
                       title={isAr ? "المعارض والفعاليات" : "Exhibitions & Events"}
                       count={results.exhibitions.length}
                       onViewAll={() => updateFilter("type", "exhibitions")}
-                      isAr={isAr}
                     >
                       {results.exhibitions.slice(0, 5).map((e) => (
-                        <ExhibitionRow key={e.id} data={e} isAr={isAr} />
+                        <ExhibitionRow key={e.id} data={e} />
                       ))}
                     </ResultSection>
                   )}
@@ -485,31 +477,31 @@ export default function Search() {
               {/* Individual tabs */}
               {filters.type === "competitions" &&
                 results.competitions.map((c) => (
-                  <CompetitionRow key={c.id} data={c} isAr={isAr} getStatusLabel={getStatusLabel} />
+                  <CompetitionRow key={c.id} data={c} getStatusLabel={getStatusLabel} />
                 ))}
               {filters.type === "exhibitions" &&
                 results.exhibitions.map((e) => (
-                  <ExhibitionRow key={e.id} data={e} isAr={isAr} />
+                  <ExhibitionRow key={e.id} data={e} />
                 ))}
               {filters.type === "articles" &&
                 results.articles.map((a) => (
-                  <ArticleRow key={a.id} data={a} isAr={isAr} />
+                  <ArticleRow key={a.id} data={a} />
                 ))}
               {filters.type === "members" &&
                 results.members.map((m) => (
-                  <MemberRow key={m.id} data={m} isAr={isAr} />
+                  <MemberRow key={m.id} data={m} />
                 ))}
               {filters.type === "entities" &&
                 results.entities.map((e) => (
-                  <EntityRow key={`${e.source}-${e.id}`} data={e} isAr={isAr} />
+                  <EntityRow key={`${e.source}-${e.id}`} data={e} />
                 ))}
               {filters.type === "recipes" &&
                 results.recipes.map((r) => (
-                  <RecipeRow key={r.id} data={r} isAr={isAr} />
+                  <RecipeRow key={r.id} data={r} />
                 ))}
               {filters.type === "posts" &&
                 results.posts.map((p) => (
-                  <PostRow key={p.id} data={p} isAr={isAr} />
+                  <PostRow key={p.id} data={p} />
                 ))}
             </div>
           )}

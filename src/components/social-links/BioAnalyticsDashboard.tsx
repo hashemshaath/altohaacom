@@ -382,7 +382,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
                     {"suffix" in stat ? stat.suffix : ""}
                   </p>
                   <p className="text-[12px] text-muted-foreground leading-tight truncate">{stat.label}</p>
-                  {"trend" in stat && stat.trend !== undefined && <TrendBadge value={stat.trend as number} isAr={isAr} />}
+                  {"trend" in stat && stat.trend !== undefined && <TrendBadge value={stat.trend as number} />}
                 </div>
               </div>
             </CardContent>

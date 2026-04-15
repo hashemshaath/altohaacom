@@ -106,6 +106,7 @@ export const DashboardLayoutControl = memo(function DashboardLayoutControl({ wid
   toggleWidget: (id: string) => void;
   resetLayout: () => void;
 }) {
+  const isAr = useIsAr();
 
   return (
     <Popover>

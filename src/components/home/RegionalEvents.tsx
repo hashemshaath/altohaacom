@@ -82,7 +82,6 @@ export function RegionalEvents() {
             itemCount={filteredComps.length}
             viewAllHref="/competitions"
             viewAllLabel={isAr ? "عرض جميع الفعاليات" : "View All Events"}
-            isAr={isAr}
             filters={
               <>
                 <FilterChip label={isAr ? "🇸🇦 السعودية" : "🇸🇦 Saudi Arabia"} active={activeTab === "saudi"} count={saudiCount} onClick={() => setActiveTab("saudi")} />
@@ -103,7 +102,7 @@ export function RegionalEvents() {
 
               <div ref={scrollRef} className="flex gap-3 overflow-x-auto pb-2 snap-x snap-mandatory no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" } as React.CSSProperties} dir={isAr ? "rtl" : "ltr"}>
                 {filteredComps.map((item) => (
-                  <EventCard key={item.id} item={item} isAr={isAr} />
+                  <EventCard key={item.id} item={item} />
                 ))}
               </div>
             </div>
