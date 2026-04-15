@@ -25,3 +25,6 @@ export { StepProgress } from "./step-progress";
 export { SuccessCelebration } from "./success-celebration";
 export { TrendIndicator } from "./trend-indicator";
 export { AddToCalendarButton } from "./AddToCalendarButton";
+export { MetricCard } from "./metric-card";
+export { DataList } from "./data-list";
+export { InfoBadge } from "./info-badge";
