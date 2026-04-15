@@ -112,7 +112,7 @@ export default function AIConfigAdmin() {
             </div>
           </div>
           <Badge variant="default" className="gap-1 bg-chart-5 hover:bg-chart-5/90 text-[12px] sm:text-xs">
-            <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
             {isAr ? "نشط" : "Active"}
           </Badge>
         </CardContent>

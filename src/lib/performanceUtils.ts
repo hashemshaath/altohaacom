@@ -5,7 +5,7 @@
 /**
  * Debounce a function call by `delay` ms.
  */
-export function debounce<T extends (...args: any[]) => any>(fn: T, delay = 300): T & { cancel: () => void } {
+export function debounce<T extends (...args: unknown[]) => unknown>(fn: T, delay = 300): T & { cancel: () => void } {
   let timer: ReturnType<typeof setTimeout> | null = null;
   const debounced = (...args: Parameters<T>) => {
     if (timer) clearTimeout(timer);
@@ -20,7 +20,7 @@ export function debounce<T extends (...args: any[]) => any>(fn: T, delay = 300):
 /**
  * Throttle a function call to at most once per `limit` ms.
  */
-export function throttle<T extends (...args: any[]) => any>(fn: T, limit = 200): T {
+export function throttle<T extends (...args: unknown[]) => unknown>(fn: T, limit = 200): T {
   let inThrottle = false;
   return ((...args: Parameters<T>) => {
     if (!inThrottle) {
@@ -34,18 +34,18 @@ export function throttle<T extends (...args: any[]) => any>(fn: T, limit = 200):
 /**
  * Simple memoize for single-argument pure functions.
  */
-export function memoize<T extends (arg) => any>(fn: T, maxSize = 100): T {
-  const cache = new Map<any, ReturnType<T>>();
-  return ((arg) => {
-    if (cache.has(arg)) return cache.get(arg);
+export function memoize<A, R>(fn: (arg: A) => R, maxSize = 100): (arg: A) => R {
+  const cache = new Map<A, R>();
+  return (arg: A): R => {
+    if (cache.has(arg)) return cache.get(arg)!;
     const result = fn(arg);
     if (cache.size >= maxSize) {
       const firstKey = cache.keys().next().value;
-      cache.delete(firstKey);
+      cache.delete(firstKey!);
     }
     cache.set(arg, result);
     return result;
-  }) as T;
+  };
 }
 
 /**

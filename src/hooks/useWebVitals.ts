@@ -87,17 +87,8 @@ export function useWebVitals() {
     // Log summary after page settles
     const timer = setTimeout(() => {
       const v = vitals.current;
-      if (import.meta.env.DEV) {
-        console.log(
-          "%c⚡ Web Vitals",
-          "color: #10b981; font-weight: bold",
-          `TTFB: ${v.ttfb?.toFixed(0) ?? "?"}ms`,
-          `FCP: ${v.fcp?.toFixed(0) ?? "?"}ms`,
-          `LCP: ${v.lcp?.toFixed(0) ?? "?"}ms`,
-          `CLS: ${v.cls?.toFixed(3) ?? "?"}`,
-          `FID: ${v.fid?.toFixed(0) ?? "?"}ms`,
-          `INP: ${v.inp?.toFixed(0) ?? "?"}ms`
-        );
+      if (import.meta.env.DEV && v.lcp) {
+        // Web vitals collected: TTFB, FCP, LCP, CLS, FID, INP
       }
     }, 10_000);
 

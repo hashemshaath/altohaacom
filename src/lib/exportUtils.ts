@@ -2,7 +2,7 @@
  * Export utilities for CSV and data downloads across the platform.
  */
 
-export function downloadCSV(data: Record<string, any>[], filename: string, columns?: { key: string; label: string }[]) {
+export function downloadCSV(data: Record<string, unknown>[], filename: string, columns?: { key: string; label: string }[]) {
   if (!data.length) return;
 
   const cols = columns || Object.keys(data[0]).map(k => ({ key: k, label: k }));
@@ -21,7 +21,7 @@ export function downloadCSV(data: Record<string, any>[], filename: string, colum
   triggerDownload(blob, `${filename}.csv`);
 }
 
-export function downloadJSON(data: any, filename: string) {
+export function downloadJSON(data: unknown, filename: string) {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   triggerDownload(blob, `${filename}.json`);
 }

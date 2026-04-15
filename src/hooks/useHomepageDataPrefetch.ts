@@ -131,7 +131,7 @@ export function useHomepageDataPrefetch() {
       const getData = <T,>(index: number): T | null => {
         const r = results[index];
         if (r.status !== "fulfilled") return null;
-        const val = r.value as any;
+        const val = r.value as { data?: T };
         return val?.data ?? null;
       };
 

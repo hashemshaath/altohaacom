@@ -519,7 +519,7 @@ export default function CertificatesAdmin() {
                             {cert.recipient_email && <p className="text-xs text-muted-foreground">{cert.recipient_email}</p>}
                           </TableCell>
                           <TableCell>
-                            <Badge className={`text-[12px] ${certificateTypes.find(t => t.value === cert.type)?.color} text-white`}>
+                            <Badge className={`text-[12px] ${certificateTypes.find(t => t.value === cert.type)?.color} text-primary-foreground`}>
                               {getTypeLabel(cert.type)}
                             </Badge>
                           </TableCell>

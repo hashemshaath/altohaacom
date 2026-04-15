@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import type { Json } from "@/integrations/supabase/types";
 
 export interface RecipeIngredient {
   name: string;
@@ -227,8 +228,8 @@ export function useCreateRecipe() {
           ...recipe,
           author_id: user.id,
           slug,
-          ingredients: recipe.ingredients as any,
-          steps: recipe.steps as any,
+          ingredients: recipe.ingredients as Json,
+          steps: recipe.steps as Json,
         })
         .select()
         .single();

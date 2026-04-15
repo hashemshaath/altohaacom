@@ -39,7 +39,7 @@ import {
   Eye,
 } from "lucide-react";
 import { format } from "date-fns";
-import { useGlobalSearch, type SearchFilters } from "@/hooks/useGlobalSearch";
+import { useGlobalSearch, type SearchFilters, type ArticleResult, type MemberResult, type PostResult, type RecipeResult, type ExhibitionResult, type EntityResult } from "@/hooks/useGlobalSearch";
 import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
 import { SearchSuggestions } from "@/components/search/SearchSuggestions";
 import { HighlightText } from "@/components/search/HighlightText";
@@ -622,7 +622,7 @@ function CompetitionRow({
 }
 
 /* ──────────────── Article Row ──────────────── */
-function ArticleRow({ data }: { data: any }) {
+function ArticleRow({ data }: { data: ArticleResult }) {
   const isAr = useIsAr();
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
@@ -681,7 +681,7 @@ function ArticleRow({ data }: { data: any }) {
 }
 
 /* ──────────────── Member Row ──────────────── */
-function MemberRow({ data }: { data: any }) {
+function MemberRow({ data }: { data: MemberResult }) {
   const isAr = useIsAr();
   const sq = useSearchQuery();
   const displayName = isAr
@@ -738,7 +738,7 @@ function MemberRow({ data }: { data: any }) {
 }
 
 /* ──────────────── Post Row ──────────────── */
-function PostRow({ data }: { data: any }) {
+function PostRow({ data }: { data: PostResult }) {
   const isAr = useIsAr();
   return (
     <Link
@@ -775,7 +775,7 @@ function PostRow({ data }: { data: any }) {
         </div>
         {data.image_url && (
           <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-muted">
-            <img loading="lazy" src={data.image_url} alt={data.title || "Result"} className="w-full h-full object-cover" />
+            <img loading="lazy" src={data.image_url} alt="Result" className="w-full h-full object-cover" />
           </div>
         )}
       </div>
@@ -784,7 +784,7 @@ function PostRow({ data }: { data: any }) {
 }
 
 /* ──────────────── Recipe Row ──────────────── */
-function RecipeRow({ data }: { data: any }) {
+function RecipeRow({ data }: { data: RecipeResult }) {
   const isAr = useIsAr();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
@@ -837,7 +837,7 @@ function RecipeRow({ data }: { data: any }) {
 }
 
 /* ──────────────── Exhibition Row ──────────────── */
-function ExhibitionRow({ data }: { data: any }) {
+function ExhibitionRow({ data }: { data: ExhibitionResult }) {
   const isAr = useIsAr();
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
@@ -867,7 +867,7 @@ function ExhibitionRow({ data }: { data: any }) {
 }
 
 /* ──────────────── Entity Row ──────────────── */
-function EntityRow({ data }: { data: any }) {
+function EntityRow({ data }: { data: EntityResult }) {
   const isAr = useIsAr();
   const name = isAr && data.name_ar ? data.name_ar : data.name;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
