@@ -161,7 +161,6 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
               </Link>
             );
           })}
-          })}
         </HorizontalScrollRow>
       </div>
     </section>

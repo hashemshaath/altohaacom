@@ -146,7 +146,6 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
               </Link>
             );
           })}
-          })}
         </HorizontalScrollRow>
       </div>
     </section>
