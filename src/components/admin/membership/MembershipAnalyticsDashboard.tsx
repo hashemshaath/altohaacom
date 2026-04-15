@@ -505,19 +505,19 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
           <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
             <div className="rounded-xl border p-3 text-center">
               <AnimatedCounter value={giftStats?.total || 0} className="text-2xl" />
-              <p className="text-[12px] text-muted-foreground">{isAr ? "إجمالي الهدايا" : "Total Gifts"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "إجمالي الهدايا" : "Total Gifts"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
               <AnimatedCounter value={giftStats?.redeemed || 0} className="text-2xl text-primary" />
-              <p className="text-[12px] text-muted-foreground">{isAr ? "تم استردادها" : "Redeemed"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "تم استردادها" : "Redeemed"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
               <AnimatedCounter value={giftStats?.pending || 0} className="text-2xl text-chart-3" />
-              <p className="text-[12px] text-muted-foreground">{isAr ? "في الانتظار" : "Pending"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "في الانتظار" : "Pending"}</p>
             </div>
             <div className="rounded-xl border p-3 text-center">
               <AnimatedCounter value={Math.round(giftStats?.totalRevenue || 0)} className="text-2xl text-chart-2" suffix=" SAR" />
-              <p className="text-[12px] text-muted-foreground">{isAr ? "إيرادات الهدايا" : "Gift Revenue"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "إيرادات الهدايا" : "Gift Revenue"}</p>
             </div>
           </div>
           <div className="mt-3 flex items-center justify-between rounded-xl border p-3">
@@ -548,7 +548,7 @@ function KPICard({ icon: Icon, label, value, sub, color = "text-foreground" }: {
         ) : (
           <p className="text-xl font-bold">{value}</p>
         )}
-        <p className="text-[12px] text-muted-foreground mt-0.5">{sub}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
       </CardContent>
     </Card>
   );

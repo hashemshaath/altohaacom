@@ -111,21 +111,21 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
           <CardContent className="p-3 text-center">
             <Ticket className="h-4 w-4 mx-auto text-primary mb-1" />
             <p className="text-lg font-bold">{stats?.total || 0}</p>
-            <p className="text-[12px] text-muted-foreground">{t("Total Tickets", "إجمالي التذاكر")}</p>
+            <p className="text-xs text-muted-foreground">{t("Total Tickets", "إجمالي التذاكر")}</p>
           </CardContent>
         </Card>
         <Card className="border-border/40">
           <CardContent className="p-3 text-center">
             <CheckCircle2 className="h-4 w-4 mx-auto text-chart-3 mb-1" />
             <p className="text-lg font-bold text-chart-3">{stats?.checkedIn || 0}</p>
-            <p className="text-[12px] text-muted-foreground">{t("Checked In", "تم الدخول")}</p>
+            <p className="text-xs text-muted-foreground">{t("Checked In", "تم الدخول")}</p>
           </CardContent>
         </Card>
         <Card className="border-border/40">
           <CardContent className="p-3 text-center">
             <Users className="h-4 w-4 mx-auto text-chart-2 mb-1" />
             <p className="text-lg font-bold text-chart-2">{occupancyPct}%</p>
-            <p className="text-[12px] text-muted-foreground">{t("Occupancy", "نسبة الحضور")}</p>
+            <p className="text-xs text-muted-foreground">{t("Occupancy", "نسبة الحضور")}</p>
           </CardContent>
         </Card>
       </div>
@@ -172,7 +172,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
               <div>
                 <p className="text-sm font-semibold">{result.message}</p>
                 {result.ticket && (
-                  <p className="text-[12px] text-muted-foreground mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {result.ticket.ticket_number} • {result.ticket.attendee_email || ""}
                   </p>
                 )}
@@ -198,7 +198,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
                   <CheckCircle2 className="h-3 w-3 text-chart-3" />
                   <span className="font-medium">{r.attendee_name || r.ticket_number}</span>
                 </div>
-                <span className="text-[12px] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   {r.checked_in_at && format(new Date(r.checked_in_at), "HH:mm")}
                 </span>
               </div>

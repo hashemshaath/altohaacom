@@ -84,7 +84,7 @@ export function ArticleTableOfContents({ content, isAr }: Props) {
               <button
                 onClick={() => scrollTo(h.id)}
                 className={cn(
-                  "w-full text-start text-[13px] py-1.5 ps-3 pe-2 rounded-lg transition-all duration-200 leading-snug",
+                  "w-full text-start text-[0.8125rem] py-1.5 ps-3 pe-2 rounded-lg transition-all duration-200 leading-snug",
                   isActive
                     ? "text-primary font-medium bg-primary/5"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/60",

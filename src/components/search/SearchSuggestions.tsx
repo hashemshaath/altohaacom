@@ -122,7 +122,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
     <div ref={ref} className="absolute top-full start-0 end-0 mt-1 z-50 rounded-2xl border border-border bg-popover shadow-lg overflow-hidden backdrop-blur-sm">
       {!hasQuery && savedSearches.length > 0 && (
         <div className="px-3 pt-3 pb-1">
-          <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {isAr ? "عمليات البحث المحفوظة" : "Saved Searches"}
           </p>
         </div>
@@ -140,7 +140,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
 
       {!hasQuery && (trendingSearches || []).length > 0 && (
         <div className="px-3 pt-3 pb-1 border-t border-border/40">
-          <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {isAr ? "الأكثر رواجاً" : "Trending"}
           </p>
         </div>
@@ -153,13 +153,13 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
         >
           <TrendingUp className="h-3.5 w-3.5 text-chart-2 shrink-0 transition-transform group-hover:scale-110" />
           <span className="flex-1 truncate">{s.text}</span>
-          <Badge variant="secondary" className="text-[12px] px-1.5 py-0 h-4 tabular-nums">#{i + 1}</Badge>
+          <Badge variant="secondary" className="text-xs px-1.5 py-0 h-4 tabular-nums">#{i + 1}</Badge>
         </button>
       ))}
 
       {hasQuery && suggestions.length > 0 && (
         <div className="px-3 pt-2.5 pb-1">
-          <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">
+          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
             {isAr ? "نتائج مطابقة" : "Results"}
           </p>
         </div>
@@ -175,7 +175,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
             <Icon className="h-3.5 w-3.5 text-muted-foreground shrink-0 transition-transform group-hover:scale-110" />
             <span className="flex-1 truncate">{s.text}</span>
             {s.category && (
-              <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-4">{s.category}</Badge>
+              <Badge variant="outline" className="text-xs px-1.5 py-0 h-4">{s.category}</Badge>
             )}
           </button>
         );

@@ -105,14 +105,14 @@ export const MentionAutocomplete = memo(function MentionAutocomplete({ content, 
         >
           <Avatar className="h-7 w-7">
             <AvatarImage src={user.avatar_url || undefined} />
-            <AvatarFallback className="text-[12px] bg-primary/10 text-primary">
+            <AvatarFallback className="text-xs bg-primary/10 text-primary">
               {(user.display_name || user.full_name || "U")[0].toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
             <p className="font-semibold truncate text-xs">{user.display_name || user.full_name || user.username}</p>
             {user.username && (
-              <p className="text-[12px] text-muted-foreground">@{user.username}</p>
+              <p className="text-xs text-muted-foreground">@{user.username}</p>
             )}
           </div>
         </button>

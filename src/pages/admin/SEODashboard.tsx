@@ -132,7 +132,7 @@ export default function SEODashboard() {
           <div className="sticky top-4 space-y-1">
             {NAV_GROUPS.map(group => (
               <div key={group.label} className="mb-3">
-                <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-semibold px-3 mb-1.5 flex items-center gap-1.5">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold px-3 mb-1.5 flex items-center gap-1.5">
                   <group.icon className="h-3 w-3" />{isAr ? group.labelAr : group.label}
                 </p>
                 {group.items.map(item => (

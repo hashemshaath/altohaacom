@@ -89,7 +89,7 @@ export const ExhibitionMapEmbed = memo(forwardRef<HTMLDivElement, Props>(functio
                 {(city || country) && (
                   <p className="text-xs text-muted-foreground">{[city, country].filter(Boolean).join(", ")}</p>
                 )}
-                {address && <p className="text-[12px] text-muted-foreground/70 mt-0.5">{address}</p>}
+                {address && <p className="text-xs text-muted-foreground/70 mt-0.5">{address}</p>}
               </div>
             </div>
           )}

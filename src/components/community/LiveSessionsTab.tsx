@@ -148,12 +148,12 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
             <p className="text-sm font-bold truncate">{session.host_name || "Chef"}</p>
             <div className="flex items-center gap-2">
               {session.status === "live" && (
-                <Badge variant="destructive" className="text-[12px] px-1.5 py-0 animate-pulse">
+                <Badge variant="destructive" className="text-xs px-1.5 py-0 animate-pulse">
                   {isAr ? "مباشر" : "LIVE"}
                 </Badge>
               )}
               {isPast && (
-                <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
+                <Badge variant="secondary" className="text-xs px-1.5 py-0">
                   {isAr ? "انتهت" : "Ended"}
                 </Badge>
               )}

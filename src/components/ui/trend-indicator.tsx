@@ -21,7 +21,7 @@ export const TrendIndicator = memo(function TrendIndicator({ value, suffix, isPe
   const isNeutral = value === 0;
 
   const Icon = isPositive ? ArrowUpRight : isNeutral ? Minus : ArrowDownRight;
-  const textSize = size === "sm" ? "text-[12px]" : "text-xs";
+  const textSize = size === "sm" ? "text-xs" : "text-xs";
   const iconSize = size === "sm" ? "h-3 w-3" : "h-3.5 w-3.5";
 
   return (

@@ -89,11 +89,11 @@ export const ExhibitionBoothNavigator = memo(function ExhibitionBoothNavigator({
 
       {/* Stats */}
       <div className="flex gap-2 flex-wrap">
-        <Badge variant="outline" className="text-[12px] gap-1">
+        <Badge variant="outline" className="text-xs gap-1">
           <LayoutGrid className="h-2.5 w-2.5" /> {filtered.length} {t("booths", "جناح")}
         </Badge>
         {halls.length > 0 && (
-          <Badge variant="outline" className="text-[12px] gap-1">
+          <Badge variant="outline" className="text-xs gap-1">
             {halls.length} {t("halls", "قاعات")}
           </Badge>
         )}
@@ -108,19 +108,19 @@ export const ExhibitionBoothNavigator = memo(function ExhibitionBoothNavigator({
                 <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 shrink-0">
                   <MapPin className="h-4 w-4 text-primary" />
                 </div>
-                <Badge variant="outline" className={`text-[12px] h-4 px-1.5 ${statusColor(booth.status)}`}>
+                <Badge variant="outline" className={`text-xs h-4 px-1.5 ${statusColor(booth.status)}`}>
                   {booth.status === "occupied" ? t("Occupied", "مشغول") : booth.status === "reserved" ? t("Reserved", "محجوز") : t("Available", "متاح")}
                 </Badge>
               </div>
               <p className="text-xs font-bold text-foreground truncate">{booth.booth_number}</p>
-              <p className="text-[12px] text-muted-foreground truncate mt-0.5">
+              <p className="text-xs text-muted-foreground truncate mt-0.5">
                 {isAr ? (booth.name_ar || booth.name || "—") : (booth.name || "—")}
               </p>
               {booth.hall && (
-                <p className="text-[12px] text-muted-foreground/70 mt-1">{t("Hall", "قاعة")}: {booth.hall}</p>
+                <p className="text-xs text-muted-foreground/70 mt-1">{t("Hall", "قاعة")}: {booth.hall}</p>
               )}
               {booth.category && (
-                <Badge variant="secondary" className="text-[12px] mt-1.5 h-4">{booth.category}</Badge>
+                <Badge variant="secondary" className="text-xs mt-1.5 h-4">{booth.category}</Badge>
               )}
             </CardContent>
           </Card>

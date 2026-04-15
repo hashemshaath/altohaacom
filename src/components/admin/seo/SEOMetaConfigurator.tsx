@@ -145,7 +145,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs">Title (EN)</Label>
-                    <span className={cn("text-[12px] tabular-nums", titleOk ? "text-emerald-500" : "text-destructive")}>
+                    <span className={cn("text-xs tabular-nums", titleOk ? "text-emerald-500" : "text-destructive")}>
                       {titleLen}/60
                     </span>
                   </div>
@@ -156,7 +156,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
                     placeholder="Page Title — Brand Name"
                   />
                   {titleLen > 60 && (
-                    <p className="text-[12px] text-destructive flex items-center gap-1">
+                    <p className="text-xs text-destructive flex items-center gap-1">
                       <AlertTriangle className="h-3 w-3" /> Title exceeds 60 characters
                     </p>
                   )}
@@ -166,7 +166,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs">العنوان (AR)</Label>
-                    <span className={cn("text-[12px] tabular-nums", (form.title_ar || "").length <= 60 ? "text-emerald-500" : "text-destructive")}>
+                    <span className={cn("text-xs tabular-nums", (form.title_ar || "").length <= 60 ? "text-emerald-500" : "text-destructive")}>
                       {(form.title_ar || "").length}/60
                     </span>
                   </div>
@@ -183,7 +183,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <Label className="text-xs">Meta Description (EN)</Label>
-                    <span className={cn("text-[12px] tabular-nums", descOk ? "text-emerald-500" : "text-destructive")}>
+                    <span className={cn("text-xs tabular-nums", descOk ? "text-emerald-500" : "text-destructive")}>
                       {descLen}/160
                     </span>
                   </div>
@@ -265,7 +265,7 @@ export const SEOMetaConfigurator = memo(function SEOMetaConfigurator({ isAr }: {
 
                 {/* SERP Preview */}
                 <div className="rounded-xl border border-border/40 bg-muted/20 p-4 space-y-1">
-                  <p className="text-[12px] text-muted-foreground uppercase tracking-wider font-semibold mb-2">
+                  <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold mb-2">
                     {isAr ? "معاينة نتائج البحث" : "SERP Preview"}
                   </p>
                   <p className="text-sm text-blue-600 dark:text-blue-400 font-medium truncate">

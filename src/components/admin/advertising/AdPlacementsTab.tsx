@@ -72,7 +72,7 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
             <Target className="h-4 w-4 text-primary" />
             <span className="text-xs font-semibold">{isAr ? "الربط مع الصفحات" : "Page Linking"}</span>
           </div>
-          <p className="text-[12px] text-muted-foreground mb-3">
+          <p className="text-xs text-muted-foreground mb-3">
             {isAr
               ? "المواقع الإعلانية مرتبطة مباشرة بالصفحات التالية. تأكد من تفعيل المواقع المطلوبة."
               : "Ad placements are linked to the following pages. Ensure desired placements are enabled."}
@@ -81,13 +81,13 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
             {Object.keys(grouped).map(page => {
               const PageIcon = pageIcons[page] || Monitor;
               return (
-                <Badge key={page} variant="secondary" className="gap-1 text-[12px] rounded-xl">
+                <Badge key={page} variant="secondary" className="gap-1 text-xs rounded-xl">
                   <PageIcon className="h-3 w-3" />
                   {page} ({grouped[page].length})
                 </Badge>
               );
             })}
-            <Button size="sm" variant="outline" className="h-6 text-[12px] rounded-xl gap-1" asChild>
+            <Button size="sm" variant="outline" className="h-6 text-xs rounded-xl gap-1" asChild>
               <Link to="/admin/design/homepage">
                 <Home className="h-3 w-3" />
                 {isAr ? "تصميم الرئيسية" : "Homepage Design"}
@@ -127,7 +127,7 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">{isAr ? "المواقع الإعلانية" : "Ad Placements"}</CardTitle>
-            <Badge variant="secondary" className="text-[12px]">
+            <Badge variant="secondary" className="text-xs">
               {sortedPlacements.filter(p => p.is_active).length}/{sortedPlacements.length} {isAr ? "مفعل" : "active"}
             </Badge>
           </div>
@@ -156,24 +156,24 @@ export const AdPlacementsTab = memo(function AdPlacementsTab({ placements, onTog
                     <TableCell>
                       <div>
                         <span className="font-medium text-xs">{isAr ? p.name_ar || p.name : p.name}</span>
-                        {p.description && <p className="text-[12px] text-muted-foreground truncate max-w-[180px]">{isAr ? p.description_ar || p.description : p.description}</p>}
-                        <code className="text-[12px] text-muted-foreground font-mono">{p.slug}</code>
+                        {p.description && <p className="text-xs text-muted-foreground truncate max-w-[180px]">{isAr ? p.description_ar || p.description : p.description}</p>}
+                        <code className="text-xs text-muted-foreground font-mono">{p.slug}</code>
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline" className="text-[12px] gap-1">
+                      <Badge variant="outline" className="text-xs gap-1">
                         {(() => { const I = pageIcons[p.page_location] || Monitor; return <I className="h-3 w-3" />; })()}
                         {p.page_location || "—"}
                       </Badge>
                     </TableCell>
-                    <TableCell><Badge variant="outline" className="text-[12px]">{p.placement_type}</Badge></TableCell>
+                    <TableCell><Badge variant="outline" className="text-xs">{p.placement_type}</Badge></TableCell>
                     <TableCell className="text-xs">{p.format}</TableCell>
                     <TableCell className="font-mono text-xs">{p.width && p.height ? `${p.width}×${p.height}` : "—"}</TableCell>
                     <TableCell className="font-mono text-xs">{p.base_cpm || "—"}</TableCell>
                     <TableCell className="font-mono text-xs">{p.base_cpc || "—"}</TableCell>
                     <TableCell className="font-mono text-xs">{p.base_cpv || "—"}</TableCell>
                     <TableCell className="text-xs">{p.max_ads || "∞"}</TableCell>
-                    <TableCell>{p.is_premium ? <Badge className="text-[12px]">Premium</Badge> : "—"}</TableCell>
+                    <TableCell>{p.is_premium ? <Badge className="text-xs">Premium</Badge> : "—"}</TableCell>
                     <TableCell>
                       <Switch checked={p.is_active} onCheckedChange={(checked) => onToggle(p.id, checked)} />
                     </TableCell>

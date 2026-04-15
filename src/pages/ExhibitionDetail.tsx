@@ -104,7 +104,7 @@ const ExhibitionTabTrigger = memo(({ value, icon: Icon, label, count }: { value:
     <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
     {label}
     {count !== undefined && count > 0 && (
-      <Badge variant="secondary" className="ms-1 h-4.5 rounded-full px-1.5 text-[10px] font-bold">{count}</Badge>
+      <Badge variant="secondary" className="ms-1 h-4.5 rounded-full px-1.5 text-[0.625rem] font-bold">{count}</Badge>
     )}
   </TabsTrigger>
 ));

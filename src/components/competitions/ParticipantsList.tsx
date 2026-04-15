@@ -333,7 +333,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                 <TabsTrigger value="list" className="text-xs gap-1">
                   <Users className="h-3 w-3" />
                   {isAr ? "القائمة" : "List"}
-                  <Badge variant="secondary" className="text-[12px] h-4 px-1">{statusCounts.total}</Badge>
+                  <Badge variant="secondary" className="text-xs h-4 px-1">{statusCounts.total}</Badge>
                 </TabsTrigger>
                 <TabsTrigger value="badges" className="text-xs gap-1">
                   <QrCode className="h-3 w-3" />
@@ -343,7 +343,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                   <Send className="h-3 w-3" />
                   {isAr ? "الدعوات" : "Invitations"}
                   {invitations.length > 0 && (
-                    <Badge variant="secondary" className="text-[12px] h-4 px-1">{invitations.length}</Badge>
+                    <Badge variant="secondary" className="text-xs h-4 px-1">{invitations.length}</Badge>
                   )}
                 </TabsTrigger>
               </TabsList>
@@ -367,7 +367,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                     onClick={() => setStatusFilter(f.key)}
                   >
                     {f.label}
-                    <Badge variant="secondary" className="text-[12px] h-4 px-1">{f.count}</Badge>
+                    <Badge variant="secondary" className="text-xs h-4 px-1">{f.count}</Badge>
                   </Button>
                 ))}
               </div>
@@ -540,7 +540,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
             <CardContent className="p-3 flex items-center gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium">{isAr ? "رابط التسجيل المباشر" : "Direct Registration Link"}</p>
-                <p className="text-[12px] text-muted-foreground truncate">
+                <p className="text-xs text-muted-foreground truncate">
                   {window.location.origin}/competitions/{competitionId}
                 </p>
               </div>
@@ -567,7 +567,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                 onClick={() => setInviteFilter(f.key)}
               >
                 {f.label}
-                <Badge variant="secondary" className="text-[12px] h-4 px-1">{f.count}</Badge>
+                <Badge variant="secondary" className="text-xs h-4 px-1">{f.count}</Badge>
               </Button>
             ))}
           </div>
@@ -591,25 +591,25 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                                   {isAr && inv.invitee_name_ar ? inv.invitee_name_ar : inv.invitee_name}
                                 </p>
                               )}
-                              <Badge variant={inv.status === "accepted" ? "default" : inv.status === "declined" ? "destructive" : "secondary"} className="text-[12px] h-5">
+                              <Badge variant={inv.status === "accepted" ? "default" : inv.status === "declined" ? "destructive" : "secondary"} className="text-xs h-5">
                                 {inv.status === "accepted" ? (isAr ? "مقبول" : "Accepted") :
                                  inv.status === "declined" ? (isAr ? "مرفوض" : "Declined") :
                                  (isAr ? "معلق" : "Pending")}
                               </Badge>
                             </div>
                             {(inv.organization_name || inv.organization_name_ar) && (
-                              <p className="text-[12px] text-muted-foreground flex items-center gap-1">
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Building2 className="h-3 w-3 shrink-0" />
                                 {isAr && inv.organization_name_ar ? inv.organization_name_ar : inv.organization_name}
                                 {inv.organization_type && inv.organization_type !== "other" && (
-                                  <Badge variant="outline" className="text-[12px] h-4 px-1 ms-1">
+                                  <Badge variant="outline" className="text-xs h-4 px-1 ms-1">
                                     {ORG_TYPES.find(t => t.value === inv.organization_type)?.[isAr ? "labelAr" : "label"]}
                                   </Badge>
                                 )}
                               </p>
                             )}
                             {inv.invitee_email && (
-                              <p className="text-[12px] text-muted-foreground flex items-center gap-1">
+                              <p className="text-xs text-muted-foreground flex items-center gap-1">
                                 <Mail className="h-2.5 w-2.5" />
                                 {inv.invitee_email}
                               </p>
@@ -620,18 +620,18 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
 
                       <div className="border-t bg-muted/20 px-4 py-2 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <Badge variant="outline" className="text-[12px] h-5 gap-0.5">
+                          <Badge variant="outline" className="text-xs h-5 gap-0.5">
                             <ChannelIcon className="h-2.5 w-2.5" />
                             {isAr ? channel?.labelAr : channel?.label}
                           </Badge>
                           {cat && (
-                            <Badge variant="outline" className="text-[12px] h-5">
+                            <Badge variant="outline" className="text-xs h-5">
                               <Trophy className="h-2.5 w-2.5 me-0.5" />
                               {isAr && cat.name_ar ? cat.name_ar : cat.name}
                             </Badge>
                           )}
                         </div>
-                        <span className="text-[12px] text-muted-foreground">
+                        <span className="text-xs text-muted-foreground">
                           {format(new Date(inv.created_at), "MMM d, yyyy")}
                         </span>
                       </div>
@@ -727,7 +727,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                           {participant.scores && participant.scores.count > 0 && (
                             <div className="absolute -top-1 -end-1 flex h-5 items-center gap-0.5 rounded-full bg-primary px-1.5">
                               <Star className="h-2.5 w-2.5 text-primary-foreground fill-primary-foreground" />
-                              <span className="text-[12px] font-bold text-primary-foreground">
+                              <span className="text-xs font-bold text-primary-foreground">
                                 {(participant.scores.total / participant.scores.count).toFixed(1)}
                               </span>
                             </div>
@@ -743,7 +743,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                               <div className="flex items-center gap-1.5">
                                 <Avatar className="h-5 w-5">
                                   <AvatarImage src={participant.profile?.avatar_url || undefined} />
-                                  <AvatarFallback className="text-[12px]">
+                                  <AvatarFallback className="text-xs">
                                     {(participant.profile?.full_name || "U")[0]}
                                   </AvatarFallback>
                                 </Avatar>
@@ -755,7 +755,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                                 )}
                               </div>
                             </Link>
-                            <Badge className={`${status.className} text-[12px] h-5 shrink-0`}>
+                            <Badge className={`${status.className} text-xs h-5 shrink-0`}>
                               <StatusIcon className="h-2.5 w-2.5 me-0.5" />
                               {isAr ? status.labelAr : status.label}
                             </Badge>
@@ -770,27 +770,27 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
 
                           <div className="flex items-center gap-2 flex-wrap">
                             {participant.category && (
-                              <Badge variant="outline" className="text-[12px] h-4 px-1">
+                              <Badge variant="outline" className="text-xs h-4 px-1">
                                 {isAr && participant.category.name_ar
                                   ? participant.category.name_ar
                                   : participant.category.name}
                               </Badge>
                             )}
                             {participant.company && (
-                              <Badge variant="outline" className="text-[12px] h-4 px-1 gap-0.5">
+                              <Badge variant="outline" className="text-xs h-4 px-1 gap-0.5">
                                 <Building2 className="h-2 w-2" />
                                 {isAr && participant.company.name_ar ? participant.company.name_ar : participant.company.name}
                               </Badge>
                             )}
                             {participant.registration_number && (
-                              <span className="text-[12px] text-muted-foreground font-mono">
+                              <span className="text-xs text-muted-foreground font-mono">
                                 #{participant.registration_number}
                               </span>
                             )}
                           </div>
 
                           {participant.scores && participant.scores.count > 0 && (
-                            <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
                               <Trophy className="h-2.5 w-2.5" />
                               <span>
                                 {isAr ? `${participant.scores.count} تقييم` : `${participant.scores.count} scores`}
@@ -803,7 +803,7 @@ export const ParticipantsList = memo(function ParticipantsList({ competitionId, 
                       </div>
 
                       <div className="border-t bg-muted/20 px-4 py-1.5">
-                        <span className="text-[12px] text-muted-foreground">
+                        <span className="text-xs text-muted-foreground">
                           {isAr ? "تاريخ التسجيل:" : "Registered:"}{" "}
                           {format(new Date(participant.registered_at), "MMM d, yyyy")}
                         </span>

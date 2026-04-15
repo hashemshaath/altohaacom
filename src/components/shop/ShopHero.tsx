@@ -29,7 +29,7 @@ export const ShopHero = memo(function ShopHero({ productCount, cart, onCartOpen 
           <div className="min-w-0 space-y-1 sm:space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
               <ShoppingBag className="h-3 w-3 text-primary" />
-              <span className="text-[12px] sm:text-[12px] font-bold uppercase tracking-[0.15em] text-primary">
+              <span className="text-xs sm:text-xs font-bold uppercase tracking-[0.15em] text-primary">
                 {isAr ? "المتجر" : "Culinary Shop"}
               </span>
             </div>
@@ -64,7 +64,7 @@ export const ShopHero = memo(function ShopHero({ productCount, cart, onCartOpen 
               <ShoppingCart className="h-4 w-4 sm:me-1.5" />
               <span className="hidden sm:inline">{isAr ? "السلة" : "Cart"}</span>
               {cart.totalItems > 0 && (
-                <Badge className="absolute -end-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground p-0 text-[12px] ring-2 ring-background">
+                <Badge className="absolute -end-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-chart-4 text-chart-4-foreground p-0 text-xs ring-2 ring-background">
                   {cart.totalItems}
                 </Badge>
               )}

@@ -103,7 +103,7 @@ export const CostCenterReports = memo(function CostCenterReports({ isAr, estimat
         ].map((kpi, i) => (
           <Card key={i} className="border-border/40">
             <CardContent className="p-4 text-center">
-              <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{kpi.label}</p>
               <p className={`text-xl font-black tabular-nums mt-1 ${kpi.color}`}>
                 {typeof kpi.value === "number" ? <AnimatedCounter value={kpi.value} /> : kpi.value} <span className="text-xs text-muted-foreground">{kpi.suffix}</span>
               </p>
@@ -161,10 +161,10 @@ export const CostCenterReports = memo(function CostCenterReports({ isAr, estimat
                       <TableCell className="py-2.5 font-bold text-muted-foreground w-6">{i + 1}</TableCell>
                       <TableCell className="py-2.5">
                         <p className="font-medium truncate max-w-[200px]">{est.title}</p>
-                        <p className="text-[12px] text-muted-foreground font-mono">{est.estimate_number}</p>
+                        <p className="text-xs text-muted-foreground font-mono">{est.estimate_number}</p>
                       </TableCell>
                       <TableCell className="py-2.5 text-end">
-                        <Badge variant="outline" className="text-[12px]">
+                        <Badge variant="outline" className="text-xs">
                           {isAr ? MODULE_TYPES[est.module_type].ar : MODULE_TYPES[est.module_type].en}
                         </Badge>
                       </TableCell>
@@ -188,13 +188,13 @@ export const CostCenterReports = memo(function CostCenterReports({ isAr, estimat
           <CardTitle className="text-sm flex items-center gap-2">
             <FileSpreadsheet className="h-4 w-4" />
             {isAr ? "جدول التقديرات الكامل" : "Full Estimates Report"}
-            <Badge variant="outline" className="text-[12px]">{filteredEstimates.length}</Badge>
+            <Badge variant="outline" className="text-xs">{filteredEstimates.length}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
-              <TableRow className="text-[12px]">
+              <TableRow className="text-xs">
                 <TableHead>{isAr ? "الرقم" : "#"}</TableHead>
                 <TableHead>{isAr ? "العنوان" : "Title"}</TableHead>
                 <TableHead>{isAr ? "القسم" : "Module"}</TableHead>
@@ -211,12 +211,12 @@ export const CostCenterReports = memo(function CostCenterReports({ isAr, estimat
                   <TableCell className="py-2 font-mono text-muted-foreground">{est.estimate_number}</TableCell>
                   <TableCell className="py-2 font-medium">{est.title}</TableCell>
                   <TableCell className="py-2">
-                    <Badge variant="outline" className="text-[12px]">
+                    <Badge variant="outline" className="text-xs">
                       {isAr ? MODULE_TYPES[est.module_type].ar : MODULE_TYPES[est.module_type].en}
                     </Badge>
                   </TableCell>
                   <TableCell className="py-2">
-                    <Badge variant="secondary" className="text-[12px]">
+                    <Badge variant="secondary" className="text-xs">
                       {isAr ? ESTIMATE_STATUS_CONFIG[est.status as keyof typeof ESTIMATE_STATUS_CONFIG]?.ar : ESTIMATE_STATUS_CONFIG[est.status as keyof typeof ESTIMATE_STATUS_CONFIG]?.en}
                     </Badge>
                   </TableCell>

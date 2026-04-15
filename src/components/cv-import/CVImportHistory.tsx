@@ -172,7 +172,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
             <div key={i} className="flex flex-col items-center p-2 rounded-xl bg-muted/30 border border-border/20">
               {stat.icon}
               <span className="text-sm font-bold mt-0.5">{stat.value}</span>
-              <span className="text-[12px] text-muted-foreground">{stat.label}</span>
+              <span className="text-xs text-muted-foreground">{stat.label}</span>
             </div>
           ))}
         </div>
@@ -194,7 +194,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
                 key={s}
                 variant={statusFilter === s ? "default" : "ghost"}
                 size="sm"
-                className="h-7 text-[12px] px-2"
+                className="h-7 text-xs px-2"
                 onClick={() => setStatusFilter(s)}
               >
                 {s === "all" ? (isAr ? "الكل" : "All") : s === "completed" ? "✓" : "✗"}
@@ -220,7 +220,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
                       </span>
                       <Badge
                         variant={imp.status === "completed" ? "default" : "destructive"}
-                        className="text-[12px] h-4"
+                        className="text-xs h-4"
                       >
                         {imp.status === "completed" ? "✓" : "✗"}
                       </Badge>
@@ -233,7 +233,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
                       <span className="text-muted-foreground">•</span>
                       <span>{imp.records_created} {isAr ? "سجل" : "records"}</span>
                       {imp.sections_imported?.map(s => (
-                        <Badge key={s} variant="outline" className="text-[12px] h-4">{sectionLabel(s)}</Badge>
+                        <Badge key={s} variant="outline" className="text-xs h-4">{sectionLabel(s)}</Badge>
                       ))}
                     </div>
                   </div>

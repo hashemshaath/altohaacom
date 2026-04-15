@@ -163,7 +163,7 @@ export const SegmentBroadcastDialog = memo(function SegmentBroadcastDialog({
             </div>
             <div className="ms-auto flex flex-wrap gap-1">
               {filters?.roles?.map((r: string) => (
-                <Badge key={r} variant="secondary" className="text-[12px]">{r}</Badge>
+                <Badge key={r} variant="secondary" className="text-xs">{r}</Badge>
               ))}
             </div>
           </div>

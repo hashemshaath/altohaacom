@@ -74,7 +74,7 @@ export const StepProgress = memo(function StepProgress({ steps, currentStep, cla
                 {isCompleted ? <Check className="h-4 w-4" /> : <span className="text-xs font-bold">{i + 1}</span>}
               </div>
               <p className={cn(
-                "text-[12px] font-semibold text-center leading-tight max-w-[80px]",
+                "text-xs font-semibold text-center leading-tight max-w-[80px]",
                 isCurrent ? "text-primary" : isCompleted ? "text-foreground" : "text-muted-foreground"
               )}>
                 {step.label}

@@ -167,7 +167,7 @@ export const CommandPalette = memo(function CommandPalette() {
             onKeyDown={handleKeyDown}
             className="border-0 p-0 h-auto text-base shadow-none focus-visible:ring-0 bg-transparent placeholder:text-muted-foreground/40"
           />
-          <kbd className="hidden sm:inline-flex h-6 items-center gap-0.5 rounded-md border border-border/50 bg-muted/50 px-1.5 text-[11px] font-mono text-muted-foreground/60">
+          <kbd className="hidden sm:inline-flex h-6 items-center gap-0.5 rounded-md border border-border/50 bg-muted/50 px-1.5 text-[0.6875rem] font-mono text-muted-foreground/60">
             ESC
           </kbd>
         </div>
@@ -175,12 +175,12 @@ export const CommandPalette = memo(function CommandPalette() {
         {/* Results */}
         <div className="max-h-[60vh] overflow-y-auto p-2">
           {filteredPages.length > 0 && query.length < 2 && (
-            <p className="px-3 py-1.5 text-[11px] font-medium text-muted-foreground/50 uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[0.6875rem] font-medium text-muted-foreground/50 uppercase tracking-wider">
               {isAr ? "تنقل سريع" : "Quick Navigation"}
             </p>
           )}
           {query.length >= 2 && dbResults.length > 0 && filteredPages.length > 0 && (
-            <p className="px-3 py-1.5 text-[11px] font-medium text-muted-foreground/50 uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[0.6875rem] font-medium text-muted-foreground/50 uppercase tracking-wider">
               {isAr ? "الصفحات" : "Pages"}
             </p>
           )}
@@ -196,7 +196,7 @@ export const CommandPalette = memo(function CommandPalette() {
             return (
               <div key={`${item.type}-${item.id}`}>
                 {showDbHeader && (
-                  <p className="px-3 py-1.5 mt-1 text-[11px] font-medium text-muted-foreground/50 uppercase tracking-wider">
+                  <p className="px-3 py-1.5 mt-1 text-[0.6875rem] font-medium text-muted-foreground/50 uppercase tracking-wider">
                     {isAr ? "نتائج البحث" : "Search Results"}
                   </p>
                 )}
@@ -214,7 +214,7 @@ export const CommandPalette = memo(function CommandPalette() {
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{isAr && item.titleAr ? item.titleAr : item.title}</p>
                     {item.type !== "page" && (
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 mt-0.5">
+                      <Badge variant="secondary" className="text-[0.625rem] px-1.5 py-0 h-4 mt-0.5">
                         {isAr ? config.labelAr : config.label}
                       </Badge>
                     )}
@@ -234,7 +234,7 @@ export const CommandPalette = memo(function CommandPalette() {
         </div>
 
         {/* Footer hint */}
-        <div className="flex items-center justify-between border-t border-border/20 px-4 py-2 text-[11px] text-muted-foreground/40">
+        <div className="flex items-center justify-between border-t border-border/20 px-4 py-2 text-[0.6875rem] text-muted-foreground/40">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1"><kbd className="rounded border border-border/40 bg-muted/30 px-1">↑↓</kbd> {isAr ? "تنقل" : "Navigate"}</span>
             <span className="flex items-center gap-1"><kbd className="rounded border border-border/40 bg-muted/30 px-1">↵</kbd> {isAr ? "فتح" : "Open"}</span>

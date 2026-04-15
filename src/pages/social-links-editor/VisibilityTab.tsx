@@ -58,7 +58,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "التحكم بالأقسام" : "Section Visibility"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "تحكم بما يظهر في صفحة الروابط العامة" : "Control what appears on your public links page"}
           </p>
         </CardHeader>
@@ -92,7 +92,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "صورة الغلاف" : "Cover Image"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "تظهر في أعلى صفحة الروابط العامة" : "Displayed at the top of your public page"}
           </p>
         </CardHeader>
@@ -111,7 +111,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             <Label htmlFor="cover-upload" className="cursor-pointer">
               <div className="border-2 border-dashed border-border/40 rounded-xl p-4 text-center hover:border-primary/30 transition-all duration-200 hover:bg-muted/20">
                 <Image className="h-5 w-5 mx-auto text-muted-foreground mb-1" />
-                <p className="text-[12px] text-muted-foreground">{isAr ? "اضغط لرفع صورة غلاف" : "Click to upload cover image"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "اضغط لرفع صورة غلاف" : "Click to upload cover image"}</p>
               </div>
             </Label>
             <input id="cover-upload" type="file" accept="image/*" className="hidden" onChange={async (e) => {
@@ -152,11 +152,11 @@ export const VisibilityTab = memo(function VisibilityTab({
           {extra.show_footer && (
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "نص التذييل (EN)" : "Footer Text (EN)"}</Label>
+                <Label className="text-xs mb-1 block font-medium">{isAr ? "نص التذييل (EN)" : "Footer Text (EN)"}</Label>
                 <Input value={extra.footer_text} onChange={e => updateExtra({ footer_text: e.target.value })} placeholder="© 2024 My Brand" dir="ltr" className="text-xs rounded-xl" />
               </div>
               <div>
-                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "نص التذييل (AR)" : "Footer Text (AR)"}</Label>
+                <Label className="text-xs mb-1 block font-medium">{isAr ? "نص التذييل (AR)" : "Footer Text (AR)"}</Label>
                 <Input value={extra.footer_text_ar} onChange={e => updateExtra({ footer_text_ar: e.target.value })} placeholder="© 2024 علامتي" dir="rtl" className="text-xs rounded-xl" />
               </div>
             </div>
@@ -173,7 +173,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "معاينة الفيديو" : "Video Embeds"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "عرض معاينة مضمنة لروابط YouTube و TikTok و Instagram" : "Show inline preview for YouTube, TikTok & Instagram links"}
           </p>
         </CardHeader>
@@ -194,7 +194,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "نموذج التواصل" : "Contact Form"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "نموذج اتصال مباشر في صفحة Bio" : "Direct contact form on your Bio page"}
           </p>
         </CardHeader>
@@ -206,11 +206,11 @@ export const VisibilityTab = memo(function VisibilityTab({
           {extra.show_contact_form && (
             <div className="grid sm:grid-cols-2 gap-3">
               <div>
-                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "عنوان النموذج (EN)" : "Form Title (EN)"}</Label>
+                <Label className="text-xs mb-1 block font-medium">{isAr ? "عنوان النموذج (EN)" : "Form Title (EN)"}</Label>
                 <Input value={extra.contact_form_title} onChange={e => updateExtra({ contact_form_title: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
               </div>
               <div>
-                <Label className="text-[12px] mb-1 block font-medium">{isAr ? "عنوان النموذج (AR)" : "Form Title (AR)"}</Label>
+                <Label className="text-xs mb-1 block font-medium">{isAr ? "عنوان النموذج (AR)" : "Form Title (AR)"}</Label>
                 <Input value={extra.contact_form_title_ar} onChange={e => updateExtra({ contact_form_title_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
               </div>
             </div>
@@ -227,7 +227,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "حماية بكلمة مرور" : "Password Protection"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "أضف كلمة مرور لحماية صفحتك من الوصول غير المصرح" : "Add a password to restrict access to your bio page"}
           </p>
         </CardHeader>
@@ -238,7 +238,7 @@ export const VisibilityTab = memo(function VisibilityTab({
           </div>
           {extra.enable_password && (
             <div>
-              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "كلمة المرور" : "Password"}</Label>
+              <Label className="text-xs mb-1 block font-medium">{isAr ? "كلمة المرور" : "Password"}</Label>
               <Input type="text" value={extra.page_password} onChange={e => updateExtra({ page_password: e.target.value })} placeholder={isAr ? "أدخل كلمة المرور" : "Enter page password"} dir="ltr" className="text-xs rounded-xl" />
             </div>
           )}
@@ -254,7 +254,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "جمع الإيميلات" : "Email Collection"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "اجمع إيميلات الزوار عبر نموذج اشتراك مدمج" : "Collect visitor emails with an embedded subscribe form"}
           </p>
         </CardHeader>
@@ -267,21 +267,21 @@ export const VisibilityTab = memo(function VisibilityTab({
             <div className="space-y-3">
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
+                  <Label className="text-xs mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Title (EN)"}</Label>
                   <Input value={extra.email_collection_title} onChange={e => updateExtra({ email_collection_title: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                 </div>
                 <div>
-                  <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
+                  <Label className="text-xs mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Title (AR)"}</Label>
                   <Input value={extra.email_collection_title_ar} onChange={e => updateExtra({ email_collection_title_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                 </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+                  <Label className="text-xs mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
                   <Input value={extra.email_collection_description} onChange={e => updateExtra({ email_collection_description: e.target.value })} dir="ltr" className="text-xs rounded-xl" />
                 </div>
                 <div>
-                  <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+                  <Label className="text-xs mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
                   <Input value={extra.email_collection_description_ar} onChange={e => updateExtra({ email_collection_description_ar: e.target.value })} dir="rtl" className="text-xs rounded-xl" />
                 </div>
               </div>
@@ -299,39 +299,39 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "تحسين محركات البحث (SEO)" : "SEO & Open Graph"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "تحكم بعنوان ووصف وصورة الصفحة عند مشاركتها" : "Customize how your page appears in search & social shares"}
           </p>
         </CardHeader>
         <CardContent className="pt-3 space-y-3">
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
-              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Page Title (EN)"}</Label>
+              <Label className="text-xs mb-1 block font-medium">{isAr ? "العنوان (EN)" : "Page Title (EN)"}</Label>
               <Input value={extra.seo_title} onChange={e => updateExtra({ seo_title: e.target.value })} placeholder={isAr ? "اتركه فارغاً للافتراضي" : "Leave empty for default"} className="text-xs" dir="ltr" maxLength={60} />
-              <span className="text-[12px] text-muted-foreground">{extra.seo_title.length}/60</span>
+              <span className="text-xs text-muted-foreground">{extra.seo_title.length}/60</span>
             </div>
             <div>
-              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Page Title (AR)"}</Label>
+              <Label className="text-xs mb-1 block font-medium">{isAr ? "العنوان (AR)" : "Page Title (AR)"}</Label>
               <Input value={extra.seo_title_ar} onChange={e => updateExtra({ seo_title_ar: e.target.value })} placeholder={isAr ? "اتركه فارغاً للافتراضي" : "Leave empty for default"} className="text-xs" dir="rtl" maxLength={60} />
-              <span className="text-[12px] text-muted-foreground">{extra.seo_title_ar.length}/60</span>
+              <span className="text-xs text-muted-foreground">{extra.seo_title_ar.length}/60</span>
             </div>
           </div>
           <div className="grid sm:grid-cols-2 gap-3">
             <div>
-              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
+              <Label className="text-xs mb-1 block font-medium">{isAr ? "الوصف (EN)" : "Description (EN)"}</Label>
               <Textarea value={extra.seo_description} onChange={e => updateExtra({ seo_description: e.target.value })} placeholder={isAr ? "وصف قصير للصفحة" : "Short page description"} className="text-xs min-h-[60px]" dir="ltr" maxLength={160} />
-              <span className="text-[12px] text-muted-foreground">{extra.seo_description.length}/160</span>
+              <span className="text-xs text-muted-foreground">{extra.seo_description.length}/160</span>
             </div>
             <div>
-              <Label className="text-[12px] mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
+              <Label className="text-xs mb-1 block font-medium">{isAr ? "الوصف (AR)" : "Description (AR)"}</Label>
               <Textarea value={extra.seo_description_ar} onChange={e => updateExtra({ seo_description_ar: e.target.value })} placeholder={isAr ? "وصف قصير بالعربية" : "Short description in Arabic"} className="text-xs min-h-[60px]" dir="rtl" maxLength={160} />
-              <span className="text-[12px] text-muted-foreground">{extra.seo_description_ar.length}/160</span>
+              <span className="text-xs text-muted-foreground">{extra.seo_description_ar.length}/160</span>
             </div>
           </div>
           <div>
-            <Label className="text-[12px] mb-1 block font-medium">{isAr ? "صورة المشاركة (OG Image URL)" : "Share Image (OG Image URL)"}</Label>
+            <Label className="text-xs mb-1 block font-medium">{isAr ? "صورة المشاركة (OG Image URL)" : "Share Image (OG Image URL)"}</Label>
             <Input value={extra.og_image_url} onChange={e => updateExtra({ og_image_url: e.target.value })} placeholder="https://..." className="text-xs" dir="ltr" />
-            <p className="text-[12px] text-muted-foreground mt-1">{isAr ? "الحجم المثالي: 1200×630 بكسل" : "Recommended: 1200×630px"}</p>
+            <p className="text-xs text-muted-foreground mt-1">{isAr ? "الحجم المثالي: 1200×630 بكسل" : "Recommended: 1200×630px"}</p>
             {extra.og_image_url && (
               <div className="mt-2 rounded-xl overflow-hidden border border-border/50">
                 <img loading="lazy" src={extra.og_image_url} alt="OG Preview" className="w-full h-auto max-h-32 object-cover" onError={e => (e.currentTarget.style.display = "none")} />
@@ -341,11 +341,11 @@ export const VisibilityTab = memo(function VisibilityTab({
 
           {/* Share Previews */}
           <div className="pt-2">
-            <Label className="text-[12px] mb-2 block font-medium">{isAr ? "معاينة المشاركة" : "Share Preview"}</Label>
+            <Label className="text-xs mb-2 block font-medium">{isAr ? "معاينة المشاركة" : "Share Preview"}</Label>
             <div className="space-y-3">
               {/* Twitter Preview */}
               <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
-                <div className="text-[12px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
+                <div className="text-xs px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
                   <Twitter className="h-2.5 w-2.5" /> X / Twitter
                 </div>
                 {(extra.og_image_url || profile?.avatar_url) && (
@@ -354,19 +354,19 @@ export const VisibilityTab = memo(function VisibilityTab({
                   </div>
                 )}
                 <div className="p-2.5 space-y-0.5">
-                  <p className="text-[12px] font-semibold text-foreground truncate">
+                  <p className="text-xs font-semibold text-foreground truncate">
                     {(isAr ? extra.seo_title_ar : extra.seo_title) || profile?.display_name || profile?.full_name || "Bio Page"}
                   </p>
-                  <p className="text-[12px] text-muted-foreground line-clamp-2">
+                  <p className="text-xs text-muted-foreground line-clamp-2">
                     {(isAr ? extra.seo_description_ar : extra.seo_description) || (isAr ? "صفحة Bio الشخصية" : "Personal bio page")}
                   </p>
-                  <p className="text-[12px] text-muted-foreground/70 truncate">{window.location.host}/bio/{profile?.username}</p>
+                  <p className="text-xs text-muted-foreground/70 truncate">{window.location.host}/bio/{profile?.username}</p>
                 </div>
               </div>
 
               {/* WhatsApp Preview */}
               <div className="rounded-xl border border-border/60 overflow-hidden bg-card shadow-sm">
-                <div className="text-[12px] px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
+                <div className="text-xs px-2 py-1 bg-muted/40 text-muted-foreground font-medium flex items-center gap-1">
                   <MessageCircle className="h-2.5 w-2.5" /> WhatsApp
                 </div>
                 <div className="flex gap-2 p-2">
@@ -376,13 +376,13 @@ export const VisibilityTab = memo(function VisibilityTab({
                     </div>
                   )}
                   <div className="min-w-0 flex-1 space-y-0.5">
-                    <p className="text-[12px] font-semibold text-foreground truncate">
+                    <p className="text-xs font-semibold text-foreground truncate">
                       {(isAr ? extra.seo_title_ar : extra.seo_title) || profile?.display_name || profile?.full_name || "Bio Page"}
                     </p>
-                    <p className="text-[12px] text-muted-foreground line-clamp-2">
+                    <p className="text-xs text-muted-foreground line-clamp-2">
                       {(isAr ? extra.seo_description_ar : extra.seo_description) || (isAr ? "صفحة Bio الشخصية" : "Personal bio page")}
                     </p>
-                    <p className="text-[12px] text-muted-foreground/60 truncate">{window.location.host}</p>
+                    <p className="text-xs text-muted-foreground/60 truncate">{window.location.host}</p>
                   </div>
                 </div>
               </div>
@@ -400,7 +400,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "تأثيرات حركية" : "Motion Effects"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "تأثيرات Typing و Particles للصفحة" : "Typing animation & Particle effects"}
           </p>
         </CardHeader>
@@ -431,13 +431,13 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "تخصيص CSS متقدم" : "Advanced CSS Customization"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "أضف أنماط CSS مخصصة لصفحتك العامة — للمستخدمين المتقدمين" : "Add custom CSS styles to your public page — for advanced users"}
           </p>
         </CardHeader>
         <CardContent className="space-y-3 pt-3">
           <Textarea value={extra.custom_user_css} onChange={e => updateExtra({ custom_user_css: e.target.value })} placeholder={isAr ? "/* أضف CSS مخصص */\n.my-class { color: red; }" : "/* Add custom CSS */\n.my-class { color: red; }"} className="min-h-[120px] text-xs font-mono" dir="ltr" />
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "⚠️ CSS غير صالح قد يؤثر على مظهر الصفحة" : "⚠️ Invalid CSS may affect page appearance"}
           </p>
         </CardContent>
@@ -452,7 +452,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "صفحات متعددة" : "Multi-Page Profiles"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "أنشئ تبويبات مختلفة (شخصي، مهني، إبداعي)" : "Create different tabs (Personal, Professional, Creative)"}
           </p>
         </CardHeader>
@@ -497,7 +497,7 @@ export const VisibilityTab = memo(function VisibilityTab({
             </div>
             {isAr ? "استيراد / تصدير" : "Import / Export"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "نسخ احتياطي أو نقل إعدادات الصفحة" : "Backup or transfer your page settings"}
           </p>
         </CardHeader>

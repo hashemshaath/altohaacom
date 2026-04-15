@@ -104,7 +104,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
         <CardTitle className="text-sm flex items-center gap-2">
           <Receipt className="h-4 w-4 text-primary" />
           {isAr ? "الفوترة" : "Billing"}
-          {hasInvoice && <Badge className="text-[12px] h-4">{isAr ? "تم إنشاء الفاتورة" : "Invoice Created"}</Badge>}
+          {hasInvoice && <Badge className="text-xs h-4">{isAr ? "تم إنشاء الفاتورة" : "Invoice Created"}</Badge>}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -115,12 +115,12 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
             <p className="text-xl font-black text-primary tabular-nums mt-1">
               <AnimatedCounter value={Math.round(session.total_cost || 0)} className="inline" /> SAR
             </p>
-            <p className="text-[12px] text-muted-foreground mt-1">{chefCount} {isAr ? "طهاة" : "chefs"}</p>
+            <p className="text-xs text-muted-foreground mt-1">{chefCount} {isAr ? "طهاة" : "chefs"}</p>
           </div>
         ) : (
           <>
             <div>
-              <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "خطة التسعير" : "Pricing Plan"}</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "خطة التسعير" : "Pricing Plan"}</p>
               <Select value={selectedPricingId} onValueChange={setSelectedPricingId}>
                 <SelectTrigger><SelectValue placeholder={isAr ? "اختر خطة التسعير" : "Select pricing plan"} /></SelectTrigger>
                 <SelectContent>

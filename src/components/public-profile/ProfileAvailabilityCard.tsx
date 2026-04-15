@@ -26,7 +26,7 @@ export const ProfileAvailabilityCard = memo(function ProfileAvailabilityCard({ p
           </div>
           <div>
             <h3 className="text-sm font-bold text-chart-2">{isAr ? "متاح للعمل" : "Open to Work"}</h3>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {isAr ? "يبحث عن فرص جديدة" : "Looking for new opportunities"}
             </p>
           </div>
@@ -40,12 +40,12 @@ export const ProfileAvailabilityCard = memo(function ProfileAvailabilityCard({ p
 
         {jobTypes.length > 0 && (
           <div className="space-y-1.5">
-            <p className="text-[12px] font-bold uppercase tracking-wider text-muted-foreground">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               {isAr ? "نوع العمل المفضل" : "Preferred Work Types"}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {jobTypes.map((type: string) => (
-                <Badge key={type} variant="secondary" className="text-[12px] rounded-lg px-2 py-0.5 capitalize">
+                <Badge key={type} variant="secondary" className="text-xs rounded-lg px-2 py-0.5 capitalize">
                   {type.replace(/_/g, " ")}
                 </Badge>
               ))}
@@ -55,13 +55,13 @@ export const ProfileAvailabilityCard = memo(function ProfileAvailabilityCard({ p
 
         {locations.length > 0 && (
           <div className="space-y-1.5">
-            <p className="text-[12px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1">
               <MapPin className="h-2.5 w-2.5" />
               {isAr ? "المواقع المفضلة" : "Preferred Locations"}
             </p>
             <div className="flex flex-wrap gap-1.5">
               {locations.map((loc: string) => (
-                <Badge key={loc} variant="outline" className="text-[12px] rounded-lg px-2 py-0.5">
+                <Badge key={loc} variant="outline" className="text-xs rounded-lg px-2 py-0.5">
                   <Globe className="h-2.5 w-2.5 me-1" />
                   {loc}
                 </Badge>
@@ -83,7 +83,7 @@ export const ProfileAvailabilityCard = memo(function ProfileAvailabilityCard({ p
         )}
 
         {profile.relocation_preference && (
-          <Badge variant="outline" className="text-[12px] rounded-lg border-chart-2/20 text-chart-2 capitalize">
+          <Badge variant="outline" className="text-xs rounded-lg border-chart-2/20 text-chart-2 capitalize">
             {profile.relocation_preference === "willing" ? (isAr ? "مستعد للانتقال" : "Open to Relocation") :
              profile.relocation_preference === "remote_only" ? (isAr ? "عن بعد فقط" : "Remote Only") :
              (isAr ? "في الموقع" : "On-site")}

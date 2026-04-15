@@ -152,7 +152,7 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
         </div>
         <h3 className="text-sm font-bold">{isAr ? "مُقترحات لك" : "Recommended for You"}</h3>
         {user && (
-          <Badge variant="secondary" className="text-[12px]">
+          <Badge variant="secondary" className="text-xs">
             <Sparkles className="h-2.5 w-2.5 me-0.5" />
             {isAr ? "مخصصة" : "Personalized"}
           </Badge>
@@ -178,14 +178,14 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Badge variant="outline" className="text-[12px] px-1.5 py-0">
+                    <Badge variant="outline" className="text-xs px-1.5 py-0">
                       {event.type === "exhibition" ? (isAr ? "معرض" : "Exhibition") : (isAr ? "مسابقة" : "Competition")}
                     </Badge>
                   </div>
                   <h4 className="text-xs font-bold line-clamp-2 group-hover:text-primary transition-colors">
                     {isAr && event.title_ar ? event.title_ar : event.title}
                   </h4>
-                  <div className="flex items-center gap-2 mt-1 text-[12px] text-muted-foreground">
+                  <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                     <span className="flex items-center gap-0.5">
                       <Calendar className="h-2.5 w-2.5" />
                       {format(new Date(event.start_date), "d MMM yyyy", { locale: isAr ? arLocale : undefined })}

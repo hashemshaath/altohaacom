@@ -233,9 +233,9 @@ export const LinksTab = memo(function LinksTab({
               <LinkIcon className="h-3.5 w-3.5 text-primary" />
             </div>
             {isAr ? "الروابط" : "Links"}
-            {items.length > 0 && <Badge variant="secondary" className="text-[12px] ms-1">{items.length}</Badge>}
+            {items.length > 0 && <Badge variant="secondary" className="text-xs ms-1">{items.length}</Badge>}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "اسحب وأفلت لإعادة الترتيب" : "Drag and drop to reorder"}
           </p>
         </CardHeader>
@@ -294,7 +294,7 @@ export const LinksTab = memo(function LinksTab({
                         <div className="flex gap-2 items-center">
                           <Input value={editForm.icon} onChange={e => setEditForm(f => ({ ...f, icon: e.target.value }))} placeholder="🔗 Emoji" className="h-8 text-xs w-24" />
                           <Label htmlFor={`thumb-${item.id}`} className="cursor-pointer shrink-0">
-                            <div className="h-8 px-2.5 rounded-md border border-border/40 bg-muted/30 hover:bg-muted/50 flex items-center gap-1 text-[12px] font-medium text-muted-foreground transition-colors">
+                            <div className="h-8 px-2.5 rounded-md border border-border/40 bg-muted/30 hover:bg-muted/50 flex items-center gap-1 text-xs font-medium text-muted-foreground transition-colors">
                               <Palette className="h-3 w-3" />
                               {isAr ? "صورة" : "Thumb"}
                             </div>
@@ -309,19 +309,19 @@ export const LinksTab = memo(function LinksTab({
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                           <div>
-                            <Label className="text-[12px] text-muted-foreground flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{isAr ? "يبدأ" : "Start"}</Label>
+                            <Label className="text-xs text-muted-foreground flex items-center gap-1"><Calendar className="h-2.5 w-2.5" />{isAr ? "يبدأ" : "Start"}</Label>
                             <Input type="datetime-local" value={editForm.scheduled_start} onChange={e => setEditForm(f => ({ ...f, scheduled_start: e.target.value }))} className="text-xs h-7" dir="ltr" />
                           </div>
                           <div>
-                            <Label className="text-[12px] text-muted-foreground flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{isAr ? "ينتهي" : "End"}</Label>
+                            <Label className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="h-2.5 w-2.5" />{isAr ? "ينتهي" : "End"}</Label>
                             <Input type="datetime-local" value={editForm.scheduled_end} onChange={e => setEditForm(f => ({ ...f, scheduled_end: e.target.value }))} className="text-xs h-7" dir="ltr" />
                           </div>
                         </div>
                         {extra.pages.length > 0 && (
                           <div>
-                            <Label className="text-[12px] text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-2.5 w-2.5" />{isAr ? "الصفحة" : "Page"}</Label>
+                            <Label className="text-xs text-muted-foreground flex items-center gap-1"><LayoutGrid className="h-2.5 w-2.5" />{isAr ? "الصفحة" : "Page"}</Label>
                             <Select value={editForm.page_tab} onValueChange={v => setEditForm(f => ({ ...f, page_tab: v }))}>
-                              <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
+                              <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="main">{isAr ? "الرئيسية" : "Main"}</SelectItem>
                                 {extra.pages.map(pg => (
@@ -334,7 +334,7 @@ export const LinksTab = memo(function LinksTab({
                         {item.thumbnail_url && (
                           <div className="flex items-center gap-2">
                             <img loading="lazy" src={item.thumbnail_url} alt={item.title || "Link"} className="h-8 w-8 rounded-md object-cover" />
-                            <Button size="sm" variant="ghost" className="h-6 text-[12px] text-destructive" onClick={() => updateItem.mutate({ id: item.id, thumbnail_url: null })}>
+                            <Button size="sm" variant="ghost" className="h-6 text-xs text-destructive" onClick={() => updateItem.mutate({ id: item.id, thumbnail_url: null })}>
                               {isAr ? "إزالة الصورة" : "Remove thumbnail"}
                             </Button>
                           </div>
@@ -343,7 +343,7 @@ export const LinksTab = memo(function LinksTab({
                         <Separator className="my-2" />
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <Label className="text-[12px] flex items-center gap-1 font-semibold">
+                            <Label className="text-xs flex items-center gap-1 font-semibold">
                               <Sparkles className="h-3 w-3 text-chart-2" />
                               {isAr ? "اختبار A/B" : "A/B Test"}
                             </Label>
@@ -351,16 +351,16 @@ export const LinksTab = memo(function LinksTab({
                           </div>
                           {item.ab_enabled && (
                             <div className="space-y-1.5 p-2 rounded-xl bg-muted/30 border border-border/30">
-                              <p className="text-[12px] text-muted-foreground">{isAr ? "النسخة البديلة (B)" : "Variant B"}</p>
+                              <p className="text-xs text-muted-foreground">{isAr ? "النسخة البديلة (B)" : "Variant B"}</p>
                               <div className="grid grid-cols-2 gap-1.5">
-                                <Input value={item.ab_variant_title || ""} onChange={e => updateItem.mutate({ id: item.id, ab_variant_title: e.target.value } as any)} placeholder={isAr ? "عنوان B (EN)" : "Title B (EN)"} className="h-7 text-[12px]" dir="ltr" />
-                                <Input value={item.ab_variant_title_ar || ""} onChange={e => updateItem.mutate({ id: item.id, ab_variant_title_ar: e.target.value } as any)} placeholder={isAr ? "عنوان B (AR)" : "Title B (AR)"} className="h-7 text-[12px]" dir="rtl" />
+                                <Input value={item.ab_variant_title || ""} onChange={e => updateItem.mutate({ id: item.id, ab_variant_title: e.target.value } as any)} placeholder={isAr ? "عنوان B (EN)" : "Title B (EN)"} className="h-7 text-xs" dir="ltr" />
+                                <Input value={item.ab_variant_title_ar || ""} onChange={e => updateItem.mutate({ id: item.id, ab_variant_title_ar: e.target.value } as any)} placeholder={isAr ? "عنوان B (AR)" : "Title B (AR)"} className="h-7 text-xs" dir="rtl" />
                               </div>
-                              <Input value={item.ab_variant_icon || ""} onChange={e => updateItem.mutate({ id: item.id, ab_variant_icon: e.target.value } as any)} placeholder={isAr ? "أيقونة B (إيموجي)" : "Icon B (emoji)"} className="h-7 text-[12px] w-28" />
+                              <Input value={item.ab_variant_icon || ""} onChange={e => updateItem.mutate({ id: item.id, ab_variant_icon: e.target.value } as any)} placeholder={isAr ? "أيقونة B (إيموجي)" : "Icon B (emoji)"} className="h-7 text-xs w-28" />
                               {((item.click_count || 0) + (item.ab_variant_click_count || 0)) > 0 && (
                                 <div className="flex items-center gap-3 pt-1">
                                   <div className="flex-1">
-                                    <div className="flex justify-between text-[12px] mb-0.5">
+                                    <div className="flex justify-between text-xs mb-0.5">
                                       <span className="font-medium">A</span>
                                       <span className="tabular-nums">{item.click_count || 0}</span>
                                     </div>
@@ -369,7 +369,7 @@ export const LinksTab = memo(function LinksTab({
                                     </div>
                                   </div>
                                   <div className="flex-1">
-                                    <div className="flex justify-between text-[12px] mb-0.5">
+                                    <div className="flex justify-between text-xs mb-0.5">
                                       <span className="font-medium">B</span>
                                       <span className="tabular-nums">{item.ab_variant_click_count || 0}</span>
                                     </div>
@@ -386,10 +386,10 @@ export const LinksTab = memo(function LinksTab({
                     ) : (
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{item.title}</p>
-                        {item.title_ar && <p className="text-[12px] text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
-                        <p className="text-[12px] text-muted-foreground truncate">{item.url}</p>
+                        {item.title_ar && <p className="text-xs text-muted-foreground truncate" dir="rtl">{item.title_ar}</p>}
+                        <p className="text-xs text-muted-foreground truncate">{item.url}</p>
                         {extra.pages.length > 0 && item.page_tab && item.page_tab !== "main" && (
-                          <Badge variant="outline" className="text-[12px] h-4 px-1.5 mt-1 border-chart-3/30 text-chart-3">
+                          <Badge variant="outline" className="text-xs h-4 px-1.5 mt-1 border-chart-3/30 text-chart-3">
                             <LayoutGrid className="h-2 w-2 me-0.5" />
                             {extra.pages.find(p => p.id === item.page_tab)?.label || item.page_tab}
                           </Badge>
@@ -397,7 +397,7 @@ export const LinksTab = memo(function LinksTab({
                         {(item.scheduled_start || item.scheduled_end) && (
                           <div className="flex items-center gap-1 mt-1">
                             <Clock className="h-2.5 w-2.5 text-chart-2" />
-                            <span className="text-[12px] text-chart-2 font-medium">
+                            <span className="text-xs text-chart-2 font-medium">
                               {item.scheduled_start ? new Date(item.scheduled_start).toLocaleDateString() : "∞"}
                               {" → "}
                               {item.scheduled_end ? new Date(item.scheduled_end).toLocaleDateString() : "∞"}
@@ -406,10 +406,10 @@ export const LinksTab = memo(function LinksTab({
                         )}
                         {item.ab_enabled && item.ab_variant_title && (
                           <div className="flex items-center gap-1.5 mt-1">
-                            <Badge variant="outline" className="text-[12px] h-4 px-1.5 gap-0.5 border-chart-2/30 text-chart-2">
+                            <Badge variant="outline" className="text-xs h-4 px-1.5 gap-0.5 border-chart-2/30 text-chart-2">
                               <Sparkles className="h-2 w-2" /> A/B
                             </Badge>
-                            <span className="text-[12px] text-muted-foreground">
+                            <span className="text-xs text-muted-foreground">
                               A: {item.click_count || 0} • B: {item.ab_variant_click_count || 0}
                             </span>
                             {(() => {
@@ -417,7 +417,7 @@ export const LinksTab = memo(function LinksTab({
                               const b = item.ab_variant_click_count || 0;
                               if (a + b >= 10) {
                                 const winner = a > b ? "A" : b > a ? "B" : "—";
-                                return <Badge variant="secondary" className="text-[12px] h-4 px-1.5">🏆 {winner}</Badge>;
+                                return <Badge variant="secondary" className="text-xs h-4 px-1.5">🏆 {winner}</Badge>;
                               }
                               return null;
                             })()}
@@ -428,7 +428,7 @@ export const LinksTab = memo(function LinksTab({
                             <div className="h-1 flex-1 max-w-[80px] rounded-full bg-muted overflow-hidden">
                               <div className="h-full rounded-full bg-primary/60 transition-all duration-500" style={{ width: `${Math.min(100, ((item.click_count || 0) / totalClicks) * 100)}%` }} />
                             </div>
-                            <span className="text-[12px] text-muted-foreground tabular-nums">{Math.round(((item.click_count || 0) / totalClicks) * 100)}%</span>
+                            <span className="text-xs text-muted-foreground tabular-nums">{Math.round(((item.click_count || 0) / totalClicks) * 100)}%</span>
                           </div>
                         )}
                       </div>
@@ -436,7 +436,7 @@ export const LinksTab = memo(function LinksTab({
 
                     {editingItem !== item.id && (
                       <div className="flex items-center gap-1">
-                        <Badge variant="outline" className="text-[12px] tabular-nums gap-0.5 h-5 px-1.5">
+                        <Badge variant="outline" className="text-xs tabular-nums gap-0.5 h-5 px-1.5">
                           <MousePointerClick className="h-2.5 w-2.5" />{item.click_count || 0}
                         </Badge>
                         <Switch checked={item.is_active !== false} onCheckedChange={v => updateItem.mutate({ id: item.id, is_active: v })} />

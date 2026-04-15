@@ -91,7 +91,7 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
               <div key={s.label} className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                 <s.icon className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-[12px] text-muted-foreground">{s.label}</p>
+                  <p className="text-xs text-muted-foreground">{s.label}</p>
                   <p className="text-lg font-bold">{typeof s.value === "number" ? <AnimatedCounter value={s.value} /> : s.value}</p>
                 </div>
               </div>
@@ -164,8 +164,8 @@ export const AdBehaviorInsights = memo(function AdBehaviorInsights() {
                 return (
                   <div key={i} className="p-3 rounded-xl bg-muted/50">
                     <div className="flex items-center justify-between mb-1.5">
-                      <Badge variant="outline" className="text-[12px]">{interest.interest_category}</Badge>
-                      <span className="text-[12px] text-muted-foreground">{interest.interaction_count} {isAr ? "تفاعل" : "actions"}</span>
+                      <Badge variant="outline" className="text-xs">{interest.interest_category}</Badge>
+                      <span className="text-xs text-muted-foreground">{interest.interaction_count} {isAr ? "تفاعل" : "actions"}</span>
                     </div>
                     <Progress value={pct} className="h-1.5" />
                   </div>

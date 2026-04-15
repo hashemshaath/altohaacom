@@ -73,7 +73,7 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
         <CardTitle className="text-sm flex items-center gap-2">
           <Activity className="h-4 w-4 text-primary" />
           {isAr ? "خريطة النشاط" : "Activity Heatmap"}
-          <span className="ms-auto text-[12px] font-normal text-muted-foreground">
+          <span className="ms-auto text-xs font-normal text-muted-foreground">
             {isAr ? `${data.activeDays} يوم نشط` : `${data.activeDays} active days`}
           </span>
         </CardTitle>
@@ -99,7 +99,7 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
           ))}
         </div>
         {/* Legend */}
-        <div className="flex items-center gap-1.5 mt-3 text-[12px] text-muted-foreground">
+        <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
           <span>{isAr ? "أقل" : "Less"}</span>
           {["bg-muted/40", "bg-primary/20", "bg-primary/40", "bg-primary/60", "bg-primary/90"].map((c, i) => (
             <div key={i} className={`h-2.5 w-2.5 rounded-[2px] ${c}`} />

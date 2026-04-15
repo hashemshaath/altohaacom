@@ -106,7 +106,7 @@ export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget
           </div>
           {isAr ? "إجراءات معلقة" : "Pending Actions"}
           {totalPending > 0 && (
-            <Badge variant="secondary" className="text-[12px] h-5 px-1.5">
+            <Badge variant="secondary" className="text-xs h-5 px-1.5">
               {totalPending}
             </Badge>
           )}
@@ -136,7 +136,7 @@ export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={item.urgent ? "destructive" : "secondary"} className="text-[12px] h-5 px-1.5">
+                    <Badge variant={item.urgent ? "destructive" : "secondary"} className="text-xs h-5 px-1.5">
                       {item.count}
                     </Badge>
                     <ArrowRight className="h-3 w-3 text-muted-foreground" />

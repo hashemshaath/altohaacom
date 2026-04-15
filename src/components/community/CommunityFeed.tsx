@@ -439,7 +439,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
       {tagFilter && (
         <div className="flex items-center gap-2 border-b border-border/30 px-4 min-h-[44px] bg-primary/5">
           <span className="text-[15px] sm:text-sm font-bold text-primary">#{tagFilter}</span>
-          <span className="text-[13px] sm:text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
+          <span className="text-[0.8125rem] sm:text-xs text-muted-foreground">{isAr ? "المنشورات المصفاة" : "Filtered posts"}</span>
           <Button
             variant="ghost"
             size="icon"
@@ -550,7 +550,7 @@ export const CommunityFeed = memo(function CommunityFeed() {
       <div ref={sentinelRef} className="py-6 flex justify-center safe-area-bottom">
         {loadingMore && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />}
         {!hasMore && posts.length > 0 && (
-          <p className="text-[13px] sm:text-xs text-muted-foreground">{isAr ? "لا مزيد من المنشورات" : "No more posts"}</p>
+          <p className="text-[0.8125rem] sm:text-xs text-muted-foreground">{isAr ? "لا مزيد من المنشورات" : "No more posts"}</p>
         )}
       </div>
 

@@ -107,7 +107,7 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
           <CardTitle className="text-sm flex items-center gap-2">
             <Ticket className="h-4 w-4 text-primary" />
             {t("Ticket Types", "أنواع التذاكر")} ({types.length})
-            {totalSold > 0 && <Badge variant="secondary" className="text-[12px]">{totalSold} {t("sold", "مباع")}</Badge>}
+            {totalSold > 0 && <Badge variant="secondary" className="text-xs">{totalSold} {t("sold", "مباع")}</Badge>}
           </CardTitle>
           <Dialog open={dialogOpen} onOpenChange={(o) => { if (!o) resetForm(); setDialogOpen(o); }}>
             <DialogTrigger asChild>
@@ -134,7 +134,7 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Input type="color" value={form.color || "#6366f1"} onChange={e => setForm({ ...form, color: e.target.value })} className="h-8 w-10 p-0.5 cursor-pointer" />
-                    <span className="text-[12px] text-muted-foreground">{t("Color", "اللون")}</span>
+                    <span className="text-xs text-muted-foreground">{t("Color", "اللون")}</span>
                   </div>
                   <label className="flex items-center gap-2 text-xs">
                     <Switch checked={form.is_active} onCheckedChange={v => setForm({ ...form, is_active: v })} />
@@ -165,9 +165,9 @@ export const ExhibitionTicketTypeManager = memo(function ExhibitionTicketTypeMan
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
                       <p className="text-xs font-semibold">{isAr && tt.name_ar ? tt.name_ar : tt.name}</p>
-                      {!tt.is_active && <Badge variant="outline" className="text-[12px] h-3.5">{t("Inactive", "غير فعال")}</Badge>}
+                      {!tt.is_active && <Badge variant="outline" className="text-xs h-3.5">{t("Inactive", "غير فعال")}</Badge>}
                     </div>
-                    <div className="flex items-center gap-3 mt-0.5 text-[12px] text-muted-foreground">
+                    <div className="flex items-center gap-3 mt-0.5 text-xs text-muted-foreground">
                       <span className="flex items-center gap-0.5"><DollarSign className="h-2.5 w-2.5" />{tt.price > 0 ? `${tt.price} ${tt.currency}` : t("Free", "مجاني")}</span>
                       <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{tt.sold_count} {t("sold", "مباع")}</span>
                       {remaining !== null && <span>{remaining} {t("left", "متبقي")}</span>}

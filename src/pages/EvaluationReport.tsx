@@ -137,7 +137,7 @@ export default function EvaluationReport() {
       <div className="flex items-center justify-between print:hidden">
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-5 w-5 text-chart-5" />
-          <Badge variant="outline" className="text-[12px]">{isAr ? "تقرير مُتحقق منه" : "Verified Report"}</Badge>
+          <Badge variant="outline" className="text-xs">{isAr ? "تقرير مُتحقق منه" : "Verified Report"}</Badge>
         </div>
         <Button variant="outline" size="sm" className="gap-1.5" onClick={() => window.print()}>
           <Printer className="h-3.5 w-3.5" />{isAr ? "طباعة" : "Print"}
@@ -151,14 +151,14 @@ export default function EvaluationReport() {
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="outline" className="text-[12px] uppercase">{isAr ? "تقرير تقييم المنتج" : "Product Evaluation Report"}</Badge>
-                  <Badge className="text-[12px]">{session.product_category}</Badge>
+                  <Badge variant="outline" className="text-xs uppercase">{isAr ? "تقرير تقييم المنتج" : "Product Evaluation Report"}</Badge>
+                  <Badge className="text-xs">{session.product_category}</Badge>
                 </div>
                 <h1 className="text-2xl font-black">{isAr && session.title_ar ? session.title_ar : session.title}</h1>
                 <p className="text-sm text-muted-foreground mt-1">{isAr && session.product_name_ar ? session.product_name_ar : session.product_name}</p>
               </div>
               <div className="text-end shrink-0">
-                <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "التقييم العام" : "Overall Score"}</p>
+                <p className="text-xs text-muted-foreground uppercase">{isAr ? "التقييم العام" : "Overall Score"}</p>
                 <p className={`text-5xl font-black tabular-nums ${getScoreColor(overallScore)}`}>{overallScore}</p>
                 <p className={`text-sm font-bold ${getScoreColor(overallScore)}`}>{getScoreLabel(overallScore, isAr)}</p>
               </div>
@@ -179,7 +179,7 @@ export default function EvaluationReport() {
                     <item.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-muted-foreground uppercase">{item.label}</p>
+                    <p className="text-xs text-muted-foreground uppercase">{item.label}</p>
                     <p className="text-sm font-bold">{item.value}</p>
                   </div>
                 </div>
@@ -192,7 +192,7 @@ export default function EvaluationReport() {
             {scoreCategories.length > 0 && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div>
-                  <p className="text-[12px] font-bold text-muted-foreground uppercase mb-3">{isAr ? "التحليل الراداري" : "Radar Analysis"}</p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase mb-3">{isAr ? "التحليل الراداري" : "Radar Analysis"}</p>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <RadarChart data={radarData}>
@@ -205,7 +205,7 @@ export default function EvaluationReport() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-[12px] font-bold text-muted-foreground uppercase mb-3">{isAr ? "النتائج" : "Category Scores"}</p>
+                  <p className="text-xs font-bold text-muted-foreground uppercase mb-3">{isAr ? "النتائج" : "Category Scores"}</p>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={barData} layout="vertical" margin={{ left: 80 }}>
@@ -226,7 +226,7 @@ export default function EvaluationReport() {
             <Separator />
 
             {/* Evaluators */}
-            <p className="text-[12px] font-bold text-muted-foreground uppercase flex items-center gap-1.5">
+            <p className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5">
               <ChefHat className="h-3.5 w-3.5" />{isAr ? "فريق التقييم" : "Evaluation Panel"}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -241,8 +241,8 @@ export default function EvaluationReport() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold truncate">{ev.profile?.full_name || "Chef"}</p>
-                    <p className="text-[12px] text-muted-foreground">{ev.profile?.specialization || "—"}</p>
-                    {ev.is_recommended && <Badge className="text-[12px] h-4 mt-0.5">{isAr ? "يوصي" : "Recommends"}</Badge>}
+                    <p className="text-xs text-muted-foreground">{ev.profile?.specialization || "—"}</p>
+                    {ev.is_recommended && <Badge className="text-xs h-4 mt-0.5">{isAr ? "يوصي" : "Recommends"}</Badge>}
                   </div>
                   <p className={`text-lg font-black tabular-nums ${getScoreColor(ev.overall_score || 0)}`}>{ev.overall_score}</p>
                 </div>
@@ -253,7 +253,7 @@ export default function EvaluationReport() {
             {evaluations.some((e) => e.endorsement_text) && (
               <>
                 <Separator />
-                <p className="text-[12px] font-bold text-muted-foreground uppercase flex items-center gap-1.5">
+                <p className="text-xs font-bold text-muted-foreground uppercase flex items-center gap-1.5">
                   <Lightbulb className="h-3.5 w-3.5" />{isAr ? "التوصيات" : "Chef Endorsements"}
                 </p>
                 <div className="space-y-3">
@@ -283,7 +283,7 @@ export default function EvaluationReport() {
             </div>
 
             {/* Footer */}
-            <div className="pt-4 border-t border-border/30 flex items-center justify-between text-[12px] text-muted-foreground">
+            <div className="pt-4 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
               <span>Altoha Chef's Table — {isAr ? "تقرير معتمد" : "Verified Report"}</span>
               <span>#{session.session_number || session.report_token}</span>
               <span>{session.report_published_at ? format(new Date(session.report_published_at), isAr ? "d MMMM yyyy" : "MMMM d, yyyy", isAr ? { locale: arLocale } : undefined) : ""}</span>

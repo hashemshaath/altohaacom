@@ -28,7 +28,7 @@ export const FilterChip = forwardRef<HTMLButtonElement, FilterChipProps>(
         {typeof count === "number" && count > 0 && (
           <span
             className={cn(
-              "text-[12px] tabular-nums",
+              "text-xs tabular-nums",
               active ? "opacity-80" : "opacity-50"
             )}
           >

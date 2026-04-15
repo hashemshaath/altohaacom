@@ -552,7 +552,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                         </TableCell>
                       ))}
                       <TableCell>
-                        <Badge variant="outline" className="text-[12px]">
+                        <Badge variant="outline" className="text-xs">
                           {row._detected_language === "ar" ? "عربي" : "EN"}
                         </Badge>
                       </TableCell>
@@ -593,7 +593,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                   {t(`${rows.length} rows ready`, `${rows.length} صف جاهز`)}
                 </span>
                 {rows.some(r => r._ai_processed) && (
-                  <Badge className="bg-primary/10 text-primary text-[12px]">
+                  <Badge className="bg-primary/10 text-primary text-xs">
                     <Sparkles className="me-1 h-3 w-3" /> {t("AI Enhanced", "محسّن بـ AI")}
                   </Badge>
                 )}
@@ -649,7 +649,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                         {dupResults[idx] ? (
                           <Tooltip>
                             <TooltipTrigger>
-                              <Badge variant="destructive" className="text-[12px]">
+                              <Badge variant="destructive" className="text-xs">
                                 {Math.round(dupResults[idx].score)}%
                               </Badge>
                             </TooltipTrigger>

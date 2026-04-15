@@ -120,7 +120,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
             <CardContent className="p-3">
               <div className="flex items-center gap-2 mb-1">
                 <kpi.icon className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[12px] text-muted-foreground">{kpi.label}</span>
+                <span className="text-xs text-muted-foreground">{kpi.label}</span>
               </div>
               <p className="text-xl font-bold"><AnimatedCounter value={kpi.value} /></p>
             </CardContent>
@@ -137,7 +137,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
               <p className={`text-lg font-bold ${growthRate >= 0 ? "text-chart-2" : "text-destructive"}`}>
                 {growthRate > 0 ? "+" : ""}{growthRate}%
               </p>
-              <p className="text-[12px] text-muted-foreground">{isAr ? "معدل النمو" : "Growth Rate"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "معدل النمو" : "Growth Rate"}</p>
             </CardContent>
           </Card>
         )}
@@ -145,14 +145,14 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
           <CardContent className="p-3 text-center">
             <Calendar className="h-5 w-5 mx-auto mb-1 text-chart-4" />
             <p className="text-lg font-bold">{avgDuration}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "متوسط المدة (أيام)" : "Avg Duration (days)"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "متوسط المدة (أيام)" : "Avg Duration (days)"}</p>
           </CardContent>
         </Card>
         <Card className="rounded-2xl border-border/40">
           <CardContent className="p-3 text-center">
             <Globe className="h-5 w-5 mx-auto mb-1 text-chart-5" />
             <p className="text-lg font-bold">{countries.length}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "دول" : "Countries"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "دول" : "Countries"}</p>
           </CardContent>
         </Card>
       </div>
@@ -236,7 +236,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
                     <div key={item.name} className="flex items-center gap-2 text-xs">
                       <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: CHART_COLORS[idx % CHART_COLORS.length] }} />
                       <span className="capitalize flex-1 truncate">{item.name}</span>
-                      <Badge variant="secondary" className="text-[12px] h-4 px-1.5">{item.value}</Badge>
+                      <Badge variant="secondary" className="text-xs h-4 px-1.5">{item.value}</Badge>
                     </div>
                   ))}
                 </div>
@@ -293,7 +293,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
                       <span className="h-2 w-2 rounded-full shrink-0" style={{ background: CHART_COLORS[idx % CHART_COLORS.length] }} />
                       <span>{c.name}</span>
                     </div>
-                    <span className="text-muted-foreground font-mono text-[12px]">{c.events} ({pct}%)</span>
+                    <span className="text-muted-foreground font-mono text-xs">{c.events} ({pct}%)</span>
                   </div>
                   <Progress value={pct} className="h-1.5" />
                 </div>
@@ -351,7 +351,7 @@ export const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({
                 <div key={s.label} className="flex items-center gap-3">
                   <span className={`h-2 w-2 rounded-full shrink-0 ${s.color}`} />
                   <span className="text-xs flex-1">{s.label}</span>
-                  <Badge variant="secondary" className="text-[12px] font-mono">{s.count}</Badge>
+                  <Badge variant="secondary" className="text-xs font-mono">{s.count}</Badge>
                 </div>
               ))}
             </CardContent>

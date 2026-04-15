@@ -66,7 +66,7 @@ export const TrendingCompetitions = memo(function TrendingCompetitions({ competi
                   )}
                   {/* Status overlay */}
                   <div className="absolute top-2 start-2">
-                    <Badge className={`text-[12px] font-black border-0 rounded-lg px-2 py-0.5 backdrop-blur-md ${derived.color}`}>
+                    <Badge className={`text-xs font-black border-0 rounded-lg px-2 py-0.5 backdrop-blur-md ${derived.color}`}>
                       {isAr ? derived.labelAr : derived.label}
                     </Badge>
                   </div>
@@ -79,7 +79,7 @@ export const TrendingCompetitions = memo(function TrendingCompetitions({ competi
                     {title}
                   </h3>
 
-                  <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     {comp.country_code && (
                       <span className="flex items-center gap-0.5">
                         {countryFlag(comp.country_code)}
@@ -96,7 +96,7 @@ export const TrendingCompetitions = memo(function TrendingCompetitions({ competi
                   {capacity > 0 && (
                     <div className="space-y-1">
                       <Progress value={fillPercent} className="h-1.5 rounded-full" />
-                      <div className="flex justify-between text-[12px] text-muted-foreground">
+                      <div className="flex justify-between text-xs text-muted-foreground">
                         <span>{fillPercent}% {isAr ? "ممتلئ" : "filled"}</span>
                         <span>{regs}/{capacity}</span>
                       </div>

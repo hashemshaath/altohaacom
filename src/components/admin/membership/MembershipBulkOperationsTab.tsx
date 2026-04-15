@@ -323,7 +323,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
             <Users className="h-5 w-5 text-primary" />
             <div>
               <AnimatedCounter value={members?.length || 0} className="text-lg font-bold" />
-              <p className="text-[12px] text-muted-foreground">{isAr ? "معروض" : "Showing"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "معروض" : "Showing"}</p>
             </div>
           </CardContent>
         </Card>
@@ -332,7 +332,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
             <CheckCircle2 className="h-5 w-5 text-chart-2" />
             <div>
               <AnimatedCounter value={selectedIds.size} className="text-lg font-bold" />
-              <p className="text-[12px] text-muted-foreground">{isAr ? "محدد" : "Selected"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "محدد" : "Selected"}</p>
             </div>
           </CardContent>
         </Card>
@@ -341,7 +341,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
             <Zap className="h-5 w-5 text-chart-4" />
             <div>
               <p className="text-sm font-medium">{bulkActions.length}</p>
-              <p className="text-[12px] text-muted-foreground">{isAr ? "عمليات متاحة" : "Actions"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "عمليات متاحة" : "Actions"}</p>
             </div>
           </CardContent>
         </Card>
@@ -372,7 +372,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
               </div>
               <div>
                 <p className="text-sm font-medium">{f.label}</p>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "اضغط للتصفية" : "Click to filter"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "اضغط للتصفية" : "Click to filter"}</p>
               </div>
             </CardContent>
           </Card>
@@ -401,7 +401,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
                   <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded ${action.color}`}>
                     <action.icon className="h-3 w-3" />
                   </div>
-                  <span className="text-[12px]">{action.label}</span>
+                  <span className="text-xs">{action.label}</span>
                 </Button>
               ))}
             </div>
@@ -500,7 +500,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
                           <div className="flex items-center gap-2.5">
                             <Avatar className="h-7 w-7">
                               <AvatarImage src={m.avatar_url || undefined} />
-                              <AvatarFallback className="text-[12px] bg-primary/10 text-primary">
+                              <AvatarFallback className="text-xs bg-primary/10 text-primary">
                                 {(m.full_name || "U")[0]}
                               </AvatarFallback>
                             </Avatar>
@@ -508,7 +508,7 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
                               <p className="text-xs font-medium truncate">
                                 {isAr ? (m.full_name_ar || m.full_name) : m.full_name || "—"}
                               </p>
-                              <p className="text-[12px] text-muted-foreground truncate">{m.email}</p>
+                              <p className="text-xs text-muted-foreground truncate">{m.email}</p>
                             </div>
                           </div>
                         </TableCell>
@@ -516,14 +516,14 @@ const MembershipBulkOperationsTab = memo(function MembershipBulkOperationsTab() 
                         <TableCell>
                           <Badge
                             variant={m.membership_status === "active" ? "default" : m.membership_status === "suspended" ? "destructive" : "secondary"}
-                            className="text-[12px]"
+                            className="text-xs"
                           >
                             {m.membership_status === "active" ? (isAr ? "نشط" : "Active") :
                              m.membership_status === "suspended" ? (isAr ? "موقوف" : "Susp") :
                              (isAr ? "منتهي" : "Exp")}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-[12px] text-muted-foreground">
+                        <TableCell className="text-xs text-muted-foreground">
                           {m.membership_expires_at ? (
                             <span className={days !== null && days < 0 ? "text-destructive" : days !== null && days <= 14 ? "text-chart-4" : ""}>
                               {format(new Date(m.membership_expires_at), "MMM d, yy")}

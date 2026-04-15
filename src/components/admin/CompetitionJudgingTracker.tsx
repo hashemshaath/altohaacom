@@ -103,7 +103,7 @@ export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker
         <CardTitle className="text-sm flex items-center gap-2">
           <Gavel className="h-4 w-4 text-chart-4" />
           {isAr ? "تقدم التحكيم المباشر" : "Live Judging Progress"}
-          <Badge variant="secondary" className="text-[12px]">{data.competitions.length}</Badge>
+          <Badge variant="secondary" className="text-xs">{data.competitions.length}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="p-3 space-y-3">
@@ -111,12 +111,12 @@ export const CompetitionJudgingTracker = memo(function CompetitionJudgingTracker
           <div key={c.id} className="space-y-1.5 p-2.5 rounded-xl bg-muted/30 border border-border/40">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium truncate max-w-[200px]">{c.title}</span>
-              <Badge variant={c.status === "judging" ? "default" : "outline"} className="text-[12px]">
+              <Badge variant={c.status === "judging" ? "default" : "outline"} className="text-xs">
                 {c.status === "judging" ? (isAr ? "تحكيم" : "Judging") : (isAr ? "جارية" : "Active")}
               </Badge>
             </div>
             <Progress value={c.progress} className="h-1.5" />
-            <div className="flex items-center justify-between text-[12px] text-muted-foreground">
+            <div className="flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1">
                   <Users className="h-3 w-3" /> {c.participants}

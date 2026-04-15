@@ -111,7 +111,7 @@ export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDas
               </div>
               <div>
                 <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-                <p className="text-[12px] text-muted-foreground">{s.label}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -208,18 +208,18 @@ export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDas
                         <TableCell className="text-xs">{ticket.attendee_email || "—"}</TableCell>
                         <TableCell>
                           {ticket.checked_in_at ? (
-                            <Badge className="bg-chart-3/10 text-chart-3 text-[12px]">
+                            <Badge className="bg-chart-3/10 text-chart-3 text-xs">
                               <CheckCircle2 className="me-1 h-2.5 w-2.5" />
                               {t("Checked In", "حاضر")}
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="text-[12px]">
+                            <Badge variant="outline" className="text-xs">
                               <Clock className="me-1 h-2.5 w-2.5" />
                               {t("Pending", "بانتظار")}
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-[12px] text-muted-foreground">{format(new Date(ticket.created_at), "MMM d, HH:mm")}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground">{format(new Date(ticket.created_at), "MMM d, HH:mm")}</TableCell>
                       </TableRow>
                     ))}
                     {ticketsList.length === 0 && (

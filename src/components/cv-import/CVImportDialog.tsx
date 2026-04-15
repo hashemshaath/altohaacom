@@ -158,7 +158,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
                   className="min-h-[300px] text-sm"
                   dir="auto"
                 />
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {cvText.length > 0 ? `${cvText.length} ${isAr ? "حرف" : "characters"}` : ""}
                 </p>
               </TabsContent>
@@ -181,7 +181,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
                       />
                     </label>
                   </div>
-                  <p className="text-[12px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {isAr ? "PDF, Word (.docx), TXT — الحد الأقصى 10MB" : "PDF, Word (.docx), TXT — Max 10MB"}
                   </p>
                   {fileUploading && (
@@ -196,7 +196,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
                     <CheckCircle2 className="h-4 w-4 text-chart-2 shrink-0" />
                     <div className="flex-1 min-w-0">
                       {fileName && <p className="text-xs font-medium truncate">{fileName}</p>}
-                      <p className="text-[12px] text-muted-foreground">
+                      <p className="text-xs text-muted-foreground">
                         {isAr ? `تم استخراج ${cvText.length.toLocaleString()} حرف` : `Extracted ${cvText.length.toLocaleString()} characters`}
                       </p>
                     </div>

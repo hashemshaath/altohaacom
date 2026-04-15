@@ -33,7 +33,7 @@ export const MonthView = memo(function MonthView({ events, currentDate, selected
         {/* Day headers */}
         <div className="grid grid-cols-7 bg-muted/20">
           {dayNames.map(d => (
-            <div key={d} className="py-3 text-center text-[11px] font-bold text-muted-foreground/70 uppercase tracking-widest border-b border-border/20">{d}</div>
+            <div key={d} className="py-3 text-center text-[0.6875rem] font-bold text-muted-foreground/70 uppercase tracking-widest border-b border-border/20">{d}</div>
           ))}
         </div>
         {/* Calendar grid */}
@@ -78,7 +78,7 @@ export const MonthView = memo(function MonthView({ events, currentDate, selected
                   {hasEvents && isCurrentMonth && (
                     <div className="flex items-center gap-0.5 mt-0.5">
                       {dayEvents.length > 2 && (
-                        <Badge variant="secondary" className="h-4 text-[10px] px-1.5 tabular-nums rounded-md">{dayEvents.length}</Badge>
+                        <Badge variant="secondary" className="h-4 text-[0.625rem] px-1.5 tabular-nums rounded-md">{dayEvents.length}</Badge>
                       )}
                       {dayEvents.length <= 2 && dayEvents.map(ev => {
                         const c = GLOBAL_EVENT_COLORS[ev.type];
@@ -93,7 +93,7 @@ export const MonthView = memo(function MonthView({ events, currentDate, selected
                       <EventChip key={`${ev.id}-${day.toISOString()}`} event={ev} isAr={isAr} compact />
                     ))}
                     {dayEvents.length > 3 && (
-                      <p className="text-[10px] text-center text-primary font-bold mt-0.5 opacity-70">
+                      <p className="text-[0.625rem] text-center text-primary font-bold mt-0.5 opacity-70">
                         +{dayEvents.length - 3} {isAr ? "المزيد" : "more"}
                       </p>
                     )}

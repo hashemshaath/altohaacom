@@ -100,7 +100,7 @@ export const VoiceMessagePlayer = memo(function VoiceMessagePlayer({ url, durati
         })}
       </div>
 
-      <span className={cn("text-[12px] tabular-nums shrink-0", isMine ? "text-primary-foreground/60" : "text-muted-foreground")}>
+      <span className={cn("text-xs tabular-nums shrink-0", isMine ? "text-primary-foreground/60" : "text-muted-foreground")}>
         {playing ? formatTime(currentTime) : formatTime(totalDuration)}
       </span>
     </div>

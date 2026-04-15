@@ -179,7 +179,7 @@ export const CohortRetentionChart = memo(function CohortRetentionChart() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "تسجيلات هذا الشهر" : "This Month"}</p>
               <AnimatedCounter value={data.thisMonthSignups} className="text-2xl font-bold" />
-              <p className={`text-[12px] ${data.growthRate >= 0 ? "text-chart-2" : "text-destructive"}`}>
+              <p className={`text-xs ${data.growthRate >= 0 ? "text-chart-2" : "text-destructive"}`}>
                 {data.growthRate >= 0 ? "+" : ""}<AnimatedCounter value={Math.round(data.growthRate * 10) / 10} className="inline" />%
               </p>
             </div>
@@ -202,7 +202,7 @@ export const CohortRetentionChart = memo(function CohortRetentionChart() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "تنبؤ الانسحاب القادم" : "Predicted Churn"}</p>
               <AnimatedCounter value={data.predictedChurn} className="text-2xl font-bold" suffix="%" />
-              <p className="text-[12px] text-muted-foreground">{isAr ? "الشهر القادم" : "Next month"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "الشهر القادم" : "Next month"}</p>
             </div>
           </CardContent>
         </Card>
@@ -217,7 +217,7 @@ export const CohortRetentionChart = memo(function CohortRetentionChart() {
               {isAr ? "اتجاه الانسحاب والاحتفاظ" : "Churn & Retention Trend"}
             </CardTitle>
             {data.churnDirection === "up" && (
-              <Badge variant="outline" className="text-[12px] text-destructive border-destructive/30 gap-1">
+              <Badge variant="outline" className="text-xs text-destructive border-destructive/30 gap-1">
                 <TrendingUp className="h-3 w-3" />
                 {isAr ? "الانسحاب يتزايد" : "Churn increasing"}
               </Badge>

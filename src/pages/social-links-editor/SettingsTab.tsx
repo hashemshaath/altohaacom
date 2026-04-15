@@ -26,7 +26,7 @@ export const SettingsTab = memo(function SettingsTab({ form, updateForm, extra, 
             </div>
             {isAr ? "المعلومات الأساسية" : "Basic Info"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "يتم تعبئة الاسم والنبذة تلقائياً من بروفايلك" : "Name & bio are auto-filled from your profile"}
           </p>
         </CardHeader>
@@ -77,7 +77,7 @@ export const SettingsTab = memo(function SettingsTab({ form, updateForm, extra, 
             </div>
             {isAr ? "الصفحات الفرعية" : "Sub-Pages"}
           </CardTitle>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "أنشئ تبويبات مختلفة (شخصي، مهني، إبداعي)" : "Create different tabs (Personal, Professional, Creative)"}
           </p>
         </CardHeader>

@@ -86,7 +86,7 @@ export const ProfileOrdersTab = memo(function ProfileOrdersTab({ userId, isAr }:
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <Badge className={`text-[12px] h-5 capitalize ${STATUS_COLORS[order.status] || "bg-muted text-muted-foreground"}`}>
+              <Badge className={`text-xs h-5 capitalize ${STATUS_COLORS[order.status] || "bg-muted text-muted-foreground"}`}>
                 {isAr ? STATUS_AR[order.status] || order.status : order.status}
               </Badge>
               <p className="text-sm font-bold text-primary">

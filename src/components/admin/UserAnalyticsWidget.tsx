@@ -90,7 +90,7 @@ export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
           <CardTitle className="text-sm flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" />
             {isAr ? "اتجاه التسجيل (14 يوم)" : "Registration Trend (14 days)"}
-            <Badge variant="secondary" className="text-[12px] ms-auto">
+            <Badge variant="secondary" className="text-xs ms-auto">
               {isAr ? "هذا الأسبوع" : "This week"}: {data.thisWeekCount}
             </Badge>
           </CardTitle>
@@ -139,7 +139,7 @@ export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
               </ResponsiveContainer>
               <div className="flex flex-wrap gap-1.5 mt-1">
                 {data.roleDistribution.slice(0, 5).map((r, i) => (
-                  <Badge key={r.name} variant="outline" className="text-[12px] gap-1">
+                  <Badge key={r.name} variant="outline" className="text-xs gap-1">
                     <span className="h-1.5 w-1.5 rounded-full" style={{ background: ROLE_COLORS[i % ROLE_COLORS.length] }} />
                     {r.name} ({r.value})
                   </Badge>
@@ -158,7 +158,7 @@ export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
           <CardTitle className="text-sm flex items-center gap-2">
             <Globe className="h-4 w-4 text-chart-3" />
             {isAr ? "التوزيع الجغرافي" : "Geographic Breakdown"}
-            <Badge variant="secondary" className="text-[12px] ms-auto">
+            <Badge variant="secondary" className="text-xs ms-auto">
               {data.topCountries.length} {isAr ? "دول" : "countries"}
             </Badge>
           </CardTitle>
@@ -177,7 +177,7 @@ export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
                       style={{ width: `${pct}%` }}
                     />
                   </div>
-                  <div className="text-[12px] text-muted-foreground">{c.count}</div>
+                  <div className="text-xs text-muted-foreground">{c.count}</div>
                 </div>
               );
             })}

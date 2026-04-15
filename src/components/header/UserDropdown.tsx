@@ -59,7 +59,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
   if (!user) {
     return (
       <div className="hidden items-center gap-2 lg:flex">
-        <Button variant="ghost" size="sm" asChild className="text-[var(--color-body)] border border-[var(--color-border)] rounded-[var(--radius-sm)] h-10 px-4 text-[13px] font-semibold hover:bg-[var(--bg-surface)]">
+        <Button variant="ghost" size="sm" asChild className="text-[var(--color-body)] border border-[var(--color-border)] rounded-[var(--radius-sm)] h-10 px-4 text-[0.8125rem] font-semibold hover:bg-[var(--bg-surface)]">
           <Link to="/login">{t("signIn")}</Link>
         </Button>
         <Link
@@ -82,16 +82,16 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
           >
             <Avatar className="h-8 w-8 border-2 border-[var(--color-primary-light)]">
               <AvatarImage src={profile?.avatar_url || undefined} alt={displayName} />
-              <AvatarFallback className="text-[12px] font-bold bg-[var(--color-primary-light)] text-[var(--color-primary)]">
+              <AvatarFallback className="text-xs font-bold bg-[var(--color-primary-light)] text-[var(--color-primary)]">
                 {initials}
               </AvatarFallback>
             </Avatar>
             <div className="hidden xl:flex flex-col items-start max-w-[120px]">
-              <span className="text-[13px] font-semibold text-[var(--color-heading)] truncate w-full">
+              <span className="text-[0.8125rem] font-semibold text-[var(--color-heading)] truncate w-full">
                 {displayName}
               </span>
               {tierInfo && (
-                <span className="text-[12px] text-[var(--color-muted)] leading-tight">
+                <span className="text-xs text-[var(--color-muted)] leading-tight">
                   {isAr ? tierInfo.ar : tierInfo.en}
                 </span>
               )}
@@ -115,9 +115,9 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
               </Avatar>
               <div className="min-w-0 flex-1">
                 <p className="text-[14px] font-semibold text-[var(--color-heading)] truncate">{displayName}</p>
-                <p className="text-[12px] text-[var(--color-muted)] truncate">{user.email}</p>
+                <p className="text-xs text-[var(--color-muted)] truncate">{user.email}</p>
                 {tierInfo && (
-                  <Badge variant="secondary" className={`mt-1 text-[12px] h-4 px-1.5 ${tierInfo.color}`}>
+                  <Badge variant="secondary" className={`mt-1 text-xs h-4 px-1.5 ${tierInfo.color}`}>
                     <Crown className="h-2.5 w-2.5 me-0.5" />
                     {isAr ? tierInfo.ar : tierInfo.en}
                   </Badge>
@@ -137,7 +137,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
               <DropdownMenuItem key={item.to} asChild className="rounded-[var(--radius-sm)] mx-1">
                 <Link to={item.to} className="flex items-center gap-2.5 px-3 py-2 transition-colors">
                   <item.icon className="h-4 w-4 text-[var(--color-muted)]" />
-                  <span className="text-[13px]">{label(item.en, item.ar)}</span>
+                  <span className="text-[0.8125rem]">{label(item.en, item.ar)}</span>
                 </Link>
               </DropdownMenuItem>
             ))}
@@ -150,7 +150,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
                 <DropdownMenuItem asChild className="mx-1 rounded-[var(--radius-sm)]">
                   <Link to="/admin" className="flex items-center gap-2.5 px-3 py-2">
                     <Shield className="h-4 w-4 text-[var(--color-muted)]" />
-                    <span className="text-[13px]">{t("adminPanel")}</span>
+                    <span className="text-[0.8125rem]">{t("adminPanel")}</span>
                   </Link>
                 </DropdownMenuItem>
               </div>
@@ -164,7 +164,7 @@ export const UserDropdown = memo(forwardRef<HTMLDivElement>(function UserDropdow
               className="text-[var(--color-error)] focus:text-[var(--color-error)] px-4 py-2 mx-1 rounded-[var(--radius-sm)]"
             >
               <LogOut className="h-4 w-4 me-2.5" />
-              <span className="text-[13px]">{t("signOut")}</span>
+              <span className="text-[0.8125rem]">{t("signOut")}</span>
             </DropdownMenuItem>
           </div>
         </DropdownMenuContent>

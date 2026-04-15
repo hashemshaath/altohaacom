@@ -23,20 +23,20 @@ const EventTooltipContent = forwardRef<HTMLDivElement, { event: GlobalEvent; isA
           <img src={event.cover_image_url} alt={event.title || "Event"} className="w-full h-24 object-cover rounded-xl" loading="lazy" />
         )}
         <div className="flex items-center gap-1.5 flex-wrap">
-          <Badge variant="outline" className={cn("text-[11px] px-1.5 py-0 border", colors.bg, colors.text, colors.border)}>
+          <Badge variant="outline" className={cn("text-[0.6875rem] px-1.5 py-0 border", colors.bg, colors.text, colors.border)}>
             {isAr ? label?.ar : label?.en}
           </Badge>
           {!countdown.past && (
-            <Badge variant={countdown.urgent ? "destructive" : "outline"} className="text-[11px] px-1.5 py-0 gap-0.5">
+            <Badge variant={countdown.urgent ? "destructive" : "outline"} className="text-[0.6875rem] px-1.5 py-0 gap-0.5">
               <Timer className="h-2 w-2" />{countdown.text}
             </Badge>
           )}
           {event.source !== "global_event" && (
-            <Badge variant="secondary" className="text-[11px] px-1 py-0 capitalize">{event.source.replace("_", " ")}</Badge>
+            <Badge variant="secondary" className="text-[0.6875rem] px-1 py-0 capitalize">{event.source.replace("_", " ")}</Badge>
           )}
         </div>
         <p className="text-xs font-bold leading-snug">{isAr && event.title_ar ? event.title_ar : event.title}</p>
-        <div className="flex flex-col gap-0.5 text-[11px] text-muted-foreground">
+        <div className="flex flex-col gap-0.5 text-[0.6875rem] text-muted-foreground">
           <span className="flex items-center gap-1">
             <Calendar className="h-2.5 w-2.5" />
             {format(parseISO(event.start_date), isAr ? "d MMM yyyy" : "MMM d, yyyy", loc)}
@@ -47,7 +47,7 @@ const EventTooltipContent = forwardRef<HTMLDivElement, { event: GlobalEvent; isA
           {event.organizer_name && <span className="flex items-center gap-1"><Building2 className="h-2.5 w-2.5" />{isAr && event.organizer_name_ar ? event.organizer_name_ar : event.organizer_name}</span>}
           {event.channel_name && <span className="flex items-center gap-1"><Tv className="h-2.5 w-2.5" />{event.channel_name}</span>}
         </div>
-        {event.link && <p className="text-[11px] text-primary font-medium">{isAr ? "اضغط للتفاصيل ←" : "Click for details →"}</p>}
+        {event.link && <p className="text-[0.6875rem] text-primary font-medium">{isAr ? "اضغط للتفاصيل ←" : "Click for details →"}</p>}
       </div>
     );
   }
@@ -64,7 +64,7 @@ export const EventChip = memo(function EventChip({ event, isAr, compact = false 
       "flex items-center gap-1 rounded-lg px-1.5 py-0.5 transition-all cursor-default border",
       colors.bg, colors.text, colors.border,
       "hover:shadow-sm hover:brightness-95 active:scale-[0.98]",
-      compact ? "text-[11px]" : "text-[11px]",
+      compact ? "text-[0.6875rem]" : "text-[0.6875rem]",
       countdown.urgent && !countdown.past && "ring-1 ring-destructive/30",
       countdown.past && "opacity-60"
     )}>

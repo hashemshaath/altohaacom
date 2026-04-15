@@ -167,7 +167,7 @@ export default function VerificationAdmin() {
             <m.icon className="h-4 w-4 text-muted-foreground shrink-0" />
             <div className="min-w-0">
               <p className="text-lg font-semibold leading-none"><AnimatedCounter value={m.value} /></p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{m.label}</p>
+              <p className="text-[0.6875rem] text-muted-foreground mt-0.5">{m.label}</p>
             </div>
           </button>
         ))}
@@ -196,7 +196,7 @@ export default function VerificationAdmin() {
             </div>
             <div className="flex gap-1">
               {["pending", "ai_review", "approved", "rejected", "all"].map(s => (
-                <Button key={s} variant={statusTab === s ? "default" : "ghost"} size="sm" className="h-7 text-[11px] px-2.5" onClick={() => setStatusTab(s)}>
+                <Button key={s} variant={statusTab === s ? "default" : "ghost"} size="sm" className="h-7 text-[0.6875rem] px-2.5" onClick={() => setStatusTab(s)}>
                   {statusLabels[s]?.[isAr ? "ar" : "en"] || (isAr ? "الكل" : "All")}
                 </Button>
               ))}
@@ -250,7 +250,7 @@ export default function VerificationAdmin() {
                                 {req.status === "approved" && <VerifiedBadge level={req.verification_level} size="sm" />}
                               </div>
                               {((req.documents as any[]) || []).length > 0 && (
-                                <p className="text-[11px] text-muted-foreground">
+                                <p className="text-[0.6875rem] text-muted-foreground">
                                   {((req.documents as any[]) || []).length} {isAr ? "مستند" : "doc(s)"}
                                 </p>
                               )}
@@ -258,7 +258,7 @@ export default function VerificationAdmin() {
                           </div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          <Badge variant="secondary" className="text-[11px] font-normal">
+                          <Badge variant="secondary" className="text-[0.6875rem] font-normal">
                             {req.entity_type === "user" ? (isAr ? "مستخدم" : "User") : req.entity_type === "company" ? (isAr ? "شركة" : "Company") : (isAr ? "جهة" : "Entity")}
                           </Badge>
                         </TableCell>
@@ -266,21 +266,21 @@ export default function VerificationAdmin() {
                           <span className="text-xs text-muted-foreground">{req.verification_level}</span>
                         </TableCell>
                         <TableCell>
-                          <Badge variant={statusVariant[req.status] || "outline"} className="text-[11px] font-normal">
+                          <Badge variant={statusVariant[req.status] || "outline"} className="text-[0.6875rem] font-normal">
                             {isAr ? sl.ar : sl.en}
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden lg:table-cell">
                           {req.ai_risk_score != null ? (
-                            <Badge variant={req.ai_risk_score > 0.6 ? "destructive" : req.ai_risk_score > 0.3 ? "secondary" : "default"} className="text-[11px] font-normal tabular-nums">
+                            <Badge variant={req.ai_risk_score > 0.6 ? "destructive" : req.ai_risk_score > 0.3 ? "secondary" : "default"} className="text-[0.6875rem] font-normal tabular-nums">
                               {(req.ai_risk_score * 100).toFixed(0)}%
                             </Badge>
                           ) : (
-                            <span className="text-[11px] text-muted-foreground">—</span>
+                            <span className="text-[0.6875rem] text-muted-foreground">—</span>
                           )}
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          <span className="text-[11px] text-muted-foreground tabular-nums">{format(new Date(req.created_at), "MMM d, yyyy")}</span>
+                          <span className="text-[0.6875rem] text-muted-foreground tabular-nums">{format(new Date(req.created_at), "MMM d, yyyy")}</span>
                         </TableCell>
                         <TableCell>
                           <div className="flex justify-end gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -337,7 +337,7 @@ export default function VerificationAdmin() {
               )}
               <div className="flex flex-wrap gap-3 mt-2 justify-center">
                 {statusChartData.filter(d => d.value > 0).map(d => (
-                  <div key={d.name} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <div key={d.name} className="flex items-center gap-1.5 text-[0.6875rem] text-muted-foreground">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: d.fill }} />
                     {d.name} ({d.value})
                   </div>
@@ -380,7 +380,7 @@ export default function VerificationAdmin() {
                   <div key={s.label} className="text-center p-3 rounded-lg bg-muted/30">
                     <p className="text-2xl font-bold">{s.value}</p>
                     <p className="text-xs font-medium mt-0.5">{s.label}</p>
-                    <p className="text-[11px] text-muted-foreground">{s.sub}</p>
+                    <p className="text-[0.6875rem] text-muted-foreground">{s.sub}</p>
                   </div>
                 ))}
               </div>
@@ -413,7 +413,7 @@ export default function VerificationAdmin() {
                   {(selectedRequest.ai_analysis as any).flags?.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {(selectedRequest.ai_analysis as any).flags.map((flag: string, i: number) => (
-                        <Badge key={i} variant="outline" className="text-[11px]">
+                        <Badge key={i} variant="outline" className="text-[0.6875rem]">
                           <AlertTriangle className="me-1 h-2.5 w-2.5" />{flag}
                         </Badge>
                       ))}

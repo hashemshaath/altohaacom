@@ -74,7 +74,7 @@ export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
             <DollarSign className="h-4 w-4 text-chart-2" />
             {isAr ? "الملخص المالي" : "Financial Summary"}
           </CardTitle>
-          <Badge variant="outline" className="text-[12px]">SAR</Badge>
+          <Badge variant="outline" className="text-xs">SAR</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-3 space-y-3">
@@ -89,10 +89,10 @@ export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
             <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
-                <span className="text-[12px] text-muted-foreground">{m.label}</span>
+                <span className="text-xs text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-sm font-bold">{m.value}</p>
-              <p className="text-[12px] text-muted-foreground">{m.sub}</p>
+              <p className="text-xs text-muted-foreground">{m.sub}</p>
             </div>
           ))}
         </div>
@@ -100,14 +100,14 @@ export const FinancialSummaryWidget = memo(function FinancialSummaryWidget() {
         {/* Collection rate */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[12px] text-muted-foreground">{isAr ? "معدل التحصيل" : "Collection Rate"}</span>
-            <span className="text-[12px] font-medium">{data.collectionRate}%</span>
+            <span className="text-xs text-muted-foreground">{isAr ? "معدل التحصيل" : "Collection Rate"}</span>
+            <span className="text-xs font-medium">{data.collectionRate}%</span>
           </div>
           <Progress value={data.collectionRate} className="h-1.5" />
         </div>
 
         {/* Status indicators */}
-        <div className="flex flex-wrap gap-2 text-[12px]">
+        <div className="flex flex-wrap gap-2 text-xs">
           <span className="flex items-center gap-1 text-chart-2"><CheckCircle className="h-3 w-3" /> {data.paidInvoices} {isAr ? "مدفوعة" : "paid"}</span>
           <span className="flex items-center gap-1 text-chart-4"><Clock className="h-3 w-3" /> {data.pendingInvoices} {isAr ? "معلقة" : "pending"}</span>
           {data.overdueInvoices > 0 && (

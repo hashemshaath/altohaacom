@@ -256,7 +256,7 @@ export default function MembershipPlans() {
 
                 {isCurrentTier && (
                   <div className="absolute top-3 end-3">
-                    <Badge variant="outline" className="gap-1 text-[12px] border-primary/40 text-primary">
+                    <Badge variant="outline" className="gap-1 text-xs border-primary/40 text-primary">
                       <Shield className="h-3 w-3" />
                       {isAr ? "الحالي" : "Current"}
                     </Badge>
@@ -280,7 +280,7 @@ export default function MembershipPlans() {
                       </p>
                     )}
                     {billingCycle === "yearly" && savings > 0 && (
-                      <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-[12px]">
+                      <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs">
                         {isAr ? `وفّر ${savings}%` : `Save ${savings}%`}
                       </Badge>
                     )}
@@ -350,7 +350,7 @@ export default function MembershipPlans() {
                           </Button>
                         )}
                         {tier.id !== "basic" && trialInfo?.trialTier === tier.id && trialInfo?.trialExpired && (
-                          <p className="text-[12px] text-center text-muted-foreground">
+                          <p className="text-xs text-center text-muted-foreground">
                             {isAr ? "تم استخدام التجربة المجانية" : "Free trial already used"}
                           </p>
                         )}

@@ -97,7 +97,7 @@ export const RegistrationStatusBanner = memo(function RegistrationStatusBanner({
               <h4 className={cn("text-sm font-bold", style.text)}>
                 {isAr ? label.ar : label.en}
               </h4>
-              <Badge variant="outline" className={cn("text-[12px] rounded-xl px-2 py-0.5", style.text, style.border)}>
+              <Badge variant="outline" className={cn("text-xs rounded-xl px-2 py-0.5", style.text, style.border)}>
                 <div className={cn("h-1.5 w-1.5 rounded-full me-1.5 animate-pulse", style.dot)} />
                 {status}
               </Badge>

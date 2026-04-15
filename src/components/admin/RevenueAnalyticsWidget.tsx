@@ -100,7 +100,7 @@ export const RevenueAnalyticsWidget = memo(function RevenueAnalyticsWidget() {
         <CardTitle className="text-base flex items-center gap-2">
           <DollarSign className="h-4 w-4 text-primary" />
           {isAr ? "التحليلات المالية" : "Revenue Analytics"}
-          <Badge variant="outline" className="text-[12px] ms-auto">30 {isAr ? "يوم" : "days"}</Badge>
+          <Badge variant="outline" className="text-xs ms-auto">30 {isAr ? "يوم" : "days"}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -109,12 +109,12 @@ export const RevenueAnalyticsWidget = memo(function RevenueAnalyticsWidget() {
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <TrendingUp className="h-3.5 w-3.5 mx-auto mb-1 text-chart-2 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-sm font-bold"><AnimatedCounter value={data?.totalRevenue || 0} /> SAR</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "الإيرادات" : "Revenue"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "الإيرادات" : "Revenue"}</p>
           </div>
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <ArrowDownRight className="h-3.5 w-3.5 mx-auto mb-1 text-destructive transition-transform duration-300 group-hover:scale-110" />
             <p className="text-sm font-bold"><AnimatedCounter value={data?.totalExpenses || 0} /> SAR</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "المصروفات" : "Expenses"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "المصروفات" : "Expenses"}</p>
           </div>
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             {(data?.netFlow || 0) >= 0 ? (
@@ -125,12 +125,12 @@ export const RevenueAnalyticsWidget = memo(function RevenueAnalyticsWidget() {
             <p className={cn("text-sm font-bold", (data?.netFlow || 0) >= 0 ? "text-chart-2" : "text-destructive")}>
               <AnimatedCounter value={data?.netFlow || 0} /> SAR
             </p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "صافي التدفق" : "Net Flow"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "صافي التدفق" : "Net Flow"}</p>
           </div>
           <div className="p-2.5 rounded-xl bg-muted/50 text-center group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
             <Receipt className="h-3.5 w-3.5 mx-auto mb-1 text-chart-4 transition-transform duration-300 group-hover:scale-110" />
             <p className="text-sm font-bold"><AnimatedCounter value={data?.collectionRate || 0} suffix="%" /></p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "التحصيل" : "Collection"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "التحصيل" : "Collection"}</p>
           </div>
         </div>
 

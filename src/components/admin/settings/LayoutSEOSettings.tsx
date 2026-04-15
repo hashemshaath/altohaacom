@@ -58,7 +58,7 @@ export const LayoutSEOSettings = memo(function LayoutSEOSettings({ settings, onS
             <div key={item.key} className="flex items-center justify-between rounded-xl border border-border/40 p-3">
               <div>
                 <p className="text-sm font-medium">{isAr ? item.ar : item.en}</p>
-                <p className="text-[12px] text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? item.descAr : item.descEn}</p>
               </div>
               <Switch checked={layout[item.key] ?? false} onCheckedChange={v => setLayout({ ...layout, [item.key]: v })} />
             </div>
@@ -108,7 +108,7 @@ export const LayoutSEOSettings = memo(function LayoutSEOSettings({ settings, onS
           <div className="flex items-center justify-between rounded-xl border border-border/40 p-3">
             <div>
               <p className="text-sm font-medium">{isAr ? "خريطة الموقع" : "Sitemap Enabled"}</p>
-              <p className="text-[12px] text-muted-foreground">{isAr ? "تمكين خريطة الموقع XML" : "Enable XML sitemap generation"}</p>
+              <p className="text-xs text-muted-foreground">{isAr ? "تمكين خريطة الموقع XML" : "Enable XML sitemap generation"}</p>
             </div>
             <Switch checked={seo.sitemapEnabled ?? true} onCheckedChange={v => setSeo({ ...seo, sitemapEnabled: v })} />
           </div>

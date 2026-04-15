@@ -141,7 +141,7 @@ export const ExhibitionOrganizerQuickActions = memo(function ExhibitionOrganizer
             </div>
             <div>
               <p className="text-sm font-bold">{t("Quick Actions", "إجراءات سريعة")}</p>
-              <p className="text-[12px] text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {t(`${totalRecipients} total recipients`, `${totalRecipients} مستلم إجمالي`)}
               </p>
             </div>

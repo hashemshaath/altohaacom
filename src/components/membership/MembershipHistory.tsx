@@ -88,7 +88,7 @@ export const MembershipHistory = memo(function MembershipHistory() {
         <CardTitle className="text-base flex items-center gap-2">
           <History className="h-4 w-4 text-primary" />
           {isAr ? "سجل العضوية" : "Membership History"}
-          <Badge variant="secondary" className="text-[12px] ms-auto">
+          <Badge variant="secondary" className="text-xs ms-auto">
             {history.length} {isAr ? "تغيير" : "changes"}
           </Badge>
         </CardTitle>
@@ -119,12 +119,12 @@ export const MembershipHistory = memo(function MembershipHistory() {
                   <div className="flex-1 min-w-0 space-y-1">
                     {/* Tier change badges */}
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <Badge variant="outline" className={cn("text-[12px] gap-1", prevConfig.color)}>
+                      <Badge variant="outline" className={cn("text-xs gap-1", prevConfig.color)}>
                         <PrevIcon className="h-3 w-3" />
                         {isAr ? prevConfig.labelAr : prevConfig.label}
                       </Badge>
                       <span className="text-muted-foreground text-xs">→</span>
-                      <Badge variant="secondary" className={cn("text-[12px] gap-1", newConfig.color)}>
+                      <Badge variant="secondary" className={cn("text-xs gap-1", newConfig.color)}>
                         <NewIcon className="h-3 w-3" />
                         {isAr ? newConfig.labelAr : newConfig.label}
                       </Badge>
@@ -136,7 +136,7 @@ export const MembershipHistory = memo(function MembershipHistory() {
                     )}
 
                     {/* Date */}
-                    <p className="text-[12px] text-muted-foreground/70">
+                    <p className="text-xs text-muted-foreground/70">
                       {format(new Date(entry.created_at), "PPp", { locale: isAr ? ar : undefined })}
                     </p>
                   </div>

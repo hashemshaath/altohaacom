@@ -11,7 +11,7 @@ export const PostReadTime = memo(function PostReadTime({ content }: { content: s
   if (words < 40) return null;
 
   return (
-    <span className="inline-flex items-center gap-0.5 text-[12px] text-muted-foreground">
+    <span className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
       <Clock className="h-2.5 w-2.5" />
       {minutes} {isAr ? "د قراءة" : "min read"}
     </span>

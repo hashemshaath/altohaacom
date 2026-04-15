@@ -39,7 +39,7 @@ export const ExhibitionWinningDishesTab = memo(function ExhibitionWinningDishesT
                 <span className="text-sm font-medium truncate">{participantName}</span>
               </div>
               <div className="flex items-center justify-between">
-                <Badge variant="outline" className="text-[12px]">{compTitle}</Badge>
+                <Badge variant="outline" className="text-xs">{compTitle}</Badge>
                 <span className="text-xs font-bold text-chart-4">{dish.totalScore.toFixed(1)} {isAr ? "نقطة" : "pts"}</span>
               </div>
             </CardContent>

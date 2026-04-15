@@ -202,7 +202,7 @@ export const TeamCollaborationPanel = memo(function TeamCollaborationPanel({ com
           </div>
           <div>
             <h3 className="font-bold text-sm">{workspace.name || (isAr ? "مساحة العمل" : "Workspace")}</h3>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {tasks.length} {isAr ? "مهمة" : "tasks"} • {recipes.length} {isAr ? "وصفة" : "recipes"}
             </p>
           </div>

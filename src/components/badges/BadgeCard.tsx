@@ -71,7 +71,7 @@ export const BadgeCard = memo(function BadgeCard({ badge, competitionTitle, earn
           </Badge>
         )}
         {earnedAt && (
-          <p className="mt-1.5 text-[12px] text-muted-foreground">
+          <p className="mt-1.5 text-xs text-muted-foreground">
             {new Date(earnedAt).toLocaleDateString(language === "ar" ? "ar" : "en")}
           </p>
         )}

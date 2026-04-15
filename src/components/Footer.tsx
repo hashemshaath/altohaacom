@@ -189,7 +189,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         <div className="grid grid-cols-2 gap-x-6 gap-y-8 py-10 sm:grid-cols-2 md:grid-cols-4">
           {navColumns.map((col) => (
             <nav key={col.titleEn} aria-label={col.titleEn}>
-              <h3 className="text-[12px] font-semibold uppercase tracking-widest text-foreground mb-3.5">
+              <h3 className="text-xs font-semibold uppercase tracking-widest text-foreground mb-3.5">
                 {l(col.titleEn, col.titleAr)}
               </h3>
               <ul className="space-y-2">
@@ -197,7 +197,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="relative text-[13px] text-muted-foreground hover:text-primary transition-colors duration-200 inline-block py-0.5 after:absolute after:bottom-0 after:start-0 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full touch-manipulation"
+                      className="relative text-[0.8125rem] text-muted-foreground hover:text-primary transition-colors duration-200 inline-block py-0.5 after:absolute after:bottom-0 after:start-0 after:h-[1.5px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full touch-manipulation"
                     >
                       {l(link.en, link.ar)}
                     </Link>
@@ -212,7 +212,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" aria-hidden="true" />
         <div className="py-5 flex flex-wrap items-center justify-center gap-6">
           {trustBadges.map((badge) => (
-            <div key={badge.labelEn} className="flex items-center gap-2 text-[12px] text-muted-foreground">
+            <div key={badge.labelEn} className="flex items-center gap-2 text-xs text-muted-foreground">
               <badge.icon className="h-3.5 w-3.5 text-primary/70" />
               <span>{l(badge.labelEn, badge.labelAr)}</span>
             </div>
@@ -222,7 +222,7 @@ export const Footer = forwardRef<HTMLElement>(function Footer(_, ref) {
         {/* ── Bottom bar ── */}
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" aria-hidden="true" />
         <div className="py-5 flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-[12px] text-muted-foreground/60">{copyrightText}</p>
+          <p className="text-xs text-muted-foreground/60">{copyrightText}</p>
 
           {/* Social icons */}
           {footerCfg.showSocialLinks !== false && socialLinks.length > 0 && (

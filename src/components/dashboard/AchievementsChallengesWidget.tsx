@@ -99,27 +99,27 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
           <div className="text-center p-2 rounded-xl bg-muted/50 group/stat hover:bg-chart-1/10 transition-colors">
             <Flame className="h-3.5 w-3.5 text-chart-1 mx-auto mb-0.5 group-hover/stat:animate-pulse" />
             <p className="text-lg font-bold">{streak?.current_streak || 0}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "يوم متتالي" : "Day Streak"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "يوم متتالي" : "Day Streak"}</p>
             {(streak?.current_streak || 0) >= 7 && (
-              <span className="text-[12px] text-chart-1 font-bold">🔥</span>
+              <span className="text-xs text-chart-1 font-bold">🔥</span>
             )}
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50 group/stat hover:bg-primary/10 transition-colors">
             <Trophy className="h-3.5 w-3.5 text-primary mx-auto mb-0.5 group-hover/stat:scale-110 transition-transform" />
             <p className="text-lg font-bold">{completedCount}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "مكتمل" : "Completed"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "مكتمل" : "Completed"}</p>
           </div>
           <div className="text-center p-2 rounded-xl bg-muted/50 group/stat hover:bg-chart-4/10 transition-colors">
             <Star className="h-3.5 w-3.5 text-chart-4 mx-auto mb-0.5 group-hover/stat:rotate-12 transition-transform" />
             <p className="text-lg font-bold">{badges.length}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "شارات" : "Badges"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "شارات" : "Badges"}</p>
           </div>
         </div>
 
         {/* Active Challenges */}
         {incompleteChallenges.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
               <Sparkles className="h-3 w-3 text-chart-1" />
               {isAr ? "تحديات نشطة" : "Active Challenges"}
             </p>
@@ -133,11 +133,11 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
                       <p className="text-xs font-medium truncate">{isAr ? c.title_ar || c.title : c.title}</p>
                       <div className="flex items-center gap-1.5 mt-0.5">
                         <Progress value={pct} className="h-1 flex-1" />
-                        <span className="text-[12px] text-muted-foreground tabular-nums">{c.current}/{c.target_count}</span>
+                        <span className="text-xs text-muted-foreground tabular-nums">{c.current}/{c.target_count}</span>
                       </div>
                     </div>
                     {c.reward_points && (
-                      <Badge variant="secondary" className="text-[12px] gap-0.5 shrink-0">
+                      <Badge variant="secondary" className="text-xs gap-0.5 shrink-0">
                         <Star className="h-2.5 w-2.5" />
                         {c.reward_points}
                       </Badge>
@@ -152,14 +152,14 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
         {/* Recent Badges */}
         {badges.length > 0 && (
           <div className="space-y-2">
-            <p className="text-[12px] font-bold uppercase tracking-widest text-muted-foreground">
+            <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
               {isAr ? "آخر الشارات" : "Recent Badges"}
             </p>
             <div className="flex gap-2 overflow-x-auto scrollbar-none">
               {badges.map((b) => (
                 <div key={b.id} className="flex flex-col items-center gap-1 shrink-0 p-2 rounded-xl bg-muted/30 min-w-[56px]">
                   <span className="text-xl">{b.badge_icon || "⭐"}</span>
-                  <p className="text-[12px] text-muted-foreground text-center line-clamp-1 max-w-[52px]">
+                  <p className="text-xs text-muted-foreground text-center line-clamp-1 max-w-[52px]">
                     {isAr ? b.badge_name_ar || b.badge_name : b.badge_name}
                   </p>
                 </div>

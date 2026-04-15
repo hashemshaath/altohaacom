@@ -462,7 +462,7 @@ export default function ProSupplierDetail() {
                   <Icon className="h-4 w-4" />
                   {isAr ? tab.labelAr : tab.labelEn}
                   {count !== undefined && count > 0 && (
-                    <span className={cn("text-[11px] rounded-full px-1.5 py-0.5 min-w-[20px] text-center", isActive ? "bg-white/20" : "bg-muted-foreground/10")}>
+                    <span className={cn("text-[0.6875rem] rounded-full px-1.5 py-0.5 min-w-[20px] text-center", isActive ? "bg-white/20" : "bg-muted-foreground/10")}>
                       {count}
                     </span>
                   )}
@@ -821,7 +821,7 @@ export default function ProSupplierDetail() {
 
                             {/* Tier Badge */}
                             <div className="absolute top-2 start-2">
-                              <Badge className={cn("backdrop-blur-md border text-[10px] font-bold uppercase tracking-wider gap-0.5 py-0 px-1.5", tierInfo.color)}>
+                              <Badge className={cn("backdrop-blur-md border text-[0.625rem] font-bold uppercase tracking-wider gap-0.5 py-0 px-1.5", tierInfo.color)}>
                                 <Crown className="h-2.5 w-2.5" />
                                 {isAr ? tierInfo.ar : tierInfo.en}
                               </Badge>
@@ -830,7 +830,7 @@ export default function ProSupplierDetail() {
                             {/* Edition & Year */}
                             <div className="absolute top-2 end-2 flex items-center gap-1">
                               {comp?.edition_year && (
-                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground text-[10px] py-0 px-1.5">
+                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground text-[0.625rem] py-0 px-1.5">
                                   {comp.edition_year}
                                 </Badge>
                               )}
@@ -844,7 +844,7 @@ export default function ProSupplierDetail() {
 
                           {/* Details */}
                           <CardContent className="p-2.5 space-y-1.5">
-                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.6875rem] text-muted-foreground">
                               {comp?.city && (
                                 <span className="flex items-center gap-1">
                                   {comp.country_code && <span>{countryFlag(comp.country_code)}</span>}
@@ -852,7 +852,7 @@ export default function ProSupplierDetail() {
                                 </span>
                               )}
                               {editionLabel && (
-                                <span className="text-[10px] text-muted-foreground/60">{editionLabel}</span>
+                                <span className="text-[0.625rem] text-muted-foreground/60">{editionLabel}</span>
                               )}
                             </div>
                           </CardContent>
@@ -875,7 +875,7 @@ export default function ProSupplierDetail() {
                           <CardContent className="p-4">
                             <p className="font-medium text-sm">{isAr && c.name_ar ? c.name_ar : c.name}</p>
                             <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                              <Badge variant="secondary" className="text-[11px] rounded-lg">{c.status}</Badge>
+                              <Badge variant="secondary" className="text-[0.6875rem] rounded-lg">{c.status}</Badge>
                               {c.start_date && <span>{new Date(c.start_date).toLocaleDateString()}</span>}
                             </div>
                           </CardContent>

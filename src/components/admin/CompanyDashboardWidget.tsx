@@ -107,12 +107,12 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
               </div>
               <p className="text-sm font-bold tabular-nums">
                 {typeof kpi.value === "number" ? (
-                  <><AnimatedCounter value={kpi.value} />{kpi.isCurrency ? <span className="text-[12px] text-muted-foreground font-medium ms-0.5">SAR</span> : ""}</>
+                  <><AnimatedCounter value={kpi.value} />{kpi.isCurrency ? <span className="text-xs text-muted-foreground font-medium ms-0.5">SAR</span> : ""}</>
                 ) : kpi.value}
               </p>
-              <p className="text-[12px] text-muted-foreground font-medium mt-0.5">{kpi.label}</p>
+              <p className="text-xs text-muted-foreground font-medium mt-0.5">{kpi.label}</p>
               {kpi.delta !== undefined && (
-                <Badge variant="outline" className={cn("text-[12px] mt-1", kpi.delta > 0 ? "text-chart-2 border-chart-2/30" : kpi.delta < 0 ? "text-destructive border-destructive/30" : "text-muted-foreground")}>
+                <Badge variant="outline" className={cn("text-xs mt-1", kpi.delta > 0 ? "text-chart-2 border-chart-2/30" : kpi.delta < 0 ? "text-destructive border-destructive/30" : "text-muted-foreground")}>
                   {kpi.delta > 0 ? <ArrowUp className="h-2 w-2 me-0.5" /> : kpi.delta < 0 ? <ArrowDown className="h-2 w-2 me-0.5" /> : <Minus className="h-2 w-2 me-0.5" />}
                   {Math.abs(kpi.delta)}
                 </Badge>
@@ -145,20 +145,20 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
             </p>
             <div className="space-y-1.5">
               {data.topCompanies.length === 0 ? (
-                <p className="text-[12px] text-muted-foreground text-center py-4">{isAr ? "لا توجد بيانات" : "No data"}</p>
+                <p className="text-xs text-muted-foreground text-center py-4">{isAr ? "لا توجد بيانات" : "No data"}</p>
               ) : (
                 data.topCompanies.map((company, idx) => (
                   <div key={company.id} className="flex items-center justify-between p-2.5 rounded-xl border border-border/30 text-xs transition-all duration-200 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5 group">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-[12px] font-bold text-muted-foreground tabular-nums w-4">{idx + 1}</span>
+                      <span className="text-xs font-bold text-muted-foreground tabular-nums w-4">{idx + 1}</span>
                       <div className="min-w-0">
                         <p className="font-medium truncate">{isAr ? (company.name_ar || company.name) : company.name}</p>
-                        <p className="text-[12px] text-muted-foreground capitalize">{company.type}</p>
+                        <p className="text-xs text-muted-foreground capitalize">{company.type}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
                       <Star className="h-3 w-3 text-chart-4 fill-chart-4" />
-                      <span className="text-[12px] text-muted-foreground">({company.total_reviews || 0})</span>
+                      <span className="text-xs text-muted-foreground">({company.total_reviews || 0})</span>
                     </div>
                   </div>
                 ))

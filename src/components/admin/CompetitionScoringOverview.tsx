@@ -103,7 +103,7 @@ export const CompetitionScoringOverview = memo(function CompetitionScoringOvervi
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold">{s.value}</div>
-              <div className="text-[12px] text-muted-foreground">{s.label}</div>
+              <div className="text-xs text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -135,8 +135,8 @@ export const CompetitionScoringOverview = memo(function CompetitionScoringOvervi
               {data.compProgress.map((c) => (
                 <div key={c.id}>
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[12px] font-medium truncate max-w-[60%]">{c.title}</span>
-                    <span className="text-[12px] text-muted-foreground">
+                    <span className="text-xs font-medium truncate max-w-[60%]">{c.title}</span>
+                    <span className="text-xs text-muted-foreground">
                       {c.scored}/{c.expected} ({c.progress}%)
                     </span>
                   </div>

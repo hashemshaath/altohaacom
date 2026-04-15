@@ -97,7 +97,7 @@ export const NotificationLiveStatsWidget = memo(function NotificationLiveStatsWi
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold">{s.value}</div>
-              <div className="text-[12px] text-muted-foreground">{s.label}</div>
+              <div className="text-xs text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -150,7 +150,7 @@ export const NotificationLiveStatsWidget = memo(function NotificationLiveStatsWi
           {data.typeData.slice(0, 3).map((t, i) => (
             <div key={i} className="bg-muted/50 rounded-xl p-2 text-center">
               <div className="text-sm font-bold">{t.value}</div>
-              <div className="text-[12px] text-muted-foreground truncate">{t.name}</div>
+              <div className="text-xs text-muted-foreground truncate">{t.name}</div>
             </div>
           ))}
         </div>

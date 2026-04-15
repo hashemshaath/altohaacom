@@ -471,22 +471,22 @@ export default function EntityDetail() {
                 </TabsTrigger>
                 <TabsTrigger value="programs" className="gap-1.5 text-xs sm:text-sm">
                   <BookOpen className="h-3.5 w-3.5" />{isAr ? "البرامج" : "Programs"}
-                  {counts?.programs ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-[12px]">{counts.programs}</Badge> : null}
+                  {counts?.programs ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-xs">{counts.programs}</Badge> : null}
                 </TabsTrigger>
                 <TabsTrigger value="members" className="gap-1.5 text-xs sm:text-sm">
                   <Users className="h-3.5 w-3.5" />{isAr ? "الأعضاء" : "Members"}
-                  {counts?.memberships ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-[12px]">{counts.memberships}</Badge> : null}
+                  {counts?.memberships ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-xs">{counts.memberships}</Badge> : null}
                 </TabsTrigger>
                 <TabsTrigger value="degrees" className="gap-1.5 text-xs sm:text-sm">
                   <GraduationCap className="h-3.5 w-3.5" />{isAr ? "الشهادات" : "Degrees"}
                 </TabsTrigger>
                 <TabsTrigger value="events" className="gap-1.5 text-xs sm:text-sm">
                   <Calendar className="h-3.5 w-3.5" />{isAr ? "الفعاليات" : "Events"}
-                  {counts?.events ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-[12px]">{counts.events}</Badge> : null}
+                  {counts?.events ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-xs">{counts.events}</Badge> : null}
                 </TabsTrigger>
                 <TabsTrigger value="competitions" className="gap-1.5 text-xs sm:text-sm">
                   <Trophy className="h-3.5 w-3.5" />{isAr ? "المسابقات" : "Competitions"}
-                  {counts?.competitions ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-[12px]">{counts.competitions}</Badge> : null}
+                  {counts?.competitions ? <Badge variant="secondary" className="ms-1 h-4 px-1 text-xs">{counts.competitions}</Badge> : null}
                 </TabsTrigger>
               </TabsList>
 
@@ -643,7 +643,7 @@ export default function EntityDetail() {
 function FactRow({ label, value, mono }: { label: string; value: React.ReactNode; mono?: boolean }) {
   return (
     <div className="flex items-center justify-between px-4 py-2.5 border-b last:border-0">
-      <span className="text-[12px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="text-xs uppercase tracking-wider text-muted-foreground">{label}</span>
       <span className={`font-medium ${mono ? "font-mono text-xs" : ""}`}>{value}</span>
     </div>
   );

@@ -234,10 +234,10 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
             <div className="flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="outline" className="text-[12px] uppercase tracking-wider">
+                  <Badge variant="outline" className="text-xs uppercase tracking-wider">
                     {isAr ? "تقرير تقييم المنتج" : "Product Evaluation Report"}
                   </Badge>
-                  <Badge className="text-[12px]">{template.product_category}</Badge>
+                  <Badge className="text-xs">{template.product_category}</Badge>
                 </div>
                 <h1 className="text-2xl font-black">{templateTitle}</h1>
                 <p className="text-sm text-muted-foreground mt-1 max-w-xl">
@@ -245,10 +245,10 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                 </p>
               </div>
               <div className="text-end shrink-0">
-                <p className="text-[12px] text-muted-foreground uppercase tracking-wider">{isAr ? "التقييم العام" : "Overall Score"}</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider">{isAr ? "التقييم العام" : "Overall Score"}</p>
                 <p className={`text-5xl font-black tabular-nums ${getScoreColor(overallScore)}`}>{overallScore}</p>
                 <p className={`text-sm font-bold ${getScoreColor(overallScore)}`}>{getScoreLabel(overallScore, isAr)}</p>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "من" : "out of"} 10</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "من" : "out of"} 10</p>
               </div>
             </div>
           </div>
@@ -267,7 +267,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                     <item.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="text-[12px] text-muted-foreground uppercase tracking-wider">{item.label}</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wider">{item.label}</p>
                     <p className="text-sm font-bold">{item.value}</p>
                   </div>
                 </div>
@@ -279,7 +279,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
             {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <div>
-                <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
                   {isAr ? "التحليل الراداري" : "Radar Analysis"}
                 </p>
                 <div className="h-64">
@@ -294,7 +294,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                 </div>
               </div>
               <div>
-                <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
                   {isAr ? "النتائج حسب الفئة" : "Scores by Category"}
                 </p>
                 <div className="h-64">
@@ -316,7 +316,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
             {/* Score Distribution Pie */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
               <div>
-                <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
                   {isAr ? "توزيع الدرجات" : "Score Distribution"}
                 </p>
                 <div className="h-48">
@@ -331,7 +331,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                 </div>
               </div>
               <div>
-                <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-3">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3">
                   {isAr ? "ملخص الأداء" : "Performance Summary"}
                 </p>
                 <div className="space-y-3 mt-2">
@@ -350,7 +350,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
             <Separator className="my-6" />
 
             {/* Detailed Criteria Scores */}
-            <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
               <Target className="h-3.5 w-3.5" />
               {isAr ? "النتائج التفصيلية" : "Detailed Scores"} — {totalCriteria} {isAr ? "معيار" : "criteria"}
             </p>
@@ -372,7 +372,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                         </span>
                         <div className="w-32 shrink-0"><Progress value={cr.simulatedScore * 10} className="h-1.5" /></div>
                         <span className={`text-xs font-bold tabular-nums w-10 text-end ${getScoreColor(cr.simulatedScore)}`}>{cr.simulatedScore}</span>
-                        {cr.weight && <Badge variant="outline" className="text-[12px] shrink-0">{cr.weight}%</Badge>}
+                        {cr.weight && <Badge variant="outline" className="text-xs shrink-0">{cr.weight}%</Badge>}
                       </div>
                     ))}
                   </div>
@@ -383,7 +383,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
             <Separator className="my-6" />
 
             {/* Evaluators Panel */}
-            <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
               <ChefHat className="h-3.5 w-3.5" />
               {isAr ? "فريق التقييم" : "Evaluation Panel"}
             </p>
@@ -395,7 +395,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold truncate">{isAr ? ev.name_ar : ev.name}</p>
-                    <p className="text-[12px] text-muted-foreground">{isAr ? ev.specialty_ar : ev.specialty}</p>
+                    <p className="text-xs text-muted-foreground">{isAr ? ev.specialty_ar : ev.specialty}</p>
                   </div>
                   <p className={`text-lg font-black tabular-nums ${getScoreColor(ev.score)}`}>{ev.score}</p>
                 </div>
@@ -405,7 +405,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
             <Separator className="my-6" />
 
             {/* Recommendations & Clarifications */}
-            <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
+            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-1.5">
               <Lightbulb className="h-3.5 w-3.5" />
               {isAr ? "التوصيات والتوضيحات" : "Recommendations & Clarifications"}
             </p>
@@ -452,7 +452,7 @@ export const EvaluationReportPreview = memo(function EvaluationReportPreview({ t
             </div>
 
             {/* Footer */}
-            <div className="mt-8 pt-4 border-t border-border/30 flex items-center justify-between text-[12px] text-muted-foreground">
+            <div className="mt-8 pt-4 border-t border-border/30 flex items-center justify-between text-xs text-muted-foreground">
               <span>Altoha Chef's Table — {isAr ? "تقرير تقييم المنتج" : "Product Evaluation Report"}</span>
               <span>{reportId}</span>
               <span>{new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>

@@ -129,20 +129,20 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
                     : "border-border/60 bg-card hover:border-primary/40 hover:shadow-sm"
                 }`}
               >
-                <span className={`text-[12px] font-bold uppercase tracking-[0.15em] ${active ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                <span className={`text-xs font-bold uppercase tracking-[0.15em] ${active ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                   {format(d, "EEE")}
                 </span>
                 <span className={`text-xl font-bold mt-0.5 ${active ? "text-primary-foreground" : "text-foreground"}`}>
                   {format(d, "d")}
                 </span>
-                <span className={`text-[12px] font-medium ${active ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+                <span className={`text-xs font-medium ${active ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
                   {format(d, "MMM")}
                 </span>
                 {today && (
                   <div className={`absolute -top-1 -end-1 h-3 w-3 rounded-full border-2 ${active ? "bg-primary-foreground border-primary" : "bg-destructive border-card"}`} />
                 )}
                 {/* Item count */}
-                <span className={`mt-1 text-[12px] font-semibold ${active ? "text-primary-foreground/50" : "text-muted-foreground/50"}`}>
+                <span className={`mt-1 text-xs font-semibold ${active ? "text-primary-foreground/50" : "text-muted-foreground/50"}`}>
                   {items.length} {isAr ? "فعالية" : "items"}
                 </span>
               </button>
@@ -164,10 +164,10 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
             <Star className={`me-1.5 h-3 w-3 ${showFavoritesOnly ? "fill-primary-foreground" : ""}`} />
             {isAr ? "المفضلة" : "Favorites"}
             {favorites.length > 0 && (
-              <Badge variant="secondary" className="ms-1.5 h-4 min-w-4 rounded-full px-1 text-[12px]">{favorites.length}</Badge>
+              <Badge variant="secondary" className="ms-1.5 h-4 min-w-4 rounded-full px-1 text-xs">{favorites.length}</Badge>
             )}
           </Button>
-          <span className="text-[12px] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             {filteredItems.length} {isAr ? "فعالية" : "events"}
           </span>
         </div>
@@ -207,12 +207,12 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
                     <div className="flex">
                       {/* Time column - elegant vertical strip */}
                       <div className="flex w-20 shrink-0 flex-col items-center justify-center border-e border-border/40 bg-muted/20 px-2 py-4">
-                        <span className="text-[12px] font-medium uppercase tracking-wider text-muted-foreground">{isAr ? "من" : "From"}</span>
+                        <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{isAr ? "من" : "From"}</span>
                         <span className="text-sm font-bold text-primary tabular-nums">{item.start_time?.slice(0, 5)}</span>
                         {item.end_time && (
                           <>
                             <div className="my-1 h-3 w-px bg-border" />
-                            <span className="text-[12px] text-muted-foreground tabular-nums">{item.end_time.slice(0, 5)}</span>
+                            <span className="text-xs text-muted-foreground tabular-nums">{item.end_time.slice(0, 5)}</span>
                           </>
                         )}
                       </div>
@@ -225,12 +225,12 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
                             <div className="flex items-center gap-2 mb-1.5">
                               <div className="flex items-center gap-1.5">
                                 <div className={`h-2 w-2 rounded-full ${cat.dot}`} />
-                                <span className="text-[12px] font-semibold uppercase tracking-wider text-muted-foreground">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                                   {isAr ? cat.ar : cat.en}
                                 </span>
                               </div>
                               {item.is_highlighted && (
-                                <Badge variant="outline" className="h-4 px-1.5 text-[12px] border-chart-4/30 text-chart-4 gap-0.5">
+                                <Badge variant="outline" className="h-4 px-1.5 text-xs border-chart-4/30 text-chart-4 gap-0.5">
                                   <Sparkles className="h-2 w-2" />
                                   {isAr ? "مميز" : "Featured"}
                                 </Badge>
@@ -252,13 +252,13 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
                             {/* Meta row */}
                             <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1">
                               {(item.speaker_name || item.speaker_name_ar) && (
-                                <span className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                   <User className="h-3 w-3 text-primary/60" />
                                   <span className="font-medium">{isAr && item.speaker_name_ar ? item.speaker_name_ar : item.speaker_name}</span>
                                 </span>
                               )}
                               {(item.location || item.location_ar) && (
-                                <span className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                                <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
                                   <MapPin className="h-3 w-3 text-chart-2/60" />
                                   {isAr && item.location_ar ? item.location_ar : item.location}
                                 </span>

@@ -343,7 +343,7 @@ export default function CompetitionDetail() {
               <Breadcrumbs items={breadcrumbItems} className="text-foreground/50 mb-3" />
 
               <div className="flex items-center gap-2 flex-wrap mb-2">
-                <Badge className={`${statusCfg.bg} px-2.5 py-0.5 font-bold uppercase tracking-wider text-[11px]`}>
+                <Badge className={`${statusCfg.bg} px-2.5 py-0.5 font-bold uppercase tracking-wider text-[0.6875rem]`}>
                   {statusCfg.glow ? (
                     <span className="relative me-1.5 flex h-2 w-2">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -355,13 +355,13 @@ export default function CompetitionDetail() {
                   {isAr ? statusCfg.labelAr : statusCfg.label}
                 </Badge>
                 {competition.edition_year && (
-                  <Badge variant="outline" className="bg-muted/50 border-border/50 font-bold text-[11px] px-2 py-0.5">{competition.edition_year}</Badge>
+                  <Badge variant="outline" className="bg-muted/50 border-border/50 font-bold text-[0.6875rem] px-2 py-0.5">{competition.edition_year}</Badge>
                 )}
                 {competition.competition_number && (
-                  <Badge variant="outline" className="font-mono text-[11px] font-bold bg-muted/50 border-border/50 px-2 py-0.5 uppercase tracking-wider">{competition.competition_number}</Badge>
+                  <Badge variant="outline" className="font-mono text-[0.6875rem] font-bold bg-muted/50 border-border/50 px-2 py-0.5 uppercase tracking-wider">{competition.competition_number}</Badge>
                 )}
                 {competition.registration_fee_type === "free" && (
-                  <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[11px] px-2 py-0.5 font-bold">
+                  <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[0.6875rem] px-2 py-0.5 font-bold">
                     <Ticket className="h-3 w-3 me-1" />{isAr ? "مجاني" : "Free"}
                   </Badge>
                 )}
@@ -404,7 +404,7 @@ export default function CompetitionDetail() {
                     <stat.icon className={`h-4 w-4 sm:h-5 sm:w-5 ${stat.color} opacity-70 shrink-0`} />
                     <div className="text-start min-w-0">
                       <p className="text-lg sm:text-xl font-extrabold text-foreground tabular-nums leading-none"><SharedAnimatedCounter value={stat.value} duration={800} /></p>
-                      <p className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground/70 mt-0.5 whitespace-nowrap">{stat.label}</p>
+                      <p className="text-[0.6875rem] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground/70 mt-0.5 whitespace-nowrap">{stat.label}</p>
                     </div>
                   </button>
                 ))}
@@ -453,7 +453,7 @@ export default function CompetitionDetail() {
             </div>
             {["in_progress", "judging"].includes(competition.status) && completionPercent > 0 && (
               <div className="mt-3 pt-3 border-t border-border/20">
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground mb-1.5">
+                <div className="flex items-center justify-between text-[0.625rem] text-muted-foreground mb-1.5">
                   <span className="font-bold uppercase tracking-wider">{isAr ? "تقدم المسابقة" : "Progress"}</span>
                   <span className="font-extrabold text-primary text-xs">{completionPercent}%</span>
                 </div>
@@ -472,7 +472,7 @@ export default function CompetitionDetail() {
               <div className="flex items-center gap-0.5 min-w-max py-1.5">
                 {NAV_GROUPS.map((group, gi) => (
                   <div key={group.labelEn} className={`flex items-center ${gi > 0 ? "border-s border-border/15 ms-1 ps-2" : ""}`}>
-                    <span className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-muted-foreground/30 px-1.5 hidden sm:block">
+                    <span className="text-[0.625rem] font-extrabold uppercase tracking-[0.15em] text-muted-foreground/30 px-1.5 hidden sm:block">
                       {isAr ? group.labelAr : group.labelEn}
                     </span>
                     {group.tabs.map((tab) => {
@@ -565,7 +565,7 @@ export default function CompetitionDetail() {
                         {competition.max_participants && (
                           <div className="mt-4">
                             <Progress value={((registrationStats?.approved || 0) / competition.max_participants) * 100} className="h-1.5" />
-                            <p className="text-[10px] text-muted-foreground mt-1.5">{registrationStats?.approved || 0}/{competition.max_participants}</p>
+                            <p className="text-[0.625rem] text-muted-foreground mt-1.5">{registrationStats?.approved || 0}/{competition.max_participants}</p>
                           </div>
                         )}
                       </div>
@@ -578,7 +578,7 @@ export default function CompetitionDetail() {
                         <p className="text-2xl sm:text-3xl font-extrabold tabular-nums leading-none">{judgesCount || 0}</p>
                         <p className="text-xs text-muted-foreground mt-1.5">{isAr ? "الحكام" : "Judges"}</p>
                         {criteria && criteria.length > 0 && (
-                          <p className="text-[11px] text-muted-foreground mt-4">{criteria.length} {isAr ? "معايير" : "criteria"} · {totalScore} {isAr ? "نقطة" : "pts"}</p>
+                          <p className="text-[0.6875rem] text-muted-foreground mt-4">{criteria.length} {isAr ? "معايير" : "criteria"} · {totalScore} {isAr ? "نقطة" : "pts"}</p>
                         )}
                       </div>
 
@@ -589,7 +589,7 @@ export default function CompetitionDetail() {
                         </div>
                         <p className="text-sm font-bold">{isAr ? statusCfg.labelAr : statusCfg.label}</p>
                         <p className="text-xs text-muted-foreground mt-1.5">{categories?.length || 0} {isAr ? "فئات" : "categories"}</p>
-                        <p className="text-[11px] text-muted-foreground mt-4">{criteria?.length || 0} {isAr ? "المعايير" : "criteria"}</p>
+                        <p className="text-[0.6875rem] text-muted-foreground mt-4">{criteria?.length || 0} {isAr ? "المعايير" : "criteria"}</p>
                       </div>
                     </div>
 
@@ -635,7 +635,7 @@ export default function CompetitionDetail() {
 
                     {/* Competition Specialty */}
                     {competitionTypes && competitionTypes.length > 0 && (
-                      <Section icon={<Flame className="h-4 w-4" />} title={isAr ? "تخصص المسابقة" : "Specialty"} badge={<Badge variant="secondary" className="text-[11px]">{competitionTypes.length}</Badge>}>
+                      <Section icon={<Flame className="h-4 w-4" />} title={isAr ? "تخصص المسابقة" : "Specialty"} badge={<Badge variant="secondary" className="text-[0.6875rem]">{competitionTypes.length}</Badge>}>
                         <div className="grid gap-4 sm:grid-cols-2">
                           {competitionTypes.map((type) => (
                             <div key={type.id} className="group overflow-hidden rounded-xl border border-border/30 bg-muted/10 hover:bg-muted/30 transition-all duration-200">
@@ -663,7 +663,7 @@ export default function CompetitionDetail() {
 
                     {/* Supervising Bodies */}
                     {supervisors.length > 0 && (
-                      <Section icon={<Building2 className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[11px]">{supervisors.length}</Badge>}>
+                      <Section icon={<Building2 className="h-4 w-4" />} title={isAr ? "الجهات المشرفة" : "Supervising Bodies"} badge={<Badge variant="secondary" className="text-[0.6875rem]">{supervisors.length}</Badge>}>
                         <div className="grid gap-4 sm:grid-cols-2">
                           {supervisors.map((entity) => (
                             <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-border/30 bg-muted/10 p-4 hover:bg-muted/30 transition-colors">
@@ -674,7 +674,7 @@ export default function CompetitionDetail() {
                               )}
                               <div className="min-w-0">
                                 <p className="text-sm font-bold truncate">{isAr && entity.name_ar ? entity.name_ar : entity.name}</p>
-                                {entity.abbreviation && <p className="text-[11px] text-muted-foreground">{entity.abbreviation}</p>}
+                                {entity.abbreviation && <p className="text-[0.6875rem] text-muted-foreground">{entity.abbreviation}</p>}
                               </div>
                             </div>
                           ))}
@@ -684,7 +684,7 @@ export default function CompetitionDetail() {
 
                     {/* Accreditors */}
                     {accreditors.length > 0 && (
-                      <Section icon={<Award className="h-4 w-4" />} title={isAr ? "جهات الاعتماد" : "Accreditation"} badge={<Badge variant="secondary" className="text-[11px]">{accreditors.length}</Badge>}>
+                      <Section icon={<Award className="h-4 w-4" />} title={isAr ? "جهات الاعتماد" : "Accreditation"} badge={<Badge variant="secondary" className="text-[0.6875rem]">{accreditors.length}</Badge>}>
                         <div className="grid gap-4 sm:grid-cols-2">
                           {accreditors.map((entity) => (
                             <div key={entity.id} className="flex items-center gap-3 rounded-xl border border-border/30 bg-muted/10 p-4 hover:bg-muted/30 transition-colors">
@@ -695,7 +695,7 @@ export default function CompetitionDetail() {
                               )}
                               <div className="min-w-0">
                                 <p className="text-sm font-bold truncate">{isAr && entity.name_ar ? entity.name_ar : entity.name}</p>
-                                <Badge variant="outline" className="mt-1 text-[10px] h-5 px-1.5 rounded">{isAr ? "اعتماد" : "Accreditor"}</Badge>
+                                <Badge variant="outline" className="mt-1 text-[0.625rem] h-5 px-1.5 rounded">{isAr ? "اعتماد" : "Accreditor"}</Badge>
                               </div>
                             </div>
                           ))}
@@ -795,7 +795,7 @@ export default function CompetitionDetail() {
 
                     {/* Categories */}
                     {categories && categories.length > 0 && (
-                      <Section icon={<Target className="h-4 w-4" />} title={isAr ? "الفئات" : "Categories"} badge={<Badge variant="secondary" className="text-[11px]">{categories.length}</Badge>}>
+                      <Section icon={<Target className="h-4 w-4" />} title={isAr ? "الفئات" : "Categories"} badge={<Badge variant="secondary" className="text-[0.6875rem]">{categories.length}</Badge>}>
                         <div className="grid gap-4 sm:grid-cols-2">
                           {categories.slice(0, 6).map((cat) => (
                             <div key={cat.id} className="group overflow-hidden rounded-xl border border-border/30 bg-muted/10 hover:bg-muted/30 transition-all duration-200 cursor-pointer" onClick={() => setActiveTab("categories")}>
@@ -805,9 +805,9 @@ export default function CompetitionDetail() {
                                   <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                                   <div className="absolute bottom-0 inset-x-0 p-3">
                                     <p className="text-sm font-bold">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
-                                    <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mt-0.5">
+                                    <div className="flex items-center gap-1.5 text-[0.6875rem] text-muted-foreground mt-0.5">
                                       {cat.max_participants && <span><Users className="inline h-2.5 w-2.5 me-0.5" />{cat.max_participants}</span>}
-                                      <Badge variant="outline" className="text-[10px] h-4 px-1.5 bg-background/60 rounded">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                                      <Badge variant="outline" className="text-[0.625rem] h-4 px-1.5 bg-background/60 rounded">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                                     </div>
                                   </div>
                                 </div>
@@ -819,7 +819,7 @@ export default function CompetitionDetail() {
                                   <div className="min-w-0">
                                     <p className="text-sm font-bold">{isAr && cat.name_ar ? cat.name_ar : cat.name}</p>
                                     <div className="flex items-center gap-1.5 mt-0.5">
-                                      <Badge variant="outline" className="text-[10px] h-4 px-1.5 rounded">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
+                                      <Badge variant="outline" className="text-[0.625rem] h-4 px-1.5 rounded">{categoryBadgeText(cat.gender, cat.participant_level, isAr)}</Badge>
                                     </div>
                                   </div>
                                 </div>
@@ -960,7 +960,7 @@ export default function CompetitionDetail() {
                       {competition.max_participants && (
                         <div className="pt-1.5">
                           <Progress value={(registrationStats.approved / competition.max_participants) * 100} className="h-1" />
-                          <p className="text-[10px] text-muted-foreground mt-1 text-center">
+                          <p className="text-[0.625rem] text-muted-foreground mt-1 text-center">
                             {registrationStats.approved}/{competition.max_participants} {isAr ? "مقاعد" : "spots"}
                           </p>
                         </div>

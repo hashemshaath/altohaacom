@@ -149,7 +149,7 @@ export const RelatedPages = forwardRef<HTMLElement, Props>(function RelatedPages
                 {isAr ? page.labelAr : page.label}
               </span>
               {(page.desc || page.descAr) && (
-                <span className="text-[12px] text-muted-foreground leading-tight line-clamp-2">
+                <span className="text-xs text-muted-foreground leading-tight line-clamp-2">
                   {isAr ? (page.descAr || page.desc) : page.desc}
                 </span>
               )}

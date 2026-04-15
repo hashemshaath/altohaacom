@@ -60,8 +60,8 @@ export const BilingualField = memo(function BilingualField({
       <div className="rounded-xl border border-border/50 bg-muted/10 overflow-hidden">
         <div className="p-2.5 space-y-1">
           <div className="flex items-center justify-between">
-            <Label className="text-[12px] text-muted-foreground font-medium flex items-center gap-1">
-              <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[12px] font-bold text-primary">ع</span>
+            <Label className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+              <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-xs font-bold text-primary">ع</span>
               {labelAr}
             </Label>
             {valueAr?.trim() && <TranslateBtn loading={translatingToEn} onClick={() => translate("ar")} target="EN" />}
@@ -71,8 +71,8 @@ export const BilingualField = memo(function BilingualField({
         <div className="border-t border-dashed border-border/30" />
         <div className="p-2.5 space-y-1">
           <div className="flex items-center justify-between">
-            <Label className="text-[12px] text-muted-foreground font-medium flex items-center gap-1">
-              <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[12px] font-bold text-muted-foreground">EN</span>
+            <Label className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+              <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-xs font-bold text-muted-foreground">EN</span>
               {label}
             </Label>
             {valueEn?.trim() && <TranslateBtn loading={translatingToAr} onClick={() => translate("en")} target="عربي" />}
@@ -88,8 +88,8 @@ export const BilingualField = memo(function BilingualField({
       {/* Arabic first */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <Label className="text-[12px] text-muted-foreground font-medium flex items-center gap-1">
-            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-[12px] font-bold text-primary">ع</span>
+          <Label className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-primary/15 text-xs font-bold text-primary">ع</span>
             {labelAr}
           </Label>
           {valueAr?.trim() && <TranslateBtn loading={translatingToEn} onClick={() => translate("ar")} target="EN" />}
@@ -99,8 +99,8 @@ export const BilingualField = memo(function BilingualField({
       {/* English second */}
       <div className="space-y-1">
         <div className="flex items-center justify-between">
-          <Label className="text-[12px] text-muted-foreground font-medium flex items-center gap-1">
-            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-[12px] font-bold text-muted-foreground">EN</span>
+          <Label className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+            <span className="inline-flex items-center justify-center h-4 w-5 rounded bg-muted text-xs font-bold text-muted-foreground">EN</span>
             {label}
           </Label>
           {valueEn?.trim() && <TranslateBtn loading={translatingToAr} onClick={() => translate("en")} target="عربي" />}
@@ -115,7 +115,7 @@ function TranslateBtn({ loading, onClick, target }: { loading: boolean; onClick:
   return (
     <Button
       type="button" variant="ghost" size="sm"
-      className="h-5 px-1.5 text-[12px] gap-1 text-primary hover:text-primary hover:bg-primary/10 rounded-md"
+      className="h-5 px-1.5 text-xs gap-1 text-primary hover:text-primary hover:bg-primary/10 rounded-md"
       onClick={onClick}
       disabled={loading}
     >

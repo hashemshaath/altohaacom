@@ -124,11 +124,11 @@ export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrat
           <Table>
             <TableHeader>
               <TableRow className="bg-muted/30">
-                <TableHead className="font-bold text-[12px] uppercase">{isAr ? "الشيف" : "Chef"}</TableHead>
-                <TableHead className="font-bold text-[12px] uppercase">{isAr ? "التخصصات" : "Specialties"}</TableHead>
-                <TableHead className="font-bold text-[12px] uppercase">{isAr ? "التوفر" : "Availability"}</TableHead>
-                <TableHead className="font-bold text-[12px] uppercase">{isAr ? "الخبرة" : "Experience"}</TableHead>
-                <TableHead className="font-bold text-[12px] uppercase">{isAr ? "الحالة" : "Status"}</TableHead>
+                <TableHead className="font-bold text-xs uppercase">{isAr ? "الشيف" : "Chef"}</TableHead>
+                <TableHead className="font-bold text-xs uppercase">{isAr ? "التخصصات" : "Specialties"}</TableHead>
+                <TableHead className="font-bold text-xs uppercase">{isAr ? "التوفر" : "Availability"}</TableHead>
+                <TableHead className="font-bold text-xs uppercase">{isAr ? "الخبرة" : "Experience"}</TableHead>
+                <TableHead className="font-bold text-xs uppercase">{isAr ? "الحالة" : "Status"}</TableHead>
                 <TableHead className="w-24" />
               </TableRow>
             </TableHeader>
@@ -146,14 +146,14 @@ export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrat
                       </div>
                       <div>
                         <p className="text-sm font-bold">{reg.profile?.full_name || "—"}</p>
-                        <p className="text-[12px] text-muted-foreground">{reg.profile?.specialization || "—"}</p>
+                        <p className="text-xs text-muted-foreground">{reg.profile?.specialization || "—"}</p>
                       </div>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1 flex-wrap">
                       {(reg.specialties || []).slice(0, 3).map((s, i) => (
-                        <Badge key={i} variant="outline" className="text-[12px]">{s}</Badge>
+                        <Badge key={i} variant="outline" className="text-xs">{s}</Badge>
                       ))}
                     </div>
                   </TableCell>
@@ -175,13 +175,13 @@ export const ChefsTableChefRegistrations = memo(function ChefsTableChefRegistrat
                     ) : "—"}
                   </TableCell>
                   <TableCell>
-                    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[12px] font-bold uppercase tracking-wider border ${statusColors[reg.status] || statusColors.available}`}>
+                    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider border ${statusColors[reg.status] || statusColors.available}`}>
                       {reg.status}
                     </span>
                   </TableCell>
                   <TableCell>
                     {reg.status === "available" && (
-                      <Button size="sm" variant="outline" className="gap-1 h-7 text-[12px]" onClick={() => matchMutation.mutate({ regId: reg.id })}>
+                      <Button size="sm" variant="outline" className="gap-1 h-7 text-xs" onClick={() => matchMutation.mutate({ regId: reg.id })}>
                         <Check className="h-3 w-3" />{isAr ? "مطابقة" : "Match"}
                       </Button>
                     )}

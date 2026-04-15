@@ -57,7 +57,7 @@ export const ImportStats = React.memo(({ stats, loading, isAr }: ImportStatsProp
                 <div className={`w-6 h-6 rounded-lg ${item.bg} flex items-center justify-center`}>
                   <Icon className={`h-3 w-3 ${item.color}`} />
                 </div>
-                <span className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider truncate">{item.label}</span>
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider truncate">{item.label}</span>
               </div>
               <AnimatedCounter value={item.value} className={`text-lg font-bold ${item.color}`} />
             </CardContent>

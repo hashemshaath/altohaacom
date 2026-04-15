@@ -239,7 +239,7 @@ export default function NotificationPreferences() {
             <div className="space-y-3">
               <div className="inline-flex items-center gap-2 rounded-2xl bg-primary/8 px-3.5 py-1.5 ring-1 ring-primary/15">
                 <Settings2 className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[12px] font-bold uppercase tracking-widest text-primary">
+                <span className="text-xs font-bold uppercase tracking-widest text-primary">
                   {t("Settings", "إعدادات")}
                 </span>
               </div>
@@ -262,7 +262,7 @@ export default function NotificationPreferences() {
                 </div>
                 <div>
                   <p className="text-xl font-black leading-none tabular-nums">{loading ? "—" : enabledCount}</p>
-                  <p className="text-[12px] text-muted-foreground/60 mt-0.5 font-bold uppercase tracking-widest">{t("Active channels", "قنوات مفعّلة")}</p>
+                  <p className="text-xs text-muted-foreground/60 mt-0.5 font-bold uppercase tracking-widest">{t("Active channels", "قنوات مفعّلة")}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 rounded-2xl border border-border/20 bg-card/60 backdrop-blur-sm px-4 py-3.5 shadow-sm">
@@ -271,7 +271,7 @@ export default function NotificationPreferences() {
                 </div>
                 <div>
                   <p className="text-xl font-black leading-none tabular-nums">{activeCategories}</p>
-                  <p className="text-[12px] text-muted-foreground/60 mt-0.5 font-bold uppercase tracking-widest">{t("Active categories", "فئات نشطة")}</p>
+                  <p className="text-xs text-muted-foreground/60 mt-0.5 font-bold uppercase tracking-widest">{t("Active categories", "فئات نشطة")}</p>
                 </div>
               </div>
             </div>
@@ -282,7 +282,7 @@ export default function NotificationPreferences() {
             <div className="mt-6 rounded-2xl border border-border/20 bg-card/40 backdrop-blur-sm p-4">
               <div className="flex items-center justify-between mb-2.5">
                 <p className="text-xs font-bold">{t("Setup completion", "اكتمال الإعداد")}</p>
-                <Badge variant={completionScore === 100 ? "default" : "secondary"} className="text-[12px] rounded-xl">
+                <Badge variant={completionScore === 100 ? "default" : "secondary"} className="text-xs rounded-xl">
                   {completionScore}%
                 </Badge>
               </div>
@@ -340,7 +340,7 @@ export default function NotificationPreferences() {
                         {t("Select how you'd like to receive notifications", "حدد الطرق المفضلة لاستقبال الإشعارات")}
                       </CardDescription>
                     </div>
-                    <Badge variant="outline" className="text-[12px] gap-1">
+                    <Badge variant="outline" className="text-xs gap-1">
                       <CheckCircle2 className="h-3 w-3 text-primary" />
                       {enabledCount}/{CHANNELS.length}
                     </Badge>
@@ -368,7 +368,7 @@ export default function NotificationPreferences() {
                                 <div className="flex items-center gap-2">
                                   <p className="text-sm font-semibold">{isAr ? config.labelAr : config.label}</p>
                                   {pref.enabled && (
-                                    <Badge variant="secondary" className="text-[12px] h-4 px-1.5 bg-primary/5 text-primary animate-in fade-in-50 zoom-in-95 duration-200">
+                                    <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-primary/5 text-primary animate-in fade-in-50 zoom-in-95 duration-200">
                                       {t("Active", "مفعّل")}
                                     </Badge>
                                   )}
@@ -439,12 +439,12 @@ export default function NotificationPreferences() {
                               <div className="flex items-center gap-2">
                                 <p className="text-sm font-semibold">{isAr ? cat.labelAr : cat.label}</p>
                                 {isCritical && (
-                                  <Badge variant="destructive" className="text-[12px] h-4 px-1.5">
+                                  <Badge variant="destructive" className="text-xs h-4 px-1.5">
                                     {t("Required", "مطلوب")}
                                   </Badge>
                                 )}
                                 {cat.priority === "high" && !isMuted && (
-                                  <Badge variant="secondary" className="text-[12px] h-4 px-1.5 bg-chart-4/10 text-chart-4">
+                                  <Badge variant="secondary" className="text-xs h-4 px-1.5 bg-chart-4/10 text-chart-4">
                                     {t("Important", "مهم")}
                                   </Badge>
                                 )}
@@ -551,7 +551,7 @@ export default function NotificationPreferences() {
                             {isAr ? opt.labelAr : opt.label}
                           </p>
                         </div>
-                        <p className="text-[12px] text-muted-foreground mt-1 ps-4">{isAr ? opt.descAr : opt.desc}</p>
+                        <p className="text-xs text-muted-foreground mt-1 ps-4">{isAr ? opt.descAr : opt.desc}</p>
                       </button>
                     ))}
                   </div>

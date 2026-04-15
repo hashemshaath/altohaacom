@@ -188,11 +188,11 @@ export default function MentorshipAdmin() {
           <TabsTrigger value="programs">{isAr ? "البرامج" : "Programs"}</TabsTrigger>
           <TabsTrigger value="applications">
             {isAr ? "الطلبات" : "Applications"}
-            {pendingApps.length > 0 && <Badge variant="destructive" className="ms-1.5 text-[12px]">{pendingApps.length}</Badge>}
+            {pendingApps.length > 0 && <Badge variant="destructive" className="ms-1.5 text-xs">{pendingApps.length}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="enrollments">
             {isAr ? "التسجيلات" : "Enrollments"}
-            {pendingEnrollments.length > 0 && <Badge variant="destructive" className="ms-1.5 text-[12px]">{pendingEnrollments.length}</Badge>}
+            {pendingEnrollments.length > 0 && <Badge variant="destructive" className="ms-1.5 text-xs">{pendingEnrollments.length}</Badge>}
           </TabsTrigger>
           <TabsTrigger value="matches">{isAr ? "المطابقات" : "Matches"}</TabsTrigger>
         </TabsList>
@@ -297,7 +297,7 @@ export default function MentorshipAdmin() {
                       </div>
                       <div className="flex flex-wrap gap-1 mt-1">
                         {(app.expertise || []).slice(0, 3).map(e => (
-                          <Badge key={e} variant="outline" className="text-[12px]">{e}</Badge>
+                          <Badge key={e} variant="outline" className="text-xs">{e}</Badge>
                         ))}
                       </div>
                       <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{app.bio}</p>
@@ -337,7 +337,7 @@ export default function MentorshipAdmin() {
                         <p className="font-medium text-sm">{enrollment.profile?.full_name || "Unknown"}</p>
                         <Badge className={statusColors[enrollment.status] || ""}>{enrollment.status}</Badge>
                         {enrollment.experience_level && (
-                          <Badge variant="outline" className="text-[12px] capitalize">{enrollment.experience_level}</Badge>
+                          <Badge variant="outline" className="text-xs capitalize">{enrollment.experience_level}</Badge>
                         )}
                       </div>
                       {enrollment.goals_description && (
@@ -417,11 +417,11 @@ export default function MentorshipAdmin() {
                     <div className="flex -space-x-2">
                       <Avatar className="h-9 w-9 border-2 border-background">
                         <AvatarImage src={m.mentor_profile?.avatar_url || ""} />
-                        <AvatarFallback className="text-[12px]">M</AvatarFallback>
+                        <AvatarFallback className="text-xs">M</AvatarFallback>
                       </Avatar>
                       <Avatar className="h-9 w-9 border-2 border-background">
                         <AvatarImage src={m.mentee_profile?.avatar_url || ""} />
-                        <AvatarFallback className="text-[12px]">S</AvatarFallback>
+                        <AvatarFallback className="text-xs">S</AvatarFallback>
                       </Avatar>
                     </div>
                     <div>

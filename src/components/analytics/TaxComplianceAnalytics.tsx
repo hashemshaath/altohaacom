@@ -146,7 +146,7 @@ export const TaxComplianceAnalytics = memo(function TaxComplianceAnalytics() {
             <div>
               <p className="text-xs text-muted-foreground">{isAr ? "درجة الامتثال" : "Compliance Score"}</p>
               <span className="text-2xl font-bold"><AnimatedCounter value={data?.complianceScore || 0} suffix="%" /></span>
-              <p className="text-[12px] text-muted-foreground">{data?.filedReports || 0}/{data?.totalExpectedReports || 4} {isAr ? "تقارير مقدمة" : "reports filed"}</p>
+              <p className="text-xs text-muted-foreground">{data?.filedReports || 0}/{data?.totalExpectedReports || 4} {isAr ? "تقارير مقدمة" : "reports filed"}</p>
             </div>
           </CardContent>
         </Card>

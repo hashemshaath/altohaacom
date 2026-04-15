@@ -124,9 +124,9 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-semibold truncate leading-snug">{displayName}</p>
+              <p className="text-[0.8125rem] font-semibold truncate leading-snug">{displayName}</p>
               {profile.username && (
-                <p className="text-[11px] text-muted-foreground/70">@{profile.username}</p>
+                <p className="text-[0.6875rem] text-muted-foreground/70">@{profile.username}</p>
               )}
             </div>
           </div>
@@ -142,7 +142,7 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
             title={!leftSidebarOpen ? tab.label : undefined}
             aria-label={tab.label}
             className={cn(
-              "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[13px] font-medium transition-all duration-150 touch-manipulation",
+              "flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-[0.8125rem] font-medium transition-all duration-150 touch-manipulation",
               !leftSidebarOpen && "justify-center px-0",
               activeTab === tab.id
                 ? "bg-primary/10 text-primary font-semibold"
@@ -170,8 +170,8 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
               { label: isAr ? "وصفة" : "Recipes", value: stats.recipes, color: "text-chart-4" },
             ].map((stat, i) => (
               <div key={i} className="rounded-lg bg-card/50 p-2 text-center">
-                <AnimatedCounter value={stat.value} className={cn("text-[13px] font-bold tabular-nums", stat.color)} />
-                <p className="text-[10px] text-muted-foreground/70 mt-0.5">{stat.label}</p>
+                <AnimatedCounter value={stat.value} className={cn("text-[0.8125rem] font-bold tabular-nums", stat.color)} />
+                <p className="text-[0.625rem] text-muted-foreground/70 mt-0.5">{stat.label}</p>
               </div>
             ))}
           </div>

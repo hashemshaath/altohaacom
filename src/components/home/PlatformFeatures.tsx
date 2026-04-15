@@ -56,7 +56,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             <h2 id="services-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
               {isAr ? "كل ما يحتاجه عالم الطهي" : "Everything the Culinary World Needs"}
             </h2>
-            <p className="mx-auto mt-1.5 max-w-xl text-[13px] sm:text-sm text-muted-foreground leading-relaxed">
+            <p className="mx-auto mt-1.5 max-w-xl text-[0.8125rem] sm:text-sm text-muted-foreground leading-relaxed">
               {isAr ? "منصة متكاملة صُممت لتمكين كل محترف في عالم الطهي" : "A comprehensive platform designed to empower every culinary professional"}
             </p>
           </div>
@@ -70,7 +70,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                     <s.icon className={cn("h-[22px] w-[22px] sm:h-5 sm:w-5 transition-colors", s.color)} />
                   </div>
                   <h3 className="font-bold mb-1.5 text-[14px] sm:text-base group-hover:text-primary transition-colors">{s.title}</h3>
-                  <p className="mb-4 flex-1 text-[12px] sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+                  <p className="mb-4 flex-1 text-xs sm:text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
                   <span className="inline-flex items-center text-xs font-semibold text-primary group-hover:gap-2 transition-all">
                     {isAr ? "اكتشف المزيد" : "Explore"}
                     <ArrowRight className="ms-1 h-3 w-3 transition-transform group-hover:translate-x-0.5" />
@@ -90,7 +90,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               <h2 id="roles-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
                 {isAr ? "لمن صُممت هذه المنصة؟" : "Who Is Altoha For?"}
               </h2>
-              <p className="mx-auto mt-1.5 max-w-xl text-[13px] sm:text-sm text-muted-foreground">
+              <p className="mx-auto mt-1.5 max-w-xl text-[0.8125rem] sm:text-sm text-muted-foreground">
                 {isAr ? "مصممة لخدمة كل دور في منظومة الطهي الاحترافية" : "Designed to serve every role in the professional culinary ecosystem"}
               </p>
             </div>
@@ -104,7 +104,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                       <role.icon className="h-[22px] w-[22px] sm:h-5 sm:w-5 text-primary" />
                     </div>
                     <h3 className="mb-0.5 text-[14px] sm:text-sm font-bold">{role.title}</h3>
-                    <p className="text-[12px] sm:text-[12px] text-muted-foreground leading-snug">{role.desc}</p>
+                    <p className="text-xs sm:text-xs text-muted-foreground leading-snug">{role.desc}</p>
                   </CardContent>
                 </Card>
               );
@@ -135,7 +135,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
             <h2 id="why-heading" className={cn("text-[20px] font-bold sm:text-2xl md:text-3xl tracking-tight", !isAr && "font-serif")}>
               {isAr ? "لماذا الطهاة؟" : "Why Altoha?"}
             </h2>
-            <p className="mx-auto mt-1.5 max-w-md text-[13px] sm:text-sm text-muted-foreground">
+            <p className="mx-auto mt-1.5 max-w-md text-[0.8125rem] sm:text-sm text-muted-foreground">
               {isAr ? "ما يميزنا عن أي منصة أخرى" : "What sets us apart from any other platform"}
             </p>
           </div>
@@ -149,7 +149,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                     <item.icon className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="mb-1 text-[14px] sm:text-sm font-bold">{item.title}</h3>
-                  <p className="text-[12px] sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                  <p className="text-xs sm:text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                 </CardContent>
               </Card>
             </div>
@@ -168,7 +168,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "هل أنت راعٍ أو شركة؟" : "Sponsor or Company?"}
               </h3>
-              <p className="mb-5 text-[13px] sm:text-sm text-muted-foreground">
+              <p className="mb-5 text-[0.8125rem] sm:text-sm text-muted-foreground">
                 {isAr ? "اربط علامتك التجارية بالتميز الطهوي وانطلق مع شبكة عالمية من المحترفين." : "Align your brand with culinary excellence and tap into a global network of professionals."}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -189,7 +189,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
               <h3 className={cn("mb-2 text-[18px] sm:text-xl font-bold", !isAr && "font-serif")}>
                 {isAr ? "تنظّم مسابقات طهي؟" : "Organizing Competitions?"}
               </h3>
-              <p className="mb-5 text-[13px] sm:text-sm text-muted-foreground">
+              <p className="mb-5 text-[0.8125rem] sm:text-sm text-muted-foreground">
                 {isAr ? "أدوات رقمية متكاملة لإنشاء وإدارة مسابقات طهوية احترافية بلا عناء." : "Integrated digital tools to create & manage professional culinary competitions effortlessly."}
               </p>
               <Button size="sm" variant="secondary" asChild>
@@ -226,7 +226,7 @@ export const PlatformFeatures = memo(function PlatformFeatures() {
                 <Link to="/competitions">{isAr ? "تصفح المسابقات" : "Browse Competitions"}</Link>
               </Button>
             </div>
-            <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-[13px] sm:text-xs text-muted-foreground">
+            <div className="mt-7 flex flex-wrap items-center justify-center gap-5 text-[0.8125rem] sm:text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "مجاني بالكامل" : "Completely Free"}</div>
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "بدون بطاقة ائتمان" : "No Credit Card"}</div>
               <div className="flex items-center gap-1.5"><CheckCircle className="h-4 w-4 text-primary" />{isAr ? "إعداد سريع" : "Quick Setup"}</div>

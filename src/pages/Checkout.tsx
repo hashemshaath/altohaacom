@@ -187,7 +187,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-xs font-medium truncate">{title}</p>
-                  <p className="text-[12px] text-muted-foreground">x{item.quantity}</p>
+                  <p className="text-xs text-muted-foreground">x{item.quantity}</p>
                 </div>
                 <p className="text-xs font-semibold shrink-0">{formatCurrency(item.price * item.quantity, language as "en" | "ar")}</p>
               </div>

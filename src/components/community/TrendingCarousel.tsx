@@ -92,7 +92,7 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
         <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
           <Flame className="h-3.5 w-3.5 text-destructive" />
           {isAr ? "الأكثر تفاعلاً" : "Trending Now"}
-          <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 font-bold tabular-nums">{trending.length}</Badge>
+          <Badge variant="secondary" className="text-[0.625rem] px-1.5 py-0 h-4 font-bold tabular-nums">{trending.length}</Badge>
         </h3>
         <div className="flex gap-1">
           <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full hover:bg-muted/50" onClick={() => scroll("left")}>
@@ -114,20 +114,20 @@ export const TrendingCarousel = memo(function TrendingCarousel() {
               <div className="relative">
                 <Avatar className="h-6 w-6 ring-1 ring-border/20">
                   <AvatarImage src={post.author_avatar || undefined} />
-                  <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
+                  <AvatarFallback className="text-[0.625rem] bg-primary/10 text-primary font-bold">
                     {(post.author_name || "C")[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 {idx < 3 && <span className="absolute -top-0.5 -end-0.5 h-2 w-2 rounded-full bg-chart-4 ring-1 ring-card" />}
               </div>
-              <span className="text-[12px] font-semibold truncate group-hover:text-primary transition-colors">
+              <span className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
                 {post.author_name || "Chef"}
               </span>
             </div>
             <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed mb-2">
               {post.content.slice(0, 100)}
             </p>
-            <div className="flex gap-3 text-[11px] text-muted-foreground font-medium">
+            <div className="flex gap-3 text-[0.6875rem] text-muted-foreground font-medium">
               <span className="flex items-center gap-0.5">💬 {post.replies_count}</span>
               <span className="flex items-center gap-0.5">🔄 {post.reposts_count}</span>
             </div>

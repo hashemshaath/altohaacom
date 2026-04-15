@@ -182,7 +182,7 @@ export const ProductEvaluationTemplates = memo(function ProductEvaluationTemplat
                 </div>
                 <p className="text-sm font-bold">{isAr ? t.name_ar : t.name}</p>
                 <div className="flex items-center justify-center gap-1 mt-2">
-                  <Badge variant="secondary" className="text-[10px]">{t.criteria.length} {isAr ? "معيار" : "criteria"}</Badge>
+                  <Badge variant="secondary" className="text-[0.625rem]">{t.criteria.length} {isAr ? "معيار" : "criteria"}</Badge>
                 </div>
                 <Button variant="ghost" size="sm" className="mt-3 w-full text-xs gap-1">
                   <Star className="h-3 w-3" />

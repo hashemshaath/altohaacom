@@ -100,7 +100,7 @@ export const OrganizerAttendeeCommunication = memo(function OrganizerAttendeeCom
           ))}
         </div>
 
-        <Badge variant="secondary" className="text-[12px]">
+        <Badge variant="secondary" className="text-xs">
           {t("Recipients", "المستلمون")}: {attendeeCount || 0}
         </Badge>
 

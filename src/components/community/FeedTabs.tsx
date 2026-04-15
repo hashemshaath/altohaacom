@@ -34,7 +34,7 @@ export const FeedTabs = memo(function FeedTabs({ active, onChange, isLoggedIn }:
               aria-selected={isActive}
               onClick={() => onChange(tab.id)}
               className={cn(
-                "flex-1 flex items-center justify-center gap-2 min-h-[48px] text-[13px] sm:text-sm font-semibold transition-all duration-200 relative touch-manipulation active:scale-[0.98]",
+                "flex-1 flex items-center justify-center gap-2 min-h-[48px] text-[0.8125rem] sm:text-sm font-semibold transition-all duration-200 relative touch-manipulation active:scale-[0.98]",
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/15 active:text-foreground"

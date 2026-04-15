@@ -204,7 +204,7 @@ export const CompanyClassificationsPanel = memo(function CompanyClassificationsP
                   {getClassLabel(role.role)}
                 </Badge>
                 <div>
-                  <Badge variant={role.is_active ? "default" : "secondary"} className="text-[12px]">
+                  <Badge variant={role.is_active ? "default" : "secondary"} className="text-xs">
                     {role.is_active ? (isAr ? "نشط" : "Active") : (isAr ? "غير نشط" : "Inactive")}
                   </Badge>
                   {role.assigned_at && (

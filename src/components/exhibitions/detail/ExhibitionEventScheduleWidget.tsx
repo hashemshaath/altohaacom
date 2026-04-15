@@ -49,12 +49,12 @@ export const ExhibitionEventScheduleWidget = memo(function ExhibitionEventSchedu
           return (
             <div key={item.id} className="flex items-start gap-3 p-2.5 rounded-xl bg-muted/20 hover:bg-muted/40 transition-colors group">
               <div className="flex flex-col items-center shrink-0 min-w-[44px]">
-                <span className="text-[12px] font-medium text-muted-foreground uppercase">{dayLabel}</span>
+                <span className="text-xs font-medium text-muted-foreground uppercase">{dayLabel}</span>
                 <span className="text-sm font-bold text-primary">{format(startTime, "HH:mm")}</span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold truncate group-hover:text-primary transition-colors">{title}</p>
-                <div className="flex items-center gap-2 mt-0.5 text-[12px] text-muted-foreground">
+                <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
                   {item.location && (
                     <span className="flex items-center gap-0.5">
                       <MapPin className="h-2.5 w-2.5" />
@@ -70,7 +70,7 @@ export const ExhibitionEventScheduleWidget = memo(function ExhibitionEventSchedu
                 </div>
               </div>
               {item.category && (
-                <Badge variant="secondary" className="text-[12px] shrink-0 h-4 px-1.5">
+                <Badge variant="secondary" className="text-xs shrink-0 h-4 px-1.5">
                   {item.category}
                 </Badge>
               )}

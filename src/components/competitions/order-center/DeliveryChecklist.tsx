@@ -203,28 +203,28 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
           <CardContent className="p-3 text-center">
             <Package className="mx-auto mb-1 h-5 w-5 text-primary" />
             <AnimatedCounter value={total} className="text-xl" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "إجمالي" : "Total"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "إجمالي" : "Total"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <CheckCircle className="mx-auto mb-1 h-5 w-5 text-chart-5" />
             <AnimatedCounter value={delivered} className="text-xl" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "تسليم" : "Delivered"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "تسليم" : "Delivered"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <Clock className="mx-auto mb-1 h-5 w-5 text-chart-4" />
             <AnimatedCounter value={total - delivered} className="text-xl" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "انتظار" : "Pending"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "انتظار" : "Pending"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <AlertTriangle className="mx-auto mb-1 h-5 w-5 text-destructive" />
             <AnimatedCounter value={overdue} className="text-xl" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "متأخر" : "Overdue"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "متأخر" : "Overdue"}</p>
           </CardContent>
         </Card>
       </div>
@@ -281,7 +281,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
                 <CardTitle className="text-sm truncate">
                   {isAr && list.title_ar ? list.title_ar : list.title}
                 </CardTitle>
-                <Badge variant="outline" className="text-[12px] shrink-0">
+                <Badge variant="outline" className="text-xs shrink-0">
                   {list.items.filter(i => i.status === "delivered").length}/{list.items.length}
                 </Badge>
               </div>
@@ -310,14 +310,14 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
                       <p className={`text-xs sm:text-sm ${item.checked ? "line-through text-muted-foreground" : "font-medium"} truncate`}>
                         {name}
                       </p>
-                      <div className="flex items-center gap-2 text-[12px] text-muted-foreground flex-wrap">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                         <span>{item.quantity} {item.unit}</span>
                         {isOrganizer ? (
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
                             <Input
                               type="date"
-                              className="h-5 w-28 text-[12px] border-dashed px-1"
+                              className="h-5 w-28 text-xs border-dashed px-1"
                               value={item.deadline ? item.deadline.split("T")[0] : ""}
                               onChange={(e) => updateDeadline.mutate({ id: item.id, deadline: e.target.value || null })}
                             />
@@ -331,7 +331,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
                     </div>
                     {isOrganizer && (
                       <Select value={item.status || "pending"} onValueChange={(v) => updateStatus.mutate({ id: item.id, status: v })}>
-                        <SelectTrigger className="h-7 w-20 sm:w-24 text-[12px] shrink-0">
+                        <SelectTrigger className="h-7 w-20 sm:w-24 text-xs shrink-0">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

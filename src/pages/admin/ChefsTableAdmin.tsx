@@ -171,7 +171,7 @@ export default function ChefsTableAdmin() {
               <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               {isAr ? "طلبات" : "Requests"}
               {pendingRequests.length > 0 && (
-                <Badge variant="destructive" className="ms-0.5 h-4 min-w-4 px-1 text-[12px]">{pendingRequests.length}</Badge>
+                <Badge variant="destructive" className="ms-0.5 h-4 min-w-4 px-1 text-xs">{pendingRequests.length}</Badge>
               )}
             </TabsTrigger>
             <TabsTrigger value="sessions" className="gap-1 text-xs rounded-xl data-[state=active]:shadow-sm px-2 sm:px-3">
@@ -221,7 +221,7 @@ export default function ChefsTableAdmin() {
                 <SelectItem value="rejected">{isAr ? "مرفوض" : "Rejected"}</SelectItem>
               </SelectContent>
             </Select>
-            <span className="text-[12px] sm:text-xs text-muted-foreground ms-auto">
+            <span className="text-xs sm:text-xs text-muted-foreground ms-auto">
               {filteredRequests.length} {isAr ? "طلب" : "requests"}
             </span>
           </div>
@@ -259,11 +259,11 @@ export default function ChefsTableAdmin() {
                             <h3 className="font-bold text-xs sm:text-sm truncate">
                               {isAr && req.title_ar ? req.title_ar : req.title}
                             </h3>
-                            <Badge variant={sc.variant} className="text-[12px] sm:text-[12px] uppercase tracking-wider shrink-0">
+                            <Badge variant={sc.variant} className="text-xs sm:text-xs uppercase tracking-wider shrink-0">
                               {req.status}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-2 sm:gap-3 mt-0.5 text-[12px] sm:text-xs text-muted-foreground flex-wrap">
+                          <div className="flex items-center gap-2 sm:gap-3 mt-0.5 text-xs sm:text-xs text-muted-foreground flex-wrap">
                             <span className="flex items-center gap-0.5 sm:gap-1"><Package className="h-2.5 w-2.5 sm:h-3 sm:w-3" />{isAr && req.product_name_ar ? req.product_name_ar : req.product_name}</span>
                             <span className="hidden sm:inline">{req.product_category}</span>
                             <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5 sm:h-3 sm:w-3" />{req.chef_count}</span>
@@ -324,7 +324,7 @@ export default function ChefsTableAdmin() {
                               <div key={i} className="rounded-xl border border-border/30 bg-background p-3">
                                 <div className="flex items-center gap-1.5 mb-1">
                                   <item.icon className="h-3 w-3 text-muted-foreground" />
-                                  <span className="text-[12px] text-muted-foreground font-medium uppercase tracking-wider">{item.label}</span>
+                                  <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">{item.label}</span>
                                 </div>
                                 <p className="text-sm font-bold">{item.value}</p>
                               </div>
@@ -332,13 +332,13 @@ export default function ChefsTableAdmin() {
                           </div>
                           {req.product_description && (
                             <div className="rounded-xl border border-border/30 bg-background p-4">
-                              <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "وصف المنتج" : "Product Description"}</p>
+                              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "وصف المنتج" : "Product Description"}</p>
                               <p className="text-sm leading-relaxed whitespace-pre-line">{req.product_description}</p>
                             </div>
                           )}
                           {req.product_images && (req.product_images as string[]).length > 0 && (
                             <div>
-                              <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
                                 <Image className="h-3 w-3" />{isAr ? "صور المنتج" : "Product Images"} ({(req.product_images as string[]).length})
                               </p>
                               <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
@@ -352,19 +352,19 @@ export default function ChefsTableAdmin() {
                           )}
                           {req.special_requirements && (
                             <div className="rounded-xl border border-chart-4/20 bg-chart-4/5 p-4">
-                              <p className="text-[12px] font-bold text-chart-4 uppercase tracking-wider mb-2">{isAr ? "متطلبات خاصة" : "Special Requirements"}</p>
+                              <p className="text-xs font-bold text-chart-4 uppercase tracking-wider mb-2">{isAr ? "متطلبات خاصة" : "Special Requirements"}</p>
                               <p className="text-sm">{req.special_requirements}</p>
                             </div>
                           )}
                           {req.preferred_venue && (
                             <div className="rounded-xl border border-border/30 bg-background p-4">
-                              <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "المكان المفضل" : "Preferred Venue"}</p>
+                              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">{isAr ? "المكان المفضل" : "Preferred Venue"}</p>
                               <p className="text-sm font-medium">{isAr && req.preferred_venue_ar ? req.preferred_venue_ar : req.preferred_venue}</p>
                             </div>
                           )}
                           {req.rejection_reason && (
                             <div className="rounded-xl bg-destructive/5 border border-destructive/20 p-4">
-                              <p className="text-[12px] font-bold text-destructive uppercase tracking-wider mb-2">{isAr ? "سبب الرفض" : "Rejection Reason"}</p>
+                              <p className="text-xs font-bold text-destructive uppercase tracking-wider mb-2">{isAr ? "سبب الرفض" : "Rejection Reason"}</p>
                               <p className="text-sm text-destructive/80">{req.rejection_reason}</p>
                             </div>
                           )}
@@ -395,7 +395,7 @@ export default function ChefsTableAdmin() {
                   <SelectItem value="completed">{isAr ? "مكتمل" : "Completed"}</SelectItem>
                 </SelectContent>
               </Select>
-              <span className="text-[12px] sm:text-xs text-muted-foreground ms-auto">
+              <span className="text-xs sm:text-xs text-muted-foreground ms-auto">
                 {filteredSessions.length} {isAr ? "جلسة" : "sessions"}
               </span>
             </div>
@@ -430,11 +430,11 @@ export default function ChefsTableAdmin() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-1.5">
                               <p className="font-bold text-xs truncate">{isAr && session.title_ar ? session.title_ar : session.title}</p>
-                              <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[12px] font-bold uppercase border ${sc.color}`}>
+                              <span className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-bold uppercase border ${sc.color}`}>
                                 {session.status.replace("_", " ")}
                               </span>
                             </div>
-                            <div className="flex items-center gap-2 mt-1 text-[12px] text-muted-foreground">
+                            <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
                               <span className="flex items-center gap-0.5"><Package className="h-2.5 w-2.5" />{isAr && session.product_name_ar ? session.product_name_ar : session.product_name}</span>
                               <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{session.max_chefs}</span>
                               <span>{session.session_date ? format(new Date(session.session_date), "MMM d") : "—"}</span>
@@ -462,8 +462,8 @@ export default function ChefsTableAdmin() {
                         <Checkbox checked={bulkSessions.isAllSelected} onCheckedChange={bulkSessions.toggleAll} />
                       </TableHead>
                       <SortableTableHead column="title" label={isAr ? "الجلسة" : "Session"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
-                      <TableHead className="font-bold text-[12px] uppercase tracking-wider">{isAr ? "المنتج" : "Product"}</TableHead>
-                      <TableHead className="font-bold text-[12px] uppercase tracking-wider">{isAr ? "النوع" : "Type"}</TableHead>
+                      <TableHead className="font-bold text-xs uppercase tracking-wider">{isAr ? "المنتج" : "Product"}</TableHead>
+                      <TableHead className="font-bold text-xs uppercase tracking-wider">{isAr ? "النوع" : "Type"}</TableHead>
                       <SortableTableHead column="status" label={isAr ? "الحالة" : "Status"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
                       <SortableTableHead column="session_date" label={isAr ? "التاريخ" : "Date"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
                       <SortableTableHead column="max_chefs" label={isAr ? "الطهاة" : "Chefs"} sortColumn={sesSortCol} sortDirection={sesSortDir} onSort={sesToggleSort} />
@@ -487,7 +487,7 @@ export default function ChefsTableAdmin() {
                             <TableCell>
                               <div>
                                 <p className="font-bold text-sm">{isAr && session.title_ar ? session.title_ar : session.title}</p>
-                                {session.session_number && <p className="text-[12px] text-muted-foreground font-mono">#{session.session_number}</p>}
+                                {session.session_number && <p className="text-xs text-muted-foreground font-mono">#{session.session_number}</p>}
                               </div>
                             </TableCell>
                             <TableCell>
@@ -497,12 +497,12 @@ export default function ChefsTableAdmin() {
                               </div>
                             </TableCell>
                             <TableCell>
-                              <Badge variant="secondary" className="text-[12px]">
+                              <Badge variant="secondary" className="text-xs">
                                 {experienceLabels[session.experience_type]?.[isAr ? "ar" : "en"] || session.experience_type}
                               </Badge>
                             </TableCell>
                             <TableCell>
-                              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[12px] font-bold uppercase tracking-wider border ${sc.color}`}>
+                              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider border ${sc.color}`}>
                                 {session.status.replace("_", " ")}
                               </span>
                             </TableCell>

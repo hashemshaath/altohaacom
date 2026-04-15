@@ -46,7 +46,7 @@ export function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolea
             <h3 className="text-sm font-bold text-foreground">
               {format(new Date(monthKey + "-01"), "MMMM yyyy", isAr ? { locale: arLocale } : undefined)}
             </h3>
-            <Badge variant="outline" className="text-[12px] tabular-nums">{monthEvents.length}</Badge>
+            <Badge variant="outline" className="text-xs tabular-nums">{monthEvents.length}</Badge>
             <div className="flex-1 h-px bg-border/30" />
           </div>
           <div className="space-y-2.5">
@@ -61,7 +61,7 @@ export function ListView({ events, isAr }: { events: GlobalEvent[]; isAr: boolea
             <h3 className="text-sm font-bold text-muted-foreground">
               {isAr ? "فعاليات سابقة" : "Past Events"}
             </h3>
-            <Badge variant="outline" className="text-[12px] tabular-nums">{pastEvents.length}</Badge>
+            <Badge variant="outline" className="text-xs tabular-nums">{pastEvents.length}</Badge>
             <div className="flex-1 h-px bg-border/30" />
           </div>
           <div className="space-y-2 opacity-60">
@@ -104,7 +104,7 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
           )}
           {!countdown.past && (
             <div className={cn(
-              "absolute top-1.5 end-1.5 rounded-md px-1.5 py-0.5 text-[12px] font-bold shadow-sm",
+              "absolute top-1.5 end-1.5 rounded-md px-1.5 py-0.5 text-xs font-bold shadow-sm",
               countdown.urgent ? "bg-destructive text-destructive-foreground" : "bg-background/90 text-foreground backdrop-blur-sm"
             )}>
               <Timer className="h-2.5 w-2.5 inline me-0.5" />{countdown.text}
@@ -114,15 +114,15 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
         <div className="flex-1 min-w-0 p-3 sm:p-4 flex flex-col justify-between">
           <div>
             <div className="flex items-center gap-1.5 flex-wrap mb-1.5">
-              <Badge variant="outline" className={cn("text-[12px] px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
+              <Badge variant="outline" className={cn("text-xs px-1.5 py-0 border gap-0.5", colors.bg, colors.text, colors.border)}>
                 <IconComp className="h-2.5 w-2.5" />
                 {isAr ? label?.ar : label?.en}
               </Badge>
               {event.is_recurring && (
-                <Badge variant="outline" className="text-[12px] px-1 py-0">{isAr ? "سنوي" : "Annual"}</Badge>
+                <Badge variant="outline" className="text-xs px-1 py-0">{isAr ? "سنوي" : "Annual"}</Badge>
               )}
               {event.status && event.status !== "upcoming" && (
-                <Badge variant="secondary" className="text-[12px] px-1 py-0 capitalize">{(() => {
+                <Badge variant="secondary" className="text-xs px-1 py-0 capitalize">{(() => {
                   const sl: Record<string, string> = { completed: "مكتملة", ongoing: "جارية", cancelled: "ملغاة", postponed: "مؤجلة", past: "سابقة" };
                   return isAr ? (sl[event.status] || event.status) : event.status;
                 })()}</Badge>
@@ -163,7 +163,7 @@ function ListEventCard({ event, isAr }: { event: GlobalEvent; isAr: boolean }) {
           <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/15">
             <EventActions event={event} isAr={isAr} />
             {event.link && (
-              <span className="text-[12px] text-primary font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
+              <span className="text-xs text-primary font-medium flex items-center gap-1 group-hover:gap-1.5 transition-all">
                 {isAr ? "عرض التفاصيل" : "View Details"}
                 <ArrowRight className="h-3 w-3" />
               </span>

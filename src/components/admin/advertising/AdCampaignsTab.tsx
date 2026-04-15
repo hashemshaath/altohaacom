@@ -68,7 +68,7 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
               </div>
               <div>
                 <p className="text-lg font-bold leading-none">{s.value}</p>
-                <p className="text-[12px] text-muted-foreground mt-0.5">{s.label}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -84,7 +84,7 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm">{isAr ? "الحملات الإعلانية" : "Ad Campaigns"}</CardTitle>
-            <Badge variant="secondary" className="text-[12px]">{campaigns.length}</Badge>
+            <Badge variant="secondary" className="text-xs">{campaigns.length}</Badge>
           </div>
         </CardHeader>
         <CardContent>
@@ -119,10 +119,10 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
                         </div>
                       </TableCell>
                       <TableCell className="font-medium text-xs">{isAr ? c.name_ar || c.name : c.name}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[12px]">{c.billing_model}</Badge></TableCell>
+                      <TableCell><Badge variant="outline" className="text-xs">{c.billing_model}</Badge></TableCell>
                       <TableCell>
                         <div className="space-y-1 min-w-[120px]">
-                          <div className="flex justify-between text-[12px]">
+                          <div className="flex justify-between text-xs">
                             <span className="font-mono">{spent.toLocaleString()} / {budget.toLocaleString()}</span>
                             <span className="text-muted-foreground">{pct}%</span>
                           </div>
@@ -130,7 +130,7 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <div className="text-[12px] space-y-0.5">
+                        <div className="text-xs space-y-0.5">
                           <p>{(c.total_impressions || 0).toLocaleString()} {isAr ? "مشاهدة" : "imp"}</p>
                           <p>{(c.total_clicks || 0).toLocaleString()} {isAr ? "نقرة" : "clicks"} · CTR {ctr}%</p>
                         </div>
@@ -153,7 +153,7 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
                               <Button size="sm" variant="ghost" className="h-7 rounded-xl" onClick={() => onApprove(c.id, "paused")}>
                                 <Pause className="h-3.5 w-3.5" />
                               </Button>
-                              <Button size="sm" variant="outline" className="h-7 rounded-xl text-[12px]" onClick={() => onInvoice(c)} disabled={invoicePending}>
+                              <Button size="sm" variant="outline" className="h-7 rounded-xl text-xs" onClick={() => onInvoice(c)} disabled={invoicePending}>
                                 <DollarSign className="h-3 w-3 me-0.5" />{isAr ? "فوترة" : "Invoice"}
                               </Button>
                             </>
@@ -163,7 +163,7 @@ export const AdCampaignsTab = memo(function AdCampaignsTab({
                               <Button size="sm" variant="ghost" className="h-7 rounded-xl" onClick={() => onApprove(c.id, "active")}>
                                 <Play className="h-3.5 w-3.5" />
                               </Button>
-                              <Button size="sm" variant="outline" className="h-7 rounded-xl text-[12px]" onClick={() => onInvoice(c)} disabled={invoicePending}>
+                              <Button size="sm" variant="outline" className="h-7 rounded-xl text-xs" onClick={() => onInvoice(c)} disabled={invoicePending}>
                                 <DollarSign className="h-3 w-3 me-0.5" />{isAr ? "فوترة" : "Invoice"}
                               </Button>
                             </>

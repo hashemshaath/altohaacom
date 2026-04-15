@@ -114,7 +114,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
             {isAr ? "مسيرتي المهنية" : "My Career"}
           </CardTitle>
           {data.rank && (
-            <Badge variant="outline" className="text-[10px] gap-1 font-bold">
+            <Badge variant="outline" className="text-[0.625rem] gap-1 font-bold">
               <Crown className="h-2.5 w-2.5 text-chart-4" />
               #{data.rank}
             </Badge>
@@ -132,7 +132,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
                 <span className={cn("text-sm font-bold", career.color)}>{career.title}</span>
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                <Badge variant="secondary" className="text-[0.625rem] px-1.5 py-0">
                   {isAr ? `المستوى ${career.level}` : `Lvl ${career.level}`}
                 </Badge>
               </div>
@@ -144,7 +144,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
                     style={{ width: `${Math.min(progressInLevel, 100)}%` }}
                   />
                 </div>
-                <span className="text-[10px] font-bold tabular-nums">{data.score}/100</span>
+                <span className="text-[0.625rem] font-bold tabular-nums">{data.score}/100</span>
               </div>
             </div>
           </div>
@@ -158,7 +158,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
               <div key={m.label} className="flex flex-col items-center gap-1 p-2 rounded-xl bg-muted/30 border border-border/20 hover:bg-muted/50 transition-all">
                 <Icon className={cn("h-3.5 w-3.5", m.color)} />
                 <span className="text-sm font-bold tabular-nums"><AnimatedCounter value={m.value} /></span>
-                <span className="text-[10px] text-muted-foreground uppercase tracking-wide font-semibold leading-tight text-center">{m.label}</span>
+                <span className="text-[0.625rem] text-muted-foreground uppercase tracking-wide font-semibold leading-tight text-center">{m.label}</span>
               </div>
             );
           })}
@@ -169,24 +169,24 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
           {data.experience > 0 && (
             <div className="flex-1 flex items-center gap-1.5 bg-accent/10 rounded-lg px-2 py-1.5 border border-accent/10">
               <ChefHat className="h-3 w-3 text-accent-foreground/60" />
-              <span className="text-[10px] font-bold">{data.experience} {isAr ? "سنة" : "yrs"}</span>
+              <span className="text-[0.625rem] font-bold">{data.experience} {isAr ? "سنة" : "yrs"}</span>
             </div>
           )}
           <div className="flex-1 flex items-center gap-1.5 bg-chart-4/10 rounded-lg px-2 py-1.5 border border-chart-4/10">
             <Star className="h-3 w-3 text-chart-4" />
-            <span className="text-[10px] font-bold"><AnimatedCounter value={data.points} /> {isAr ? "نقطة" : "pts"}</span>
+            <span className="text-[0.625rem] font-bold"><AnimatedCounter value={data.points} /> {isAr ? "نقطة" : "pts"}</span>
           </div>
           {data.recipes > 0 && (
             <div className="flex-1 flex items-center gap-1.5 bg-chart-2/10 rounded-lg px-2 py-1.5 border border-chart-2/10">
               <Target className="h-3 w-3 text-chart-2" />
-              <span className="text-[10px] font-bold">{data.recipes} {isAr ? "وصفة" : "recipes"}</span>
+              <span className="text-[0.625rem] font-bold">{data.recipes} {isAr ? "وصفة" : "recipes"}</span>
             </div>
           )}
         </div>
 
         {/* CTA */}
         <Link to="/rankings">
-          <Button variant="ghost" size="sm" className="w-full h-7 gap-1.5 text-[11px] font-bold text-muted-foreground hover:text-primary">
+          <Button variant="ghost" size="sm" className="w-full h-7 gap-1.5 text-[0.6875rem] font-bold text-muted-foreground hover:text-primary">
             {isAr ? "عرض التصنيف العام" : "View Leaderboard"}
             <ArrowRight className="h-3 w-3 rtl:rotate-180" />
           </Button>

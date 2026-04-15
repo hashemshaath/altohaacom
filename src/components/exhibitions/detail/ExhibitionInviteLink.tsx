@@ -60,7 +60,7 @@ export const ExhibitionInviteLink = memo(forwardRef<HTMLDivElement, Props>(funct
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold">{t("Invite Friends", "دعوة أصدقاء")}</p>
-            <p className="text-[12px] text-muted-foreground">{t("Create a personal invite link", "أنشئ رابط دعوة شخصي")}</p>
+            <p className="text-xs text-muted-foreground">{t("Create a personal invite link", "أنشئ رابط دعوة شخصي")}</p>
           </div>
         </div>
 
@@ -77,7 +77,7 @@ export const ExhibitionInviteLink = memo(forwardRef<HTMLDivElement, Props>(funct
           </Button>
         ) : (
           <div className="mt-3 flex gap-2">
-            <Input value={inviteUrl} readOnly className="h-9 text-[12px] rounded-xl bg-muted/50 flex-1" />
+            <Input value={inviteUrl} readOnly className="h-9 text-xs rounded-xl bg-muted/50 flex-1" />
             <Button size="sm" variant="outline" className="h-9 rounded-xl shrink-0" onClick={copyUrl}>
               {copied ? <Check className="h-3.5 w-3.5 text-chart-3" /> : <Copy className="h-3.5 w-3.5" />}
             </Button>

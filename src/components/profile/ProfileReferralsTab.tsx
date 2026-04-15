@@ -103,7 +103,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
                 ) : (
                   <AnimatedCounter value={typeof s.value === "number" ? s.value : parseInt(String(s.value)) || 0} className="text-xl" />
                 )}
-                <p className="text-[12px] uppercase tracking-wider text-muted-foreground">{s.label}</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -134,7 +134,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="text-[12px] text-muted-foreground mt-2.5 leading-relaxed">
+              <p className="text-xs text-muted-foreground mt-2.5 leading-relaxed">
                 {isAr
                   ? "شارك هذا الكود مع أصدقائك ليستخدموه أثناء التسجيل"
                   : "Share this code with friends to use during registration"}
@@ -254,13 +254,13 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
                   {currentIcon}
                 </div>
                 <div className="flex-1">
-                  <p className="text-[12px] uppercase tracking-widest text-muted-foreground">
+                  <p className="text-xs uppercase tracking-widest text-muted-foreground">
                     {isAr ? "مستواك" : "Your Level"}
                   </p>
                   <p className="font-semibold">{currentLevelName}</p>
                 </div>
                 {nextMilestone && (
-                  <Badge variant="outline" className="text-[12px] gap-1">
+                  <Badge variant="outline" className="text-xs gap-1">
                     <Sparkles className="h-2.5 w-2.5" />
                     {nextMilestone.required_referrals - totalConversions} {isAr ? "متبقية" : "to go"}
                   </Badge>
@@ -275,7 +275,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
                   <div className="relative">
                     <Progress value={progress} className="h-3" />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-[12px] font-bold text-primary-foreground drop-shadow-sm">{Math.round(progress)}%</span>
+                      <span className="text-xs font-bold text-primary-foreground drop-shadow-sm">{Math.round(progress)}%</span>
                     </div>
                   </div>
                 </div>
@@ -292,7 +292,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
             <CardTitle className="text-sm flex items-center gap-2">
               <Clock className="h-4 w-4 text-muted-foreground" />
               {isAr ? "آخر الدعوات" : "Recent Invitations"}
-              <Badge variant="secondary" className="text-[12px] ms-auto">{invitations.length}</Badge>
+              <Badge variant="secondary" className="text-xs ms-auto">{invitations.length}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
@@ -310,11 +310,11 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{inv.invitee_email || inv.invitee_phone || (isAr ? "رابط" : "Link share")}</p>
-                    <p className="text-[12px] text-muted-foreground">
+                    <p className="text-xs text-muted-foreground">
                       {inv.channel} · {new Date(inv.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric" })}
                     </p>
                   </div>
-                  <Badge variant={inv.status === "converted" ? "default" : "secondary"} className="text-[12px] shrink-0">
+                  <Badge variant={inv.status === "converted" ? "default" : "secondary"} className="text-xs shrink-0">
                     {inv.status === "converted" ? (isAr ? "تم" : "Done") :
                      inv.status === "clicked" ? (isAr ? "نقر" : "Clicked") :
                      (isAr ? "مرسل" : "Sent")}
@@ -339,7 +339,7 @@ export const ProfileReferralsTab = memo(function ProfileReferralsTab({ userId }:
                 return (
                   <div key={m.id} className={`text-center rounded-xl p-2.5 border transition-all duration-200 ${achieved ? "border-chart-2/30 bg-chart-2/5 shadow-sm" : totalConversions >= m.required_referrals ? "border-primary/20 bg-primary/5" : "opacity-40"}`}>
                     <span className="text-xl block mb-0.5">{m.badge_icon}</span>
-                    <p className="text-[12px] font-medium leading-tight">{isAr ? m.name_ar : m.name}</p>
+                    <p className="text-xs font-medium leading-tight">{isAr ? m.name_ar : m.name}</p>
                     {achieved && <CheckCircle2 className="h-2.5 w-2.5 text-chart-2 mx-auto mt-0.5" />}
                   </div>
                 );

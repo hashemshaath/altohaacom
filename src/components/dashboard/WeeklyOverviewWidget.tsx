@@ -70,8 +70,8 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
             <div key={s.labelEn} className="flex flex-col items-center gap-1 rounded-xl bg-muted/40 p-3 text-center">
               <Icon className="h-4 w-4 text-primary" />
               <AnimatedCounter value={s.value} className="text-lg font-bold" />
-              <span className="text-[12px] text-muted-foreground">{isAr ? s.labelAr : s.labelEn}</span>
-              <div className={`flex items-center gap-0.5 text-[12px] font-bold ${trendColor}`}>
+              <span className="text-xs text-muted-foreground">{isAr ? s.labelAr : s.labelEn}</span>
+              <div className={`flex items-center gap-0.5 text-xs font-bold ${trendColor}`}>
                 <TrendIcon className="h-2.5 w-2.5" />
                 {delta > 0 ? `+${delta}` : delta}
               </div>

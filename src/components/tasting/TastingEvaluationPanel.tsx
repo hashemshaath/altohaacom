@@ -192,7 +192,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
               <div className="text-center">
                 <span className="text-lg font-bold text-primary">{val.score ?? 0}</span>
                 {crit.max_score <= 6 && (
-                  <p className="text-[12px] text-muted-foreground">{renderScaleLabel(val.score ?? 0)}</p>
+                  <p className="text-xs text-muted-foreground">{renderScaleLabel(val.score ?? 0)}</p>
                 )}
               </div>
               <span className="text-muted-foreground">{crit.max_score}</span>
@@ -296,7 +296,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
                           <TabsTrigger key={stageKey} value={stageKey} className="gap-1.5">
                             <Icon className={`h-3.5 w-3.5 ${cfg.color}`} />
                             {isAr ? cfg.ar : cfg.en}
-                            <Badge variant="secondary" className="text-[12px] h-4 px-1">{stageCriteria.length}</Badge>
+                            <Badge variant="secondary" className="text-xs h-4 px-1">{stageCriteria.length}</Badge>
                           </TabsTrigger>
                         );
                       })}

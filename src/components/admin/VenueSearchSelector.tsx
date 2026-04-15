@@ -89,7 +89,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
           )}
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold truncate">{isAr && value.nameAr ? value.nameAr : value.name}</p>
-            <div className="flex items-center gap-3 text-[12px] text-muted-foreground mt-0.5">
+            <div className="flex items-center gap-3 text-xs text-muted-foreground mt-0.5">
               {value.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{value.city}</span>}
               {value.country && <span className="flex items-center gap-0.5"><Globe className="h-2.5 w-2.5" />{value.country}</span>}
               {value.capacity && <span className="flex items-center gap-0.5"><Users className="h-2.5 w-2.5" />{value.capacity.toLocaleString()}</span>}
@@ -97,7 +97,7 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
           </div>
           {!disabled && (
             <div className="flex gap-1 shrink-0">
-              <Button variant="outline" size="sm" className="h-7 text-[12px] rounded-lg gap-1" onClick={() => { setShowResults(true); setSearch(""); }}>
+              <Button variant="outline" size="sm" className="h-7 text-xs rounded-lg gap-1" onClick={() => { setShowResults(true); setSearch(""); }}>
                 <Search className="h-3 w-3" />{t("Change", "تغيير")}
               </Button>
               <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg text-destructive hover:text-destructive" onClick={() => onChange(null)}>
@@ -150,9 +150,9 @@ export const VenueSearchSelector = memo(function VenueSearchSelector({
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">
                       {isAr && v.name_ar ? v.name_ar : v.name}
-                      {v.is_verified && <Badge variant="secondary" className="ms-1.5 text-[12px] h-3.5 px-1">✓</Badge>}
+                      {v.is_verified && <Badge variant="secondary" className="ms-1.5 text-xs h-3.5 px-1">✓</Badge>}
                     </p>
-                    <p className="text-[12px] text-muted-foreground truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       {[v.city, v.country].filter(Boolean).join(", ")}
                       {v.capacity ? ` · ${v.capacity.toLocaleString()} ${t("capacity", "سعة")}` : ""}
                     </p>
@@ -238,22 +238,22 @@ function InlineCreateVenueForm({ isAr, initialSearch, onCreated, onCancel }: {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <div><Label className="text-[12px]">{t("Name (EN)", "الاسم (EN)")} *</Label><Input className="h-8 text-xs" value={form.name} onChange={e => update("name", e.target.value)} /></div>
-        <div><Label className="text-[12px]">{t("Name (AR)", "الاسم (AR)")}</Label><Input className="h-8 text-xs" value={form.name_ar} onChange={e => update("name_ar", e.target.value)} dir="rtl" /></div>
+        <div><Label className="text-xs">{t("Name (EN)", "الاسم (EN)")} *</Label><Input className="h-8 text-xs" value={form.name} onChange={e => update("name", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Name (AR)", "الاسم (AR)")}</Label><Input className="h-8 text-xs" value={form.name_ar} onChange={e => update("name_ar", e.target.value)} dir="rtl" /></div>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
-        <div><Label className="text-[12px]">{t("City", "المدينة")}</Label><Input className="h-8 text-xs" value={form.city} onChange={e => update("city", e.target.value)} /></div>
-        <div><Label className="text-[12px]">{t("Country", "الدولة")}</Label><Input className="h-8 text-xs" value={form.country} onChange={e => update("country", e.target.value)} /></div>
-        <div><Label className="text-[12px]">{t("Capacity", "السعة")}</Label><Input className="h-8 text-xs" type="number" value={form.capacity} onChange={e => update("capacity", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("City", "المدينة")}</Label><Input className="h-8 text-xs" value={form.city} onChange={e => update("city", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Country", "الدولة")}</Label><Input className="h-8 text-xs" value={form.country} onChange={e => update("country", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Capacity", "السعة")}</Label><Input className="h-8 text-xs" type="number" value={form.capacity} onChange={e => update("capacity", e.target.value)} /></div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        <div><Label className="text-[12px]">{t("Address", "العنوان")}</Label><Input className="h-8 text-xs" value={form.address} onChange={e => update("address", e.target.value)} /></div>
-        <div><Label className="text-[12px]">{t("Map URL", "رابط الخريطة")}</Label><Input className="h-8 text-xs" value={form.map_url} onChange={e => update("map_url", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Address", "العنوان")}</Label><Input className="h-8 text-xs" value={form.address} onChange={e => update("address", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Map URL", "رابط الخريطة")}</Label><Input className="h-8 text-xs" value={form.map_url} onChange={e => update("map_url", e.target.value)} /></div>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">
-        <div><Label className="text-[12px]">{t("Phone", "الهاتف")}</Label><Input className="h-8 text-xs" value={form.phone} onChange={e => update("phone", e.target.value)} /></div>
-        <div><Label className="text-[12px]">{t("Email", "البريد")}</Label><Input className="h-8 text-xs" value={form.email} onChange={e => update("email", e.target.value)} /></div>
-        <div><Label className="text-[12px]">{t("Website", "الموقع")}</Label><Input className="h-8 text-xs" value={form.website} onChange={e => update("website", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Phone", "الهاتف")}</Label><Input className="h-8 text-xs" value={form.phone} onChange={e => update("phone", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Email", "البريد")}</Label><Input className="h-8 text-xs" value={form.email} onChange={e => update("email", e.target.value)} /></div>
+        <div><Label className="text-xs">{t("Website", "الموقع")}</Label><Input className="h-8 text-xs" value={form.website} onChange={e => update("website", e.target.value)} /></div>
       </div>
 
       <div className="flex gap-2 pt-1">

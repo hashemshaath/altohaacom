@@ -82,7 +82,7 @@ export const SocialMediaSection = memo(function SocialMediaSection({ form, updat
                 aria-label={isAr ? labelAr : label}
               />
               {form[key] && (
-                <span className={`absolute end-3 top-1/2 -translate-y-1/2 text-[12px] font-medium ${color} opacity-60`}>
+                <span className={`absolute end-3 top-1/2 -translate-y-1/2 text-xs font-medium ${color} opacity-60`}>
                   {isAr ? labelAr : label}
                 </span>
               )}

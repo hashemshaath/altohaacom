@@ -54,7 +54,7 @@ export const ChefsTableClients = memo(function ChefsTableClients({ isAr }: Props
               </div>
               <div className="text-center">
                 <p className="text-sm font-bold">{isAr ? client.name_ar : client.name}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">{isAr ? client.sector_ar : client.sector_en}</p>
+                <p className="text-[0.6875rem] text-muted-foreground mt-0.5">{isAr ? client.sector_ar : client.sector_en}</p>
               </div>
             </div>
           ))}

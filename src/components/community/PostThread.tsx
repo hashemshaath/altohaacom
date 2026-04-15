@@ -210,7 +210,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                     <div className="flex gap-3">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={reply.author_avatar || undefined} />
-                        <AvatarFallback className="bg-primary/10 text-primary text-[12px] font-bold">
+                        <AvatarFallback className="bg-primary/10 text-primary text-xs font-bold">
                           {(reply.author_name || "C")[0].toUpperCase()}
                         </AvatarFallback>
                       </Avatar>

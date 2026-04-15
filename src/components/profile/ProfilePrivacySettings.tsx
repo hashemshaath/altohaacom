@@ -114,7 +114,7 @@ export const ProfilePrivacySettings = memo(function ProfilePrivacySettings({ pro
             </div>
             <div>
               <AnimatedCounter value={visibleCount} className="text-xl font-black tabular-nums" />
-              <p className="text-[12px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "ظاهر" : "Visible"}</p>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "ظاهر" : "Visible"}</p>
             </div>
           </CardContent>
         </Card>
@@ -125,7 +125,7 @@ export const ProfilePrivacySettings = memo(function ProfilePrivacySettings({ pro
             </div>
             <div>
               <AnimatedCounter value={hiddenCount} className="text-xl font-black tabular-nums" />
-              <p className="text-[12px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "مخفي" : "Hidden"}</p>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "مخفي" : "Hidden"}</p>
             </div>
           </CardContent>
         </Card>
@@ -136,7 +136,7 @@ export const ProfilePrivacySettings = memo(function ProfilePrivacySettings({ pro
             </div>
             <div>
               <p className="text-sm font-black capitalize">{profileVisibility === "public" ? (isAr ? "عام" : "Public") : profileVisibility === "followers_only" ? (isAr ? "متابعون" : "Followers") : (isAr ? "خاص" : "Private")}</p>
-              <p className="text-[12px] uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "الملف" : "Profile"}</p>
+              <p className="text-xs uppercase tracking-widest text-muted-foreground/60 font-bold">{isAr ? "الملف" : "Profile"}</p>
             </div>
           </CardContent>
         </Card>
@@ -176,7 +176,7 @@ export const ProfilePrivacySettings = memo(function ProfilePrivacySettings({ pro
                 </div>
                 <div className="text-center">
                   <p className="text-xs font-bold">{opt.label}</p>
-                  <p className="text-[12px] text-muted-foreground/60">{opt.desc}</p>
+                  <p className="text-xs text-muted-foreground/60">{opt.desc}</p>
                 </div>
                 {profileVisibility === opt.value && (
                   <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -213,13 +213,13 @@ export const ProfilePrivacySettings = memo(function ProfilePrivacySettings({ pro
                 <div>
                   <Label className="text-xs font-bold cursor-pointer">{isAr ? s.labelAr : s.label}</Label>
                   {(isAr ? s.descriptionAr : s.description) && (
-                    <p className="text-[12px] text-muted-foreground/60">{isAr ? s.descriptionAr : s.description}</p>
+                    <p className="text-xs text-muted-foreground/60">{isAr ? s.descriptionAr : s.description}</p>
                   )}
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
                 {visibility[s.key] && (
-                  <Badge variant="outline" className="text-[12px] px-2 py-0.5 text-chart-4 border-chart-4/20 rounded-xl">
+                  <Badge variant="outline" className="text-xs px-2 py-0.5 text-chart-4 border-chart-4/20 rounded-xl">
                     {isAr ? "ظاهر" : "Visible"}
                   </Badge>
                 )}

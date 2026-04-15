@@ -247,7 +247,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
             {/* Warranty badge on image */}
             {warrantyYears > 0 && (
               <div className="absolute top-3 end-3">
-                <Badge className="bg-chart-5/90 text-primary-foreground font-bold text-[10px] px-2 py-1 rounded-xl shadow-md gap-1 backdrop-blur-sm">
+                <Badge className="bg-chart-5/90 text-primary-foreground font-bold text-[0.625rem] px-2 py-1 rounded-xl shadow-md gap-1 backdrop-blur-sm">
                   <Shield className="h-3 w-3" />{isAr ? `${warrantyYears} سنوات ضمان` : `${warrantyYears}Y Warranty`}
                 </Badge>
               </div>
@@ -261,7 +261,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
               <div className="absolute bottom-3 start-3 flex items-center gap-1.5 bg-card/90 backdrop-blur-md rounded-xl px-3 py-1.5 border border-border/20 shadow-sm">
                 <Star className="h-4 w-4 fill-chart-4 text-chart-4" />
                 <span className="text-sm font-bold">{avgRating}</span>
-                <span className="text-[11px] text-muted-foreground">({totalReviews})</span>
+                <span className="text-[0.6875rem] text-muted-foreground">({totalReviews})</span>
               </div>
             )}
           </div>
@@ -276,7 +276,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/8">
                       <IconComp className={cn("h-4 w-4", badge.color_class || "text-primary")} />
                     </div>
-                    <span className="text-[10px] font-bold leading-tight text-foreground">{isAr ? (badge.label_ar || badge.label) : badge.label}</span>
+                    <span className="text-[0.625rem] font-bold leading-tight text-foreground">{isAr ? (badge.label_ar || badge.label) : badge.label}</span>
                   </div>
                 );
               })}
@@ -302,7 +302,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
           {/* Title Block */}
           <header className="space-y-2">
             {product.category && (
-              <Badge variant="outline" className="text-[11px] font-bold uppercase tracking-widest rounded-lg border-primary/20 bg-primary/5 text-primary/80">
+              <Badge variant="outline" className="text-[0.6875rem] font-bold uppercase tracking-widest rounded-lg border-primary/20 bg-primary/5 text-primary/80">
                 {product.category}
               </Badge>
             )}
@@ -337,20 +337,20 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                     <div className="flex items-baseline gap-2 flex-wrap">
                       <span className="text-3xl font-black text-primary tracking-tight tabular-nums">{priceWithVat.toLocaleString()}</span>
                       <span className="text-sm font-medium text-muted-foreground">{currencyLabel}</span>
-                      <Badge variant="outline" className="text-[10px] border-chart-5/30 text-chart-5 font-medium py-0">
+                      <Badge variant="outline" className="text-[0.625rem] border-chart-5/30 text-chart-5 font-medium py-0">
                         {isAr ? "شامل الضريبة 15%" : "15% VAT Included"}
                       </Badge>
                     </div>
                     {hasDiscount && (
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-muted-foreground/50 line-through tabular-nums">{originalPriceVat.toLocaleString()} {currencyLabel}</span>
-                        <Badge className="bg-destructive/10 text-destructive border-0 text-[10px] font-bold gap-0.5">
+                        <Badge className="bg-destructive/10 text-destructive border-0 text-[0.625rem] font-bold gap-0.5">
                           <Percent className="h-2.5 w-2.5" />−{discountPercent}%
                         </Badge>
-                        <span className="text-[10px] text-chart-5 font-bold">{isAr ? `توفير ${(originalPriceVat - priceWithVat).toLocaleString()} ${currencyLabel}` : `Save ${(originalPriceVat - priceWithVat).toLocaleString()} ${currencyLabel}`}</span>
+                        <span className="text-[0.625rem] text-chart-5 font-bold">{isAr ? `توفير ${(originalPriceVat - priceWithVat).toLocaleString()} ${currencyLabel}` : `Save ${(originalPriceVat - priceWithVat).toLocaleString()} ${currencyLabel}`}</span>
                       </div>
                     )}
-                    <p className="text-[11px] text-muted-foreground/60">
+                    <p className="text-[0.6875rem] text-muted-foreground/60">
                       {isAr ? `السعر بدون الضريبة: ${price.toLocaleString()} ${currencyLabel}` : `Price excl. VAT: ${price.toLocaleString()} ${currencyLabel}`}
                     </p>
                   </div>
@@ -362,10 +362,10 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                         <Sparkles className="h-4 w-4 text-primary" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[11px] font-bold text-primary">{isAr ? "سعر المنصة الحصري" : "Exclusive Platform Price"}</p>
+                        <p className="text-[0.6875rem] font-bold text-primary">{isAr ? "سعر المنصة الحصري" : "Exclusive Platform Price"}</p>
                         <p className="text-base font-black text-primary tabular-nums">{platformPriceVat.toLocaleString()} <span className="text-xs font-normal text-muted-foreground">{currencyLabel} {isAr ? "شامل الضريبة" : "incl. VAT"}</span></p>
                       </div>
-                      <Badge className="bg-primary text-primary-foreground text-[10px] font-bold shrink-0 rounded-lg">
+                      <Badge className="bg-primary text-primary-foreground text-[0.625rem] font-bold shrink-0 rounded-lg">
                         {isAr ? "وفر" : "Save"} {(priceWithVat - platformPriceVat).toLocaleString()} {currencyLabel}
                       </Badge>
                     </div>
@@ -404,7 +404,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
               </div>
               <div className="flex-1 min-w-0 relative">
                 <p className="text-xs font-bold text-foreground">{isAr ? "🎁 كود خصم حصري للمنصة" : "🎁 Platform Exclusive Code"}</p>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-[0.625rem] text-muted-foreground">
                   {isAr ? `خصم إضافي ${couponDiscountPct}% عند الشراء من المنصة` : `Extra ${couponDiscountPct}% off when buying through platform`}
                 </p>
               </div>
@@ -426,7 +426,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-bold text-foreground">{isAr ? `ضمان ${warrantyYears} سنوات شامل` : `${warrantyYears}-Year Comprehensive Warranty`}</h3>
-                      <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[10px] font-bold rounded-md gap-0.5 py-0">
+                      <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 text-[0.625rem] font-bold rounded-md gap-0.5 py-0">
                         <CheckCircle className="h-2.5 w-2.5" />{isAr ? "مفعّل" : "Active"}
                       </Badge>
                     </div>
@@ -439,7 +439,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                       ].map((item, idx) => (
                         <div key={idx} className="flex items-center gap-1.5">
                           <CheckCircle className="h-3 w-3 text-chart-5 shrink-0" />
-                          <span className="text-[11px] text-muted-foreground">{isAr ? item.ar : item.en}</span>
+                          <span className="text-[0.6875rem] text-muted-foreground">{isAr ? item.ar : item.en}</span>
                         </div>
                       ))}
                     </div>
@@ -462,12 +462,12 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
               </Badge>
             )}
             {isInStock && stockQty && stockQty <= 10 && (
-              <Badge variant="outline" className="border-destructive/30 text-destructive text-[10px] font-bold gap-1 animate-pulse rounded-lg">
+              <Badge variant="outline" className="border-destructive/30 text-destructive text-[0.625rem] font-bold gap-1 animate-pulse rounded-lg">
                 <Timer className="h-3 w-3" />{isAr ? `باقي ${stockQty} فقط — اطلب الآن!` : `Only ${stockQty} left — Order now!`}
               </Badge>
             )}
             {hasDiscount && (
-              <Badge variant="outline" className="border-chart-4/30 text-chart-4 text-[10px] font-bold gap-1 rounded-lg">
+              <Badge variant="outline" className="border-chart-4/30 text-chart-4 text-[0.625rem] font-bold gap-1 rounded-lg">
                 <Megaphone className="h-3 w-3" />{isAr ? "عرض محدود" : "Limited Offer"}
               </Badge>
             )}
@@ -500,8 +500,8 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
             ].map(({ icon: Icon, en, ar, sub_en, sub_ar }) => (
               <div key={en} className="flex flex-col items-center gap-1.5 rounded-xl bg-gradient-to-b from-card to-muted/10 border border-border/20 p-3 text-center shadow-sm">
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/8"><Icon className="h-4 w-4 text-primary" /></div>
-                <span className="text-[11px] font-semibold text-foreground">{isAr ? ar : en}</span>
-                <span className="text-[10px] text-muted-foreground leading-tight">{isAr ? sub_ar : sub_en}</span>
+                <span className="text-[0.6875rem] font-semibold text-foreground">{isAr ? ar : en}</span>
+                <span className="text-[0.625rem] text-muted-foreground leading-tight">{isAr ? sub_ar : sub_en}</span>
               </div>
             ))}
           </div>
@@ -521,7 +521,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
               )}>
                 <Icon className="h-3.5 w-3.5" />{isAr ? tab.ar : tab.en}
                 {tab.count !== undefined && tab.count > 0 && (
-                  <span className={cn("text-[10px] rounded-full px-1.5 py-0.5 font-bold", isActive ? "bg-primary/10 text-primary" : "bg-muted/60")}>{tab.count}</span>
+                  <span className={cn("text-[0.625rem] rounded-full px-1.5 py-0.5 font-bold", isActive ? "bg-primary/10 text-primary" : "bg-muted/60")}>{tab.count}</span>
                 )}
               </button>
             );
@@ -583,7 +583,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                         <span className="text-xs w-3 text-end font-medium text-muted-foreground">{stars}</span>
                         <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
                         <Progress value={pct} className="h-2 flex-1" />
-                        <span className="text-[10px] text-muted-foreground w-8 tabular-nums">{pct}%</span>
+                        <span className="text-[0.625rem] text-muted-foreground w-8 tabular-nums">{pct}%</span>
                       </div>
                     ))}
                   </div>
@@ -595,7 +595,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
               <Award className="h-5 w-5 text-chart-4 shrink-0" />
               <div>
                 <p className="text-sm font-bold text-foreground">{isAr ? "تقييمات الطهاة المحترفين" : "Professional Chef Reviews"}</p>
-                <p className="text-[10px] text-muted-foreground">{isAr ? "تقييمات موثقة من طهاة محترفين معتمدين" : "Verified reviews from certified professional chefs"}</p>
+                <p className="text-[0.625rem] text-muted-foreground">{isAr ? "تقييمات موثقة من طهاة محترفين معتمدين" : "Verified reviews from certified professional chefs"}</p>
               </div>
             </div>
 
@@ -609,7 +609,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                         <div className="flex-1 min-w-0 space-y-1.5">
                           <div className="flex items-center gap-2">
                             <div className="flex gap-0.5">{renderStars(review.rating, "h-3 w-3")}</div>
-                            <span className="text-[10px] text-muted-foreground">{new Date(review.created_at).toLocaleDateString()}</span>
+                            <span className="text-[0.625rem] text-muted-foreground">{new Date(review.created_at).toLocaleDateString()}</span>
                           </div>
                           {review.content && <p className="text-sm text-muted-foreground leading-relaxed">{review.content}</p>}
                           <Button variant="ghost" size="sm" className="h-7 text-xs gap-1 text-muted-foreground hover:text-primary rounded-lg px-2">
@@ -659,9 +659,9 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                           <p className="text-sm text-muted-foreground leading-relaxed">{isAr ? (item.answer_ar || item.answer) : item.answer}</p>
                           <div className="flex items-center gap-3 mt-2">
                             {(item.answered_by || item.answered_by_ar) && (
-                              <span className="text-[10px] text-muted-foreground/60">— {isAr ? (item.answered_by_ar || item.answered_by) : item.answered_by}</span>
+                              <span className="text-[0.625rem] text-muted-foreground/60">— {isAr ? (item.answered_by_ar || item.answered_by) : item.answered_by}</span>
                             )}
-                            <Button variant="ghost" size="sm" className="h-6 text-[10px] gap-1 text-muted-foreground rounded-lg px-2">
+                            <Button variant="ghost" size="sm" className="h-6 text-[0.625rem] gap-1 text-muted-foreground rounded-lg px-2">
                               <ThumbsUp className="h-2.5 w-2.5" />{item.helpful_count}
                             </Button>
                           </div>
@@ -721,8 +721,8 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
                     {rpPrice > 0 && (
                       <div className="flex items-baseline gap-1 mt-1.5">
                         <span className="text-sm font-bold text-primary tabular-nums">{rpPriceVat.toLocaleString()}</span>
-                        <span className="text-[10px] text-muted-foreground">{currencyLabel}</span>
-                        <span className="text-[10px] text-muted-foreground/60 ms-0.5">{isAr ? "شامل الضريبة" : "incl. VAT"}</span>
+                        <span className="text-[0.625rem] text-muted-foreground">{currencyLabel}</span>
+                        <span className="text-[0.625rem] text-muted-foreground/60 ms-0.5">{isAr ? "شامل الضريبة" : "incl. VAT"}</span>
                       </div>
                     )}
                   </CardContent>

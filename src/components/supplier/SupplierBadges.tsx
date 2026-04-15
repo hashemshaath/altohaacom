@@ -103,7 +103,7 @@ export const SupplierBadges = memo(function SupplierBadges({
           return (
             <Tooltip key={b.key}>
               <TooltipTrigger asChild>
-                <Badge className={`${b.className} gap-1 text-[12px] cursor-default`}>
+                <Badge className={`${b.className} gap-1 text-xs cursor-default`}>
                   <Icon className="h-3 w-3" />
                   {variant === "full" && b.label}
                 </Badge>

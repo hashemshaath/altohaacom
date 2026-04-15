@@ -259,8 +259,8 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
                       <div>
                         <p className="font-medium">{isAr ? f.nameAr : f.name}</p>
                         <div className="flex items-center gap-1.5 mt-0.5">
-                          <Badge variant="outline" className="text-[12px] px-1.5 py-0">{f.category}</Badge>
-                          <span className="text-[12px] text-muted-foreground">{f.code}</span>
+                          <Badge variant="outline" className="text-xs px-1.5 py-0">{f.category}</Badge>
+                          <span className="text-xs text-muted-foreground">{f.code}</span>
                         </div>
                       </div>
                     </td>
@@ -270,7 +270,7 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
                     <td className="text-center py-2.5 px-3 tabular-nums font-semibold"><AnimatedCounter value={f.total} /></td>
                     <td className="text-center py-2.5 px-3">
                       {f.blocked > 0 ? (
-                        <Badge variant="destructive" className="text-[12px] px-1.5 py-0">{f.blocked}</Badge>
+                        <Badge variant="destructive" className="text-xs px-1.5 py-0">{f.blocked}</Badge>
                       ) : (
                         <span className="text-muted-foreground/30">—</span>
                       )}

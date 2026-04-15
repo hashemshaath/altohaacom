@@ -187,7 +187,7 @@ export default function MentorshipMatch() {
                     <p className="text-xs text-muted-foreground">{match.mentor_profile.specialization}</p>
                   )}
                 </div>
-                {isMentor && <Badge variant="outline" className="ms-auto text-[12px]">{isAr ? "أنت" : "You"}</Badge>}
+                {isMentor && <Badge variant="outline" className="ms-auto text-xs">{isAr ? "أنت" : "You"}</Badge>}
               </div>
               <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50">
                 <Avatar className="h-12 w-12">
@@ -201,7 +201,7 @@ export default function MentorshipMatch() {
                     <p className="text-xs text-muted-foreground">{match.mentee_profile.specialization}</p>
                   )}
                 </div>
-                {!isMentor && <Badge variant="outline" className="ms-auto text-[12px]">{isAr ? "أنت" : "You"}</Badge>}
+                {!isMentor && <Badge variant="outline" className="ms-auto text-xs">{isAr ? "أنت" : "You"}</Badge>}
               </div>
             </div>
           </CardContent>

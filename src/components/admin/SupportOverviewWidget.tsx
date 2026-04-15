@@ -58,7 +58,7 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
             {isAr ? "نظرة عامة على الدعم" : "Support Overview"}
           </CardTitle>
           {data.urgent > 0 && (
-            <Badge variant="destructive" className="text-[12px]">{data.urgent} {isAr ? "عاجل" : "urgent"}</Badge>
+            <Badge variant="destructive" className="text-xs">{data.urgent} {isAr ? "عاجل" : "urgent"}</Badge>
           )}
         </div>
       </CardHeader>
@@ -73,18 +73,18 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
             <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
-                <span className="text-[12px] text-muted-foreground">{m.label}</span>
+                <span className="text-xs text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-sm font-bold">{m.value}</p>
-              {m.sub && <p className="text-[12px] text-muted-foreground">{m.sub}</p>}
+              {m.sub && <p className="text-xs text-muted-foreground">{m.sub}</p>}
             </div>
           ))}
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[12px] text-muted-foreground">{isAr ? "معدل الحل" : "Resolution Rate"}</span>
-            <span className={`text-[12px] font-medium ${data.resolutionRate >= 80 ? "text-chart-2" : data.resolutionRate >= 50 ? "text-chart-4" : "text-destructive"}`}>
+            <span className="text-xs text-muted-foreground">{isAr ? "معدل الحل" : "Resolution Rate"}</span>
+            <span className={`text-xs font-medium ${data.resolutionRate >= 80 ? "text-chart-2" : data.resolutionRate >= 50 ? "text-chart-4" : "text-destructive"}`}>
               {data.resolutionRate}%
               {data.resolutionRate >= 80 ? " ✓" : data.resolutionRate < 50 ? " ⚠" : ""}
             </span>
@@ -92,7 +92,7 @@ export const SupportOverviewWidget = memo(function SupportOverviewWidget() {
           <Progress value={data.resolutionRate} className="h-1.5" />
         </div>
 
-        <div className="flex flex-wrap gap-2 text-[12px]">
+        <div className="flex flex-wrap gap-2 text-xs">
           <span className="flex items-center gap-1 text-chart-3"><MessageSquare className="h-3 w-3" /> {data.totalSessions} {isAr ? "محادثة" : "chat sessions"}</span>
           {data.urgent > 0 && (
             <span className="flex items-center gap-1 text-destructive"><AlertTriangle className="h-3 w-3" /> {data.urgent} {isAr ? "عاجل/مرتفع" : "urgent/high"}</span>

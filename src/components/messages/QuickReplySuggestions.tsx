@@ -59,7 +59,7 @@ export const QuickReplySuggestions = memo(function QuickReplySuggestions({ lastM
           key={text}
           variant="outline"
           size="sm"
-          className="h-7 text-[12px] rounded-xl border-border/30 bg-muted/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30 shrink-0 transition-all active:scale-95"
+          className="h-7 text-xs rounded-xl border-border/30 bg-muted/20 hover:bg-primary/10 hover:text-primary hover:border-primary/30 shrink-0 transition-all active:scale-95"
           onClick={() => onSelect(text)}
           type="button"
         >

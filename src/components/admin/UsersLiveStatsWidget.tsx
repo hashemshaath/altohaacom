@@ -98,7 +98,7 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
         <CardTitle className="text-base flex items-center gap-2">
           <Users className="h-4 w-4 text-primary" />
           {isAr ? "إحصائيات المستخدمين المباشرة" : "Users Live Stats"}
-          <Badge variant="outline" className="ms-auto text-[12px]">
+          <Badge variant="outline" className="ms-auto text-xs">
             {data.pros} {isAr ? "محترف" : "Pro"} / {data.fans} {isAr ? "مستخدم عادي" : "Regular"}
           </Badge>
         </CardTitle>
@@ -110,7 +110,7 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
             <div key={i} className="bg-muted/50 rounded-xl p-3 text-center">
               <s.icon className={`h-4 w-4 mx-auto mb-1 ${s.color}`} />
               <div className="text-lg font-bold"><AnimatedCounter value={typeof s.value === "number" ? s.value : 0} /></div>
-              <div className="text-[12px] text-muted-foreground">{s.label}</div>
+              <div className="text-xs text-muted-foreground">{s.label}</div>
             </div>
           ))}
         </div>
@@ -159,18 +159,18 @@ export const UsersLiveStatsWidget = memo(function UsersLiveStatsWidget() {
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <Crown className="h-3 w-3 mx-auto mb-1 text-chart-4" />
             <div className="text-sm font-bold"><AnimatedCounter value={data.activeMemberships} /></div>
-            <div className="text-[12px] text-muted-foreground">{isAr ? "عضويات نشطة" : "Active Memberships"}</div>
+            <div className="text-xs text-muted-foreground">{isAr ? "عضويات نشطة" : "Active Memberships"}</div>
           </div>
           <div className="bg-muted/50 rounded-xl p-2 text-center">
             <UserCheck className="h-3 w-3 mx-auto mb-1 text-chart-2" />
             <div className="text-sm font-bold"><AnimatedCounter value={data.verified} /></div>
-            <div className="text-[12px] text-muted-foreground">{isAr ? "مستخدم موثق" : "Verified Users"}</div>
+            <div className="text-xs text-muted-foreground">{isAr ? "مستخدم موثق" : "Verified Users"}</div>
           </div>
           {data.topCountries.slice(0, 2).map(([code, count], i) => (
             <div key={i} className="bg-muted/50 rounded-xl p-2 text-center">
               <Globe className="h-3 w-3 mx-auto mb-1 text-primary" />
               <div className="text-sm font-bold"><AnimatedCounter value={count} /></div>
-              <div className="text-[12px] text-muted-foreground">{code}</div>
+              <div className="text-xs text-muted-foreground">{code}</div>
             </div>
           ))}
         </div>

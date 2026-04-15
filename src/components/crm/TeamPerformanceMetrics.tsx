@@ -103,7 +103,7 @@ export const TeamPerformanceMetrics = memo(function TeamPerformanceMetrics() {
                     <AvatarFallback className="text-xs">{agent.name[0]?.toUpperCase()}</AvatarFallback>
                   </Avatar>
                   {i < 3 && (
-                    <div className="absolute -top-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[12px] font-bold text-primary-foreground">
+                    <div className="absolute -top-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
                       {i + 1}
                     </div>
                   )}
@@ -111,21 +111,21 @@ export const TeamPerformanceMetrics = memo(function TeamPerformanceMetrics() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{agent.name}</p>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Ticket className="h-3 w-3" /> {agent.ticketsResolved}
                     </span>
-                    <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <MessageSquare className="h-3 w-3" /> {agent.chatsHandled}
                     </span>
                     {agent.avgResponseMinutes !== null && (
-                      <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" /> {agent.avgResponseMinutes}m
                       </span>
                     )}
                   </div>
                 </div>
                 {agent.avgRating !== null && (
-                  <Badge variant="outline" className="gap-1 text-[12px] bg-chart-5/10 text-chart-5">
+                  <Badge variant="outline" className="gap-1 text-xs bg-chart-5/10 text-chart-5">
                     <Star className="h-3 w-3" /> {agent.avgRating}
                   </Badge>
                 )}

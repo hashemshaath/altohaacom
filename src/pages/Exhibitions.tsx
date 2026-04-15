@@ -206,7 +206,7 @@ export default function Exhibitions() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </div>
-                <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-primary">
+                <span className="text-xs font-bold uppercase tracking-[0.15em] text-primary">
                   {isAr ? "فعاليات الطهي العالمية" : "Global Culinary Events"}
                 </span>
               </div>
@@ -386,14 +386,14 @@ export default function Exhibitions() {
         {/* Popular Cities Quick Filter */}
         {countries.length > 0 && (
           <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none -mx-2 px-2">
-            <span className="text-[12px] font-bold uppercase tracking-wider text-muted-foreground shrink-0">
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground shrink-0">
               {isAr ? "مدن شائعة:" : "Popular:"}
             </span>
             {countries.slice(0, 8).map(c => (
               <button
                 key={c}
                 onClick={() => setCountryFilter(countryFilter === c ? "all" : c)}
-                className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium border transition-all ${
+                className={`shrink-0 flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium border transition-all ${
                   countryFilter === c
                     ? "bg-primary text-primary-foreground border-primary shadow-sm"
                     : "bg-muted/30 text-muted-foreground border-border/40 hover:bg-muted/60 hover:text-foreground"
@@ -419,12 +419,12 @@ export default function Exhibitions() {
               <TabsTrigger
                 key={t.id}
                 value={t.id}
-                className="gap-1.5 rounded-xl px-4 py-2 text-[12px] font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
+                className="gap-1.5 rounded-xl px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md"
               >
                 {t.icon && <t.icon className="h-3.5 w-3.5" />}
                 {t.label}
                 {t.count != null && t.count > 0 && (
-                  <span className="ms-1 text-[12px] opacity-70">(<AnimatedCounter value={t.count} className="inline" />)</span>
+                  <span className="ms-1 text-xs opacity-70">(<AnimatedCounter value={t.count} className="inline" />)</span>
                 )}
               </TabsTrigger>
             ))}
@@ -499,7 +499,7 @@ export default function Exhibitions() {
                   <CardContent className="p-4 flex flex-col items-center text-center gap-1.5">
                     <stat.icon className={`h-5 w-5 ${stat.color} opacity-60`} />
                     <p className="text-2xl font-bold text-foreground sm:text-3xl"><AnimatedCounter value={Number(stat.value) || 0} className="inline" /></p>
-                    <p className="text-[12px] uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground font-medium">{stat.label}</p>
                   </CardContent>
                 </Card>
               ))}

@@ -533,7 +533,7 @@ export default function ChefsTableDetail() {
                       <Badge variant={
                         inv.status === "accepted" ? "default" :
                         inv.status === "declined" ? "destructive" : "secondary"
-                      } className="text-[12px] uppercase tracking-wider">
+                      } className="text-xs uppercase tracking-wider">
                         {inv.status === "pending" && <Clock className="h-3 w-3 me-1" />}
                         {inv.status === "accepted" && <Check className="h-3 w-3 me-1" />}
                         {inv.status}

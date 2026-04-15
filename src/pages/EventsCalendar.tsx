@@ -40,7 +40,7 @@ function AnimatedStat({ icon: Icon, value, label, accent }: { icon: LucideIcon; 
       </div>
       <div>
         <p className="text-2xl font-bold tabular-nums leading-none tracking-tight">{value}</p>
-        <p className="text-[11px] text-muted-foreground mt-0.5 font-medium">{label}</p>
+        <p className="text-[0.6875rem] text-muted-foreground mt-0.5 font-medium">{label}</p>
       </div>
     </div>
   );
@@ -163,7 +163,7 @@ export default function EventsCalendar() {
                 <div className="space-y-2">
                   <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/15 bg-primary/5 px-3 py-1 backdrop-blur-sm">
                     <Sparkles className="h-3 w-3 text-primary animate-pulse" />
-                    <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
+                    <span className="text-[0.6875rem] font-bold text-primary uppercase tracking-wider">
                       {isAr ? "تقويم تفاعلي" : "Interactive Calendar"}
                     </span>
                   </div>
@@ -230,7 +230,7 @@ export default function EventsCalendar() {
                     <SlidersHorizontal className="h-3.5 w-3.5" />
                     {isAr ? "تصفية" : "Filters"}
                     {activeFiltersCount > 0 && (
-                      <Badge variant="destructive" className="h-5 min-w-5 p-0 justify-center text-[10px] rounded-full">
+                      <Badge variant="destructive" className="h-5 min-w-5 p-0 justify-center text-[0.625rem] rounded-full">
                         {activeFiltersCount}
                       </Badge>
                     )}
@@ -268,7 +268,7 @@ export default function EventsCalendar() {
                       >
                         <IconComp className="h-3 w-3" />
                         {isAr ? label.ar : label.en}
-                        <span className="opacity-50 text-[10px] tabular-nums">({count})</span>
+                        <span className="opacity-50 text-[0.625rem] tabular-nums">({count})</span>
                       </Button>
                     );
                   })}
@@ -329,7 +329,7 @@ export default function EventsCalendar() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 text-[11px] ms-1 rounded-full px-3.5 font-bold border-primary/20 text-primary hover:bg-primary/5 active:scale-[0.98]"
+                    className="h-7 text-[0.6875rem] ms-1 rounded-full px-3.5 font-bold border-primary/20 text-primary hover:bg-primary/5 active:scale-[0.98]"
                     onClick={goToday}
                   >
                     {isAr ? "اليوم" : "Today"}
@@ -367,7 +367,7 @@ export default function EventsCalendar() {
           {!isLoading && viewMode !== "list" && (
             <div className="rounded-2xl border border-border/20 bg-muted/10 px-4 py-3">
               <div className="flex items-center flex-wrap gap-x-3 gap-y-2">
-                <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-widest me-1">
+                <span className="text-[0.6875rem] font-bold text-muted-foreground uppercase tracking-widest me-1">
                   {isAr ? "الأنواع" : "Types"}
                 </span>
                 {EVENT_TYPES.filter(t => (typeCounts[t] || 0) > 0).map(type => {
@@ -379,7 +379,7 @@ export default function EventsCalendar() {
                       key={type}
                       onClick={() => toggleType(type)}
                       className={cn(
-                        "flex items-center gap-1.5 text-[11px] transition-all rounded-full px-2.5 py-1 active:scale-[0.97]",
+                        "flex items-center gap-1.5 text-[0.6875rem] transition-all rounded-full px-2.5 py-1 active:scale-[0.97]",
                         isActive
                           ? "bg-primary/15 text-primary font-bold ring-1 ring-primary/20"
                           : "text-muted-foreground hover:text-foreground hover:bg-muted/30"
@@ -387,7 +387,7 @@ export default function EventsCalendar() {
                     >
                       <div className={cn("h-2 w-2 rounded-full ring-1 ring-inset ring-border/20", colors.dot)} />
                       {isAr ? label.ar : label.en}
-                      <span className="text-[10px] opacity-40 tabular-nums">{typeCounts[type]}</span>
+                      <span className="text-[0.625rem] opacity-40 tabular-nums">{typeCounts[type]}</span>
                     </button>
                   );
                 })}
@@ -401,8 +401,8 @@ export default function EventsCalendar() {
               { keys: "← →", label: isAr ? "تنقل" : "Navigate" },
               { keys: "T", label: isAr ? "اليوم" : "Today" },
             ].map(({ keys, label }) => (
-              <span key={keys} className="flex items-center gap-1.5 text-[11px] text-muted-foreground/40">
-                <kbd className="px-1.5 py-0.5 rounded-md bg-muted/40 border border-border/30 font-mono text-[10px]">{keys}</kbd>
+              <span key={keys} className="flex items-center gap-1.5 text-[0.6875rem] text-muted-foreground/40">
+                <kbd className="px-1.5 py-0.5 rounded-md bg-muted/40 border border-border/30 font-mono text-[0.625rem]">{keys}</kbd>
                 {label}
               </span>
             ))}

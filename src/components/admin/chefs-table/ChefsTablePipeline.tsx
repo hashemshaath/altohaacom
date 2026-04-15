@@ -64,7 +64,7 @@ export const ChefsTablePipeline = memo(function ChefsTablePipeline({ requests, s
   return (
     <Card className="border-border/40 overflow-hidden">
       <CardContent className="p-4">
-        <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider mb-4">
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">
           {isAr ? "مسار العمل" : "Workflow Pipeline"}
         </p>
         <div className="flex items-stretch gap-1">
@@ -73,7 +73,7 @@ export const ChefsTablePipeline = memo(function ChefsTablePipeline({ requests, s
               <div className={`flex-1 rounded-xl border p-3 ${stage.color} transition-all hover:scale-[1.02]`}>
                 <div className="flex items-center gap-2 mb-2">
                   <stage.icon className="h-4 w-4 shrink-0" />
-                  <span className="text-[12px] font-bold truncate">{stage.label}</span>
+                  <span className="text-xs font-bold truncate">{stage.label}</span>
                 </div>
                 <AnimatedCounter value={stage.count} className="text-2xl font-black tabular-nums" />
                 <div className="mt-2 h-1 rounded-full bg-background/50 overflow-hidden">

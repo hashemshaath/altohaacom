@@ -57,7 +57,7 @@ export const SEOScoreGauge = memo(function SEOScoreGauge({
               <span className={cn("text-3xl font-black tabular-nums", grade.color)}>
                 {score != null ? <AnimatedCounter value={s} /> : "—"}
               </span>
-              <span className="text-[12px] text-muted-foreground font-medium">/100</span>
+              <span className="text-xs text-muted-foreground font-medium">/100</span>
             </div>
           </div>
 
@@ -84,7 +84,7 @@ export const SEOScoreGauge = memo(function SEOScoreGauge({
                   <CheckCircle2 className="h-3 w-3 text-emerald-500" />
                   <span className="text-sm font-bold tabular-nums">{vitalsPass}/{vitalsTotal}</span>
                 </div>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "Web Vitals" : "CWV Pass"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "Web Vitals" : "CWV Pass"}</p>
               </div>
               <div className="text-center rounded-xl bg-muted/40 p-2.5">
                 <div className="flex items-center justify-center gap-1 mb-0.5">
@@ -95,7 +95,7 @@ export const SEOScoreGauge = memo(function SEOScoreGauge({
                   )}
                   <span className="text-sm font-bold tabular-nums">{indexedPages}/{totalPages}</span>
                 </div>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "مفهرسة" : "Indexed"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "مفهرسة" : "Indexed"}</p>
               </div>
               <div className="text-center rounded-xl bg-muted/40 p-2.5">
                 <div className="flex items-center justify-center gap-1 mb-0.5">
@@ -106,7 +106,7 @@ export const SEOScoreGauge = memo(function SEOScoreGauge({
                   )}
                   <span className="text-sm font-bold tabular-nums">{issueCount}</span>
                 </div>
-                <p className="text-[12px] text-muted-foreground">{isAr ? "مشاكل" : "Issues"}</p>
+                <p className="text-xs text-muted-foreground">{isAr ? "مشاكل" : "Issues"}</p>
               </div>
             </div>
           </div>

@@ -54,7 +54,7 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
             <Award className="h-4 w-4 text-chart-4" />
             {isAr ? "إصدار الشهادات" : "Certificate Issuance"}
           </CardTitle>
-          <Badge variant="outline" className="text-[12px]">{data.templateCount} {isAr ? "قالب" : "templates"}</Badge>
+          <Badge variant="outline" className="text-xs">{data.templateCount} {isAr ? "قالب" : "templates"}</Badge>
         </div>
       </CardHeader>
       <CardContent className="p-3 space-y-3">
@@ -68,7 +68,7 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
             <div key={i} className="p-2 rounded-xl bg-muted/30 border border-border/40">
               <div className="flex items-center gap-1.5 mb-1">
                 <m.icon className={`h-3 w-3 ${m.color}`} />
-                <span className="text-[12px] text-muted-foreground">{m.label}</span>
+                <span className="text-xs text-muted-foreground">{m.label}</span>
               </div>
               <p className="text-base font-bold">{m.value}</p>
             </div>
@@ -78,14 +78,14 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
         {/* Issuance rate */}
         <div>
           <div className="flex items-center justify-between mb-1">
-            <span className="text-[12px] text-muted-foreground">{isAr ? "معدل الإصدار" : "Issuance Rate"}</span>
-            <span className="text-[12px] font-medium">{data.issuanceRate}%</span>
+            <span className="text-xs text-muted-foreground">{isAr ? "معدل الإصدار" : "Issuance Rate"}</span>
+            <span className="text-xs font-medium">{data.issuanceRate}%</span>
           </div>
           <Progress value={data.issuanceRate} className="h-1.5" />
         </div>
 
         {/* Status pipeline */}
-        <div className="flex flex-wrap gap-2 text-[12px]">
+        <div className="flex flex-wrap gap-2 text-xs">
           <span className="flex items-center gap-1 text-muted-foreground"><Clock className="h-3 w-3" /> {data.draft} {isAr ? "مسودة" : "draft"}</span>
           <span className="flex items-center gap-1 text-chart-2"><PenTool className="h-3 w-3" /> {data.signed} {isAr ? "موقّعة" : "signed"}</span>
           <span className="flex items-center gap-1 text-chart-3"><FileCheck className="h-3 w-3" /> {data.issued} {isAr ? "مُصدرة" : "issued"}</span>
@@ -95,7 +95,7 @@ export const CertificateIssuanceWidget = memo(function CertificateIssuanceWidget
         {/* Type badges */}
         <div className="flex flex-wrap gap-1">
           {Object.entries(data.typeCounts).map(([type, count]) => (
-            <Badge key={type} variant="outline" className="text-[12px] gap-0.5">
+            <Badge key={type} variant="outline" className="text-xs gap-0.5">
               {type}: {count}
             </Badge>
           ))}

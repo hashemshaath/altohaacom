@@ -83,9 +83,9 @@ export const AdminSessionTracker = memo(function AdminSessionTracker() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{typeof s.device_info === "string" ? s.device_info : (isAr ? "جهاز غير معروف" : "Unknown device")}</p>
-                    <p className="text-[12px] text-muted-foreground">{typeof s.ip_address === "string" ? s.ip_address : "—"}</p>
+                    <p className="text-xs text-muted-foreground">{typeof s.ip_address === "string" ? s.ip_address : "—"}</p>
                   </div>
-                  <span className="text-[12px] text-muted-foreground shrink-0">
+                  <span className="text-xs text-muted-foreground shrink-0">
                     {s.last_active_at && formatDistanceToNow(new Date(s.last_active_at), { addSuffix: true, locale: isAr ? ar : undefined })}
                   </span>
                 </div>
@@ -109,14 +109,14 @@ export const AdminSessionTracker = memo(function AdminSessionTracker() {
                 <p className="text-center text-sm text-muted-foreground py-6">{isAr ? "لا توجد أحداث" : "No recent events"}</p>
               ) : recentEvents.map(e => (
                 <div key={e.id} className="flex items-center gap-3 px-4 py-2.5 border-b border-border/50 last:border-0">
-                  <Badge variant={getSeverityColor(e.severity || "low")} className="text-[12px] shrink-0">
+                  <Badge variant={getSeverityColor(e.severity || "low")} className="text-xs shrink-0">
                     {e.severity || "info"}
                   </Badge>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium truncate">{e.event_type}</p>
-                    <p className="text-[12px] text-muted-foreground">{e.ip_address || "—"}</p>
+                    <p className="text-xs text-muted-foreground">{e.ip_address || "—"}</p>
                   </div>
-                  <span className="text-[12px] text-muted-foreground shrink-0">
+                  <span className="text-xs text-muted-foreground shrink-0">
                     {formatDistanceToNow(new Date(e.created_at), { addSuffix: true, locale: isAr ? ar : undefined })}
                   </span>
                 </div>

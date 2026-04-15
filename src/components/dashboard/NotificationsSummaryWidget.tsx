@@ -64,7 +64,7 @@ export const NotificationsSummaryWidget = memo(function NotificationsSummaryWidg
           </div>
           {isAr ? "الإشعارات" : "Notifications"}
           {unreadCount > 0 && (
-            <Badge variant="secondary" className="ms-1 h-5 min-w-5 justify-center px-1.5 text-[12px]">
+            <Badge variant="secondary" className="ms-1 h-5 min-w-5 justify-center px-1.5 text-xs">
               {unreadCount}
             </Badge>
           )}
@@ -99,10 +99,10 @@ export const NotificationsSummaryWidget = memo(function NotificationsSummaryWidg
                     <p className="text-sm font-medium line-clamp-1 leading-snug">
                       {isAr && notification.title_ar ? notification.title_ar : notification.title}
                     </p>
-                    <p className="mt-0.5 text-[12px] text-muted-foreground line-clamp-1">
+                    <p className="mt-0.5 text-xs text-muted-foreground line-clamp-1">
                       {isAr && notification.body_ar ? notification.body_ar : notification.body}
                     </p>
-                    <span className="mt-1 block text-[12px] text-muted-foreground/60">
+                    <span className="mt-1 block text-xs text-muted-foreground/60">
                       {formatDistanceToNow(new Date(notification.created_at), {
                         addSuffix: true,
                         locale: isAr ? ar : enUS,

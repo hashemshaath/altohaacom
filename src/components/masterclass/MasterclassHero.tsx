@@ -23,7 +23,7 @@ export const MasterclassHero = memo(function MasterclassHero({ totalCount, filte
           <div className="max-w-2xl space-y-2 sm:space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 sm:px-3.5 sm:py-1.5 ring-1 ring-primary/20">
               <GraduationCap className="h-3.5 w-3.5 text-primary" />
-              <span className="text-[12px] font-bold uppercase tracking-[0.15em] text-primary">
+              <span className="text-xs font-bold uppercase tracking-[0.15em] text-primary">
                 {isAr ? "التعلم المهني" : "Professional Learning"}
               </span>
             </div>
@@ -42,13 +42,13 @@ export const MasterclassHero = memo(function MasterclassHero({ totalCount, filte
             <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
               <BookOpen className="h-3.5 w-3.5" />
               <span className="font-bold">{filteredCount}</span>
-              <span className="text-[12px]">{isAr ? "دورة" : "courses"}</span>
+              <span className="text-xs">{isAr ? "دورة" : "courses"}</span>
             </Badge>
             {totalEnrollments > 0 && (
               <Badge variant="outline" className="gap-1.5 border-chart-2/20 bg-chart-2/5 text-chart-2 px-3 py-1.5">
                 <Users className="h-3.5 w-3.5" />
                 <span className="font-bold">{totalEnrollments}</span>
-                <span className="text-[12px]">{isAr ? "مسجل" : "enrolled"}</span>
+                <span className="text-xs">{isAr ? "مسجل" : "enrolled"}</span>
               </Badge>
             )}
           </div>

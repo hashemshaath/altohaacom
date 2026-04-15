@@ -106,12 +106,12 @@ export default function AIConfigAdmin() {
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-semibold">Lovable AI Gateway</h3>
-              <p className="text-[12px] sm:text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {isAr ? "متصل ويعمل" : "Connected"}
               </p>
             </div>
           </div>
-          <Badge variant="default" className="gap-1 bg-chart-5 hover:bg-chart-5/90 text-[12px] sm:text-xs">
+          <Badge variant="default" className="gap-1 bg-chart-5 hover:bg-chart-5/90 text-xs sm:text-xs">
             <span className="h-1.5 w-1.5 rounded-full bg-background animate-pulse" />
             {isAr ? "نشط" : "Active"}
           </Badge>
@@ -153,7 +153,7 @@ export default function AIConfigAdmin() {
               <div className="space-y-1.5">
                 <div className="flex justify-between">
                   <Label className="text-xs">{isAr ? "الرموز" : "Max Tokens"}</Label>
-                  <span className="text-[12px] text-muted-foreground">{config.maxTokens}</span>
+                  <span className="text-xs text-muted-foreground">{config.maxTokens}</span>
                 </div>
                 <Slider
                   value={[config.maxTokens]}
@@ -167,7 +167,7 @@ export default function AIConfigAdmin() {
               <div className="space-y-1.5">
                 <div className="flex justify-between">
                   <Label className="text-xs">{isAr ? "الإبداع" : "Temperature"}</Label>
-                  <span className="text-[12px] text-muted-foreground">{config.temperature}</span>
+                  <span className="text-xs text-muted-foreground">{config.temperature}</span>
                 </div>
                 <Slider
                   value={[config.temperature]}
@@ -198,7 +198,7 @@ export default function AIConfigAdmin() {
                   </div>
                   <div>
                     <p className="font-medium text-xs sm:text-sm">{feature.title}</p>
-                    <p className="text-[12px] sm:text-xs text-muted-foreground">{feature.desc}</p>
+                    <p className="text-xs sm:text-xs text-muted-foreground">{feature.desc}</p>
                   </div>
                 </div>
                 <Switch
@@ -240,7 +240,7 @@ export default function AIConfigAdmin() {
           <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
             <div className="grid gap-3 sm:gap-4 grid-cols-3">
               <div className="space-y-1.5">
-                <Label className="text-[12px] sm:text-xs">{isAr ? "يومي" : "Daily"}</Label>
+                <Label className="text-xs sm:text-xs">{isAr ? "يومي" : "Daily"}</Label>
                 <Input
                   type="number"
                   className="h-8 sm:h-9 text-xs"
@@ -249,7 +249,7 @@ export default function AIConfigAdmin() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[12px] sm:text-xs">{isAr ? "محادثة" : "Conv. Len"}</Label>
+                <Label className="text-xs sm:text-xs">{isAr ? "محادثة" : "Conv. Len"}</Label>
                 <Input
                   type="number"
                   className="h-8 sm:h-9 text-xs"
@@ -258,7 +258,7 @@ export default function AIConfigAdmin() {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-[12px] sm:text-xs">{isAr ? "لكل مستخدم" : "Per User"}</Label>
+                <Label className="text-xs sm:text-xs">{isAr ? "لكل مستخدم" : "Per User"}</Label>
                 <Input
                   type="number"
                   className="h-8 sm:h-9 text-xs"

@@ -163,8 +163,8 @@ export default function CustomCSSPage() {
                   dir="ltr"
                 />
                 <div className="absolute bottom-2 end-2 flex items-center gap-2">
-                  <Badge variant="outline" className="text-[12px] font-mono">{lineCount} {isAr ? "سطر" : "lines"}</Badge>
-                  <Badge variant="outline" className="text-[12px] font-mono">{customCSS.length} {isAr ? "حرف" : "chars"}</Badge>
+                  <Badge variant="outline" className="text-xs font-mono">{lineCount} {isAr ? "سطر" : "lines"}</Badge>
+                  <Badge variant="outline" className="text-xs font-mono">{customCSS.length} {isAr ? "حرف" : "chars"}</Badge>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -191,7 +191,7 @@ export default function CustomCSSPage() {
                   {group.vars.map(v => (
                     <div key={v.name} className="space-y-1">
                       <Label className="text-xs flex items-center gap-1.5">
-                        <code className="text-[12px] font-mono text-primary">{v.name}</code>
+                        <code className="text-xs font-mono text-primary">{v.name}</code>
                         <span className="text-muted-foreground">— {isAr ? v.ar : v.en}</span>
                       </Label>
                       <div className="flex gap-2 items-center">
@@ -228,7 +228,7 @@ export default function CustomCSSPage() {
                   <CardTitle className="text-sm">{isAr ? snippet.ar : snippet.en}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <pre className="text-[12px] font-mono bg-muted/50 rounded-lg p-3 overflow-x-auto leading-relaxed" dir="ltr">
+                  <pre className="text-xs font-mono bg-muted/50 rounded-lg p-3 overflow-x-auto leading-relaxed" dir="ltr">
                     {snippet.code}
                   </pre>
                   <div className="flex gap-1.5">

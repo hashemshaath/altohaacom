@@ -189,7 +189,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
           <Button
             variant="secondary"
             size="sm"
-            className="absolute end-4 top-4 h-9 gap-2 bg-background/30 backdrop-blur-2xl border-white/10 text-foreground text-[12px] font-bold uppercase tracking-widest shadow-lg rounded-2xl hover:bg-background/50 transition-all"
+            className="absolute end-4 top-4 h-9 gap-2 bg-background/30 backdrop-blur-2xl border-white/10 text-foreground text-xs font-bold uppercase tracking-widest shadow-lg rounded-2xl hover:bg-background/50 transition-all"
             onClick={() => coverInputRef.current?.click()}
             disabled={uploading}
           >
@@ -275,13 +275,13 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
               {isAr ? tier.labelAr : tier.label}
             </Badge>
             {roles.map((r) => (
-              <Badge key={r} variant="secondary" className="capitalize text-[12px] bg-muted/30 border-border/20 px-3 py-1.5 rounded-2xl">
+              <Badge key={r} variant="secondary" className="capitalize text-xs bg-muted/30 border-border/20 px-3 py-1.5 rounded-2xl">
                 {r === 'admin' ? <Shield className="h-3 w-3 me-1 text-primary" /> : null}
                 {r}
               </Badge>
             ))}
             {profile?.account_number && (
-              <Badge variant="outline" className="font-mono text-[12px] border-primary/10 bg-primary/5 text-primary rounded-2xl px-3 py-1.5">
+              <Badge variant="outline" className="font-mono text-xs border-primary/10 bg-primary/5 text-primary rounded-2xl px-3 py-1.5">
                 <span dir="ltr">#{profile.account_number}</span>
               </Badge>
             )}

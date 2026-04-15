@@ -44,7 +44,7 @@ export const NewsTrendingSidebar = memo(function NewsTrendingSidebar({ articles,
                 <h4 className="text-xs font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug">
                   {title}
                 </h4>
-                <span className="mt-1 flex items-center gap-1 text-[12px] text-muted-foreground">
+                <span className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                   <Eye className="h-2.5 w-2.5" />
                   {(article.view_count || 0).toLocaleString()} {isAr ? "مشاهدة" : "views"}
                 </span>

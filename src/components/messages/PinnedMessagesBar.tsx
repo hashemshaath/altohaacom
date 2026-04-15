@@ -46,7 +46,7 @@ export const PinnedMessagesBar = memo(function PinnedMessagesBar({ pinnedMessage
                 <Pin className="h-3 w-3 text-chart-4 mt-0.5 shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="truncate">{msg.content}</p>
-                  <p className="text-[12px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {format(new Date(msg.created_at), "MMM d, h:mm a")}
                   </p>
                 </div>

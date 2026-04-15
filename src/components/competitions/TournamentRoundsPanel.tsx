@@ -255,14 +255,14 @@ export const TournamentRoundsPanel = memo(function TournamentRoundsPanel({ compe
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
                             <h4 className="font-semibold text-sm">{isAr && round.name_ar ? round.name_ar : round.name}</h4>
-                            <Badge className={`${statusStyles[round.status]} text-[12px] gap-1`}>
+                            <Badge className={`${statusStyles[round.status]} text-xs gap-1`}>
                               {statusIcons[round.status]}
                               {round.status === "pending" ? (isAr ? "معلقة" : "Pending") :
                                round.status === "in_progress" ? (isAr ? "جارية" : "In Progress") :
                                (isAr ? "مكتملة" : "Completed")}
                             </Badge>
-                            <Badge variant="outline" className="text-[12px]">{getLabel(ROUND_TYPES, round.round_type)}</Badge>
-                            <Badge variant="outline" className="text-[12px]">{getLabel(FORMATS, round.format)}</Badge>
+                            <Badge variant="outline" className="text-xs">{getLabel(ROUND_TYPES, round.round_type)}</Badge>
+                            <Badge variant="outline" className="text-xs">{getLabel(FORMATS, round.format)}</Badge>
                           </div>
                           <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">

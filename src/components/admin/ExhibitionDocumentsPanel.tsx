@@ -161,7 +161,7 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
         </div>
       </div>
 
-      <p className="text-[12px] text-muted-foreground">
+      <p className="text-xs text-muted-foreground">
         {t(
           "📌 Files marked 'Feed to AI' will be used by the AI customer service to answer exhibition-related questions.",
           "📌 الملفات المميزة بـ 'تغذية الذكاء الاصطناعي' ستُستخدم لتغذية خدمة العملاء الآلية للإجابة على الأسئلة المتعلقة بالمعرض."
@@ -181,14 +181,14 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium truncate">{doc.title}</p>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Badge variant="secondary" className="text-[12px] h-4">
+                  <Badge variant="secondary" className="text-xs h-4">
                     {DOC_CATEGORIES.find(c => c.value === doc.category)?.[isAr ? "ar" : "en"] || doc.category}
                   </Badge>
                   {doc.file_size && (
-                    <span className="text-[12px] text-muted-foreground">{formatSize(doc.file_size)}</span>
+                    <span className="text-xs text-muted-foreground">{formatSize(doc.file_size)}</span>
                   )}
                   {doc.feed_to_ai && (
-                    <Badge className="text-[12px] h-4 border-0 bg-chart-2/10 text-chart-2 gap-0.5">
+                    <Badge className="text-xs h-4 border-0 bg-chart-2/10 text-chart-2 gap-0.5">
                       <Bot className="h-2.5 w-2.5" /> AI
                     </Badge>
                   )}

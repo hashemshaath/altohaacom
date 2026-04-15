@@ -154,14 +154,14 @@ export const SettingsImportExport = memo(function SettingsImportExport() {
               <Shield className="h-4 w-4 text-primary" />
               <span className="text-xs font-semibold">{isAr ? "ملف جاهز للاستيراد" : "File ready to import"}</span>
             </div>
-            <div className="flex flex-wrap gap-2 text-[12px] text-muted-foreground">
-              <Badge variant="secondary" className="text-[12px]">
+            <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+              <Badge variant="secondary" className="text-xs">
                 {importData.site_settings?.length || 0} {isAr ? "إعداد" : "settings"}
               </Badge>
-              <Badge variant="secondary" className="text-[12px]">
+              <Badge variant="secondary" className="text-xs">
                 {importData.homepage_sections?.length || 0} {isAr ? "قسم" : "sections"}
               </Badge>
-              <Badge variant="outline" className="text-[12px]">
+              <Badge variant="outline" className="text-xs">
                 {new Date(importData.exported_at).toLocaleDateString(isAr ? "ar" : "en")}
               </Badge>
             </div>

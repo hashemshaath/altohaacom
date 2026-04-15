@@ -25,7 +25,7 @@ function CharCount({ value, max }: { value: string; max: number }) {
   const len = (value || "").length;
   const over = len > max;
   return (
-    <span className={`text-[12px] tabular-nums ${over ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+    <span className={`text-xs tabular-nums ${over ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
       {len}/{max}
     </span>
   );
@@ -160,7 +160,7 @@ export const SEOAnalyticsSettings = memo(function SEOAnalyticsSettings({ setting
               {isAr ? "صورة Open Graph الافتراضية" : "Default OG Image URL"}
             </Label>
             <Input value={seo.defaultOgImageUrl} onChange={e => setSeo(p => ({ ...p, defaultOgImageUrl: e.target.value }))} placeholder="https://altoha.com/og-image.png" />
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {isAr ? "الحجم الموصى به: 1200×630 بكسل" : "Recommended size: 1200×630px"}
             </p>
           </div>

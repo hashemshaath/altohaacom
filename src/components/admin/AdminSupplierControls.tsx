@@ -110,7 +110,7 @@ export const AdminSupplierControls = memo(function AdminSupplierControls() {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="text-[12px] uppercase">{c.type}</Badge>
+                    <Badge variant="outline" className="text-xs uppercase">{c.type}</Badge>
                   </TableCell>
                   <TableCell className="text-center">
                     <Switch

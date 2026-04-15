@@ -204,7 +204,7 @@ export const GroupsTab = memo(function GroupsTab() {
             <div className="flex items-center justify-between rounded-xl border p-3">
               <div>
                 <Label className="text-sm">{t("privateGroup")}</Label>
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {isAr ? "المجموعة الخاصة تتطلب دعوة للانضمام" : "Private groups require invitation to join"}
                 </p>
               </div>
@@ -228,14 +228,14 @@ export const GroupsTab = memo(function GroupsTab() {
                 <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${group.is_private ? "bg-chart-5/8" : "bg-primary/8"}`}>
                   {group.is_private ? <Lock className="h-3.5 w-3.5 text-chart-5" /> : <Globe className="h-3.5 w-3.5 text-primary" />}
                 </div>
-                <h3 className="font-semibold text-[13px] leading-tight truncate">{getDisplayName(group)}</h3>
+                <h3 className="font-semibold text-[0.8125rem] leading-tight truncate">{getDisplayName(group)}</h3>
               </div>
             </div>
             {getDisplayDesc(group) && (
-              <p className="mb-2.5 line-clamp-2 text-[11px] text-muted-foreground/60 leading-relaxed">{getDisplayDesc(group)}</p>
+              <p className="mb-2.5 line-clamp-2 text-[0.6875rem] text-muted-foreground/60 leading-relaxed">{getDisplayDesc(group)}</p>
             )}
             <div className="flex items-center justify-between pt-2 border-t border-border/10">
-              <span className="flex items-center gap-1 text-[11px] text-muted-foreground/50">
+              <span className="flex items-center gap-1 text-[0.6875rem] text-muted-foreground/50">
                 <Users className="h-3 w-3" />
                 {group.members_count} {isAr ? "عضو" : "members"}
               </span>
@@ -243,7 +243,7 @@ export const GroupsTab = memo(function GroupsTab() {
                 <Button
                   variant={group.is_member ? "ghost" : "default"}
                   size="sm"
-                  className="h-7 text-[11px] rounded-lg px-3 active:scale-[0.98]"
+                  className="h-7 text-[0.6875rem] rounded-lg px-3 active:scale-[0.98]"
                   onClick={() => handleJoinLeave(group.id, group.is_member)}
                 >
                   {group.is_member ? (isAr ? "مغادرة" : "Leave") : (isAr ? "انضمام" : "Join")}

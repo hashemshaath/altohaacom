@@ -91,7 +91,7 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
             {["available", "reserved", "occupied"].map(s => {
               const count = booths.filter((b) => (b.status || "available") === s).length;
               return (
-                <Badge key={s} variant="outline" className="text-[12px] gap-1">
+                <Badge key={s} variant="outline" className="text-xs gap-1">
                   {statusIcon(s)}
                   <span className="capitalize">{s}</span>
                   <span className="font-bold">{count}</span>
@@ -137,13 +137,13 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
                   </TableCell>
                   <TableCell className="text-xs font-medium">{isAr && booth.name_ar ? booth.name_ar : booth.name}</TableCell>
                   <TableCell>
-                    <Badge variant="secondary" className="text-[12px] capitalize">{booth.category || "general"}</Badge>
+                    <Badge variant="secondary" className="text-xs capitalize">{booth.category || "general"}</Badge>
                   </TableCell>
                   <TableCell className="text-xs text-muted-foreground">{booth.hall || "—"}</TableCell>
                   <TableCell>
                     {editingId === booth.id ? (
                       <Select value={editStatus} onValueChange={setEditStatus}>
-                        <SelectTrigger className="h-7 text-[12px] w-24">
+                        <SelectTrigger className="h-7 text-xs w-24">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -153,7 +153,7 @@ export const ExhibitionBoothManagement = memo(function ExhibitionBoothManagement
                         </SelectContent>
                       </Select>
                     ) : (
-                      <Badge variant="outline" className="text-[12px] gap-1 capitalize">
+                      <Badge variant="outline" className="text-xs gap-1 capitalize">
                         {statusIcon(booth.status || "available")}
                         {booth.status || "available"}
                       </Badge>

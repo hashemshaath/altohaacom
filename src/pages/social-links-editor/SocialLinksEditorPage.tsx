@@ -313,7 +313,7 @@ export default function SocialLinksEditorPage() {
               </div>
               <div className="flex gap-2 flex-wrap items-center">
                 {hasUnsavedChanges && (
-                  <Badge variant="outline" className="text-[12px] border-amber-500/30 text-amber-600 dark:text-amber-400 animate-in fade-in duration-200 gap-1">
+                  <Badge variant="outline" className="text-xs border-amber-500/30 text-amber-600 dark:text-amber-400 animate-in fade-in duration-200 gap-1">
                     {page ? <><Loader2 className="h-2.5 w-2.5 animate-spin" />{isAr ? "حفظ تلقائي..." : "Auto-saving..."}</> : (isAr ? "تغييرات غير محفوظة" : "Unsaved changes")}
                   </Badge>
                 )}
@@ -347,7 +347,7 @@ export default function SocialLinksEditorPage() {
                             <Switch checked={extra.qr_show_username} onCheckedChange={v => updateExtra({ qr_show_username: v })} />
                           </div>
                           <div>
-                            <Label className="text-[12px] mb-1 block">{isAr ? "شعار مخصص (URL)" : "Custom Logo (URL)"}</Label>
+                            <Label className="text-xs mb-1 block">{isAr ? "شعار مخصص (URL)" : "Custom Logo (URL)"}</Label>
                             <Input value={extra.qr_logo_url} onChange={e => updateExtra({ qr_logo_url: e.target.value })} placeholder="https://..." dir="ltr" className="text-xs h-8" />
                           </div>
                         </div>
@@ -382,7 +382,7 @@ export default function SocialLinksEditorPage() {
                     </div>
                     <div>
                       <p className="text-xl font-bold tabular-nums">{stat.value}</p>
-                      <p className="text-[12px] text-muted-foreground font-medium">{stat.label}</p>
+                      <p className="text-xs text-muted-foreground font-medium">{stat.label}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -400,7 +400,7 @@ export default function SocialLinksEditorPage() {
                       <code className="block text-xs bg-background/80 px-2 py-0.5 rounded font-mono mt-0.5" dir="ltr">altoha.com/bio/{profile.username}</code>
                     </div>
                   </div>
-                  <Badge variant={form.is_published ? "default" : "secondary"} className="text-[12px]">
+                  <Badge variant={form.is_published ? "default" : "secondary"} className="text-xs">
                     {form.is_published ? (isAr ? "✓ منشور" : "✓ Published") : (isAr ? "مسودة" : "Draft")}
                   </Badge>
                 </CardContent>
@@ -446,7 +446,7 @@ export default function SocialLinksEditorPage() {
                 <Card className="overflow-hidden border-border/20 shadow-lg">
                   <CardHeader className="py-2 px-3 bg-muted/40 border-b border-border/20">
                     <div className="flex items-center justify-between">
-                      <p className="text-[12px] font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "معاينة مباشرة" : "Live Preview"}</p>
+                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "معاينة مباشرة" : "Live Preview"}</p>
                       <div className="flex gap-1">
                         <div className="h-2 w-2 rounded-full bg-destructive/60" />
                         <div className="h-2 w-2 rounded-full bg-chart-2/60" />
@@ -473,8 +473,8 @@ export default function SocialLinksEditorPage() {
                             )}
                             <div className={alignClass}>
                               <p className={`font-bold ${extra.font_size === "sm" ? "text-xs" : extra.font_size === "lg" ? "text-base" : extra.font_size === "xl" ? "text-lg" : "text-sm"}`} style={{ color: pt.text }}>{form.page_title || displayName || "Your Name"}</p>
-                              <p className="text-[12px] mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
-                              {extra.show_bio && form.bio && <p className="text-[12px] mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
+                              <p className="text-xs mt-0.5" style={{ color: `${pt.text}66` }}>@{profile?.username || "username"}</p>
+                              {extra.show_bio && form.bio && <p className="text-xs mt-1" style={{ color: `${pt.text}aa` }}>{form.bio}</p>}
                             </div>
                             {form.show_social_icons && activeSocials.length > 0 && (
                               <div className={`flex gap-2 mt-1 flex-wrap ${justifyClass}`}>
@@ -494,20 +494,20 @@ export default function SocialLinksEditorPage() {
                                 return (
                                   <div key={item.id} className={`flex items-center gap-2 px-3 py-2.5 ${btnRadius} ${extra.link_layout === "grid" ? "flex-col text-center py-4" : ""}`} style={customColor}>
                                     {item.icon && <span className="text-sm">{item.icon}</span>}
-                                    <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-[12px] font-medium ${alignClass}`} style={{ color: (customColor as any).color || pt.text }}>{item.title}</span>
+                                    <span className={`${extra.link_layout === "grid" ? "" : "flex-1"} text-xs font-medium ${alignClass}`} style={{ color: (customColor as any).color || pt.text }}>{item.title}</span>
                                   </div>
                                 );
                               })}
                               {items.length === 0 && (
                                 <div className={`text-center py-6 opacity-40 ${extra.link_layout === "grid" ? "col-span-2" : ""}`} style={{ color: pt.text }}>
                                   <Globe className="h-8 w-8 mx-auto mb-2" />
-                                  <p className="text-[12px]">{isAr ? "أضف روابط" : "Add links"}</p>
+                                  <p className="text-xs">{isAr ? "أضف روابط" : "Add links"}</p>
                                 </div>
                               )}
                             </div>
                             {extra.show_footer && extra.footer_text && (
                               <div className="mt-4 pt-3 w-full text-center" style={{ borderTop: `1px solid ${pt.border}` }}>
-                                <p className="text-[12px]" style={{ color: `${pt.text}55` }}>{extra.footer_text}</p>
+                                <p className="text-xs" style={{ color: `${pt.text}55` }}>{extra.footer_text}</p>
                               </div>
                             )}
                           </div>

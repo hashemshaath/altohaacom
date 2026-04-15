@@ -465,7 +465,7 @@ function DataField({ label, value, multiline }: { label: string; value?: string 
   if (!value) return null;
   return (
     <div className="space-y-0.5">
-      <span className="text-[12px] font-medium text-muted-foreground uppercase">{label}</span>
+      <span className="text-xs font-medium text-muted-foreground uppercase">{label}</span>
       {multiline ? (
         <p className="text-xs whitespace-pre-line">{value}</p>
       ) : (

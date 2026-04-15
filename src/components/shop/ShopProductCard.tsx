@@ -53,12 +53,12 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
           {/* Top-start badges */}
           <div className="absolute start-3 top-3 flex flex-wrap gap-2 z-10">
             {product.is_featured && (
-              <Badge className="bg-chart-4 text-primary-foreground shadow-lg shadow-chart-4/20 text-[12px] gap-1 px-2.5 py-1 font-bold">
+              <Badge className="bg-chart-4 text-primary-foreground shadow-lg shadow-chart-4/20 text-xs gap-1 px-2.5 py-1 font-bold">
                 <Star className="h-2.5 w-2.5 fill-current" />
                 {isAr ? "مميز" : "Featured"}
               </Badge>
             )}
-            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-[12px] gap-1 px-2.5 py-1 font-bold ring-1 ring-border/50">
+            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-xs gap-1 px-2.5 py-1 font-bold ring-1 ring-border/50">
               <TypeIcon className="h-2.5 w-2.5" />
               {isAr ? label.ar : label.en}
             </Badge>
@@ -66,7 +66,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
 
           {/* Discount badge */}
           {product.discount_percent > 0 && !isOutOfStock && (
-            <Badge className="absolute end-3 top-3 bg-destructive text-primary-foreground shadow-lg shadow-destructive/20 text-[12px] px-2.5 py-1 font-bold">
+            <Badge className="absolute end-3 top-3 bg-destructive text-primary-foreground shadow-lg shadow-destructive/20 text-xs px-2.5 py-1 font-bold">
               <Percent className="me-1 h-2.5 w-2.5" />
               {product.discount_percent}% {isAr ? "خصم" : "OFF"}
             </Badge>
@@ -85,7 +85,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
 
       <CardContent className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="flex-1 space-y-1.5">
-          <Badge variant="outline" className="text-[12px] sm:text-[12px] font-bold uppercase tracking-widest border-primary/20 bg-primary/5 text-primary/80">
+          <Badge variant="outline" className="text-xs sm:text-xs font-bold uppercase tracking-widest border-primary/20 bg-primary/5 text-primary/80">
             {product.category}
           </Badge>
           <Link to={`/shop/${product.id}`} className="block">
@@ -94,7 +94,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
             </h3>
           </Link>
           {product.rating_avg > 0 && (
-            <div className="flex items-center gap-1 text-[12px] text-muted-foreground">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
               <span className="font-bold">{product.rating_avg.toFixed(1)}</span>
               {product.review_count > 0 && <span>({product.review_count})</span>}
@@ -113,12 +113,12 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
               SAR {product.price.toFixed(0)}
             </span>
             {product.compare_at_price && product.compare_at_price > product.price && (
-              <span className="text-[12px] text-muted-foreground line-through opacity-60">
+              <span className="text-xs text-muted-foreground line-through opacity-60">
                 {product.compare_at_price.toFixed(0)}
               </span>
             )}
             {product.product_type === "physical" && !isOutOfStock && product.stock_quantity > 0 && product.stock_quantity <= 5 && (
-              <span className="text-[12px] text-destructive font-bold mt-0.5">
+              <span className="text-xs text-destructive font-bold mt-0.5">
                 {isAr ? `باقي ${product.stock_quantity} فقط` : `Only ${product.stock_quantity} left`}
               </span>
             )}

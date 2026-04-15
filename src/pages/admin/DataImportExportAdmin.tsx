@@ -348,13 +348,13 @@ const ExportTab = memo(function ExportTab() {
                 <Label className="text-xs">{t("Columns to Export", "الأعمدة المطلوبة")}</Label>
                 <div className="flex gap-2">
                   <Button
-                    variant="ghost" size="sm" className="h-6 text-[12px]"
+                    variant="ghost" size="sm" className="h-6 text-xs"
                     onClick={() => setSelectedColumns(new Set(currentModule.columns.map(c => c.key)))}
                   >
                     {t("Select All", "تحديد الكل")}
                   </Button>
                   <Button
-                    variant="ghost" size="sm" className="h-6 text-[12px]"
+                    variant="ghost" size="sm" className="h-6 text-xs"
                     onClick={() => setSelectedColumns(new Set())}
                   >
                     {t("Clear", "مسح")}
@@ -393,7 +393,7 @@ const ExportTab = memo(function ExportTab() {
                   </SelectContent>
                 </Select>
               </div>
-              <Badge variant="secondary" className="text-[12px]">
+              <Badge variant="secondary" className="text-xs">
                 {recordCount ?? "…"} {t("records", "سجل")} • {selectedColumns.size} {t("columns", "أعمدة")}
               </Badge>
               <div className="flex gap-2 ms-auto">
@@ -442,7 +442,7 @@ const ExportTab = memo(function ExportTab() {
             <CardTitle className="text-sm flex items-center gap-2">
               <Layers className="h-4 w-4 text-primary" />
               {t("Saved Templates", "القوالب المحفوظة")}
-              <Badge variant="outline" className="ms-auto text-[12px]">{templates.length}</Badge>
+              <Badge variant="outline" className="ms-auto text-xs">{templates.length}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -471,8 +471,8 @@ const ExportTab = memo(function ExportTab() {
                             </Button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
-                          <Badge variant="secondary" className="text-[12px]">{mod ? (isAr ? mod.labelAr : mod.label) : tpl.module}</Badge>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Badge variant="secondary" className="text-xs">{mod ? (isAr ? mod.labelAr : mod.label) : tpl.module}</Badge>
                           <span>{tpl.columns.length} {t("cols", "أعمدة")}</span>
                           <span className="uppercase">{tpl.format}</span>
                         </div>
@@ -673,7 +673,7 @@ const ImportTab = memo(function ImportTab() {
             <CardTitle className="text-sm flex items-center gap-2">
               <Filter className="h-4 w-4 text-primary" />
               {t("Map Columns", "تعيين الأعمدة")}
-              <Badge variant="secondary" className="ms-2 text-[12px]">{parsedRows.length} {t("rows", "صف")}</Badge>
+              <Badge variant="secondary" className="ms-2 text-xs">{parsedRows.length} {t("rows", "صف")}</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -705,13 +705,13 @@ const ImportTab = memo(function ImportTab() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    {csvHeaders.map(h => <TableHead key={h} className="text-[12px] py-1">{h}</TableHead>)}
+                    {csvHeaders.map(h => <TableHead key={h} className="text-xs py-1">{h}</TableHead>)}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {parsedRows.slice(0, 5).map((row, i) => (
                     <TableRow key={i}>
-                      {csvHeaders.map(h => <TableCell key={h} className="text-[12px] py-1 max-w-[150px] truncate">{row[h]}</TableCell>)}
+                      {csvHeaders.map(h => <TableCell key={h} className="text-xs py-1 max-w-[150px] truncate">{row[h]}</TableCell>)}
                     </TableRow>
                   ))}
                 </TableBody>
@@ -781,7 +781,7 @@ const HistoryTab = memo(function HistoryTab() {
       review: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
       failed: "bg-red-500/10 text-red-700 dark:text-red-400",
     };
-    return <Badge className={`text-[12px] ${colors[status] || ""}`}>{status}</Badge>;
+    return <Badge className={`text-xs ${colors[status] || ""}`}>{status}</Badge>;
   };
 
   return (
@@ -804,21 +804,21 @@ const HistoryTab = memo(function HistoryTab() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="text-[12px]">{t("Date", "التاريخ")}</TableHead>
-                  <TableHead className="text-[12px]">{t("Type", "النوع")}</TableHead>
-                  <TableHead className="text-[12px]">{t("File", "الملف")}</TableHead>
-                  <TableHead className="text-[12px]">{t("Status", "الحالة")}</TableHead>
-                  <TableHead className="text-[12px] text-end">{t("Rows", "الصفوف")}</TableHead>
+                  <TableHead className="text-xs">{t("Date", "التاريخ")}</TableHead>
+                  <TableHead className="text-xs">{t("Type", "النوع")}</TableHead>
+                  <TableHead className="text-xs">{t("File", "الملف")}</TableHead>
+                  <TableHead className="text-xs">{t("Status", "الحالة")}</TableHead>
+                  <TableHead className="text-xs text-end">{t("Rows", "الصفوف")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {imports.map(imp => (
                   <TableRow key={imp.id}>
-                    <TableCell className="text-[12px]">{fmtDate(new Date(imp.created_at), "MMM dd, HH:mm")}</TableCell>
-                    <TableCell><Badge variant="outline" className="text-[12px]">{imp.entity_type}</Badge></TableCell>
-                    <TableCell className="text-[12px] max-w-[150px] truncate">{imp.file_name || "—"}</TableCell>
+                    <TableCell className="text-xs">{fmtDate(new Date(imp.created_at), "MMM dd, HH:mm")}</TableCell>
+                    <TableCell><Badge variant="outline" className="text-xs">{imp.entity_type}</Badge></TableCell>
+                    <TableCell className="text-xs max-w-[150px] truncate">{imp.file_name || "—"}</TableCell>
                     <TableCell>{statusBadge(imp.status)}</TableCell>
-                    <TableCell className="text-[12px] text-end tabular-nums">
+                    <TableCell className="text-xs text-end tabular-nums">
                       <span className="text-green-600">{imp.processed_rows || 0}</span>
                       {(imp.failed_rows || 0) > 0 && <span className="text-red-500 ms-1">/ {imp.failed_rows}</span>}
                       <span className="text-muted-foreground ms-1">of {imp.total_rows}</span>

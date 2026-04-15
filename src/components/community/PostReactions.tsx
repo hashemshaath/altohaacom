@@ -140,7 +140,7 @@ export const PostReactions = memo(function PostReactions({ postId, initialReacti
           )}
         >
           <span className="text-sm">{getEmoji(r.type)}</span>
-          <span className="tabular-nums text-[12px] font-semibold text-muted-foreground">
+          <span className="tabular-nums text-xs font-semibold text-muted-foreground">
             <AnimatedCounter value={r.count} className="inline" />
           </span>
         </button>

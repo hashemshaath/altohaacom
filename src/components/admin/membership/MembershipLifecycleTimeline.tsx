@@ -251,7 +251,7 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
                           <div className="flex items-center gap-2 flex-wrap">
                             <Avatar className="h-6 w-6">
                               <AvatarImage src={event.profile?.avatar_url || undefined} />
-                              <AvatarFallback className="text-[12px]">
+                              <AvatarFallback className="text-xs">
                                 {(event.profile?.full_name || "?").charAt(0)}
                               </AvatarFallback>
                             </Avatar>
@@ -259,11 +259,11 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
                               {event.profile?.full_name || event.profile?.username || event.user_id.slice(0, 8)}
                             </span>
                             {event.profile?.account_number && (
-                              <span className="text-[12px] text-muted-foreground font-mono">{event.profile.account_number}</span>
+                              <span className="text-xs text-muted-foreground font-mono">{event.profile.account_number}</span>
                             )}
                           </div>
                           <div className="flex items-center gap-2 flex-wrap mt-1">
-                            <Badge variant="outline" className="text-[12px]">
+                            <Badge variant="outline" className="text-xs">
                               {isAr ? config.labelAr : config.label}
                             </Badge>
                             <span className="text-xs text-muted-foreground">
@@ -274,7 +274,7 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
                             <p className="text-xs text-muted-foreground mt-1 truncate">{event.reason}</p>
                           )}
                         </div>
-                        <span className="text-[12px] text-muted-foreground shrink-0">
+                        <span className="text-xs text-muted-foreground shrink-0">
                           {format(new Date(event.created_at), "HH:mm")}
                         </span>
                       </div>

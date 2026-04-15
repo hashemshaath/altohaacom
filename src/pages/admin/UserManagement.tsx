@@ -335,7 +335,7 @@ export default function UserManagement() {
           <div key={kpi.label} className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-border/50 bg-card min-w-fit">
             <kpi.icon className={`h-4 w-4 ${kpi.color}`} />
             <div className="flex flex-col">
-              <span className="text-[11px] text-muted-foreground font-medium leading-none">{kpi.label}</span>
+              <span className="text-[0.6875rem] text-muted-foreground font-medium leading-none">{kpi.label}</span>
               <AnimatedCounter value={kpi.value} className="text-lg font-bold leading-tight" />
             </div>
           </div>
@@ -366,7 +366,7 @@ export default function UserManagement() {
             <CardContent className="p-3 flex flex-wrap items-center gap-2">
               <Button variant="outline" size="sm" onClick={() => setUserSearchOpen(true)} className="gap-1.5 rounded-xl">
                 <Search className="h-3.5 w-3.5" /><span className="hidden sm:inline">{isAr ? "بحث سريع" : "Quick Search"}</span>
-                <kbd className="text-[10px] bg-muted px-1.5 py-0.5 rounded font-mono hidden sm:inline">⌘U</kbd>
+                <kbd className="text-[0.625rem] bg-muted px-1.5 py-0.5 rounded font-mono hidden sm:inline">⌘U</kbd>
               </Button>
               <Separator orientation="vertical" className="h-5 mx-0.5" />
               <Button variant="outline" size="sm" onClick={() => exportCSV(filteredUsers)} className="gap-1.5 rounded-xl">
@@ -559,8 +559,8 @@ export default function UserManagement() {
           </div>
           <div className="rounded-xl border border-border/50 p-4 space-y-3">
             <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{isAr ? "رسالة الدعوة" : "Invitation Message"}</h4>
-            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">ع</Badge> {isAr ? "الرسالة بالعربية" : "Message in Arabic"}</Label><Textarea value={inviteMessageAr} onChange={(e) => setInviteMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="نتشرف بدعوتكم للانضمام إلى منصتنا..." /></div>
-            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">EN</Badge> {isAr ? "الرسالة بالإنجليزية" : "Message in English"}</Label><Textarea value={inviteMessageEn} onChange={(e) => setInviteMessageEn(e.target.value)} rows={3} dir="ltr" placeholder="We are honored to invite you to join our platform..." /></div>
+            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-xs px-1">ع</Badge> {isAr ? "الرسالة بالعربية" : "Message in Arabic"}</Label><Textarea value={inviteMessageAr} onChange={(e) => setInviteMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="نتشرف بدعوتكم للانضمام إلى منصتنا..." /></div>
+            <div className="space-y-1.5"><Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-xs px-1">EN</Badge> {isAr ? "الرسالة بالإنجليزية" : "Message in English"}</Label><Textarea value={inviteMessageEn} onChange={(e) => setInviteMessageEn(e.target.value)} rows={3} dir="ltr" placeholder="We are honored to invite you to join our platform..." /></div>
           </div>
         </div>
       </InlinePanel>
@@ -587,11 +587,11 @@ export default function UserManagement() {
       >
         <div className="space-y-4" dir={isAr ? "rtl" : "ltr"}>
           <div className="space-y-1.5">
-            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">ع</Badge> {isAr ? "نص الرسالة بالعربية" : "Message in Arabic"}</Label>
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-xs px-1">ع</Badge> {isAr ? "نص الرسالة بالعربية" : "Message in Arabic"}</Label>
             <Textarea value={notifyMessageAr} onChange={(e) => setNotifyMessageAr(e.target.value)} rows={3} dir="rtl" placeholder="اكتب رسالتك بالعربية هنا..." />
           </div>
           <div className="space-y-1.5">
-            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-[12px] px-1">EN</Badge> {isAr ? "نص الرسالة بالإنجليزية" : "Message in English"}</Label>
+            <Label className="text-xs flex items-center gap-1"><Badge variant="outline" className="text-xs px-1">EN</Badge> {isAr ? "نص الرسالة بالإنجليزية" : "Message in English"}</Label>
             <Textarea value={notifyMessage} onChange={(e) => setNotifyMessage(e.target.value)} rows={3} dir="ltr" placeholder="Type your message in English here..." />
           </div>
         </div>

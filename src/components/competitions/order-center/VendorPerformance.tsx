@@ -155,28 +155,28 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
           <CardContent className="p-3 text-center">
             <Building2 className="mx-auto mb-1 h-5 w-5 text-primary" />
             <AnimatedCounter value={vendors.length} className="text-xl" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "الموردين" : "Vendors"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "الموردين" : "Vendors"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <Package className="mx-auto mb-1 h-5 w-5 text-chart-1" />
             <AnimatedCounter value={totalAssigned} className="text-xl" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "عناصر معينة" : "Assigned"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "عناصر معينة" : "Assigned"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <CheckCircle className="mx-auto mb-1 h-5 w-5 text-chart-5" />
             <AnimatedCounter value={avgRate} className="text-xl" suffix="%" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "معدل التسليم" : "Delivery Rate"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "معدل التسليم" : "Delivery Rate"}</p>
           </CardContent>
         </Card>
         <Card className="border-border/60">
           <CardContent className="p-3 text-center">
             <AlertTriangle className="mx-auto mb-1 h-5 w-5 text-destructive" />
             <AnimatedCounter value={totalOverdue} className="text-xl font-bold" />
-            <p className="text-[12px] text-muted-foreground uppercase">{isAr ? "متأخرة" : "Overdue"}</p>
+            <p className="text-xs text-muted-foreground uppercase">{isAr ? "متأخرة" : "Overdue"}</p>
           </CardContent>
         </Card>
       </div>
@@ -224,7 +224,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
                     </div>
                     <div className="text-end shrink-0">
                       <p className={`text-lg font-bold ${ratingColor}`}>{vendor.deliveryRate}%</p>
-                      <p className="text-[12px] text-muted-foreground">{isAr ? "معدل التسليم" : "delivery rate"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "معدل التسليم" : "delivery rate"}</p>
                     </div>
                   </div>
 
@@ -232,7 +232,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
                     <Progress value={vendor.deliveryRate} className="h-2" />
                   </div>
 
-                  <div className="flex items-center gap-3 mt-2 text-[12px]">
+                  <div className="flex items-center gap-3 mt-2 text-xs">
                     <span className="flex items-center gap-0.5 text-chart-5">
                       <CheckCircle className="h-3 w-3" /> {vendor.delivered} {isAr ? "تم" : "done"}
                     </span>
@@ -245,7 +245,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
                       </span>
                     )}
                     {index === 0 && vendors.length > 1 && (
-                      <Badge variant="outline" className="text-[12px] h-4 ms-auto border-chart-4/40 text-chart-4">
+                      <Badge variant="outline" className="text-xs h-4 ms-auto border-chart-4/40 text-chart-4">
                         <Star className="h-2.5 w-2.5 me-0.5" /> {isAr ? "الأعلى" : "Top Vendor"}
                       </Badge>
                     )}

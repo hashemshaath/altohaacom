@@ -32,8 +32,8 @@ export const FieldGroup = memo(({ label, required, error, hint, children, classN
       {label}{required && <span className="text-destructive ms-0.5">*</span>}
     </Label>
     {children}
-    {error && <p className="text-[12px] text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{error}</p>}
-    {hint && !error && <p className="text-[12px] text-muted-foreground">{hint}</p>}
+    {error && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3" />{error}</p>}
+    {hint && !error && <p className="text-xs text-muted-foreground">{hint}</p>}
   </div>
 ));
 FieldGroup.displayName = "FieldGroup";
@@ -73,7 +73,7 @@ export function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr,
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelAr}</Label>
           {valueAr?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[12px] gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-xs gap-1 text-primary" onClick={translateToEn} disabled={tEn}>
               {tEn ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} AR → EN
             </Button>
           )}
@@ -84,7 +84,7 @@ export function BilingualField({ labelAr, labelEn, valueAr, valueEn, onChangeAr,
         <div className="flex items-center justify-between">
           <Label className="text-xs font-medium">{labelEn}</Label>
           {valueEn?.trim() && (
-            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-[12px] gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
+            <Button type="button" variant="ghost" size="sm" className="h-5 px-1.5 text-xs gap-1 text-primary" onClick={translateToAr} disabled={tAr}>
               {tAr ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />} EN → AR
             </Button>
           )}
@@ -107,7 +107,7 @@ export function ProgressRing({ pct }: { pct: number }) {
             <circle cx="21" cy="21" r={r} fill="none" strokeWidth="3" className="stroke-muted/30" />
             <circle cx="21" cy="21" r={r} fill="none" strokeWidth="3" className={cn(color, "transition-all duration-500")}
               strokeDasharray={c} strokeDashoffset={c - (c * pct / 100)} strokeLinecap="round" />
-            <text x="21" y="21" textAnchor="middle" dominantBaseline="central" className="fill-foreground text-[12px] font-bold rotate-90 origin-center">{pct}%</text>
+            <text x="21" y="21" textAnchor="middle" dominantBaseline="central" className="fill-foreground text-xs font-bold rotate-90 origin-center">{pct}%</text>
           </svg>
         </TooltipTrigger>
         <TooltipContent side="bottom"><p className="text-xs">{pct}% complete</p></TooltipContent>

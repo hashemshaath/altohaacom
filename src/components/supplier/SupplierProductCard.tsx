@@ -82,7 +82,7 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
         {/* Discount badge */}
         {hasDiscount && (
           <div className="absolute top-2.5 start-2.5 z-[5]">
-            <Badge className="bg-destructive text-destructive-foreground text-[11px] font-bold px-2 py-0.5 rounded-full shadow-md gap-0.5">
+            <Badge className="bg-destructive text-destructive-foreground text-[0.6875rem] font-bold px-2 py-0.5 rounded-full shadow-md gap-0.5">
               <Flame className="h-3 w-3" />
               −{discountPercent}%
             </Badge>
@@ -109,7 +109,7 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
         {/* Category pill - localized */}
         {categoryLabel && !compact && (
           <div className="absolute bottom-2.5 end-2.5 z-[5]">
-            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-[10px] font-semibold px-2.5 py-0.5 rounded-lg border border-border/20 shadow-sm">
+            <Badge variant="secondary" className="bg-background/80 backdrop-blur-md text-[0.625rem] font-semibold px-2.5 py-0.5 rounded-lg border border-border/20 shadow-sm">
               {categoryLabel}
             </Badge>
           </div>
@@ -118,7 +118,7 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
         {/* Low stock warning */}
         {isInStock && qty && qty > 0 && qty <= 5 && (
           <div className="absolute top-2.5 end-2.5 z-[5]">
-            <Badge className="bg-destructive/90 text-destructive-foreground text-[10px] px-1.5 py-0.5 rounded-lg font-bold">
+            <Badge className="bg-destructive/90 text-destructive-foreground text-[0.625rem] px-1.5 py-0.5 rounded-lg font-bold">
               {isAr ? `باقي ${qty} فقط` : `Only ${qty} left`}
             </Badge>
           </div>
@@ -140,17 +140,17 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
           <div className="flex items-center gap-1.5 flex-wrap">
             {product.sku && (
               <>
-                <span className="text-[10px] font-mono text-muted-foreground/50 tracking-wide">{product.sku}</span>
+                <span className="text-[0.625rem] font-mono text-muted-foreground/50 tracking-wide">{product.sku}</span>
                 <span className="text-muted-foreground/20">·</span>
               </>
             )}
             {isInStock ? (
-              <span className="flex items-center gap-0.5 text-[10px] text-chart-5 font-semibold">
+              <span className="flex items-center gap-0.5 text-[0.625rem] text-chart-5 font-semibold">
                 <CheckCircle className="h-2.5 w-2.5" />
                 {isAr ? "متوفر" : "In Stock"}
               </span>
             ) : (
-              <span className="flex items-center gap-0.5 text-[10px] text-destructive font-semibold">
+              <span className="flex items-center gap-0.5 text-[0.625rem] text-destructive font-semibold">
                 <XCircle className="h-2.5 w-2.5" />
                 {isAr ? "غير متوفر" : "Sold Out"}
               </span>
@@ -167,16 +167,16 @@ export const SupplierProductCard = memo(forwardRef<HTMLDivElement, SupplierProdu
                   <span className="text-lg font-black tracking-tight text-primary leading-none tabular-nums">
                     {priceWithVat.toLocaleString()}
                   </span>
-                  <span className="text-[11px] text-muted-foreground font-medium">
+                  <span className="text-[0.6875rem] text-muted-foreground font-medium">
                     {currencyLabel}
                   </span>
                   {hasDiscount && (
-                    <span className="text-[11px] text-muted-foreground/40 line-through tabular-nums">
+                    <span className="text-[0.6875rem] text-muted-foreground/40 line-through tabular-nums">
                       {originalPriceVat.toLocaleString()}
                     </span>
                   )}
                 </div>
-                <p className="text-[10px] text-muted-foreground/50 mt-0.5 font-medium">
+                <p className="text-[0.625rem] text-muted-foreground/50 mt-0.5 font-medium">
                   {isAr ? "شامل الضريبة" : "VAT included"}
                 </p>
               </div>

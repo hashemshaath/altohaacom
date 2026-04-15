@@ -100,7 +100,7 @@ export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
               <s.icon className={`h-3.5 w-3.5 ${s.color}`} />
               <div>
                 <p className="text-sm font-bold">{s.value}</p>
-                <p className="text-[12px] text-muted-foreground">{s.label}</p>
+                <p className="text-xs text-muted-foreground">{s.label}</p>
               </div>
             </div>
           ))}
@@ -108,13 +108,13 @@ export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
 
         {/* Top countries */}
         <div>
-          <p className="text-[12px] text-muted-foreground mb-1.5 font-medium">{isAr ? "أعلى الدول" : "Top Countries"}</p>
+          <p className="text-xs text-muted-foreground mb-1.5 font-medium">{isAr ? "أعلى الدول" : "Top Countries"}</p>
           <div className="space-y-1.5">
             {data.topCountries.map(([code, count]) => (
               <div key={code} className="flex items-center gap-2">
                 <span className="text-xs font-mono w-6">{code}</span>
                 <Progress value={(count / maxCountry) * 100} className="h-1.5 flex-1" />
-                <span className="text-[12px] text-muted-foreground w-8 text-end">{count}</span>
+                <span className="text-xs text-muted-foreground w-8 text-end">{count}</span>
               </div>
             ))}
           </div>
@@ -123,14 +123,14 @@ export const UserDemographicsWidget = memo(function UserDemographicsWidget() {
         {/* Role & Tier badges */}
         <div className="flex flex-wrap gap-1.5">
           {Object.entries(data.roleCounts).map(([role, count]) => (
-            <Badge key={role} variant="outline" className="text-[12px] gap-1">
+            <Badge key={role} variant="outline" className="text-xs gap-1">
               <Shield className="h-2.5 w-2.5" /> {translateRole(role, isAr)}: {count}
             </Badge>
           ))}
         </div>
         <div className="flex flex-wrap gap-1.5">
           {Object.entries(data.tierCounts).map(([tier, count]) => (
-            <Badge key={tier} variant="secondary" className={`text-[12px] gap-1 ${tierColors[tier] || ""}`}>
+            <Badge key={tier} variant="secondary" className={`text-xs gap-1 ${tierColors[tier] || ""}`}>
               <Crown className="h-2.5 w-2.5" /> {tier}: {count}
             </Badge>
           ))}

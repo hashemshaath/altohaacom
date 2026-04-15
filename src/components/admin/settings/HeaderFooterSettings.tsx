@@ -76,7 +76,7 @@ export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
                 </CardDescription>
               </div>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-xl bg-primary/10 px-2.5 py-1 text-[12px] font-semibold text-primary tabular-nums">
+            <span className="inline-flex items-center gap-1 rounded-xl bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary tabular-nums">
               <CheckCircle2 className="h-3 w-3" />
               {headerEnabledCount}/{headerToggles.length}
             </span>
@@ -104,7 +104,7 @@ export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
                     )}
                     <div>
                       <p className="text-sm font-medium leading-tight">{isAr ? item.ar : item.en}</p>
-                      <p className="text-[12px] text-muted-foreground leading-tight mt-0.5">{isAr ? item.descAr : item.descEn}</p>
+                      <p className="text-xs text-muted-foreground leading-tight mt-0.5">{isAr ? item.descAr : item.descEn}</p>
                     </div>
                   </div>
                   <Switch checked={isOn} onCheckedChange={v => setHeader({ ...header, [item.key]: v })} />
@@ -141,7 +141,7 @@ export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
                 </CardDescription>
               </div>
             </div>
-            <span className="inline-flex items-center gap-1 rounded-xl bg-accent/60 px-2.5 py-1 text-[12px] font-semibold text-accent-foreground tabular-nums">
+            <span className="inline-flex items-center gap-1 rounded-xl bg-accent/60 px-2.5 py-1 text-xs font-semibold text-accent-foreground tabular-nums">
               <CheckCircle2 className="h-3 w-3" />
               {footerEnabledCount}/{footerToggles.length}
             </span>
@@ -170,7 +170,7 @@ export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
                     )}
                     <div>
                       <p className="text-sm font-medium leading-tight">{isAr ? item.ar : item.en}</p>
-                      <p className="text-[12px] text-muted-foreground leading-tight mt-0.5">{isAr ? item.descAr : item.descEn}</p>
+                      <p className="text-xs text-muted-foreground leading-tight mt-0.5">{isAr ? item.descAr : item.descEn}</p>
                     </div>
                   </div>
                   <Switch checked={isOn} onCheckedChange={v => setFooter({ ...footer, [item.key]: v })} />
@@ -214,7 +214,7 @@ export function HeaderFooterSettings({ settings, onSave, isPending }: Props) {
                 </div>
                 {isAr ? "روابط التواصل الاجتماعي" : "Social Media Links"}
               </h4>
-              <span className="text-[12px] text-muted-foreground tabular-nums">
+              <span className="text-xs text-muted-foreground tabular-nums">
                 {socialFilledCount}/{socialFields.length} {isAr ? "مكتمل" : "filled"}
               </span>
             </div>

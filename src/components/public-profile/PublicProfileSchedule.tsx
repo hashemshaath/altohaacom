@@ -127,7 +127,7 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
             const inner = (
               <>
                 <div className="flex flex-col items-center justify-center w-11 shrink-0">
-                  <span className="text-[12px] uppercase font-semibold text-muted-foreground leading-none">{month}</span>
+                  <span className="text-xs uppercase font-semibold text-muted-foreground leading-none">{month}</span>
                   <span className="text-lg font-bold leading-tight tabular-nums">{day}</span>
                 </div>
                 <div className={`w-0.5 h-10 rounded-full ${config.bg}`} />
@@ -137,13 +137,13 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
                     <span className="text-xs font-semibold truncate group-hover:text-primary transition-colors">{item.title}</span>
                   </div>
                   {item.location && (
-                    <span className="text-[12px] text-muted-foreground flex items-center gap-0.5 mt-0.5 truncate">
+                    <span className="text-xs text-muted-foreground flex items-center gap-0.5 mt-0.5 truncate">
                       <MapPin className="h-2.5 w-2.5 shrink-0" />{item.location}
                     </span>
                   )}
                 </div>
                 <div className="shrink-0">
-                  <Badge variant="outline" className="text-[12px] h-5 gap-1">
+                  <Badge variant="outline" className="text-xs h-5 gap-1">
                     <Clock className="h-2.5 w-2.5" />{getDaysUntil(item.date)}
                   </Badge>
                 </div>

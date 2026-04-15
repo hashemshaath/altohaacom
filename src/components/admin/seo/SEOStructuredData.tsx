@@ -42,25 +42,25 @@ export const SEOStructuredData = memo(function SEOStructuredData({ isAr }: { isA
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-emerald-500">{implemented}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "مطبق بالكامل" : "Implemented"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "مطبق بالكامل" : "Implemented"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-amber-500">{partial}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "جزئي" : "Partial"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "جزئي" : "Partial"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold text-destructive">{missing}</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "مفقود" : "Missing"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "مفقود" : "Missing"}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold">{coverage}%</p>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "التغطية" : "Coverage"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "التغطية" : "Coverage"}</p>
           </CardContent>
         </Card>
       </div>
@@ -89,18 +89,18 @@ export const SEOStructuredData = memo(function SEOStructuredData({ isAr }: { isA
                     <code className="text-sm font-semibold text-primary">{schema.type}</code>
                     <Badge
                       variant={schema.status === "implemented" ? "default" : schema.status === "partial" ? "secondary" : "destructive"}
-                      className="text-[12px]"
+                      className="text-xs"
                     >
                       {schema.status === "implemented" ? "✓" : schema.status === "partial" ? "⚠" : "✗"} {schema.status}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-1 mt-1 text-[12px] text-muted-foreground">
+                  <div className="flex items-center gap-1 mt-1 text-xs text-muted-foreground">
                     <Globe className="h-2.5 w-2.5" />
                     {schema.pages.join(", ")}
                   </div>
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {schema.fields.map((f) => (
-                      <span key={f} className="text-[12px] bg-muted/60 px-1.5 py-0.5 rounded">
+                      <span key={f} className="text-xs bg-muted/60 px-1.5 py-0.5 rounded">
                         {f}
                       </span>
                     ))}

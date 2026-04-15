@@ -291,8 +291,8 @@ export default function PublicProfile() {
                               <h4 className="font-semibold text-xs truncate">
                                 {isAr ? (m.culinary_entities?.name_ar || m.culinary_entities?.name) : (m.culinary_entities?.name || m.culinary_entities?.name_ar)}
                               </h4>
-                              {m.title && <p className="text-[12px] text-muted-foreground truncate">{isAr ? (m.title_ar || m.title) : m.title}</p>}
-                              <Badge variant="outline" className="text-[12px] mt-1 h-4">{m.membership_type}</Badge>
+                              {m.title && <p className="text-xs text-muted-foreground truncate">{isAr ? (m.title_ar || m.title) : m.title}</p>}
+                              <Badge variant="outline" className="text-xs mt-1 h-4">{m.membership_type}</Badge>
                             </div>
                           </CardContent>
                         </Card>
@@ -408,7 +408,7 @@ export default function PublicProfile() {
                         <p className="text-sm font-medium truncate">{p.display_name || p.full_name || "Unknown"}</p>
                         {p.is_verified && <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" />}
                       </div>
-                      <p className="text-[12px] text-muted-foreground truncate">@{p.username}</p>
+                      <p className="text-xs text-muted-foreground truncate">@{p.username}</p>
                     </div>
                   </Link>
                 ))

@@ -53,7 +53,7 @@ export const PublicProfileComments = memo(function PublicProfileComments({ userI
         <CardTitle className="text-xs flex items-center gap-2">
           <MessageCircle className="h-3.5 w-3.5 text-chart-2" />
           {isAr ? "التعليقات الأخيرة" : "Recent Comments"}
-          <Badge variant="secondary" className="text-[12px] h-4 px-1.5">{comments.length}</Badge>
+          <Badge variant="secondary" className="text-xs h-4 px-1.5">{comments.length}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0 space-y-2">
@@ -64,10 +64,10 @@ export const PublicProfileComments = memo(function PublicProfileComments({ userI
             <Link key={c.id} to={href} className="block rounded-xl p-2.5 hover:bg-muted/40 transition-colors border border-border/20">
               <div className="flex items-center gap-1.5 mb-1">
                 {isComp ? <Trophy className="h-3 w-3 text-primary" /> : <Landmark className="h-3 w-3 text-chart-5" />}
-                <span className="text-[12px] font-medium truncate">{isAr ? c.event.title_ar || c.event.title : c.event.title}</span>
+                <span className="text-xs font-medium truncate">{isAr ? c.event.title_ar || c.event.title : c.event.title}</span>
               </div>
-              <p className="text-[12px] text-foreground/80 line-clamp-2">{c.content}</p>
-              <div className="flex items-center gap-3 mt-1 text-[12px] text-muted-foreground">
+              <p className="text-xs text-foreground/80 line-clamp-2">{c.content}</p>
+              <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
                 {c.likes_count > 0 && <span className="flex items-center gap-0.5"><Heart className="h-2.5 w-2.5" />{c.likes_count}</span>}
                 <span>{formatDistanceToNow(new Date(c.created_at), { addSuffix: true, locale: isAr ? ar : enUS })}</span>
               </div>

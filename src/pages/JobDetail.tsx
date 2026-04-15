@@ -323,14 +323,14 @@ export default function JobDetail() {
                               <p className="text-xs font-semibold truncate group-hover:text-primary transition-colors">
                                 {isAr ? (rj.title_ar || rj.title) : rj.title}
                               </p>
-                              <p className="text-[12px] text-muted-foreground truncate">
+                              <p className="text-xs text-muted-foreground truncate">
                                 {isAr ? ((rj.companies as any)?.name_ar || (rj.companies as any)?.name) : (rj.companies as any)?.name}
                               </p>
                               <div className="flex items-center gap-2 mt-1">
                                 {rj.is_salary_visible && rj.salary_min && (
-                                  <span className="text-[12px] font-bold">{rj.salary_min.toLocaleString()} {rj.salary_currency}</span>
+                                  <span className="text-xs font-bold">{rj.salary_min.toLocaleString()} {rj.salary_currency}</span>
                                 )}
-                                <span className="text-[12px] text-muted-foreground/40">{rjDaysAgo === 0 ? (isAr ? "اليوم" : "Today") : `${rjDaysAgo}d`}</span>
+                                <span className="text-xs text-muted-foreground/40">{rjDaysAgo === 0 ? (isAr ? "اليوم" : "Today") : `${rjDaysAgo}d`}</span>
                               </div>
                             </div>
                             <ArrowRight className="h-3 w-3 text-muted-foreground/30 group-hover:text-primary transition-colors shrink-0" />
@@ -357,7 +357,7 @@ export default function JobDetail() {
                       </div>
                       <div>
                         <p className="text-sm font-bold text-chart-2">{isAr ? "تم تقديم طلبك" : "Application Submitted"}</p>
-                        <p className="text-[12px] text-muted-foreground mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           {isAr ? "الحالة:" : "Status:"} {existingApplication.status} • {format(new Date(existingApplication.created_at), "MMM d, yyyy")}
                         </p>
                       </div>
@@ -372,7 +372,7 @@ export default function JobDetail() {
                         onChange={(e) => setCoverLetter(e.target.value)}
                         maxLength={1000}
                       />
-                      <p className="text-[12px] text-muted-foreground text-end">{coverLetter.length}/1000</p>
+                      <p className="text-xs text-muted-foreground text-end">{coverLetter.length}/1000</p>
                       <div className="flex flex-col gap-2">
                         <Button onClick={() => apply.mutate()} disabled={apply.isPending} className="rounded-xl gap-1.5 w-full font-bold">
                           <Send className="h-3.5 w-3.5" />
@@ -389,7 +389,7 @@ export default function JobDetail() {
                         <Briefcase className="h-4 w-4" />
                         {isAr ? "تقديم طلب" : "Apply Now"}
                       </Button>
-                      <p className="text-[12px] text-center text-muted-foreground/50">
+                      <p className="text-xs text-center text-muted-foreground/50">
                         {isAr ? "ملفك الشخصي سيُرفق تلقائياً" : "Your profile will be attached automatically"}
                       </p>
                     </div>
@@ -417,7 +417,7 @@ export default function JobDetail() {
                     <div>
                       <p className="text-xs font-semibold">{isAr ? (company?.name_ar || company?.name) : company?.name}</p>
                       {company?.id && (
-                        <Link to={`/companies/${company.id}`} className="text-[12px] text-primary hover:underline">
+                        <Link to={`/companies/${company.id}`} className="text-xs text-primary hover:underline">
                           {isAr ? "عرض صفحة الشركة" : "View company page"}
                         </Link>
                       )}
@@ -475,7 +475,7 @@ function SummaryRow({ icon: Icon, label, value }: { icon: LucideIcon; label: str
         <Icon className="h-3.5 w-3.5 text-muted-foreground/50" />
       </div>
       <div>
-        <p className="text-[12px] text-muted-foreground">{label}</p>
+        <p className="text-xs text-muted-foreground">{label}</p>
         <p className="text-xs font-semibold">{value}</p>
       </div>
     </div>

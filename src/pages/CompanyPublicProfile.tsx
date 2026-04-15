@@ -149,23 +149,23 @@ export default function CompanyPublicProfile() {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-[12px] tracking-widest px-3 py-1">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 uppercase text-xs tracking-widest px-3 py-1">
                     {company.type}
                   </Badge>
                   {company.is_verified && (
-                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-1 text-[12px]">
+                    <Badge className="bg-chart-5/10 text-chart-5 border-chart-5/20 gap-1 text-xs">
                       <CheckCircle className="h-3 w-3" />
                       {isAr ? "موثّق" : "Verified"}
                     </Badge>
                   )}
                   {company.company_number && (
-                    <Badge variant="outline" className="bg-muted/50 font-mono text-[12px] px-3 py-1">
+                    <Badge variant="outline" className="bg-muted/50 font-mono text-xs px-3 py-1">
                       <Hash className="me-1 h-3 w-3" />
                       {company.company_number}
                     </Badge>
                   )}
                   {company.country_code && (
-                    <Badge variant="outline" className="bg-muted/50 text-[12px] px-3 py-1">
+                    <Badge variant="outline" className="bg-muted/50 text-xs px-3 py-1">
                       {countryFlag(company.country_code)} {getCountryName(company.country_code)}
                     </Badge>
                   )}
@@ -174,7 +174,7 @@ export default function CompanyPublicProfile() {
                 {activeRoles.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {activeRoles.map((r, i) => (
-                      <Badge key={i} variant="secondary" className="text-[12px]">{r}</Badge>
+                      <Badge key={i} variant="secondary" className="text-xs">{r}</Badge>
                     ))}
                   </div>
                 )}
@@ -249,7 +249,7 @@ export default function CompanyPublicProfile() {
                 <CardContent>
                   <div className="flex flex-wrap gap-1.5">
                     {company.classifications.map((c) => (
-                      <Badge key={c} variant="secondary" className="text-[12px]">{c}</Badge>
+                      <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>
                     ))}
                   </div>
                 </CardContent>
@@ -276,7 +276,7 @@ export default function CompanyPublicProfile() {
                         </div>
                         <div className="min-w-0">
                           <p className="truncate text-sm font-medium">{title}</p>
-                          <Badge variant="outline" className="mt-1 text-[12px] uppercase tracking-wider">
+                          <Badge variant="outline" className="mt-1 text-xs uppercase tracking-wider">
                             {s.tier}
                           </Badge>
                         </div>

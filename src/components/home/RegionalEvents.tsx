@@ -141,14 +141,14 @@ const EventCard = forwardRef<HTMLAnchorElement, { item: any }>(function EventCar
               <Trophy className="h-8 w-8 text-primary/30" />
             </div>
           )}
-          <Badge className={cn("absolute end-2 top-2 text-[12px] gap-1 shadow-sm", s.cls)}>
+          <Badge className={cn("absolute end-2 top-2 text-xs gap-1 shadow-sm", s.cls)}>
             {StatusIcon && <StatusIcon className="h-2.5 w-2.5" />}
             {isAr ? s.labelAr : s.label}
           </Badge>
         </div>
         <CardContent className="p-3">
           <h3 className="mb-1 line-clamp-2 text-sm font-semibold group-hover:text-primary transition-colors">{title}</h3>
-          <div className="flex items-center gap-3 text-[12px] text-muted-foreground">
+          <div className="flex items-center gap-3 text-xs text-muted-foreground">
             {item.competition_start && (
               <span className="flex items-center gap-1">
                 <Calendar className="h-3 w-3" />

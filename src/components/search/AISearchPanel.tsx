@@ -94,7 +94,7 @@ export const AISearchPanel = memo(function AISearchPanel({ query }: Props) {
           </div>
           <div>
             <h3 className="text-sm font-bold">{isAr ? "بحث ذكي بالذكاء الاصطناعي" : "AI Smart Search"}</h3>
-            <p className="text-[12px] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {isAr ? "تحليل ذكي لنتائج البحث" : "Intelligent analysis of search results"}
             </p>
           </div>

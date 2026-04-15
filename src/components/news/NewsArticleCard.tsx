@@ -71,14 +71,14 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
               <div className="flex flex-1 flex-col justify-between min-w-0">
                 <div>
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Badge variant="secondary" className="text-[10px] rounded-md gap-0.5 px-1.5 py-0 h-4 bg-muted/60">
+                    <Badge variant="secondary" className="text-[0.625rem] rounded-md gap-0.5 px-1.5 py-0 h-4 bg-muted/60">
                       <TypeIcon className="h-2 w-2" />
                       {typeBadgeLabel(article.type)}
                     </Badge>
                   </div>
-                  <h3 className="text-[13px] font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug">{title}</h3>
+                  <h3 className="text-[0.8125rem] font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug">{title}</h3>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-muted-foreground/60 mt-1">
+                <div className="flex items-center gap-2 text-[0.625rem] text-muted-foreground/60 mt-1">
                   <span className="flex items-center gap-0.5"><Calendar className="h-2.5 w-2.5" />{formatDate(article.published_at || article.created_at)}</span>
                   <span>·</span>
                   <span className="flex items-center gap-0.5"><BookOpen className="h-2.5 w-2.5" />{readTime}{isAr ? "د" : "m"}</span>
@@ -105,12 +105,12 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
             )}
             {/* Subtle bottom gradient for text readability */}
             <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/20 to-transparent" />
-            <Badge className="absolute start-3 top-3 gap-1 text-[10px] rounded-lg bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground font-semibold">
+            <Badge className="absolute start-3 top-3 gap-1 text-[0.625rem] rounded-lg bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground font-semibold">
               <TypeIcon className="h-2.5 w-2.5" />
               {typeBadgeLabel(article.type)}
             </Badge>
             <div className="absolute top-3 end-3 flex items-center gap-1.5">
-              <div className="flex items-center gap-0.5 rounded-md bg-white/10 backdrop-blur-md px-1.5 py-0.5 text-[10px] text-white/80">
+              <div className="flex items-center gap-0.5 rounded-md bg-white/10 backdrop-blur-md px-1.5 py-0.5 text-[0.625rem] text-white/80">
                 <BookOpen className="h-2.5 w-2.5" />
                 {readTime} {isAr ? "د" : "min"}
               </div>
@@ -119,9 +119,9 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
           </div>
           <CardContent className="flex flex-1 flex-col p-4">
             <h3 className="mb-1.5 text-[14px] font-semibold line-clamp-2 group-hover:text-primary transition-colors leading-snug">{title}</h3>
-            {excerpt && <p className="mb-2 flex-1 text-[12px] text-muted-foreground/60 line-clamp-2 leading-relaxed">{excerpt}</p>}
+            {excerpt && <p className="mb-2 flex-1 text-xs text-muted-foreground/60 line-clamp-2 leading-relaxed">{excerpt}</p>}
             {article.type === "exhibition" && article.event_start && (
-              <div className="mb-2 rounded-lg bg-muted/30 p-2 text-[11px]">
+              <div className="mb-2 rounded-lg bg-muted/30 p-2 text-[0.6875rem]">
                 <p className="font-medium">
                   {formatDate(article.event_start)}
                   {article.event_end && ` – ${formatDate(article.event_end)}`}
@@ -131,11 +131,11 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
                 )}
               </div>
             )}
-            <div className="flex items-center justify-between border-t border-border/10 pt-2.5 text-[11px] text-muted-foreground/50 mt-auto">
+            <div className="flex items-center justify-between border-t border-border/10 pt-2.5 text-[0.6875rem] text-muted-foreground/50 mt-auto">
               <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formatDate(article.published_at || article.created_at)}</span>
               <div className="flex items-center gap-2">
                 {(article.view_count ?? 0) >= 100 && (
-                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 rounded-md gap-0.5 bg-chart-4/8 text-chart-4 border-0">
+                  <Badge variant="secondary" className="text-[0.625rem] px-1.5 py-0 h-4 rounded-md gap-0.5 bg-chart-4/8 text-chart-4 border-0">
                     🔥 {isAr ? "رائج" : "Hot"}
                   </Badge>
                 )}

@@ -318,7 +318,7 @@ export default function EstablishmentsAdmin() {
             <m.icon className="h-4 w-4 text-muted-foreground shrink-0" />
             <div className="min-w-0">
               <p className="text-lg font-semibold leading-none"><AnimatedCounter value={m.value} /></p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{m.label}</p>
+              <p className="text-[0.6875rem] text-muted-foreground mt-0.5">{m.label}</p>
             </div>
           </button>
         ))}
@@ -444,7 +444,7 @@ export default function EstablishmentsAdmin() {
                         <TableCell className="w-10">
                           <Checkbox checked={selected.has(entity.id)} onCheckedChange={() => toggleOne(entity.id)} />
                         </TableCell>
-                        <TableCell className="hidden xl:table-cell font-mono text-[11px] text-muted-foreground">{entity.entity_number}</TableCell>
+                        <TableCell className="hidden xl:table-cell font-mono text-[0.6875rem] text-muted-foreground">{entity.entity_number}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2.5">
                             {entity.logo_url ? (
@@ -459,7 +459,7 @@ export default function EstablishmentsAdmin() {
                                 <p className="text-sm font-medium truncate max-w-[180px]">{displayName}</p>
                                 {entity.is_verified && <ShieldCheck className="h-3 w-3 text-primary shrink-0" />}
                               </div>
-                              <p className="text-[11px] text-muted-foreground truncate">
+                              <p className="text-[0.6875rem] text-muted-foreground truncate">
                                 {entity.username && `@${entity.username}`}
                                 {entity.username && entity.city && " · "}
                                 {entity.city}{entity.country ? `, ${entity.country}` : ""}
@@ -468,14 +468,14 @@ export default function EstablishmentsAdmin() {
                           </div>
                         </TableCell>
                         <TableCell className="hidden md:table-cell">
-                          <Badge variant="secondary" className="text-[11px] font-normal">
+                          <Badge variant="secondary" className="text-[0.6875rem] font-normal">
                             {typeOptions.find(t => t.value === entity.type)?.[isAr ? "ar" : "en"] || entity.type}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <Select value={entity.status} onValueChange={v => handleStatusChange(entity.id, v)}>
-                            <SelectTrigger className="h-6 w-[100px] text-[11px] border-none bg-transparent p-0 shadow-none">
-                              <Badge variant={sc.variant} className="text-[11px] font-normal cursor-pointer">
+                            <SelectTrigger className="h-6 w-[100px] text-[0.6875rem] border-none bg-transparent p-0 shadow-none">
+                              <Badge variant={sc.variant} className="text-[0.6875rem] font-normal cursor-pointer">
                                 {isAr ? sc.ar : sc.en}
                               </Badge>
                             </SelectTrigger>
@@ -569,7 +569,7 @@ export default function EstablishmentsAdmin() {
               )}
               <div className="flex flex-wrap gap-3 mt-2 justify-center">
                 {typeChartData.map((d, i) => (
-                  <div key={d.name} className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <div key={d.name} className="flex items-center gap-1.5 text-[0.6875rem] text-muted-foreground">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                     {d.name} ({d.value})
                   </div>
@@ -608,7 +608,7 @@ export default function EstablishmentsAdmin() {
                   <div key={s.label} className="text-center p-3 rounded-lg bg-muted/30">
                     <p className="text-2xl font-bold">{s.value}</p>
                     <p className="text-xs font-medium mt-0.5">{s.label}</p>
-                    <p className="text-[11px] text-muted-foreground">{s.sub}</p>
+                    <p className="text-[0.6875rem] text-muted-foreground">{s.sub}</p>
                   </div>
                 ))}
               </div>

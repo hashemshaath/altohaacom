@@ -141,7 +141,7 @@ export default function OfflinePage() {
                 <Icon className="h-3.5 w-3.5" />
                 {isAr ? labelArVal : labelEn}
                 {count > 0 && (
-                  <Badge variant="secondary" className="text-[12px] px-1.5 py-0 h-4 ms-0.5">
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0 h-4 ms-0.5">
                     {count}
                   </Badge>
                 )}
@@ -179,7 +179,7 @@ export default function OfflinePage() {
                       {isAr ? (a.excerpt_ar || a.excerpt) : a.excerpt}
                     </p>
                   </div>
-                  <Badge variant="outline" className="text-[12px] shrink-0">{a.type}</Badge>
+                  <Badge variant="outline" className="text-xs shrink-0">{a.type}</Badge>
                 </CardContent>
               </Card>
             ))}
@@ -197,7 +197,7 @@ export default function OfflinePage() {
                     </p>
                   </div>
                   {r.difficulty && (
-                    <Badge variant="secondary" className="text-[12px] shrink-0">{r.difficulty}</Badge>
+                    <Badge variant="secondary" className="text-xs shrink-0">{r.difficulty}</Badge>
                   )}
                 </CardContent>
               </Card>

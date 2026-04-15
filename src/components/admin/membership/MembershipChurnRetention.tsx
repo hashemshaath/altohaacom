@@ -341,7 +341,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل فقدان الأعضاء" : "Avg Loss Rate"}</span>
             </div>
             <span className="text-2xl font-bold"><AnimatedCounter value={parseFloat(churnData?.avgChurn || "0")} suffix="%" /></span>
-            <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "متوسط 6 أشهر — نسبة الأعضاء المدفوعين الذين ألغوا أو خفّضوا اشتراكهم" : "6-month avg — % of paid members who downgraded or cancelled"}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{isAr ? "متوسط 6 أشهر — نسبة الأعضاء المدفوعين الذين ألغوا أو خفّضوا اشتراكهم" : "6-month avg — % of paid members who downgraded or cancelled"}</p>
           </CardContent>
         </Card>
         <Card>
@@ -351,7 +351,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معدل الاحتفاظ" : "Retention Rate"}</span>
             </div>
             <span className="text-2xl font-bold"><AnimatedCounter value={Math.round((100 - parseFloat(churnData?.avgChurn || "0")) * 10) / 10} suffix="%" /></span>
-            <p className="text-[12px] text-muted-foreground mt-0.5">{isAr ? "نسبة الأعضاء الذين استمروا باشتراكهم المدفوع" : "% of paid members who stayed"}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{isAr ? "نسبة الأعضاء الذين استمروا باشتراكهم المدفوع" : "% of paid members who stayed"}</p>
           </CardContent>
         </Card>
         <Card>
@@ -361,7 +361,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معرضون للخطر" : "At Risk"}</span>
             </div>
             <AnimatedCounter value={totalAtRisk} className="text-2xl" />
-            <p className="text-[12px] text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {atRiskData?.critical.length || 0} {isAr ? "حرج" : "critical"}
             </p>
           </CardContent>
@@ -373,7 +373,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               <span className="text-xs font-medium text-muted-foreground">{isAr ? "معلقون" : "Suspended"}</span>
             </div>
             <AnimatedCounter value={atRiskData?.statusCounts?.suspended || 0} className="text-2xl" />
-            <p className="text-[12px] text-muted-foreground mt-0.5">
+            <p className="text-xs text-muted-foreground mt-0.5">
               {atRiskData?.statusCounts?.expired || 0} {isAr ? "منتهي" : "expired"}
             </p>
           </CardContent>
@@ -392,9 +392,9 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
                   <div className="flex items-center gap-2">
                     <Crown className="h-3 w-3" />
                     <span className="font-medium">{u.name}</span>
-                    <Badge variant="outline" className="text-[12px] px-1.5 py-0">{u.membership_tier}</Badge>
+                    <Badge variant="outline" className="text-xs px-1.5 py-0">{u.membership_tier}</Badge>
                   </div>
-                  <Badge variant="destructive" className="text-[12px]">
+                  <Badge variant="destructive" className="text-xs">
                     {u.daysLeft <= 0 ? (isAr ? "اليوم" : "Today") : `${u.daysLeft}d`}
                   </Badge>
                 </div>
@@ -564,7 +564,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               <div key={group.label} className="rounded-xl border p-3">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-muted-foreground">{group.label}</span>
-                  <Badge variant={group.color} className="text-[12px]">{group.data.length}</Badge>
+                  <Badge variant={group.color} className="text-xs">{group.data.length}</Badge>
                 </div>
                 {group.data.length > 0 ? (
                   <div className="space-y-1">
@@ -572,13 +572,13 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
                       <div key={u.user_id} className="flex items-center justify-between text-xs">
                         <span className="truncate max-w-[140px]">{u.name}</span>
                         <div className="flex items-center gap-1.5">
-                          <Badge variant="outline" className="text-[12px] px-1 py-0">{u.membership_tier}</Badge>
+                          <Badge variant="outline" className="text-xs px-1 py-0">{u.membership_tier}</Badge>
                           <span className="text-muted-foreground tabular-nums">{u.daysLeft}d</span>
                         </div>
                       </div>
                     ))}
                     {group.data.length > 3 && (
-                      <p className="text-[12px] text-muted-foreground">+{group.data.length - 3} {isAr ? "آخرين" : "more"}</p>
+                      <p className="text-xs text-muted-foreground">+{group.data.length - 3} {isAr ? "آخرين" : "more"}</p>
                     )}
                   </div>
                 ) : (
@@ -637,7 +637,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
               return (
                 <div key={s.label} className="text-center rounded-xl border p-3">
                   <p className="text-2xl font-bold" style={{ color: s.color }}><AnimatedCounter value={s.count} /></p>
-                  <p className="text-[12px] text-muted-foreground">{s.label} ({pct}%)</p>
+                  <p className="text-xs text-muted-foreground">{s.label} ({pct}%)</p>
                 </div>
               );
             })}

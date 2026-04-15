@@ -87,7 +87,7 @@ const ExhibitionKPIStrip = memo(function ExhibitionKPIStrip() {
               {isLoading ? <Skeleton className="h-6 w-10 rounded-xl" /> : (
                 <AnimatedCounter value={item.value || 0} className="text-lg font-black leading-none tracking-tight" />
               )}
-              <p className="text-[12px] text-muted-foreground truncate mt-0.5">{item.label}</p>
+              <p className="text-xs text-muted-foreground truncate mt-0.5">{item.label}</p>
             </div>
           </CardContent>
         </Card>
@@ -226,7 +226,7 @@ const OverviewTab = memo(function OverviewTab() {
                   </div>
                   <div className="flex flex-wrap gap-2 justify-center">
                     {data.statusData.map((d, i) => (
-                      <span key={d.name} className="text-[11px] flex items-center gap-1">
+                      <span key={d.name} className="text-[0.6875rem] flex items-center gap-1">
                         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                         {d.name} ({d.value})
                       </span>
@@ -355,7 +355,7 @@ const TicketsTab = memo(function TicketsTab() {
             <CardContent className="p-3 flex items-center gap-3">
               <div className={cn("rounded-xl p-2", kpi.bg)}><kpi.icon className={cn("h-4 w-4", kpi.color)} /></div>
               <div>
-                <p className="text-[12px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-xs text-muted-foreground">{kpi.label}</p>
                 <p className="text-lg font-bold"><AnimatedCounter value={kpi.value} />{(kpi as any).suffix || ""}</p>
               </div>
             </CardContent>
@@ -415,12 +415,12 @@ const TicketsTab = memo(function TicketsTab() {
               <ScrollArea className="max-h-[200px]">
                 <div className="space-y-1 p-3">
                   {data?.recent?.map(t => (
-                    <div key={t.id} className="flex items-center justify-between text-[12px] p-1.5 rounded bg-muted/20">
+                    <div key={t.id} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/20">
                       <div className="truncate flex-1">
                         <span className="font-mono font-medium">{t.ticket_number}</span>
                         {t.attendee_name && <span className="text-muted-foreground ms-2">• {t.attendee_name}</span>}
                       </div>
-                      <Badge variant={t.status === "confirmed" ? "default" : "secondary"} className="text-[11px] px-1.5 py-0 shrink-0 ms-2">
+                      <Badge variant={t.status === "confirmed" ? "default" : "secondary"} className="text-[0.6875rem] px-1.5 py-0 shrink-0 ms-2">
                         {t.status === "confirmed" ? (isAr ? "مؤكد" : "OK") : (isAr ? "معلق" : "Pending")}
                       </Badge>
                     </div>
@@ -585,7 +585,7 @@ const AnalyticsTab = memo(function AnalyticsTab() {
                 <div key={c.city} className="space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <span>{c.city}</span>
-                    <Badge variant="outline" className="text-[11px]">{c.count}</Badge>
+                    <Badge variant="outline" className="text-[0.6875rem]">{c.count}</Badge>
                   </div>
                   <Progress value={(c.count / (data.cityData[0]?.count || 1)) * 100} className="h-1.5" />
                 </div>
@@ -646,12 +646,12 @@ const ActivityTab = memo(function ActivityTab() {
                 <div key={ticket.id} className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2">
                   <Ticket className="h-3 w-3 text-chart-2 shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-medium truncate">{ticket.ticket_number}</p>
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-xs font-medium truncate">{ticket.ticket_number}</p>
+                    <p className="text-[0.6875rem] text-muted-foreground">
                       {ticket.attendee_name || (isAr ? "مجهول" : "Anonymous")} • {formatDistanceToNow(new Date(ticket.created_at), { addSuffix: true })}
                     </p>
                   </div>
-                  <Badge variant="outline" className="text-[11px] shrink-0">{ticket.status}</Badge>
+                  <Badge variant="outline" className="text-[0.6875rem] shrink-0">{ticket.status}</Badge>
                 </div>
               ))}
               {recentTickets.length === 0 && <p className="py-8 text-center text-xs text-muted-foreground">{isAr ? "لا توجد تذاكر" : "No tickets"}</p>}
@@ -675,8 +675,8 @@ const ActivityTab = memo(function ActivityTab() {
                 <div key={action.id} className="flex items-center gap-2 rounded-xl bg-muted/30 px-3 py-2">
                   {getActionIcon(action.action_type)}
                   <div className="flex-1 min-w-0">
-                    <p className="text-[12px] font-medium truncate">{action.action_type.replace(/_/g, " ")}</p>
-                    <p className="text-[11px] text-muted-foreground">{formatDistanceToNow(new Date(action.created_at), { addSuffix: true })}</p>
+                    <p className="text-xs font-medium truncate">{action.action_type.replace(/_/g, " ")}</p>
+                    <p className="text-[0.6875rem] text-muted-foreground">{formatDistanceToNow(new Date(action.created_at), { addSuffix: true })}</p>
                   </div>
                 </div>
               ))}

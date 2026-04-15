@@ -35,7 +35,7 @@ export const VendorSummaryCard = memo(function VendorSummaryCard({ vendorSummary
                 <Building2 className="h-4 w-4 text-muted-foreground shrink-0" />
                 <div className="min-w-0">
                   <p className="text-sm font-medium truncate">{isAr ? info.nameAr : info.name}</p>
-                  <p className="text-[12px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {info.count} {isAr ? "عنصر" : "items"} · {info.delivered} {isAr ? "تم التسليم" : "delivered"}
                   </p>
                 </div>

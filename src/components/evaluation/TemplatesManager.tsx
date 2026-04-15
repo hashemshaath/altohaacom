@@ -266,7 +266,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
                         <TableCell className="text-sm font-bold">{cr.max_score}</TableCell>
                         <TableCell className="text-sm font-bold">{cr.weight}%</TableCell>
                         <TableCell>
-                          {cr.is_required ? <Badge variant="destructive" className="text-[12px]">{isAr ? "نعم" : "Yes"}</Badge> : "—"}
+                          {cr.is_required ? <Badge variant="destructive" className="text-xs">{isAr ? "نعم" : "Yes"}</Badge> : "—"}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -354,12 +354,12 @@ export const TemplatesManager = memo(function TemplatesManager() {
                         </h3>
                       </div>
                       <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                        {t.is_default && <Badge className="text-[12px] h-4">{isAr ? "افتراضي" : "Default"}</Badge>}
-                        <Badge variant="outline" className="text-[12px] h-4">
+                        {t.is_default && <Badge className="text-xs h-4">{isAr ? "افتراضي" : "Default"}</Badge>}
+                        <Badge variant="outline" className="text-xs h-4">
                           {TEMPLATE_TYPES.find(tt => tt.value === t.template_type)?.[isAr ? "ar" : "en"] || t.template_type}
                         </Badge>
                         {t.product_category && (
-                          <Badge variant="secondary" className="text-[12px] h-4">{t.product_category}</Badge>
+                          <Badge variant="secondary" className="text-xs h-4">{t.product_category}</Badge>
                         )}
                       </div>
                     </div>
@@ -375,15 +375,15 @@ export const TemplatesManager = memo(function TemplatesManager() {
                   <div className="grid grid-cols-3 gap-2 mb-3">
                     <div className="rounded-xl bg-muted/50 p-2 text-center">
                       <AnimatedCounter value={categories} className="text-lg font-black tabular-nums" />
-                      <p className="text-[12px] text-muted-foreground">{isAr ? "فئات" : "Categories"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "فئات" : "Categories"}</p>
                     </div>
                     <div className="rounded-xl bg-muted/50 p-2 text-center">
                       <AnimatedCounter value={totalCriteria} className="text-lg font-black tabular-nums" />
-                      <p className="text-[12px] text-muted-foreground">{isAr ? "معايير" : "Criteria"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "معايير" : "Criteria"}</p>
                     </div>
                     <div className="rounded-xl bg-muted/50 p-2 text-center">
                       <AnimatedCounter value={totalWeight} className="text-lg font-black tabular-nums" suffix="%" />
-                      <p className="text-[12px] text-muted-foreground">{isAr ? "الأوزان" : "Weight"}</p>
+                      <p className="text-xs text-muted-foreground">{isAr ? "الأوزان" : "Weight"}</p>
                     </div>
                   </div>
 
@@ -393,13 +393,13 @@ export const TemplatesManager = memo(function TemplatesManager() {
                       const catWeight = (cat.criteria || []).reduce((s, c) => s + (c.weight || 0), 0);
                       return (
                         <div key={i} className="flex items-center gap-2">
-                          <span className="text-[12px] text-muted-foreground truncate flex-1 min-w-0">
+                          <span className="text-xs text-muted-foreground truncate flex-1 min-w-0">
                             {isAr && cat.category?.name_ar ? cat.category.name_ar : cat.category?.name}
                           </span>
                           <div className="w-16 shrink-0">
                             <Progress value={Math.min(catWeight, 100)} className="h-1" />
                           </div>
-                          <span className="text-[12px] font-bold tabular-nums w-8 text-end">{catWeight}%</span>
+                          <span className="text-xs font-bold tabular-nums w-8 text-end">{catWeight}%</span>
                         </div>
                       );
                     })}
@@ -407,7 +407,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
 
                   {/* Actions */}
                   <div className="flex items-center gap-1 border-t border-border/30 pt-3">
-                    <Button size="sm" variant="outline" className="gap-1 h-7 text-[12px] flex-1" onClick={() => setPreviewTemplate(t)}>
+                    <Button size="sm" variant="outline" className="gap-1 h-7 text-xs flex-1" onClick={() => setPreviewTemplate(t)}>
                       <Eye className="h-3 w-3" />
                       {isAr ? "معاينة التقرير" : "Preview Report"}
                     </Button>

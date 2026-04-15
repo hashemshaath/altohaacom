@@ -54,7 +54,7 @@ export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: C
           </div>
           <Progress value={Math.min(weightPct, 100)} className="h-1.5" />
           {!isBalanced && (
-            <p className="text-[12px] text-destructive">
+            <p className="text-xs text-destructive">
               {weightPct < 100
                 ? isAr ? `متبقي ${100 - weightPct}% للوصول إلى 100%` : `${100 - weightPct}% remaining to reach 100%`
                 : isAr ? `تجاوز بـ ${weightPct - 100}%` : `Exceeds by ${weightPct - 100}%`}
@@ -78,7 +78,7 @@ export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: C
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <Label className="text-[12px]">{isAr ? "الاسم (إنجليزي)" : "Name (English)"}</Label>
+                  <Label className="text-xs">{isAr ? "الاسم (إنجليزي)" : "Name (English)"}</Label>
                   <AITextOptimizer
                     text={crit.name}
                     lang="en"
@@ -95,7 +95,7 @@ export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: C
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <Label className="text-[12px]">{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
+                  <Label className="text-xs">{isAr ? "الاسم (عربي)" : "Name (Arabic)"}</Label>
                   <AITextOptimizer
                     text={crit.name_ar}
                     lang="ar"
@@ -116,7 +116,7 @@ export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: C
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <Label className="text-[12px]">{isAr ? "الوصف (إنجليزي)" : "Description (English)"}</Label>
+                  <Label className="text-xs">{isAr ? "الوصف (إنجليزي)" : "Description (English)"}</Label>
                   <AITextOptimizer
                     text={crit.description}
                     lang="en"
@@ -134,7 +134,7 @@ export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: C
               </div>
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <Label className="text-[12px]">{isAr ? "الوصف (عربي)" : "Description (Arabic)"}</Label>
+                  <Label className="text-xs">{isAr ? "الوصف (عربي)" : "Description (Arabic)"}</Label>
                   <AITextOptimizer
                     text={crit.description_ar}
                     lang="ar"
@@ -155,11 +155,11 @@ export const CriteriaStep = memo(function CriteriaStep({ criteria, onChange }: C
 
             <div className="grid gap-2 sm:grid-cols-2">
               <div className="space-y-1">
-                <Label className="text-[12px]">{isAr ? "الدرجة القصوى" : "Max Score"}</Label>
+                <Label className="text-xs">{isAr ? "الدرجة القصوى" : "Max Score"}</Label>
                 <Input type="number" value={crit.max_score} onChange={(e) => updateCriteria(index, "max_score", parseInt(e.target.value) || 10)} min={1} max={100} className="h-8" />
               </div>
               <div className="space-y-1">
-                <Label className="text-[12px]">{isAr ? "الوزن" : "Weight"} ({(Number(crit.weight) * 100).toFixed(0)}%)</Label>
+                <Label className="text-xs">{isAr ? "الوزن" : "Weight"} ({(Number(crit.weight) * 100).toFixed(0)}%)</Label>
                 <Input type="number" step="0.05" value={crit.weight} onChange={(e) => updateCriteria(index, "weight", parseFloat(e.target.value) || 0)} min={0} max={1} className="h-8" />
               </div>
             </div>

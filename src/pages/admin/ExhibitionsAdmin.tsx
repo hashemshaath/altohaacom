@@ -315,7 +315,7 @@ export default function ExhibitionsAdmin() {
                 <p className={cn("text-lg font-bold tabular-nums leading-none", kpi.color)}>
                   <AnimatedCounter value={kpi.value} />
                 </p>
-                <p className="text-[11px] text-muted-foreground">{kpi.label}</p>
+                <p className="text-[0.6875rem] text-muted-foreground">{kpi.label}</p>
               </div>
             </div>
           ))}
@@ -403,7 +403,7 @@ export default function ExhibitionsAdmin() {
           {/* Status Legend */}
           <div className="flex flex-wrap gap-1.5">
             {EXHIBITION_STATUS_LEGEND.map(s => (
-              <span key={s.status} className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium", s.color)}>
+              <span key={s.status} className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[0.6875rem] font-medium", s.color)}>
                 <span className={cn("h-1.5 w-1.5 rounded-full", s.dot)} />
                 {isAr ? s.labelAr : s.label}
               </span>
@@ -488,7 +488,7 @@ export default function ExhibitionsAdmin() {
                               </div>
                             )}
                             <div className="min-w-0">
-                              <p className="font-medium text-[13px] truncate group-hover:text-primary transition-colors">
+                              <p className="font-medium text-[0.8125rem] truncate group-hover:text-primary transition-colors">
                                 {(() => {
                                   const title = isAr && ex.title_ar ? ex.title_ar : ex.title;
                                   const year = (ex as any).edition_year;
@@ -498,12 +498,12 @@ export default function ExhibitionsAdmin() {
                               </p>
                               <div className="flex items-center gap-1 mt-0.5">
                                 {(ex as any).edition_year && (
-                                  <span className="text-[10px] font-mono text-muted-foreground">{(ex as any).edition_year}</span>
+                                  <span className="text-[0.625rem] font-mono text-muted-foreground">{(ex as any).edition_year}</span>
                                 )}
                                 {(ex as any).exhibition_number && (
-                                  <span className="text-[10px] text-muted-foreground">#{(ex as any).exhibition_number}</span>
+                                  <span className="text-[0.625rem] text-muted-foreground">#{(ex as any).exhibition_number}</span>
                                 )}
-                                {ex.is_featured && <span className="text-[10px] text-chart-4">★</span>}
+                                {ex.is_featured && <span className="text-[0.625rem] text-chart-4">★</span>}
                               </div>
                             </div>
                           </div>
@@ -534,7 +534,7 @@ export default function ExhibitionsAdmin() {
                         <TableCell>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <button className={cn("inline-flex items-center gap-1.5 rounded-full border-0 px-2 py-0.5 text-[11px] font-medium cursor-pointer hover:ring-2 hover:ring-ring/20 transition-all", derived.color)}>
+                              <button className={cn("inline-flex items-center gap-1.5 rounded-full border-0 px-2 py-0.5 text-[0.6875rem] font-medium cursor-pointer hover:ring-2 hover:ring-ring/20 transition-all", derived.color)}>
                                 {derived.status === "started" ? (
                                   <span className="relative flex h-1.5 w-1.5">
                                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-current opacity-75" />
@@ -548,7 +548,7 @@ export default function ExhibitionsAdmin() {
                               </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="start" className="min-w-[180px]">
-                              <p className="px-2 py-1.5 text-[11px] font-medium text-muted-foreground">{t("Change Status", "تغيير الحالة")}</p>
+                              <p className="px-2 py-1.5 text-[0.6875rem] font-medium text-muted-foreground">{t("Change Status", "تغيير الحالة")}</p>
                               {statusOptions.map(opt => (
                                 <DropdownMenuItem
                                   key={opt.value}
@@ -695,7 +695,7 @@ export default function ExhibitionsAdmin() {
                     <p className={cn("text-xl font-bold tabular-nums", item.color)}>
                       <AnimatedCounter value={item.value} />
                     </p>
-                    <p className="text-[11px] text-muted-foreground">{item.label}</p>
+                    <p className="text-[0.6875rem] text-muted-foreground">{item.label}</p>
                   </div>
                 </CardContent>
               </Card>

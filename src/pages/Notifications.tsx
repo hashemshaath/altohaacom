@@ -250,7 +250,7 @@ export default function Notifications() {
                     <s.icon className={`h-3.5 w-3.5 sm:h-4.5 sm:w-4.5 text-${s.color}`} />
                   </div>
                   <div>
-                    <p className="text-[12px] sm:text-[12px] text-muted-foreground font-medium">{s.label}</p>
+                    <p className="text-xs sm:text-xs text-muted-foreground font-medium">{s.label}</p>
                     <AnimatedCounter value={typeof s.value === 'number' ? s.value : 0} className="text-lg sm:text-xl font-bold" />
                   </div>
                 </CardContent>
@@ -292,7 +292,7 @@ export default function Notifications() {
                     <Badge 
                       variant={isActive ? "outline" : "secondary"} 
                       className={cn(
-                        "text-[12px] h-4 px-1.5 ms-0.5",
+                        "text-xs h-4 px-1.5 ms-0.5",
                         isActive && "border-primary-foreground/30 text-primary-foreground"
                       )}
                     >
@@ -391,7 +391,7 @@ export default function Notifications() {
                   <div className="flex items-center gap-3 mb-3">
                     <p className="text-sm font-semibold text-muted-foreground">{dateLabel}</p>
                     <div className="flex-1 h-px bg-gradient-to-r from-border/50 to-transparent" />
-                    <Badge variant="secondary" className="text-[12px] rounded-xl tabular-nums">
+                    <Badge variant="secondary" className="text-xs rounded-xl tabular-nums">
                       <AnimatedCounter value={items.length} className="inline" />
                     </Badge>
                   </div>
@@ -486,10 +486,10 @@ export default function Notifications() {
                                         locale: isAr ? ar : enUS,
                                       }))}
                                     </span>
-                                    <Badge variant="outline" className="text-[12px] px-1.5 py-0 rounded-md">
+                                    <Badge variant="outline" className="text-xs px-1.5 py-0 rounded-md">
                                       {getTypeLabel(notification.type || "info")}
                                     </Badge>
-                                    <Badge variant="secondary" className="text-[12px] px-1.5 py-0 rounded-md">
+                                    <Badge variant="secondary" className="text-xs px-1.5 py-0 rounded-md">
                                       {getSectionLabel(notification)}
                                     </Badge>
                                     {notification.is_read && notification.read_at && (

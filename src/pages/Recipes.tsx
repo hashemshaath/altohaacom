@@ -57,7 +57,7 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
           <div className="mb-2 flex items-start justify-between gap-2">
             <h3 className="line-clamp-1 font-semibold">{isAr && recipe.title_ar ? recipe.title_ar : recipe.title}</h3>
             {recipe.difficulty && (
-              <Badge variant="outline" className={`shrink-0 text-[12px] ${difficultyColor(recipe.difficulty)}`}>
+              <Badge variant="outline" className={`shrink-0 text-xs ${difficultyColor(recipe.difficulty)}`}>
                 {recipe.difficulty}
               </Badge>
             )}
@@ -67,7 +67,7 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
               {isAr && recipe.description_ar ? recipe.description_ar : recipe.description}
             </p>
           )}
-          <div className="mb-3 flex flex-wrap items-center gap-2.5 text-[12px] text-muted-foreground">
+          <div className="mb-3 flex flex-wrap items-center gap-2.5 text-xs text-muted-foreground">
             {recipe.cuisine && (
               <span className="flex items-center gap-1"><ChefHat className="h-3 w-3" />{recipe.cuisine}</span>
             )}
@@ -82,21 +82,21 @@ const RecipeCard = memo(function RecipeCard({ recipe, isAr }: { recipe: RecipeWi
             )}
           </div>
           {cat && (
-            <Badge variant="secondary" className="mb-3 text-[12px]">{isAr ? cat.ar : cat.en}</Badge>
+            <Badge variant="secondary" className="mb-3 text-xs">{isAr ? cat.ar : cat.en}</Badge>
           )}
           <Separator className="mb-3" />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Avatar className="h-5 w-5">
-                <AvatarFallback className="bg-primary/10 text-primary text-[12px]">
+                <AvatarFallback className="bg-primary/10 text-primary text-xs">
                   {(recipe.author_name || "C")[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="text-[12px] text-muted-foreground">{recipe.author_name || "Chef"}</span>
+              <span className="text-xs text-muted-foreground">{recipe.author_name || "Chef"}</span>
             </div>
             <div className="flex items-center gap-2">
               {recipe.ratings_count > 0 && (
-                <span className="flex items-center gap-1 text-[12px]">
+                <span className="flex items-center gap-1 text-xs">
                   <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
                   {recipe.avg_rating} ({recipe.ratings_count})
                 </span>
@@ -158,7 +158,7 @@ export default function Recipes() {
               <div className="space-y-2 md:space-y-3 max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 ring-1 ring-primary/20">
                   <UtensilsCrossed className="h-3.5 w-3.5 text-primary" />
-                  <span className="text-[12px] font-bold uppercase tracking-widest text-primary">
+                  <span className="text-xs font-bold uppercase tracking-widest text-primary">
                     {isAr ? "قاعدة الوصفات" : "Recipe Vault"}
                   </span>
                 </div>
@@ -176,7 +176,7 @@ export default function Recipes() {
                   <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 text-primary px-3 py-1.5">
                     <ChefHat className="h-3.5 w-3.5" />
                     <span className="font-bold">{recipes.length}</span>
-                    <span className="text-[12px]">{isAr ? "وصفة" : "Recipes"}</span>
+                    <span className="text-xs">{isAr ? "وصفة" : "Recipes"}</span>
                   </Badge>
                 )}
                 {user && (

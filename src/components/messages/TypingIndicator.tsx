@@ -18,7 +18,7 @@ export const TypingIndicator = memo(function TypingIndicator({ partnerName }: Ty
               <span className="h-[6px] w-[6px] rounded-full bg-primary/50 animate-bounce [animation-delay:200ms] [animation-duration:1.2s]" />
               <span className="h-[6px] w-[6px] rounded-full bg-primary/40 animate-bounce [animation-delay:400ms] [animation-duration:1.2s]" />
             </div>
-            <span className="text-[12px] text-muted-foreground font-medium">
+            <span className="text-xs text-muted-foreground font-medium">
               {partnerName
                 ? isAr ? `${partnerName} يكتب...` : `${partnerName} is typing...`
                 : isAr ? "يكتب..." : "typing..."}

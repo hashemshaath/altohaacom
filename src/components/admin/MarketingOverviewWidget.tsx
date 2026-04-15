@@ -107,7 +107,7 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
             <CardContent className="p-3 flex items-center gap-2">
               <div className={`rounded-full p-1.5 ${kpi.bg}`}><kpi.icon className={`h-3.5 w-3.5 ${kpi.color}`} /></div>
               <div className="min-w-0">
-                <p className="text-[12px] text-muted-foreground truncate">{kpi.label}</p>
+                <p className="text-xs text-muted-foreground truncate">{kpi.label}</p>
                 <p className="text-base font-bold">{kpi.value}</p>
               </div>
             </CardContent>
@@ -135,14 +135,14 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
         <div className="space-y-4">
           <Card>
             <CardContent className="p-3">
-              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "حالة التشغيل" : "Run Status"}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">{isAr ? "حالة التشغيل" : "Run Status"}</p>
               <div className="flex items-center gap-3">
                 <PieChart width={60} height={60}>
                   <Pie data={data.runStatusDist} dataKey="value" cx={28} cy={28} innerRadius={16} outerRadius={28} strokeWidth={0}>
                     {data.runStatusDist.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                 </PieChart>
-                <div className="text-[12px] space-y-1">
+                <div className="text-xs space-y-1">
                   {data.runStatusDist.map((s, i) => (
                     <div key={s.name} className="flex items-center gap-1.5">
                       <span className="h-2 w-2 rounded-full" style={{ background: COLORS[i % COLORS.length] }} />
@@ -156,12 +156,12 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
 
           <Card>
             <CardContent className="p-3">
-              <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "القنوات النشطة" : "Active Channels"}</p>
+              <p className="text-xs font-semibold text-muted-foreground mb-2">{isAr ? "القنوات النشطة" : "Active Channels"}</p>
               <div className="space-y-1">
                 {data.channelDist.map(c => (
-                  <div key={c.name} className="flex items-center justify-between text-[12px]">
+                  <div key={c.name} className="flex items-center justify-between text-xs">
                     <span className="capitalize">{c.name.replace(/_/g, " ")}</span>
-                    <Badge variant="outline" className="text-[12px] h-4">{c.value}</Badge>
+                    <Badge variant="outline" className="text-xs h-4">{c.value}</Badge>
                   </div>
                 ))}
               </div>

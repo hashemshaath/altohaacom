@@ -84,7 +84,7 @@ export const ProfileSkillsEndorsements = memo(function ProfileSkillsEndorsements
                   {isAr ? skill.nameAr : skill.name}
                 </span>
                 {skill.count > 0 && (
-                  <span className="inline-flex items-center gap-0.5 text-[12px] font-bold text-chart-2 bg-chart-2/10 rounded-full px-1.5 py-0.5">
+                  <span className="inline-flex items-center gap-0.5 text-xs font-bold text-chart-2 bg-chart-2/10 rounded-full px-1.5 py-0.5">
                     <Users className="h-2.5 w-2.5" />
                     {skill.count}
                   </span>

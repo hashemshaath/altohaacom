@@ -137,7 +137,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
                       <span className="flex items-center gap-2">
                         <m.icon className="h-3 w-3" />
                         {isAr ? m.labelAr : m.label}
-                        <Badge variant="secondary" className="text-[12px] px-1 py-0 ms-1">{counts?.[m.key] || 0}</Badge>
+                        <Badge variant="secondary" className="text-xs px-1 py-0 ms-1">{counts?.[m.key] || 0}</Badge>
                       </span>
                     </SelectItem>
                   ))}
@@ -155,7 +155,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
               </Button>
             </div>
           </div>
-          <p className="text-[12px] text-muted-foreground mt-2">
+          <p className="text-xs text-muted-foreground mt-2">
             {isAr ? `${currentCount} سجل جاهز للتصدير` : `${currentCount} records ready for export`}
           </p>
         </div>
@@ -166,7 +166,7 @@ export const AdvancedExportWidget = memo(function AdvancedExportWidget() {
             <div key={m.key} role="button" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && setSelectedModule(m.key)} className="bg-muted/30 rounded-xl p-2 text-center cursor-pointer hover:bg-muted/60 transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none" onClick={() => setSelectedModule(m.key)}>
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${selectedModule === m.key ? "text-primary" : "text-muted-foreground"}`} />
               <div className="text-xs font-bold">{counts?.[m.key] || 0}</div>
-              <div className="text-[12px] text-muted-foreground">{isAr ? m.labelAr : m.label}</div>
+              <div className="text-xs text-muted-foreground">{isAr ? m.labelAr : m.label}</div>
             </div>
           ))}
         </div>

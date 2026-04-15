@@ -141,7 +141,7 @@ export default function CompanyPortalDashboard() {
                 </div>
                 <div>
                   <p className="text-xs font-semibold">{isAr ? "اكتمال الملف" : "Profile"}</p>
-                  <p className="text-[12px] text-primary-foreground/70">{completionScore === 100 ? (isAr ? "مكتمل ✓" : "Complete ✓") : (isAr ? "أكمل ملفك" : "Complete it")}</p>
+                  <p className="text-xs text-primary-foreground/70">{completionScore === 100 ? (isAr ? "مكتمل ✓" : "Complete ✓") : (isAr ? "أكمل ملفك" : "Complete it")}</p>
                 </div>
               </div>
             </div>
@@ -171,11 +171,11 @@ export default function CompanyPortalDashboard() {
                       <AnimatedCounter value={stat.value} />
                     </p>
                   )}
-                  <p className="text-[12px] text-muted-foreground font-medium mt-0.5">{stat.label}</p>
+                  <p className="text-xs text-muted-foreground font-medium mt-0.5">{stat.label}</p>
                   {stat.sub !== undefined && stat.sub > 0 && (
                     <div className="flex items-center gap-1 mt-1">
                       <div className="h-1 w-1 rounded-full bg-chart-4 animate-pulse" />
-                      <p className="text-[12px] text-chart-4 font-medium">
+                      <p className="text-xs text-chart-4 font-medium">
                         {stat.sub} {stat.subLabel}
                       </p>
                     </div>
@@ -204,7 +204,7 @@ export default function CompanyPortalDashboard() {
                   <item.icon className={cn("h-5 w-5", item.color)} />
                 </div>
                 <div>
-                  <p className="text-[12px] text-muted-foreground font-medium">{item.label}</p>
+                  <p className="text-xs text-muted-foreground font-medium">{item.label}</p>
                   <p className="text-lg font-bold">{item.value}</p>
                 </div>
               </CardContent>
@@ -293,7 +293,7 @@ function SponsorshipWidget({ companyId }: { companyId: string | null }) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="truncate text-sm font-medium">{title}</p>
-              <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 {comp.competition_start && (
                   <span className="flex items-center gap-1">
                     <Calendar className="h-3 w-3" />
@@ -303,7 +303,7 @@ function SponsorshipWidget({ companyId }: { companyId: string | null }) {
                 {comp.city && <span>{comp.city}</span>}
               </div>
             </div>
-            <Badge variant="outline" className="shrink-0 text-[12px] bg-chart-3/5 text-chart-3 border-chart-3/30">
+            <Badge variant="outline" className="shrink-0 text-xs bg-chart-3/5 text-chart-3 border-chart-3/30">
               <Crown className="me-1 h-3 w-3" />
               {isAr ? "رعاية" : "Sponsor"}
             </Badge>

@@ -141,10 +141,10 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
           {t("Advanced Reports", "تقارير متقدمة")}
         </h3>
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" className="text-[12px]" onClick={() => exportTickets(data.tickets)}>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => exportTickets(data.tickets)}>
             <Download className="me-1 h-3 w-3" /> {t("Export Tickets", "تصدير التذاكر")}
           </Button>
-          <Button size="sm" variant="outline" className="text-[12px]" onClick={() => exportBooths(data.booths)}>
+          <Button size="sm" variant="outline" className="text-xs" onClick={() => exportBooths(data.booths)}>
             <Download className="me-1 h-3 w-3" /> {t("Export Booths", "تصدير الأجنحة")}
           </Button>
         </div>
@@ -164,15 +164,15 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
             <CardContent className="p-3">
               <div className="flex items-center gap-2 mb-1">
                 <kpi.icon className="h-3.5 w-3.5 text-primary" />
-                <span className="text-[12px] text-muted-foreground">{kpi.label}</span>
+                <span className="text-xs text-muted-foreground">{kpi.label}</span>
               </div>
               <p className="text-base font-bold">
                 {'numValue' in kpi && kpi.numValue !== undefined
                   ? <><AnimatedCounter value={kpi.numValue} className="inline" />{kpi.suffix || ''}</>
                   : kpi.strValue}
               </p>
-              {kpi.sub && <p className="text-[12px] text-muted-foreground">{kpi.sub}</p>}
-              {'subValue' in kpi && (kpi as { subValue?: number }).subValue != null && <p className="text-[12px] text-muted-foreground">+<AnimatedCounter value={Math.round((kpi as { subValue?: number }).subValue)} className="inline" /> {isAr ? "أجنحة" : "booths"}</p>}
+              {kpi.sub && <p className="text-xs text-muted-foreground">{kpi.sub}</p>}
+              {'subValue' in kpi && (kpi as { subValue?: number }).subValue != null && <p className="text-xs text-muted-foreground">+<AnimatedCounter value={Math.round((kpi as { subValue?: number }).subValue)} className="inline" /> {isAr ? "أجنحة" : "booths"}</p>}
             </CardContent>
           </Card>
         ))}
@@ -262,14 +262,14 @@ export default memo(function OrganizerAdvancedReports({ exhibitionId, exhibition
           <CardContent className="p-4 space-y-2">
             <p className="text-xs font-semibold">{t("Booth Occupancy", "إشغال الأجنحة")}</p>
             <Progress value={data.boothOccupancy} className="h-3" />
-            <p className="text-[12px] text-muted-foreground">{data.occupiedBooths} / {data.totalBooths} ({data.boothOccupancy}%)</p>
+            <p className="text-xs text-muted-foreground">{data.occupiedBooths} / {data.totalBooths} ({data.boothOccupancy}%)</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 space-y-2">
             <p className="text-xs font-semibold">{t("Check-in Rate", "معدل الدخول")}</p>
             <Progress value={data.checkInRate} className="h-3" />
-            <p className="text-[12px] text-muted-foreground">{data.checkedIn} / {data.confirmed} ({data.checkInRate}%)</p>
+            <p className="text-xs text-muted-foreground">{data.checkedIn} / {data.confirmed} ({data.checkInRate}%)</p>
           </CardContent>
         </Card>
       </div>

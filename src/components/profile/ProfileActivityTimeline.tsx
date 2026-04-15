@@ -132,7 +132,7 @@ export const ProfileActivityTimeline = memo(function ProfileActivityTimeline({ u
             <Clock className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "النشاط الأخير" : "Recent Activity"}
-          <Badge variant="secondary" className="ms-auto text-[12px] h-5 px-2">{events.length}</Badge>
+          <Badge variant="secondary" className="ms-auto text-xs h-5 px-2">{events.length}</Badge>
         </h3>
       </div>
       <CardContent className="p-4">
@@ -149,8 +149,8 @@ export const ProfileActivityTimeline = memo(function ProfileActivityTimeline({ u
                 <event.icon className={`h-3.5 w-3.5 ${event.color} transition-colors`} />
               </div>
               <div className="flex-1 pt-0.5">
-                <p className="text-[13px] leading-snug text-foreground/90 group-hover:text-foreground transition-colors">{event.title}</p>
-                <p className="mt-1 text-[12px] text-muted-foreground font-medium" dir="ltr">
+                <p className="text-[0.8125rem] leading-snug text-foreground/90 group-hover:text-foreground transition-colors">{event.title}</p>
+                <p className="mt-1 text-xs text-muted-foreground font-medium" dir="ltr">
                   {format(new Date(event.date), "MMM d, yyyy")}
                 </p>
               </div>

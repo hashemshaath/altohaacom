@@ -340,7 +340,7 @@ export default function MembershipCheckout() {
           {["plan", "confirm", "success"].map((s, i) => (
             <div key={s} className="flex items-center gap-2">
               <div className={cn(
-                "flex h-6 w-6 items-center justify-center rounded-full text-[12px] font-bold",
+                "flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold",
                 step === s || (s === "success" && step === "processing")
                   ? "bg-primary text-primary-foreground"
                   : i < ["plan", "confirm", "success"].indexOf(step)
@@ -414,7 +414,7 @@ export default function MembershipCheckout() {
                       )}>
                         {isTierUpgrade && (
                           <div className="absolute -top-2.5 start-3">
-                            <Badge className="bg-primary text-[12px] gap-1">
+                            <Badge className="bg-primary text-xs gap-1">
                               <ArrowUp className="h-3 w-3" />
                               {isAr ? "ترقية" : "Upgrade"}
                             </Badge>
@@ -422,7 +422,7 @@ export default function MembershipCheckout() {
                         )}
                         {isTierDowngrade && (
                           <div className="absolute -top-2.5 start-3">
-                            <Badge variant="secondary" className="text-[12px] gap-1">
+                            <Badge variant="secondary" className="text-xs gap-1">
                               <ArrowDown className="h-3 w-3" />
                               {isAr ? "تخفيض" : "Downgrade"}
                             </Badge>
@@ -430,7 +430,7 @@ export default function MembershipCheckout() {
                         )}
                         {isCurrent && isRenewal && (
                           <div className="absolute -top-2.5 start-3">
-                            <Badge variant="outline" className="text-[12px] gap-1 bg-background">
+                            <Badge variant="outline" className="text-xs gap-1 bg-background">
                               <RefreshCw className="h-3 w-3" />
                               {isAr ? "تجديد" : "Renew"}
                             </Badge>
@@ -446,7 +446,7 @@ export default function MembershipCheckout() {
                               <div>
                                 <p className="font-bold">{TIER_NAMES[tier.id]?.[isAr ? "ar" : "en"]}</p>
                                 {isCurrent && (
-                                  <Badge variant="outline" className="text-[12px] mt-0.5">
+                                  <Badge variant="outline" className="text-xs mt-0.5">
                                     {isAr ? "الحالي" : "Current"}
                                   </Badge>
                                 )}
@@ -465,7 +465,7 @@ export default function MembershipCheckout() {
                                   </span>
                                 </p>
                                 {billingCycle === "yearly" && monthlySaving > 0 && (
-                                  <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-[12px] mt-1">
+                                  <Badge variant="secondary" className="bg-chart-2/10 text-chart-2 border-chart-2/20 text-xs mt-1">
                                     {isAr ? `وفّر ${monthlySaving} ر.س/سنة` : `Save ${monthlySaving} SAR/yr`}
                                   </Badge>
                                 )}
@@ -566,7 +566,7 @@ export default function MembershipCheckout() {
                     )}
                     <span className="text-sm font-bold">{TIER_NAMES[selectedTier]?.[isAr ? "ar" : "en"]}</span>
                   </div>
-                  <Badge variant={isDowngrade ? "secondary" : "default"} className="ms-auto text-[12px]">
+                  <Badge variant={isDowngrade ? "secondary" : "default"} className="ms-auto text-xs">
                     {isRenewal ? (isAr ? "تجديد" : "Renewal") : isDowngrade ? (isAr ? "تخفيض" : "Downgrade") : (isAr ? "ترقية" : "Upgrade")}
                   </Badge>
                 </div>
@@ -651,7 +651,7 @@ export default function MembershipCheckout() {
               </Button>
             </div>
 
-            <p className="text-[12px] text-center text-muted-foreground">
+            <p className="text-xs text-center text-muted-foreground">
               {isAr
                 ? "بالمتابعة، أنت توافق على شروط الخدمة وسياسة الخصوصية"
                 : "By proceeding, you agree to our Terms of Service and Privacy Policy"}

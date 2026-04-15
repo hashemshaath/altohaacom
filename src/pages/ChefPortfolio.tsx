@@ -184,7 +184,7 @@ export default function ChefPortfolio() {
                     <stat.icon className={`h-5 w-5 ${stat.color}`} />
                   </div>
                   <div>
-                    <p className="text-[12px] uppercase font-bold tracking-wider text-muted-foreground">{stat.label}</p>
+                    <p className="text-xs uppercase font-bold tracking-wider text-muted-foreground">{stat.label}</p>
                     <p className="text-lg font-bold">{stat.value}</p>
                   </div>
                 </CardContent>
@@ -218,12 +218,12 @@ export default function ChefPortfolio() {
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-semibold truncate">{isAr && comp?.title_ar ? comp.title_ar : comp?.title}</p>
-                              <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
+                              <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                 {comp?.country_code && <span>{countryFlag(comp.country_code)}</span>}
                                 {comp?.competition_start && <span>{format(new Date(comp.competition_start), "MMM yyyy")}</span>}
                               </div>
                             </div>
-                            <Badge variant={reg.status === "approved" ? "default" : "secondary"} className="text-[12px] shrink-0">
+                            <Badge variant={reg.status === "approved" ? "default" : "secondary"} className="text-xs shrink-0">
                               {reg.status}
                             </Badge>
                           </div>
@@ -286,7 +286,7 @@ export default function ChefPortfolio() {
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Award className="h-4 w-4 text-primary" />
                     {isAr ? "الشهادات" : "Certificates"}
-                    {totalCerts > 0 && <Badge variant="secondary" className="text-[12px]">{totalCerts}</Badge>}
+                    {totalCerts > 0 && <Badge variant="secondary" className="text-xs">{totalCerts}</Badge>}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -297,7 +297,7 @@ export default function ChefPortfolio() {
                           <Award className="h-4 w-4 text-chart-5 shrink-0" />
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium truncate">{isAr && cert.event_name_ar ? cert.event_name_ar : cert.event_name}</p>
-                            <p className="text-[12px] text-muted-foreground">{cert.type} • {cert.issued_at ? format(new Date(cert.issued_at), "MMM yyyy") : "—"}</p>
+                            <p className="text-xs text-muted-foreground">{cert.type} • {cert.issued_at ? format(new Date(cert.issued_at), "MMM yyyy") : "—"}</p>
                           </div>
                         </div>
                       ))}

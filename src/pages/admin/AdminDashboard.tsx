@@ -64,7 +64,7 @@ function MetricCard({ title, value, icon: Icon, trend, sparkData, chartColor, li
         <div className="flex items-center justify-between mb-3">
           <Icon className="h-4 w-4 text-muted-foreground" />
           {trend !== undefined && trend !== 0 && (
-            <span className={cn("text-[11px] font-mono font-medium flex items-center gap-0.5",
+            <span className={cn("text-[0.6875rem] font-mono font-medium flex items-center gap-0.5",
               trend > 0 ? "text-chart-5" : "text-destructive"
             )}>
               {trend > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
@@ -79,7 +79,7 @@ function MetricCard({ title, value, icon: Icon, trend, sparkData, chartColor, li
             <AnimatedCounter value={value} />
           </p>
         )}
-        <p className="text-[12px] text-muted-foreground mt-0.5">{title}</p>
+        <p className="text-xs text-muted-foreground mt-0.5">{title}</p>
         {sparkData && sparkData.length > 0 && chartColor && (
           <div className="mt-2 -mx-1 opacity-40 group-hover:opacity-70 transition-opacity">
             <ResponsiveContainer width="100%" height={24}>
@@ -256,14 +256,14 @@ export default function AdminDashboard() {
           <h1 className="text-lg font-semibold tracking-tight text-foreground">
             {greeting} 👋
           </h1>
-          <p className="text-[13px] text-muted-foreground mt-0.5">
+          <p className="text-[0.8125rem] text-muted-foreground mt-0.5">
             {format(new Date(), "EEEE, MMM d, yyyy")}
           </p>
         </div>
         <div className="flex items-center gap-2">
           <div className="hidden sm:flex items-center gap-1.5 rounded-full border border-border/50 px-2.5 py-1">
             <div className="h-1.5 w-1.5 rounded-full bg-chart-5 animate-pulse" />
-            <span className="text-[11px] text-muted-foreground font-medium">{isAr ? "مباشر" : "Live"}</span>
+            <span className="text-[0.6875rem] text-muted-foreground font-medium">{isAr ? "مباشر" : "Live"}</span>
           </div>
           <AdminRealtimeNotificationBell />
         </div>
@@ -306,7 +306,7 @@ export default function AdminDashboard() {
 
           {/* Today strip */}
           <div className="flex items-center gap-3 overflow-x-auto pb-1">
-            <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground shrink-0">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground shrink-0">
               <Clock className="h-3.5 w-3.5" />
               <span className="font-medium">{isAr ? "اليوم" : "Today"}</span>
             </div>
@@ -319,14 +319,14 @@ export default function AdminDashboard() {
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-1.5 shrink-0">
                 <span className={cn("text-sm font-semibold tabular-nums", item.color)}>{item.value}</span>
-                <span className="text-[11px] text-muted-foreground">{item.label}</span>
+                <span className="text-[0.6875rem] text-muted-foreground">{item.label}</span>
               </div>
             ))}
           </div>
 
           {/* Quick Actions */}
           <div>
-            <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2.5">
               {isAr ? "وصول سريع" : "Quick access"}
             </p>
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
@@ -343,9 +343,9 @@ export default function AdminDashboard() {
                 <Link key={action.title} to={action.link}>
                   <div className="group relative flex flex-col items-center gap-1.5 rounded-lg border border-border/40 p-3 text-center transition-all hover:border-border hover:bg-accent/5 active:scale-[0.98]">
                     <action.icon className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    <span className="text-[10px] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
+                    <span className="text-[0.625rem] font-medium text-muted-foreground group-hover:text-foreground transition-colors leading-tight">{action.title}</span>
                     {action.badge && action.badge > 0 && (
-                      <span className="absolute -top-1 -end-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground px-1">{action.badge}</span>
+                      <span className="absolute -top-1 -end-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive text-[0.625rem] font-bold text-destructive-foreground px-1">{action.badge}</span>
                     )}
                   </div>
                 </Link>
@@ -389,8 +389,8 @@ export default function AdminDashboard() {
             {/* Events Preview */}
             <div className="lg:col-span-3">
               <div className="flex items-center justify-between mb-2.5">
-                <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "الفعاليات القادمة" : "Upcoming events"}</p>
-                <Button variant="ghost" size="sm" className="text-[11px] h-6 px-2 text-muted-foreground hover:text-foreground" asChild>
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "الفعاليات القادمة" : "Upcoming events"}</p>
+                <Button variant="ghost" size="sm" className="text-[0.6875rem] h-6 px-2 text-muted-foreground hover:text-foreground" asChild>
                   <Link to="/admin/exhibitions">{isAr ? "عرض الكل" : "View all"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
                 </Button>
               </div>
@@ -400,7 +400,7 @@ export default function AdminDashboard() {
                     <Link key={ev.id} to={ev.link}>
                       <div className="group flex items-center gap-3 rounded-lg border border-border/30 p-3 transition-all hover:border-border hover:bg-accent/5">
                         <div className="flex flex-col items-center rounded-md bg-muted/50 px-2.5 py-1.5 text-center min-w-[44px]">
-                          <span className="text-[10px] font-medium text-muted-foreground uppercase">{format(new Date(ev.date), "MMM")}</span>
+                          <span className="text-[0.625rem] font-medium text-muted-foreground uppercase">{format(new Date(ev.date), "MMM")}</span>
                           <span className="text-base font-semibold text-foreground leading-none">{format(new Date(ev.date), "d")}</span>
                         </div>
                         <div className="flex-1 min-w-0">
@@ -413,11 +413,11 @@ export default function AdminDashboard() {
                             })()}
                           </p>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[11px] text-muted-foreground capitalize">{ev.type === "competition" ? (isAr ? "مسابقة" : "competition") : (isAr ? "معرض" : "exhibition")}</span>
+                            <span className="text-[0.6875rem] text-muted-foreground capitalize">{ev.type === "competition" ? (isAr ? "مسابقة" : "competition") : (isAr ? "معرض" : "exhibition")}</span>
                             {(ev as any).city && (
                               <>
                                 <span className="text-muted-foreground/30">·</span>
-                                <span className="text-[11px] text-muted-foreground truncate">{(ev as any).city}</span>
+                                <span className="text-[0.6875rem] text-muted-foreground truncate">{(ev as any).city}</span>
                               </>
                             )}
                           </div>
@@ -453,10 +453,10 @@ export default function AdminDashboard() {
                     { label: isAr ? "التخزين" : "Storage", status: isAr ? "متاح" : "Available" },
                   ].map((s) => (
                     <div key={s.label} className="flex items-center justify-between">
-                      <span className="text-[12px] text-muted-foreground">{s.label}</span>
+                      <span className="text-xs text-muted-foreground">{s.label}</span>
                       <div className="flex items-center gap-1.5">
                         <div className="h-1.5 w-1.5 rounded-full bg-chart-5" />
-                        <span className="text-[11px] font-medium text-chart-5">{s.status}</span>
+                        <span className="text-[0.6875rem] font-medium text-chart-5">{s.status}</span>
                       </div>
                     </div>
                   ))}
@@ -474,7 +474,7 @@ export default function AdminDashboard() {
                   <div key={s.label} className="rounded-lg border border-border/30 p-2.5">
                     <s.icon className="h-3.5 w-3.5 text-muted-foreground mb-1" />
                     <p className="text-base font-semibold tabular-nums">{isLoading ? <Skeleton className="h-4 w-8" /> : <AnimatedCounter value={s.value} />}</p>
-                    <p className="text-[10px] text-muted-foreground">{s.label}</p>
+                    <p className="text-[0.625rem] text-muted-foreground">{s.label}</p>
                   </div>
                 ))}
               </div>
@@ -499,7 +499,7 @@ export default function AdminDashboard() {
 
           {/* Account breakdown bar */}
           <div className="rounded-lg border border-border/50 p-4">
-            <p className="text-[12px] font-medium text-muted-foreground mb-3">{isAr ? "توزيع الحسابات" : "Account distribution"}</p>
+            <p className="text-xs font-medium text-muted-foreground mb-3">{isAr ? "توزيع الحسابات" : "Account distribution"}</p>
             <div className="flex rounded-full overflow-hidden h-2 bg-muted">
               {stats?.totalUsers && stats.totalUsers > 0 && (
                 <>
@@ -511,11 +511,11 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-4 mt-2">
               <div className="flex items-center gap-1.5">
                 <div className="h-2 w-2 rounded-full bg-primary" />
-                <span className="text-[11px] text-muted-foreground">{isAr ? "محترف" : "Pro"} ({stats?.totalUsers ? Math.round((stats.proUsers / stats.totalUsers) * 100) : 0}%)</span>
+                <span className="text-[0.6875rem] text-muted-foreground">{isAr ? "محترف" : "Pro"} ({stats?.totalUsers ? Math.round((stats.proUsers / stats.totalUsers) * 100) : 0}%)</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="h-2 w-2 rounded-full bg-chart-4" />
-                <span className="text-[11px] text-muted-foreground">{isAr ? "عادي" : "Regular"} ({stats?.totalUsers ? Math.round((stats.fanUsers / stats.totalUsers) * 100) : 0}%)</span>
+                <span className="text-[0.6875rem] text-muted-foreground">{isAr ? "عادي" : "Regular"} ({stats?.totalUsers ? Math.round((stats.fanUsers / stats.totalUsers) * 100) : 0}%)</span>
               </div>
             </div>
           </div>
@@ -544,8 +544,8 @@ export default function AdminDashboard() {
           {/* Recent Users */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "أحدث المستخدمين" : "Recent users"}</p>
-              <Button variant="ghost" size="sm" className="text-[11px] h-6 px-2 text-muted-foreground" asChild>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "أحدث المستخدمين" : "Recent users"}</p>
+              <Button variant="ghost" size="sm" className="text-[0.6875rem] h-6 px-2 text-muted-foreground" asChild>
                 <Link to="/admin/users">{isAr ? "إدارة الكل" : "Manage all"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
               </Button>
             </div>
@@ -563,11 +563,11 @@ export default function AdminDashboard() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{user.display_name || user.full_name || "Unknown"}</p>
-                    <p className="text-[11px] text-muted-foreground">{user.username ? `@${user.username}` : ""}</p>
+                    <p className="text-[0.6875rem] text-muted-foreground">{user.username ? `@${user.username}` : ""}</p>
                   </div>
                   <div className="text-end shrink-0">
-                    <Badge variant="outline" className="text-[10px] h-4 font-normal capitalize">{(user as any).account_type || "user"}</Badge>
-                    <p className="text-[10px] text-muted-foreground mt-0.5 tabular-nums">{format(new Date(user.created_at), "MMM d")}</p>
+                    <Badge variant="outline" className="text-[0.625rem] h-4 font-normal capitalize">{(user as any).account_type || "user"}</Badge>
+                    <p className="text-[0.625rem] text-muted-foreground mt-0.5 tabular-nums">{format(new Date(user.created_at), "MMM d")}</p>
                   </div>
                 </Link>
               ))}
@@ -619,14 +619,14 @@ export default function AdminDashboard() {
 
           {/* Full events list */}
           <div>
-            <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider mb-2.5">{isAr ? "جميع الفعاليات القادمة" : "All upcoming events"}</p>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2.5">{isAr ? "جميع الفعاليات القادمة" : "All upcoming events"}</p>
             {upcomingEvents && upcomingEvents.length > 0 ? (
               <div className="rounded-lg border border-border/50 divide-y divide-border/30">
                 {upcomingEvents.map((ev) => (
                   <Link key={ev.id} to={ev.link}>
                     <div className="group flex items-center gap-3 p-3 transition-colors hover:bg-accent/5">
                       <div className="flex flex-col items-center rounded-md bg-muted/50 px-2.5 py-1.5 text-center min-w-[44px]">
-                        <span className="text-[10px] font-medium text-muted-foreground uppercase">{format(new Date(ev.date), "MMM")}</span>
+                        <span className="text-[0.625rem] font-medium text-muted-foreground uppercase">{format(new Date(ev.date), "MMM")}</span>
                         <span className="text-base font-semibold text-foreground leading-none">{format(new Date(ev.date), "d")}</span>
                       </div>
                       <div className="flex-1 min-w-0">
@@ -634,11 +634,11 @@ export default function AdminDashboard() {
                           {isAr ? ((ev as any).title_ar || ev.title) : ev.title}
                         </p>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <Badge variant="outline" className="text-[10px] h-4 px-1.5 capitalize">{ev.type === "competition" ? (isAr ? "مسابقة" : "competition") : (isAr ? "معرض" : "exhibition")}</Badge>
-                          {(ev as any).city && <span className="text-[11px] text-muted-foreground">{(ev as any).city}{(ev as any).country ? `, ${(ev as any).country}` : ""}</span>}
+                          <Badge variant="outline" className="text-[0.625rem] h-4 px-1.5 capitalize">{ev.type === "competition" ? (isAr ? "مسابقة" : "competition") : (isAr ? "معرض" : "exhibition")}</Badge>
+                          {(ev as any).city && <span className="text-[0.6875rem] text-muted-foreground">{(ev as any).city}{(ev as any).country ? `, ${(ev as any).country}` : ""}</span>}
                         </div>
                       </div>
-                      <Badge variant="outline" className="text-[10px] h-4 capitalize shrink-0">{(ev as any).status}</Badge>
+                      <Badge variant="outline" className="text-[0.625rem] h-4 capitalize shrink-0">{(ev as any).status}</Badge>
                     </div>
                   </Link>
                 ))}
@@ -697,8 +697,8 @@ export default function AdminDashboard() {
           {/* Recent Actions */}
           <div>
             <div className="flex items-center justify-between mb-2.5">
-              <p className="text-[12px] font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "آخر الإجراءات" : "Recent actions"}</p>
-              <Button variant="ghost" size="sm" className="text-[11px] h-6 px-2 text-muted-foreground" asChild>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{isAr ? "آخر الإجراءات" : "Recent actions"}</p>
+              <Button variant="ghost" size="sm" className="text-[0.6875rem] h-6 px-2 text-muted-foreground" asChild>
                 <Link to="/admin/audit">{isAr ? "سجل التدقيق" : "Audit log"} <ArrowRight className="ms-1 h-3 w-3" /></Link>
               </Button>
             </div>
@@ -710,7 +710,7 @@ export default function AdminDashboard() {
                       <Activity className="h-3.5 w-3.5 text-muted-foreground" />
                       <span className="text-sm capitalize">{action.action_type.replace(/_/g, " ")}</span>
                     </div>
-                    <span className="text-[11px] text-muted-foreground tabular-nums">{format(new Date(action.created_at), "MMM d, HH:mm")}</span>
+                    <span className="text-[0.6875rem] text-muted-foreground tabular-nums">{format(new Date(action.created_at), "MMM d, HH:mm")}</span>
                   </div>
                 ))}
               </div>

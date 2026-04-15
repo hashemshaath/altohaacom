@@ -68,18 +68,18 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
 
           {/* Top badges */}
           <div className="absolute start-4 top-4 flex items-center gap-2">
-            <Badge className="gap-1.5 text-[11px] rounded-lg bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground font-semibold">
+            <Badge className="gap-1.5 text-[0.6875rem] rounded-lg bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground font-semibold">
               <TypeIcon className="h-3 w-3" />
               {typeBadgeLabel(article.type)}
             </Badge>
             {(article.view_count ?? 0) >= 100 && (
-              <Badge className="text-[11px] px-2 py-0.5 rounded-lg gap-1 bg-orange-500/20 backdrop-blur-md text-orange-200 border-orange-500/20 font-semibold">
+              <Badge className="text-[0.6875rem] px-2 py-0.5 rounded-lg gap-1 bg-orange-500/20 backdrop-blur-md text-orange-200 border-orange-500/20 font-semibold">
                 🔥 {isAr ? "رائج" : "Trending"}
               </Badge>
             )}
           </div>
           <div className="absolute top-4 end-4 flex items-center gap-2">
-            <div className="flex items-center gap-1 rounded-lg bg-white/10 backdrop-blur-md px-2 py-1 text-[11px] text-white/80">
+            <div className="flex items-center gap-1 rounded-lg bg-white/10 backdrop-blur-md px-2 py-1 text-[0.6875rem] text-white/80">
               <BookOpen className="h-2.5 w-2.5" />
               {readTime} {isAr ? "د" : "min"}
             </div>
@@ -90,7 +90,7 @@ export const NewsHeroCard = memo(function NewsHeroCard({ article, isAr, formatDa
           <div className="absolute bottom-0 inset-x-0 p-5 md:p-6">
             <h3 className="text-xl md:text-2xl font-bold line-clamp-2 mb-2 text-primary-foreground group-hover:text-white/90 transition-colors leading-tight">{title}</h3>
             {excerpt && <p className="text-sm text-white/60 line-clamp-2 mb-3 leading-relaxed">{excerpt}</p>}
-            <div className="flex items-center gap-4 text-[12px] text-white/50">
+            <div className="flex items-center gap-4 text-xs text-white/50">
               <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formatDate(article.published_at || article.created_at)}</span>
               <span className="flex items-center gap-1"><Eye className="h-3 w-3" />{article.view_count}</span>
               <span className="ms-auto flex items-center gap-1 text-white/70 font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0 rtl:-translate-x-2 rtl:group-hover:-translate-x-0">

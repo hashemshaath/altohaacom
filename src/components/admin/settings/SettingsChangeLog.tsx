@@ -69,9 +69,9 @@ export const SettingsChangeLog = memo(function SettingsChangeLog() {
                       <p className="text-xs font-medium truncate capitalize">
                         {log.key?.replace(/_/g, " ") || "—"}
                       </p>
-                      <p className="text-[12px] text-muted-foreground">{timeAgo}</p>
+                      <p className="text-xs text-muted-foreground">{timeAgo}</p>
                     </div>
-                    <Badge variant="outline" className="text-[12px] shrink-0">
+                    <Badge variant="outline" className="text-xs shrink-0">
                       {log.category || "general"}
                     </Badge>
                   </div>

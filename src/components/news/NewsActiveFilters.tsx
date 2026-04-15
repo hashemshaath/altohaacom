@@ -48,7 +48,7 @@ export const NewsActiveFilters = memo(function NewsActiveFilters({
 
   return (
     <div className="flex flex-wrap items-center gap-1.5 mb-5 animate-in fade-in-50 slide-in-from-top-2 duration-200">
-      <span className="text-[12px] text-muted-foreground/60 font-medium uppercase tracking-wider me-1">
+      <span className="text-xs text-muted-foreground/60 font-medium uppercase tracking-wider me-1">
         {isAr ? "الفلاتر:" : "Filters:"}
       </span>
 
@@ -91,7 +91,7 @@ export const NewsActiveFilters = memo(function NewsActiveFilters({
 
       <button
         onClick={onClearAll}
-        className="text-[12px] text-muted-foreground hover:text-destructive transition-colors underline underline-offset-2 ms-1"
+        className="text-xs text-muted-foreground hover:text-destructive transition-colors underline underline-offset-2 ms-1"
       >
         {isAr ? "مسح الكل" : "Clear all"}
       </button>
@@ -103,7 +103,7 @@ function FilterChip({ label, icon, onRemove }: { label: string; icon: string; on
   return (
     <Badge
       variant="secondary"
-      className="gap-1 pe-1 ps-2 py-0.5 rounded-lg text-[12px] font-medium bg-primary/10 text-primary border-0 hover:bg-primary/15 transition-colors group cursor-default"
+      className="gap-1 pe-1 ps-2 py-0.5 rounded-lg text-xs font-medium bg-primary/10 text-primary border-0 hover:bg-primary/15 transition-colors group cursor-default"
     >
       {icon === "tag" && <Tag className="h-2 w-2 opacity-60" />}
       {icon === "category" && <FolderOpen className="h-2 w-2 opacity-60" />}

@@ -78,7 +78,7 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
               <span className="text-xs text-muted-foreground">{isAr ? "إجمالي الفواتير" : "Total Invoiced"}</span>
             </div>
             <p className="text-lg font-bold"><AnimatedCounter value={data.totalInvoiced} /> SAR</p>
-            <p className="text-[12px] text-muted-foreground">{data.totalInvoiceCount} {isAr ? "فاتورة" : "invoices"}</p>
+            <p className="text-xs text-muted-foreground">{data.totalInvoiceCount} {isAr ? "فاتورة" : "invoices"}</p>
           </CardContent>
         </Card>
 
@@ -91,7 +91,7 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
             <p className="text-lg font-bold"><AnimatedCounter value={data.totalPaid} /> SAR</p>
             <div className="flex items-center gap-2 mt-1">
               <Progress value={data.collectionRate} className="h-1.5 flex-1" />
-              <span className="text-[12px] text-muted-foreground">{data.collectionRate}%</span>
+              <span className="text-xs text-muted-foreground">{data.collectionRate}%</span>
             </div>
           </CardContent>
         </Card>
@@ -103,7 +103,7 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
               <span className="text-xs text-muted-foreground">{isAr ? "قيد الانتظار" : "Pending"}</span>
             </div>
             <p className="text-lg font-bold"><AnimatedCounter value={data.totalPending} /> SAR</p>
-            <p className="text-[12px] text-muted-foreground">{data.pendingCount} {isAr ? "فاتورة" : "invoices"}</p>
+            <p className="text-xs text-muted-foreground">{data.pendingCount} {isAr ? "فاتورة" : "invoices"}</p>
           </CardContent>
         </Card>
 
@@ -117,7 +117,7 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
               {data.netFlow >= 0 ? "+" : ""}<AnimatedCounter value={data.netFlow} /> SAR
             </p>
             {data.overdueCount > 0 && (
-              <Badge variant="destructive" className="text-[12px] mt-1">
+              <Badge variant="destructive" className="text-xs mt-1">
                 <AlertTriangle className="h-3 w-3 me-1" />
                 {data.overdueCount} {isAr ? "متأخرة" : "overdue"}
               </Badge>

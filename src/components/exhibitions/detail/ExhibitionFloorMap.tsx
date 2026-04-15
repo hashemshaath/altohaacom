@@ -137,7 +137,7 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
             <Map className="h-3.5 w-3.5 text-chart-3" />
           </div>
           <h3 className="text-sm font-semibold">{isAr ? "خريطة الأجنحة" : "Floor Map"}</h3>
-          <Badge variant="secondary" className="text-[12px] h-4 px-1.5">{filteredBooths.length}</Badge>
+          <Badge variant="secondary" className="text-xs h-4 px-1.5">{filteredBooths.length}</Badge>
         </div>
 
         {/* Zoom controls */}
@@ -145,7 +145,7 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleZoom("out")}>
             <ZoomOut className="h-3.5 w-3.5" />
           </Button>
-          <span className="text-[12px] font-mono text-muted-foreground w-8 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="text-xs font-mono text-muted-foreground w-8 text-center">{Math.round(zoom * 100)}%</span>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleZoom("in")}>
             <ZoomIn className="h-3.5 w-3.5" />
           </Button>
@@ -163,18 +163,18 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
             placeholder={isAr ? "بحث..." : "Search..."}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="h-7 ps-7 text-[12px]"
+            className="h-7 ps-7 text-xs"
           />
         </div>
 
         {halls.length > 1 && (
           <ScrollArea className="flex-1">
             <div className="flex gap-1.5">
-              <Button variant={!selectedHall ? "default" : "ghost"} size="sm" className="rounded-full text-[12px] h-6 px-3 shrink-0" onClick={() => setSelectedHall(null)}>
+              <Button variant={!selectedHall ? "default" : "ghost"} size="sm" className="rounded-full text-xs h-6 px-3 shrink-0" onClick={() => setSelectedHall(null)}>
                 {isAr ? "كل القاعات" : "All Halls"}
               </Button>
               {halls.map(h => (
-                <Button key={h} variant={selectedHall === h ? "default" : "ghost"} size="sm" className="rounded-full text-[12px] h-6 px-3 shrink-0" onClick={() => setSelectedHall(selectedHall === h ? null : h)}>
+                <Button key={h} variant={selectedHall === h ? "default" : "ghost"} size="sm" className="rounded-full text-xs h-6 px-3 shrink-0" onClick={() => setSelectedHall(selectedHall === h ? null : h)}>
                   {h}
                 </Button>
               ))}
@@ -186,7 +186,7 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
         {/* Status filter */}
         <div className="flex gap-1">
           {["available", "reserved", "occupied"].map(s => (
-            <Button key={s} variant={statusFilter === s ? "default" : "ghost"} size="sm" className="rounded-full text-[12px] h-6 px-2.5 shrink-0" onClick={() => setStatusFilter(statusFilter === s ? null : s)}>
+            <Button key={s} variant={statusFilter === s ? "default" : "ghost"} size="sm" className="rounded-full text-xs h-6 px-2.5 shrink-0" onClick={() => setStatusFilter(statusFilter === s ? null : s)}>
               <div className={`h-2 w-2 rounded-full me-1 ${s === "available" ? "bg-chart-3" : s === "reserved" ? "bg-chart-4" : "bg-muted-foreground"}`} />
               {s === "available" ? (isAr ? "متاح" : "Available") : s === "reserved" ? (isAr ? "محجوز" : "Reserved") : (isAr ? "مشغول" : "Occupied")}
             </Button>
@@ -317,16 +317,16 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
-                  <Badge variant="outline" className="font-mono text-[12px] h-4 px-1.5">
+                  <Badge variant="outline" className="font-mono text-xs h-4 px-1.5">
                     <Hash className="me-0.5 h-2 w-2" />{selectedBooth.booth_number}
                   </Badge>
                   {selectedBooth.is_featured && (
-                    <Badge variant="outline" className="text-[12px] h-4 px-1 border-chart-4/30 text-chart-4">
+                    <Badge variant="outline" className="text-xs h-4 px-1 border-chart-4/30 text-chart-4">
                       <Star className="h-2 w-2 fill-chart-4 me-0.5" />{isAr ? "مميز" : "Featured"}
                     </Badge>
                   )}
                   {selectedBooth.hall && (
-                    <span className="text-[12px] text-muted-foreground flex items-center gap-0.5">
+                    <span className="text-xs text-muted-foreground flex items-center gap-0.5">
                       <MapPin className="h-2.5 w-2.5" />{selectedBooth.hall}
                     </span>
                   )}
@@ -335,24 +335,24 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
                   {isAr && selectedBooth.name_ar ? selectedBooth.name_ar : selectedBooth.name}
                 </p>
                 {(selectedBooth.description || selectedBooth.description_ar) && (
-                  <p className="text-[12px] text-muted-foreground line-clamp-2 mt-0.5">
+                  <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">
                     {isAr && selectedBooth.description_ar ? selectedBooth.description_ar : selectedBooth.description}
                   </p>
                 )}
                 {(selectedBooth.contact_email || selectedBooth.contact_phone || selectedBooth.website_url) && (
                   <div className="flex flex-wrap gap-2 mt-1.5">
                     {selectedBooth.contact_email && (
-                      <a href={`mailto:${selectedBooth.contact_email}`} className="text-[12px] text-primary flex items-center gap-0.5 hover:underline">
+                      <a href={`mailto:${selectedBooth.contact_email}`} className="text-xs text-primary flex items-center gap-0.5 hover:underline">
                         <Mail className="h-2.5 w-2.5" /> {isAr ? "بريد" : "Email"}
                       </a>
                     )}
                     {selectedBooth.contact_phone && (
-                      <a href={`tel:${selectedBooth.contact_phone}`} className="text-[12px] text-primary flex items-center gap-0.5 hover:underline">
+                      <a href={`tel:${selectedBooth.contact_phone}`} className="text-xs text-primary flex items-center gap-0.5 hover:underline">
                         <Phone className="h-2.5 w-2.5" /> {isAr ? "اتصال" : "Call"}
                       </a>
                     )}
                     {selectedBooth.website_url && (
-                      <a href={selectedBooth.website_url} target="_blank" rel="noopener noreferrer" className="text-[12px] text-primary flex items-center gap-0.5 hover:underline">
+                      <a href={selectedBooth.website_url} target="_blank" rel="noopener noreferrer" className="text-xs text-primary flex items-center gap-0.5 hover:underline">
                         <ExternalLink className="h-2.5 w-2.5" /> {isAr ? "موقع" : "Website"}
                       </a>
                     )}
@@ -372,12 +372,12 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
           {Object.entries(CATEGORY_COLORS).slice(0, 5).map(([key, colors]) => (
             <div key={key} className="flex items-center gap-1">
               <div className="h-2.5 w-2.5 rounded-sm" style={{ background: colors.stroke }} />
-              <span className="text-[12px] text-muted-foreground capitalize">{key}</span>
+              <span className="text-xs text-muted-foreground capitalize">{key}</span>
             </div>
           ))}
           <div className="flex items-center gap-1">
             <div className="h-2.5 w-2.5 rounded-full bg-chart-4" />
-            <span className="text-[12px] text-muted-foreground">{isAr ? "مميز" : "Featured"}</span>
+            <span className="text-xs text-muted-foreground">{isAr ? "مميز" : "Featured"}</span>
           </div>
         </div>
       </CardContent>

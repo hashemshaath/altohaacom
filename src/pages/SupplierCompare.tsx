@@ -226,7 +226,7 @@ export default function SupplierCompare() {
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-medium truncate">{isAr && s.name_ar ? s.name_ar : s.name}</p>
-                        <p className="text-[12px] text-muted-foreground">
+                        <p className="text-xs text-muted-foreground">
                           {s.country_code && countryFlag(s.country_code)} {s.supplier_category || ""}
                         </p>
                       </div>
@@ -275,7 +275,7 @@ export default function SupplierCompare() {
               />
               <CompareRow
                 label={isAr ? "التصنيف" : "Category"}
-                render={(s) => <Badge variant="secondary" className="text-[12px]">{(s as any).supplier_category || "—"}</Badge>}
+                render={(s) => <Badge variant="secondary" className="text-xs">{(s as any).supplier_category || "—"}</Badge>}
               />
               <CompareRow
                 label={isAr ? "الموقع" : "Location"}
@@ -341,7 +341,7 @@ export default function SupplierCompare() {
                   return specs?.length ? (
                     <div className="flex flex-wrap gap-1">
                       {specs.map((sp) => (
-                        <Badge key={sp} variant="outline" className="text-[12px]">{sp}</Badge>
+                        <Badge key={sp} variant="outline" className="text-xs">{sp}</Badge>
                       ))}
                     </div>
                   ) : <span className="text-muted-foreground">—</span>;

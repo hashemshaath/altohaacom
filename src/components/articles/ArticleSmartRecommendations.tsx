@@ -120,7 +120,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
         </div>
         <div>
           <h3 className="text-sm font-bold">{isAr ? "مُقترحات ذكية لك" : "Smart Picks for You"}</h3>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {isAr ? "بناءً على اهتماماتك وسجل قراءتك" : "Based on your interests & reading history"}
           </p>
         </div>
@@ -145,7 +145,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
                         loading="lazy"
                       />
                       <div className="absolute top-2 start-2">
-                        <Badge className="text-[12px] rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-primary-foreground border-0">
+                        <Badge className="text-xs rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-primary-foreground border-0">
                           {matchPct}% {isAr ? "تطابق" : "match"}
                         </Badge>
                       </div>
@@ -154,7 +154,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
                     <div className="w-28 sm:w-36 bg-gradient-to-br from-chart-4/10 to-muted flex items-center justify-center shrink-0 relative">
                       <Sparkles className="h-6 w-6 text-muted-foreground/20" />
                       <div className="absolute top-2 start-2">
-                        <Badge className="text-[12px] rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-primary-foreground border-0">
+                        <Badge className="text-xs rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-primary-foreground border-0">
                           {matchPct}%
                         </Badge>
                       </div>
@@ -166,10 +166,10 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
                         {t}
                       </h4>
                       {e && (
-                        <p className="text-[12px] text-muted-foreground line-clamp-1 leading-relaxed">{e}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-1 leading-relaxed">{e}</p>
                       )}
                     </div>
-                    <div className="flex items-center gap-3 mt-2.5 text-[12px] text-muted-foreground">
+                    <div className="flex items-center gap-3 mt-2.5 text-xs text-muted-foreground">
                       {article.published_at && (
                         <span className="flex items-center gap-1">
                           <Calendar className="h-2.5 w-2.5" />

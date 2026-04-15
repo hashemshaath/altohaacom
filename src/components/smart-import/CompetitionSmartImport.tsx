@@ -444,7 +444,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">{item.name}</p>
                         {item.description && <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{item.description}</p>}
-                        {item.place_type && <Badge variant="outline" className="text-[12px] px-1.5 py-0 h-4 mt-1">{item.place_type}</Badge>}
+                        {item.place_type && <Badge variant="outline" className="text-xs px-1.5 py-0 h-4 mt-1">{item.place_type}</Badge>}
                       </div>
                       <ArrowRight className="h-4 w-4 text-muted-foreground/40 group-hover:text-primary shrink-0 mt-1" />
                     </button>
@@ -463,7 +463,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
               <p className="text-sm text-muted-foreground">{isAr ? "جاري تحليل بيانات المسابقة..." : "Analyzing competition data..."}</p>
               <div className="flex flex-wrap gap-1.5 justify-center">
                 {["🔍 Scraping", "🤖 AI Extraction", "📋 Rules", "⚖️ Judging", "📅 Schedule"].map(s => (
-                  <Badge key={s} variant="outline" className="text-[12px] animate-pulse">{s}</Badge>
+                  <Badge key={s} variant="outline" className="text-xs animate-pulse">{s}</Badge>
                 ))}
               </div>
             </div>
@@ -495,7 +495,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                     {selectedDuplicate.title} {selectedDuplicate.edition_year && `(${selectedDuplicate.edition_year})`}
                   </p>
                 </div>
-                <Badge variant="outline" className="text-[12px] shrink-0">{selectedDuplicate.status}</Badge>
+                <Badge variant="outline" className="text-xs shrink-0">{selectedDuplicate.status}</Badge>
               </div>
             </div>
 
@@ -517,17 +517,17 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                 ) : (
                   dataDiff.map((item, i) => (
                     <div key={i} className="rounded-xl border p-2.5 text-xs space-y-1">
-                      <span className="font-semibold text-muted-foreground uppercase text-[12px] tracking-wide">
+                      <span className="font-semibold text-muted-foreground uppercase text-xs tracking-wide">
                         {isAr ? item.fieldAr : item.field}
                       </span>
                       {item.oldValue && (
                         <div className="flex items-start gap-1.5">
-                          <span className="text-destructive font-mono shrink-0 text-[12px] mt-0.5">−</span>
+                          <span className="text-destructive font-mono shrink-0 text-xs mt-0.5">−</span>
                           <p className="text-muted-foreground line-clamp-2">{item.oldValue}</p>
                         </div>
                       )}
                       <div className="flex items-start gap-1.5">
-                        <span className="text-green-600 font-mono shrink-0 text-[12px] mt-0.5">+</span>
+                        <span className="text-green-600 font-mono shrink-0 text-xs mt-0.5">+</span>
                         <p className="line-clamp-3">{item.newValue}</p>
                       </div>
                     </div>
@@ -564,12 +564,12 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                   if (!ch) return null;
                   const Icon = ch.icon;
                   return (
-                    <Badge key={key} variant="outline" className={`text-[12px] gap-0.5 px-1.5 py-0 h-5 ${ch.color}`}>
+                    <Badge key={key} variant="outline" className={`text-xs gap-0.5 px-1.5 py-0 h-5 ${ch.color}`}>
                       <Icon className="h-2.5 w-2.5" />
                     </Badge>
                   );
                 })}
-                <Badge variant="outline" className={`text-[12px] ${qualityColor}`}>
+                <Badge variant="outline" className={`text-xs ${qualityColor}`}>
                   {dataQuality}% {isAr ? "جودة" : "quality"}
                 </Badge>
               </div>
@@ -581,7 +581,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                 <Trophy className="h-4 w-4 text-primary shrink-0" />
                 <h3 className="text-sm font-bold">{displayTitle}</h3>
                 {detailData.edition_year && (
-                  <Badge variant="secondary" className="text-[12px]">
+                  <Badge variant="secondary" className="text-xs">
                     {isAr ? `النسخة ${detailData.edition_year}` : `Edition ${detailData.edition_year}`}
                   </Badge>
                 )}
@@ -589,7 +589,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
               {detailData.name_ar && detailData.name_en && (
                 <p className="text-xs text-muted-foreground">{detailData.name_ar} {detailData.edition_year && `(${detailData.edition_year})`}</p>
               )}
-              {detailData.competition_type && <Badge variant="outline" className="text-[12px]">{detailData.competition_type}</Badge>}
+              {detailData.competition_type && <Badge variant="outline" className="text-xs">{detailData.competition_type}</Badge>}
             </div>
 
             {/* Duplicate Warning Panel */}
@@ -608,15 +608,15 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                         <p className="font-medium truncate">{dup.title} {dup.edition_year && `(${dup.edition_year})`}</p>
                         {dup.title_ar && <p className="text-muted-foreground truncate">{dup.title_ar}</p>}
                         <div className="flex items-center gap-2 mt-0.5">
-                          <Badge variant="outline" className="text-[12px] h-4 px-1">{dup.status}</Badge>
+                          <Badge variant="outline" className="text-xs h-4 px-1">{dup.status}</Badge>
                           {dup.competition_start && (
-                            <span className="text-muted-foreground text-[12px]">
+                            <span className="text-muted-foreground text-xs">
                               {new Date(dup.competition_start).toLocaleDateString()}
                             </span>
                           )}
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="h-7 text-[12px] gap-1" onClick={() => handleSelectDuplicateForUpdate(dup)}>
+                      <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => handleSelectDuplicateForUpdate(dup)}>
                         <Edit className="h-3 w-3" />
                         {isAr ? "تحديث" : "Update"}
                       </Button>
@@ -682,7 +682,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                         <div key={i} className="p-2 rounded-xl border text-xs">
                           <p className="font-medium">{v.name} {v.name_ar && `/ ${v.name_ar}`}</p>
                           {v.description && <p className="text-muted-foreground mt-0.5">{v.description}</p>}
-                          {v.max_participants && <Badge variant="outline" className="mt-1 text-[12px]">Max: {v.max_participants}</Badge>}
+                          {v.max_participants && <Badge variant="outline" className="mt-1 text-xs">Max: {v.max_participants}</Badge>}
                         </div>
                       ))}
                     </div>
@@ -699,7 +699,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                     <Field label={isAr ? "شروط الأهلية (AR)" : "Eligibility (AR)"} value={detailData.eligibility_ar} multi />
                     {detailData.participation_requirements_en?.length ? (
                       <div className="space-y-0.5">
-                        <span className="text-[12px] font-medium text-muted-foreground uppercase">{isAr ? "متطلبات المشاركة" : "Participation Requirements"}</span>
+                        <span className="text-xs font-medium text-muted-foreground uppercase">{isAr ? "متطلبات المشاركة" : "Participation Requirements"}</span>
                         <ul className="list-disc list-inside text-xs space-y-0.5">
                           {detailData.participation_requirements_en.map((r, i) => <li key={i}>{r}</li>)}
                         </ul>
@@ -714,18 +714,18 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                     <Field label={isAr ? "طريقة التقييم (AR)" : "Scoring Method (AR)"} value={detailData.scoring_method_ar} multi />
                     {detailData.judging_criteria?.length ? (
                       <div className="space-y-1">
-                        <span className="text-[12px] font-medium text-muted-foreground uppercase">{isAr ? "معايير التحكيم" : "Judging Criteria"}</span>
+                        <span className="text-xs font-medium text-muted-foreground uppercase">{isAr ? "معايير التحكيم" : "Judging Criteria"}</span>
                         {detailData.judging_criteria.map((c, i) => (
                           <div key={i} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/30">
                             <span className="font-medium flex-1">{c.criterion} {c.criterion_ar && `/ ${c.criterion_ar}`}</span>
-                            {c.weight && <Badge variant="secondary" className="text-[12px]">{c.weight}%</Badge>}
+                            {c.weight && <Badge variant="secondary" className="text-xs">{c.weight}%</Badge>}
                           </div>
                         ))}
                       </div>
                     ) : null}
                     {detailData.judging_committee?.length ? (
                       <div className="space-y-1">
-                        <span className="text-[12px] font-medium text-muted-foreground uppercase">{isAr ? "لجنة التحكيم" : "Judging Committee"}</span>
+                        <span className="text-xs font-medium text-muted-foreground uppercase">{isAr ? "لجنة التحكيم" : "Judging Committee"}</span>
                         {detailData.judging_committee.map((j, i) => (
                           <div key={i} className="flex items-center gap-2 text-xs p-1.5 rounded bg-muted/30">
                             <div className="h-6 w-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
@@ -735,7 +735,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                               <p className="font-medium truncate">{j.name} {j.name_ar && `/ ${j.name_ar}`}</p>
                               {j.title && <p className="text-muted-foreground truncate">{j.title}</p>}
                             </div>
-                            {j.role && <Badge variant="outline" className="text-[12px] shrink-0">{j.role}</Badge>}
+                            {j.role && <Badge variant="outline" className="text-xs shrink-0">{j.role}</Badge>}
                           </div>
                         ))}
                       </div>
@@ -762,7 +762,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                       <div key={i} className="p-2 rounded-xl border text-xs">
                         <p className="font-medium">{r.name} {r.name_ar && `/ ${r.name_ar}`}</p>
                         {r.description && <p className="text-muted-foreground mt-0.5">{r.description}</p>}
-                        {r.duration && <Badge variant="outline" className="mt-1 text-[12px]">{r.duration}</Badge>}
+                        {r.duration && <Badge variant="outline" className="mt-1 text-xs">{r.duration}</Badge>}
                       </div>
                     ))}
                   </DetailSection>
@@ -803,10 +803,10 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
                   )}
                   {detailData.allowed_entry_types?.length ? (
                     <div className="space-y-0.5">
-                      <span className="text-[12px] font-medium text-muted-foreground uppercase">{isAr ? "أنواع المشاركة" : "Entry Types"}</span>
+                      <span className="text-xs font-medium text-muted-foreground uppercase">{isAr ? "أنواع المشاركة" : "Entry Types"}</span>
                       <div className="flex flex-wrap gap-1">
                         {detailData.allowed_entry_types.map((t, i) => (
-                          <Badge key={i} variant="outline" className="text-[12px]">{t}</Badge>
+                          <Badge key={i} variant="outline" className="text-xs">{t}</Badge>
                         ))}
                       </div>
                     </div>
@@ -851,7 +851,7 @@ const Field = React.memo(({ label, value, multi }: { label: string; value?: stri
   if (!value) return null;
   return (
     <div className="space-y-0.5">
-      <span className="text-[12px] font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
+      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
       {multi ? (
         <p className="text-xs whitespace-pre-line leading-relaxed">{value}</p>
       ) : (

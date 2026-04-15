@@ -191,7 +191,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
           <CollapsibleTrigger asChild>
             <button className="flex flex-1 items-center gap-1.5 text-start min-w-0 py-0.5">
               {/* Serial number badge */}
-              <Badge variant="outline" className="text-[12px] font-mono px-1.5 py-0 h-4 shrink-0 bg-primary/5 border-primary/20 text-primary">
+              <Badge variant="outline" className="text-xs font-mono px-1.5 py-0 h-4 shrink-0 bg-primary/5 border-primary/20 text-primary">
                 {section.section_number || `#${index + 1}`}
               </Badge>
 
@@ -236,7 +236,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                 )}
               </div>
 
-              <span className="text-[12px] text-muted-foreground font-mono hidden lg:inline shrink-0">{section.section_key}</span>
+              <span className="text-xs text-muted-foreground font-mono hidden lg:inline shrink-0">{section.section_key}</span>
               <ChevronDown className={cn("h-3 w-3 text-muted-foreground transition-transform shrink-0", isOpen && "rotate-180")} />
             </button>
           </CollapsibleTrigger>
@@ -248,19 +248,19 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
             <Tabs defaultValue="data" className="w-full">
               <div className="px-2 pt-1.5">
                 <TabsList className="h-7 w-full grid grid-cols-5 bg-muted/40 p-0.5">
-                  <TabsTrigger value="data" className="text-[12px] gap-1 h-6 px-1">
+                  <TabsTrigger value="data" className="text-xs gap-1 h-6 px-1">
                     <Database className="h-3 w-3" /> {isAr ? "المصدر" : "Data"}
                   </TabsTrigger>
-                  <TabsTrigger value="layout" className="text-[12px] gap-1 h-6 px-1">
+                  <TabsTrigger value="layout" className="text-xs gap-1 h-6 px-1">
                     <LayoutGrid className="h-3 w-3" /> {isAr ? "التخطيط" : "Layout"}
                   </TabsTrigger>
-                  <TabsTrigger value="card" className="text-[12px] gap-1 h-6 px-1">
+                  <TabsTrigger value="card" className="text-xs gap-1 h-6 px-1">
                     <LayoutTemplate className="h-3 w-3" /> {isAr ? "البطاقة" : "Card"}
                   </TabsTrigger>
-                  <TabsTrigger value="style" className="text-[12px] gap-1 h-6 px-1">
+                  <TabsTrigger value="style" className="text-xs gap-1 h-6 px-1">
                     <Palette className="h-3 w-3" /> {isAr ? "المظهر" : "Style"}
                   </TabsTrigger>
-                  <TabsTrigger value="advanced" className="text-[12px] gap-1 h-6 px-1">
+                  <TabsTrigger value="advanced" className="text-xs gap-1 h-6 px-1">
                     <Settings2 className="h-3 w-3" /> {isAr ? "متقدم" : "More"}
                   </TabsTrigger>
                 </TabsList>
@@ -270,9 +270,9 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
               <TabsContent value="data" className="px-2 py-3 space-y-3 mt-0">
                 <div className="grid gap-2 grid-cols-2 sm:grid-cols-3">
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "نوع المصدر" : "Source Type"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "نوع المصدر" : "Source Type"}</Label>
                     <Select value={merged.source_type} onValueChange={(v) => set("source_type", v as HomepageSection["source_type"])}>
-                      <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {SOURCE_TYPE_OPTIONS.map(o => (
                           <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>
@@ -281,9 +281,9 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                     </Select>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "جدول البيانات" : "Source Table"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "جدول البيانات" : "Source Table"}</Label>
                     <Select value={merged.source_table || "default"} onValueChange={(v) => set("source_table", v === "default" ? "" : v)}>
-                      <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {SOURCE_TABLE_OPTIONS.map(o => (
                           <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>
@@ -292,9 +292,9 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                     </Select>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "الترتيب" : "Sort By"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "الترتيب" : "Sort By"}</Label>
                     <Select value={merged.source_sort_by || "created_at"} onValueChange={(v) => set("source_sort_by", v)}>
-                      <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {SORT_BY_OPTIONS.map(o => (
                           <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>
@@ -305,14 +305,14 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Label className="text-[12px] text-muted-foreground shrink-0">{isAr ? "الاتجاه" : "Direction"}</Label>
+                  <Label className="text-xs text-muted-foreground shrink-0">{isAr ? "الاتجاه" : "Direction"}</Label>
                   <div className="flex gap-1">
                     {(["desc", "asc"] as const).map(dir => (
                       <button
                         key={dir}
                         onClick={() => set("source_sort_dir", dir)}
                         className={cn(
-                          "text-[12px] px-2 py-0.5 rounded-md border transition-colors",
+                          "text-xs px-2 py-0.5 rounded-md border transition-colors",
                           merged.source_sort_dir === dir ? "border-primary bg-primary/10 text-primary" : "border-border/40 text-muted-foreground"
                         )}
                       >
@@ -324,13 +324,13 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
 
                 {merged.source_type === "query" && (
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "فلاتر مخصصة (JSON)" : "Filters (JSON)"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "فلاتر مخصصة (JSON)" : "Filters (JSON)"}</Label>
                     <Textarea
                       value={JSON.stringify(merged.source_filters || {}, null, 2)}
                       onChange={(e) => {
                         try { set("source_filters", JSON.parse(e.target.value)); } catch { /* ignore */ }
                       }}
-                      className="text-[12px] font-mono h-16 resize-none"
+                      className="text-xs font-mono h-16 resize-none"
                       placeholder='{ "status": "published" }'
                     />
                   </div>
@@ -356,14 +356,14 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
               <TabsContent value="layout" className="px-2 py-3 space-y-3 mt-0">
                 {/* Display style selector */}
                 <div className="space-y-1">
-                  <Label className="text-[12px] text-muted-foreground">{isAr ? "أسلوب العرض" : "Display Style"}</Label>
+                  <Label className="text-xs text-muted-foreground">{isAr ? "أسلوب العرض" : "Display Style"}</Label>
                   <div className="flex gap-1">
                     {DISPLAY_STYLE_OPTIONS.map(opt => (
                       <button
                         key={opt.value}
                         onClick={() => set("display_style", opt.value as HomepageSection["display_style"])}
                         className={cn(
-                          "flex-1 rounded-lg border py-1.5 text-center transition-all text-[12px]",
+                          "flex-1 rounded-lg border py-1.5 text-center transition-all text-xs",
                           merged.display_style === opt.value
                             ? "border-primary bg-primary/10 text-primary font-medium"
                             : "border-border/40 text-muted-foreground hover:border-primary/30"
@@ -378,22 +378,22 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
 
                 <div className="grid gap-2 grid-cols-4">
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "العدد" : "Items"}</Label>
-                    <Input type="number" min={1} max={50} value={merged.item_count} onChange={(e) => set("item_count", parseInt(e.target.value) || 8)} className="text-[12px] h-7" />
+                    <Label className="text-xs text-muted-foreground">{isAr ? "العدد" : "Items"}</Label>
+                    <Input type="number" min={1} max={50} value={merged.item_count} onChange={(e) => set("item_count", parseInt(e.target.value) || 8)} className="text-xs h-7" />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "بالصف" : "Per Row"}</Label>
-                    <Input type="number" min={1} max={8} value={merged.items_per_row} onChange={(e) => set("items_per_row", parseInt(e.target.value) || 4)} className="text-[12px] h-7" />
+                    <Label className="text-xs text-muted-foreground">{isAr ? "بالصف" : "Per Row"}</Label>
+                    <Input type="number" min={1} max={8} value={merged.items_per_row} onChange={(e) => set("items_per_row", parseInt(e.target.value) || 4)} className="text-xs h-7" />
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "الحجم" : "Size"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "الحجم" : "Size"}</Label>
                     <div className="flex gap-0.5">
                       {SIZE_OPTIONS.map(s => (
                         <button
                           key={s.value}
                           onClick={() => set("item_size", s.value as HomepageSection["item_size"])}
                           className={cn(
-                            "flex-1 text-[12px] py-1 rounded-md border transition-colors",
+                            "flex-1 text-xs py-1 rounded-md border transition-colors",
                             merged.item_size === s.value ? "border-primary bg-primary/10 text-primary" : "border-border/40"
                           )}
                         >
@@ -403,25 +403,25 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "موبايل" : "Mobile"}</Label>
-                    <Input type="number" min={1} max={8} value={merged.max_items_mobile} onChange={(e) => set("max_items_mobile", parseInt(e.target.value) || 4)} className="text-[12px] h-7" />
+                    <Label className="text-xs text-muted-foreground">{isAr ? "موبايل" : "Mobile"}</Label>
+                    <Input type="number" min={1} max={8} value={merged.max_items_mobile} onChange={(e) => set("max_items_mobile", parseInt(e.target.value) || 4)} className="text-xs h-7" />
                   </div>
                 </div>
 
                 <div className="grid gap-2 grid-cols-2">
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "التباعد" : "Spacing"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "التباعد" : "Spacing"}</Label>
                     <Select value={merged.spacing} onValueChange={(v) => set("spacing", v as HomepageSection["spacing"])}>
-                      <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {SPACING_OPTIONS.map(o => <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "الحاوية" : "Container"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "الحاوية" : "Container"}</Label>
                     <Select value={merged.container_width} onValueChange={(v) => set("container_width", v as HomepageSection["container_width"])}>
-                      <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {CONTAINER_OPTIONS.map(o => <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>)}
                       </SelectContent>
@@ -444,7 +444,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                         onCheckedChange={(v) => set(key, v)}
                         className="scale-75"
                       />
-                      <span className="text-[12px] text-muted-foreground">{label}</span>
+                      <span className="text-xs text-muted-foreground">{label}</span>
                     </div>
                   ))}
                 </div>
@@ -453,7 +453,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
               {/* Card Template Tab */}
               <TabsContent value="card" className="px-2 py-3 space-y-3 mt-0">
                 <div className="space-y-1">
-                  <Label className="text-[12px] text-muted-foreground">{isAr ? "قالب البطاقة" : "Card Template"}</Label>
+                  <Label className="text-xs text-muted-foreground">{isAr ? "قالب البطاقة" : "Card Template"}</Label>
                   <div className="grid grid-cols-5 gap-1">
                     {CARD_TEMPLATE_OPTIONS.map(opt => (
                       <button
@@ -466,7 +466,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                             : "border-border/40 hover:border-primary/30"
                         )}
                       >
-                        <span className="text-[12px] font-medium block">{isAr ? opt.ar : opt.en}</span>
+                        <span className="text-xs font-medium block">{isAr ? opt.ar : opt.en}</span>
                       </button>
                     ))}
                   </div>
@@ -477,9 +477,9 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                 {/* Cover settings */}
                 <div className="grid gap-2 grid-cols-2">
                   <div className="space-y-1">
-                    <Label className="text-[12px] text-muted-foreground">{isAr ? "الغلاف" : "Cover"}</Label>
+                    <Label className="text-xs text-muted-foreground">{isAr ? "الغلاف" : "Cover"}</Label>
                     <Select value={merged.cover_type} onValueChange={(v) => set("cover_type", v as HomepageSection["cover_type"])}>
-                      <SelectTrigger className="h-7 text-[12px]"><SelectValue /></SelectTrigger>
+                      <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>
                         {COVER_TYPE_OPTIONS.map(o => <SelectItem key={o.value} value={o.value} className="text-xs">{isAr ? o.ar : o.en}</SelectItem>)}
                       </SelectContent>
@@ -487,12 +487,12 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   </div>
                   {merged.cover_type !== "none" && (
                     <div className="space-y-1">
-                      <Label className="text-[12px] text-muted-foreground">{isAr ? "رابط الصورة" : "Image URL"}</Label>
+                      <Label className="text-xs text-muted-foreground">{isAr ? "رابط الصورة" : "Image URL"}</Label>
                       <Input
                         value={merged.cover_image_url || ""}
                         onChange={(e) => set("cover_image_url", e.target.value)}
                         placeholder="https://..."
-                        className="text-[12px] h-7 font-mono"
+                        className="text-xs h-7 font-mono"
                       />
                     </div>
                   )}
@@ -502,15 +502,15 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   <div className="grid gap-2 grid-cols-2">
                     <div className="space-y-1">
                       <div className="flex justify-between">
-                        <Label className="text-[12px] text-muted-foreground">{isAr ? "الارتفاع" : "Height"}</Label>
-                        <span className="text-[12px] font-mono text-muted-foreground">{merged.cover_height}px</span>
+                        <Label className="text-xs text-muted-foreground">{isAr ? "الارتفاع" : "Height"}</Label>
+                        <span className="text-xs font-mono text-muted-foreground">{merged.cover_height}px</span>
                       </div>
                       <Slider value={[merged.cover_height]} onValueChange={([v]) => set("cover_height", v)} min={100} max={500} step={10} />
                     </div>
                     <div className="space-y-1">
                       <div className="flex justify-between">
-                        <Label className="text-[12px] text-muted-foreground">{isAr ? "التراكب" : "Overlay"}</Label>
-                        <span className="text-[12px] font-mono text-muted-foreground">{merged.cover_overlay_opacity}%</span>
+                        <Label className="text-xs text-muted-foreground">{isAr ? "التراكب" : "Overlay"}</Label>
+                        <span className="text-xs font-mono text-muted-foreground">{merged.cover_overlay_opacity}%</span>
                       </div>
                       <Slider value={[merged.cover_overlay_opacity]} onValueChange={([v]) => set("cover_overlay_opacity", v)} min={0} max={100} step={5} />
                     </div>
@@ -521,14 +521,14 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
               {/* Style Tab */}
               <TabsContent value="style" className="px-2 py-3 space-y-3 mt-0">
                 <div className="space-y-1">
-                  <Label className="text-[12px] text-muted-foreground">{isAr ? "الحركة" : "Animation"}</Label>
+                  <Label className="text-xs text-muted-foreground">{isAr ? "الحركة" : "Animation"}</Label>
                   <div className="flex gap-0.5">
                     {ANIMATION_OPTIONS.map(opt => (
                       <button
                         key={opt.value}
                         onClick={() => set("animation", opt.value as HomepageSection["animation"])}
                         className={cn(
-                          "flex-1 rounded-md border py-1 text-[12px] transition-colors",
+                          "flex-1 rounded-md border py-1 text-xs transition-colors",
                           merged.animation === opt.value
                             ? "border-primary bg-primary/10 text-primary font-medium"
                             : "border-border/40 text-muted-foreground"
@@ -541,17 +541,17 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                 </div>
 
                 <div className="space-y-1">
-                  <Label className="text-[12px] text-muted-foreground">{isAr ? "لون الخلفية" : "Background"}</Label>
+                  <Label className="text-xs text-muted-foreground">{isAr ? "لون الخلفية" : "Background"}</Label>
                   <div className="flex items-center gap-1.5">
                     <Input type="color" value={merged.bg_color || "#ffffff"} onChange={(e) => set("bg_color", e.target.value)} className="h-7 w-9 p-0.5 cursor-pointer" />
-                    <Input value={merged.bg_color || ""} onChange={(e) => set("bg_color", e.target.value)} placeholder="#f5f5f5" className="text-[12px] h-7 font-mono flex-1" />
-                    {merged.bg_color && <Button size="sm" variant="ghost" className="h-7 text-[12px] px-1.5" onClick={() => set("bg_color", "")}>✕</Button>}
+                    <Input value={merged.bg_color || ""} onChange={(e) => set("bg_color", e.target.value)} placeholder="#f5f5f5" className="text-xs h-7 font-mono flex-1" />
+                    {merged.bg_color && <Button size="sm" variant="ghost" className="h-7 text-xs px-1.5" onClick={() => set("bg_color", "")}>✕</Button>}
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <Label className="text-[12px] text-muted-foreground">{isAr ? "فئة CSS" : "CSS Class"}</Label>
-                  <Input value={merged.css_class || ""} onChange={(e) => set("css_class", e.target.value)} placeholder="custom-class" className="text-[12px] h-7 font-mono" />
+                  <Label className="text-xs text-muted-foreground">{isAr ? "فئة CSS" : "CSS Class"}</Label>
+                  <Input value={merged.css_class || ""} onChange={(e) => set("css_class", e.target.value)} placeholder="custom-class" className="text-xs h-7 font-mono" />
                 </div>
               </TabsContent>
 
@@ -565,37 +565,37 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                 />
 
                 <div className="space-y-1">
-                  <Label className="text-[12px] text-muted-foreground">{isAr ? "تكوين مخصص (JSON)" : "Custom Config"}</Label>
+                  <Label className="text-xs text-muted-foreground">{isAr ? "تكوين مخصص (JSON)" : "Custom Config"}</Label>
                   <Textarea
                     value={JSON.stringify(merged.custom_config || {}, null, 2)}
                     onChange={(e) => {
                       try { set("custom_config", JSON.parse(e.target.value)); setJsonError(null); }
                       catch { setJsonError("Invalid JSON"); }
                     }}
-                    className="text-[12px] font-mono h-20 resize-none"
+                    className="text-xs font-mono h-20 resize-none"
                   />
-                  {jsonError && <p className="text-[12px] text-destructive">{jsonError}</p>}
+                  {jsonError && <p className="text-xs text-destructive">{jsonError}</p>}
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
                   {onDuplicate && (
-                    <Button size="sm" variant="outline" className="h-6 text-[12px] gap-1 px-2" onClick={() => onDuplicate(section)}>
+                    <Button size="sm" variant="outline" className="h-6 text-xs gap-1 px-2" onClick={() => onDuplicate(section)}>
                       <Copy className="h-2.5 w-2.5" /> {isAr ? "تكرار" : "Duplicate"}
                     </Button>
                   )}
-                  <Button size="sm" variant="outline" className="h-6 text-[12px] gap-1 px-2" onClick={() => {
+                  <Button size="sm" variant="outline" className="h-6 text-xs gap-1 px-2" onClick={() => {
                     setLocal({ animation: "fade", spacing: "normal", container_width: "default", bg_color: "", css_class: "", cover_type: "none" });
                   }}>
                     <RotateCcw className="h-2.5 w-2.5" /> {isAr ? "إعادة تعيين" : "Reset"}
                   </Button>
-                  <Button size="sm" variant="outline" className="h-6 text-[12px] gap-1 px-2" asChild>
+                  <Button size="sm" variant="outline" className="h-6 text-xs gap-1 px-2" asChild>
                     <a href={`/#${section.section_key}`} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="h-2.5 w-2.5" /> {isAr ? "معاينة" : "Preview"}
                     </a>
                   </Button>
                 </div>
 
-                <div className="rounded-lg bg-muted/30 p-2.5 grid grid-cols-2 gap-x-4 gap-y-1 text-[12px] text-muted-foreground">
+                <div className="rounded-lg bg-muted/30 p-2.5 grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-muted-foreground">
                   <span className="font-medium">{isAr ? "الرقم التسلسلي" : "Serial"}:</span>
                   <span className="font-mono text-foreground">{section.section_number || "—"}</span>
                   <span className="font-medium">Key:</span>
@@ -603,7 +603,7 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
                   <span className="font-medium">{isAr ? "التصنيف" : "Classification"}:</span>
                   <span>{(() => { const c = CLASSIFICATION_META[section.classification || "content"]; return c ? (isAr ? c.ar : c.en) : section.classification; })()}</span>
                   <span className="font-medium">{isAr ? "المكوّن" : "Component"}:</span>
-                  <span className="font-mono text-foreground text-[12px]">{section.component_name || "Generic"}</span>
+                  <span className="font-mono text-foreground text-xs">{section.component_name || "Generic"}</span>
                   <span className="font-medium">{isAr ? "المصدر" : "Source"}:</span>
                   <span>{merged.source_type}{merged.source_table ? ` → ${merged.source_table}` : ""}</span>
                   <span className="font-medium">{isAr ? "العناصر" : "Items"}:</span>
@@ -622,14 +622,14 @@ export const SectionRow = forwardRef<HTMLDivElement, SectionRowProps>(function S
             {/* Save footer */}
             {hasChanges && (
               <div className="px-2 pb-2 flex items-center gap-1.5">
-                <Button size="sm" className="gap-1 h-7 text-[12px]" onClick={save} disabled={isPending}>
+                <Button size="sm" className="gap-1 h-7 text-xs" onClick={save} disabled={isPending}>
                   {isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
                   {isAr ? "حفظ" : "Save"}
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => { setLocal({}); setJsonError(null); }} className="text-[12px] h-7">
+                <Button size="sm" variant="ghost" onClick={() => { setLocal({}); setJsonError(null); }} className="text-xs h-7">
                   {isAr ? "إلغاء" : "Cancel"}
                 </Button>
-                <Badge variant="secondary" className="text-[12px] ms-auto">{Object.keys(local).length} {isAr ? "تغيير" : "changes"}</Badge>
+                <Badge variant="secondary" className="text-xs ms-auto">{Object.keys(local).length} {isAr ? "تغيير" : "changes"}</Badge>
               </div>
             )}
           </div>

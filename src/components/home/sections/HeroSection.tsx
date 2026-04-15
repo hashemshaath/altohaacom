@@ -124,7 +124,7 @@ function FallbackHero() {
                   ].map((s) => (
                     <div key={s.l} className="text-center">
                       <div className="h-6 w-12 mx-auto rounded bg-muted/50 animate-pulse mb-1" />
-                      <p className="text-[11px] text-muted-foreground">{s.l}</p>
+                      <p className="text-[0.6875rem] text-muted-foreground">{s.l}</p>
                     </div>
                   ))}
                 </div>

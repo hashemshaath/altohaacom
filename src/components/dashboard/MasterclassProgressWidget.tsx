@@ -91,7 +91,7 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
                     <p className="text-sm font-medium line-clamp-1">{title}</p>
                     <div className="mt-1.5 flex items-center gap-2">
                       <Progress value={progress} className="h-1.5 flex-1" />
-                      <span className="text-[12px] font-medium text-muted-foreground shrink-0">
+                      <span className="text-xs font-medium text-muted-foreground shrink-0">
                         {progress}%
                       </span>
                     </div>

@@ -54,7 +54,7 @@ export const CollapsibleProfileSection = memo(function CollapsibleProfileSection
           {label}
         </h2>
         {typeof count === "number" && count > 0 && (
-          <span className="text-[12px] font-semibold text-muted-foreground bg-muted rounded-full px-2 py-0.5 min-w-[20px] text-center">
+          <span className="text-xs font-semibold text-muted-foreground bg-muted rounded-full px-2 py-0.5 min-w-[20px] text-center">
             {count}
           </span>
         )}

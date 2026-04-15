@@ -357,7 +357,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
                     </div>
                     <div className="min-w-0">
                       <p className="text-xs font-medium">{isAr ? t.nameAr : t.name}</p>
-                      <p className="text-[12px] text-muted-foreground">{t.ingredients.length} {isAr ? "عنصر" : "items"}</p>
+                      <p className="text-xs text-muted-foreground">{t.ingredients.length} {isAr ? "عنصر" : "items"}</p>
                     </div>
                   </Button>
                 );
@@ -550,40 +550,40 @@ function RequestCard({
               <div className="flex items-center gap-1.5">
                 <p className="text-sm font-medium">{isAr && request.item_name_ar ? request.item_name_ar : request.item_name}</p>
                 {templateInfo && (
-                  <Badge variant="outline" className="text-[12px] h-4 gap-0.5">
+                  <Badge variant="outline" className="text-xs h-4 gap-0.5">
                     <BookTemplate className="h-2.5 w-2.5" />
                     {isAr ? templateInfo.nameAr : templateInfo.name}
                   </Badge>
                 )}
               </div>
               <div className="flex flex-wrap items-center gap-1.5 mt-1">
-                <Badge variant="outline" className="text-[12px] h-4">
+                <Badge variant="outline" className="text-xs h-4">
                   {catInfo ? (isAr ? catInfo.labelAr : catInfo.label) : request.category}
                 </Badge>
-                <span className="text-[12px] text-muted-foreground">{request.quantity} {request.unit}</span>
-                <Badge className={`${priorityInfo.color} text-[12px] h-4`} variant="outline">
+                <span className="text-xs text-muted-foreground">{request.quantity} {request.unit}</span>
+                <Badge className={`${priorityInfo.color} text-xs h-4`} variant="outline">
                   {isAr ? priorityInfo.labelAr : priorityInfo.labelEn}
                 </Badge>
-                <Badge className={`${statusInfo.color} text-[12px] h-4`} variant="outline">
+                <Badge className={`${statusInfo.color} text-xs h-4`} variant="outline">
                   {isAr ? statusInfo.labelAr : statusInfo.labelEn}
                 </Badge>
               </div>
               {!isOwn && request.profiles && (
-                <p className="text-[12px] text-muted-foreground mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {isAr ? "بواسطة" : "By"}: {request.profiles.full_name || request.profiles.username}
                 </p>
               )}
               {request.notes && (
-                <p className="text-[12px] text-muted-foreground mt-1 line-clamp-1">{request.notes}</p>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{request.notes}</p>
               )}
               {request.rejection_reason && (
-                <p className="text-[12px] text-destructive mt-1 flex items-center gap-1">
+                <p className="text-xs text-destructive mt-1 flex items-center gap-1">
                   <AlertTriangle className="h-2.5 w-2.5" /> {request.rejection_reason}
                 </p>
               )}
               {/* Admin notes visible to both */}
               {request.admin_notes && (
-                <p className="text-[12px] text-chart-1 mt-1 flex items-center gap-1">
+                <p className="text-xs text-chart-1 mt-1 flex items-center gap-1">
                   <MessageSquare className="h-2.5 w-2.5" />
                   {isAr ? "ملاحظة الإدارة:" : "Admin note:"} {request.admin_notes}
                 </p>
@@ -627,7 +627,7 @@ function RequestCard({
 
         {/* Expanded details */}
         {expanded && (
-          <div className="mt-2 ps-6.5 space-y-1 text-[12px] text-muted-foreground border-t border-border/40 pt-2">
+          <div className="mt-2 ps-6.5 space-y-1 text-xs text-muted-foreground border-t border-border/40 pt-2">
             {request.item_name_ar && <p>{isAr ? "English" : "عربي"}: {isAr ? request.item_name : request.item_name_ar}</p>}
             {request.notes && <p>{isAr ? "ملاحظات:" : "Notes:"} {request.notes}</p>}
             <p>{isAr ? "تاريخ الإنشاء:" : "Created:"} {new Date(request.created_at).toLocaleDateString()}</p>

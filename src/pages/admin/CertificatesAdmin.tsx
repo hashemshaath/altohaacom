@@ -519,7 +519,7 @@ export default function CertificatesAdmin() {
                             {cert.recipient_email && <p className="text-xs text-muted-foreground">{cert.recipient_email}</p>}
                           </TableCell>
                           <TableCell>
-                            <Badge className={`text-[12px] ${certificateTypes.find(t => t.value === cert.type)?.color} text-primary-foreground`}>
+                            <Badge className={`text-xs ${certificateTypes.find(t => t.value === cert.type)?.color} text-primary-foreground`}>
                               {getTypeLabel(cert.type)}
                             </Badge>
                           </TableCell>
@@ -571,7 +571,7 @@ export default function CertificatesAdmin() {
                             <div key={key}>
                               <div className="flex items-center gap-2 mb-2 px-1">
                                 <Badge variant="secondary" className="text-xs font-medium">{key}</Badge>
-                                <Badge variant="outline" className="text-[12px]">
+                                <Badge variant="outline" className="text-xs">
                                   {groups[key].length} {language === "ar" ? "شهادة" : "certificates"}
                                 </Badge>
                               </div>
@@ -722,7 +722,7 @@ export default function CertificatesAdmin() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-semibold text-sm">{language === "ar" && t.name_ar ? t.name_ar : t.name}</h3>
-                          <Badge variant="outline" className="mt-1 text-[12px]">{getTypeLabel(t.type as CertificateType)}</Badge>
+                          <Badge variant="outline" className="mt-1 text-xs">{getTypeLabel(t.type as CertificateType)}</Badge>
                         </div>
                         <Button variant="ghost" size="icon" className="h-7 w-7"><Edit className="h-3.5 w-3.5" /></Button>
                       </div>

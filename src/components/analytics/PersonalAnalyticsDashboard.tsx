@@ -160,11 +160,11 @@ export const PersonalAnalyticsDashboard = memo(function PersonalAnalyticsDashboa
                 </div>
                 <div className="min-w-0">
                   <AnimatedCounter value={card.value} className="text-xl font-bold tabular-nums" />
-                  <p className="text-[12px] text-muted-foreground truncate">{card.label}</p>
+                  <p className="text-xs text-muted-foreground truncate">{card.label}</p>
                   <div className="flex items-center gap-1">
-                    {card.sub && <span className="text-[12px] text-muted-foreground">{card.sub}</span>}
+                    {card.sub && <span className="text-xs text-muted-foreground">{card.sub}</span>}
                     {"trend" in card && card.trend !== undefined && card.trend !== 0 && (
-                      <span className={cn("text-[12px] font-medium", card.trend > 0 ? "text-chart-2" : "text-destructive")}>
+                      <span className={cn("text-xs font-medium", card.trend > 0 ? "text-chart-2" : "text-destructive")}>
                         {card.trend > 0 ? "+" : ""}{card.trend}%
                       </span>
                     )}
@@ -234,7 +234,7 @@ export const PersonalAnalyticsDashboard = memo(function PersonalAnalyticsDashboa
               </div>
               <div className="flex flex-wrap justify-center gap-2 mt-2">
                 {reactionPieData.map((entry, i) => (
-                  <div key={entry.name} className="flex items-center gap-1 text-[12px]">
+                  <div key={entry.name} className="flex items-center gap-1 text-xs">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: CHART_COLORS[i % CHART_COLORS.length] }} />
                     {entry.name} ({entry.value})
                   </div>

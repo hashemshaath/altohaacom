@@ -55,7 +55,7 @@ export default function SmartImportAdmin() {
             <div>
               <h1 className="font-serif text-2xl font-bold tracking-tight flex items-center gap-2">
                 {isAr ? "الاستيراد الذكي" : "Smart Import"}
-                <Badge variant="secondary" className="text-[12px] font-normal rounded-lg">v4.0</Badge>
+                <Badge variant="secondary" className="text-xs font-normal rounded-lg">v4.0</Badge>
               </h1>
               <p className="text-muted-foreground text-sm mt-0.5">
                 {d.step === "search" && (isAr ? "ابحث، الصق رابط، أو استورد دفعة واحدة" : "Search, paste URL, or bulk import")}
@@ -231,7 +231,7 @@ export default function SmartImportAdmin() {
                   <CardTitle className="text-sm flex items-center justify-between">
                     <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-red-500" />{isAr ? "النتائج" : "Results"}</span>
                     <div className="flex items-center gap-1.5">
-                      {d.searchTime && <Badge variant="outline" className="text-[12px] font-normal gap-1"><Zap className="h-2.5 w-2.5" />{(d.searchTime / 1000).toFixed(1)}s</Badge>}
+                      {d.searchTime && <Badge variant="outline" className="text-xs font-normal gap-1"><Zap className="h-2.5 w-2.5" />{(d.searchTime / 1000).toFixed(1)}s</Badge>}
                       {!d.searching && <Badge variant="secondary" className="text-xs font-normal">{d.searchResults.length}</Badge>}
                     </div>
                   </CardTitle>
@@ -260,11 +260,11 @@ export default function SmartImportAdmin() {
                                       <p className="font-semibold text-sm truncate">{item.name}</p>
                                       {item.rating != null && <span className="flex items-center gap-0.5 text-xs font-medium shrink-0"><Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />{item.rating}</span>}
                                     </div>
-                                    {item.place_type && <p className="text-[12px] text-muted-foreground mt-0.5">{item.place_type}</p>}
+                                    {item.place_type && <p className="text-xs text-muted-foreground mt-0.5">{item.place_type}</p>}
                                     {item.description && <p className="text-xs text-muted-foreground/80 line-clamp-1 mt-0.5">{item.description}</p>}
                                     <div className="flex items-center gap-1.5 mt-1.5">
-                                      {item.google_maps_url && <Badge variant="outline" className="text-[12px] h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5"><MapPin className="h-2 w-2" /> Maps</Badge>}
-                                      {item.url && <Badge variant="outline" className="text-[12px] h-[18px] px-1 gap-0.5"><Globe className="h-2 w-2" /> Web</Badge>}
+                                      {item.google_maps_url && <Badge variant="outline" className="text-xs h-[18px] px-1 bg-red-500/10 text-red-600 border-red-500/20 gap-0.5"><MapPin className="h-2 w-2" /> Maps</Badge>}
+                                      {item.url && <Badge variant="outline" className="text-xs h-[18px] px-1 gap-0.5"><Globe className="h-2 w-2" /> Web</Badge>}
                                     </div>
                                   </div>
                                 </div>
@@ -390,8 +390,8 @@ export default function SmartImportAdmin() {
                               <p className="text-sm font-semibold">{record.name}</p>
                               {record.name_ar && record.name !== record.name_ar && <p className="text-xs text-muted-foreground">{record.name_ar}</p>}
                               <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                                <Badge variant="outline" className="text-[12px] h-4">{record.identifier}</Badge>
-                                <Badge variant="secondary" className="text-[12px] h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
+                                <Badge variant="outline" className="text-xs h-4">{record.identifier}</Badge>
+                                <Badge variant="secondary" className="text-xs h-4">{isAr ? tableInfo?.label_ar : tableInfo?.label_en}</Badge>
                                 <span>{typeLabel}</span>
                                 {record.city && <span className="flex items-center gap-0.5"><MapPin className="h-2.5 w-2.5" />{record.city}</span>}
                               </div>
@@ -402,7 +402,7 @@ export default function SmartImportAdmin() {
                               {d.updating && d.selectedExistingId === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                               {isAr ? "تحديث المعلومات" : "Update Information"}
                             </Button>
-                            <Button size="sm" variant="ghost" className="gap-1 text-[12px] text-muted-foreground h-6" onClick={() => window.open(d.getAdminEditUrl(record.table as TargetTable, record.id), '_blank', 'noopener')}>
+                            <Button size="sm" variant="ghost" className="gap-1 text-xs text-muted-foreground h-6" onClick={() => window.open(d.getAdminEditUrl(record.table as TargetTable, record.id), '_blank', 'noopener')}>
                               <ExternalLink className="h-2.5 w-2.5" />{isAr ? "فتح السجل" : "Open Record"}
                             </Button>
                           </div>

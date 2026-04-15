@@ -60,7 +60,7 @@ export default function ActivityTab({ isAr, t }: Props) {
             <CardTitle className="text-sm flex items-center gap-2">
               <Activity className="h-4 w-4 text-primary" />
               {t("Role Change Activity Log", "سجل تغييرات الأدوار")}
-              {recentChanges.length > 0 && <Badge variant="secondary" className="text-[12px]">{recentChanges.length}</Badge>}
+              {recentChanges.length > 0 && <Badge variant="secondary" className="text-xs">{recentChanges.length}</Badge>}
             </CardTitle>
             <CardDescription className="text-xs">
               {t("Last 50 role and permission changes", "آخر 50 تغيير في الأدوار والصلاحيات")}
@@ -99,7 +99,7 @@ export default function ActivityTab({ isAr, t }: Props) {
                       <p className="text-xs font-semibold">
                         {label ? (isAr ? label.ar : label.en) : change.action_type.replace(/_/g, " ")}
                       </p>
-                      <p className="text-[12px] text-muted-foreground truncate">
+                      <p className="text-xs text-muted-foreground truncate">
                         {change.details
                           ? typeof change.details === "object"
                             ? Object.entries(change.details).map(([k, v]) => `${k}: ${v}`).join(" · ")
@@ -108,10 +108,10 @@ export default function ActivityTab({ isAr, t }: Props) {
                       </p>
                     </div>
                     <div className="text-end shrink-0">
-                      <p className="text-[12px] text-muted-foreground whitespace-nowrap" dir="ltr">
+                      <p className="text-xs text-muted-foreground whitespace-nowrap" dir="ltr">
                         {format(new Date(change.created_at), "MMM d, HH:mm")}
                       </p>
-                      <p className="text-[12px] text-muted-foreground/60">
+                      <p className="text-xs text-muted-foreground/60">
                         {formatDistanceToNow(new Date(change.created_at), { addSuffix: true, locale: isAr ? arLocale : undefined })}
                       </p>
                     </div>

@@ -136,7 +136,7 @@ export const QuickActionsWidget = memo(function QuickActionsWidget() {
                 {isAr ? action.labelAr : action.label}
               </span>
               {(isAr ? action.badgeAr : action.badge) && (
-                <Badge variant="secondary" className="text-[12px] px-1.5 py-0 shrink-0">
+                <Badge variant="secondary" className="text-xs px-1.5 py-0 shrink-0">
                   {isAr ? action.badgeAr : action.badge}
                 </Badge>
               )}

@@ -48,7 +48,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     const renderCharCounter = maxCharacters != null && (
       <span
         className={cn(
-          "absolute end-1 -bottom-5 text-[12px] tabular-nums transition-colors duration-200",
+          "absolute end-1 -bottom-5 text-xs tabular-nums transition-colors duration-200",
           isOverLimit ? "text-destructive font-medium" : "text-muted-foreground/70"
         )}
       >

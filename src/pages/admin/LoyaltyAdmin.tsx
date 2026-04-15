@@ -242,7 +242,7 @@ export default memo(function LoyaltyAdmin() {
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
                     {(t.benefits as string[] || []).map((b: string, i: number) => (
-                      <Badge key={i} variant="outline" className="text-[10px] rounded-lg">{b}</Badge>
+                      <Badge key={i} variant="outline" className="text-[0.625rem] rounded-lg">{b}</Badge>
                     ))}
                   </div>
                 </TableCell>
@@ -276,7 +276,7 @@ export default memo(function LoyaltyAdmin() {
                     <span className="font-medium text-sm">{isAr ? c.title_ar : c.title}</span>
                   </div>
                 </TableCell>
-                <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{c.category}</Badge></TableCell>
+                <TableCell><Badge variant="outline" className="text-[0.625rem] uppercase rounded-lg">{c.category}</Badge></TableCell>
                 <TableCell className="text-center font-mono tabular-nums">{c.target_count}</TableCell>
                 <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{c.reward_points}</TableCell>
                 <TableCell>
@@ -309,9 +309,9 @@ export default memo(function LoyaltyAdmin() {
             {rwPagination.paginated.map((r) => (
               <TableRow key={r.id} className="transition-colors duration-200 hover:bg-muted/40">
                 <TableCell className="font-medium text-sm">{isAr ? r.name_ar : r.name}</TableCell>
-                <TableCell><Badge variant="outline" className="text-[10px] uppercase rounded-lg">{r.category}</Badge></TableCell>
+                <TableCell><Badge variant="outline" className="text-[0.625rem] uppercase rounded-lg">{r.category}</Badge></TableCell>
                 <TableCell className="text-center font-mono tabular-nums text-primary font-bold">{r.points_cost}</TableCell>
-                <TableCell className="text-center"><Badge variant="secondary" className="text-[10px] rounded-lg">{r.min_tier}</Badge></TableCell>
+                <TableCell className="text-center"><Badge variant="secondary" className="text-[0.625rem] rounded-lg">{r.min_tier}</Badge></TableCell>
                 <TableCell className="text-center">
                   <Switch checked={r.is_featured} onCheckedChange={v => updateReward.mutate({ id: r.id, updates: { is_featured: v } })} />
                 </TableCell>
@@ -411,7 +411,7 @@ export default memo(function LoyaltyAdmin() {
               </div>
               <div>
                 <AnimatedCounter value={s.value} className="text-xl font-bold tabular-nums" />
-                <p className="text-[10px] text-muted-foreground font-medium">{s.label}</p>
+                <p className="text-[0.625rem] text-muted-foreground font-medium">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -425,7 +425,7 @@ export default memo(function LoyaltyAdmin() {
             {TAB_GROUPS.map((group) => (
               <div key={group.labelEn} className="flex flex-col">
                 <div className="px-3 py-1 bg-muted/40 border-b border-border/40">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span className="text-[0.625rem] font-semibold uppercase tracking-wider text-muted-foreground">
                     {isAr ? group.labelAr : group.labelEn}
                   </span>
                 </div>
@@ -438,7 +438,7 @@ export default memo(function LoyaltyAdmin() {
                         key={tab.id}
                         onClick={() => handleTabChange(tab.id)}
                         className={`
-                          flex items-center gap-1 rounded-lg px-2 py-1.5 text-[11px] font-medium transition-all active:scale-95
+                          flex items-center gap-1 rounded-lg px-2 py-1.5 text-[0.6875rem] font-medium transition-all active:scale-95
                           ${isActive
                             ? "bg-primary text-primary-foreground shadow-sm"
                             : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -448,7 +448,7 @@ export default memo(function LoyaltyAdmin() {
                         <Icon className="h-3 w-3 shrink-0" />
                         <span className="whitespace-nowrap">{isAr ? tab.labelAr : tab.labelEn}</span>
                         {tab.id === "redemptions" && (stats?.pendingRedemptions ?? 0) > 0 && (
-                          <Badge variant="destructive" className="ms-0.5 h-4 min-w-4 px-1 text-[10px]">{stats?.pendingRedemptions}</Badge>
+                          <Badge variant="destructive" className="ms-0.5 h-4 min-w-4 px-1 text-[0.625rem]">{stats?.pendingRedemptions}</Badge>
                         )}
                       </button>
                     );

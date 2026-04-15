@@ -60,7 +60,7 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
             <Merge className="h-4 w-4 text-primary" />
             <div>
               <div className="text-lg font-bold">{data?.mergeCount || 0}</div>
-              <div className="text-[12px] text-muted-foreground">{isAr ? "عمليات الدمج" : "Total Merges"}</div>
+              <div className="text-xs text-muted-foreground">{isAr ? "عمليات الدمج" : "Total Merges"}</div>
             </div>
           </div>
           <Button variant="default" size="sm" className="gap-1.5" asChild>
@@ -73,7 +73,7 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
 
         {data?.recentMerges && data.recentMerges.length > 0 && (
           <div className="space-y-1.5">
-            <div className="text-[12px] text-muted-foreground font-medium uppercase tracking-wider">
+            <div className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
               {isAr ? "آخر العمليات" : "Recent Merges"}
             </div>
             {data.recentMerges.map((m) => {
@@ -82,8 +82,8 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
                 <div key={m.id} className="flex items-center gap-2 text-xs p-2 rounded-lg bg-muted/30">
                   <Merge className="h-3 w-3 text-muted-foreground shrink-0" />
                   <span className="truncate flex-1">{String(details?.primary_name || "—")}</span>
-                  <Badge variant="secondary" className="text-[12px]">+{String(details?.merged_count || 0)}</Badge>
-                  <span className="text-[12px] text-muted-foreground shrink-0">
+                  <Badge variant="secondary" className="text-xs">+{String(details?.merged_count || 0)}</Badge>
+                  <span className="text-xs text-muted-foreground shrink-0">
                     <Clock className="h-2.5 w-2.5 inline me-0.5" />
                     {format(new Date(m.created_at), "MMM d")}
                   </span>

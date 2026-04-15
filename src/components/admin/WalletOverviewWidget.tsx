@@ -79,7 +79,7 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
             <div key={i} className="text-center p-2 rounded-xl bg-muted/30">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color}`} />
               <p className="text-xs font-bold">{m.value}</p>
-              <p className="text-[12px] text-muted-foreground">{m.label}</p>
+              <p className="text-xs text-muted-foreground">{m.label}</p>
             </div>
           ))}
         </div>
@@ -101,17 +101,17 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
         <div className="space-y-1">
           <p className="text-xs font-medium text-muted-foreground">{isAr ? "آخر المعاملات" : "Recent Transactions"}</p>
           {data?.recentTxns.length === 0 && (
-            <p className="text-[12px] text-muted-foreground/50 text-center py-3">{isAr ? "لا معاملات حديثة" : "No recent transactions"}</p>
+            <p className="text-xs text-muted-foreground/50 text-center py-3">{isAr ? "لا معاملات حديثة" : "No recent transactions"}</p>
           )}
           {data?.recentTxns.map((txn, i) => {
             const isCredit = ["credit", "refund"].includes(txn.type);
             return (
-              <div key={i} className={`flex items-center justify-between text-[12px] p-1.5 rounded transition-colors hover:bg-muted/40 ${isCredit ? "bg-chart-2/5" : "bg-destructive/5"}`}>
+              <div key={i} className={`flex items-center justify-between text-xs p-1.5 rounded transition-colors hover:bg-muted/40 ${isCredit ? "bg-chart-2/5" : "bg-destructive/5"}`}>
                 <div className="flex items-center gap-1.5 truncate">
                   <ArrowRightLeft className={`h-3 w-3 shrink-0 ${isCredit ? "text-chart-2" : "text-destructive"}`} />
                   <span className="truncate">{txn.description || txn.type}</span>
                 </div>
-                <Badge variant={isCredit ? "secondary" : "outline"} className={`text-[12px] px-1.5 py-0 shrink-0 ms-2 ${isCredit ? "text-chart-2" : "text-destructive"}`}>
+                <Badge variant={isCredit ? "secondary" : "outline"} className={`text-xs px-1.5 py-0 shrink-0 ms-2 ${isCredit ? "text-chart-2" : "text-destructive"}`}>
                   {isCredit ? "+" : "-"}{txn.amount} SAR
                 </Badge>
               </div>

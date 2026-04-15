@@ -107,7 +107,7 @@ export const NotificationGroupWidget = memo(function NotificationGroupWidget() {
           {isAr ? "ملخص الإشعارات" : "Notification Summary"}
         </h3>
         {unreadCount > 0 && (
-          <Badge variant="secondary" className="text-[12px]">
+          <Badge variant="secondary" className="text-xs">
             <AnimatedCounter value={unreadCount} className="inline" /> {isAr ? "جديد" : "new"}
           </Badge>
         )}
@@ -127,17 +127,17 @@ export const NotificationGroupWidget = memo(function NotificationGroupWidget() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <span className="text-xs font-semibold">{group.category}</span>
-                  <Badge variant="secondary" className="text-[12px] px-1.5 h-4">
+                  <Badge variant="secondary" className="text-xs px-1.5 h-4">
                     <AnimatedCounter value={group.count} className="inline" />
                   </Badge>
                   {group.unreadCount > 0 && (
-                    <Badge className="text-[12px] px-1.5 h-4 ms-auto">
+                    <Badge className="text-xs px-1.5 h-4 ms-auto">
                       <AnimatedCounter value={group.unreadCount} className="inline" />
                     </Badge>
                   )}
                 </div>
-                <p className="text-[12px] text-muted-foreground truncate mt-0.5">{group.latestTitle}</p>
-                <span className="text-[12px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground truncate mt-0.5">{group.latestTitle}</p>
+                <span className="text-xs text-muted-foreground">
                   {formatDistanceToNow(new Date(group.latestTime), { addSuffix: true, locale: isAr ? ar : enUS })}
                 </span>
               </div>

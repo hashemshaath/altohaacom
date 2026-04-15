@@ -46,7 +46,7 @@ export const CommunityInsights = memo(function CommunityInsights() {
   if (!insights || (insights.postsToday === 0 && insights.postsWeek === 0)) return null;
 
   return (
-    <div className="px-4 py-3 flex items-center gap-2.5 flex-wrap text-[12px]">
+    <div className="px-4 py-3 flex items-center gap-2.5 flex-wrap text-xs">
       <Zap className="h-3.5 w-3.5 text-chart-4 shrink-0" />
       {insights.postsToday > 0 && (
         <div className="flex items-center gap-1.5 rounded-full bg-primary/8 px-3 py-1.5">

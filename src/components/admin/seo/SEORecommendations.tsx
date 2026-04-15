@@ -125,7 +125,7 @@ Be specific with numbers, target metrics, and implementation steps. Include both
               <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-0.5">
                   <p className="text-sm font-medium">{rec.title}</p>
-                  <Badge variant={rec.priority === "high" ? "destructive" : rec.priority === "medium" ? "secondary" : "default"} className="text-[12px]">
+                  <Badge variant={rec.priority === "high" ? "destructive" : rec.priority === "medium" ? "secondary" : "default"} className="text-xs">
                     {rec.priority === "high" ? (isAr ? "عالي" : "High") : rec.priority === "medium" ? (isAr ? "متوسط" : "Medium") : (isAr ? "منخفض" : "Low")}
                   </Badge>
                 </div>

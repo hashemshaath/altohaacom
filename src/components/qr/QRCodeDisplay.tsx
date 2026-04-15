@@ -90,7 +90,7 @@ export const QRCodeDisplay = React.forwardRef<HTMLDivElement, QRCodeDisplayProps
             {code}
           </Badge>
           {showActions && (
-            <Button variant="ghost" size="sm" className="h-6 px-2 text-[12px]" onClick={handleCopyCode}>
+            <Button variant="ghost" size="sm" className="h-6 px-2 text-xs" onClick={handleCopyCode}>
               <Copy className="h-3 w-3 me-1" />
               {isAr ? "نسخ" : "Copy"}
             </Button>

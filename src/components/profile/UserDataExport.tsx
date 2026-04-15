@@ -84,7 +84,7 @@ export const UserDataExport = memo(function UserDataExport() {
             <Shield className="h-3.5 w-3.5 text-primary" />
           </div>
           {isAr ? "تصدير بياناتك" : "Export Your Data"}
-          <Badge variant="secondary" className="text-[12px]">GDPR</Badge>
+          <Badge variant="secondary" className="text-xs">GDPR</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -115,7 +115,7 @@ export const UserDataExport = memo(function UserDataExport() {
             {isAr ? "تحميل CSV" : "Download CSV"}
           </Button>
         </div>
-        <p className="text-[12px] text-muted-foreground/70">
+        <p className="text-xs text-muted-foreground/70">
           {isAr
             ? "يشمل: الملف الشخصي، المحفظة، النقاط، الشهادات، العضوية"
             : "Includes: Profile, Wallet, Points, Certificates, Membership"}

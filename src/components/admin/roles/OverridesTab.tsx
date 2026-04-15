@@ -62,7 +62,7 @@ export default function OverridesTab({ isAr, t }: Props) {
             <CardTitle className="text-sm flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-chart-4" />
               {t("Permission Overrides", "استثناءات الصلاحيات")}
-              {overrides.length > 0 && <Badge variant="destructive" className="text-[12px]">{overrides.length}</Badge>}
+              {overrides.length > 0 && <Badge variant="destructive" className="text-xs">{overrides.length}</Badge>}
             </CardTitle>
             <CardDescription className="text-xs">
               {t("Permissions individually granted or revoked from specific users", "صلاحيات مُمنوحة أو مسحوبة من مستخدمين بشكل فردي")}
@@ -70,10 +70,10 @@ export default function OverridesTab({ isAr, t }: Props) {
           </div>
           {overrides.length > 0 && (
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-[12px] gap-1">
+              <Badge variant="outline" className="text-xs gap-1">
                 <ShieldCheck className="h-3 w-3 text-chart-2" /> {grantedCount} {t("granted", "ممنوح")}
               </Badge>
-              <Badge variant="outline" className="text-[12px] gap-1">
+              <Badge variant="outline" className="text-xs gap-1">
                 <ShieldOff className="h-3 w-3 text-destructive" /> {revokedCount} {t("revoked", "محجوب")}
               </Badge>
             </div>
@@ -105,24 +105,24 @@ export default function OverridesTab({ isAr, t }: Props) {
                     {isAr ? o.permissions?.name_ar || o.permissions?.name : o.permissions?.name}
                     <span className="font-mono ms-1.5" dir="ltr">({o.permissions?.code})</span>
                   </p>
-                  {o.reason && <p className="text-[12px] text-muted-foreground mt-0.5">{o.reason}</p>}
+                  {o.reason && <p className="text-xs text-muted-foreground mt-0.5">{o.reason}</p>}
                   {o.expires_at && (
-                    <p className="text-[12px] text-chart-4 mt-0.5">
+                    <p className="text-xs text-chart-4 mt-0.5">
                       {t("Expires:", "ينتهي:")} {new Date(o.expires_at).toLocaleDateString(isAr ? "ar" : "en")}
                     </p>
                   )}
                 </div>
-                <Badge variant={o.granted ? "default" : "destructive"} className="text-[12px] shrink-0">
+                <Badge variant={o.granted ? "default" : "destructive"} className="text-xs shrink-0">
                   {o.granted ? t("Granted", "ممنوح") : t("Revoked", "محجوب")}
                 </Badge>
                 {confirmingDeleteId === o.id ? (
                   <div className="flex items-center gap-1 shrink-0">
-                    <Button variant="destructive" size="sm" className="h-7 text-[12px] rounded-lg gap-1"
+                    <Button variant="destructive" size="sm" className="h-7 text-xs rounded-lg gap-1"
                       onClick={() => deleteOverride.mutate(o.id)} disabled={deleteOverride.isPending}>
                       {deleteOverride.isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
                       {t("Confirm", "تأكيد")}
                     </Button>
-                    <Button variant="ghost" size="sm" className="h-7 text-[12px] rounded-lg" onClick={() => setConfirmingDeleteId(null)}>
+                    <Button variant="ghost" size="sm" className="h-7 text-xs rounded-lg" onClick={() => setConfirmingDeleteId(null)}>
                       {t("Cancel", "إلغاء")}
                     </Button>
                   </div>

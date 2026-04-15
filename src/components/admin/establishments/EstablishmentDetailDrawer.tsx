@@ -143,7 +143,7 @@ const EstablishmentDetailDrawer = memo(function EstablishmentDetailDrawer({ enti
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium truncate">{isAr && profile?.full_name_ar ? profile.full_name_ar : profile?.full_name || "—"}</p>
-                    <p className="text-xs text-muted-foreground">{a.role_title || a.association_type} {a.is_current && <Badge variant="outline" className="text-[12px] ms-1">{isAr ? "حالي" : "Current"}</Badge>}</p>
+                    <p className="text-xs text-muted-foreground">{a.role_title || a.association_type} {a.is_current && <Badge variant="outline" className="text-xs ms-1">{isAr ? "حالي" : "Current"}</Badge>}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -175,7 +175,7 @@ function MiniKPI({ icon: Icon, label, value }: { icon: LucideIcon; label: string
     <div className="rounded-xl border bg-card p-2.5 text-center">
       <Icon className="h-4 w-4 mx-auto text-muted-foreground mb-1" />
       <p className="text-lg font-bold">{value}</p>
-      <p className="text-[12px] text-muted-foreground">{label}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
 }

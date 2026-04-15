@@ -59,7 +59,7 @@ export const FeedStatsBar = memo(function FeedStatsBar() {
     <div className="flex items-center gap-4 border-b border-border/30 px-4 py-2 bg-muted/10">
       <Zap className="h-3.5 w-3.5 text-chart-4 shrink-0" />
       {items.map((item, idx) => (
-        <div key={idx} className="flex items-center gap-1.5 text-[11px]">
+        <div key={idx} className="flex items-center gap-1.5 text-[0.6875rem]">
           <item.icon className={cn("h-3 w-3", item.color)} />
           <AnimatedCounter value={item.value} className={cn("font-bold tabular-nums", item.color)} />
           <span className="text-muted-foreground">{item.label}</span>

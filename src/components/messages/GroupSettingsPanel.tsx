@@ -122,8 +122,8 @@ export const GroupSettingsPanel = memo(function GroupSettingsPanel({ open, onOpe
                         </p>
                       </div>
                       <div className="flex items-center gap-1">
-                        {isCreator && <Badge variant="outline" className="text-[12px] px-1.5 py-0"><Crown className="h-2.5 w-2.5 me-0.5" />{isAr ? "مالك" : "Owner"}</Badge>}
-                        {isMemberAdmin && !isCreator && <Badge variant="secondary" className="text-[12px] px-1.5 py-0">{isAr ? "مشرف" : "Admin"}</Badge>}
+                        {isCreator && <Badge variant="outline" className="text-xs px-1.5 py-0"><Crown className="h-2.5 w-2.5 me-0.5" />{isAr ? "مالك" : "Owner"}</Badge>}
+                        {isMemberAdmin && !isCreator && <Badge variant="secondary" className="text-xs px-1.5 py-0">{isAr ? "مشرف" : "Admin"}</Badge>}
                         {isAdmin && !isSelf && !isCreator && (
                           <div className="flex gap-0.5">
                             {!isMemberAdmin && (

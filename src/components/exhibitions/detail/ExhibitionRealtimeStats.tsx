@@ -73,28 +73,28 @@ export const ExhibitionRealtimeStats = memo(function ExhibitionRealtimeStats({
     <div className="flex items-center gap-3 flex-wrap">
       <div className="flex items-center gap-1.5">
         <div className="flex h-2 w-2 rounded-full bg-chart-3 animate-pulse" />
-        <span className="text-[12px] font-medium text-muted-foreground">{t("Live", "مباشر")}</span>
+        <span className="text-xs font-medium text-muted-foreground">{t("Live", "مباشر")}</span>
       </div>
       
-      <Badge variant="outline" className="gap-1 text-[12px] py-0.5">
+      <Badge variant="outline" className="gap-1 text-xs py-0.5">
         <Ticket className="h-2.5 w-2.5" />
         {tickets} {t("tickets", "تذكرة")}
       </Badge>
 
-      <Badge variant="outline" className="gap-1 text-[12px] py-0.5">
+      <Badge variant="outline" className="gap-1 text-xs py-0.5">
         <Users className="h-2.5 w-2.5" />
         {checkins} {t("checked in", "حضور")}
       </Badge>
 
       {tickets > 0 && (
-        <Badge variant="outline" className="gap-1 text-[12px] py-0.5 text-chart-3 border-chart-3/30">
+        <Badge variant="outline" className="gap-1 text-xs py-0.5 text-chart-3 border-chart-3/30">
           <TrendingUp className="h-2.5 w-2.5" />
           {Math.round((checkins / tickets) * 100)}%
         </Badge>
       )}
 
       {recentAction && (
-        <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20 text-[12px] animate-in fade-in slide-in-from-left-2 duration-300">
+        <Badge className="bg-chart-3/10 text-chart-3 border-chart-3/20 text-xs animate-in fade-in slide-in-from-left-2 duration-300">
           <Activity className="h-2.5 w-2.5 me-1" />
           {recentAction}
         </Badge>

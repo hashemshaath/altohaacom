@@ -260,7 +260,7 @@ const MembershipPolicySettings = memo(function MembershipPolicySettings() {
               {isAr ? "ملخص السياسة النشطة" : "Active Policy Summary"}
             </CardTitle>
             {settings?.[SETTINGS_KEY] && (
-              <Badge variant="outline" className="gap-1 text-[12px] text-muted-foreground">
+              <Badge variant="outline" className="gap-1 text-xs text-muted-foreground">
                 <CheckCircle2 className="h-3 w-3" />
                 {isAr ? "آخر حفظ: " : "Last saved: "}
                 {new Date().toLocaleDateString(isAr ? "ar-SA" : "en-US")}

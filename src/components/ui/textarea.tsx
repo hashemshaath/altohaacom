@@ -71,7 +71,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         {maxCharacters != null && (
           <span
             className={cn(
-              "absolute end-2 bottom-2 text-[12px] tabular-nums transition-colors duration-200",
+              "absolute end-2 bottom-2 text-xs tabular-nums transition-colors duration-200",
               isOverLimit ? "text-destructive font-medium" : "text-muted-foreground/70"
             )}
           >

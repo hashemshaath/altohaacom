@@ -96,7 +96,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
           <CardTitle className="text-sm flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-primary" />
             {isAr ? "نمو المستخدمين (30 يوم)" : "User Growth (30 Days)"}
-            <Badge variant="secondary" className="ms-auto text-[12px]">
+            <Badge variant="secondary" className="ms-auto text-xs">
               +{data.totalNew30d} {isAr ? "جديد" : "new"}
             </Badge>
           </CardTitle>
@@ -116,7 +116,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
               <Area type="monotone" dataKey="count" stroke="hsl(var(--primary))" fill="url(#ugFill)" strokeWidth={2} />
             </AreaChart>
           </ResponsiveContainer>
-          <div className="flex gap-4 mt-2 text-[12px] text-muted-foreground">
+          <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
             <span className="flex items-center gap-1"><Users className="h-3 w-3" /> {isAr ? "آخر 7 أيام:" : "Last 7d:"} <strong><AnimatedCounter value={data.totalNew7d} className="inline" /></strong></span>
             <span className="flex items-center gap-1"><UserCheck className="h-3 w-3 text-chart-5" /> {isAr ? "نشط:" : "Active:"} <strong><AnimatedCounter value={data.activeCount} className="inline" /></strong></span>
             <span className="flex items-center gap-1"><UserX className="h-3 w-3 text-destructive" /> {isAr ? "موقوف:" : "Suspended:"} <strong><AnimatedCounter value={data.suspendedCount} className="inline" /></strong></span>
@@ -129,7 +129,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
         {/* Account Type */}
         <Card>
           <CardContent className="p-3">
-            <p className="text-[12px] font-semibold text-muted-foreground mb-2">{isAr ? "نوع الحساب" : "Account Type"}</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2">{isAr ? "نوع الحساب" : "Account Type"}</p>
             <div className="flex items-center gap-3">
               <PieChart width={60} height={60}>
                 <Pie data={[{ v: data.proCount }, { v: data.fanCount }]} dataKey="v" cx={28} cy={28} innerRadius={16} outerRadius={28} strokeWidth={0}>
@@ -137,7 +137,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
                   <Cell fill="hsl(var(--chart-4))" />
                 </Pie>
               </PieChart>
-              <div className="text-[12px] space-y-1">
+              <div className="text-xs space-y-1">
                 <div className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-primary" /> {isAr ? "محترف" : "Pro"}: <strong><AnimatedCounter value={data.proCount} className="inline" /></strong></div>
                 <div className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-chart-4" /> {isAr ? "معجب" : "Fan"}: <strong><AnimatedCounter value={data.fanCount} className="inline" /></strong></div>
               </div>
@@ -148,12 +148,12 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
         {/* Role Distribution */}
         <Card>
           <CardContent className="p-3">
-            <p className="text-[12px] font-semibold text-muted-foreground mb-2 flex items-center gap-1"><Shield className="h-3 w-3" /> {isAr ? "الأدوار" : "Roles"}</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1"><Shield className="h-3 w-3" /> {isAr ? "الأدوار" : "Roles"}</p>
             <div className="space-y-1">
               {data.roleDistribution.map((r, i) => (
-                <div key={r.name} className="flex items-center justify-between text-[12px]">
+                <div key={r.name} className="flex items-center justify-between text-xs">
                   <span className="capitalize">{translateRole(r.name, isAr)}</span>
-                  <Badge variant="outline" className="text-[12px] h-4">{r.value}</Badge>
+                  <Badge variant="outline" className="text-xs h-4">{r.value}</Badge>
                 </div>
               ))}
             </div>
@@ -163,12 +163,12 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
         {/* Top Countries */}
         <Card>
           <CardContent className="p-3">
-            <p className="text-[12px] font-semibold text-muted-foreground mb-2 flex items-center gap-1"><Globe className="h-3 w-3" /> {isAr ? "أعلى الدول" : "Top Countries"}</p>
+            <p className="text-xs font-semibold text-muted-foreground mb-2 flex items-center gap-1"><Globe className="h-3 w-3" /> {isAr ? "أعلى الدول" : "Top Countries"}</p>
             <div className="space-y-1">
               {data.topCountries.map(([code, count]) => (
-                <div key={code} className="flex items-center justify-between text-[12px]">
+                <div key={code} className="flex items-center justify-between text-xs">
                   <span>{code}</span>
-                  <Badge variant="outline" className="text-[12px] h-4">{count}</Badge>
+                  <Badge variant="outline" className="text-xs h-4">{count}</Badge>
                 </div>
               ))}
             </div>

@@ -33,7 +33,7 @@ export const NewsletterCTA = forwardRef<HTMLDivElement, Props>(function Newslett
           </div>
           <div>
             <h3 className="text-sm font-bold">{isAr ? "اشترك في النشرة" : "Stay Updated"}</h3>
-            <p className="text-[12px] text-muted-foreground">{isAr ? "احصل على آخر الأخبار أسبوعياً" : "Get weekly culinary news digest"}</p>
+            <p className="text-xs text-muted-foreground">{isAr ? "احصل على آخر الأخبار أسبوعياً" : "Get weekly culinary news digest"}</p>
           </div>
         </div>
         {submitted ? (

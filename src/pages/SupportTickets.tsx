@@ -397,7 +397,7 @@ export default function SupportTickets() {
                                 <Badge variant="outline" className="text-xs">
                                   {isMine ? (isAr ? "أنت" : "You") : (isAr ? "الدعم" : "Support")}
                                 </Badge>
-                                <span className="text-[12px] text-muted-foreground">
+                                <span className="text-xs text-muted-foreground">
                                   {toEnglishDigits(formatDistanceToNow(new Date(msg.created_at), {
                                     addSuffix: true,
                                     locale: isAr ? ar : enUS,
@@ -512,7 +512,7 @@ export default function SupportTickets() {
                             }))}
                           </p>
                           {ticket.status === "resolved" && (
-                            <Badge variant="outline" className="text-[12px] text-chart-5 border-chart-5/30 bg-chart-5/5">
+                            <Badge variant="outline" className="text-xs text-chart-5 border-chart-5/30 bg-chart-5/5">
                               ✓ {isAr ? "تمت المعالجة" : "Resolved"}
                             </Badge>
                           )}

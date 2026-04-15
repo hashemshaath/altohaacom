@@ -242,15 +242,15 @@ export const RecipesTab = memo(function RecipesTab() {
             )}
             <div className="p-3.5">
               <div className="mb-1.5 flex items-start justify-between gap-2">
-                <h3 className="line-clamp-1 text-[13px] font-semibold">{recipe.title}</h3>
-                <Badge variant="outline" className={`shrink-0 text-[10px] px-1.5 py-0 ${difficultyColor(recipe.difficulty)}`}>
+                <h3 className="line-clamp-1 text-[0.8125rem] font-semibold">{recipe.title}</h3>
+                <Badge variant="outline" className={`shrink-0 text-[0.625rem] px-1.5 py-0 ${difficultyColor(recipe.difficulty)}`}>
                   {recipe.difficulty}
                 </Badge>
               </div>
               {recipe.description && (
-                <p className="mb-2 line-clamp-2 text-[11px] text-muted-foreground/70 leading-relaxed">{recipe.description}</p>
+                <p className="mb-2 line-clamp-2 text-[0.6875rem] text-muted-foreground/70 leading-relaxed">{recipe.description}</p>
               )}
-              <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground/60 mb-2">
+              <div className="flex flex-wrap items-center gap-2 text-[0.6875rem] text-muted-foreground/60 mb-2">
                 {recipe.cuisine && (
                   <span className="flex items-center gap-0.5"><ChefHat className="h-3 w-3" />{recipe.cuisine}</span>
                 )}
@@ -267,14 +267,14 @@ export const RecipesTab = memo(function RecipesTab() {
               <div className="flex items-center justify-between pt-2 border-t border-border/10">
                 <div className="flex items-center gap-1.5">
                   <Avatar className="h-5 w-5">
-                    <AvatarFallback className="bg-primary/8 text-primary text-[10px] font-semibold">
+                    <AvatarFallback className="bg-primary/8 text-primary text-[0.625rem] font-semibold">
                       {(recipe.author_name || "C")[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="text-[11px] text-muted-foreground/60">{recipe.author_name || "Chef"}</span>
+                  <span className="text-[0.6875rem] text-muted-foreground/60">{recipe.author_name || "Chef"}</span>
                 </div>
                 {recipe.ratings_count > 0 && (
-                  <span className="flex items-center gap-0.5 text-[11px]">
+                  <span className="flex items-center gap-0.5 text-[0.6875rem]">
                     <Star className="h-3 w-3 fill-chart-4 text-chart-4" />
                     {recipe.avg_rating}
                   </span>

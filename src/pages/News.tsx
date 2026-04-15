@@ -307,7 +307,7 @@ export default function News() {
               <div className="space-y-2 max-w-2xl">
                 <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/8 px-2.5 py-1 ring-1 ring-primary/15">
                   <div className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-primary">
+                  <span className="text-[0.6875rem] font-bold uppercase tracking-[0.15em] text-primary">
                     {isAr ? "مركز الأخبار" : "News Center"}
                   </span>
                 </div>
@@ -332,7 +332,7 @@ export default function News() {
                       <stat.icon className={`h-3 w-3 ${stat.color}`} />
                     </div>
                     <span className="text-sm font-bold leading-none tabular-nums">{stat.value}</span>
-                    <span className="text-[10px] text-muted-foreground/50 mt-0.5">{stat.label}</span>
+                    <span className="text-[0.625rem] text-muted-foreground/50 mt-0.5">{stat.label}</span>
                   </div>
                 ))}
               </div>
@@ -344,7 +344,7 @@ export default function News() {
                 { icon: Building2, en: "Companies", ar: "الشركات" },
                 { icon: Award, en: "Associations", ar: "الجمعيات" },
               ].map((topic) => (
-                <Badge key={topic.en} variant="outline" className="gap-1 px-2 py-0.5 text-[11px] rounded-md border-border/15 bg-card/30 cursor-default">
+                <Badge key={topic.en} variant="outline" className="gap-1 px-2 py-0.5 text-[0.6875rem] rounded-md border-border/15 bg-card/30 cursor-default">
                   <topic.icon className="h-2.5 w-2.5 text-primary/40" />
                   {isAr ? topic.ar : topic.en}
                 </Badge>
@@ -407,7 +407,7 @@ export default function News() {
                   <SlidersHorizontal className="h-3.5 w-3.5" />
                   {isAr ? "فلاتر" : "Filters"}
                   {activeFilterCount > 0 && (
-                    <span className="absolute -top-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
+                    <span className="absolute -top-1 -end-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[0.625rem] font-bold">
                       {activeFilterCount}
                     </span>
                   )}
@@ -489,11 +489,11 @@ export default function News() {
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="rounded-lg px-3 py-1.5 text-[12px] font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-[13px] gap-1"
+                    className="rounded-lg px-3 py-1.5 text-xs font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm sm:text-[0.8125rem] gap-1"
                   >
                     {isAr ? tab.ar : tab.en}
                     {typeCounts[tab.value] != null && (
-                      <span className="text-[10px] opacity-50 tabular-nums">({typeCounts[tab.value]})</span>
+                      <span className="text-[0.625rem] opacity-50 tabular-nums">({typeCounts[tab.value]})</span>
                     )}
                   </TabsTrigger>
                 ))}
@@ -631,7 +631,7 @@ export default function News() {
                       {categories.length > 0 && (
                         <Card className="rounded-xl border-border/15">
                           <CardContent className="p-4">
-                            <h3 className="text-[13px] font-semibold mb-2.5 flex items-center gap-1.5">
+                            <h3 className="text-[0.8125rem] font-semibold mb-2.5 flex items-center gap-1.5">
                               <Filter className="h-3.5 w-3.5 text-muted-foreground/50" />
                               {isAr ? "التصنيفات" : "Categories"}
                             </h3>
@@ -641,7 +641,7 @@ export default function News() {
                                   key={cat.id}
                                   variant={selectedCategory === cat.id ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-md text-[11px] transition-colors",
+                                    "cursor-pointer rounded-md text-[0.6875rem] transition-colors",
                                     selectedCategory === cat.id
                                       ? "bg-primary text-primary-foreground"
                                       : "border-border/15 hover:bg-primary/5"
@@ -660,7 +660,7 @@ export default function News() {
                       {tags.length > 0 && (
                         <Card className="rounded-xl border-border/15">
                           <CardContent className="p-4">
-                            <h3 className="text-[13px] font-semibold mb-2.5 flex items-center gap-1.5">
+                            <h3 className="text-[0.8125rem] font-semibold mb-2.5 flex items-center gap-1.5">
                               <TrendingUp className="h-3.5 w-3.5 text-muted-foreground/50" />
                               {isAr ? "الوسوم" : "Tags"}
                             </h3>
@@ -670,7 +670,7 @@ export default function News() {
                                   key={tag.id}
                                   variant={selectedTags.includes(tag.id) ? "default" : "outline"}
                                   className={cn(
-                                    "cursor-pointer rounded-md text-[11px] transition-colors",
+                                    "cursor-pointer rounded-md text-[0.6875rem] transition-colors",
                                     selectedTags.includes(tag.id)
                                       ? "bg-primary text-primary-foreground"
                                       : "border-border/15 hover:bg-primary/5"

@@ -33,7 +33,7 @@ export const ArticleEstimatedTimeLeft = memo(function ArticleEstimatedTimeLeft({
   if (timeLeft <= 0) return null;
 
   return (
-    <span className="inline-flex items-center gap-1 text-[12px] text-muted-foreground tabular-nums shrink-0">
+    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground tabular-nums shrink-0">
       <Clock className="h-3 w-3" />
       {timeLeft} {isAr ? "د متبقية" : "min left"}
     </span>

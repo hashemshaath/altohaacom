@@ -124,7 +124,7 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
 
           {/* Price Preview */}
           <Separator />
-          <p className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+          <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
             <Calculator className="h-3.5 w-3.5" />
             {isAr ? "معاينة الأسعار" : "Price Preview"}
           </p>
@@ -135,7 +135,7 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
                 <p className="text-2xl font-black tabular-nums text-primary mt-1">
                   <AnimatedCounter value={Math.round((editing.base_fee || 0) + (editing.per_chef_fee || 0) * count)} className="text-2xl font-black tabular-nums text-primary mt-1" />
                 </p>
-                <p className="text-[12px] text-muted-foreground">SAR</p>
+                <p className="text-xs text-muted-foreground">SAR</p>
               </div>
             ))}
           </div>
@@ -171,8 +171,8 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
                 <div>
                   <h4 className="font-bold text-sm">{isAr && plan.name_ar ? plan.name_ar : plan.name}</h4>
                   <div className="flex gap-1.5 mt-1">
-                    {plan.is_active && <Badge className="text-[12px] h-4">{isAr ? "نشط" : "Active"}</Badge>}
-                    {plan.product_category && <Badge variant="outline" className="text-[12px] h-4">{plan.product_category}</Badge>}
+                    {plan.is_active && <Badge className="text-xs h-4">{isAr ? "نشط" : "Active"}</Badge>}
+                    {plan.product_category && <Badge variant="outline" className="text-xs h-4">{plan.product_category}</Badge>}
                   </div>
                 </div>
                 <DollarSign className="h-5 w-5 text-primary" />
@@ -181,11 +181,11 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
               <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="rounded-xl bg-muted/50 p-3 text-center">
                   <AnimatedCounter value={plan.base_fee} className="text-xl font-black tabular-nums" />
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "رسوم أساسية" : "Base Fee"} (SAR)</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "رسوم أساسية" : "Base Fee"} (SAR)</p>
                 </div>
                 <div className="rounded-xl bg-muted/50 p-3 text-center">
                   <AnimatedCounter value={plan.per_chef_fee} className="text-xl font-black tabular-nums" prefix="+" />
-                  <p className="text-[12px] text-muted-foreground">{isAr ? "لكل شيف" : "Per Chef"} (SAR)</p>
+                  <p className="text-xs text-muted-foreground">{isAr ? "لكل شيف" : "Per Chef"} (SAR)</p>
                 </div>
               </div>
 
@@ -194,10 +194,10 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
               </p>
 
               <div className="flex gap-1.5 border-t border-border/30 pt-3">
-                <Button size="sm" variant="outline" className="flex-1 gap-1 h-7 text-[12px]" onClick={() => setEditing(plan)}>
+                <Button size="sm" variant="outline" className="flex-1 gap-1 h-7 text-xs" onClick={() => setEditing(plan)}>
                   <Edit2 className="h-3 w-3" />{isAr ? "تعديل" : "Edit"}
                 </Button>
-                <Button size="sm" variant="outline" className="h-7 text-[12px] text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(plan.id)}>
+                <Button size="sm" variant="outline" className="h-7 text-xs text-destructive hover:text-destructive" onClick={() => deleteMutation.mutate(plan.id)}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
               </div>

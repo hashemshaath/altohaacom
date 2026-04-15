@@ -147,11 +147,11 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">{result.title}</p>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-[12px] px-1.5 py-0 h-4">
+                          <Badge variant="secondary" className="text-xs px-1.5 py-0 h-4">
                             {isAr ? config.labelAr : config.label}
                           </Badge>
                           {result.subtitle && (
-                            <span className="text-[12px] text-muted-foreground truncate">{result.subtitle}</span>
+                            <span className="text-xs text-muted-foreground truncate">{result.subtitle}</span>
                           )}
                         </div>
                       </div>
@@ -161,7 +161,7 @@ export const GlobalSearchWidget = memo(function GlobalSearchWidget() {
                 })}
                 {results.length > 0 && (
                   <div className="border-t border-border/30 mt-1 pt-1">
-                    <p className="text-center text-[12px] text-muted-foreground/50 py-1">
+                    <p className="text-center text-xs text-muted-foreground/50 py-1">
                       {isAr ? `${results.length} نتيجة — اضغط Enter للمزيد` : `${results.length} results — press Enter for more`}
                     </p>
                   </div>

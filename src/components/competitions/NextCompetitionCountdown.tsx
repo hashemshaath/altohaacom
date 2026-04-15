@@ -66,13 +66,13 @@ export const NextCompetitionCountdown = memo(function NextCompetitionCountdown({
 
           {/* Info */}
           <div className="flex-1 min-w-0 text-center sm:text-start">
-            <Badge className="mb-1.5 text-[12px] font-black uppercase tracking-widest bg-primary/10 text-primary border-0 rounded-lg">
+            <Badge className="mb-1.5 text-xs font-black uppercase tracking-widest bg-primary/10 text-primary border-0 rounded-lg">
               <Clock className="h-2.5 w-2.5 me-1" />
               {isAr ? "المسابقة القادمة" : "Next Competition"}
             </Badge>
             <h3 className="text-sm font-bold truncate group-hover:text-primary transition-colors">{title}</h3>
             {(nextComp.city || nextComp.country_code) && (
-              <p className="text-[12px] text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
+              <p className="text-xs text-muted-foreground flex items-center gap-1 justify-center sm:justify-start mt-0.5">
                 <MapPin className="h-2.5 w-2.5" />
                 {nextComp.country_code && countryFlag(nextComp.country_code)} {nextComp.city}
               </p>
@@ -88,7 +88,7 @@ export const NextCompetitionCountdown = memo(function NextCompetitionCountdown({
                     {String(u.value).padStart(2, "0")}
                   </span>
                 </div>
-                <span className="text-[12px] text-muted-foreground font-bold uppercase mt-1">{u.labelShort}</span>
+                <span className="text-xs text-muted-foreground font-bold uppercase mt-1">{u.labelShort}</span>
               </div>
             ))}
           </div>

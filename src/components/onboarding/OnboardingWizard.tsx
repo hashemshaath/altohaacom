@@ -259,7 +259,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
                   onChange={(e) => setForm({ ...form, username: e.target.value.replace(/[^a-zA-Z0-9_]/g, "") })}
                   placeholder={isAr ? "اختر اسم مستخدم" : "Choose a username"}
                 />
-                <p className="text-[12px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {isAr ? "أحرف إنجليزية وأرقام وشرطة سفلية فقط" : "Letters, numbers and underscores only"}
                 </p>
               </div>
@@ -372,7 +372,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
                   );
                 })}
               </div>
-              <p className="text-center text-[12px] text-muted-foreground/50">
+              <p className="text-center text-xs text-muted-foreground/50">
                 {selectedInterests.length} / {INTERESTS.length} {isAr ? "محدد" : "selected"}
               </p>
             </div>
@@ -425,7 +425,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
                   rows={3}
                   maxLength={300}
                 />
-                <p className="text-[12px] text-muted-foreground/50 text-end">{form.bio.length}/300</p>
+                <p className="text-xs text-muted-foreground/50 text-end">{form.bio.length}/300</p>
               </div>
 
               {/* Summary */}
@@ -434,7 +434,7 @@ export const OnboardingWizard = memo(function OnboardingWizard({ onComplete }: O
                   <Sparkles className="h-3.5 w-3.5 text-primary" />
                   {isAr ? "ملخص ملفك الشخصي" : "Profile Summary"}
                 </p>
-                <div className="grid grid-cols-2 gap-2 text-[12px]">
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
                     <span className="text-muted-foreground">{isAr ? "الاسم:" : "Name:"}</span>{" "}
                     <span className="font-medium">{form.full_name || "—"}</span>

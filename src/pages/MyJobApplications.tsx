@@ -81,7 +81,7 @@ export default function MyJobApplications() {
             <Card key={s.label} className="rounded-xl border-border/15">
               <CardContent className="p-3 text-center">
                 <p className={`text-xl font-extrabold ${s.color}`}>{s.value}</p>
-                <p className="text-[11px] text-muted-foreground/60">{s.label}</p>
+                <p className="text-[0.6875rem] text-muted-foreground/60">{s.label}</p>
               </CardContent>
             </Card>
           ))}
@@ -129,7 +129,7 @@ export default function MyJobApplications() {
 
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold truncate group-hover:text-primary transition-colors">{title}</p>
-                        <div className="flex items-center gap-2 mt-0.5 text-[12px] text-muted-foreground/60">
+                        <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground/60">
                           <span className="flex items-center gap-1 truncate">
                             <Building2 className="h-3 w-3 shrink-0" />
                             {companyName}
@@ -142,11 +142,11 @@ export default function MyJobApplications() {
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-1.5">
-                          <Badge variant="outline" className={`rounded-lg text-[11px] px-2 py-0.5 gap-1 border ${statusCfg.color}`}>
+                          <Badge variant="outline" className={`rounded-lg text-[0.6875rem] px-2 py-0.5 gap-1 border ${statusCfg.color}`}>
                             <StatusIcon className="h-3 w-3" />
                             {isAr ? statusCfg.labelAr : statusCfg.labelEn}
                           </Badge>
-                          <span className="text-[11px] text-muted-foreground/40">
+                          <span className="text-[0.6875rem] text-muted-foreground/40">
                             {format(new Date(app.created_at), "MMM d, yyyy")}
                           </span>
                           {app.cover_letter && (

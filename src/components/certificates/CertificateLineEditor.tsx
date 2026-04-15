@@ -98,7 +98,7 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
               <span className="flex-1 truncate font-medium" style={{ fontFamily: line.font, fontSize: Math.min(line.fontSize, 12) }}>
                 {line.text.replace(/\{\{.*?\}\}/g, "•••").substring(0, 30)}
               </span>
-              <Badge variant="outline" className="text-[12px] shrink-0">{line.fontSize}px</Badge>
+              <Badge variant="outline" className="text-xs shrink-0">{line.fontSize}px</Badge>
               <Button variant="ghost" size="icon" className="h-5 w-5 shrink-0" onClick={e => { e.stopPropagation(); moveLine(line.id, "up"); }} disabled={idx === 0}>
                 <ChevronUp className="h-3 w-3" />
               </Button>
@@ -126,7 +126,7 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
 
               {/* Text */}
               <div className="space-y-1">
-                <Label className="text-[12px]">{language === "ar" ? "النص" : "Text"}</Label>
+                <Label className="text-xs">{language === "ar" ? "النص" : "Text"}</Label>
                 <Textarea
                   value={selectedLine.text}
                   onChange={e => updateLine(selectedLine.id, { text: e.target.value })}
@@ -135,7 +135,7 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
                   dir={selectedLine.font.includes("Amiri") || selectedLine.font.includes("Cairo") || selectedLine.font.includes("Tajawal") || selectedLine.font.includes("Naskh") || selectedLine.font.includes("Plex Sans Arabic") ? "rtl" : "ltr"}
                 />
                 {selectedLine.isVariable && (
-                  <p className="text-[12px] text-muted-foreground">
+                  <p className="text-xs text-muted-foreground">
                     {"{{recipient_name}} {{event_name}} {{event_location}} {{event_date}} {{achievement}} {{certificate_number}} {{verification_code}}"}
                   </p>
                 )}
@@ -143,7 +143,7 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
 
               {/* Font */}
               <div className="space-y-1">
-                <Label className="text-[12px]">{language === "ar" ? "الخط" : "Font"}</Label>
+                <Label className="text-xs">{language === "ar" ? "الخط" : "Font"}</Label>
                 <Select value={selectedLine.font} onValueChange={v => updateLine(selectedLine.id, { font: v })}>
                   <SelectTrigger className="text-xs h-8"><SelectValue /></SelectTrigger>
                   <SelectContent>{fontOptions.map(f => <SelectItem key={f.value} value={f.value} className="text-xs">{f.label}</SelectItem>)}</SelectContent>
@@ -153,11 +153,11 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
               {/* Size & Weight */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-[12px]">{language === "ar" ? "الحجم" : "Size"}: {selectedLine.fontSize}px</Label>
+                  <Label className="text-xs">{language === "ar" ? "الحجم" : "Size"}: {selectedLine.fontSize}px</Label>
                   <Slider value={[selectedLine.fontSize]} onValueChange={([v]) => updateLine(selectedLine.id, { fontSize: v })} min={8} max={60} step={1} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[12px]">{language === "ar" ? "الوزن" : "Weight"}: {selectedLine.fontWeight}</Label>
+                  <Label className="text-xs">{language === "ar" ? "الوزن" : "Weight"}: {selectedLine.fontWeight}</Label>
                   <Slider value={[selectedLine.fontWeight]} onValueChange={([v]) => updateLine(selectedLine.id, { fontWeight: v })} min={100} max={900} step={100} />
                 </div>
               </div>
@@ -165,11 +165,11 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
               {/* Letter Spacing & Line Height */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-[12px]">{language === "ar" ? "تباعد الحروف" : "Letter Spacing"}: {selectedLine.letterSpacing}px</Label>
+                  <Label className="text-xs">{language === "ar" ? "تباعد الحروف" : "Letter Spacing"}: {selectedLine.letterSpacing}px</Label>
                   <Slider value={[selectedLine.letterSpacing]} onValueChange={([v]) => updateLine(selectedLine.id, { letterSpacing: v })} min={-2} max={10} step={0.5} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[12px]">{language === "ar" ? "ارتفاع السطر" : "Line Height"}: {selectedLine.lineHeight}</Label>
+                  <Label className="text-xs">{language === "ar" ? "ارتفاع السطر" : "Line Height"}: {selectedLine.lineHeight}</Label>
                   <Slider value={[selectedLine.lineHeight]} onValueChange={([v]) => updateLine(selectedLine.id, { lineHeight: v })} min={0.8} max={3} step={0.1} />
                 </div>
               </div>
@@ -179,7 +179,7 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
 
               {/* Alignment */}
               <div className="space-y-1">
-                <Label className="text-[12px]">{language === "ar" ? "المحاذاة" : "Alignment"}</Label>
+                <Label className="text-xs">{language === "ar" ? "المحاذاة" : "Alignment"}</Label>
                 <div className="flex gap-1">
                   {(["left", "center", "right"] as const).map(a => (
                     <Button key={a} variant={selectedLine.alignment === a ? "default" : "outline"} size="icon" className="h-7 w-7" onClick={() => updateLine(selectedLine.id, { alignment: a })}>
@@ -191,7 +191,7 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
 
               {/* Margin Bottom */}
               <div className="space-y-1">
-                <Label className="text-[12px]">{language === "ar" ? "مسافة أسفل" : "Space Below"}: {selectedLine.marginBottom}px</Label>
+                <Label className="text-xs">{language === "ar" ? "مسافة أسفل" : "Space Below"}: {selectedLine.marginBottom}px</Label>
                 <Slider value={[selectedLine.marginBottom]} onValueChange={([v]) => updateLine(selectedLine.id, { marginBottom: v })} min={0} max={40} step={1} />
               </div>
 
@@ -203,7 +203,7 @@ export const CertificateLineEditor = memo(function CertificateLineEditor({ lines
                   onChange={e => updateLine(selectedLine.id, { isVariable: e.target.checked })}
                   className="rounded"
                 />
-                <Label className="text-[12px] cursor-pointer">{language === "ar" ? "يحتوي على متغيرات" : "Contains variables"}</Label>
+                <Label className="text-xs cursor-pointer">{language === "ar" ? "يحتوي على متغيرات" : "Contains variables"}</Label>
               </div>
             </CardContent>
           </Card>

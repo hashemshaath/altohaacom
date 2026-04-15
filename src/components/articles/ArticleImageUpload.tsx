@@ -90,7 +90,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
             </div>
             {/* Image dimensions info */}
             <div className="absolute bottom-2 start-2 end-2 flex justify-between">
-              <span className="text-[12px] bg-black/60 text-primary-foreground px-2 py-0.5 rounded-lg">{t("Cover Image", "صورة الغلاف")}</span>
+              <span className="text-xs bg-black/60 text-primary-foreground px-2 py-0.5 rounded-lg">{t("Cover Image", "صورة الغلاف")}</span>
             </div>
           </div>
           {/* Alt text */}
@@ -110,7 +110,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
               </TooltipContent>
             </Tooltip>
           </div>
-          <p className="text-[12px] text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             💡 {t("Recommended: 1200×630px for optimal social sharing", "الأفضل: 1200×630 بكسل للمشاركة المثلى")}
           </p>
         </div>
@@ -140,7 +140,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
                   <p className="text-xs text-muted-foreground mt-1">
                     {t("or drag and drop • Max 10MB", "أو اسحب وأفلت • الحد 10 ميجا")}
                   </p>
-                  <p className="text-[12px] text-muted-foreground mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {t("Recommended: 1200×630px JPG/PNG/WebP", "الأفضل: 1200×630 بكسل JPG/PNG/WebP")}
                   </p>
                 </div>

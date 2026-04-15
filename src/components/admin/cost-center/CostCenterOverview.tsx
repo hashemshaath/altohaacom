@@ -40,9 +40,9 @@ export const CostCenterOverview = memo(function CostCenterOverview({ isAr, estim
                   onClick={() => onSelect(est.id)}>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold truncate">{est.title}</p>
-                    <p className="text-[12px] text-muted-foreground font-mono">{est.estimate_number}</p>
+                    <p className="text-xs text-muted-foreground font-mono">{est.estimate_number}</p>
                   </div>
-                  <Badge className={`text-[12px] ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
+                  <Badge className={`text-xs ${sc.color}`}>{isAr ? sc.ar : sc.en}</Badge>
                   <AnimatedCounter value={Math.round(est.total_amount)} className="text-sm font-bold tabular-nums" />
                 </div>
               );
@@ -60,7 +60,7 @@ export const CostCenterOverview = memo(function CostCenterOverview({ isAr, estim
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-chart-4" />{isAr ? "بانتظار الموافقة" : "Pending Approvals"}
-              {stats.pending > 0 && <Badge variant="destructive" className="text-[12px]">{stats.pending}</Badge>}
+              {stats.pending > 0 && <Badge variant="destructive" className="text-xs">{stats.pending}</Badge>}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -72,7 +72,7 @@ export const CostCenterOverview = memo(function CostCenterOverview({ isAr, estim
                   onClick={() => onSelect(est.id)}>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-bold truncate">{est.title}</p>
-                    <Badge variant="outline" className="text-[12px]">{isAr ? mt.ar : mt.en}</Badge>
+                    <Badge variant="outline" className="text-xs">{isAr ? mt.ar : mt.en}</Badge>
                   </div>
                   <span className="text-sm font-bold tabular-nums text-chart-4"><AnimatedCounter value={Math.round(est.total_amount)} className="inline" /> SAR</span>
                   <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />

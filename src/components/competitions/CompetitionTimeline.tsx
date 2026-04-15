@@ -98,22 +98,22 @@ export const CompetitionTimeline = memo(function CompetitionTimeline({
                         {isAr ? event.labelAr : event.label}
                       </p>
                       {isCurrent && (
-                        <Badge className="bg-primary/10 text-primary text-[12px] px-2 py-0 font-bold rounded-xl">
+                        <Badge className="bg-primary/10 text-primary text-xs px-2 py-0 font-bold rounded-xl">
                           {isAr ? "الآن" : "Now"}
                         </Badge>
                       )}
                       {isUrgent && (
-                        <Badge className="bg-chart-4/10 text-chart-4 text-[12px] px-2 py-0 font-bold animate-pulse rounded-xl">
+                        <Badge className="bg-chart-4/10 text-chart-4 text-xs px-2 py-0 font-bold animate-pulse rounded-xl">
                           {isAr ? `${daysUntil} أيام` : `${daysUntil}d left`}
                         </Badge>
                       )}
                       {isPast && !isCurrent && (
-                        <Badge variant="outline" className="text-[12px] px-2 py-0 border-muted text-muted-foreground rounded-xl">
+                        <Badge variant="outline" className="text-xs px-2 py-0 border-muted text-muted-foreground rounded-xl">
                           {isAr ? "مكتمل" : "Done"}
                         </Badge>
                       )}
                     </div>
-                    <p className="text-[12px] text-muted-foreground mt-1.5">
+                    <p className="text-xs text-muted-foreground mt-1.5">
                       {format(new Date(event.date), "EEEE, MMM d, yyyy • h:mm a")}
                     </p>
                   </div>

@@ -73,7 +73,7 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
             <div key={i} className="text-center p-2 rounded-xl bg-muted/30 group transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5">
               <m.icon className={`h-3.5 w-3.5 mx-auto mb-1 ${m.color} transition-transform duration-300 group-hover:scale-110`} />
               <p className="text-sm font-bold">{typeof m.value === "number" ? <AnimatedCounter value={m.value} /> : m.value}</p>
-              <p className="text-[12px] text-muted-foreground">{m.label}</p>
+              <p className="text-xs text-muted-foreground">{m.label}</p>
             </div>
           ))}
         </div>
@@ -101,15 +101,15 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
           <div className="space-y-1.5">
             <p className="text-xs font-medium text-muted-foreground">{isAr ? "الأكثر تسجيلاً" : "Top Courses"}</p>
             {data.topCourses.map((course) => (
-              <div key={course.id} className="flex items-center justify-between text-[12px] p-1.5 rounded bg-muted/20">
+              <div key={course.id} className="flex items-center justify-between text-xs p-1.5 rounded bg-muted/20">
                 <span className="truncate flex-1">{isAr && course.title_ar ? course.title_ar : course.title}</span>
                 <div className="flex items-center gap-1.5 shrink-0 ms-2">
                   {course.average_rating > 0 && (
-                    <Badge variant="outline" className="text-[12px] px-1 py-0 gap-0.5">
+                    <Badge variant="outline" className="text-xs px-1 py-0 gap-0.5">
                       <Star className="h-2 w-2 text-chart-4 fill-chart-4" />{course.average_rating.toFixed(1)}
                     </Badge>
                   )}
-                  <Badge variant="secondary" className="text-[12px] px-1.5 py-0">
+                  <Badge variant="secondary" className="text-xs px-1.5 py-0">
                     {course.enrollment_count} <Users className="h-2 w-2 ms-0.5" />
                   </Badge>
                 </div>
