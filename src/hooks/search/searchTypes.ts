@@ -1,0 +1,151 @@
+import type { Database } from "@/integrations/supabase/types";
+
+type CompetitionStatus = Database["public"]["Enums"]["competition_status"];
+
+export interface SearchFilters {
+  query: string;
+  type: "all" | "competitions" | "articles" | "members" | "posts" | "entities" | "recipes" | "exhibitions";
+  competitionStatus?: CompetitionStatus | "all";
+  isVirtual?: boolean | null;
+  articleType?: "news" | "blog" | "exhibition" | "all";
+  articleStatus?: "published" | "draft" | "all";
+  memberRole?: string | "all";
+  experienceLevel?: "beginner" | "amateur" | "professional" | "all";
+  country?: string | "all";
+  cuisineType?: string | "all";
+}
+
+export const DEFAULT_FILTERS: SearchFilters = {
+  query: "",
+  type: "all",
+  competitionStatus: "all",
+  isVirtual: null,
+  articleType: "all",
+  articleStatus: "published",
+  memberRole: "all",
+  experienceLevel: "all",
+  country: "all",
+  cuisineType: "all",
+};
+
+export interface CompetitionResult {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  cover_image_url: string | null;
+  status: CompetitionStatus;
+  competition_start: string;
+  competition_end: string;
+  venue: string | null;
+  venue_ar: string | null;
+  city: string | null;
+  country: string | null;
+  is_virtual: boolean | null;
+  _relevance?: number;
+}
+
+export interface ArticleResult {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  excerpt: string | null;
+  excerpt_ar: string | null;
+  featured_image_url: string | null;
+  type: string;
+  status: string | null;
+  published_at: string | null;
+  slug: string;
+  view_count?: number | null;
+  _relevance?: number;
+}
+
+export interface MemberResult {
+  id: string;
+  user_id: string;
+  full_name: string | null;
+  full_name_ar: string | null;
+  display_name: string | null;
+  display_name_ar: string | null;
+  username: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  bio_ar: string | null;
+  specialization: string | null;
+  specialization_ar: string | null;
+  experience_level: Database["public"]["Enums"]["experience_level"] | null;
+  location: string | null;
+  is_verified: boolean | null;
+  _relevance?: number;
+}
+
+export interface PostResult {
+  id: string;
+  content: string;
+  image_url: string | null;
+  video_url: string | null;
+  created_at: string;
+  author_id: string;
+  author_name: string | null;
+  author_username: string | null;
+  author_avatar: string | null;
+  _relevance?: number;
+}
+
+export interface EntityResult {
+  id: string;
+  name: string;
+  name_ar: string | null;
+  type: string | null;
+  description: string | null;
+  description_ar: string | null;
+  logo_url: string | null;
+  city: string | null;
+  country: string | null;
+  is_verified: boolean | null;
+  source: "entity" | "establishment";
+  _relevance?: number;
+}
+
+export interface RecipeResult {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  image_url: string | null;
+  prep_time: number | null;
+  cook_time: number | null;
+  average_rating: number | null;
+  slug: string | null;
+  _relevance?: number;
+}
+
+export interface ExhibitionResult {
+  id: string;
+  title: string;
+  title_ar: string | null;
+  description: string | null;
+  description_ar: string | null;
+  cover_image_url: string | null;
+  slug: string;
+  start_date: string | null;
+  end_date: string | null;
+  venue: string | null;
+  venue_ar: string | null;
+  city: string | null;
+  country: string | null;
+  status: string;
+  _relevance?: number;
+}
+
+export interface SearchResults {
+  competitions: CompetitionResult[];
+  articles: ArticleResult[];
+  members: MemberResult[];
+  posts: PostResult[];
+  entities: EntityResult[];
+  recipes: RecipeResult[];
+  exhibitions: ExhibitionResult[];
+}
