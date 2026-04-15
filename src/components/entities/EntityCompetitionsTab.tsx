@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Calendar, ExternalLink } from "lucide-react";
 import { format } from "date-fns";
+import type { JoinedCompetition } from "./entityTypes";
 
 const participationLabels: Record<string, { en: string; ar: string }> = {
   participant: { en: "Participant", ar: "مشارك" },
@@ -46,7 +47,7 @@ export const EntityCompetitionsTab = memo(function EntityCompetitionsTab({ entit
   return (
     <div className="space-y-3">
       {participations.map(p => {
-        const comp = p.competitions as any;
+        const comp = p.competitions as JoinedCompetition | null;
         if (!comp) return null;
         const name = isAr && comp.title_ar ? comp.title_ar : comp.title;
         const pLabel = participationLabels[p.participation_type] || participationLabels.participant;
