@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Sparkles, Search, BarChart3, CalendarDays, MapPin, ChefHat,
   UserPlus, Heart, Truck, GraduationCap, Megaphone, Newspaper,
