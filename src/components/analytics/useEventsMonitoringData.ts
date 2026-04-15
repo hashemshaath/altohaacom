@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import { format, subDays, subHours, parseISO, getHours, getDay } from "date-fns";
 import { type TimeRange, getDelta, type EcomMetrics } from "./eventsMonitoringTypes";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 function getTimeFilter(range: TimeRange): string {
   const now = new Date();
@@ -49,7 +50,7 @@ export function useEventsMonitoringData() {
         .limit(1000);
       return data || [];
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   const { data: prevPageViews } = useQuery({
@@ -63,7 +64,7 @@ export function useEventsMonitoringData() {
         .limit(1000);
       return data || [];
     },
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   const { data: behaviorEvents } = useQuery({
@@ -77,7 +78,7 @@ export function useEventsMonitoringData() {
         .limit(1000);
       return data || [];
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   const { data: adClicks } = useQuery({
@@ -91,7 +92,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   const { data: adImpressions } = useQuery({
@@ -105,7 +106,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   const { data: abandonedCarts } = useQuery({
@@ -119,7 +120,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   const { data: shopOrders } = useQuery({
@@ -133,7 +134,7 @@ export function useEventsMonitoringData() {
         .limit(QUERY_LIMIT_MEDIUM);
       return data || [];
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   // ── Computed Metrics ──

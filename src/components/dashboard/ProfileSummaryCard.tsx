@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -29,7 +30,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
       return data;
     },
     enabled: !!user,
-    staleTime: 5 * 60 * 1000,
+    ...CACHE.medium,
   });
 
   const { data: stats } = useQuery({
@@ -55,7 +56,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
       };
     },
     enabled: !!user,
-    staleTime: 5 * 60 * 1000,
+    ...CACHE.medium,
   });
 
   if (!profile) return null;

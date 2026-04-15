@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, memo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
@@ -47,7 +48,7 @@ function useMergeAuditLog() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 }
 

@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useMemo, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,7 +37,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   const { data: allItems, isLoading: itemsLoading } = useQuery({
@@ -51,7 +52,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       return data;
     },
     enabled: !!lists?.length,
-    staleTime: 60 * 1000,
+    ...CACHE.realtime,
   });
 
   const { data: quoteRequests } = useQuery({
@@ -64,7 +65,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   const { data: suggestions } = useQuery({
@@ -77,7 +78,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   const { data: itemRequests } = useQuery({
@@ -90,7 +91,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
       if (error) throw error;
       return data;
     },
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   const stats = useMemo(() => calcOrderStats(allItems || []), [allItems]);

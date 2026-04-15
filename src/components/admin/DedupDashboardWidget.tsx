@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -30,7 +31,7 @@ export const DedupDashboardWidget = memo(function DedupDashboardWidget() {
       ]);
       return { mergeCount: mergeCount || 0, recentMerges: recentMerges || [] };
     },
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   return (

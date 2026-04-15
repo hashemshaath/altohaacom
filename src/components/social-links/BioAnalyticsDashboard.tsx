@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -132,7 +133,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       };
     },
     enabled: !!pageId,
-    staleTime: 5 * 60_000,
+    ...CACHE.medium,
   });
 
   // Click analytics — real data from social_link_clicks
@@ -201,7 +202,7 @@ export const BioAnalyticsDashboard = memo(function BioAnalyticsDashboard({ pageI
       };
     },
     enabled: !!pageId,
-    staleTime: 5 * 60_000,
+    ...CACHE.medium,
   });
 
   // Link items for performance table

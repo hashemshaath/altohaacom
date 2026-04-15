@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -87,7 +88,7 @@ const TrackingStatusCard = memo(function TrackingStatusCard() {
         .filter((r) => r.is_active)
         .map((r) => r.integration_type);
     },
-    staleTime: 30_000,
+    ...CACHE.realtime,
   });
 
   return (

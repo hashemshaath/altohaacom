@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, useMemo, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -36,7 +37,7 @@ export const MessageSearchWidget = memo(function MessageSearchWidget() {
       return data || [];
     },
     enabled: !!user && query.length >= 2,
-    staleTime: 15000,
+    ...CACHE.realtime,
   });
 
   const { data: profiles } = useQuery({

@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -43,7 +44,7 @@ export const RecipeActionBar = memo(function RecipeActionBar({ recipeId, saveCou
       return data || [];
     },
     enabled: !!user,
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   const addToCollection = async (collectionId: string) => {

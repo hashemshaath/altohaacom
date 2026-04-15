@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -49,7 +50,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
       return data || [];
     },
     enabled: searchUser.length >= 2,
-    staleTime: 10000,
+    ...CACHE.realtime,
   });
 
   // Fetch overrides for selected user

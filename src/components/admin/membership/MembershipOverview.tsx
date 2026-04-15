@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo, useState, useMemo } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -349,7 +350,7 @@ const RecentActivityFeed = memo(function RecentActivityFeed({ isAr }: { isAr: bo
       const profileMap = new Map((profiles || []).map(p => [p.user_id, p]));
       return data.map(e => ({ ...e, profile: profileMap.get(e.user_id) || null }));
     },
-    staleTime: 60_000,
+    ...CACHE.realtime,
   });
 
   const tierLabels: Record<string, { en: string; ar: string }> = {

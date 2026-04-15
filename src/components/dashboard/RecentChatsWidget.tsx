@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -54,7 +55,7 @@ export const RecentChatsWidget = memo(function RecentChatsWidget() {
       });
     },
     enabled: !!user,
-    staleTime: 30 * 1000,
+    ...CACHE.realtime,
   });
 
   if (!chats || chats.length === 0) return null;

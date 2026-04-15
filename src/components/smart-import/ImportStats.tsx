@@ -1,4 +1,3 @@
-import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Building2, Briefcase, MapPin, TrendingUp, Calendar, Zap, Landmark, Trophy, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

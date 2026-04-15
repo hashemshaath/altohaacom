@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,7 +27,7 @@ export function useDeadlineAlerts(competitionId: string) {
       if (error) throw error;
       return data;
     },
-    staleTime: 5 * 60 * 1000,
+    ...CACHE.medium,
   });
 
   const { data: items } = useQuery({
@@ -43,7 +44,7 @@ export function useDeadlineAlerts(competitionId: string) {
       return data;
     },
     enabled: !!lists?.length,
-    staleTime: 5 * 60 * 1000,
+    ...CACHE.medium,
   });
 
   useEffect(() => {

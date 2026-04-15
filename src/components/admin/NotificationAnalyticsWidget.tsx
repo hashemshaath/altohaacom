@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,7 +39,7 @@ export const NotificationAnalyticsWidget = memo(function NotificationAnalyticsWi
         todayCount,
       };
     },
-    staleTime: 2 * 60 * 1000,
+    ...CACHE.short,
   });
 
   if (!stats) return null;

@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -56,7 +57,7 @@ export const ActivityHeatmapWidget = memo(function ActivityHeatmapWidget() {
       return { dayMap, totalActivities, activeDays };
     },
     enabled: !!user,
-    staleTime: 5 * 60 * 1000,
+    ...CACHE.medium,
   });
 
   if (!data) return null;

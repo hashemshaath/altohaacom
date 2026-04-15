@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,7 +48,7 @@ export const WeeklyOverviewWidget = memo(function WeeklyOverviewWidget() {
       ] as StatItem[];
     },
     enabled: !!user,
-    staleTime: 5 * 60 * 1000,
+    ...CACHE.medium,
   });
 
   if (!stats) return null;
