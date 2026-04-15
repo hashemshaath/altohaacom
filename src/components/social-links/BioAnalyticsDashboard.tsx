@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo, useState, useMemo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
