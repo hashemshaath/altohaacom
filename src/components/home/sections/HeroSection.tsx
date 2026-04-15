@@ -227,7 +227,7 @@ export function HeroSection() {
     }
   }, [slides, current]);
 
-  if (!slides.length) return <FallbackHero isAr={isAr} />;
+  if (!slides.length) return <FallbackHero />;
 
   const safeCurrent = ((current % slides.length) + slides.length) % slides.length;
   const slide = slides[safeCurrent];
