@@ -24,10 +24,10 @@ export type EntityPositionWithProfile = EntityPositionRow & {
 
 /** Competition join shape from entity_competition_participations */
 export interface JoinedCompetition {
-  id: string;
   title: string;
   title_ar: string | null;
   status: string | null;
   cover_image_url: string | null;
   competition_start: string | null;
+  country_code?: string | null;
 }
