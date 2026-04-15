@@ -1,3 +1,5 @@
+import { defaultDesign, defaultLines, defaultLinesAr } from "./types";
+import type { CertificateDesign } from "./types";
 import { useState, memo } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
