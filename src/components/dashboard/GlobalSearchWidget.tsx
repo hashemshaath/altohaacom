@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useEffect, memo } from "react";
 import { ROUTES } from "@/config/routes";

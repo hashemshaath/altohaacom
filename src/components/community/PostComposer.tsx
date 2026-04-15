@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useRef, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";

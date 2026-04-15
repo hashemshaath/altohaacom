@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Flame, Cake, Eye, Monitor, Check, Plus, Trash2 } from "lucide-react";
 import type { CategoryForm } from "./types";
+import { emptyCategory } from "./types";
 import { GENDER_OPTIONS, categoryBadgeText } from "@/lib/categoryUtils";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

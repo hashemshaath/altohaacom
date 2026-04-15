@@ -9,7 +9,7 @@ import { Download, Upload, Plus, Trash2, Eye, EyeOff, Image, FileText, Video, Me
 import { Briefcase, Globe, BarChart3, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { parseExtra } from "@/lib/socialLinksConstants";
+import { parseExtra, DEFAULT_EXTRA } from "@/lib/socialLinksConstants";
 import type { EditorSharedProps } from "./types";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

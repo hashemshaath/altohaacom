@@ -15,7 +15,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { CHART_COLORS, TOOLTIP_STYLE, BAR_RADIUS } from "@/lib/chartConfig";
+import { CHART_COLORS, TOOLTIP_STYLE, BAR_RADIUS , X_AXIS_PROPS } from "@/lib/chartConfig";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 

@@ -42,6 +42,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 import { handleSupabaseError, redirectOnSessionExpiry } from "@/lib/supabaseErrorHandler";
 import { AppError } from "@/lib/AppError";
+import { CACHE } from "@/lib/queryConfig";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({

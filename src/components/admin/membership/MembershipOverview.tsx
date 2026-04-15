@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
