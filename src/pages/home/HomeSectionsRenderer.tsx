@@ -32,12 +32,6 @@ const TimedSkeleton = forwardRef<HTMLDivElement, { index: number }>(function Tim
   return <HomeSectionSkeleton ref={ref} index={index} />;
 });
 
-const SECTION_ERROR_FALLBACK = (
-  <div className="container py-4">
-    <div className="min-h-[40px]" />
-  </div>
-);
-
 /** Number of sections to render immediately (above-fold) */
 const EAGER_SECTION_COUNT = 5;
 

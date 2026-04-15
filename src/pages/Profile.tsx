@@ -10,6 +10,7 @@ import { useProfileData } from "@/hooks/useProfileData";
 import { useAccountType } from "@/hooks/useAccountType";
 import { useUserFeatures } from "@/hooks/useMembershipFeatures";
 import { UpgradePrompt } from "@/components/membership/UpgradePrompt";
+import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
 
 // Lazy-load heavy tabs for faster initial paint
 const ProfileOverviewTab = lazy(() => import("@/components/profile/ProfileOverviewTab").then(m => ({ default: m.ProfileOverviewTab })));
