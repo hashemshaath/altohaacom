@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import { USERNAME_REGEX, isReservedUsername } from "@/lib/usernameValidation";

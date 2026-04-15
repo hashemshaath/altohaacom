@@ -6,7 +6,6 @@ import { ArticleEditorPro } from "@/components/articles/ArticleEditorPro";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

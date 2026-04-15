@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useParams, Link } from "react-router-dom";
 import { useState, lazy, Suspense } from "react";
 
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipeBySlug, useRateRecipe } from "@/hooks/useRecipes";
 import { Header } from "@/components/Header";

@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { TastingEntry, TastingCriterion, TastingScore, EvalMethod } from "@/hooks/useTasting";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

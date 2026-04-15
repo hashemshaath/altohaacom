@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { memo, type KeyboardEvent, type MouseEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Link, useNavigate } from "react-router-dom";
 import { MessageCircle, Heart, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";

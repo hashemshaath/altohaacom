@@ -3,7 +3,6 @@ import { useState, memo, useMemo } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { adminNavSections, type NavItem, type NavSection } from "@/config/adminNavSections";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { ChevronRight } from "lucide-react";

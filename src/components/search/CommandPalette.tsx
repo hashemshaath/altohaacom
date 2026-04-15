@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

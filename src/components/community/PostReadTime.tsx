@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Clock } from "lucide-react";
-import { useLanguage } from "@/i18n/LanguageContext";
 
 /** Estimates read time for a post and shows it as a tiny badge */
 export const PostReadTime = memo(function PostReadTime({ content }: { content: string }) {

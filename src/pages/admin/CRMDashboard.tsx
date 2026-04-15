@@ -9,7 +9,6 @@ import { PipelineFunnelView } from "@/components/crm/PipelineFunnelView";
 import { TeamPerformanceMetrics } from "@/components/crm/TeamPerformanceMetrics";
 import { ActivityTimelineFeed } from "@/components/crm/ActivityTimelineFeed";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useVerifyQRCode } from "@/hooks/useQRCode";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

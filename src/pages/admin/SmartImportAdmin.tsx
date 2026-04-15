@@ -13,7 +13,6 @@ import { DataQualityIndicator } from "@/components/smart-import/DataQualityIndic
 import { ExportDataButton } from "@/components/smart-import/ExportDataButton";
 import { ImportStats } from "@/components/smart-import/ImportStats";
 import { EditableField } from "@/components/smart-import/EditableField";
-import { useLanguage } from "@/i18n/LanguageContext";
 import {
   type ExistingRecord, type EntityType, type CompanyType, type TargetTable,
   SOURCE_CHANNELS, TARGET_TABLE_OPTIONS,

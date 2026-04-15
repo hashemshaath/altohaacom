@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { ShoppingBag } from "lucide-react";
 
 interface ShopEmptyStateProps {

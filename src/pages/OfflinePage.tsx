@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
 import { useOnlineStatus } from "@/hooks/usePWA";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { getCachedItems, getCacheStats } from "@/lib/offlineCache";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";

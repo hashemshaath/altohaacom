@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { RelatedPages } from "@/components/seo/RelatedPages";
 import { Separator } from "@/components/ui/separator";

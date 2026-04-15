@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/i18n/LanguageContext";
 import {
   Newspaper, CalendarDays, UsersRound, UserPlus, Users, BookOpen, Radio, Bookmark, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";

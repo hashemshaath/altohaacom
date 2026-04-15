@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import {

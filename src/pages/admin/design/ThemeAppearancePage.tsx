@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Palette, Type, Moon, Sun, Monitor } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";

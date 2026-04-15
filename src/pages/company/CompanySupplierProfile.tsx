@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
 import { useCompanyPagePermissions } from "@/hooks/useCompanyPermissions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

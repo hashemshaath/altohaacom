@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAllVerificationRequests, useReviewVerification, useRunAIVerification } from "@/hooks/useVerification";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

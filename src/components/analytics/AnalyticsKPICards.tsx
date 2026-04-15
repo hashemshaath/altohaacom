@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trophy, Users, Star, ClipboardList, Globe } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

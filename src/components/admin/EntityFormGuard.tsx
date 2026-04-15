@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useEffect, memo, useCallback } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useEntityDedup } from "@/hooks/useEntityDedup";
 import { useAutoTranslate } from "@/hooks/useAutoTranslate";
 import { DeduplicationPanel } from "@/components/admin/DeduplicationPanel";

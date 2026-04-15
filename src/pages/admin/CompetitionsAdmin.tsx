@@ -9,7 +9,6 @@ import { CompetitionSmartImport } from "@/components/smart-import/CompetitionSma
 import type { ImportedData } from "@/components/smart-import/SmartImportDialog";
 import { Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";

@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";

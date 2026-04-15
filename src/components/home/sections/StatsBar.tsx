@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Users, Trophy, Globe, Landmark, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useScrollReveal } from "@/hooks/useScrollReveal";

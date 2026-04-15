@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 

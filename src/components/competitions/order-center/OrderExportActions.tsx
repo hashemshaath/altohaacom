@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Download, FileText, Table } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
-import { useLanguage } from "@/i18n/LanguageContext";
 
 interface ExportColumn {
   key: string;

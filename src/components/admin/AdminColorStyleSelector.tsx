@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo, useState, useEffect } from "react";
 import { Palette, Check, RotateCcw } from "lucide-react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import {
   Popover,

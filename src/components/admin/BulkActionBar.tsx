@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { X, Trash2, CheckCircle, Download } from "lucide-react";
 import { cn } from "@/lib/utils";

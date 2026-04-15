@@ -2,7 +2,6 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { PageShell } from "@/components/PageShell";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useEstablishments, useCreateEstablishment } from "@/hooks/useEstablishments";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent } from "@/components/ui/card";

@@ -3,7 +3,6 @@ import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

@@ -3,7 +3,6 @@ import { CACHE } from "@/lib/queryConfig";
 import { useState, useCallback, memo } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useQuery } from "@tanstack/react-query";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

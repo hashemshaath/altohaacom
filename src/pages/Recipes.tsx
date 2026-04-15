@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipes, useDistinctCuisines, RecipeWithMeta } from "@/hooks/useRecipes";
 import { PageShell } from "@/components/PageShell";

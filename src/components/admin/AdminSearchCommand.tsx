@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useMemo, useCallback, useEffect, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import {
   CommandDialog, CommandEmpty, CommandGroup, CommandInput,

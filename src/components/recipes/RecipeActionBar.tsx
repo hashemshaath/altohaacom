@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecipeSave } from "@/hooks/useRecipeSave";
 import { useQuery, useQueryClient } from "@tanstack/react-query";

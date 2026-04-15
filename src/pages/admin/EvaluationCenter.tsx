@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Settings2, FileText, ChefHat, Trophy, Wrench, UtensilsCrossed, Printer, Download } from "lucide-react";

@@ -8,7 +8,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Download, FileSpreadsheet, FileJson } from "lucide-react";
-import { useLanguage } from "@/i18n/LanguageContext";
 
 interface AdminExportButtonProps {
   onExport: (format: "csv" | "json") => void;

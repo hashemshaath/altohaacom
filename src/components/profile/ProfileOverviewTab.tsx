@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { UserCareerTimeline } from "@/components/admin/UserCareerTimeline";
 import { UserBadgesDisplay } from "@/components/badges/UserBadgesDisplay";

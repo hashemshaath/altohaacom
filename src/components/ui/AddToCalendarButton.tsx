@@ -5,7 +5,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { CalendarPlus, Download, ExternalLink } from "lucide-react";
 import { downloadICS, getGoogleCalendarUrl, getOutlookCalendarUrl } from "@/lib/calendarSync";
 import { toast } from "@/hooks/use-toast";
-import { useLanguage } from "@/i18n/LanguageContext";
 
 interface Props {
   title: string;

@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Settings, Home, Globe, Shield, Users, Database, Palette } from "lucide-react";
 

@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { Wifi, WifiOff } from "lucide-react";
 import { useEffect, useState, memo, forwardRef } from "react";

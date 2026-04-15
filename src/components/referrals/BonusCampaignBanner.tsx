@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Badge } from "@/components/ui/badge";
 import { useActiveBonusCampaigns } from "@/hooks/useReferralExtras";
 import { Zap, Clock } from "lucide-react";

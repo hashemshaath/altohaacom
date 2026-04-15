@@ -4,7 +4,6 @@ import { useParams, Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEstablishment, useEstablishmentAssociations, useAddAssociation, useAddQualification, useAssociationQualifications } from "@/hooks/useEstablishments";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

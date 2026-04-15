@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo, useState, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { getDaysInMonth, EVENT_TYPE_CONFIG, type ChefScheduleEvent, type ScheduleEventType } from "@/hooks/useChefSchedule";
 import {
   useGlobalEventsCalendar, GLOBAL_EVENT_COLORS, GLOBAL_EVENT_LABELS,

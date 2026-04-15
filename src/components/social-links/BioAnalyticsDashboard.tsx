@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { CACHE } from "@/lib/queryConfig";
 import { memo, useState, useMemo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

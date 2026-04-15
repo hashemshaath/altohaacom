@@ -6,7 +6,6 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AdminRealtimeNotificationBell } from "@/components/admin/AdminRealtimeNotificationBell";
 import { SecurityAlertsBanner } from "@/components/admin/SecurityAlertsBanner";
 import { useAdminCacheWarmer } from "@/hooks/useAdminCacheWarmer";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";

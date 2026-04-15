@@ -6,7 +6,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Menu, Search, X, ChevronDown } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { adminNavSections } from "@/config/adminNavSections";
 import { useAdminRole } from "@/hooks/useAdminRole";
 import { cn } from "@/lib/utils";

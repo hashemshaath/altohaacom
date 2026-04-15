@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { formatNumber } from "@/lib/formatNumber";
 import { Eye, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";

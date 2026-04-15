@@ -1,6 +1,5 @@
 import { memo, type ReactNode } from "react";
 import { SectionHeader, FieldGroup, EmptyHint } from "@/components/admin/exhibition/ExhibitionFormHelpers";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

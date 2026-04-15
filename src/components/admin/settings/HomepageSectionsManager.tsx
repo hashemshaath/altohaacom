@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, useCallback, useRef, memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import {
   useHomepageSections,
   useUpdateHomepageSection,

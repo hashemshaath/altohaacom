@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { PageShell } from "@/components/PageShell";
 import { ProfileAnalyticsDashboard } from "@/components/profile/ProfileAnalyticsDashboard";
 import { PersonalAnalyticsDashboard } from "@/components/analytics/PersonalAnalyticsDashboard";

@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useState, forwardRef } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useIsFollowing, useToggleFollow } from "@/hooks/useFollow";
 import { Button } from "@/components/ui/button";
 import {

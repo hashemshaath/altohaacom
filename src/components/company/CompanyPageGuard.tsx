@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { useCanAccessPage } from "@/hooks/useCompanyPermissions";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { ShieldX } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

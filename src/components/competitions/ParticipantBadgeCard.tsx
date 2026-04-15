@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { useEntityQRCode } from "@/hooks/useQRCode";
 import { getVerificationUrl } from "@/lib/qrCode";
 import { useToast } from "@/hooks/use-toast";

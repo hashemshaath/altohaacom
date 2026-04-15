@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { forwardRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";

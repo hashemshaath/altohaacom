@@ -4,7 +4,6 @@ import { useIsAr } from "@/hooks/useIsAr";
  * Appears when notifications are selected.
  */
 import { memo } from "react";
-import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCheck, Trash2, X } from "lucide-react";
