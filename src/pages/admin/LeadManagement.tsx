@@ -50,8 +50,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
-import {
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import {
   Search,
   MoreHorizontal,
   Eye,
