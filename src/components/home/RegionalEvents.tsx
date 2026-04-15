@@ -120,7 +120,7 @@ export function RegionalEvents() {
   );
 }
 
-const EventCard = forwardRef<HTMLAnchorElement, { item: any; isAr: boolean }>(function EventCard({ item, isAr }, ref) {
+const EventCard = forwardRef<HTMLAnchorElement, { item: any }>(function EventCard({ item }, ref) {
   const isAr = useIsAr();
   const title = isAr && item.title_ar ? item.title_ar : item.title;
 

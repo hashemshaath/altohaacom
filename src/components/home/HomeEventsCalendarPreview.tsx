@@ -50,14 +50,12 @@ function resolveEventType(type: string | null | undefined): GlobalEventType {
 }
 
 function formatEventDate(value: string, isAr: boolean) {
-  const isAr = useIsAr();
   const parsed = parseISO(value);
   if (Number.isNaN(parsed.getTime())) return isAr ? "تاريخ غير محدد" : "Date TBD";
   return format(parsed, "d MMM yyyy", { locale: isAr ? arLocale : undefined });
 }
 
 function formatDateParts(value: string, isAr: boolean) {
-  const isAr = useIsAr();
   const parsed = parseISO(value);
   if (Number.isNaN(parsed.getTime())) return { day: "?", month: "TBD" };
   return {
@@ -271,7 +269,7 @@ const FilterPill = memo(
 
 /* ─── Event Card ─── */
 const EventCard = memo(React.forwardRef<HTMLDivElement, { event: GlobalEvent; isAr: boolean }>(
-  function EventCard({ event, isAr }, ref) {
+  function EventCard({ event }, ref) {
   const isAr = useIsAr();
   const eventType = resolveEventType(event.type);
   const colors = GLOBAL_EVENT_COLORS[eventType];
