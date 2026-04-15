@@ -28,7 +28,7 @@ export function useProfileData() {
       return data as Profile;
     },
     enabled: !!user,
-    ...CACHE.short,
+    ...CACHE.medium,
   });
 
   const { data: roles = [] } = useQuery({
