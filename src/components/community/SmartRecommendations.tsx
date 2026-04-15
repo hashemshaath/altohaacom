@@ -13,12 +13,36 @@ import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight, Land
 import { Link } from "react-router-dom";
 import { CACHE } from "@/lib/queryConfig";
 
+interface RecommendationItem {
+  id?: string;
+  user_id?: string;
+  slug?: string;
+  title?: string;
+  title_ar?: string;
+  image_url?: string;
+  featured_image_url?: string;
+  avatar_url?: string;
+  full_name?: string;
+  full_name_ar?: string;
+  username?: string;
+  category?: string;
+  country_code?: string;
+  city?: string;
+  difficulty?: string;
+  cuisine_type?: string;
+  type?: string;
+  specialization?: string;
+  is_verified?: boolean;
+  _reason?: string;
+  [key: string]: any;
+}
+
 interface RecommendationData {
-  competitions: Record<string, any>[];
-  recipes: Record<string, any>[];
-  articles: Record<string, any>[];
-  chefs: Record<string, any>[];
-  exhibitions: Record<string, any>[];
+  competitions: RecommendationItem[];
+  recipes: RecommendationItem[];
+  articles: RecommendationItem[];
+  chefs: RecommendationItem[];
+  exhibitions: RecommendationItem[];
   tip: string;
   tip_ar: string;
 }

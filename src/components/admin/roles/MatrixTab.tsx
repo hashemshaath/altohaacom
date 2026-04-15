@@ -10,8 +10,18 @@ import { CheckCircle2, XCircle, Grid3X3, Search, Download, RotateCcw } from "luc
 import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
 import { format } from "date-fns";
 
+interface Permission {
+  id: string;
+  code: string;
+  name: string;
+  name_ar?: string;
+  description?: string;
+  category?: string;
+  [key: string]: any;
+}
+
 interface Props {
-  permissions: Record<string, any>[];
+  permissions: Permission[];
   allRolePerms: Record<string, any>[];
   isAr: boolean;
   t: (en: string, ar: string) => string;
