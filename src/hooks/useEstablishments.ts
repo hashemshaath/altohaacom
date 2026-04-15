@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useEstablishments(filters?: { type?: string; country?: string; search?: string }) {
   return useQuery({
@@ -19,7 +21,7 @@ export function useEstablishments(filters?: { type?: string; country?: string; s
       if (filters?.search) query = query.or(`name.ilike.%${filters.search}%,name_ar.ilike.%${filters.search}%,city.ilike.%${filters.search}%`);
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -34,7 +36,7 @@ export function useEstablishment(id?: string) {
         .select("id, name, name_ar, type, description, description_ar, country_code, city, city_ar, address, address_ar, phone, email, website, cuisine_type, cuisine_type_ar, star_rating, logo_url, cover_image_url, is_active, is_verified, establishment_number, created_by, created_at, updated_at")
         .eq("id", id!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!id,
