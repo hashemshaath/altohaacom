@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -275,20 +275,20 @@ export function useNotificationsData() {
   }, [recentNotifications, queueItems, isAr]);
 
   // ─── Helpers ─────────────────────────────────────────────
-  const toggleChannel = (ch: string) => {
+  const toggleChannel = useCallback((ch: string) => {
     setNewNotification((prev) => ({
       ...prev,
       channels: prev.channels.includes(ch) ? prev.channels.filter((c) => c !== ch) : [...prev.channels, ch],
     }));
-  };
+  }, []);
 
-  const toggleQueueSelect = (id: string) => {
+  const toggleQueueSelect = useCallback((id: string) => {
     setSelectedQueueIds((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
-  };
+  }, []);
 
   const { exportCSV: exportNotifications } = useCSVExport({
     columns: [
@@ -302,10 +302,10 @@ export function useNotificationsData() {
     filename: "notifications",
   });
 
-  const refreshQueue = () => {
+  const refreshQueue = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ["notification-queue-items"] });
     queryClient.invalidateQueries({ queryKey: ["notification-queue-stats"] });
-  };
+  }, [queryClient]);
 
   return {
     isAr,

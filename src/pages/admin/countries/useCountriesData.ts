@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -269,35 +269,35 @@ export function useCountriesData() {
     setFormTab("basic");
   };
 
-  const openNew = () => {
+  const openNew = useCallback(() => {
     setEditCountry(null);
     setForm({ ...defaultForm });
     setShowForm(true);
     setFormTab("basic");
-  };
+  }, []);
 
-  const closeForm = () => {
+  const closeForm = useCallback(() => {
     setShowForm(false);
     setEditCountry(null);
-  };
+  }, []);
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: countries.length,
     active: countries.filter(c => c.is_active).length,
     inactive: countries.filter(c => !c.is_active).length,
     regions: [...new Set(countries.map(c => c.region).filter(Boolean))].length,
     featured: countries.filter(c => c.is_featured).length,
     continents: [...new Set(countries.map(c => c.continent).filter(Boolean))].length,
-  };
+  }), [countries]);
 
-  const grouped = filtered.reduce<Record<string, Country[]>>((acc, c) => {
+  const grouped = useMemo(() => filtered.reduce<Record<string, Country[]>>((acc, c) => {
     const key = c.region || (isAr ? "أخرى" : "Other");
     if (!acc[key]) acc[key] = [];
     acc[key].push(c);
     return acc;
-  }, {});
+  }, {}), [filtered, isAr]);
 
-  const enabledFeatureCount = (c: Country) => Object.values(c.features || {}).filter(Boolean).length;
+  const enabledFeatureCount = useCallback((c: Country) => Object.values(c.features || {}).filter(Boolean).length, []);
 
   return {
     isAr, toast,
