@@ -12,6 +12,7 @@ import {
   Building2, Save, Loader2, ChevronLeft, CheckCircle2, Image as ImageIcon,
   Mail, MapPin, Calendar, Shield, Star, ExternalLink, Languages,
   StickyNote, TrendingUp, Briefcase, Clock, Users, Undo2, Globe,
+  type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
