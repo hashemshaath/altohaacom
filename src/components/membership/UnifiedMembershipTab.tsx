@@ -425,19 +425,19 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-xl border bg-d.card p-3 text-center">
+              <div className="rounded-xl border bg-card p-3 text-center">
                 <Calendar className="mx-auto mb-1 h-4 w-4 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{isAr ? "الحالة" : "Status"}</p>
                 <Badge variant={d.isExpired ? "destructive" : "default"} className="mt-1">
                   {d.isExpired ? (isAr ? "منتهية" : "Expired") : (isAr ? "نشطة" : "Active")}
                 </Badge>
               </div>
-              <div className="rounded-xl border bg-d.card p-3 text-center">
+              <div className="rounded-xl border bg-card p-3 text-center">
                 <Clock className="mx-auto mb-1 h-4 w-4 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{isAr ? "تنتهي في" : "Expires"}</p>
                 <p className="mt-1 text-sm font-semibold">{d.expiresAt ? format(new Date(d.expiresAt), "d MMM yyyy", { locale: isAr ? ar : undefined }) : (isAr ? "غير محدد" : "N/A")}</p>
               </div>
-              <div className="rounded-xl border bg-d.card p-3 text-center">
+              <div className="rounded-xl border bg-card p-3 text-center">
                 <AlertTriangle className="mx-auto mb-1 h-4 w-4 text-muted-foreground" />
                 <p className="text-xs text-muted-foreground">{isAr ? "أيام متبقية" : "Days Left"}</p>
                 <p className={`mt-1 text-sm font-bold ${d.daysLeft !== null && d.daysLeft < 30 ? "text-destructive" : ""}`}>{d.daysLeft !== null ? d.daysLeft : "∞"}</p>
@@ -499,7 +499,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
           <CardContent>
             <div className="grid gap-2 sm:grid-cols-2">
               {benefits.map((b) => (
-                <div key={b.label} className="flex items-center gap-2.5 rounded-xl border p-2.5 bg-d.card">
+                <div key={b.label} className="flex items-center gap-2.5 rounded-xl border p-2.5 bg-card">
                   <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-xl ${d.tierBg}`}>
                     <b.icon className={`h-3.5 w-3.5 ${d.tierColor}`} />
                   </div>

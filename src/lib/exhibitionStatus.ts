@@ -1,3 +1,4 @@
+import { MS_PER_DAY } from "@/lib/constants";
 /**
  * Derive the real-time exhibition/event status from dates.
  * This is the single source of truth for exhibition status display across the app.
@@ -40,7 +41,7 @@ export function deriveExhibitionStatus(params: {
 }): ExhibitionStatusResult {
   const { dbStatus, startDate, endDate, registrationDeadline } = params;
   const now = Date.now();
-  const dayMs = 1000 * 60 * 60 * 24;
+  const dayMs = MS_PER_DAY;
 
   // Non-active statuses pass through
   if (dbStatus === "draft") {
