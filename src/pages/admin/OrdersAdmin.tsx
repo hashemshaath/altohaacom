@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
@@ -10,7 +9,6 @@ import { SortableTableHead } from "@/components/admin/SortableTableHead";
 import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { safeLazy } from "@/lib/safeLazy";
 
-// Lazy-load heavy financial widgets
 const RevenueAnalyticsWidget = safeLazy(() => import("@/components/admin/RevenueAnalyticsWidget").then(m => ({ default: m.RevenueAnalyticsWidget })));
 const PaymentTrackerWidget = safeLazy(() => import("@/components/admin/PaymentTrackerWidget").then(m => ({ default: m.PaymentTrackerWidget })));
 const WalletOverviewWidget = safeLazy(() => import("@/components/admin/WalletOverviewWidget").then(m => ({ default: m.WalletOverviewWidget })));
@@ -18,15 +16,9 @@ const OrdersRevenueWidget = safeLazy(() => import("@/components/admin/OrdersReve
 const OrdersLiveStatsWidget = safeLazy(() => import("@/components/admin/OrdersLiveStatsWidget").then(m => ({ default: m.OrdersLiveStatsWidget })));
 const InvoiceTrackerWidget = safeLazy(() => import("@/components/admin/InvoiceTrackerWidget").then(m => ({ default: m.InvoiceTrackerWidget })));
 const FinancialSummaryWidget = safeLazy(() => import("@/components/admin/FinancialSummaryWidget").then(m => ({ default: m.FinancialSummaryWidget })));
-import { useLanguage } from "@/i18n/LanguageContext";
-import { useAuth } from "@/contexts/AuthContext";
 import { FinanceQuickNav } from "@/components/admin/FinanceQuickNav";
-import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
-import { useCSVExport } from "@/hooks/useCSVExport";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,7 +31,6 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
@@ -49,21 +40,42 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
-import {
-  type OrderStatus, type OrderDirection, type OrderCategory,
-  type OrderFormType, statusColors, categoryLabels, defaultOrderForm,
-  getStatusLabel, getCategoryLabel,
-} from "./orders/ordersAdminTypes";
+import { statusColors, defaultOrderForm, getCategoryLabel } from "./orders/ordersAdminTypes";
 import { CompanyOrderDetailView } from "./orders/CompanyOrderDetailView";
 import { ShopOrderDetailView } from "./orders/ShopOrderDetailView";
+import { useOrdersData } from "./orders/useOrdersData";
 
 
 export default function OrdersAdmin() {
-  const { language } = useLanguage();
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const isAr = language === "ar";
+  const {
+    isAr,
+    activeTab, setActiveTab,
+    searchQuery, setSearchQuery,
+    statusFilter, setStatusFilter,
+    directionFilter, setDirectionFilter,
+    categoryFilter, setCategoryFilter,
+    selectedOrder, setSelectedOrder,
+    showOrderForm, setShowOrderForm,
+    editingOrder, setEditingOrder,
+    orderForm, setOrderForm,
+    newItem, setNewItem,
+    rejectionReason, setRejectionReason,
+    showRejectDialog, setShowRejectDialog,
+    newMessage, setNewMessage,
+    shopSearchQuery, setShopSearchQuery,
+    shopStatusFilter, setShopStatusFilter,
+    selectedShopOrder, setSelectedShopOrder,
+    orders, isLoading,
+    orderDetails, communications, companies,
+    shopOrders, shopLoading, shopOrderDetails,
+    updateStatusMutation, createOrderMutation, updateOrderMutation,
+    deleteOrderMutation, updateShopStatusMutation, sendMessageMutation,
+    updateInternalNotesMutation,
+    getStatusLabelLocal, getCategoryLabelLocal,
+    addItemToOrder, removeItemFromOrder, recalcTotal, openEditForm,
+    bulk, exportOrdersCSV, bulkStatusChange, bulkDelete,
+    companyStats, shopStats,
+  } = useOrdersData();
 
   const [activeTab, setActiveTab] = useState("company");
   const [searchQuery, setSearchQuery] = useState("");
