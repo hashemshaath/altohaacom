@@ -260,9 +260,11 @@ export function HeroSection() {
               sizes={idx === 0 ? "100vw" : undefined}
               alt={isAr ? s.title_ar || s.title : s.title}
               className="h-full w-full object-cover"
+              width={1200}
+              height={600}
               loading={idx === 0 ? "eager" : "lazy"}
-              decoding="async"
-              {...(idx === 0 ? { fetchpriority: "high" as const } : {})}
+              decoding={idx === 0 ? "sync" : "async"}
+              fetchPriority={idx === 0 ? "high" : undefined}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5" style={{ opacity }} />
             <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent rtl:bg-gradient-to-l" />
