@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +14,6 @@ import {
   PieChart, Pie, Cell, BarChart, Bar,
 } from "recharts";
 import {
-import { CACHE } from "@/lib/queryConfig";
   FileText, Heart, Users, UserPlus, Trophy, ChefHat, Sparkles, TrendingUp,
   TrendingDown, Minus, Eye, Star, Hash, Lightbulb, Zap, BookOpen,
   MessageSquare, Film,

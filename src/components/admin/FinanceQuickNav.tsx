@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -6,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
-import { CACHE } from "@/lib/queryConfig";
   Package, FileText, Calculator, Wallet, CreditCard,
   ArrowRight, TrendingUp, AlertTriangle,
 } from "lucide-react";

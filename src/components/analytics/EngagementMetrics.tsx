@@ -1,3 +1,4 @@
+import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
@@ -20,7 +21,6 @@ import {
 } from "lucide-react";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 import {
-import { CACHE } from "@/lib/queryConfig";
   RadarChart,
   Radar,
   PolarGrid,
