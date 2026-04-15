@@ -9,6 +9,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { MapPin, Star, Users, ArrowRight, BadgeCheck, Briefcase, Trophy, ChefHat, Award, TrendingUp } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { CACHE } from "@/lib/queryConfig";
 import { MembershipBadge } from "@/components/membership/MembershipBadge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
@@ -16,7 +18,7 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: profile } = useQuery({
+  const { data: profile, isLoading } = useQuery({
     queryKey: ["profile-summary-card", user?.id],
     queryFn: async () => {
       if (!user) return null;
@@ -56,6 +58,25 @@ export const ProfileSummaryCard = memo(function ProfileSummaryCard() {
     enabled: !!user,
     ...CACHE.medium,
   });
+
+  if (isLoading) return (
+    <Card className="overflow-hidden border-border/40 animate-pulse">
+      <div className="h-24 bg-muted/30" />
+      <CardContent className="relative -mt-12 px-4 pb-4">
+        <div className="flex items-end gap-3 mb-3">
+          <Skeleton className="h-[72px] w-[72px] rounded-full" />
+          <div className="flex-1 space-y-2 pb-1">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-3 w-20" />
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-1.5 mb-3">
+          {[1,2,3].map(i => <Skeleton key={i} className="h-14 rounded-xl" />)}
+        </div>
+        <Skeleton className="h-8 w-full rounded-xl" />
+      </CardContent>
+    </Card>
+  );
 
   if (!profile) return null;
 
