@@ -166,9 +166,9 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         .lte("membership_expires_at", subDays(now, -30).toISOString())
         .order("membership_expires_at", { ascending: true });
 
-      const critical: any[] = [];
-      const warning: any[] = [];
-      const upcoming: any[] = [];
+      const critical: Record<string, unknown>[] = [];
+      const warning: Record<string, unknown>[] = [];
+      const upcoming: Record<string, unknown>[] = [];
 
       for (const p of profiles || []) {
         const daysLeft = differenceInDays(new Date(p.membership_expires_at), now);

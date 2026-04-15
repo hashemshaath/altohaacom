@@ -51,9 +51,9 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
   const [step, setStep] = useState<ImportStep>("upload");
   const [loading, setLoading] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [parsedData, setParsedData] = useState<any>(null);
-  const [rows, setRows] = useState<any[]>([]);
-  const [errors, setErrors] = useState<any[]>([]);
+  const [parsedData, setParsedData] = useState<Record<string, unknown> | null>(null);
+  const [rows, setRows] = useState<Record<string, unknown>[]>([]);
+  const [errors, setErrors] = useState<Record<string, unknown>[]>([]);
   const [optimizing, setOptimizing] = useState(false);
   const [optimizeProgress, setOptimizeProgress] = useState(0);
   const [saving, setSaving] = useState(false);
@@ -178,7 +178,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
       const { data: { session } } = await supabase.auth.getSession();
       // Process in batches of 5
       const batchSize = 5;
-      const allOptimized: any[] = [];
+      const allOptimized: Record<string, unknown>[] = [];
 
       for (let i = 0; i < rows.length; i += batchSize) {
         const batch = rows.slice(i, i + batchSize);

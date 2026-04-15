@@ -27,7 +27,7 @@ const CHART_COLORS = [
 
 interface Props {
   organizerId: string;
-  exhibitions: any[];
+  exhibitions: Record<string, unknown>[];
 }
 
 const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId, exhibitions }: Props) {

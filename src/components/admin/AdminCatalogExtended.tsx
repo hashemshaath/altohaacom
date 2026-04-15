@@ -47,7 +47,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
       if (!itemIds.length) return [];
       const { data } = await supabase.from("product_qa").select("*").in("catalog_item_id", itemIds).order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_qa select("*") returns dynamic columns
-      return (data || []) as any[];
+      return (data || []) as Record<string, unknown>[];
     },
     enabled: items.length > 0,
   });
@@ -58,7 +58,7 @@ export function AdminCatalogExtended({ companyId }: Props) {
     queryFn: async () => {
       const { data } = await supabase.from("product_trust_badges").select("*").eq("company_id", companyId).order("sort_order").limit(QUERY_LIMIT_MEDIUM);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- product_trust_badges select("*") returns dynamic columns
-      return (data || []) as any[];
+      return (data || []) as Record<string, unknown>[];
     },
   });
 

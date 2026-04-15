@@ -18,7 +18,7 @@ import {
 // ── Career Form (Education / Work / Judging / Media / Organizing / Custom) ──
 
 export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
-  form: any; editingId: string | null; isAr: boolean; isPending: boolean;
+  form: Record<string, unknown>; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   const rt = form.record_type;
@@ -217,7 +217,7 @@ export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPe
 // ── Membership Form ──────────────────────────────────────
 
 export const MembershipForm = memo(function MembershipForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
-  form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
+  form: Record<string, unknown>; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -284,7 +284,7 @@ export const MembershipForm = memo(function MembershipForm({ form, isAr, isPendi
 
 export const CompetitionAddForm = memo(function CompetitionAddForm({ competitions, selectedId, onSelect, isAr, isPendingLink, onSaveLink,
   careerForm, onUpdateCareer, isPendingManual, onSaveManual, onCancel }: {
-  competitions: any[]; selectedId: string; onSelect: (id: string) => void;
+  competitions: Record<string, unknown>[]; selectedId: string; onSelect: (id: string) => void;
   isAr: boolean; isPendingLink: boolean; onSaveLink: () => void;
   careerForm: any; onUpdateCareer: (key: string, value: unknown) => void;
   isPendingManual: boolean; onSaveManual: () => void; onCancel: () => void;
@@ -351,7 +351,7 @@ export const CompetitionAddForm = memo(function CompetitionAddForm({ competition
 // ── Competition Event Form (manual) ──────────────────────────────────────
 
 export const CompetitionEventForm = memo(function CompetitionEventForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
-  form: any; editingId: string | null; isAr: boolean; isPending: boolean;
+  form: Record<string, unknown>; editingId: string | null; isAr: boolean; isPending: boolean;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (
@@ -428,7 +428,7 @@ export const CompetitionEventForm = memo(function CompetitionEventForm({ form, e
 // ── Award Form ──────────────────────────────────────
 
 export const AwardAddForm = memo(function AwardAddForm({ form, isAr, isPending, editingId, onUpdate, onSave, onCancel }: {
-  form: any; isAr: boolean; isPending: boolean; editingId?: string | null;
+  form: Record<string, unknown>; isAr: boolean; isPending: boolean; editingId?: string | null;
   onUpdate: (key: string, value: unknown) => void; onSave: () => void; onCancel: () => void;
 }) {
   return (

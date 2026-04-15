@@ -106,7 +106,7 @@ export default function OrganizersAdmin() {
       const matchVerified = verifiedFilter === "all" || (verifiedFilter === "verified" ? o.is_verified : !o.is_verified);
       return matchSearch && matchStatus && matchCountry && matchVerified;
     });
-    return list.sort((a: any, b: any) => {
+    return list.sort((a, b) => {
       let av = a[sortKey], bv = b[sortKey];
       if (typeof av === "string") av = av.toLowerCase();
       if (typeof bv === "string") bv = bv.toLowerCase();
@@ -123,22 +123,22 @@ export default function OrganizersAdmin() {
 
   const { exportCSV } = useCSVExport({
     columns: [
-      { header: "Number", accessor: (o: any) => o.organizer_number },
-      { header: "Name", accessor: (o: any) => o.name },
-      { header: "Name (AR)", accessor: (o: any) => o.name_ar },
-      { header: "Email", accessor: (o: any) => o.email },
-      { header: "Phone", accessor: (o: any) => o.phone },
-      { header: "Website", accessor: (o: any) => o.website },
-      { header: "City", accessor: (o: any) => o.city },
-      { header: "Country", accessor: (o: any) => o.country },
-      { header: "Status", accessor: (o: any) => o.status },
-      { header: "Verified", accessor: (o: any) => o.is_verified ? "Yes" : "No" },
-      { header: "Featured", accessor: (o: any) => o.is_featured ? "Yes" : "No" },
-      { header: "Events", accessor: (o: any) => o.total_exhibitions || 0 },
-      { header: "Views", accessor: (o: any) => o.total_views || 0 },
-      { header: "Rating", accessor: (o: any) => o.average_rating || 0 },
-      { header: "Services", accessor: (o: any) => (o.services || []).join("; ") },
-      { header: "Founded", accessor: (o: any) => o.founded_year },
+      { header: "Number", accessor: (o) => o.organizer_number },
+      { header: "Name", accessor: (o) => o.name },
+      { header: "Name (AR)", accessor: (o) => o.name_ar },
+      { header: "Email", accessor: (o) => o.email },
+      { header: "Phone", accessor: (o) => o.phone },
+      { header: "Website", accessor: (o) => o.website },
+      { header: "City", accessor: (o) => o.city },
+      { header: "Country", accessor: (o) => o.country },
+      { header: "Status", accessor: (o) => o.status },
+      { header: "Verified", accessor: (o) => o.is_verified ? "Yes" : "No" },
+      { header: "Featured", accessor: (o) => o.is_featured ? "Yes" : "No" },
+      { header: "Events", accessor: (o) => o.total_exhibitions || 0 },
+      { header: "Views", accessor: (o) => o.total_views || 0 },
+      { header: "Rating", accessor: (o) => o.average_rating || 0 },
+      { header: "Services", accessor: (o) => (o.services || []).join("; ") },
+      { header: "Founded", accessor: (o) => o.founded_year },
     ],
     filename: "organizers",
   });
@@ -239,7 +239,7 @@ export default function OrganizersAdmin() {
     return sortDir === "asc" ? <ArrowUp className="h-3 w-3 text-primary" /> : <ArrowDown className="h-3 w-3 text-primary" />;
   };
 
-  const getProfileCompleteness = (org: any): number => {
+  const getProfileCompleteness = (org: NonNullable<typeof organizers>[number]): number => {
     let score = 0;
     const checks = [org.name, org.name_ar, org.email, org.phone, org.website, org.logo_url, org.cover_image_url, org.description, org.city, org.country, org.services?.length > 0, org.founded_year, org.social_links && Object.keys(org.social_links).length > 0];
     checks.forEach(c => { if (c) score++; });
@@ -378,7 +378,7 @@ export default function OrganizersAdmin() {
                 </SelectContent>
               </Select>
             )}
-            <Select value={verifiedFilter} onValueChange={(v) => setVerifiedFilter(v as any)}>
+            <Select value={verifiedFilter} onValueChange={(v) => setVerifiedFilter(v as "all" | "verified" | "unverified")}>
               <SelectTrigger className="w-28 h-9 rounded-xl"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{isAr ? "الكل" : "All"}</SelectItem>

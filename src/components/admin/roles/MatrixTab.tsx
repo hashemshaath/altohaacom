@@ -11,8 +11,8 @@ import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
 import { format } from "date-fns";
 
 interface Props {
-  permissions: any[];
-  allRolePerms: any[];
+  permissions: Record<string, unknown>[];
+  allRolePerms: Record<string, unknown>[];
   isAr: boolean;
   t: (en: string, ar: string) => string;
 }
