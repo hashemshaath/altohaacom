@@ -293,7 +293,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       </button>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-[12px] tracking-[0.15em]" style={{ color: d.cardTheme === "classic" ? "rgba(255,255,255,0.45)" : "hsl(var(--muted-foreground) / 0.55)" }}>{profile?.account_number || card.membership_number}</span>
+                      <span className="font-mono text-[12px] tracking-[0.15em]" style={{ color: d.cardTheme === "classic" ? "rgba(255,255,255,0.45)" : "hsl(var(--muted-foreground) / 0.55)" }}>{profile?.account_number || d.card!.membership_number}</span>
                       <span
                         className={`ms-auto text-[12px] font-bold rounded-full px-3 py-1 whitespace-nowrap ${isAr ? "tracking-normal" : "uppercase tracking-wider"}`}
                         style={d.isCardExpired
