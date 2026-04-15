@@ -436,6 +436,7 @@ function VerificationResult({
 }
 
 function UserVerificationDetails({ details, onSaveContact }: { details: any; onSaveContact: () => void }) {
+  const isAr = useIsAr();
 
   return (
     <div className="space-y-4">
