@@ -66,7 +66,7 @@ export function RegionalEvents() {
   return (
     <section className="relative overflow-hidden w-full" aria-labelledby="regional-heading" dir={isAr ? "rtl" : "ltr"}>
       <div className="relative h-[160px] sm:h-[200px] md:h-[220px] overflow-hidden">
-        <img src={regionalCover} alt="Regional culinary events" className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
+        <img src={regionalCover} alt="Regional culinary events" width={1200} height={220} className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-background" />
       </div>
 

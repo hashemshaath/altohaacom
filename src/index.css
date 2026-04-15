@@ -3,6 +3,18 @@
    Font loading via index.html <head>
    ═══════════════════════════════════════════════════════════════ */
 
+/* ── Font-display fallback (prevents FOIT / CLS from web fonts) ── */
+@font-face {
+  font-family: 'IBM Plex Arabic';
+  font-display: swap;
+  src: local('IBM Plex Arabic');
+}
+@font-face {
+  font-family: 'IBM Plex Sans';
+  font-display: swap;
+  src: local('IBM Plex Sans');
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

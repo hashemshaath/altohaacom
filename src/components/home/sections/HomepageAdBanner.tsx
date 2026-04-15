@@ -110,15 +110,15 @@ export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAd
           <div className="relative aspect-[4/1] sm:aspect-[5/1] md:aspect-[6/1] bg-muted overflow-hidden">
             <img loading="lazy" src={creative.image_url}
               alt={title || "Advertisement"}
+              width={1200} height={200}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-             
             />
             {/* Overlay with text */}
             {(title || bodyText) && (
               <div className="absolute inset-0 flex items-center bg-gradient-to-r from-black/80 via-black/40 to-transparent p-4 sm:p-6">
                 <div className="max-w-md space-y-1.5">
                   {company?.logo_url && (
-                    <img src={company.logo_url} alt={company?.name || "Sponsor"} className="h-6 w-auto rounded-lg mb-2" loading="lazy" />
+                    <img src={company.logo_url} alt={company?.name || "Sponsor"} width={80} height={24} className="h-6 w-auto rounded-lg mb-2" loading="lazy" />
                   )}
                   {title && <h3 className="text-sm sm:text-base font-bold text-foreground line-clamp-1">{title}</h3>}
                   {bodyText && <p className="text-xs sm:text-xs text-muted-foreground line-clamp-2">{bodyText}</p>}
@@ -155,7 +155,7 @@ export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAd
       >
         <div className="flex items-center gap-3">
           {company?.logo_url && (
-            <img src={company.logo_url} alt={company?.name || "Sponsor"} className="h-10 w-10 rounded-xl object-cover shrink-0" loading="lazy" />
+            <img src={company.logo_url} alt={company?.name || "Sponsor"} width={40} height={40} className="h-10 w-10 rounded-xl object-cover shrink-0" loading="lazy" />
           )}
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 mb-0.5">
