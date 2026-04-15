@@ -17,10 +17,10 @@ interface SectionContentProps {
   itemIds: string[];
   // Career records
   sectionRecords: CareerRecord[];
-  careerForm: Record<string, unknown>;
+  careerForm: Record<string, any>;
   editingId: string | null;
   saveCareerPending: boolean;
-  onUpdateCareer: (k: string, v: unknown) => void;
+  onUpdateCareer: (k: string, v: any) => void;
   onSaveCareer: () => void;
   onStartEditCareer: (r: CareerRecord) => void;
   onDeleteCareer: (id: string) => void;
