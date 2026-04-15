@@ -300,11 +300,15 @@ export function useSEODashboardData(isAr: boolean) {
     return d;
   }, [pageViews]);
 
-  const topPages = useMemo(() => {
-    const pageCounts: Record<string, number> = {};
-    pageViews?.forEach((v) => { pageCounts[v.path] = (pageCounts[v.path] || 0) + 1; });
-    return Object.entries(pageCounts).sort(([, a], [, b]) => b - a).slice(0, 15);
+  const pageCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    pageViews?.forEach((v) => { counts[v.path] = (counts[v.path] || 0) + 1; });
+    return counts;
   }, [pageViews]);
+
+  const topPages = useMemo(() => {
+    return Object.entries(pageCounts).sort(([, a], [, b]) => b - a).slice(0, 15);
+  }, [pageCounts]);
 
   const p75 = (arr: number[]) => { if (!arr.length) return null; const s = [...arr].sort((a, b) => a - b); return s[Math.ceil(s.length * 0.75) - 1]; };
 
