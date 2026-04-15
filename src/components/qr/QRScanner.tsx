@@ -56,7 +56,7 @@ export const QRScanner = memo(function QRScanner({ onScan }: QRScannerProps) {
 
     // Use BarcodeDetector if available (Chrome/Edge/Android)
     if ("BarcodeDetector" in window) {
-      const detector = new (window as any).BarcodeDetector({ formats: ["qr_code"] });
+      const detector = new window.BarcodeDetector({ formats: ["qr_code"] });
       const loop = async () => {
         if (!videoRef.current || !streamRef.current) return;
         try {

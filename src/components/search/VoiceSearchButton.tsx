@@ -24,7 +24,7 @@ export const VoiceSearchButton = memo(function VoiceSearchButton({ onResult, cla
       return;
     }
 
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRecognition();
     recognition.lang = isAr ? "ar-SA" : "en-US";
     recognition.continuous = false;

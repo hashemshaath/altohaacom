@@ -53,7 +53,7 @@ export function useGoogleTracking() {
 
     // Ensure dataLayer exists once before any script needs it
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- GTM global requires window extension
-    (window as any).dataLayer = (window as any).dataLayer || [];
+    window.dataLayer = window.dataLayer || [];
     console.info(`[Tracking] Injecting ${configs.length} tracking script(s):`, configs.map(c => c.integration_type).join(", "));
 
 
@@ -120,13 +120,13 @@ function createAsyncScript(src: string, attrs?: Record<string, string>): HTMLScr
    ═══════════════════════════════════════════ */
 
 function ensureGtag() {
-  if (typeof (window as any).gtag === "function") return;
-  (window as any).dataLayer = (window as any).dataLayer || [];
-  (window as any).gtag = function gtag() {
+  if (typeof window.gtag === "function") return;
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function gtag() {
     // eslint-disable-next-line prefer-rest-params
-    (window as any).dataLayer.push(arguments);
+    window.dataLayer.push(arguments);
   };
-  (window as any).gtag("js", new Date());
+  window.gtag("js", new Date());
 }
 
 /* ═══════════════════════════════════════════
@@ -165,7 +165,7 @@ function injectGA4(measurementId: string) {
     createAsyncScript(`https://www.googletagmanager.com/gtag/js?id=${measurementId}`)
   );
   ensureGtag();
-  (window as any).gtag("config", measurementId, { send_page_view: true });
+  window.gtag("config", measurementId, { send_page_view: true });
 }
 
 function injectGoogleAds(conversionId: string) {
@@ -176,7 +176,7 @@ function injectGoogleAds(conversionId: string) {
     );
   }
   ensureGtag();
-  (window as any).gtag("config", conversionId);
+  window.gtag("config", conversionId);
 }
 
 function injectAdSense(publisherId: string) {
@@ -309,8 +309,8 @@ function injectHotjar(siteId: string) {
 export function pushDataLayer(event: string, params?: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   const payload = { event, ...params };
-  (window as any).dataLayer = (window as any).dataLayer || [];
-  (window as any).dataLayer.push(payload);
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push(payload);
   if (import.meta.env.DEV) {
     console.debug("[DataLayer]", event, params);
   }
@@ -321,7 +321,7 @@ export const pushToDataLayer = pushDataLayer;
 
 /** Send conversion events to Google gtag */
 export function sendGoogleConversion(eventName: string, params?: Record<string, unknown>) {
-  if (typeof window !== "undefined" && (window as any).gtag) {
-    (window as any).gtag("event", eventName, params);
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", eventName, params);
   }
 }

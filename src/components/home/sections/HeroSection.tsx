@@ -218,8 +218,8 @@ export function HeroSection() {
     };
 
     if ("requestIdleCallback" in window) {
-      const id = (window as any).requestIdleCallback(preload, { timeout: 3000 });
-      return () => (window as any).cancelIdleCallback(id);
+      const id = window.requestIdleCallback(preload, { timeout: 3000 });
+      return () => window.cancelIdleCallback(id);
     } else {
       const timer = setTimeout(preload, 1000);
       return () => clearTimeout(timer);

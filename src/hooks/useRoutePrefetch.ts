@@ -30,8 +30,8 @@ export function useRoutePrefetch() {
     };
 
     if ("requestIdleCallback" in window) {
-      const id = (window as any).requestIdleCallback(prefetch, { timeout: 5000 });
-      return () => (window as any).cancelIdleCallback(id);
+      const id = window.requestIdleCallback(prefetch, { timeout: 5000 });
+      return () => window.cancelIdleCallback(id);
     } else {
       const timer = setTimeout(prefetch, 3000);
       return () => clearTimeout(timer);
