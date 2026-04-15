@@ -232,7 +232,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                     >
                       {isAr ? "رقم العضوية" : "MEMBERSHIP NO."}
                     </p>
-                    <p className="text-base sm:text-lg font-mono font-bold tracking-[0.15em]" style={{ color: d.cardTheme === "classic" ? "#d4af5a" : "hsl(var(--primary))" }}>{card.membership_number}</p>
+                    <p className="text-base sm:text-lg font-mono font-bold tracking-[0.15em]" style={{ color: d.cardTheme === "classic" ? "#d4af5a" : "hsl(var(--primary))" }}>{d.card!.membership_number}</p>
                   </div>
                   <div className={`flex ${d.isVertical ? "justify-center" : ""} gap-5 sm:gap-7 mt-2`}>
                     <div>
@@ -242,7 +242,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       >
                         {isAr ? "الانضمام" : "ISSUED"}
                       </p>
-                      <p className="text-[12px] sm:text-xs font-semibold" style={{ color: d.cardTheme === "classic" ? "rgba(255,255,255,0.85)" : "hsl(var(--foreground) / 0.75)" }}>{format(new Date(card.issued_at), "MM/yy")}</p>
+                      <p className="text-[12px] sm:text-xs font-semibold" style={{ color: d.cardTheme === "classic" ? "rgba(255,255,255,0.85)" : "hsl(var(--foreground) / 0.75)" }}>{format(new Date(d.card!.issued_at), "MM/yy")}</p>
                     </div>
                     <div>
                       <p
@@ -276,7 +276,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       >
                         {isAr ? "رمز التحقق" : "VERIFY CODE"}
                       </span>
-                      {d.verificationCode.split("").map((d, i) => (
+                      {d.verificationCode.split("").map((ch, i) => (
                         <span
                           key={i}
                           className="inline-flex h-7 w-6 sm:h-8 sm:w-7 items-center justify-center rounded font-mono text-sm sm:text-base font-bold"
@@ -285,7 +285,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                             : { background: "hsl(var(--primary) / 0.1)", border: "1px solid hsl(var(--primary) / 0.25)", color: "hsl(var(--primary))" }
                           }
                         >
-                          {d.showCode ? d : "•"}
+                          {d.showCode ? ch : "•"}
                         </span>
                       ))}
                       <button onClick={() => d.setShowCode(!d.showCode)} className="ms-1 p-0.5 transition-colors" style={{ color: d.cardTheme === "classic" ? "rgba(255,255,255,0.45)" : "hsl(var(--muted-foreground) / 0.55)" }}>
@@ -298,12 +298,12 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                         className={`ms-auto text-[12px] font-bold rounded-full px-3 py-1 whitespace-nowrap ${isAr ? "tracking-normal" : "uppercase tracking-wider"}`}
                         style={d.isCardExpired
                           ? { color: "#f87171", background: "rgba(248,113,113,0.15)" }
-                          : card.card_status === "suspended"
+: d.card!.card_status === "suspended"
                           ? { color: "#fbbf24", background: "rgba(251,191,36,0.15)" }
                           : { color: d.cardTheme === "classic" ? "#6ee7b7" : "hsl(142 71% 45%)", background: d.cardTheme === "classic" ? "rgba(52,211,153,0.15)" : "hsl(142 71% 45% / 0.12)" }
                         }
                       >
-                        {d.isCardExpired ? (isAr ? "منتهية" : "EXPIRED") : card.card_status === "suspended" ? (isAr ? "معلقة" : "SUSPENDED") : (isAr ? "نشطة" : "ACTIVE")}
+                        {d.isCardExpired ? (isAr ? "منتهية" : "EXPIRED") : d.card!.card_status === "suspended" ? (isAr ? "معلقة" : "SUSPENDED") : (isAr ? "نشطة" : "ACTIVE")}
                       </span>
                     </div>
                   </div>
@@ -317,7 +317,7 @@ export const UnifiedMembershipTab = memo(function UnifiedMembershipTab({ profile
                       }
                     >
                       <QRCodeSVG
-                        value={`https://altoha.com/verify?code=${profile?.account_number || card.membership_number}`}
+                        value={`https://altoha.com/verify?code=${profile?.account_number || d.card!.membership_number}`}
                         size={d.isVertical ? 60 : 58}
                         level="M"
                         includeMargin={false}
