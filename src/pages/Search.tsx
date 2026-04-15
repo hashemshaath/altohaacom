@@ -520,16 +520,15 @@ function ResultSection({
   title,
   count,
   onViewAll,
-  isAr,
   children,
 }: {
   icon: React.ReactNode;
   title: string;
   count: number;
   onViewAll: () => void;
-  isAr: boolean;
   children: React.ReactNode;
 }) {
+  const isAr = useIsAr();
   return (
     <section className="space-y-1">
       <div className="flex items-center justify-between mb-2">
@@ -552,13 +551,12 @@ function ResultSection({
 /* ──────────────── Competition Row ──────────────── */
 function CompetitionRow({
   data,
-  isAr,
   getStatusLabel,
 }: {
   data: any;
-  isAr: boolean;
   getStatusLabel: (s: CompetitionStatus) => string;
 }) {
+  const isAr = useIsAr();
   const sq = useSearchQuery();
   const title = isAr && data.title_ar ? data.title_ar : data.title;
   const desc = isAr && data.description_ar ? data.description_ar : data.description;
@@ -966,13 +964,12 @@ function RecentSearchesPanel({
   recentSearches,
   onRecentClick,
   onClear,
-  isAr,
 }: {
   recentSearches: string[];
   onRecentClick: (term: string) => void;
   onClear: () => void;
-  isAr: boolean;
 }) {
+  const isAr = useIsAr();
   if (recentSearches.length === 0) {
     return (
       <div className="py-16 text-center">

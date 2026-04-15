@@ -215,7 +215,7 @@ export default function SystemSettings() {
       ) : (
         <>
           {/* Quick Stats Overview */}
-          <QuickStatsCards settings={settings} completion={completion} isAr={isAr} />
+          <QuickStatsCards settings={settings} completion={completion} />
 
           {/* Data & Actions Overview - lazy loaded */}
           {activeTab === "branding" && (
