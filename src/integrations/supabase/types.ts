@@ -26702,7 +26702,7 @@ export type CompositeTypes<
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
-const Constants = {
+export const Constants = {
   public: {
     Enums: {
       account_status: ["pending", "active", "suspended", "banned"],
