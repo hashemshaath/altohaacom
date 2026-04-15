@@ -40,7 +40,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 
-import { statusColors, defaultOrderForm, getCategoryLabel } from "./orders/ordersAdminTypes";
+import { type OrderDirection, type OrderCategory, statusColors, categoryLabels, defaultOrderForm, getCategoryLabel } from "./orders/ordersAdminTypes";
 import { CompanyOrderDetailView } from "./orders/CompanyOrderDetailView";
 import { ShopOrderDetailView } from "./orders/ShopOrderDetailView";
 import { useOrdersData } from "./orders/useOrdersData";
