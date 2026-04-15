@@ -250,7 +250,8 @@ export default function CompanyPortalDashboard() {
 }
 
 
-function SponsorshipWidget({ companyId, language }: { companyId: string | null; language: string }) {
+function SponsorshipWidget({ companyId }: { companyId: string | null }) {
+  const isAr = useIsAr();
   const { data: opportunities = [] } = useQuery({
     queryKey: ["company-dash-sponsor-opps", companyId],
     queryFn: async () => {
