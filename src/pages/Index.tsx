@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
+import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 import { HeroSection } from "@/components/home/sections/HeroSection";
@@ -129,23 +130,27 @@ const Index = () => {
         ]}
       />
 
-      <Header />
+      <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
+        <Header />
+      </ErrorBoundary>
 
       <main className="flex-1" role="main" aria-label={isAr ? "المحتوى الرئيسي" : "Homepage content"}>
-        <ErrorBoundary fallback={<HomeEmergencyHero language={language} />}>
+        <SectionErrorBoundary name="hero">
           {showHero ? <HeroSection /> : <HomeEmergencyHero language={language} />}
-        </ErrorBoundary>
+        </SectionErrorBoundary>
 
-        <ErrorBoundary fallback={<HomeEmergencySections language={language} />}>
+        <SectionErrorBoundary name="home-sections">
           {isError ? (
             <HomeEmergencySections language={language} />
           ) : (
             <HomeSectionsRenderer sections={dbSections} />
           )}
-        </ErrorBoundary>
+        </SectionErrorBoundary>
       </main>
 
-      <Footer />
+      <SectionErrorBoundary name="footer" variant="compact">
+        <Footer />
+      </SectionErrorBoundary>
     </div>
   );
 };
