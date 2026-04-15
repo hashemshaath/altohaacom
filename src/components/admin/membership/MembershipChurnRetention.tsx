@@ -166,9 +166,9 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         .lte("membership_expires_at", subDays(now, -30).toISOString())
         .order("membership_expires_at", { ascending: true });
 
-      const critical: Record<string, unknown>[] = [];
-      const warning: Record<string, unknown>[] = [];
-      const upcoming: Record<string, unknown>[] = [];
+      const critical: Record<string, any>[] = [];
+      const warning: Record<string, any>[] = [];
+      const upcoming: Record<string, any>[] = [];
 
       for (const p of profiles || []) {
         const daysLeft = differenceInDays(new Date(p.membership_expires_at), now);
@@ -272,7 +272,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
   const { exportData, isExporting } = useAdminExport();
 
   const handleExport = useCallback((fmt: "csv" | "json") => {
-    const rows: Record<string, unknown>[] = [];
+    const rows: Record<string, any>[] = [];
     // Churn monthly data
     for (const m of churnData?.months || []) {
       rows.push({ section: "Monthly Churn", month: m.label, churn_rate: m.churnRate, churned: m.churned, retained: m.retained });
