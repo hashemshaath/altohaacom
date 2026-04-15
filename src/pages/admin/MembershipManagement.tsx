@@ -1,6 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { lazy, Suspense, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import {
   CreditCard, BarChart3, Users, Star, UserX, History, TrendingUp,
   PieChart, Share2, ShieldAlert, FileText, Settings2, GitBranch,

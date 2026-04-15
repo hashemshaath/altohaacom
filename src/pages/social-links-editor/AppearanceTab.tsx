@@ -11,7 +11,7 @@ import { THEMES, BUTTON_STYLES, FONT_SIZES } from "./constants";
 import { FONT_FAMILIES } from "@/lib/socialLinksConstants";
 import { Loader2 } from "lucide-react";
 import type { EditorSharedProps } from "./types";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_WEEK } from "@/lib/constants";
 
 interface Props extends EditorSharedProps {
   uploading: boolean;

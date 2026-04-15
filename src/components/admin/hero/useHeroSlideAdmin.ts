@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import { HERO_TEMPLATES } from "./heroTemplates";
-import { defaultSlide, type HeroSlide } from "./heroSlideConstants";
+import { type HeroSlide } from "./heroSlideConstants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useHeroSlideAdmin() {

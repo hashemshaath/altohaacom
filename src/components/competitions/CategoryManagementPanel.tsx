@@ -18,7 +18,7 @@ import {
   Eye, ArrowLeft, Trophy, Pause, Play, FileText,
   Save, X, Loader2,
 } from "lucide-react";
-import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, levelDisplay, categoryBadgeText } from "@/lib/categoryUtils";
+import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, categoryBadgeText } from "@/lib/categoryUtils";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CategoryManagementPanelProps {

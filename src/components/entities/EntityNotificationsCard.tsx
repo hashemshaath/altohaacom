@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Calendar, Trophy, Award, Newspaper } from "lucide-react";
+import { Bell, Calendar, Trophy, Award } from "lucide-react";
 import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
 

@@ -2,12 +2,12 @@ import { useState, useEffect, useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
-import { Gavel, Clock, TrendingUp, DollarSign, Flame, Timer, Tag, Percent, ShoppingBag } from "lucide-react";
+import { Gavel, Clock, Flame, Timer } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

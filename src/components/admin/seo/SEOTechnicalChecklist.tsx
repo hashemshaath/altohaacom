@@ -7,7 +7,6 @@ import {
   CheckCircle2, XCircle, AlertTriangle, RefreshCw, Shield,
   Globe, FileText, Code2, Smartphone, Link2, Image, Zap, Lock,
   Languages, Search, Loader2, LucideIcon } from "lucide-react";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 interface CheckItem {
   id: string;

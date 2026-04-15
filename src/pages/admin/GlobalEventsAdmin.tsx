@@ -10,7 +10,7 @@ import {
   type GlobalEventRecord,
 } from "@/hooks/useGlobalEvents";
 import { GLOBAL_EVENT_LABELS, GLOBAL_EVENT_COLORS, type GlobalEventType } from "@/hooks/useGlobalEventsCalendar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "sonner";
 import { format, parseISO } from "date-fns";
 import { cn } from "@/lib/utils";
-import { downloadCSV } from "@/lib/exportUtils";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";

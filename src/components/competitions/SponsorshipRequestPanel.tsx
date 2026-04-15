@@ -5,7 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Send, Building2, Clock, CheckCircle, XCircle } from "lucide-react";
+import { Send, Building2 } from "lucide-react";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const REQUEST_STATUS_COLORS: Record<string, string> = {

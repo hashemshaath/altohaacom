@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { BookOpen, Clock, Users, Star, MapPin } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
-import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 
 const levelColors: Record<string, string> = {

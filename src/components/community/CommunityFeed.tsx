@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, useCallback, useRef, memo, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,9 +22,7 @@ import { NewPostsBanner } from "./NewPostsBanner";
 import { TrendingCarousel } from "./TrendingCarousel";
 import { FeedScrollProgress } from "./FeedScrollProgress";
 import { FeedKeyboardShortcuts } from "./FeedKeyboardShortcuts";
-import { FeedStatsBar } from "./FeedStatsBar";
 import { CommunityInsights } from "./CommunityInsights";
-import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { MS_PER_DAY } from "@/lib/constants";
 
 export interface CommunityPost {

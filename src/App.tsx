@@ -40,8 +40,6 @@ import { companyRoutes } from "@/routes/companyRoutes";
 const AIChatbot = safeLazy(() => import("@/components/ai/AIChatbot"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-import { CACHE } from "@/lib/queryConfig";
-import { HTTP_STATUS } from "@/lib/constants";
 import { handleSupabaseError, redirectOnSessionExpiry } from "@/lib/supabaseErrorHandler";
 import { AppError } from "@/lib/AppError";
 

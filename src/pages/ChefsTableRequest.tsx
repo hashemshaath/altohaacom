@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreateChefsTableRequest, ExperienceType } from "@/hooks/useChefsTable";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
-import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEOHead } from "@/components/SEOHead";
@@ -13,8 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   ArrowLeft, ArrowRight, ChefHat, Building2, Package, MapPin, Send, 
   Globe, Image, Sparkles, CheckCircle2, Users, FileText, Camera,

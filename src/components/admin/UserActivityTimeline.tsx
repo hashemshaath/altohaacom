@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Activity, UserCheck, UserX, Shield, KeyRound, Edit, Ban, Clock } from "lucide-react";
-import { format, formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

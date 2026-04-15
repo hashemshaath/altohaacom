@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Receipt, Handshake, TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
-import { formatCurrency, SAR_SYMBOL } from "@/lib/currencyFormatter";
+import { formatCurrency } from "@/lib/currencyFormatter";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 

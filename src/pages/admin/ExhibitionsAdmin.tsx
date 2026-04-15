@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useMemo, memo, lazy, Suspense } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import { useTableSort } from "@/hooks/useTableSort";
 import { usePagination } from "@/hooks/usePagination";
 import { SortableTableHead } from "@/components/admin/SortableTableHead";
@@ -15,10 +15,8 @@ import { Button } from "@/components/ui/button";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminTableCard } from "@/components/admin/AdminTableCard";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "@/hooks/use-toast";

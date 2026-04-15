@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -7,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Link } from "react-router-dom";
 import {
   Zap, Trophy, FileText, Users, ShoppingBag,

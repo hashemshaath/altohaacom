@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { CACHE } from "@/lib/queryConfig";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
-import { MessageSquare, ArrowRight } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 export const RecentChatsWidget = memo(function RecentChatsWidget() {

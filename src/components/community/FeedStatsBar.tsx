@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { TrendingUp, Users, FileText, Zap } from "lucide-react";
+import { Users, FileText, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CACHE } from "@/lib/queryConfig";
 

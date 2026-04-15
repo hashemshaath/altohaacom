@@ -4,7 +4,7 @@ import { EntityFormGuard } from "@/components/admin/EntityFormGuard";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import EntityFormTabs, { EntityFormData, emptyForm, typeOptions, scopeOptions } from "@/components/admin/entities/EntityFormTabs";
+import EntityFormTabs, { EntityFormData, emptyForm, typeOptions } from "@/components/admin/entities/EntityFormTabs";
 import EstablishmentDetailDrawer from "@/components/admin/establishments/EstablishmentDetailDrawer";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { BulkImportPanel } from "@/components/admin/BulkImportPanel";
@@ -37,7 +37,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
-import { AreaChart, Area, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RTooltip } from "recharts";
+import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RTooltip } from "recharts";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // --- Status config ---

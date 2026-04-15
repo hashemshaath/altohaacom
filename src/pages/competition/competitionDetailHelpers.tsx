@@ -5,7 +5,6 @@ import { useState, useEffect, useRef } from "react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Separator } from "@/components/ui/separator";
 import { ChevronDown } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import type { Database } from "@/integrations/supabase/types";
 
 export type CompetitionStatus = Database["public"]["Enums"]["competition_status"];

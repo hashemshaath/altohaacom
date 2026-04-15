@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_WEEK } from "@/lib/constants";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;

@@ -6,7 +6,6 @@
  * Reduces network requests by ~80% for analytics-heavy pages.
  */
 
-import { supabase } from "@/integrations/supabase/client";
 
 type QueuedRecord = Record<string, unknown>;
 

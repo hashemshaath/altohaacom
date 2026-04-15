@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileBarChart, Users, Trophy, Package, FileText, TrendingUp, Landmark } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_WEEK } from "@/lib/constants";
 
 interface ModuleStat {
   icon: React.ElementType;

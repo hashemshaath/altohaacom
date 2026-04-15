@@ -19,7 +19,6 @@ import type { useCart } from "@/hooks/useCart";
 import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
-import { cn } from "@/lib/utils";
 
 interface CartSheetProps {
   open: boolean;

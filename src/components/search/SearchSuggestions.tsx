@@ -1,12 +1,11 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, useRef, memo } from "react";
+import { useEffect, useRef, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { cn } from "@/lib/utils";
-import { Search, TrendingUp, Clock, Star, Trophy, FileText, Users, UtensilsCrossed, Ticket } from "lucide-react";
+import { Search, TrendingUp, Star, Trophy, FileText, Users, UtensilsCrossed, Ticket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { getSavedSearches, addSavedSearch, removeSavedSearch } from "@/lib/recentSearches";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { getSavedSearches } from "@/lib/recentSearches";
+import { MS_PER_WEEK } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
 
 interface SearchSuggestionsProps {

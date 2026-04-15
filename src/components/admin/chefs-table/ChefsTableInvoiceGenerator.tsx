@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
-import { FileText, DollarSign, Receipt, ChefHat, Send, CheckCircle2 } from "lucide-react";
+import { FileText, Receipt, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { executeEvaluationWorkflow } from "@/lib/evaluationWorkflows";
 import { AnimatedCounter } from "@/components/ui/animated-counter";

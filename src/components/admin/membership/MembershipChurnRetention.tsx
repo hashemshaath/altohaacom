@@ -18,7 +18,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, differenceInDays, startOfMonth, endOfMonth, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";

@@ -24,7 +24,7 @@ import {
   Phone, Mail, KeyRound, Gift, ChefHat, Heart, AlertCircle,
 } from "lucide-react";
 
-import { useAuthHandlers, DEFAULT_PHONE_CODE, DEFAULT_COUNTRY } from "./auth/useAuthHandlers";
+import { useAuthHandlers } from "./auth/useAuthHandlers";
 
 const MAX_LOGIN_ATTEMPTS = 5;
 

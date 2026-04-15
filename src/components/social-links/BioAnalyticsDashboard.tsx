@@ -1,9 +1,7 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo, useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Eye, TrendingUp, Globe, Monitor, Clock, MousePointerClick, Smartphone, Users, Calendar, ArrowUpRight, ArrowDownRight, Minus, Percent, BarChart3 } from "lucide-react";

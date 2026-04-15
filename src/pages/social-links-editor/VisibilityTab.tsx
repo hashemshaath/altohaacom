@@ -3,14 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Download, Upload, Plus, Trash2, Eye, EyeOff, Image, FileText, Video, MessageCircle, Type, Sparkles, Settings2, Search, LayoutGrid, UserPlus, Twitter } from "lucide-react";
 import { Briefcase, Globe, BarChart3, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { parseExtra, DEFAULT_EXTRA, FONT_FAMILIES } from "@/lib/socialLinksConstants";
+import { parseExtra } from "@/lib/socialLinksConstants";
 import type { EditorSharedProps } from "./types";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

@@ -13,9 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SEOHead } from "@/components/SEOHead";
-import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { QRScanner } from "@/components/qr/QRScanner";
-import { generateVCard, downloadVCard, getVerificationUrl } from "@/lib/qrCode";
+import { generateVCard, downloadVCard } from "@/lib/qrCode";
 import {
   Search, Shield, CheckCircle, XCircle, AlertTriangle,
   User, Award, FileText, Building, Calendar, QrCode,

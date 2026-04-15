@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DollarSign, Clock, AlertTriangle, TrendingUp, TrendingDown, Receipt, CalendarClock, Target, Banknote } from "lucide-react";
+import { DollarSign, Clock, AlertTriangle, TrendingUp, TrendingDown, Receipt, Target, Banknote } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -16,7 +16,6 @@ import { formatCurrency } from "@/lib/currencyFormatter";
 import { StaggeredList } from "@/components/ui/staggered-list";
 import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";
 import { translateStatus, getTooltipStyle } from "@/lib/chartConfig";
-import { TrendForecastChart } from "./TrendForecastChart";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 

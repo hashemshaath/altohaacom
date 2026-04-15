@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { SEOScoreGauge } from "@/components/admin/seo/SEOScoreGauge";
-import { Eye, Activity, TrendingUp, Clock, ArrowUp, ArrowDown, Gauge, Smartphone, Monitor } from "lucide-react";
+import { Eye, Activity, TrendingUp, Clock, ArrowUp, ArrowDown } from "lucide-react";
 
 interface VitalsAgg {
   lcp: number | null;

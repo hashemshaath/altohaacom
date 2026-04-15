@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "@/hooks/use-toast";
-import { LayoutGrid, Search, DollarSign, MapPin, Building, Users, CheckCircle2, Clock, XCircle, Eye, Bookmark } from "lucide-react";
+import { LayoutGrid, Search, MapPin, Building, CheckCircle2, Clock, Eye, Bookmark } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

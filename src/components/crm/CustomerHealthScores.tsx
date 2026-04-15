@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Progress } from "@/components/ui/progress";
 import { HeartPulse, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MS_PER_DAY } from "@/lib/constants";

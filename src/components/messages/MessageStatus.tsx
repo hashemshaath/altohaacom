@@ -1,6 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
-import { Check, CheckCheck, Clock } from "lucide-react";
+import { CheckCheck, Clock } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,

@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
-import { useState, useMemo, memo } from "react";
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,7 +20,6 @@ import {
   CheckCircle2, XCircle, Zap, Shield, MessageSquare, Crown, Timer,
   Play, Target, Rocket, Globe, Heart, LucideIcon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import heroImage from "@/assets/jobs-hero.jpg";
 import employerImage from "@/assets/jobs-employer.jpg";
 import chefImage from "@/assets/jobs-chef.jpg";

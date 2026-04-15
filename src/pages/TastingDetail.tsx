@@ -12,7 +12,7 @@ import {
 import { TastingEvaluationPanel } from "@/components/tasting/TastingEvaluationPanel";
 import { TastingResultsPanel } from "@/components/tasting/TastingResultsPanel";
 import { TastingReportPanel } from "@/components/tasting/TastingReportPanel";
-import { ProductEvaluationTemplates, PRODUCT_TEMPLATES } from "@/components/tasting/ProductEvaluationTemplates";
+import { ProductEvaluationTemplates } from "@/components/tasting/ProductEvaluationTemplates";
 import { ScoringAnalytics } from "@/components/judging/ScoringAnalytics";
 import { EntryComparison } from "@/components/judging/EntryComparison";
 import { Header } from "@/components/Header";
@@ -28,7 +28,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
 import {
   ArrowLeft, Calendar, MapPin, Eye, Plus, UtensilsCrossed, ClipboardList,
   BarChart3, Settings2, Trash2, CheckCircle2, XCircle, RefreshCw, FileEdit,

@@ -1,9 +1,8 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useFadeIn, useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
+import { useStaggeredReveal } from "@/hooks/useStaggeredAnimation";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

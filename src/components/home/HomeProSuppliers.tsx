@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { countryFlag } from "@/lib/countryFlag";
-import { cn } from "@/lib/utils";
 import { Building2, Factory, CheckCircle, MapPin } from "lucide-react";
 import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";

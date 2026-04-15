@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useEffect, useState, useCallback, memo } from "react";
+import { useEffect, useState, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,7 +7,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Activity, Trophy, CheckCircle, XCircle, Clock, ChefHat, Zap, UserPlus, Star, MessageSquare } from "lucide-react";
+import { Activity, Trophy, Zap, UserPlus, Star, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";

@@ -3,7 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Globe, Trophy, Users } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
-import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { CompetitionWithRegs } from "./CompetitionCard";
 
 interface Props {

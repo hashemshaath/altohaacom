@@ -19,7 +19,7 @@ import {
   Search, ShoppingCart, GripVertical, UtensilsCrossed,
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
-import { DISH_TEMPLATES, type DishTemplate, type IngredientItem } from "@/data/dishTemplates";
+import { DISH_TEMPLATES, type DishTemplate } from "@/data/dishTemplates";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {

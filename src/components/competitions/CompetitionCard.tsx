@@ -9,7 +9,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { deriveCompetitionStatus } from "@/lib/competitionStatus";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { localizeLocation, localizeCity } from "@/lib/localizeLocation";
+import { localizeCity } from "@/lib/localizeLocation";
 import type { Database } from "@/integrations/supabase/types";
 
 type CompetitionStatus = Database["public"]["Enums"]["competition_status"];

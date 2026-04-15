@@ -1,7 +1,7 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, BookOpen, Users, Sparkles } from "lucide-react";
+import { GraduationCap, BookOpen, Users } from "lucide-react";
 
 interface MasterclassHeroProps {
   totalCount: number;

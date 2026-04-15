@@ -4,7 +4,7 @@ import { useCompanyAccess } from "@/hooks/useCompanyAccess";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Users, Mail, Phone, Building, UserPlus, Shield, Crown, Eye, Pencil,
   Clock, CheckCircle2, XCircle, Send, RefreshCw, MoreHorizontal, Trash2, LucideIcon } from "lucide-react";
-import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { MS_PER_WEEK } from "@/lib/constants";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";

@@ -6,7 +6,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
-import { Badge } from "@/components/ui/badge";
 import {
   ShoppingBag, Bell, Trophy, CreditCard,
   ChevronRight, Package, AlertCircle,

@@ -13,7 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CountrySelector } from "@/components/auth/CountrySelector";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
-import { Search, Plus, Building2, X, Globe, ChevronDown, ChevronUp, Check } from "lucide-react";
+import { Search, Plus, Building2, X, Globe, Check } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

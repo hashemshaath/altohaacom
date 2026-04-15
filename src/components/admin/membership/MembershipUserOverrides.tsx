@@ -1,5 +1,4 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { useState, memo } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Search, Plus, Trash2, Shield, Clock, User, ChevronDown } from "lucide-react";
+import { Search, Plus, Trash2, Shield, Clock, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

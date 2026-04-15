@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
@@ -26,7 +26,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { CertificateDesigner } from "@/components/certificates/CertificateDesigner";
 import { CertificateViewPanel } from "@/components/certificates/CertificateViewPanel";
@@ -41,7 +40,6 @@ import {
   CheckCircle, XCircle, Clock, ChevronLeft, Save, X, Copy, Palette,
   LayoutTemplate, PenTool, Sparkles, Trophy, Printer, RefreshCw,
 } from "lucide-react";
-import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

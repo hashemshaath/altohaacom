@@ -1,6 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
-import { useState, useCallback, useRef, useEffect, memo } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import { ROUTES } from "@/config/routes";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

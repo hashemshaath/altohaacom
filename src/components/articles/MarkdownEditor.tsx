@@ -1,7 +1,6 @@
 import { useRef, useState, useCallback, useMemo } from "react";
 import { MarkdownToolbar } from "./MarkdownToolbar";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";

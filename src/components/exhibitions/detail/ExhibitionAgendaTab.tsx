@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { Clock, MapPin, Star, StarOff, User, Sparkles, CalendarDays } from "lucide-react";
+import { MapPin, Star, StarOff, User, Sparkles, CalendarDays } from "lucide-react";
 import { format, parseISO, isToday } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";

@@ -9,7 +9,6 @@ import { useRealtimeMessages } from "@/hooks/useRealtimeMessages";
 import { usePresence } from "@/hooks/usePresence";
 import { useToast } from "@/hooks/use-toast";
 import { uploadMessageAttachment } from "@/utils/storageUtils";
-import { CACHE } from "@/lib/queryConfig";
 import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Gauge, TrendingUp, TrendingDown, Minus, Smartphone, Monitor, Wifi, Zap, AlertTriangle } from "lucide-react";
+import { Gauge, TrendingUp, TrendingDown, Minus, Smartphone, Wifi, Zap } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer,

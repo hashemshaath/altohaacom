@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, lazy, Suspense, memo } from "react";
+import { useState, lazy, memo } from "react";
 import { safeLazy } from "@/lib/safeLazy";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -25,7 +25,7 @@ import {
   Truck, DollarSign, Star, Image, CalendarCheck, MessageSquare, UserPlus, Building,
   Upload, File, Sparkles, ChevronLeft, CheckCircle, XCircle, Phone, Mail,
 } from "lucide-react";
-import { type CompanyStatus, MEDIA_CATEGORIES, DAYS, getTypeLabel, getStatusLabel } from "./companiesAdminTypes";
+import { type CompanyStatus, MEDIA_CATEGORIES, getTypeLabel, getStatusLabel } from "./companiesAdminTypes";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 

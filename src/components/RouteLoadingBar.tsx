@@ -1,6 +1,5 @@
 import { memo, useEffect, useState, useRef } from "react";
-import { useNavigation, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
 
 /**
  * Thin progress bar at top of viewport during route transitions.

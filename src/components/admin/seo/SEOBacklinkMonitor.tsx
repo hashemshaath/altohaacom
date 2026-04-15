@@ -15,7 +15,6 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
-import { format } from "date-fns";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Backlink {

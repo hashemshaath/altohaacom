@@ -2,7 +2,7 @@ import { useIsAr } from "@/hooks/useIsAr";
 import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { CheckCircle, Star, Zap, Award, Shield, TrendingUp } from "lucide-react";
+import { CheckCircle, Star, Award, Shield, TrendingUp } from "lucide-react";
 
 interface SupplierBadgesProps {
   isVerified?: boolean;

@@ -8,13 +8,12 @@ import { Footer } from "@/components/Footer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
 import {
   Search as SearchIcon,
   Calendar,
@@ -40,7 +39,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useGlobalSearch, type SearchFilters, type ArticleResult, type MemberResult, type PostResult, type RecipeResult, type ExhibitionResult, type EntityResult } from "@/hooks/useGlobalSearch";
-import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch, getSavedSearches, removeSavedSearch } from "@/lib/recentSearches";
+import { getRecentSearches, addRecentSearch, clearRecentSearches, addSavedSearch } from "@/lib/recentSearches";
 import { SearchSuggestions } from "@/components/search/SearchSuggestions";
 import { HighlightText } from "@/components/search/HighlightText";
 import { VoiceSearchButton } from "@/components/search/VoiceSearchButton";

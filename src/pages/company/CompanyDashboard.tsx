@@ -1,11 +1,11 @@
 import { useIsAr } from "@/hooks/useIsAr";
 import { useMemo } from "react";
 import { useCompanyAccess, useCompanyProfile } from "@/hooks/useCompanyAccess";
-import { useCompanyRoles, COMPANY_ROLES } from "@/hooks/useCompanyRoles";
+import { useCompanyRoles } from "@/hooks/useCompanyRoles";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";

@@ -1,5 +1,5 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, lazy, Suspense, memo } from "react";
+import { useState, Suspense, memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";

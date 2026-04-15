@@ -6,14 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Flame, Cake, Eye, Monitor, Check, Plus, Trash2 } from "lucide-react";
 import type { CategoryForm } from "./types";
-import { emptyCategory } from "./types";
-import { GENDER_OPTIONS, PARTICIPANT_LEVELS, genderDisplay, categoryBadgeText } from "@/lib/categoryUtils";
+import { GENDER_OPTIONS, categoryBadgeText } from "@/lib/categoryUtils";
 import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const iconMap: Record<string, React.ReactNode> = {

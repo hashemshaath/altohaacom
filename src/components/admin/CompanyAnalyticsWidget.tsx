@@ -1,12 +1,11 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { CACHE } from "@/lib/queryConfig";
 import { memo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Building2, CheckCircle, Clock, Star, TrendingUp, DollarSign } from "lucide-react";
+import { Building2, CheckCircle, Clock, TrendingUp, DollarSign } from "lucide-react";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
 
 export const CompanyAnalyticsWidget = memo(function CompanyAnalyticsWidget() {

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, ArrowRight, MapPin, Trophy } from "lucide-react";
 import { countryFlag } from "@/lib/countryFlag";
-import { getDerivedStatus, type CompetitionWithRegs } from "./CompetitionCard";
+import { type CompetitionWithRegs } from "./CompetitionCard";
 
 interface Props {
   competitions: CompetitionWithRegs[];

@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Save, Plus, Trash2, Database, Search, Edit2, X, Check, Copy, Eye, EyeOff,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface Props {
   settings: Record<string, any>;
