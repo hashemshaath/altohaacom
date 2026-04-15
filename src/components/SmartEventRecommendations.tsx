@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sparkles, Calendar, MapPin, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 interface RecommendedEvent {
   id: string;
@@ -139,7 +140,7 @@ export const SmartEventRecommendations = memo(function SmartEventRecommendations
 
       return scored.sort((a, b) => b.score - a.score).slice(0, limit);
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (recommendations.length === 0) return null;

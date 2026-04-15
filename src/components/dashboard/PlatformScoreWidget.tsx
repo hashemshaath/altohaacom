@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Zap, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 function getScoreLevel(score: number, isAr: boolean): { label: string; color: string; emoji: string } {
   if (score >= 80) return { label: isAr ? "متميّز" : "Outstanding", color: "text-chart-2", emoji: "🏆" };
@@ -74,7 +75,7 @@ export const PlatformScoreWidget = memo(function PlatformScoreWidget() {
       };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (!data) return null;

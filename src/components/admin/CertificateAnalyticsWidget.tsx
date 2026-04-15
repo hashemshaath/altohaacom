@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { PieChart, Pie, Cell } from "recharts";
 import { Award, FileText, CheckCircle, PenTool, Send, ShieldCheck } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -58,7 +59,7 @@ export const CertificateAnalyticsWidget = memo(function CertificateAnalyticsWidg
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-44 w-full rounded-xl" />;

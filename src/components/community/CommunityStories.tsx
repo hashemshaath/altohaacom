@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CommunityStories = memo(function CommunityStories() {
   const { user } = useAuth();
@@ -24,7 +25,7 @@ export const CommunityStories = memo(function CommunityStories() {
         .limit(12);
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: myProfile } = useQuery({

@@ -12,6 +12,7 @@ import { Activity, ArrowRight, UserPlus, Flag, Trophy, FileText, Shield, Package
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 interface FeedItem {
   id: string;
@@ -92,7 +93,7 @@ export const AdminActivityFeed = memo(function AdminActivityFeed() {
 
       return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 15);
     },
-    staleTime: 1000 * 30,
+    staleTime: CACHE.realtime.staleTime,
     refetchInterval: useVisibleRefetchInterval(1000 * 60),
   });
 

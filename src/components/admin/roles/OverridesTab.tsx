@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { AlertTriangle, ShieldCheck, ShieldOff, XCircle, Trash2, Loader2, Info } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   isAr: boolean;
@@ -35,7 +36,7 @@ export default function OverridesTab({ isAr, t }: Props) {
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
       return data.map(o => ({ ...o, profile: profileMap.get(o.user_id) }));
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const deleteOverride = useMutation({

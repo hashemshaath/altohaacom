@@ -8,6 +8,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AnalyticsKPICards } from "./AnalyticsKPICards";
 import {
+import { CACHE } from "@/lib/queryConfig";
   RegistrationTrendChart,
   MonthlyCompetitionsChart,
   ScoreDistributionChart,
@@ -88,7 +89,7 @@ const CompetitionAnalytics = memo(function CompetitionAnalytics() {
         regTrend: Object.entries(regMonths).sort(([a], [b]) => a.localeCompare(b)).slice(-6).map(([month, count]) => ({ month, count })),
       };
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const avgScore = useMemo(() => {

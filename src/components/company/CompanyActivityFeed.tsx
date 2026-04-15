@@ -10,6 +10,7 @@ import { ShoppingCart, FileText, Users, CreditCard, Clock, ArrowUpRight } from "
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { Link } from "react-router-dom";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ActivityItem {
   id: string;
@@ -60,7 +61,7 @@ export const CompanyActivityFeed = memo(function CompanyActivityFeed({ companyId
       return items.sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const getIcon = (type: string) => {

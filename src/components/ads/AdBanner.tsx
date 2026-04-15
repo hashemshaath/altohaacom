@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getDeviceType } from "@/lib/deviceType";
+import { CACHE } from "@/lib/queryConfig";
 
 interface AdBannerProps {
   placementSlug: string;
@@ -43,7 +44,7 @@ export const AdBanner = forwardRef<HTMLDivElement, AdBannerProps>(function AdBan
       if (!creative) return null;
       return { ...creative, placement_id: placement.id };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Log impression (fire-and-forget, no chaining)

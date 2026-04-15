@@ -9,6 +9,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { toast } from "@/hooks/use-toast";
 import { Clock, MapPin, Star, UserPlus, UserMinus, CalendarClock, Users, Mic } from "lucide-react";
 import { format, parseISO, isSameDay } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -45,7 +46,7 @@ export const ExhibitionSchedulePublic = memo(function ExhibitionSchedulePublic({
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: myRegistrations = [] } = useQuery({

@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useIsAdmin } from "@/hooks/useAdmin";
 import { useEventWatchlist } from "@/components/fan/FanEventWatchlist";
 import { useEntityQRCode } from "@/hooks/useQRCode";
+import { CACHE } from "@/lib/queryConfig";
 
 export function useCompetitionDetailData() {
   const { slug: urlParam } = useParams<{ slug: string }>();
@@ -32,7 +33,7 @@ export function useCompetitionDetailData() {
       return data;
     },
     enabled: !!slug,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // SEO: Redirect UUID URLs to slug-based canonical URL
@@ -55,7 +56,7 @@ export function useCompetitionDetailData() {
       return data;
     },
     enabled: !!competitionId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: criteria } = useQuery({
@@ -66,7 +67,7 @@ export function useCompetitionDetailData() {
       return data;
     },
     enabled: !!competitionId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: myRegistration } = useQuery({
@@ -89,7 +90,7 @@ export function useCompetitionDetailData() {
       return { total, approved, pending };
     },
     enabled: !!competitionId,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { data: judgesCount } = useQuery({
@@ -99,7 +100,7 @@ export function useCompetitionDetailData() {
       return data?.length || 0;
     },
     enabled: !!competitionId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: competitionTypes } = useQuery({

@@ -7,6 +7,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Heart, MessageCircle, UserPlus, Repeat2, Bookmark, Bell, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ActivityItem {
   id: string;
@@ -75,7 +76,7 @@ export const ActivitySidebar = memo(function ActivitySidebar() {
       });
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
     refetchInterval: useVisibleRefetchInterval(1000 * 60 * 2),
   });
 

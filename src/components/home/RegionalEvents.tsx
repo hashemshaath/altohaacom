@@ -15,6 +15,7 @@ import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { localizeLocation } from "@/lib/localizeLocation";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { CACHE } from "@/lib/queryConfig";
 
 const MIDDLE_EAST = ["SA", "AE", "KW", "BH", "QA", "OM", "JO", "LB", "IQ", "EG", "TN", "MA", "DZ", "LY", "SY", "PS", "YE"];
 
@@ -39,7 +40,7 @@ export function RegionalEvents() {
         .limit(itemCount);
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

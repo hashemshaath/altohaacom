@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -63,7 +64,7 @@ export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionI
       return items;
     },
     enabled: !!exhibitionId,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (related.length === 0) return null;

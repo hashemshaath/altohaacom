@@ -11,6 +11,7 @@ import {
 import { format, subDays, eachDayOfInterval, parseISO } from "date-fns";
 import { TrendingUp, Users, Ticket, Star, Clock, Activity, Globe, Eye } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -40,7 +41,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { data: reviewsData = [] } = useQuery({
@@ -53,7 +54,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { data: boothStats = [] } = useQuery({
@@ -66,7 +67,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { data: scheduleRegs = [] } = useQuery({
@@ -87,7 +88,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
       (regs || []).forEach((r) => regCounts.set(r.schedule_item_id, (regCounts.get(r.schedule_item_id) || 0) + 1));
       return data.map(d => ({ ...d, registrations: regCounts.get(d.id) || 0 }));
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { data: followerTimeline = [] } = useQuery({
@@ -101,7 +102,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { data: cookingSessionStats = [] } = useQuery({
@@ -122,7 +123,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
       (regs || []).forEach((r) => regCounts.set(r.session_id, (regCounts.get(r.session_id) || 0) + 1));
       return data.map(d => ({ ...d, registrations: regCounts.get(d.id) || 0 }));
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { data: volunteerCount = 0 } = useQuery({
@@ -135,7 +136,7 @@ export const ExhibitionOrganizerAnalytics = memo(function ExhibitionOrganizerAna
         .eq("status", "approved");
       return count || 0;
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   // Revenue

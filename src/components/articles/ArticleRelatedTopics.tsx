@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Hash, ArrowUpRight, Layers } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Shows related topic clusters — groups articles by tags
@@ -53,7 +54,7 @@ export const NewsRelatedTopics = memo(function NewsRelatedTopics({
         .slice(0, 6);
     },
     enabled: tagIds.length > 0,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!articleTags.length || !relatedByTag?.length) return null;

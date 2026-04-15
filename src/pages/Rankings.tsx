@@ -14,6 +14,7 @@ import { Trophy, TrendingUp, TrendingDown, Minus, Search, ChefHat, Crown, Medal,
 import { countryFlag } from "@/lib/countryFlag";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 const medalBg = (rank: number) =>
   rank === 1 ? "from-yellow-500/20 via-yellow-400/10 to-yellow-500/5 ring-yellow-500/30"
@@ -59,7 +60,7 @@ export default function Rankings() {
       const profileMap = new Map(profiles?.map(p => [p.user_id, p]) || []);
       return data.map(r => ({ ...r, profile: profileMap.get(r.user_id) }));
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const { data: countries } = useQuery({
@@ -72,7 +73,7 @@ export default function Rankings() {
       const unique = [...new Set(data?.map(d => d.country_code).filter(Boolean))];
       return unique as string[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const filteredRankings = useMemo(() => rankings?.filter(r => {

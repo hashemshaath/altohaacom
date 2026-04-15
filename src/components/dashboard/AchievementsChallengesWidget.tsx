@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Trophy, Flame, Star, ChevronRight, Sparkles, Check } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CACHE } from "@/lib/queryConfig";
 
 export const AchievementsChallengesWidget = memo(function AchievementsChallengesWidget() {
   const { user } = useAuth();
@@ -66,7 +67,7 @@ export const AchievementsChallengesWidget = memo(function AchievementsChallenges
       return { activeChallenges, badges, streak, completedCount, totalChallenges: challenges.length };
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (!data) return null;

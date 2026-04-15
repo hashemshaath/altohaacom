@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const RevenueAnalyticsWidget = memo(function RevenueAnalyticsWidget() {
   const { language } = useLanguage();
@@ -89,7 +90,7 @@ export const RevenueAnalyticsWidget = memo(function RevenueAnalyticsWidget() {
         statusChartData,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-72 w-full rounded-xl" />;

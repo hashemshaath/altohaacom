@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Megaphone, Target, DollarSign, TrendingUp, AlertTriangle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CampaignPerformanceTracker = memo(function CampaignPerformanceTracker() {
   const { language } = useLanguage();
@@ -24,7 +25,7 @@ export const CampaignPerformanceTracker = memo(function CampaignPerformanceTrack
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!campaigns.length) return null;

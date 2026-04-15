@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -62,7 +63,7 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
         dailyBreakdown: Array.from(dailyMap.entries()).sort((a, b) => a[0].localeCompare(b[0])),
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { exportCSV } = useCSVExport({

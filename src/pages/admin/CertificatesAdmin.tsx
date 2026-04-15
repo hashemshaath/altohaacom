@@ -42,6 +42,7 @@ import {
   LayoutTemplate, PenTool, Sparkles, Trophy, Printer, RefreshCw,
 } from "lucide-react";
 import { format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 type CertificateType = "participation" | "winner_gold" | "winner_silver" | "winner_bronze" | "appreciation" | "organizer" | "judge" | "sponsor" | "volunteer";
 type CertificateStatus = "draft" | "pending_signature" | "signed" | "issued" | "revoked";
@@ -120,7 +121,7 @@ export default function CertificatesAdmin() {
       if (error) throw error;
       return data as Certificate[];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { data: templates = [] } = useQuery({
@@ -130,7 +131,7 @@ export default function CertificatesAdmin() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const { data: competitions = [] } = useQuery({
@@ -140,7 +141,7 @@ export default function CertificatesAdmin() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   // ═══ Mutations ═══

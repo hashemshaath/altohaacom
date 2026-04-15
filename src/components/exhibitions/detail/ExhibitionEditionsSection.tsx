@@ -13,6 +13,7 @@ import {
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   seriesId: string | null;
@@ -119,7 +120,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
       return (data || []) as EditionRow[];
     },
     enabled: !!seriesId,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const editionIds = useMemo(() => (editions || []).map(e => e.id), [editions]);
@@ -139,7 +140,7 @@ export const ExhibitionEditionsSection = memo(function ExhibitionEditionsSection
       return counts;
     },
     enabled: editionIds.length > 0,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const pastEditions = useMemo(() => (editions || []).filter(e => e.id !== currentExhibitionId), [editions, currentExhibitionId]);

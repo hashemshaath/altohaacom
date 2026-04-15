@@ -10,6 +10,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Zap, Users, Target, Activity, CheckCircle2, Clock } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -85,7 +86,7 @@ export const MarketingOverviewWidget = memo(function MarketingOverviewWidget() {
       };
     },
     refetchInterval: visibleInterval,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

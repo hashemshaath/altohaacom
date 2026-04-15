@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Award, FileText, PenTool, Send, CheckCircle, XCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CertificateWorkflowTracker = memo(function CertificateWorkflowTracker() {
   const { language } = useLanguage();
@@ -31,7 +32,7 @@ export const CertificateWorkflowTracker = memo(function CertificateWorkflowTrack
       const total = data?.length || 0;
       return { statuses, types, total };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const steps = [

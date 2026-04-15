@@ -6,6 +6,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, ChevronLeft, ChevronRight, ExternalLink, X } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface PortfolioItem {
   name: string;
@@ -32,7 +33,7 @@ export const ProfilePortfolioGallery = memo(function ProfilePortfolioGallery({ u
         });
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (mediaFiles.length === 0) return null;

@@ -9,6 +9,7 @@ import { Quote, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionHeader } from "./SectionHeader";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { CACHE } from "@/lib/queryConfig";
 
 export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimonials(_props, _ref) {
   const { language } = useLanguage();
@@ -32,7 +33,7 @@ export const HomeTestimonials = forwardRef<HTMLDivElement>(function HomeTestimon
         .limit(itemCount);
       return (data as any[]) || [];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

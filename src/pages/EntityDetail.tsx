@@ -39,6 +39,7 @@ import { EntityMapEmbed } from "@/components/entities/EntityMapEmbed";
 import { EntityContactCard } from "@/components/entities/EntityContactCard";
 import entitiesHero from "@/assets/entities-hero.jpg";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];
@@ -93,7 +94,7 @@ export default function EntityDetail() {
       return data;
     },
     enabled: !!slug,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: isFollowing } = useQuery({
@@ -122,7 +123,7 @@ export default function EntityDetail() {
       return count || 0;
     },
     enabled: !!entity,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: counts } = useQuery({
@@ -145,7 +146,7 @@ export default function EntityDetail() {
       };
     },
     enabled: !!entity,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: qrCode } = useEntityQRCode("company", entity?.id, "company");

@@ -14,6 +14,7 @@ import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
+import { CACHE } from "@/lib/queryConfig";
 
 const TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   news: { en: "News", ar: "أخبار" },
@@ -50,7 +51,7 @@ export const HomeTrendingContent = forwardRef<HTMLDivElement>(function HomeTrend
         .limit(itemCount);
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

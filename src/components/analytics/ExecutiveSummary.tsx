@@ -11,6 +11,7 @@ import { FileText, Download, Printer, Users, Trophy, ShoppingCart, DollarSign, T
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 export const ExecutiveSummary = memo(function ExecutiveSummary() {
   const { language } = useLanguage();
@@ -66,7 +67,7 @@ export const ExecutiveSummary = memo(function ExecutiveSummary() {
         generatedAt: new Date().toISOString(),
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const handlePrint = () => {

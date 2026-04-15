@@ -13,6 +13,7 @@ import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 import { ImageWithFallback } from "@/components/home/ImageWithFallback";
+import { CACHE } from "@/lib/queryConfig";
 
 const TYPE_COLORS: Record<string, string> = {
   news: "bg-semantic-info-bg text-semantic-info dark:bg-semantic-info/20 dark:text-semantic-info",
@@ -61,7 +62,7 @@ const ArticlesSection = memo(forwardRef<HTMLElement>(function ArticlesSection(_p
         .limit(itemCount);
       return data || [];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

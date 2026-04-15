@@ -24,6 +24,7 @@ import { format, subDays } from "date-fns";
 import { cn } from "@/lib/utils";
 import { ResponsiveContainer, AreaChart, Area } from "recharts";
 import { GrowthAreaChart, DonutChart, ComparisonBarChart, ActivityHeatmap } from "@/components/admin/AdminDashboardCharts";
+import { CACHE } from "@/lib/queryConfig";
 
 const AdminActivityFeed = lazy(() => import("@/components/admin/AdminActivityFeed").then(m => ({ default: m.AdminActivityFeed })));
 const AdminModerationQueue = lazy(() => import("@/components/admin/AdminModerationQueue").then(m => ({ default: m.AdminModerationQueue })));
@@ -137,7 +138,7 @@ export default function AdminDashboard() {
         totalOrganizers: totalOrganizers || 0, recentActions: recentActions || [], recentUsers: recentUsers || [],
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: todayStats } = useQuery({
@@ -153,7 +154,7 @@ export default function AdminDashboard() {
       ]);
       return { newUsers: newUsers.count || 0, newPosts: newPosts.count || 0, newOrders: newOrders.count || 0, newReports: newReports.count || 0 };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: sparkData } = useQuery({
@@ -183,7 +184,7 @@ export default function AdminDashboard() {
         return row;
       });
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const { data: upcomingEvents } = useQuery({
@@ -201,7 +202,7 @@ export default function AdminDashboard() {
         ...(comp || []).map(c => ({ ...c, type: "competition" as const, date: c.competition_start, link: `/admin/competitions` })),
       ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()).slice(0, 8);
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Activity heatmap data (based on posts creation times over last 4 weeks)
@@ -229,7 +230,7 @@ export default function AdminDashboard() {
       });
       return grid;
     },
-    staleTime: 1000 * 60 * 15,
+    staleTime: CACHE.realtime.staleTime * 15,
   });
 
   const getSparkPoints = (key: string) => sparkData?.map((d) => ({ v: d[key] || 0 })) || [];

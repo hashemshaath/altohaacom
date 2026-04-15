@@ -9,6 +9,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { Globe } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { CHART_COLORS, TOOLTIP_STYLE, CHART_HEIGHT, H_BAR_RADIUS, getTooltipStyle } from "@/lib/chartConfig";
+import { CACHE } from "@/lib/queryConfig";
 
 interface CountryBreakdownChartProps {
   metric: "users" | "competitions" | "companies";
@@ -46,7 +47,7 @@ export const CountryBreakdownChart = memo(function CountryBreakdownChart({ metri
         .slice(0, 10);
     },
     enabled: !!countries,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const title = titles[metric];

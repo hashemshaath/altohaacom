@@ -14,6 +14,7 @@ import { AdBanner } from "@/components/ads/AdBanner";
 import { SupplierBadges } from "@/components/supplier/SupplierBadges";
 import { countryFlag } from "@/lib/countryFlag";
 import {
+import { CACHE } from "@/lib/queryConfig";
   Building2, Search, ChefHat, UtensilsCrossed, Package, Shirt,
   Wrench, Boxes, Grid3X3, ArrowRight, Sparkles,
   Factory, Globe, ArrowUpDown, Scale, Trophy, Star, Crown,
@@ -101,7 +102,7 @@ export default function ProSuppliers() {
       });
       return counts;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const [compareIds, setCompareIds] = useState<string[]>([]);

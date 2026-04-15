@@ -23,6 +23,7 @@ import { isPast, isFuture, isWithinInterval } from "date-fns";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
 
@@ -67,7 +68,7 @@ export default function Exhibitions() {
       if (error) throw error;
       return data as Exhibition[];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Batch sponsor fetch for all exhibitions (eliminates N+1)

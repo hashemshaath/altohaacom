@@ -30,6 +30,7 @@ import {
 import { formatDistanceToNow, differenceInMinutes } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 export default function LiveChatAdmin() {
   const { user } = useAuth();
@@ -100,7 +101,7 @@ export default function LiveChatAdmin() {
       return data;
     },
     enabled: !!selectedSessionId,
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   // Realtime

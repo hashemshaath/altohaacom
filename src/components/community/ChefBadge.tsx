@@ -5,6 +5,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Award, BadgeCheck, Shield, Star, LucideIcon } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ChefBadgeProps {
   userId: string;
@@ -62,7 +63,7 @@ export const ChefBadge = memo(function ChefBadge({ userId, className, showToolti
 
       return result;
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (badges.length === 0) return null;

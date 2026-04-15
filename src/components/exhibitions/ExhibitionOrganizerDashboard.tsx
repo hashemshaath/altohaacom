@@ -24,6 +24,7 @@ import { ExhibitionDiscountCodes } from "./detail/ExhibitionDiscountCodes";
 import { ExhibitionOrganizerMessaging } from "./detail/ExhibitionOrganizerMessaging";
 import { ExhibitionSurveyManager } from "./detail/ExhibitionSurveyManager";
 import { ExhibitionAnalyticsDashboard } from "./detail/ExhibitionAnalyticsDashboard";
+import { CACHE } from "@/lib/queryConfig";
 interface Props {
   exhibitionId: string;
   exhibitionTitle: string;
@@ -54,7 +55,7 @@ export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDas
         booths: booths.count || 0,
       };
     },
-    staleTime: 1000 * 30,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { data: ticketsList = [] } = useQuery({
@@ -69,7 +70,7 @@ export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDas
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const statCards = [

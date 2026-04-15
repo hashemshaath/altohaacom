@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CACHE } from "@/lib/queryConfig";
 
 export const FanRecommendationsWidget = memo(function FanRecommendationsWidget() {
   const { language } = useLanguage();
@@ -22,7 +23,7 @@ export const FanRecommendationsWidget = memo(function FanRecommendationsWidget()
         .limit(6);
       return data || [];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (recipes.length === 0) return null;

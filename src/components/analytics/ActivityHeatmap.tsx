@@ -11,6 +11,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { useState } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 type DataSource = "profiles" | "messages" | "competition_registrations" | "posts";
 
@@ -67,7 +68,7 @@ export const ActivityHeatmap = memo(function ActivityHeatmap() {
 
       return { grid, maxVal, peakDay, peakHour, total: (records || []).length };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const getColor = (value: number, max: number) => {

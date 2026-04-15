@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Trophy, Users, Gavel, Medal, TrendingUp, MapPin } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -69,7 +70,7 @@ export const CompetitionAnalyticsWidget = memo(function CompetitionAnalyticsWidg
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

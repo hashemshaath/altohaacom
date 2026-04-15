@@ -16,6 +16,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { countryFlag } from "@/lib/countryFlag";
 import {
+import { CACHE } from "@/lib/queryConfig";
   CompetitionCard,
   FeaturedCompetitionCard,
   getDerivedStatus,
@@ -40,7 +41,7 @@ export default function CompetitionDiscovery() {
         .order("competition_start", { ascending: true });
       return (data || []) as CompetitionWithRegs[];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const countries = useMemo(() => {

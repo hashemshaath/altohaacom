@@ -11,6 +11,7 @@ import {
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
 import { TrendingUp, PieChart as PieIcon, Receipt, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { CACHE } from "@/lib/queryConfig";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",
@@ -54,7 +55,7 @@ export const CompanyAnalyticsCharts = memo(function CompanyAnalyticsCharts({ com
       return months;
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: revenueData, isLoading: revenueLoading } = useQuery({
@@ -78,7 +79,7 @@ export const CompanyAnalyticsCharts = memo(function CompanyAnalyticsCharts({ com
       }));
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: invoiceStats, isLoading: invoiceLoading } = useQuery({
@@ -105,7 +106,7 @@ export const CompanyAnalyticsCharts = memo(function CompanyAnalyticsCharts({ com
       }));
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Calculate month-over-month growth

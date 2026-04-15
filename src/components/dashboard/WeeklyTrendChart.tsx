@@ -8,6 +8,7 @@ import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { Activity, TrendingUp, TrendingDown } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
   const { user } = useAuth();
@@ -72,7 +73,7 @@ export const WeeklyTrendChart = memo(function WeeklyTrendChart() {
       return { days, totalActivity, trending: secondHalf >= firstHalf ? "up" : "down" };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!data || data.totalActivity === 0) return null;

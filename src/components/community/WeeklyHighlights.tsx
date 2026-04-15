@@ -9,6 +9,7 @@ import { Trophy, Flame, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 export const WeeklyHighlights = memo(function WeeklyHighlights() {
   const { language } = useLanguage();
@@ -65,7 +66,7 @@ export const WeeklyHighlights = memo(function WeeklyHighlights() {
           })),
       };
     },
-    staleTime: 1000 * 60 * 15,
+    staleTime: CACHE.realtime.staleTime * 15,
     gcTime: 1000 * 60 * 30,
   });
 

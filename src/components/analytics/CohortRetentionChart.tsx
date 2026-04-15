@@ -14,6 +14,7 @@ import {
 import { StaggeredList } from "@/components/ui/staggered-list";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CohortRetentionChart = memo(function CohortRetentionChart() {
   const { language } = useLanguage();
@@ -126,7 +127,7 @@ export const CohortRetentionChart = memo(function CohortRetentionChart() {
         maxRetention,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading) {

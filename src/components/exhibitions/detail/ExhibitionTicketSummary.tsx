@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Ticket, Users, CheckCircle2, TrendingUp, Clock, CreditCard } from "lucide-react";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -42,7 +43,7 @@ export const ExhibitionTicketSummary = memo(function ExhibitionTicketSummary({ e
         occupancy,
       };
     },
-    staleTime: 1000 * 30,
+    staleTime: CACHE.realtime.staleTime,
     refetchInterval: visibleInterval,
   });
 

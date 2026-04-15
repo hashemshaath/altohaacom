@@ -8,6 +8,7 @@ import { Sparkles, Eye, Calendar, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   currentArticleId: string;
@@ -53,7 +54,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
         .limit(50);
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: tagMap = {} } = useQuery({
@@ -73,7 +74,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
       return map;
     },
     enabled: candidates.length > 0,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const readHistory = getReadingHistory();

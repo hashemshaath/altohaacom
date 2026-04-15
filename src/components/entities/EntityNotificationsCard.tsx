@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Calendar, Trophy, Award, Newspaper } from "lucide-react";
 import { format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   entityId: string;
@@ -76,7 +77,7 @@ export const EntityNotificationsCard = memo(function EntityNotificationsCard({ e
 
       return activities.slice(0, 5);
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!recentActivity?.length) return null;

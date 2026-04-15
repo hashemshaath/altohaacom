@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { AlertTriangle, ArrowRight, Flag, MessageSquare, Eye } from "lucide-react";
 import { format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 export const AdminModerationQueue = memo(function AdminModerationQueue() {
   const { language } = useLanguage();
@@ -27,7 +28,7 @@ export const AdminModerationQueue = memo(function AdminModerationQueue() {
         totalPending: pendingPosts.data?.length || 0,
       };
     },
-    staleTime: 1000 * 30,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const totalItems = (data?.totalReports || 0) + (data?.totalPending || 0);

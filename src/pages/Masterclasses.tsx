@@ -12,6 +12,7 @@ import { useAllCountries } from "@/hooks/useCountries";
 import { MasterclassHero } from "@/components/masterclass/MasterclassHero";
 import { MasterclassFilters } from "@/components/masterclass/MasterclassFilters";
 import { MasterclassCard } from "@/components/masterclass/MasterclassCard";
+import { CACHE } from "@/lib/queryConfig";
 
 export default function Masterclasses() {
   const { language } = useLanguage();
@@ -34,7 +35,7 @@ export default function Masterclasses() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: myEnrollments = [] } = useQuery({
@@ -50,7 +51,7 @@ export default function Masterclasses() {
       return data?.map((e) => e.masterclass_id) || [];
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const countryCodes = useMemo(() => Array.from(

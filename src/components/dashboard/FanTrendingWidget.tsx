@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TrendingUp, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CACHE } from "@/lib/queryConfig";
 
 export const FanTrendingWidget = memo(function FanTrendingWidget() {
   const { language } = useLanguage();
@@ -31,7 +32,7 @@ export const FanTrendingWidget = memo(function FanTrendingWidget() {
       const profileMap = new Map(profiles?.map((p) => [p.user_id, p]) || []);
       return data.map((p) => ({ ...p, author: profileMap.get(p.author_id) }));
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (trendingPosts.length === 0) return null;

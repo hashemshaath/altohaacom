@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { Crown, TrendingUp, Users, Gift, Zap, Star } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
   const { language } = useLanguage();
@@ -53,7 +54,7 @@ export const LoyaltyOverviewWidget = memo(function LoyaltyOverviewWidget() {
         referralCodes: referralCodes || 0,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

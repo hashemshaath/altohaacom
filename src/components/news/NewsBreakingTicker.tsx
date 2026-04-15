@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Zap, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CACHE } from "@/lib/queryConfig";
 
 interface BreakingArticle {
   id: string;
@@ -32,7 +33,7 @@ export const NewsBreakingTicker = memo(function NewsBreakingTicker({ isAr }: { i
         .limit(5);
       return (data || []) as BreakingArticle[];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const articles = breakingArticles || [];

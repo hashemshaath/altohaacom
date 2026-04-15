@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight, Landmark, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { CACHE } from "@/lib/queryConfig";
 
 interface RecommendationData {
   competitions: any[];
@@ -35,7 +36,7 @@ export const SmartRecommendations = memo(function SmartRecommendations() {
       return data as RecommendationData;
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 30,
+    staleTime: CACHE.static.staleTime,
     retry: 1,
   });
 

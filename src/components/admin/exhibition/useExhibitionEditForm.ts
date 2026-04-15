@@ -14,6 +14,7 @@ import { MS_PER_DAY } from "@/lib/constants";
 import type { OrganizerValue } from "@/components/admin/OrganizerSearchSelector";
 import type { VenueValue } from "@/components/admin/VenueSearchSelector";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 export type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
 export type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
@@ -173,7 +174,7 @@ export function useExhibitionEditForm(exhibition: any | undefined, onClose: () =
       return data || [];
     },
     enabled: !!selectedSeriesId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   useEffect(() => {

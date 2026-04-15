@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight, MapPin, Calendar, Landmark, RefreshCw } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface RecommendationData {
   competitions: any[];
@@ -36,7 +37,7 @@ export default function ForYou() {
       return data as RecommendationData;
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 15,
+    staleTime: CACHE.realtime.staleTime * 15,
     retry: 1,
   });
 

@@ -7,6 +7,7 @@ import { Award } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CACHE } from "@/lib/queryConfig";
 
 interface UserBadgesDisplayProps {
   userId: string;
@@ -18,7 +19,7 @@ export const UserBadgesDisplay = memo(function UserBadgesDisplay({ userId, limit
 
   const { data: badges, isLoading } = useQuery({
     queryKey: ["user-badges", userId],
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     queryFn: async () => {
       let query = supabase
         .from("user_badges")

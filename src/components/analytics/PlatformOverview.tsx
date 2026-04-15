@@ -15,6 +15,7 @@ import {
 } from "@/lib/chartConfig";
 import type { DataPoint } from "@/lib/trendPrediction";
 import type { DateRange } from "./AnalyticsDateRange";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   dateRange?: DateRange;
@@ -96,7 +97,7 @@ const PlatformOverview = memo(function PlatformOverview({ dateRange }: Props) {
         userSparkline: buildSparkline(profileDates || []),
       };
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const cards = [

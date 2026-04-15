@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Award, GraduationCap, FileCheck, Clock, MessageCircle, Heart, Users } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ProfileActivityTimelineProps {
   userId: string;
@@ -117,7 +118,7 @@ export const ProfileActivityTimeline = memo(function ProfileActivityTimeline({ u
         .slice(0, 10);
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading || !events?.length) {

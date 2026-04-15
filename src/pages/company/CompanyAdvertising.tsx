@@ -19,6 +19,7 @@ import { Megaphone, Eye, MousePointer, DollarSign, Plus, Package, BarChart3, Fil
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 const statusColors: Record<string, string> = {
   pending: "bg-warning/10 text-warning border-warning/20",
@@ -49,7 +50,7 @@ export default function CompanyAdvertising() {
       return data;
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { data: requests = [] } = useQuery({

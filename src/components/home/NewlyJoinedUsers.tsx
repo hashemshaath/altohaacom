@@ -17,6 +17,7 @@ import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
+import { CACHE } from "@/lib/queryConfig";
 
 export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
   const { language } = useLanguage();
@@ -45,7 +46,7 @@ export const NewlyJoinedUsers = memo(function NewlyJoinedUsers() {
         .limit(itemCount);
       return data || [];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
     gcTime: 1000 * 60 * 15,
     refetchOnWindowFocus: false,
   });

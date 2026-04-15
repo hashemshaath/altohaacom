@@ -13,6 +13,7 @@ import { FilterChip } from "./FilterChip";
 import { localizeLocation } from "@/lib/localizeLocation";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
+import { CACHE } from "@/lib/queryConfig";
 
 const SUPPLIER_CAT_LABELS: Record<string, { en: string; ar: string }> = {
   food: { en: "Food", ar: "أغذية" },
@@ -54,7 +55,7 @@ export const HomeProSuppliers = memo(function HomeProSuppliers() {
         .limit(itemCount);
       return data || [];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

@@ -11,6 +11,7 @@ import { SectionHeader } from "./SectionHeader";
 import { FilterChip } from "./FilterChip";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
+import { CACHE } from "@/lib/queryConfig";
 
 const LEVEL_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   beginner: { en: "Beginner", ar: "مبتدئ", color: "bg-chart-2/10 text-chart-2 border-chart-2/20" },
@@ -61,7 +62,7 @@ export const HomeMasterclasses = memo(forwardRef<HTMLElement>(function HomeMaste
         .limit(itemCount);
       return data || [];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

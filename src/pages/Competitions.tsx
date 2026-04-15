@@ -31,6 +31,7 @@ import { CompetitionEditionsSection } from "@/components/competitions/Competitio
 import { TrendingCompetitions } from "@/components/competitions/TrendingCompetitions";
 import { CountryDiscovery } from "@/components/competitions/CountryDiscovery";
 import { NextCompetitionCountdown } from "@/components/competitions/NextCompetitionCountdown";
+import { CACHE } from "@/lib/queryConfig";
 
 const TAB_FILTERS = ["all", "upcoming", "active", "past"] as const;
 type TabFilter = typeof TAB_FILTERS[number];
@@ -66,7 +67,7 @@ export default function Competitions() {
       if (error) throw error;
       return data as CompetitionWithRegs[];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: userRoles } = useQuery({

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { UserPlus, Users, ChefHat } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState, memo } from "react";
+import { CACHE } from "@/lib/queryConfig";
 
 export const FanSuggestedFollowsWidget = memo(function FanSuggestedFollowsWidget() {
   const { user } = useAuth();
@@ -38,7 +39,7 @@ export const FanSuggestedFollowsWidget = memo(function FanSuggestedFollowsWidget
         .slice(0, 5);
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const handleFollow = async (targetId: string) => {

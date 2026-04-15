@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { ShoppingCart, ArrowUpRight, Package, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { CACHE } from "@/lib/queryConfig";
 
 const statusStyles: Record<string, string> = {
   draft: "bg-muted text-muted-foreground",
@@ -35,7 +36,7 @@ export const CompanyRecentOrdersWidget = memo(function CompanyRecentOrdersWidget
       return data || [];
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   return (

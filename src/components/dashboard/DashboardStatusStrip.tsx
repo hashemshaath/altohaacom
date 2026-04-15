@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Badge } from "@/components/ui/badge";
 import {
+import { CACHE } from "@/lib/queryConfig";
   ShoppingBag, Bell, Trophy, CreditCard,
   ChevronRight, Package, AlertCircle,
 } from "lucide-react";
@@ -50,7 +51,7 @@ export const DashboardStatusStrip = memo(function DashboardStatusStrip() {
       };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

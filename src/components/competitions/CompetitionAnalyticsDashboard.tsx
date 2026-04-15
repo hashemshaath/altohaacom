@@ -10,6 +10,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import {
+import { CACHE } from "@/lib/queryConfig";
   BarChart3, Users, Trophy, TrendingUp, Target, Medal,
   UserCheck, Clock, Star, Activity, ArrowUp, ArrowDown, LucideIcon } from "lucide-react";
 
@@ -69,7 +70,7 @@ export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsD
       return { total, approved, pending, rejected, timeline, approvalRate, statusPie };
     },
     enabled: !!competitionId,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: scoringStats, isLoading: scoreLoading } = useQuery({
@@ -109,7 +110,7 @@ export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsD
       return { avg: Math.round(avg * 10) / 10, max, min, median, dist, uniqueJudges, totalScores: data.length, avgPerJudge };
     },
     enabled: !!competitionId,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: categoryStats } = useQuery({
@@ -136,7 +137,7 @@ export const CompetitionAnalyticsDashboard = memo(function CompetitionAnalyticsD
       return results.sort((a, b) => b.participants - a.participants);
     },
     enabled: !!competitionId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const tooltipStyle = {

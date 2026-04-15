@@ -11,6 +11,7 @@ import { AlertTriangle, Clock, CheckCircle2, TrendingDown, Zap } from "lucide-re
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { differenceInHours, differenceInMinutes, subDays, format } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { CACHE } from "@/lib/queryConfig";
 
 export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
   const { language } = useLanguage();
@@ -87,7 +88,7 @@ export const TicketEscalationWidget = memo(function TicketEscalationWidget() {
       };
     },
     refetchInterval: visibleInterval,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

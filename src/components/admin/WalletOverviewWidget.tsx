@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Wallet, TrendingUp, TrendingDown, ArrowRightLeft, CreditCard, Banknote } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import { subDays, format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
   const { language } = useLanguage();
@@ -56,7 +57,7 @@ export const WalletOverviewWidget = memo(function WalletOverviewWidget() {
         recentTxns: recentTxns || [],
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-72 w-full rounded-xl" />;

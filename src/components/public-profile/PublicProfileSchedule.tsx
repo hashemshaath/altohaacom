@@ -7,6 +7,7 @@ import { Calendar, Trophy, BookOpen, MapPin, Clock, Tv, ChefHat, Landmark } from
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { Link } from "react-router-dom";
 import { usePublicChefSchedule, EVENT_TYPE_CONFIG, type ScheduleEventType } from "@/hooks/useChefSchedule";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   userId: string;
@@ -85,7 +86,7 @@ export const PublicProfileSchedule = memo(function PublicProfileSchedule({ userI
       return items.slice(0, 8);
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (schedule.length === 0) return null;

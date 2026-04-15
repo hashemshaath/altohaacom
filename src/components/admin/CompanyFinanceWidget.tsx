@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Building2, DollarSign, FileText, TrendingUp, CreditCard, Receipt } from "lucide-react";
 import { subDays, format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -82,7 +83,7 @@ export const CompanyFinanceWidget = memo(function CompanyFinanceWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-52 w-full rounded-xl" />;

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Building, MapPin, Globe, Search, LayoutGrid, Star, Hash, ArrowUpRight } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -39,7 +40,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const categories = useMemo(() => [...new Set(booths.map((b) => b.category || "general"))], [booths]);

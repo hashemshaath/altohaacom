@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { JudgeAIAssistant } from "@/components/knowledge/JudgeAIAssistant";
 import {
+import { CACHE } from "@/lib/queryConfig";
   BookOpen, Link, FileText, Image, Scale, Search, Folder,
   GalleryHorizontalEnd, ExternalLink, Star
 } from "lucide-react";
@@ -35,7 +36,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: categories } = useQuery({
@@ -48,7 +49,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const { data: references } = useQuery({
@@ -62,7 +63,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const { data: competitions } = useQuery({
@@ -76,7 +77,7 @@ export default function KnowledgePortal() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const filteredResources = useMemo(() => resources?.filter(r => {

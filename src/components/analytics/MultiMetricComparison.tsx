@@ -11,6 +11,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import { format, subMonths, startOfMonth, endOfMonth, eachMonthOfInterval } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface MetricDef {
   id: string;
@@ -80,7 +81,7 @@ export const MultiMetricComparison = memo(function MultiMetricComparison() {
       }));
     },
     enabled: selected.length > 0,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   return (

@@ -31,6 +31,7 @@ import { format, subDays, subHours, formatDistanceToNow } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
+import { CACHE } from "@/lib/queryConfig";
 
 const CHART_COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -77,7 +78,7 @@ const SecurityKPIStrip = memo(function SecurityKPIStrip() {
         roleAssignments: roleAssignments.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const items = [
@@ -278,7 +279,7 @@ const SessionsTab = memo(function SessionsTab() {
 
       return { activeSessions, uniqueIPs, blockedCount: blocked.length, blocked, deviceMap, deviceData };
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   if (isLoading) return <TabSkeleton />;
@@ -406,7 +407,7 @@ const PermissionsTab = memo(function PermissionsTab() {
 
       return { roleCounts, permPerRole, roleData, overrides: overrideRes.data || [], grantedOverrides, revokedOverrides, totalRoles: rolesRes.data?.length || 0 };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <TabSkeleton />;
@@ -543,7 +544,7 @@ const AnalyticsTab = memo(function AnalyticsTab() {
 
       return { trendData, severityData, stackData, topActions, totalEvents: events.length, totalActions: actions.length };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <TabSkeleton />;

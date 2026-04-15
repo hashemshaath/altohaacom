@@ -16,6 +16,7 @@ import { subDays, format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CHART_COLORS, TOOLTIP_STYLE, X_AXIS_PROPS, BAR_RADIUS } from "@/lib/chartConfig";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
   const { language } = useLanguage();
@@ -63,7 +64,7 @@ export const CompanyDashboardWidget = memo(function CompanyDashboardWidget() {
         ordersTrend,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading) {

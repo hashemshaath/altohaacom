@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from "recharts";
 import { Users, Globe, TrendingUp, Shield } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 const ROLE_COLORS = [
   "hsl(var(--primary))",
@@ -75,7 +76,7 @@ export const UserAnalyticsWidget = memo(function UserAnalyticsWidget() {
         thisMonthCount: recentUsers.data?.length || 0,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

@@ -14,6 +14,7 @@ import { CountrySelector } from "@/components/auth/CountrySelector";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
 import { Search, Plus, Building2, X, Globe, ChevronDown, ChevronUp, Check } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 const ENTITY_TYPES = [
   { value: "university", en: "University", ar: "جامعة" },
@@ -66,7 +67,7 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Only show results when user is searching or focused

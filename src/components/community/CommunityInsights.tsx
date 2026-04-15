@@ -6,6 +6,7 @@ import { TrendingUp, Users, MessageCircle, Zap } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CommunityInsights = memo(function CommunityInsights() {
   const { language } = useLanguage();
@@ -39,7 +40,7 @@ export const CommunityInsights = memo(function CommunityInsights() {
         activeToday,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 10,
   });
 

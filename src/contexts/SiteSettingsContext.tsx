@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 export type SiteSettings = Record<string, Record<string, any>>;
 
@@ -23,7 +24,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
       });
       return map;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 15,
   });
 

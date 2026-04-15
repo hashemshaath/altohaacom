@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { CACHE } from "@/lib/queryConfig";
 
 const categories = [
   { key: "all", icon: Search, labelEn: "All", labelAr: "الكل" },
@@ -41,7 +42,7 @@ export const HomeSearch = forwardRef<HTMLElement>(function HomeSearch(_props, re
         .limit(4);
       return data || [];
     },
-    staleTime: 1000 * 60 * 15,
+    staleTime: CACHE.realtime.staleTime * 15,
   });
 
   useEffect(() => {

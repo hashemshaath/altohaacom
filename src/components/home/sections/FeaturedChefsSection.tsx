@@ -12,6 +12,7 @@ import { memo, forwardRef } from "react";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
+import { CACHE } from "@/lib/queryConfig";
 
 const RANK_COLORS = [
   "from-amber-400 to-yellow-500",
@@ -63,7 +64,7 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
         .limit(itemCount);
       return (profiles || []).map((p) => ({ ...p, total_points: 0, gold_medals: 0, silver_medals: 0, bronze_medals: 0, show_nationality: true }));
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
+import { CACHE } from "@/lib/queryConfig";
   Package, FileText, Calculator, Wallet, CreditCard,
   ArrowRight, TrendingUp, AlertTriangle,
 } from "lucide-react";
@@ -57,7 +58,7 @@ export const FinanceQuickNav = memo(function FinanceQuickNav() {
         overdue: overdueRes.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
     refetchOnWindowFocus: false,
   });
 

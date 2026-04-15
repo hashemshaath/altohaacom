@@ -9,6 +9,7 @@ import { Crown, Trophy, Gift, Zap, Star, TrendingUp, Users, Target } from "lucid
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from "recharts";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -89,7 +90,7 @@ export const LoyaltyLiveStatsWidget = memo(function LoyaltyLiveStatsWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

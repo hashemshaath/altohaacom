@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Gavel, Users, CheckCircle, Clock, Trophy, Star } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
   const { language } = useLanguage();
@@ -56,7 +57,7 @@ export const JudgingOverviewWidget = memo(function JudgingOverviewWidget() {
         compStats,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (isLoading) {

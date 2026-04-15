@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { buildSocialLinksPath, buildSocialLinksUrl } from "@/lib/publicAppUrl";
 import { FeatureGate } from "@/components/membership/FeatureGate";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ProfileHeaderProps {
   profile: any;
@@ -159,7 +160,7 @@ export const ProfileHeader = memo(function ProfileHeader({ profile, roles, userI
       };
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   return (

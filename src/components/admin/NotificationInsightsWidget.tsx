@@ -9,6 +9,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Bell, Send, Eye, AlertTriangle, Zap, Mail, Smartphone, MessageSquare } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const NotificationInsightsWidget = memo(function NotificationInsightsWidget() {
   const { language } = useLanguage();
@@ -72,7 +73,7 @@ export const NotificationInsightsWidget = memo(function NotificationInsightsWidg
         activeRules, totalRules: rules.length,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

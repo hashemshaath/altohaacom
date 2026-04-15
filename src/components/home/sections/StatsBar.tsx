@@ -6,6 +6,7 @@ import { Users, Trophy, Globe, Landmark, LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useCountUp } from "@/hooks/useCountUp";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = [
   { bg: "bg-card", text: "text-primary", icon: "bg-primary/10", ring: "ring-border/50" },
@@ -59,7 +60,7 @@ const StatsBar = memo(forwardRef<HTMLElement>(function StatsBar(_props, _ref) {
       const getCount = (r: PromiseSettledResult<{ count: number | null }>) => r.status === "fulfilled" ? (r.value.count ?? 0) : 0;
       return { members: getCount(results[0]), competitions: getCount(results[1]), entities: getCount(results[2]), exhibitions: getCount(results[3]), organizers: getCount(results[4]) };
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const items = [

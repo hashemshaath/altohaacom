@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { countryFlag } from "@/lib/countryFlag";
 import { Users, Trophy, Building2, Award, Globe } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 interface CountryStats {
   code: string;
@@ -66,7 +67,7 @@ export const CountryOverviewDashboard = memo(function CountryOverviewDashboard()
 
       return stats;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading) {

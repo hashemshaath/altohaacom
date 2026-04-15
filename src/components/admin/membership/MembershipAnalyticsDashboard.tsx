@@ -18,6 +18,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, startOfMonth, endOfMonth, differenceInDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
+import { CACHE } from "@/lib/queryConfig";
 
 const TIER_COLORS: Record<string, string> = {
   basic: "hsl(var(--muted-foreground))",
@@ -56,7 +57,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
         pct: total > 0 ? ((value / total) * 100).toFixed(1) : "0",
       }));
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Upgrade/downgrade trends (last 6 months)
@@ -92,7 +93,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
         net: m.upgrades - m.downgrades,
       }));
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Revenue trend (last 6 months estimated)
@@ -130,7 +131,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
 
       return { months, currentMRR };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Summary stats
@@ -160,7 +161,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
 
       return { total, active, paid, newThisMonth, expiringSoon, recentChanges: totalUpgrades || 0 };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Gift analytics
@@ -186,7 +187,7 @@ const MembershipAnalyticsDashboard = memo(function MembershipAnalyticsDashboard(
 
       return { total, pending, redeemed, totalRevenue, redemptionRate, byTier };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const conversionRate = summary?.total ? ((summary.paid / summary.total) * 100).toFixed(1) : "0";

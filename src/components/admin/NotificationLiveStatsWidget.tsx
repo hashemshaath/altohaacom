@@ -8,6 +8,7 @@ import { Bell, Send, CheckCircle, XCircle, Clock, Mail, Smartphone, Megaphone, T
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis } from "recharts";
 import { format, subDays } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -63,7 +64,7 @@ export const NotificationLiveStatsWidget = memo(function NotificationLiveStatsWi
       return { total, readCount, readRate, activeRules, typeData, trendData, channelData };
     },
     refetchInterval: visibleInterval,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Sparkles, Users, TrendingUp } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ProfileSkillsEndorsementsProps {
   userId: string;
@@ -26,7 +27,7 @@ export const ProfileSkillsEndorsements = memo(function ProfileSkillsEndorsements
       return data || [];
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const skills = useMemo(() => {

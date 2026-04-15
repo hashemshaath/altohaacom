@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { MessageSquare, Bell, Ticket, Mail, Zap, AlertTriangle } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 const NAV_ITEMS = [
   { href: "/admin/support-tickets", icon: Ticket, labelEn: "Support", labelAr: "الدعم", countKey: "tickets" },
@@ -32,7 +33,7 @@ export const CommunicationsQuickNav = memo(function CommunicationsQuickNav() {
         chats: chatsRes.status === "fulfilled" ? chatsRes.value.count || 0 : 0,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
     refetchOnWindowFocus: false,
   });
 

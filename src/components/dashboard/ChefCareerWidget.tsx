@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { Trophy, Award, Star, ChefHat, TrendingUp, Target, Crown, Medal, ArrowRight, Sparkles } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 function getCareerLevel(score: number, isAr: boolean) {
   if (score >= 90) return { level: 5, title: isAr ? "طاهٍ أسطوري" : "Legendary Chef", icon: Crown, color: "text-chart-4", bg: "bg-chart-4/10", border: "border-chart-4/20" };
@@ -80,7 +81,7 @@ export const ChefCareerWidget = memo(function ChefCareerWidget() {
       };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!data) return null;

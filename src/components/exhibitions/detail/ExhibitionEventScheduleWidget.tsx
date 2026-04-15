@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CalendarClock, MapPin, Clock, Users } from "lucide-react";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -26,7 +27,7 @@ export const ExhibitionEventScheduleWidget = memo(function ExhibitionEventSchedu
         .limit(6);
       return data || [];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (items.length === 0) return null;

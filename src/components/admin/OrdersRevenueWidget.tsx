@@ -8,6 +8,7 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, 
 import { DollarSign, ShoppingBag, TrendingUp, Package, CreditCard, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
   const { language } = useLanguage();
@@ -81,7 +82,7 @@ export const OrdersRevenueWidget = memo(function OrdersRevenueWidget() {
         outgoing, incoming, paidInvoices, totalInvoiced,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (!data) return null;

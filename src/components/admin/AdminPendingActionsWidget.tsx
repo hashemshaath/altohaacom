@@ -12,6 +12,7 @@ import {
   UserCheck, FileText, Building2, ClipboardCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface PendingItem {
   label: string;
@@ -47,7 +48,7 @@ export const AdminPendingActionsWidget = memo(function AdminPendingActionsWidget
         pendingPosts: r5.count || 0,
       };
     },
-    staleTime: 1000 * 30,
+    staleTime: CACHE.realtime.staleTime,
     refetchInterval: useVisibleRefetchInterval(1000 * 60),
   });
 

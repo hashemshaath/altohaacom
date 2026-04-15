@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, CheckCircle2, AlertCircle, XCircle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Shows recent admin actions (last 10) for audit visibility.
@@ -25,7 +26,7 @@ export const RecentAdminActions = memo(function RecentAdminActions() {
         .limit(8);
       return data || [];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const getActionIcon = (type: string) => {

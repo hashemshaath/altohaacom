@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Alert {
   id: string;
@@ -123,7 +124,7 @@ export const AdminAlertCenter = memo(function AdminAlertCenter() {
         return order[a.severity] - order[b.severity];
       });
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
     refetchInterval: useVisibleRefetchInterval(1000 * 60 * 5),
   });
 

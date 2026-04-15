@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { FileText, DollarSign, Clock, CheckCircle, AlertTriangle, Send, XCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { CACHE } from "@/lib/queryConfig";
 
 const STATUS_COLORS: Record<string, string> = {
   draft: "hsl(var(--muted-foreground))",
@@ -62,7 +63,7 @@ export const InvoiceTrackerWidget = memo(function InvoiceTrackerWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

@@ -9,6 +9,7 @@ import { MessageSquare, Send, Inbox, Mail, Clock, CheckCheck, TrendingUp, BarCha
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts";
 import { format, subDays, differenceInMinutes } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget() {
   const { language } = useLanguage();
@@ -73,7 +74,7 @@ export const CommunicationsLiveWidget = memo(function CommunicationsLiveWidget()
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

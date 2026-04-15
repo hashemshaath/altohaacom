@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import {
+import { CACHE } from "@/lib/queryConfig";
   Megaphone, Target, BarChart3, Globe, Users, CheckCircle2,
   Sparkles, ArrowRight, Loader2, Eye, MousePointer, DollarSign,
   Zap, Clock, Building2,
@@ -111,7 +112,7 @@ export default function AdvertiseWithUs() {
       return data || [];
     },
     enabled: !!company?.id,
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const submit = useMutation({

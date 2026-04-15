@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Target, Users, TrendingUp, UserCheck, Ticket, MessageSquare, Clock, CheckCircle2 } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { format, subDays, differenceInHours } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -81,7 +82,7 @@ export const CRMLiveStatsWidget = memo(function CRMLiveStatsWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

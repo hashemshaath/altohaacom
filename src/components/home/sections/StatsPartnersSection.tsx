@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { cn } from "@/lib/utils";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
+import { CACHE } from "@/lib/queryConfig";
 
 interface LogoItem { id: string; name: string; logo_url: string; website_url: string | null; }
 
@@ -30,7 +31,7 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
       }
       return (data || []).map((p) => ({ id: p.id, name: isAr ? p.name_ar || p.name : p.name, logo_url: p.logo_url, website_url: p.website_url })) as LogoItem[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });
@@ -42,7 +43,7 @@ const StatsPartnersSection = memo(forwardRef<HTMLElement>(function StatsPartners
       const { data } = await supabase.from("culinary_entities").select("id, name, name_ar, logo_url, slug, is_verified").eq("status", "active").eq("is_visible", true).not("logo_url", "is", null).order("name").limit(itemCount);
       return (data || []).map((e) => ({ id: e.id, name: isAr ? e.name_ar || e.name : e.name, logo_url: e.logo_url, website_url: null })) as LogoItem[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

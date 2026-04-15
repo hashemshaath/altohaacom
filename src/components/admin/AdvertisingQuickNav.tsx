@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
+import { CACHE } from "@/lib/queryConfig";
   Megaphone, FileText, Building2, DollarSign, BarChart3,
   Globe, Users, AlertTriangle,
 } from "lucide-react";
@@ -36,7 +37,7 @@ export const AdvertisingQuickNav = memo(function AdvertisingQuickNav() {
           (campaignsRes.status === "fulfilled" ? campaignsRes.value.count || 0 : 0),
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
     refetchOnWindowFocus: false,
   });
 

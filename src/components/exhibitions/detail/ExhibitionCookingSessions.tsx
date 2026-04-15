@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -42,7 +43,7 @@ function useCookingData(exhibitionId: string, userId?: string) {
         .order("scheduled_start", { ascending: true });
       return data || [];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { data: profiles = {} } = useQuery({

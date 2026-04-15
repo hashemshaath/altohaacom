@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Users, Gavel, CheckCircle, Clock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CompetitionPipelineTracker = memo(function CompetitionPipelineTracker() {
   const { language } = useLanguage();
@@ -50,7 +51,7 @@ export const CompetitionPipelineTracker = memo(function CompetitionPipelineTrack
 
       return { pipeline, topComps };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const stages = [

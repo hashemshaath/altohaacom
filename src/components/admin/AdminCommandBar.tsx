@@ -12,6 +12,7 @@ import {
   MessageSquare, ArrowRight, Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface QuickAction {
   icon: React.ElementType;
@@ -42,7 +43,7 @@ export const AdminCommandBar = memo(function AdminCommandBar() {
         openTickets: rTickets.count ?? 0,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const actions: QuickAction[] = useMemo(() => [

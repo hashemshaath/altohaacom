@@ -16,6 +16,7 @@ import { StaggeredList } from "@/components/ui/staggered-list";
 import { linearRegression, forecast, type DataPoint } from "@/lib/trendPrediction";
 import { translateStatus, getTooltipStyle } from "@/lib/chartConfig";
 import { TrendForecastChart } from "./TrendForecastChart";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--chart-2))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))", "hsl(var(--primary))"];
 
@@ -132,7 +133,7 @@ export const RevenueAnalytics = memo(function RevenueAnalytics() {
         invoiceCount: (invoices || []).length,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) {
