@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Flame, Hash, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 export const TrendingTopics = memo(function TrendingTopics() {
   const { language } = useLanguage();
@@ -47,7 +48,7 @@ export const TrendingTopics = memo(function TrendingTopics() {
         .sort((a, b) => b.score - a.score)
         .slice(0, 10);
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (!isLoading && topics.length === 0) return null;

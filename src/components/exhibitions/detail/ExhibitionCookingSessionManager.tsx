@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ChefHat, Plus, Edit, Trash2, Radio, Check, Clock, Users, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -44,7 +45,7 @@ export const ExhibitionCookingSessionManager = memo(function ExhibitionCookingSe
         .order("scheduled_start");
       return data || [];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { data: regCounts = {} } = useQuery({

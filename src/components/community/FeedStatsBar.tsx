@@ -6,6 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { TrendingUp, Users, FileText, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Compact real-time stats bar shown above the feed.
@@ -42,7 +43,7 @@ export const FeedStatsBar = memo(function FeedStatsBar() {
         activeToday: uniqueAuthors.size,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 10,
   });
 

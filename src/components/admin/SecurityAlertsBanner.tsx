@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ShieldAlert, AlertTriangle, Ban, Lock, ArrowRight, LucideIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { subDays } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
   const { language } = useLanguage();
@@ -31,7 +32,7 @@ export const SecurityAlertsBanner = memo(function SecurityAlertsBanner() {
         failedLogins: failedLoginsRes.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!data || (data.criticalEvents === 0 && data.blockedIPs === 0 && data.failedLogins < 5)) {

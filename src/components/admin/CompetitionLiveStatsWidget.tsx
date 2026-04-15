@@ -9,6 +9,7 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pi
 import { Trophy, Users, Gavel, MapPin, TrendingUp, Calendar } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidget() {
   const { language } = useLanguage();
@@ -82,7 +83,7 @@ export const CompetitionLiveStatsWidget = memo(function CompetitionLiveStatsWidg
         utilization,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (!data) return null;

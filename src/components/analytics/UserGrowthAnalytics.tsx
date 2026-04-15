@@ -11,6 +11,7 @@ import { CountryBreakdownChart } from "./CountryBreakdownChart";
 import { TrendForecastChart } from "./TrendForecastChart";
 import type { DataPoint } from "@/lib/trendPrediction";
 import { linearRegression } from "@/lib/trendPrediction";
+import { CACHE } from "@/lib/queryConfig";
 
 
 const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
@@ -74,7 +75,7 @@ const UserGrowthAnalytics = memo(function UserGrowthAnalytics() {
         trendPoints,
       };
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const cards = [

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowDown, Users, UserCheck, Trophy, ShoppingCart, TrendingDown } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 interface FunnelStep {
   label: string;
@@ -43,7 +44,7 @@ export const FunnelAnalysis = memo(function FunnelAnalysis() {
 
       return { signups, profilesCompleted, competitionRegs, purchases, totalUsers: totalUsersRes.count || 0 };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const steps: FunnelStep[] = [

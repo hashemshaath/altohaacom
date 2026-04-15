@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles, Check } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 const SLIDE_DURATION = 6000;
 const SWIPE_THRESHOLD = 50;
@@ -156,7 +157,7 @@ export function HeroSection() {
         .order("sort_order");
       return (data || []) as HeroSlide[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

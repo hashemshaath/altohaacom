@@ -23,6 +23,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subMonths, differenceInDays, startOfMonth, endOfMonth, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
+import { CACHE } from "@/lib/queryConfig";
 
 const TIER_COLORS: Record<string, string> = {
   basic: "hsl(var(--muted-foreground))",
@@ -80,7 +81,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
 
       return { months: Object.values(months), avgChurn: avgChurn.toFixed(1), totalPaid };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Retention cohorts - users grouped by signup month, tracked over time
@@ -149,7 +150,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
 
       return cohorts;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Predictive expiry alerts - users at risk
@@ -197,7 +198,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
 
       return { critical, warning, upcoming, statusCounts };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Cancellation/churn reasons breakdown from membership_history
@@ -223,7 +224,7 @@ const MembershipChurnRetention = memo(function MembershipChurnRetention() {
         .sort((a, b) => b.count - a.count)
         .slice(0, 8);
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const totalAtRisk = (atRiskData?.critical.length || 0) + (atRiskData?.warning.length || 0) + (atRiskData?.upcoming.length || 0);

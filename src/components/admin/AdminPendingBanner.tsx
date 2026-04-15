@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { memo } from "react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface PendingItem {
   key: string;
@@ -74,7 +75,7 @@ const AdminPendingBanner = memo(function AdminPendingBanner() {
 
       return list.filter(i => i.count > 0);
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     refetchInterval: useVisibleRefetchInterval(1000 * 60 * 5),
   });
 

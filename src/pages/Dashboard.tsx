@@ -63,6 +63,7 @@ const WeeklyTrendChart = lazy(() => import("@/components/dashboard/WeeklyTrendCh
 const JobAvailabilityWidget = lazy(() => import("@/components/dashboard/JobAvailabilityWidget").then(m => ({ default: m.JobAvailabilityWidget })));
 const ChefCareerWidget = lazy(() => import("@/components/dashboard/ChefCareerWidget").then(m => ({ default: m.ChefCareerWidget })));
 import { WidgetErrorBoundary } from "@/components/WidgetErrorBoundary";
+import { CACHE } from "@/lib/queryConfig";
 
 function W({ children, lines, name }: { children: React.ReactNode; lines?: number; name?: string }) {
   return (
@@ -449,7 +450,7 @@ const AchievementsSummary = memo(function AchievementsSummary({ userId, isAr }: 
         badges: badgesRes.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!data || (data.certificates === 0 && data.competitions === 0 && data.badges === 0)) return null;

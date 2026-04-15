@@ -14,6 +14,7 @@ import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { SectionHeader } from "@/components/home/SectionHeader";
 import { HorizontalScrollRow } from "@/components/home/HorizontalScrollRow";
 import { ImageWithFallback } from "@/components/home/ImageWithFallback";
+import { CACHE } from "@/lib/queryConfig";
 
 const STATUS_STYLES: Record<string, { en: string; ar: string; dot: string }> = {
   registration_open: { en: "Open", ar: "مفتوح", dot: "bg-semantic-success" },
@@ -49,7 +50,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
         .limit(itemCount);
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });
@@ -67,7 +68,7 @@ const CompetitionsSection = memo(forwardRef<HTMLElement>(function CompetitionsSe
       const completed = (data || []).filter(e => e.status === "completed").reverse().slice(0, 4);
       return [...active, ...completed].slice(0, 12);
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

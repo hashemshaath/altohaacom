@@ -26,6 +26,7 @@ import {
 import { format, subMonths, subDays, startOfMonth, endOfMonth, startOfDay, endOfDay, eachMonthOfInterval, eachWeekOfInterval, parseISO } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { CACHE } from "@/lib/queryConfig";
 
 const CHART_COLORS = [
   "hsl(var(--primary))",
@@ -95,7 +96,7 @@ export default function CompanyAnalytics() {
       return data || [];
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Fetch transactions
@@ -113,7 +114,7 @@ export default function CompanyAnalytics() {
       return data || [];
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   // Fetch invoices
@@ -131,7 +132,7 @@ export default function CompanyAnalytics() {
       return data || [];
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const isLoading = ordersLoading || txnLoading || invLoading;

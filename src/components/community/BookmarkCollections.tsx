@@ -13,6 +13,7 @@ import {
 import { FolderPlus, Folder, Check, Plus, Trash2, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface BookmarkCollectionsProps {
   postId: string;
@@ -39,7 +40,7 @@ export const BookmarkCollections = memo(function BookmarkCollections({ postId }:
       return data || [];
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: postCollections = [] } = useQuery({
@@ -52,7 +53,7 @@ export const BookmarkCollections = memo(function BookmarkCollections({ postId }:
       return data?.map((d) => d.collection_id) || [];
     },
     enabled: !!user && collections.length > 0,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const toggleCollection = async (collectionId: string) => {

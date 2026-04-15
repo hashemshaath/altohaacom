@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DollarSign, TrendingUp, FileText, CreditCard, AlertTriangle } from "lucide-react";
 import { subDays, format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
   const { language } = useLanguage();
@@ -56,7 +57,7 @@ export const FinancialOverviewCards = memo(function FinancialOverviewCards() {
         netFlow: totalCredits - totalDebits,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (isLoading) {

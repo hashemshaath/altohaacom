@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { format, subDays, differenceInDays, formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = [
   "hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -61,7 +62,7 @@ const ExhibitionKPIStrip = memo(function ExhibitionKPIStrip() {
         totalTickets: tickets.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const items = [
@@ -156,7 +157,7 @@ const OverviewTab = memo(function OverviewTab() {
         nextEvent: nextEvent ? { title: isAr ? (nextEvent.title_ar || nextEvent.title) : nextEvent.title, daysTo: daysToNext } : null,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <TabSkeleton />;
@@ -337,7 +338,7 @@ const TicketsTab = memo(function TicketsTab() {
 
       return { total: tickets.length, confirmed, checkedIn, pending, checkInRate, trendData, topExhibitions, recent: tickets.slice(0, 8) };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <TabSkeleton />;
@@ -483,7 +484,7 @@ const AnalyticsTab = memo(function AnalyticsTab() {
         followerTrendData, ratingDist, cityData,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { exportCSV } = useCSVExport({

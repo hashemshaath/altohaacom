@@ -32,6 +32,7 @@ import {
   X, KeyRound, Activity, BarChart3, Shield, TrendingUp, UserCheck, UserX, Clock,
 } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 // Lazy-loaded heavy widgets
 const UserGrowthTrendWidget = lazy(() => import("@/components/admin/UserGrowthTrendWidget").then(m => ({ default: m.UserGrowthTrendWidget })));
@@ -168,7 +169,7 @@ export default function UserManagement() {
 
       return { users, totalCount: count || 0 };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   // KPI stats query
@@ -192,7 +193,7 @@ export default function UserManagement() {
         professional: proRes.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const filteredUsers = usersData?.users?.filter((u) => {

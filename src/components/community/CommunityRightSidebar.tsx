@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface CommunityRightSidebarProps {
   rightSidebarOpen: boolean;
@@ -44,7 +45,7 @@ export const CommunityRightSidebar = memo(function CommunityRightSidebar({ right
       return data || [];
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   return (

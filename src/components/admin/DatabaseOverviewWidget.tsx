@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Database, HardDrive, Users, FileText, Image, MessageSquare, Trophy } from "lucide-react";
 import { formatNumber } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Shows database table row counts for key tables — 
@@ -38,7 +39,7 @@ export const DatabaseOverviewWidget = memo(function DatabaseOverviewWidget() {
       });
       return results;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const rows = [

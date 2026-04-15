@@ -19,6 +19,7 @@ import {
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 const KSA_VAT_RATE = 15;
 const KSA_ZAKAT_RATE = 2.5;
@@ -101,7 +102,7 @@ export const TaxComplianceAnalytics = memo(function TaxComplianceAnalytics() {
         taxReports: taxReports || [],
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const getStatusBadge = (status: string) => {

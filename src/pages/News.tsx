@@ -34,6 +34,7 @@ import { NewsReadingProgress } from "@/components/news/NewsReadingProgress";
 import { NewsBreakingTicker } from "@/components/news/NewsBreakingTicker";
 import { NewsReadingStats } from "@/components/news/NewsReadingStats";
 import { NewsWeeklyDigest } from "@/components/news/NewsWeeklyDigest";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Category {
   id: string;
@@ -148,7 +149,7 @@ export default function News() {
       if (error) throw error;
       return (data || []) as NewsArticle[];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const { data: categories = [] } = useQuery({
@@ -157,7 +158,7 @@ export default function News() {
       const { data } = await supabase.from("content_categories").select("id, name, name_ar, slug").limit(500);
       return (data || []) as Category[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const { data: tags = [] } = useQuery({
@@ -166,7 +167,7 @@ export default function News() {
       const { data } = await supabase.from("content_tags").select("id, name, name_ar, slug").order("name").limit(5000);
       return (data || []) as ContentTag[];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const { data: articleTagMap = {} } = useQuery({
@@ -180,7 +181,7 @@ export default function News() {
       });
       return map;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const filteredArticles = useMemo(() => {

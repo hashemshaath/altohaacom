@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
   const { language } = useLanguage();
@@ -27,7 +28,7 @@ export const UpcomingEventsWidget = memo(function UpcomingEventsWidget() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- exhibitions query with dynamic status filter
       return (data as Record<string, string>[]) || [];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (events.length === 0) return null;

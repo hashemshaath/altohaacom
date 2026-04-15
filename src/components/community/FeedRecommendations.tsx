@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, Hash, TrendingUp } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 export const FeedRecommendations = memo(function FeedRecommendations() {
   const { user } = useAuth();
@@ -24,7 +25,7 @@ export const FeedRecommendations = memo(function FeedRecommendations() {
       };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 30, // 30 min cache
+    staleTime: CACHE.static.staleTime, // 30 min cache
     retry: 1,
   });
 

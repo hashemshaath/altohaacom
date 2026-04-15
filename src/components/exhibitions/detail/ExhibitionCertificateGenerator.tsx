@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { Award, Loader2, Download, CheckCircle2, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -34,7 +35,7 @@ export const ExhibitionCertificateGenerator = memo(function ExhibitionCertificat
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   // Get checked-in attendees

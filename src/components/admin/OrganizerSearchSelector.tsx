@@ -14,6 +14,7 @@ import { CountrySelector } from "@/components/auth/CountrySelector";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
 import { Search, Plus, Building2, X, Globe, Check, User, Briefcase } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 type OrganizerType = "entity" | "company" | "chef" | "custom";
 
@@ -84,7 +85,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Fetch companies
@@ -100,7 +101,7 @@ export const OrganizerSearchSelector = memo(function OrganizerSearchSelector({ v
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Fetch chefs (only when searching)

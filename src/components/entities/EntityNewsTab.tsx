@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import { Newspaper, Calendar, Eye } from "lucide-react";
 import { format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   entityId: string;
@@ -40,7 +41,7 @@ export const EntityNewsTab = memo(function EntityNewsTab({ entityId, entityName,
 
       return filtered;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading) {

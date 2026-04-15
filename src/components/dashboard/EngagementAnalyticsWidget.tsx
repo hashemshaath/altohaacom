@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { PieChart, Sparkles, MessageSquare, Trophy, Heart, UserPlus, Eye } from "lucide-react";
 import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = [
   "hsl(var(--primary))",
@@ -88,7 +89,7 @@ export const EngagementAnalyticsWidget = memo(function EngagementAnalyticsWidget
       return { chartData, total: notifs.length };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!user) return null;

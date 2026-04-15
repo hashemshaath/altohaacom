@@ -12,6 +12,7 @@ import {
   TrendingUp, ArrowUpRight, Crown, Star,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
   const { language } = useLanguage();
@@ -61,7 +62,7 @@ export const FinanceMembershipWidget = memo(function FinanceMembershipWidget() {
         totalPoints,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const financeCards = [

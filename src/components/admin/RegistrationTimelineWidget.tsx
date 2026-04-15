@@ -9,6 +9,7 @@ import { CalendarClock, TrendingUp, Users, Clock } from "lucide-react";
 import { format, subDays, differenceInDays } from "date-fns";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip } from "recharts";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidget() {
   const { language } = useLanguage();
@@ -51,7 +52,7 @@ export const RegistrationTimelineWidget = memo(function RegistrationTimelineWidg
 
       return { chartData, totalRegs, approvedRegs, upcoming: upcoming || [] };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

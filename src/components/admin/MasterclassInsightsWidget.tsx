@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 import { BookOpen, Users, GraduationCap, Star, TrendingUp } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget() {
   const { language } = useLanguage();
@@ -50,7 +51,7 @@ export const MasterclassInsightsWidget = memo(function MasterclassInsightsWidget
         topCourses: topCourses || [],
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

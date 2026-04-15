@@ -21,6 +21,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { CompanyPageGuard } from "@/components/company/CompanyPageGuard";
 import { useToast } from "@/hooks/use-toast";
+import { CACHE } from "@/lib/queryConfig";
 
 type NotificationType = string | null;
 
@@ -89,7 +90,7 @@ export default function CompanyNotifications() {
       return (data || []) as Notification[];
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Homepage ad banner section — renders active creatives from ad_placements
@@ -72,7 +73,7 @@ export const HomepageAdBanner = memo(forwardRef<HTMLElement>(function HomepageAd
 
       return cr;
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
     refetchOnWindowFocus: false,
   });
 

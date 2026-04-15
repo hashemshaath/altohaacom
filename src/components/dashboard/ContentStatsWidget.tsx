@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 interface DailyCount {
   day: string;
@@ -78,7 +79,7 @@ export const ContentStatsWidget = memo(function ContentStatsWidget() {
         },
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!data) return null;

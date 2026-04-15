@@ -7,6 +7,7 @@ import { Search, TrendingUp, Clock, Star, Trophy, FileText, Users, UtensilsCross
 import { Badge } from "@/components/ui/badge";
 import { getSavedSearches, addSavedSearch, removeSavedSearch } from "@/lib/recentSearches";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 interface SearchSuggestionsProps {
   query: string;
@@ -73,7 +74,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
       return suggestions.slice(0, 8);
     },
     enabled: !!query && query.length >= 2 && isOpen,
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   // Trending searches (top hashtags from recent posts)
@@ -101,7 +102,7 @@ export const SearchSuggestions = memo(function SearchSuggestions({ query, isOpen
         .slice(0, 6)
         .map(([tag]) => ({ text: `#${tag}`, type: "trending" as const, icon: TrendingUp }));
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const savedSearches = getSavedSearches().slice(0, 4).map(s => ({

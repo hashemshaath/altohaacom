@@ -16,6 +16,7 @@ import { ShopEmptyState } from "@/components/shop/ShopEmptyState";
 import { toast } from "@/hooks/use-toast";
 import { useEcommerceTracking } from "@/hooks/useEcommerceTracking";
 import { useAbandonedCartTracker } from "@/hooks/useAbandonedCartTracker";
+import { CACHE } from "@/lib/queryConfig";
 
 export default function Shop() {
   const { language } = useLanguage();
@@ -42,7 +43,7 @@ export default function Shop() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const categories = useMemo(

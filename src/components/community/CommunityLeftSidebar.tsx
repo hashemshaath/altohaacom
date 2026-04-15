@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { OnlineCountBadge } from "./PresenceIndicator";
 import { ProfileCompletionCard } from "@/components/onboarding/ProfileCompletionCard";
 import { useUserFeatures } from "@/hooks/useMembershipFeatures";
+import { CACHE } from "@/lib/queryConfig";
 
 export type CommunityTab = "feed" | "chefs" | "recipes" | "groups" | "events" | "network" | "live" | "bookmarks";
 
@@ -60,7 +61,7 @@ export const CommunityLeftSidebar = memo(function CommunityLeftSidebar({ activeT
         posts: postsRes.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: enabledFeatures } = useUserFeatures();

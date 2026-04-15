@@ -11,6 +11,7 @@ import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
   const { user } = useAuth();
@@ -73,7 +74,7 @@ export const ProfileInsightsWidget = memo(function ProfileInsightsWidget() {
       };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!user) return null;

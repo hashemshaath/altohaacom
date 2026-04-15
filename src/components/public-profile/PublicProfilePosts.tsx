@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { MentionText } from "@/components/community/MentionText";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   userId: string;
@@ -56,7 +57,7 @@ export const PublicProfilePosts = memo(function PublicProfilePosts({ userId, isO
         comments_count: (commentsMap.get(p.id) || 0) + (repliesMap.get(p.id) || 0),
       }));
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading || posts.length === 0) return null;

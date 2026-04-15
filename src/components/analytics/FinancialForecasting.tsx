@@ -19,6 +19,7 @@ import {
 import { formatCurrency } from "@/lib/currencyFormatter";
 import { format, subMonths, eachMonthOfInterval, startOfMonth } from "date-fns";
 import { ar } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 export const FinancialForecasting = memo(function FinancialForecasting() {
   const { language } = useLanguage();
@@ -121,7 +122,7 @@ export const FinancialForecasting = memo(function FinancialForecasting() {
         profitMargin: totalRevenue > 0 ? Math.round(((totalRevenue - totalExpenses) / totalRevenue) * 100) : 0,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   // Generate forecast data

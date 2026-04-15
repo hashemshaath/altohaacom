@@ -30,6 +30,7 @@ import {
   Play,
 } from "lucide-react";
 import {
+import { CACHE } from "@/lib/queryConfig";
   BarChart,
   Bar,
   XAxis,
@@ -127,7 +128,7 @@ export const CustomReportBuilder = memo(function CustomReportBuilder() {
       return results;
     },
     enabled: selectedMetrics.length > 0,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const saveReport = useCallback(() => {

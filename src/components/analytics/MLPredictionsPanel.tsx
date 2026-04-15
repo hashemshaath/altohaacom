@@ -13,6 +13,7 @@ import {
   DollarSign, AlertTriangle, Target, Sparkles, Lightbulb, ShieldAlert, Activity,
 } from "lucide-react";
 import {
+import { CACHE } from "@/lib/queryConfig";
   ComposedChart, Area, Line, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid,
   PolarAngleAxis, PolarRadiusAxis,
@@ -80,7 +81,7 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
       if (error) throw error;
       return result;
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     retry: 1,
   });
 

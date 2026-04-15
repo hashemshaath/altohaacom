@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Activity, Trophy, CheckCircle, XCircle, Clock, ChefHat, Zap, UserPlus, Star, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ActivityItem {
   id: string;
@@ -88,7 +89,7 @@ export const RecentActivityWidget = memo(function RecentActivityWidget() {
       return items.slice(0, 8);
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   // Realtime: listen for new notifications as live activity

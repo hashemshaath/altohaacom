@@ -35,6 +35,7 @@ import { CompanyAnalyticsCharts } from "@/components/company/CompanyAnalyticsCha
 import { CompanyRecentOrdersWidget } from "@/components/company/CompanyRecentOrdersWidget";
 import { CompanyQuickActions } from "@/components/company/CompanyQuickActions";
 import { CompanyActivityFeed } from "@/components/company/CompanyActivityFeed";
+import { CACHE } from "@/lib/queryConfig";
 
 export default function CompanyPortalDashboard() {
   const { language } = useLanguage();
@@ -66,7 +67,7 @@ export default function CompanyPortalDashboard() {
       };
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const isLoading = companyLoading || statsLoading;
@@ -261,7 +262,7 @@ function SponsorshipWidget({ companyId, language }: { companyId: string | null; 
       return data || [];
     },
     enabled: !!companyId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (opportunities.length === 0) {

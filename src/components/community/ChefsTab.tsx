@@ -15,6 +15,7 @@ import { FollowButton } from "./FollowButton";
 import { ChefBadge } from "./ChefBadge";
 import { MessageButton } from "./MessageButton";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ChefProfile {
   user_id: string;
@@ -68,7 +69,7 @@ export const ChefsTab = memo(function ChefsTab() {
 
       return (profiles || []) as (ChefProfile & { created_at: string })[];
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const filtered = chefs

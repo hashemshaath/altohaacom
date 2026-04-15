@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MessageSquareQuote } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   isAr: boolean;
@@ -59,7 +60,7 @@ export const OrganizerReviewsCarousel = memo(function OrganizerReviewsCarousel({
         };
       });
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (reviews.length < 2) return null;

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Map, ZoomIn, ZoomOut, RotateCcw, Building, Star, Hash, MapPin, X, Mail, Phone, ExternalLink, Search } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Booth {
   id: string;
@@ -90,7 +91,7 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
       if (error) throw error;
       return (data || []) as Booth[];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const halls = useMemo(() => [...new Set(booths.filter(b => b.hall).map(b => b.hall!))], [booths]);

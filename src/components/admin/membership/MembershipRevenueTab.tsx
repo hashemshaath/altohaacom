@@ -15,6 +15,7 @@ import {
   ArrowUpCircle, ArrowDownCircle, Percent, Target, Wallet, Coins,
 } from "lucide-react";
 import { format, subMonths, startOfMonth, endOfMonth } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 const MembershipRevenueTab = memo(function MembershipRevenueTab() {
   const { language } = useLanguage();
@@ -121,7 +122,7 @@ const MembershipRevenueTab = memo(function MembershipRevenueTab() {
         totalWalletBalance, totalPoints, ltv,
       };
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const kpiCards = [

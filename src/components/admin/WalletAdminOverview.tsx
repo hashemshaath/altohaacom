@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Wallet, TrendingUp, ArrowUpRight, ArrowDownRight, Coins, Users } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 export const WalletAdminOverview = memo(function WalletAdminOverview() {
   const { language } = useLanguage();
@@ -45,7 +46,7 @@ export const WalletAdminOverview = memo(function WalletAdminOverview() {
         weeklyPointsActivity: pointsRes.count || 0,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const cards = [

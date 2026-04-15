@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { CreditCard, AlertTriangle, Clock, TrendingUp, Receipt } from "lucide-react";
 import { differenceInDays } from "date-fns";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
   const { language } = useLanguage();
@@ -53,7 +54,7 @@ export const PaymentTrackerWidget = memo(function PaymentTrackerWidget() {
         collectionRate,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (isLoading) {

@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useSwipeTabs } from "@/hooks/useSwipeTabs";
 import { isFuture, isPast } from "date-fns";
 import { toast } from "sonner";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ExhibitionRow {
   [key: string]: any;
@@ -104,7 +105,7 @@ export function useOrganizerDetailData() {
       return { orgRecord, exhibitions, articles: articles || [], totalTickets, totalReviews };
     },
     enabled: !!decodedName,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Increment views

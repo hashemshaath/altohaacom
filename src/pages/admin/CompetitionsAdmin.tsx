@@ -36,6 +36,7 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
+import { CACHE } from "@/lib/queryConfig";
 
 // Lazy widgets
 const CompetitionPipelineTracker = lazy(() => import("@/components/admin/CompetitionPipelineTracker").then(m => ({ default: m.CompetitionPipelineTracker })));
@@ -186,19 +187,19 @@ export default function CompetitionsAdmin() {
         return { ...c, derivedOrganizer };
       });
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { data: allCategories } = useQuery({
     queryKey: ["adminCompetitionCategories"],
     queryFn: async () => { const { data } = await supabase.from("competition_categories").select("id, competition_id, name, name_ar").limit(5000); return data || []; },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: typeAssignments } = useQuery({
     queryKey: ["adminCompetitionTypes"],
     queryFn: async () => { const { data } = await supabase.from("competition_type_assignments").select("competition_id, type:competition_types(id, name, name_ar)").limit(5000); return data || []; },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: participantCounts } = useQuery({

@@ -8,6 +8,7 @@ import { AlertTriangle, Clock, Crown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 export const MembershipExpiryBanner = memo(function MembershipExpiryBanner({ className }: { className?: string }) {
   const { user } = useAuth();
@@ -42,7 +43,7 @@ export const MembershipExpiryBanner = memo(function MembershipExpiryBanner({ cla
       };
     },
     enabled: !!user?.id,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (!expiryInfo || dismissed) return null;

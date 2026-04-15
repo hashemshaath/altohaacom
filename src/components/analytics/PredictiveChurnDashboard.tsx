@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ChurnRisk {
   segment: string;
@@ -35,7 +36,7 @@ export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard()
       if (error) throw error;
       return result as { churn_risks: ChurnRisk[]; health_score: { retention: number } };
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
     retry: 1,
   });
 

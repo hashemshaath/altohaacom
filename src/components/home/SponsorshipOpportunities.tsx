@@ -14,6 +14,7 @@ import { formatCurrency } from "@/lib/currencyFormatter";
 import { SectionHeader } from "./SectionHeader";
 import { useSectionConfig } from "@/components/home/SectionKeyContext";
 import { HorizontalScrollRow } from "./HorizontalScrollRow";
+import { CACHE } from "@/lib/queryConfig";
 
 const TIER_LABELS: Record<string, { en: string; ar: string; color: string }> = {
   platinum: { en: "Platinum", ar: "بلاتيني", color: "bg-chart-3/10 text-chart-3 border-chart-3/30" },
@@ -63,7 +64,7 @@ export const SponsorshipOpportunities = forwardRef<HTMLElement>(function Sponsor
         packages: packages || [],
       }));
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 30,
     refetchOnWindowFocus: false,
   });

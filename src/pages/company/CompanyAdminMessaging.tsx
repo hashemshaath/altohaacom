@@ -20,6 +20,7 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { CACHE } from "@/lib/queryConfig";
 
 interface SupportMessage {
   id: string;
@@ -59,7 +60,7 @@ export default function CompanyAdminMessaging() {
       return (data || []) as SupportMessage[];
     },
     enabled: !!companyId,
-    staleTime: 1000 * 30,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   // Realtime

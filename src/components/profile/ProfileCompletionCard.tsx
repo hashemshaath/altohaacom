@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles, User, Camera, FileText, Briefcase, Globe, AtSign, Phone, Share2 } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Compact profile completion card that encourages users
@@ -46,7 +47,7 @@ export const ProfileCompletionCard = memo(function ProfileCompletionCard() {
       return { ...profile, percent, missing, filled, total: fields.length };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   if (!data || data.percent === 100) return null;

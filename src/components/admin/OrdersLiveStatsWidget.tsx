@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Package, DollarSign, Clock, CheckCircle, TrendingUp, FileText, ShoppingBag, ArrowUpDown } from "lucide-react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from "recharts";
 import { format, subDays } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-2))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))"];
 
@@ -73,7 +74,7 @@ export const OrdersLiveStatsWidget = memo(function OrdersLiveStatsWidget() {
       };
     },
     refetchInterval: useVisibleRefetchInterval(60000),
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (!data) return null;

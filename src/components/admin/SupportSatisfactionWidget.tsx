@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, LineChart, Line } from "recharts";
 import { SmilePlus, Clock, Timer, Users, TrendingDown, Zap } from "lucide-react";
 import { format, subDays, differenceInMinutes } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget() {
   const { language } = useLanguage();
@@ -101,7 +102,7 @@ export const SupportSatisfactionWidget = memo(function SupportSatisfactionWidget
         totalOpen: tickets.filter(t => t.status === "open" || t.status === "in_progress").length,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-48 w-full rounded-xl" />;

@@ -6,6 +6,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Flame, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CACHE } from "@/lib/queryConfig";
 
 /**
  * Displays the user's login streak (consecutive days with activity).
@@ -51,7 +52,7 @@ export const StreakWidget = memo(function StreakWidget() {
       return { streak, weekDays: getWeekDays(uniqueDates) };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 10,
+    staleTime: CACHE.long.staleTime,
   });
 
   const streak = data?.streak || 0;

@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Clock, MapPin, Star, StarOff, User, Sparkles, CalendarDays } from "lucide-react";
 import { format, parseISO, isToday } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -41,7 +42,7 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
       if (error) throw error;
       return data || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: favorites = [] } = useQuery({

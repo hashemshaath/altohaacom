@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 interface LastSeenLabelProps {
   userId: string;
@@ -24,7 +25,7 @@ export const LastSeenLabel = memo(function LastSeenLabel({ userId, isOnline, isT
       return data?.last_login_at || null;
     },
     enabled: !isOnline && !isTyping,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isTyping) return <span className="text-primary">{isAr ? "يكتب..." : "typing..."}</span>;

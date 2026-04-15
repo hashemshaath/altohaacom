@@ -27,6 +27,7 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ExhibitionHero } from "@/components/exhibitions/detail/ExhibitionHero";
 import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/ExhibitionMobileActionBar";
 import { ExhibitionInteractiveStats } from "@/components/exhibitions/detail/ExhibitionInteractiveStats";
+import { CACHE } from "@/lib/queryConfig";
 
 // Lazy-loaded components
 const ExhibitionOverviewTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionOverviewTab").then(m => ({ default: m.ExhibitionOverviewTab })));
@@ -129,7 +130,7 @@ export default function ExhibitionDetail() {
       return data;
     },
     enabled: !!slug,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   // Increment view count once per session
@@ -161,7 +162,7 @@ export default function ExhibitionDetail() {
       return count || 0;
     },
     enabled: !!exhibition,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const { data: linkedCompetitions } = useQuery({
@@ -177,7 +178,7 @@ export default function ExhibitionDetail() {
       return data || [];
     },
     enabled: !!exhibition,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const competitionIds = useMemo(() => linkedCompetitions?.map((c) => c.id) || [], [linkedCompetitions]);
@@ -211,7 +212,7 @@ export default function ExhibitionDetail() {
       return scored;
     },
     enabled: competitionIds.length > 0,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const allJudgeIds = useMemo(() => {
@@ -231,7 +232,7 @@ export default function ExhibitionDetail() {
       return (profiles || []).map(p => ({ ...p, judgeExtra: extrasMap.get(p.user_id) || null }));
     },
     enabled: allJudgeIds.length > 0,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const toggleFollow = useMutation({
@@ -272,7 +273,7 @@ export default function ExhibitionDetail() {
       return { agenda: agenda.count || 0, booths: booths.count || 0, reviews: reviews.count || 0, scheduleItems: scheduleItems.count || 0, tickets: tickets.count || 0, avgRating };
     },
     enabled: !!exhibition,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const agendaCount = featureCounts?.agenda || 0;

@@ -17,6 +17,7 @@ import {
 } from "recharts";
 import { cn } from "@/lib/utils";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 // Friendly page labels
 const PAGE_LABELS: Record<string, { en: string; ar: string }> = {
@@ -102,7 +103,7 @@ export const UserJourneyMapping = memo(function UserJourneyMapping() {
       if (error) throw error;
       return views || [];
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   const analysis = useMemo(() => {

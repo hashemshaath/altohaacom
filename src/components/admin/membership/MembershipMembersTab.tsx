@@ -34,6 +34,7 @@ import {
 import { format, differenceInDays, addDays, addMonths, addYears } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
@@ -117,7 +118,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       if (error) throw error;
       return data as MemberProfile[];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const openDialog = (action: AdminAction, member: MemberProfile) => {

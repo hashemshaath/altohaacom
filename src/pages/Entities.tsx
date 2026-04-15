@@ -23,6 +23,7 @@ import entitiesHero from "@/assets/entities-hero.jpg";
 import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
 import { EntityCard, typeLabels, scopeLabels } from "@/pages/entities/EntityCard";
+import { CACHE } from "@/lib/queryConfig";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];
@@ -134,7 +135,7 @@ export default function Entities() {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
     gcTime: 1000 * 60 * 30,
   });
 
@@ -149,7 +150,7 @@ export default function Entities() {
       return data?.map(f => f.entity_id) || [];
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   const toggleFollow = useMutation({

@@ -27,6 +27,7 @@ import { GroupSettingsPanel } from "@/components/messages/GroupSettingsPanel";
 import { useToast } from "@/hooks/use-toast";
 import { format, isToday, isYesterday } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 interface GroupChatViewProps {
   groupId: string;
@@ -86,7 +87,7 @@ export const GroupChatView = memo(function GroupChatView({ groupId, onBack }: Gr
         .limit(200);
       return data || [];
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   // Realtime subscription

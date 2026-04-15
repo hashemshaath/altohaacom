@@ -12,6 +12,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { Search, UserCog, Download, Loader2, Filter } from "lucide-react";
 import { ROLE_META, ALL_ROLES, type AppRole } from "./types";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   isAr: boolean;
@@ -45,7 +46,7 @@ export default function UsersTab({ isAr, t }: Props) {
         roles: (roles?.filter(r => r.user_id === u.user_id) || []).map(r => r.role),
       }));
     },
-    staleTime: 1000 * 30,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const filteredUsers = roleFilter === "all"

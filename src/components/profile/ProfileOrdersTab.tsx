@@ -10,6 +10,7 @@ import { ShoppingBag, ExternalLink } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { CACHE } from "@/lib/queryConfig";
 
 const STATUS_COLORS: Record<string, string> = {
   pending: "bg-chart-4/15 text-chart-4",
@@ -41,7 +42,7 @@ export const ProfileOrdersTab = memo(function ProfileOrdersTab({ userId, isAr }:
         .limit(50);
       return data || [];
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <PageSkeleton variant="list" count={3} />;

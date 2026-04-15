@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Ticket, Users, Eye, TrendingUp, BarChart3 } from "lucide-react";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   exhibitionId: string;
@@ -34,7 +35,7 @@ export const ExhibitionStats = memo(forwardRef<HTMLDivElement, Props>(function E
         avgRating,
       };
     },
-    staleTime: 1000 * 60 * 3,
+    staleTime: CACHE.default.staleTime,
   });
 
   if (!stats || (stats.tickets === 0 && stats.followers === 0 && stats.booths === 0)) return null;

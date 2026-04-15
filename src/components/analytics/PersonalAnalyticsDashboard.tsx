@@ -13,6 +13,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar,
 } from "recharts";
 import {
+import { CACHE } from "@/lib/queryConfig";
   FileText, Heart, Users, UserPlus, Trophy, ChefHat, Sparkles, TrendingUp,
   TrendingDown, Minus, Eye, Star, Hash, Lightbulb, Zap, BookOpen,
   MessageSquare, Film,
@@ -75,7 +76,7 @@ export const PersonalAnalyticsDashboard = memo(function PersonalAnalyticsDashboa
       return data as AnalyticsData;
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 15,
+    staleTime: CACHE.realtime.staleTime * 15,
     retry: 1,
   });
 

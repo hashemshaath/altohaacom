@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 interface ProfileAnalyticsDashboardProps {
   userId: string;
@@ -82,7 +83,7 @@ export const ProfileAnalyticsDashboard = memo(function ProfileAnalyticsDashboard
       return { totalFollowers, totalFollowing, dailyGrowth, last7NewFollowers: last7, growthPercent, newFollowers30d: recentFollowers.length, bestDay, bestCount };
     },
     enabled: !!userId,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (isLoading) {

@@ -15,6 +15,7 @@ import PermissionsTab from "@/components/admin/roles/PermissionsTab";
 import UsersTab from "@/components/admin/roles/UsersTab";
 import OverridesTab from "@/components/admin/roles/OverridesTab";
 import ActivityTab from "@/components/admin/roles/ActivityTab";
+import { CACHE } from "@/lib/queryConfig";
 
 export default function RoleManagement() {
   const { language } = useLanguage();
@@ -37,7 +38,7 @@ export default function RoleManagement() {
       data?.forEach((r) => { counts[r.role] = (counts[r.role] || 0) + 1; });
       return ALL_ROLES.map((role) => ({ role, count: counts[role] || 0 }));
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const { data: overridesCount = 0 } = useQuery({
@@ -49,7 +50,7 @@ export default function RoleManagement() {
       if (error) throw error;
       return count || 0;
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const securityScore = useMemo(() => {

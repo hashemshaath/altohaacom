@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, Trophy, Star, TrendingUp, Award, Target } from "lucide-react";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
 import { MS_PER_DAY } from "@/lib/constants";
+import { CACHE } from "@/lib/queryConfig";
 
 export const ProgressReportWidget = memo(function ProgressReportWidget() {
   const { language } = useLanguage();
@@ -57,7 +58,7 @@ export const ProgressReportWidget = memo(function ProgressReportWidget() {
       };
     },
     enabled: !!user,
-    staleTime: 1000 * 60 * 5,
+    staleTime: CACHE.medium.staleTime,
   });
 
   if (!data) return null;

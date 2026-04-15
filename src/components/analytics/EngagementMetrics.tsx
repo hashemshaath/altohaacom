@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 import {
+import { CACHE } from "@/lib/queryConfig";
   RadarChart,
   Radar,
   PolarGrid,
@@ -138,7 +139,7 @@ const EngagementMetrics = memo(function EngagementMetrics() {
         totalUsers: totalUsers || 0,
       };
     },
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   const TrendIndicator = ({ trend }: { trend: number }) => {

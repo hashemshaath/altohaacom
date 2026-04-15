@@ -11,6 +11,7 @@ import { translateRole } from "@/lib/chartConfig";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { CACHE } from "@/lib/queryConfig";
 
 const COLORS = ["hsl(var(--primary))", "hsl(var(--chart-3))", "hsl(var(--chart-4))", "hsl(var(--chart-5))", "hsl(var(--destructive))"];
 
@@ -81,7 +82,7 @@ export const UserGrowthTrendWidget = memo(function UserGrowthTrendWidget() {
       };
     },
     refetchInterval: visibleInterval,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

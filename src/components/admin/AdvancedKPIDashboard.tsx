@@ -16,6 +16,7 @@ import {
   CHART_COLORS, TOOLTIP_STYLE, AXIS_TICK, X_AXIS_PROPS, Y_AXIS_PROPS, GRID_PROPS, getNoDataText,
 } from "@/lib/chartConfig";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
+import { CACHE } from "@/lib/queryConfig";
 
 export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
   const { language } = useLanguage();
@@ -111,7 +112,7 @@ export const AdvancedKPIDashboard = memo(function AdvancedKPIDashboard() {
       return { kpis, trend, radarData };
     },
     refetchInterval: visibleInterval,
-    staleTime: 1000 * 60 * 2,
+    staleTime: CACHE.short.staleTime,
   });
 
   if (isLoading) return <Skeleton className="h-64 w-full rounded-xl" />;

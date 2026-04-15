@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Activity, Download, UserPlus, UserMinus, RefreshCw } from "lucide-react";
 import { format, formatDistanceToNow } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
+import { CACHE } from "@/lib/queryConfig";
 
 interface Props {
   isAr: boolean;
@@ -33,7 +34,7 @@ export default function ActivityTab({ isAr, t }: Props) {
       if (error) throw error;
       return data;
     },
-    staleTime: 1000 * 60,
+    staleTime: CACHE.realtime.staleTime,
   });
 
   const { exportCSV } = useCSVExport({
