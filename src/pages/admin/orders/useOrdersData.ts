@@ -6,6 +6,19 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
+import type { Database } from "@/integrations/supabase/types";
+import {
+  type OrderStatus,
+  type OrderFormType,
+  defaultOrderForm,
+  getStatusLabel,
+  getCategoryLabel,
+} from "./ordersAdminTypes";
+
+type CompanyOrderStatus = Database["public"]["Tables"]["company_orders"]["Row"]["status"];
+type CompanyOrderDirection = Database["public"]["Tables"]["company_orders"]["Row"]["direction"];
+type CompanyOrderCategory = Database["public"]["Tables"]["company_orders"]["Row"]["category"];
+type ShopOrderStatus = Database["public"]["Tables"]["shop_orders"]["Row"]["status"];
 import {
   type OrderStatus,
   type OrderFormType,
@@ -47,9 +60,9 @@ export function useOrdersData() {
         .select("*, companies:company_id (id, name, name_ar, logo_url)")
         .order("created_at", { ascending: false });
       if (searchQuery) query = query.or(`order_number.ilike.%${searchQuery}%,title.ilike.%${searchQuery}%`);
-      if (statusFilter !== "all") query = query.eq("status", statusFilter);
-      if (directionFilter !== "all") query = query.eq("direction", directionFilter);
-      if (categoryFilter !== "all") query = query.eq("category", categoryFilter);
+      if (statusFilter !== "all") query = query.eq("status", statusFilter as CompanyOrderStatus);
+      if (directionFilter !== "all") query = query.eq("direction", directionFilter as CompanyOrderDirection);
+      if (categoryFilter !== "all") query = query.eq("category", categoryFilter as CompanyOrderCategory);
       const { data, error } = await query.limit(200);
       if (error) throw error;
       return data;
@@ -99,7 +112,7 @@ export function useOrdersData() {
         .select("*, shop_order_items(*, shop_products(title, title_ar, image_url))")
         .order("created_at", { ascending: false });
       if (shopSearchQuery) query = query.or(`order_number.ilike.%${shopSearchQuery}%,buyer_name.ilike.%${shopSearchQuery}%,buyer_email.ilike.%${shopSearchQuery}%`);
-      if (shopStatusFilter !== "all") query = query.eq("status", shopStatusFilter);
+      if (shopStatusFilter !== "all") query = query.eq("status", shopStatusFilter as ShopOrderStatus);
       const { data, error } = await query.limit(200);
       if (error) throw error;
       return data;
@@ -210,7 +223,7 @@ export function useOrdersData() {
 
   const updateShopStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
-      const { error } = await supabase.from("shop_orders").update({ status }).eq("id", id);
+      const { error } = await supabase.from("shop_orders").update({ status: status as ShopOrderStatus }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -311,7 +324,7 @@ export function useOrdersData() {
 
   const bulkStatusChange = async (status: string) => {
     const ids = [...bulk.selected];
-    const { error } = await supabase.from("company_orders").update({ status }).in("id", ids);
+    const { error } = await supabase.from("company_orders").update({ status: status as CompanyOrderStatus }).in("id", ids);
     if (!error) {
       queryClient.invalidateQueries({ queryKey: ["all-orders"] });
       bulk.clearSelection();
