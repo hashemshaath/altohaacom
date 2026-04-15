@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Package, Truck, CheckCircle2, Clock, ArrowRight, ShoppingBag } from "lucide-react";
@@ -20,7 +21,7 @@ export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
   const { user } = useAuth();
   const isAr = useIsAr();
 
-  const { data: orders } = useQuery({
+  const { data: orders, isLoading } = useQuery({
     queryKey: ["recent-orders-widget", user?.id],
     queryFn: async () => {
       if (!user) return [];
@@ -35,6 +36,15 @@ export const RecentOrdersWidget = memo(function RecentOrdersWidget() {
     enabled: !!user,
     ...CACHE.short,
   });
+
+  if (isLoading) return (
+    <Card>
+      <CardHeader className="pb-2"><Skeleton className="h-4 w-32" /></CardHeader>
+      <CardContent className="space-y-2">
+        {[1,2,3].map(i => <Skeleton key={i} className="h-14 rounded-xl" />)}
+      </CardContent>
+    </Card>
+  );
 
   if (!orders || orders.length === 0) return null;
 
