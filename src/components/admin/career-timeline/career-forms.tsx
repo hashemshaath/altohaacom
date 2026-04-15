@@ -17,9 +17,10 @@ import {
 
 // ── Career Form (Education / Work / Judging / Media / Organizing / Custom) ──
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- dynamic form with mixed field types
 export const CareerForm = memo(function CareerForm({ form, editingId, isAr, isPending, onUpdate, onSave, onCancel }: {
-  form: Record<string, string | number | boolean | null | undefined>; editingId: string | null; isAr: boolean; isPending: boolean;
-  onUpdate: (key: string, value: string | number | boolean | null) => void; onSave: () => void; onCancel: () => void;
+  form: Record<string, any>; editingId: string | null; isAr: boolean; isPending: boolean;
+  onUpdate: (key: string, value: any) => void; onSave: () => void; onCancel: () => void;
 }) {
   const rt = form.record_type;
   const isEdu = rt === "education";
