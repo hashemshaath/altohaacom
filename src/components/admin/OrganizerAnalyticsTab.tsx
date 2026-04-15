@@ -25,9 +25,19 @@ const CHART_COLORS = [
   "hsl(var(--chart-5))",
 ];
 
+interface ExhibitionRow {
+  id: string;
+  start_date: string;
+  status: string;
+  country: string | null;
+  city: string | null;
+  view_count: number | null;
+  [key: string]: unknown;
+}
+
 interface Props {
   organizerId: string;
-  exhibitions: Record<string, unknown>[];
+  exhibitions: ExhibitionRow[];
 }
 
 const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId, exhibitions }: Props) {
@@ -49,7 +59,7 @@ const OrganizerAnalyticsTab = memo(function OrganizerAnalyticsTab({ organizerId,
 
       const reviews = reviewsRes.data || [];
       const avgRating = reviews.length > 0
-        ? reviews.reduce((s, r: any) => s + (r.rating || 0), 0) / reviews.length
+        ? reviews.reduce((s, r) => s + ((r as { rating?: number }).rating || 0), 0) / reviews.length
         : 0;
 
       const totalViews = exhibitions.reduce((s, e) => s + (e.view_count || 0), 0);

@@ -613,7 +613,7 @@ export default function OrganizerDetail() {
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold flex items-center gap-2"><UserCircle2 className="h-5 w-5 text-primary" />{isAr ? "فريق العمل وجهات الاتصال" : "Team & Key Contacts"}</h3>
                   <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                    {orgKeyContacts.map((c: Record<string, unknown>, i: number) => (
+                    {orgKeyContacts.map((c: Record<string, any>, i: number) => (
                       <Card key={i} className="rounded-2xl border-border/40 hover:shadow-md transition-shadow">
                         <CardContent className="p-5">
                           <div className="flex items-center gap-4 mb-3">

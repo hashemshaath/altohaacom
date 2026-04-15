@@ -40,7 +40,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Message, ConversationPartner } from "@/hooks/useMessagesData";
 
 interface ChatAreaProps {
-  user: any;
+  user: { id: string } | null;
   isAr: boolean;
   selectedPartner: ConversationPartner | null;
   messages: Message[] | undefined;
@@ -63,8 +63,8 @@ interface ChatAreaProps {
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setIsApprovalOpen: (v: boolean) => void;
   onBack: () => void;
-  sendMessage: any;
-  toggleStarMutation: any;
+  sendMessage: { mutate: (payload: Record<string, unknown>) => void; isPending: boolean };
+  toggleStarMutation: { mutate: (payload: { msgId: string; starred: boolean }) => void };
 }
 
 function formatMessageDate(date: string, isAr: boolean) {
@@ -137,7 +137,7 @@ export const ChatArea = memo(function ChatArea({
   const [forwardMsg, setForwardMsg] = useState<Message | null>(null);
   const [mediaPreview, setMediaPreview] = useState<{ urls: string[]; index: number } | null>(null);
 
-  const pinnedMessages = useMemo(() => (messages || []).filter((m) => (m as any).is_pinned), [messages]);
+  const pinnedMessages = useMemo(() => (messages || []).filter((m) => m.is_pinned), [messages]);
 
   // Compute unread divider position
   const firstUnreadIdx = useMemo(() => {
@@ -167,7 +167,7 @@ export const ChatArea = memo(function ChatArea({
   }, [isAr, toast, queryClient]);
 
   const handlePin = useCallback(async (msgId: string, pin: boolean) => {
-    await supabase.from("messages").update({ is_pinned: pin } as any).eq("id", msgId);
+    await supabase.from("messages").update({ is_pinned: pin }).eq("id", msgId);
     toast({ title: pin ? (isAr ? "تم تثبيت الرسالة" : "Message pinned") : (isAr ? "تم إلغاء التثبيت" : "Message unpinned") });
   }, [isAr, toast]);
 
@@ -365,8 +365,8 @@ export const ChatArea = memo(function ChatArea({
                         <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" title={isAr ? "إعادة توجيه" : "Forward"} onClick={() => setForwardMsg(msg)}>
                           <Forward className="h-3 w-3" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" title={isAr ? "تثبيت" : "Pin"} onClick={() => handlePin(msg.id, !(msg as any).is_pinned)}>
-                          <Pin className={`h-3 w-3 ${(msg as any).is_pinned ? "text-chart-4 fill-chart-4" : ""}`} />
+                        <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" title={isAr ? "تثبيت" : "Pin"} onClick={() => handlePin(msg.id, !msg.is_pinned)}>
+                          <Pin className={`h-3 w-3 ${msg.is_pinned ? "text-chart-4 fill-chart-4" : ""}`} />
                         </Button>
                         <Button variant="ghost" size="icon" className="h-7 w-7 rounded-xl hover:bg-primary/10" onClick={() => toggleStarMutation.mutate({ msgId: msg.id, starred: !msg.is_starred })}>
                           <Star className={`h-3 w-3 ${msg.is_starred ? "text-chart-4 fill-chart-4" : ""}`} />
@@ -381,7 +381,7 @@ export const ChatArea = memo(function ChatArea({
                       <div className={`rounded-2xl px-4 py-3 transition-all duration-200 hover:shadow-md ${
                         isMine ? "bg-primary text-primary-foreground rounded-ee-md shadow-sm shadow-primary/10" : "bg-card border border-border/30 rounded-es-md shadow-sm"
                       }`}>
-                        {(msg as any).is_pinned && (
+                        {msg.is_pinned && (
                           <div className={`flex items-center gap-1 mb-1 text-xs ${isMine ? "text-primary-foreground/50" : "text-chart-4"}`}>
                             <Pin className="h-2.5 w-2.5" /> {isAr ? "مثبتة" : "Pinned"}
                           </div>
@@ -392,8 +392,8 @@ export const ChatArea = memo(function ChatArea({
 
                         {isApproval ? (
                           <ApprovalMessage messageId={msg.id} senderId={msg.sender_id} receiverId={msg.receiver_id} metadata={msg.metadata || {}} isMine={isMine} />
-                        ) : isLocation && (msg.metadata as any)?.location ? (
-                          <LocationBubble lat={(msg.metadata as any).location.lat} lng={(msg.metadata as any).location.lng} label={(msg.metadata as any).location.label} isMine={isMine} />
+                        ) : isLocation && msg.metadata?.location ? (
+                          <LocationBubble lat={msg.metadata.location.lat} lng={msg.metadata.location.lng} label={msg.metadata.location.label} isMine={isMine} />
                         ) : msg.message_type === "audio" && msg.attachment_urls?.[0] ? (
                           <VoiceMessagePlayer url={msg.attachment_urls[0]} isMine={isMine} />
                         ) : (
@@ -414,11 +414,11 @@ export const ChatArea = memo(function ChatArea({
                       </div>
                       {/* Message Reactions */}
                       <MessageReactions
-                        reactions={(msg.metadata as any)?.reactions || {}}
+                        reactions={msg.metadata?.reactions || {}}
                         currentUserId={user?.id || ""}
                         isMine={isMine}
                         onReact={(emoji) => {
-                          const currentReactions = ((msg.metadata as any)?.reactions || {}) as Record<string, string[]>;
+                          const currentReactions = (msg.metadata?.reactions || {}) as Record<string, string[]>;
                           const userIds = currentReactions[emoji] || [];
                           const alreadyReacted = userIds.includes(user?.id || "");
                           const newUserIds = alreadyReacted
@@ -430,7 +430,7 @@ export const ChatArea = memo(function ChatArea({
                           
                           supabase
                             .from("messages")
-                            .update({ metadata: { ...((msg.metadata as any) || {}), reactions: newReactions } })
+                            .update({ metadata: { ...(msg.metadata || {}), reactions: newReactions } })
                             .eq("id", msg.id)
                             .then(null, () => {});
                         }}

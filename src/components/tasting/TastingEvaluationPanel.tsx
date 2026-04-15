@@ -55,7 +55,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
     const grouped: Record<string, TastingCriterion[]> = {};
     const noStage: TastingCriterion[] = [];
     criteria.forEach(c => {
-      const s = (c as any).stage;
+      const s = c.stage;
       if (s && STAGE_CONFIG[s as keyof typeof STAGE_CONFIG]) {
         if (!grouped[s]) grouped[s] = [];
         grouped[s].push(c);
@@ -113,10 +113,10 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
           session_id: sessionId,
           entry_id: selectedEntry,
           criterion_id: crit.id,
-          score: val.score ?? null as any,
-          stars: val.stars ?? null as any,
-          passed: val.passed ?? null as any,
-          note: val.note ?? null as any,
+          score: val.score ?? null,
+          stars: val.stars ?? null,
+          passed: val.passed ?? null,
+          note: val.note ?? null,
         });
       }
       toast.success(isAr ? "تم حفظ التقييمات" : "Scores saved");
@@ -132,9 +132,9 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
 
   function renderCriterionCard(crit: TastingCriterion) {
     const val = getScoreValue(crit.id);
-    const guidelines = (crit as any).guidelines;
-    const guidelinesAr = (crit as any).guidelines_ar;
-    const refImages = (crit as any).reference_images as string[] | null;
+    const guidelines = crit.guidelines;
+    const guidelinesAr = crit.guidelines_ar;
+    const refImages = crit.reference_images;
     const hasHelp = guidelines || guidelinesAr || (refImages && refImages.length > 0);
 
     return (
@@ -143,7 +143,7 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
           <div className="flex items-center gap-2">
             <div>
               <p className="text-sm font-medium">{isAr && crit.name_ar ? crit.name_ar : crit.name}</p>
-              {crit.description && <p className="text-xs text-muted-foreground">{isAr && (crit as any).description_ar ? (crit as any).description_ar : crit.description}</p>}
+              {crit.description && <p className="text-xs text-muted-foreground">{isAr && crit.description_ar ? crit.description_ar : crit.description}</p>}
             </div>
             {hasHelp && (
               <TooltipProvider>
@@ -253,8 +253,8 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
             onClick={() => setSelectedEntry(e.id)}
             className="gap-1.5"
           >
-            {(e as any).images?.[0] && (
-              <img loading="lazy" decoding="async" src={(e as any).images[0]} alt={e.dish_name || "Entry"} className="h-5 w-5 rounded object-cover" />
+            {e.images?.[0] && (
+              <img loading="lazy" decoding="async" src={e.images[0]} alt={e.dish_name || "Entry"} className="h-5 w-5 rounded object-cover" />
             )}
             {isBlind ? `#${e.entry_number || i + 1}` : (isAr && e.dish_name_ar ? e.dish_name_ar : e.dish_name)}
           </Button>
@@ -266,9 +266,9 @@ export const TastingEvaluationPanel = memo(function TastingEvaluationPanel({ ses
           {/* Main evaluation area */}
           <div className="lg:col-span-2 space-y-4">
             {/* Entry images */}
-            {(entry as any).images?.length > 0 && (
+            {entry.images && entry.images.length > 0 && (
               <div className="flex gap-2 overflow-x-auto pb-2">
-                {((entry as any).images as string[]).map((img, i) => (
+                {entry.images.map((img, i) => (
                   <img loading="lazy" decoding="async" key={i} src={img} alt={entry.dish_name} className="h-32 w-32 rounded-xl object-cover border" />
                 ))}
               </div>

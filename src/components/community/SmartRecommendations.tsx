@@ -14,11 +14,11 @@ import { Link } from "react-router-dom";
 import { CACHE } from "@/lib/queryConfig";
 
 interface RecommendationData {
-  competitions: Record<string, unknown>[];
-  recipes: Record<string, unknown>[];
-  articles: Record<string, unknown>[];
-  chefs: Record<string, unknown>[];
-  exhibitions: Record<string, unknown>[];
+  competitions: Record<string, any>[];
+  recipes: Record<string, any>[];
+  articles: Record<string, any>[];
+  chefs: Record<string, any>[];
+  exhibitions: Record<string, any>[];
   tip: string;
   tip_ar: string;
 }

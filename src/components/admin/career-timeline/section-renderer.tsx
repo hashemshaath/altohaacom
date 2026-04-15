@@ -17,10 +17,10 @@ interface SectionContentProps {
   itemIds: string[];
   // Career records
   sectionRecords: CareerRecord[];
-  careerForm: Record<string, unknown>;
+  careerForm: Record<string, any>;
   editingId: string | null;
   saveCareerPending: boolean;
-  onUpdateCareer: (k: string, v: unknown) => void;
+  onUpdateCareer: (k: string, v: any) => void;
   onSaveCareer: () => void;
   onStartEditCareer: (r: CareerRecord) => void;
   onDeleteCareer: (id: string) => void;
@@ -29,8 +29,8 @@ interface SectionContentProps {
   getMoveSections: (key: string) => { key: string; label: string }[];
   onMoveRecord: (id: string, target: string) => void;
   // Memberships
-  memberships?: Record<string, unknown>[];
-  membershipForm?: Record<string, unknown>;
+  memberships?: Record<string, any>[];
+  membershipForm?: Record<string, any>;
   editingMembershipId?: string | null;
   saveMembershipPending?: boolean;
   onUpdateMembership?: (k: string, v: unknown) => void;
@@ -39,8 +39,8 @@ interface SectionContentProps {
   onStartEditMembership?: (m) => void;
   onDeleteMembership?: (id: string) => void;
   // Competitions (linked)
-  competitions?: Record<string, unknown>[];
-  availableCompetitions?: Record<string, unknown>[];
+  competitions?: Record<string, any>[];
+  availableCompetitions?: Record<string, any>[];
   selectedCompetitionId?: string;
   onSelectCompetition?: (id: string) => void;
   addCompetitionPending?: boolean;
@@ -50,8 +50,8 @@ interface SectionContentProps {
   competitionCareerRecords?: CareerRecord[];
   onDeleteCompetitionReg?: (id: string) => void;
   // Awards
-  certificates?: Record<string, unknown>[];
-  awardForm?: Record<string, unknown>;
+  certificates?: Record<string, any>[];
+  awardForm?: Record<string, any>;
   editingAwardId?: string | null;
   addAwardPending?: boolean;
   saveAwardPending?: boolean;

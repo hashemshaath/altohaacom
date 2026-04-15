@@ -205,7 +205,7 @@ export default function ProSupplierDetail() {
     return acc;
   }, {});
 
-  const handleAddToCart = useCallback((product: Record<string, unknown>, qty = 1) => {
+  const handleAddToCart = useCallback((product: Record<string, any>, qty = 1) => {
     addItem({
       product_id: product.id,
       title: product.name,

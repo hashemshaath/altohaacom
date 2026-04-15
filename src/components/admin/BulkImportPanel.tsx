@@ -545,7 +545,7 @@ export const BulkImportPanel = memo(function BulkImportPanel({ entityType, onImp
                 <TableBody>
                   {rows.map((row, idx) => (
                     <TableRow key={idx} className={row._has_errors ? "bg-destructive/5" : ""}>
-                      <TableCell className="text-xs text-muted-foreground">{row._row_index}</TableCell>
+                      <TableCell className="text-xs text-muted-foreground">{String(row._row_index ?? "")}</TableCell>
                       {displayColumns.map(col => (
                         <TableCell key={col} className="text-xs max-w-[150px] truncate">
                           {String(row[col] || "").slice(0, 50)}
