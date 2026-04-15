@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,106 +12,28 @@ import { Radio, Users, Calendar, Clock, Plus, Loader2, Video } from "lucide-reac
 import { useToast } from "@/hooks/use-toast";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { useLiveSessionsData, type LiveSession } from "@/hooks/community/useLiveSessionsData";
 
-interface LiveSession {
-  id: string;
-  host_id: string;
-  title: string;
-  title_ar: string | null;
-  description: string | null;
-  description_ar: string | null;
-  scheduled_at: string;
-  duration_minutes: number;
-  status: string;
-  max_attendees: number | null;
-  cover_image_url: string | null;
-  host_name: string | null;
-  host_avatar: string | null;
-  attendee_count: number;
-  is_registered: boolean;
-}
+const INITIAL_FORM = { title: "", titleAr: "", description: "", descriptionAr: "", scheduledAt: "", duration: "60" };
 
 export const LiveSessionsTab = memo(function LiveSessionsTab() {
   const { user } = useAuth();
   const isAr = useIsAr();
   const { toast } = useToast();
+  const { sessions, pastSessions, isLoading, createSession, isCreating, toggleRegistration } = useLiveSessionsData();
 
-  const [sessions, setSessions] = useState<LiveSession[]>([]);
-  const [pastSessions, setPastSessions] = useState<LiveSession[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({ title: "", titleAr: "", description: "", descriptionAr: "", scheduledAt: "", duration: "60" });
-
-  const fetchSessions = useCallback(async () => {
-    const now = new Date().toISOString();
-
-    const sessionFields = "id, host_id, title, title_ar, description, description_ar, scheduled_at, duration_minutes, status, max_attendees, cover_image_url";
-    const [upcomingRes, pastRes] = await Promise.all([
-      supabase.from("live_sessions").select(sessionFields).in("status", ["scheduled", "live"]).gte("scheduled_at", now).order("scheduled_at", { ascending: true }).limit(20),
-      supabase.from("live_sessions").select(sessionFields).eq("status", "ended").order("scheduled_at", { ascending: false }).limit(10),
-    ]);
-
-    const allData = [...(upcomingRes.data || []), ...(pastRes.data || [])];
-    if (!allData.length) { setSessions([]); setPastSessions([]); setLoading(false); return; }
-
-    const hostIds = [...new Set(allData.map((s) => s.host_id))];
-    const sessionIds = allData.map((s) => s.id);
-
-    const [profilesRes, attendeesRes, userAttendeesRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, full_name, avatar_url").in("user_id", hostIds),
-      supabase.from("live_session_attendees").select("session_id").in("session_id", sessionIds),
-      user ? supabase.from("live_session_attendees").select("session_id").eq("user_id", user.id).in("session_id", sessionIds) : { data: [] },
-    ]);
-
-    const profileMap = new Map(profilesRes.data?.map((p) => [p.user_id, p]) || []);
-    const countMap = new Map<string, number>();
-    attendeesRes.data?.forEach((a) => countMap.set(a.session_id, (countMap.get(a.session_id) || 0) + 1));
-    const registeredSet = new Set(userAttendeesRes.data?.map((a) => a.session_id) || []);
-
-    type RawSession = NonNullable<typeof upcomingRes.data>[number];
-    const enrich = (s: RawSession): LiveSession => {
-      const host = profileMap.get(s.host_id);
-      return { ...s, host_name: host?.full_name || null, host_avatar: host?.avatar_url || null, attendee_count: countMap.get(s.id) || 0, is_registered: registeredSet.has(s.id) };
-    };
-
-    setSessions((upcomingRes.data || []).map(enrich));
-    setPastSessions((pastRes.data || []).map(enrich));
-    setLoading(false);
-  }, [user?.id]);
-
-  useEffect(() => { fetchSessions(); }, [fetchSessions]);
-
-  const handleRegister = async (sessionId: string, isRegistered: boolean) => {
-    if (!user) return;
-    if (isRegistered) {
-      await supabase.from("live_session_attendees").delete().eq("session_id", sessionId).eq("user_id", user.id);
-    } else {
-      await supabase.from("live_session_attendees").insert({ session_id: sessionId, user_id: user.id });
-    }
-    fetchSessions();
-  };
+  const [form, setForm] = useState(INITIAL_FORM);
 
   const handleCreate = async () => {
     if (!user || !form.title.trim() || !form.scheduledAt) return;
-    setCreating(true);
-    const { error } = await supabase.from("live_sessions").insert({
-      host_id: user.id,
-      title: form.title.trim(),
-      title_ar: form.titleAr.trim() || null,
-      description: form.description.trim() || null,
-      description_ar: form.descriptionAr.trim() || null,
-      scheduled_at: new Date(form.scheduledAt).toISOString(),
-      duration_minutes: parseInt(form.duration) || 60,
-    });
-    setCreating(false);
-    if (error) {
-      toast({ variant: "destructive", title: "Error", description: error.message });
-    } else {
+    try {
+      await createSession(form);
       setShowForm(false);
-      setForm({ title: "", titleAr: "", description: "", descriptionAr: "", scheduledAt: "", duration: "60" });
-      fetchSessions();
+      setForm(INITIAL_FORM);
       toast({ title: isAr ? "تم إنشاء الجلسة" : "Session created!" });
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message });
     }
   };
 
@@ -126,7 +47,7 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
     return toEnglishDigits(d.toLocaleTimeString(isAr ? "ar-SA" : "en-US", { hour: "2-digit", minute: "2-digit" }));
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -191,7 +112,7 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
             variant={session.is_registered ? "outline" : "default"}
             size="sm"
             className="w-full h-8 text-xs rounded-xl font-semibold"
-            onClick={() => handleRegister(session.id, session.is_registered)}
+            onClick={() => toggleRegistration(session.id, session.is_registered)}
           >
             {session.is_registered ? (isAr ? "مسجّل ✓" : "Registered ✓") : (isAr ? "سجّل الآن" : "Register")}
           </Button>
@@ -202,7 +123,6 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold flex items-center gap-2">
           <Radio className="h-5 w-5 text-destructive" />
@@ -216,7 +136,6 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
         )}
       </div>
 
-      {/* Upcoming Sessions */}
       {sessions.length > 0 ? (
         <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
           {sessions.map((s) => <SessionCard key={s.id} session={s} />)}
@@ -231,7 +150,6 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
         </Card>
       )}
 
-      {/* Past Sessions */}
       {pastSessions.length > 0 && (
         <>
           <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
@@ -243,7 +161,6 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
         </>
       )}
 
-      {/* Create Session Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
         <DialogContent className="sm:max-w-md">
           <DialogTitle>{isAr ? "إنشاء جلسة طبخ مباشرة" : "Create Live Cooking Session"}</DialogTitle>
@@ -261,8 +178,8 @@ export const LiveSessionsTab = memo(function LiveSessionsTab() {
                 <Input type="number" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} min="15" max="480" />
               </div>
             </div>
-            <Button onClick={handleCreate} disabled={creating || !form.title.trim() || !form.scheduledAt} className="w-full">
-              {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : (isAr ? "إنشاء الجلسة" : "Create Session")}
+            <Button onClick={handleCreate} disabled={isCreating || !form.title.trim() || !form.scheduledAt} className="w-full">
+              {isCreating ? <Loader2 className="h-4 w-4 animate-spin" /> : (isAr ? "إنشاء الجلسة" : "Create Session")}
             </Button>
           </div>
         </DialogContent>

@@ -1,36 +1,18 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ChefHat, Clock, Users as UsersIcon, Star, Plus, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-interface Recipe {
-  id: string;
-  title: string;
-  description: string | null;
-  image_url: string | null;
-  cuisine: string | null;
-  difficulty: string;
-  prep_time_minutes: number | null;
-  cook_time_minutes: number | null;
-  servings: number | null;
-  author_id: string;
-  author_name: string | null;
-  avg_rating: number;
-  ratings_count: number;
-  created_at: string;
-}
+import { useRecipesData } from "@/hooks/community/useRecipesData";
 
 const difficultyColor = (d: string) => {
   if (d === "easy") return "bg-chart-3/10 text-chart-3";
@@ -38,99 +20,40 @@ const difficultyColor = (d: string) => {
   return "bg-chart-4/10 text-chart-4";
 };
 
+const INITIAL_FORM = {
+  title: "", description: "", cuisine: "", difficulty: "medium",
+  prep_time_minutes: "", cook_time_minutes: "", servings: "",
+  ingredients: "", steps: "",
+};
+
 export const RecipesTab = memo(function RecipesTab() {
   const { user } = useAuth();
   const isAr = useIsAr();
   const { toast } = useToast();
-  const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { recipes: allRecipes, isLoading, createRecipe, isCreating } = useRecipesData();
+
   const [showForm, setShowForm] = useState(false);
-  const [creating, setCreating] = useState(false);
   const [filter, setFilter] = useState("all");
-  const [form, setForm] = useState({
-    title: "", description: "", cuisine: "", difficulty: "medium",
-    prep_time_minutes: "", cook_time_minutes: "", servings: "",
-    ingredients: "", steps: "",
-  });
+  const [form, setForm] = useState(INITIAL_FORM);
 
-
-  const fetchRecipes = async () => {
-    const { data, error } = await supabase
-      .from("recipes")
-      .select("id, title, title_ar, description, description_ar, image_url, author_id, cuisine, difficulty, prep_time_minutes, cook_time_minutes, servings, is_published, created_at, save_count, slug")
-      .eq("is_published", true)
-      .order("created_at", { ascending: false })
-      .limit(50);
-
-    if (error) { setLoading(false); return; }
-
-    const authorIds = [...new Set(data?.map((r) => r.author_id) || [])];
-    const recipeIds = data?.map((r) => r.id) || [];
-
-    const [profilesRes, ratingsRes] = await Promise.all([
-      supabase.from("profiles").select("user_id, full_name, full_name_ar, display_name, display_name_ar").in("user_id", authorIds),
-      supabase.from("recipe_ratings").select("recipe_id, rating").in("recipe_id", recipeIds),
-    ]);
-
-    const profileMap = new Map(profilesRes.data?.map((p) => [p.user_id, p.display_name || p.full_name]) || []);
-    const ratingsMap = new Map<string, { sum: number; count: number }>();
-    ratingsRes.data?.forEach((r) => {
-      const existing = ratingsMap.get(r.recipe_id) || { sum: 0, count: 0 };
-      ratingsMap.set(r.recipe_id, { sum: existing.sum + r.rating, count: existing.count + 1 });
-    });
-
-    const enriched: Recipe[] = (data || []).map((r) => {
-      const rating = ratingsMap.get(r.id);
-      return {
-        id: r.id, title: r.title, description: r.description, image_url: r.image_url,
-        cuisine: r.cuisine, difficulty: r.difficulty || "medium",
-        prep_time_minutes: r.prep_time_minutes, cook_time_minutes: r.cook_time_minutes,
-        servings: r.servings, author_id: r.author_id,
-        author_name: profileMap.get(r.author_id) || null,
-        avg_rating: rating ? Math.round((rating.sum / rating.count) * 10) / 10 : 0,
-        ratings_count: rating?.count || 0,
-        created_at: r.created_at,
-      };
-    });
-
-    setAllRecipes(enriched);
-    setLoading(false);
-  };
-
-  useEffect(() => { fetchRecipes(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const recipes = filter === "all" ? allRecipes : allRecipes.filter((r) => r.difficulty === filter);
+  // Derived state — no separate useState needed
+  const recipes = useMemo(
+    () => filter === "all" ? allRecipes : allRecipes.filter((r) => r.difficulty === filter),
+    [allRecipes, filter]
+  );
 
   const handleCreate = async () => {
     if (!user || !form.title.trim()) return;
-    setCreating(true);
-
-    const ingredients = form.ingredients.split("\n").filter(Boolean).map((i) => ({ text: i.trim() }));
-    const steps = form.steps.split("\n").filter(Boolean).map((s, idx) => ({ step: idx + 1, text: s.trim() }));
-
-    const { error } = await supabase.from("recipes").insert({
-      author_id: user.id,
-      title: form.title.trim(),
-      description: form.description.trim() || null,
-      cuisine: form.cuisine.trim() || null,
-      difficulty: form.difficulty,
-      prep_time_minutes: form.prep_time_minutes ? parseInt(form.prep_time_minutes) : null,
-      cook_time_minutes: form.cook_time_minutes ? parseInt(form.cook_time_minutes) : null,
-      servings: form.servings ? parseInt(form.servings) : null,
-      ingredients, steps,
-    });
-
-    setCreating(false);
-    if (error) {
-      toast({ variant: "destructive", title: "Error", description: error.message });
-    } else {
+    try {
+      await createRecipe(form);
       setShowForm(false);
-      setForm({ title: "", description: "", cuisine: "", difficulty: "medium", prep_time_minutes: "", cook_time_minutes: "", servings: "", ingredients: "", steps: "" });
-      fetchRecipes();
+      setForm(INITIAL_FORM);
+    } catch (error: any) {
+      toast({ variant: "destructive", title: "Error", description: error.message });
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-4">
         <div className="flex justify-between"><Skeleton className="h-10 w-40" /><Skeleton className="h-10 w-32" /></div>
@@ -224,8 +147,8 @@ export const RecipesTab = memo(function RecipesTab() {
             </div>
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button variant="outline" onClick={() => setShowForm(false)}>{isAr ? "إلغاء" : "Cancel"}</Button>
-              <Button onClick={handleCreate} disabled={creating || !form.title.trim()}>
-                {creating ? "..." : isAr ? "نشر الوصفة" : "Publish Recipe"}
+              <Button onClick={handleCreate} disabled={isCreating || !form.title.trim()}>
+                {isCreating ? "..." : isAr ? "نشر الوصفة" : "Publish Recipe"}
               </Button>
             </div>
           </CardContent>
