@@ -41,20 +41,28 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 import { CACHE } from "@/lib/queryConfig";
 import { HTTP_STATUS } from "@/lib/constants";
+import { handleSupabaseError, redirectOnSessionExpiry } from "@/lib/supabaseErrorHandler";
+import { AppError } from "@/lib/AppError";
 
 const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => {
-      console.error("[Mutation Error]", error instanceof Error ? error.message : error);
+      const appError = error instanceof AppError ? error : handleSupabaseError(error);
+      if (import.meta.env.DEV) {
+        console.error("[Mutation Error]", appError.code, appError.message);
+      }
+      // Auto-redirect on session expiry
+      redirectOnSessionExpiry(appError);
     },
   }),
   defaultOptions: {
     queries: {
       ...CACHE.default,
       retry: (failureCount, error) => {
-        const status = (error as { status?: number })?.status;
-        if (status && status >= HTTP_STATUS.CLIENT_ERROR_MIN && status <= HTTP_STATUS.CLIENT_ERROR_MAX) return false;
-        return failureCount < 1;
+        const appError = error instanceof AppError ? error : handleSupabaseError(error);
+        // Never retry auth or validation errors
+        if (!appError.isRetryable) return false;
+        return failureCount < 2;
       },
       refetchOnWindowFocus: false,
       refetchOnReconnect: "always",
