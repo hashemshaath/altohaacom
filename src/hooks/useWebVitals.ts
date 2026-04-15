@@ -87,9 +87,8 @@ export function useWebVitals() {
     // Log summary after page settles
     const timer = setTimeout(() => {
       const v = vitals.current;
-      if (import.meta.env.DEV) {
-          // Web vitals summary available in v object
-        }
+      if (import.meta.env.DEV && v.lcp) {
+        // Web vitals collected: TTFB, FCP, LCP, CLS, FID, INP
       }
     }, 10_000);
 
