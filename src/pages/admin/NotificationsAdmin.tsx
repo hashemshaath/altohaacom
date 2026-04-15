@@ -378,7 +378,7 @@ export default function NotificationsAdmin() {
               </SelectContent>
             </Select>
             <Button variant="outline" size="sm" className="h-10"
-              onClick={() => { queryClient.invalidateQueries({ queryKey: ["notification-queue-items"] }); queryClient.invalidateQueries({ queryKey: ["notification-queue-stats"] }); }}>
+              onClick={refreshQueue}>
               <RefreshCw className="me-2 h-3.5 w-3.5" />{isAr ? "تحديث" : "Refresh"}
             </Button>
           </div>
