@@ -12,15 +12,18 @@ export function useRecipeSave(recipeId: string) {
   useEffect(() => {
     if (!user || !recipeId) return;
     let cancelled = false;
-    supabase
-      .from("recipe_saves")
-      .select("id")
-      .eq("user_id", user.id)
-      .eq("recipe_id", recipeId)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (!cancelled) setIsSaved(!!data);
-      });
+
+    const checkSaved = async () => {
+      const { data } = await supabase
+        .from("recipe_saves")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("recipe_id", recipeId)
+        .maybeSingle();
+      if (!cancelled) setIsSaved(!!data);
+    };
+
+    checkSaved();
     return () => { cancelled = true; };
   }, [user?.id, recipeId]);
 
