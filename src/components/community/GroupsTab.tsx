@@ -1,152 +1,53 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, useCallback, memo } from "react";
+import { useState, memo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, Plus, Lock, Globe, UsersRound, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useGroupsData } from "@/hooks/community/useGroupsData";
 
-interface Group {
-  id: string;
-  name: string;
-  name_ar: string | null;
-  description: string | null;
-  description_ar: string | null;
-  is_private: boolean;
-  created_by: string;
-  members_count: number;
-  is_member: boolean;
-}
+const INITIAL_FORM = { name: "", name_ar: "", description: "", description_ar: "", is_private: false };
 
 export const GroupsTab = memo(function GroupsTab() {
   const { user } = useAuth();
   const isAr = useIsAr();
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
   const { toast } = useToast();
-  const [groups, setGroups] = useState<Group[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { groups, isLoading, createGroup, isCreating, toggleMembership } = useGroupsData();
+
   const [showForm, setShowForm] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    name_ar: "",
-    description: "",
-    description_ar: "",
-    is_private: false,
-  });
-
-  const fetchGroups = useCallback(async () => {
-    const { data: groupsData, error } = await supabase
-      .from("groups")
-      .select("id, name, name_ar, description, description_ar, cover_image_url, is_private, category, created_by, created_at")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error("Error fetching groups:", error);
-      setLoading(false);
-      return;
-    }
-
-    const groupIds = groupsData?.map((g) => g.id) || [];
-
-    const [membersRes, userMembersRes] = await Promise.all([
-      supabase.from("group_members").select("group_id").in("group_id", groupIds),
-      user
-        ? supabase.from("group_members").select("group_id").eq("user_id", user.id).in("group_id", groupIds)
-        : { data: [] },
-    ]);
-
-    const membersMap = new Map<string, number>();
-    membersRes.data?.forEach((m) => membersMap.set(m.group_id, (membersMap.get(m.group_id) || 0) + 1));
-    const userMemberSet = new Set(userMembersRes.data?.map((m) => m.group_id) || []);
-
-    const enriched: Group[] = (groupsData || []).map((g) => ({
-      id: g.id,
-      name: g.name,
-      name_ar: g.name_ar,
-      description: g.description,
-      description_ar: g.description_ar,
-      is_private: g.is_private,
-      created_by: g.created_by,
-      members_count: membersMap.get(g.id) || 0,
-      is_member: userMemberSet.has(g.id) || g.created_by === user?.id,
-    }));
-
-    setGroups(enriched);
-    setLoading(false);
-  }, [user?.id]);
-
-  useEffect(() => {
-    fetchGroups();
-  }, [fetchGroups]);
+  const [form, setForm] = useState(INITIAL_FORM);
 
   const handleCreate = async () => {
     if (!user || !form.name.trim()) return;
-    setCreating(true);
-
-    const { data, error } = await supabase
-      .from("groups")
-      .insert({
-        name: form.name.trim(),
-        name_ar: form.name_ar.trim() || null,
-        description: form.description.trim() || null,
-        description_ar: form.description_ar.trim() || null,
-        is_private: form.is_private,
-        created_by: user.id,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      setCreating(false);
+    try {
+      await createGroup(form);
+      setShowForm(false);
+      setForm(INITIAL_FORM);
+    } catch (error: any) {
       toast({ variant: "destructive", title: "Error", description: error.message });
-      return;
     }
-
-    await supabase.from("group_members").insert({
-      group_id: data.id,
-      user_id: user.id,
-      role: "admin",
-    });
-
-    setCreating(false);
-    setShowForm(false);
-    setForm({ name: "", name_ar: "", description: "", description_ar: "", is_private: false });
-    fetchGroups();
   };
 
-  const handleJoinLeave = async (groupId: string, isMember: boolean) => {
+  const handleJoinLeave = (groupId: string, isMember: boolean) => {
     if (!user) {
       toast({ title: isAr ? "يرجى تسجيل الدخول" : "Please sign in to join groups" });
       return;
     }
-    if (isMember) {
-      await supabase.from("group_members").delete().eq("group_id", groupId).eq("user_id", user.id);
-    } else {
-      await supabase.from("group_members").insert({ group_id: groupId, user_id: user.id });
-    }
-    setGroups((prev) =>
-      prev.map((g) =>
-        g.id === groupId
-          ? { ...g, is_member: !isMember, members_count: isMember ? g.members_count - 1 : g.members_count + 1 }
-          : g
-      )
-    );
+    toggleMembership(groupId, isMember);
   };
 
-  const getDisplayName = (group: Group) => (isAr && group.name_ar ? group.name_ar : group.name);
-  const getDisplayDesc = (group: Group) => (isAr && group.description_ar ? group.description_ar : group.description);
+  const getDisplayName = (group: typeof groups[0]) => (isAr && group.name_ar ? group.name_ar : group.name);
+  const getDisplayDesc = (group: typeof groups[0]) => (isAr && group.description_ar ? group.description_ar : group.description);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="space-y-4">
         <div className="flex justify-end"><Skeleton className="h-10 w-36" /></div>
@@ -174,7 +75,6 @@ export const GroupsTab = memo(function GroupsTab() {
         </div>
       )}
 
-      {/* Inline create form */}
       {showForm && (
         <Card>
           <CardHeader className="pb-3">
@@ -212,8 +112,8 @@ export const GroupsTab = memo(function GroupsTab() {
             </div>
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               <Button variant="outline" onClick={() => setShowForm(false)}>{t("cancel")}</Button>
-              <Button onClick={handleCreate} disabled={creating || !form.name.trim()}>
-                {creating ? t("loading") : t("create")}
+              <Button onClick={handleCreate} disabled={isCreating || !form.name.trim()}>
+                {isCreating ? t("loading") : t("create")}
               </Button>
             </div>
           </CardContent>
