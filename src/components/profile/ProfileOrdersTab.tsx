@@ -99,4 +99,3 @@ export const ProfileOrdersTab = memo(function ProfileOrdersTab({ userId, isAr }:
   );
 });
 
-export default ProfileOrdersTab;

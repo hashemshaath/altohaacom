@@ -81,4 +81,3 @@ export const ExhibitionEventScheduleWidget = memo(function ExhibitionEventSchedu
   );
 });
 
-export default ExhibitionEventScheduleWidget;

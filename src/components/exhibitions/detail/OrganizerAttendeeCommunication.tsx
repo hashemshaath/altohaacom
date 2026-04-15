@@ -129,4 +129,3 @@ export const OrganizerAttendeeCommunication = memo(function OrganizerAttendeeCom
   );
 });
 
-export default OrganizerAttendeeCommunication;
