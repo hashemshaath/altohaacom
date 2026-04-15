@@ -1,4 +1,5 @@
 import { memo, forwardRef, useState, useCallback } from "react";
+import { getOptimizedUrl } from "@/components/ui/optimized-image";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
