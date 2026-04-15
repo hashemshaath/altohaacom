@@ -16,6 +16,7 @@ import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip,
   CartesianGrid, Cell,
 } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Competitor {
   id: string;
@@ -59,7 +60,7 @@ export const SEOCompetitorTracker = memo(function SEOCompetitorTracker({ isAr }:
         .from("seo_competitors")
         .select("*")
         .order("da_score", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Competitor[];
     },
   });
@@ -86,7 +87,7 @@ export const SEOCompetitorTracker = memo(function SEOCompetitorTracker({ isAr }:
         ...metrics,
         last_checked: new Date().toISOString(),
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setNewDomain("");
       setNewName("");
       qc.invalidateQueries({ queryKey: ["seo-competitors"] });

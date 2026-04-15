@@ -21,6 +21,7 @@ import {
   Plus, Copy, Pencil, Trash2, Save, FileText, ChefHat, Trophy, Wrench, Coffee,
   Layers, Star, Eye, Package, Target,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const DOMAIN_ICONS: Record<string, React.ElementType> = {
   chefs_table: ChefHat,
@@ -71,7 +72,7 @@ function useEvaluationTemplates(domainId?: string) {
         .order("created_at", { ascending: false });
       if (domainId) query = query.eq("domain_id", domainId);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as Template[];
     },
   });
@@ -103,13 +104,13 @@ export const TemplatesManager = memo(function TemplatesManager() {
           .from("evaluation_templates" as any)
           .update(rest as any)
           .eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { id, created_at, ...rest } = template as any;
         const { error } = await supabase
           .from("evaluation_templates" as any)
           .insert({ ...rest, domain_id: domainId } as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -127,7 +128,7 @@ export const TemplatesManager = memo(function TemplatesManager() {
         .from("evaluation_templates" as any)
         .delete()
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["evaluation-templates"] });

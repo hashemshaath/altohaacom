@@ -14,6 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ── Smart Translate Button ──────────────────────────────────────
 
@@ -30,7 +31,7 @@ export const SmartTranslateBtn = memo(function SmartTranslateBtn({ sourceText, f
       const { data, error } = await supabase.functions.invoke("smart-translate", {
         body: { text: sourceText, from: fromLang, to: fromLang === "ar" ? "en" : "ar", context: "culinary/hospitality/food industry professional CV" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) onTranslated(data.translated);
     } catch (e: unknown) {
       toast({ title: "Translation failed", description: e instanceof Error ? e.message : String(e), variant: "destructive" });
@@ -59,7 +60,7 @@ export const TranslateInlineButton = memo(function TranslateInlineButton({ text,
       const { data, error } = await supabase.functions.invoke("smart-translate", {
         body: { text, from: fromLang, to: toLang, context: "culinary/chef profile/section titles" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) onTranslated(data.translated);
     } catch { /* silent */ } finally { setLoading(false); }
   };

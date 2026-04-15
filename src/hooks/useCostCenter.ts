@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { sendNotification } from "@/lib/notifications";
 import { CACHE } from "@/lib/queryConfig";
 import { MS_PER_DAY } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ─── Types ──────────────────────────────────
 
@@ -169,7 +170,7 @@ export function useCostEstimates(filters?: { moduleType?: string; status?: strin
         query = query.eq("status", filters.status);
       }
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as CostEstimate[];
     },
   });
@@ -183,7 +184,7 @@ export function useCostEstimate(id: string | undefined) {
         .select(ESTIMATE_COLS)
         .eq("id", id!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as CostEstimate;
     },
     enabled: !!id,
@@ -199,7 +200,7 @@ export function useCostEstimateItems(estimateId: string | undefined) {
         .select(ITEM_COLS)
         .eq("estimate_id", estimateId!)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as CostEstimateItem[];
     },
     enabled: !!estimateId,
@@ -214,7 +215,7 @@ export function useCostApprovalLog(estimateId: string | undefined) {
         .select(LOG_COLS)
         .eq("estimate_id", estimateId!)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as CostApprovalLog[];
     },
     enabled: !!estimateId,
@@ -233,7 +234,7 @@ export function useCostTemplates(moduleType?: CostModuleType) {
         query = query.eq("module_type", moduleType);
       }
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as CostTemplate[];
     },
   });
@@ -251,7 +252,7 @@ export function useCreateCostEstimate() {
         .insert({ ...estimate, prepared_by: user?.id } as Record<string, unknown>)
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as CostEstimate;
     },
     onSuccess: () => {
@@ -270,7 +271,7 @@ export function useUpdateCostEstimate() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as CostEstimate;
     },
     onSuccess: (data) => {
@@ -294,7 +295,7 @@ export function useSaveCostEstimateItem() {
           .eq("id", id)
           .select()
           .single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         return data as unknown as CostEstimateItem;
       } else {
         const { id, ...rest } = payload;
@@ -302,7 +303,7 @@ export function useSaveCostEstimateItem() {
           .insert(rest as Record<string, unknown>)
           .select()
           .single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         return data as unknown as CostEstimateItem;
       }
     },
@@ -321,7 +322,7 @@ export function useDeleteCostEstimateItem() {
       const { error } = await untypedFrom("cost_estimate_items")
         .delete()
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return estimateId;
     },
     onSuccess: (estimateId) => {
@@ -573,12 +574,12 @@ export function useSaveCostTemplate() {
         const { error } = await untypedFrom("cost_templates")
           .update(rest as Record<string, unknown>)
           .eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { id, ...rest } = template;
         const { error } = await untypedFrom("cost_templates")
           .insert({ ...rest, created_by: user?.id } as Record<string, unknown>);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {

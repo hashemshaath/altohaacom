@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type Notification = Database["public"]["Tables"]["notifications"]["Row"];
 
@@ -56,7 +57,7 @@ export function useNotifications() {
         .order("created_at", { ascending: false })
         .limit(50);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       setNotifications(data || []);
       setUnreadCount(data?.filter(n => !n.is_read).length || 0);
@@ -77,7 +78,7 @@ export function useNotifications() {
         .eq("id", notificationId)
         .eq("user_id", user.id);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       setNotifications(prev =>
         prev.map(n =>
@@ -100,7 +101,7 @@ export function useNotifications() {
         .eq("user_id", user.id)
         .eq("is_read", false);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       setNotifications(prev =>
         prev.map(n => ({ ...n, is_read: true, read_at: new Date().toISOString() }))
@@ -119,7 +120,7 @@ export function useNotifications() {
         .delete()
         .eq("id", notificationId)
         .eq("user_id", user.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setNotifications(prev => {
         const deleted = prev.find(n => n.id === notificationId);
         const next = prev.filter(n => n.id !== notificationId);
@@ -141,7 +142,7 @@ export function useNotifications() {
         .delete()
         .eq("user_id", user.id)
         .eq("is_read", true);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setNotifications(prev => prev.filter(n => !n.is_read));
     } catch (error: unknown) {
       console.error("Error clearing read notifications:", error);

@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Timer, CheckCircle2, Clock, TrendingDown, Zap, BarChart3 } from "lucide-react";
 import { differenceInHours } from "date-fns";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
   const isAr = useIsAr();
@@ -21,7 +22,7 @@ export const TicketPerformanceWidget = memo(function TicketPerformanceWidget() {
         .select("id, status, priority, created_at, resolved_at")
         .order("created_at", { ascending: false })
         .limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const all = tickets || [];
       const resolved = all.filter(t => t.status === "resolved" || t.status === "closed");

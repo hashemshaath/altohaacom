@@ -23,6 +23,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TABLE_OPTIONS = [
   { value: "organizers", label_en: "Organizers", label_ar: "المنظمون", icon: "🏢" },
@@ -46,7 +47,7 @@ function useMergeAuditLog() {
         .eq("action_type", "entity_merge")
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     ...CACHE.realtime,

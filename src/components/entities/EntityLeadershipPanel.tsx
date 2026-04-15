@@ -14,6 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import { ChefSearchSelector } from "@/components/admin/ChefSearchSelector";
 import { Plus, Trash2, Crown, User, GripVertical } from "lucide-react";
 import type { EntityPositionWithProfile } from "./entityTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const positionTypes = [
   { value: "president", en: "President", ar: "الرئيس" },
@@ -62,7 +63,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
         .select("*, profiles:user_id(id, full_name, full_name_ar, avatar_url, experience_level)")
         .eq("entity_id", entityId)
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as EntityPositionWithProfile[];
     },
   });
@@ -80,7 +81,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
         is_active: isActive,
         sort_order: (positions?.length || 0) + 1,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entity-positions", entityId] });
@@ -95,7 +96,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("entity_positions").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["entity-positions", entityId] });
@@ -106,7 +107,7 @@ export const EntityLeadershipPanel = memo(function EntityLeadershipPanel({ entit
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
       const { error } = await supabase.from("entity_positions").update({ is_active: active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["entity-positions", entityId] }),
   });

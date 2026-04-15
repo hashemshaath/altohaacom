@@ -23,6 +23,7 @@ import {
   ArrowLeft, ArrowRight, Check, Trophy, Layers,
   Hash, Star, CheckCircle2, Eye, Wrench, Zap,
   ClipboardList, Info, LucideIcon } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type SessionMode = "standalone" | "competition";
 
@@ -66,7 +67,7 @@ export default function CreateTasting() {
         .in("status", ["draft", "registration_open", "registration_closed", "in_progress", "judging"])
         .order("competition_start", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: mode === "competition",

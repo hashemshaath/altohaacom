@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { ClipboardCheck, Plus, Trash2, Sparkles } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ChecklistItem {
   label: string;
@@ -65,7 +66,7 @@ export const PreparationChecklistPanel = memo(function PreparationChecklistPanel
         .eq("competition_id", competitionId)
         .eq("user_id", user.id)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user,
@@ -89,7 +90,7 @@ export const PreparationChecklistPanel = memo(function PreparationChecklistPanel
         items: updatedItems as unknown as Json,
         progress_percentage: progress,
       }, { onConflict: "competition_id,user_id" });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["preparation-checklist", competitionId, user?.id] });

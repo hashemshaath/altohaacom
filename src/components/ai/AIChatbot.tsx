@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, X, Send, Bot, User, Loader2, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Message {
   id: string;
@@ -50,7 +51,7 @@ const AIChatbot = memo(function AIChatbot() {
         },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const assistantMsg: Message = {
         id: crypto.randomUUID(),

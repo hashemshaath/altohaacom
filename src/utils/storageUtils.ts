@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const SIGNED_URL_EXPIRY = 2592000; // 30 days in seconds
 
@@ -13,7 +14,7 @@ export async function uploadMessageAttachment(
   const { error } = await supabase.storage
     .from("message-attachments")
     .upload(filePath, file);
-  if (error) throw error;
+  if (error) throw handleSupabaseError(error);
 
   const { data, error: signError } = await supabase.storage
     .from("message-attachments")

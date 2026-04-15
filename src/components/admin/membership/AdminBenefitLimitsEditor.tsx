@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Save, Infinity, RotateCcw } from "lucide-react";
 import { useState, useEffect, memo } from "react";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIERS = ["basic", "professional", "enterprise"] as const;
 const TIER_LABELS: Record<string, { en: string; ar: string }> = {
@@ -43,7 +44,7 @@ const AdminBenefitLimitsEditor = memo(function AdminBenefitLimitsEditor() {
         .from("membership_benefit_limits")
         .select("id, tier, benefit_code, benefit_name, benefit_name_ar, monthly_limit, is_active, sort_order, category, icon_name")
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as LimitRow[];
     },
   });

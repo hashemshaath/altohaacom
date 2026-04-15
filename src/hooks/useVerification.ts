@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useVerificationStatus() {
   const { user } = useAuth();
@@ -32,7 +33,7 @@ export function useMyVerificationRequests() {
         .select("id, user_id, entity_type, verification_level, applicant_name, applicant_name_ar, applicant_role, applicant_position, documents, status, ai_analysis, ai_risk_score, ai_flags, ai_reviewed_at, reviewed_by, reviewed_at, reviewer_notes, rejection_reason, created_at")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -46,7 +47,7 @@ export function useAllVerificationRequests() {
         .from("verification_requests")
         .select("id, user_id, company_id, culinary_entity_id, entity_type, verification_level, applicant_name, applicant_name_ar, applicant_role, applicant_position, documents, status, ai_analysis, ai_risk_score, ai_flags, ai_reviewed_at, reviewed_by, reviewed_at, reviewer_notes, rejection_reason, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -82,7 +83,7 @@ export function useSubmitVerification() {
         })
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: (data, variables) => {
@@ -152,7 +153,7 @@ export function useRunAIVerification() {
         })
         .eq("id", payload.request_id);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return result.analysis;
     },
     onError: (err: Error) => {
@@ -197,7 +198,7 @@ export function useReviewVerification() {
         .update(updateData)
         .eq("id", payload.request_id);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // If approved, update the target entity's verified status
       if (payload.action === "approved" && request) {

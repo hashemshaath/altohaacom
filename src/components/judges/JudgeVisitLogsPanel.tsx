@@ -14,6 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Pencil, Calendar, MapPin, Trophy } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   userId: string;
@@ -60,7 +61,7 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
         .select("id, user_id, competition_id, event_name, event_name_ar, event_type, role_played, location, country, start_date, end_date, achievements, notes, created_by, created_at, updated_at")
         .eq("user_id", userId)
         .order("start_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -83,10 +84,10 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
       };
       if (editingId) {
         const { error } = await supabase.from("judge_visit_logs").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("judge_visit_logs").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -100,7 +101,7 @@ const JudgeVisitLogsPanel = memo(function JudgeVisitLogsPanel({ userId, isAdmin 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("judge_visit_logs").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["judge-visit-logs", userId] });

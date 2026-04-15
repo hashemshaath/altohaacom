@@ -15,6 +15,7 @@ import { OrderSearchFilter } from "./OrderSearchFilter";
 import { BulkActionBar } from "./BulkActionBar";
 import { useRealtimeOrderUpdates } from "@/hooks/useRealtimeOrderUpdates";
 import { Checkbox } from "@/components/ui/checkbox";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -50,7 +51,7 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
         .select("id, title, title_ar, category, status")
         .eq("competition_id", competitionId)
         .order("created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -64,7 +65,7 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
         .select("*, requirement_items(name, name_ar, category)")
         .in("list_id", lists.map(l => l.id))
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!lists?.length,
@@ -79,7 +80,7 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
         .eq("status", "active")
         .order("name")
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -94,7 +95,7 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
           assigned_by: companyId ? user!.id : null,
         } as any)
         .eq("id", itemId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["vendor-items", competitionId] });
@@ -126,7 +127,7 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
           assigned_by: user!.id,
         } as any)
         .in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vendor-items", competitionId] });
@@ -141,7 +142,7 @@ export const VendorAssignmentPanel = memo(function VendorAssignmentPanel({ compe
       const updates: Record<string, unknown> = { status };
       if (status === "delivered") updates.delivered_at = new Date().toISOString();
       const { error } = await supabase.from("requirement_list_items").update(updates).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vendor-items", competitionId] });

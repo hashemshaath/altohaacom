@@ -18,6 +18,7 @@ import {
   Plus, Pencil, Trash2, ChevronDown, Layers, Calendar, Copy, Loader2, X,
   Landmark, Trophy, Shuffle,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface SeriesRow {
   id: string;
@@ -81,7 +82,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
         .from("event_series")
         .select("id, name, name_ar, description, description_ar, series_type, logo_url, cover_image_url, default_venue, default_venue_ar, default_city, default_country, default_organizer_name, default_organizer_name_ar, default_organizer_email, default_organizer_phone, default_organizer_website, website_url, tags, is_active, created_at")
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as SeriesRow[];
     },
   });
@@ -134,10 +135,10 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
       };
       if (editingId) {
         const { error } = await supabase.from("event_series").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("event_series").insert(payload as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -151,7 +152,7 @@ export const EventSeriesManager = memo(function EventSeriesManager({ onCreateEdi
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("event_series").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["event-series"] });

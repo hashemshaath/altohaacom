@@ -11,6 +11,7 @@ import { History } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { format } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface PostEditHistoryProps {
   postId: string;
@@ -28,7 +29,7 @@ export const PostEditHistory = memo(function PostEditHistory({ postId, onClose }
         .select("id, post_id, previous_content, edited_by, edited_at")
         .eq("post_id", postId)
         .order("edited_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

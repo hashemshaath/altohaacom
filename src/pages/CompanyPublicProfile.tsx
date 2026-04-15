@@ -18,6 +18,7 @@ import {
   Users, Crown, ArrowLeft, CheckCircle, Package,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyPublicProfile() {
   const isAr = useIsAr();
@@ -35,7 +36,7 @@ export default function CompanyPublicProfile() {
         .eq("id", id)
         .eq("status", "active")
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!id,

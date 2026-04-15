@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Pencil, Check, X, Copy, Languages, Loader2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface EditableFieldProps {
   label: string;
@@ -51,7 +52,7 @@ export const EditableField = React.memo(({ label, value, fieldKey, onUpdate, cop
         },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         onUpdate(pairedFieldKey, data.translated);
         toast({ title: targetLang === "ar" ? "تمت الترجمة" : "Translated", description: targetLang === "ar" ? "تم ترجمة النص إلى العربية" : "Text translated to English" });

@@ -12,6 +12,7 @@ import { Trophy, Medal, Award, Calendar, Search, Filter, ArrowRight, Clock, Chec
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CompetitionHistoryProps {
   userId: string;
@@ -46,7 +47,7 @@ export const CompetitionHistory = memo(function CompetitionHistory({ userId }: C
         .eq("participant_id", userId)
         .order("registered_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!regs || regs.length === 0) return [];
 
       const competitionIds = [...new Set(regs.map(r => r.competition_id))];

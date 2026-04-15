@@ -25,6 +25,7 @@ import {
   Truck, Plus, Search, User, Phone, Car, CheckCircle, XCircle, Trash2, Pencil, Filter, Download,
 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyDrivers() {
   const { companyId } = useCompanyAccess();
@@ -46,7 +47,7 @@ export default function CompanyDrivers() {
         .select("id, company_id, branch_id, name, name_ar, phone, license_number, vehicle_type, vehicle_plate, is_active, is_available, created_at")
         .eq("company_id", companyId)
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -68,10 +69,10 @@ export default function CompanyDrivers() {
       };
       if (editingDriver) {
         const { error } = await supabase.from("company_drivers").update(payload).eq("id", editingDriver.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("company_drivers").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -85,7 +86,7 @@ export default function CompanyDrivers() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("company_drivers").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyDrivers"] });
@@ -96,7 +97,7 @@ export default function CompanyDrivers() {
   const toggleAvailability = useMutation({
     mutationFn: async ({ id, is_available }: { id: string; is_available: boolean }) => {
       const { error } = await supabase.from("company_drivers").update({ is_available }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["companyDrivers"] }),
   });
@@ -104,7 +105,7 @@ export default function CompanyDrivers() {
   const toggleActive = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("company_drivers").update({ is_active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["companyDrivers"] }),
   });

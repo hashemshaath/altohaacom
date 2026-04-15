@@ -17,6 +17,7 @@ import {
   buildEstablishmentPayload, buildExhibitionPayload, buildCompetitionPayload, buildOrganizerPayload,
 } from "../smartImportPayloads";
 import { smartImportReducer, initialSmartImportState } from "./smartImportReducer";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSmartImportData(isAr: boolean) {
   const { user } = useAuth();
@@ -212,7 +213,7 @@ export function useSmartImportData(isAr: boolean) {
     try {
       const updatePayload = getPayloadForTable(state.details, record.table);
       const { error } = await supabase.from(record.table).update(updatePayload).eq("id", record.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const tableLabel = TARGET_TABLE_OPTIONS.find(t => t.value === record.table);
       toast({ title: isAr ? "تم تحديث البيانات بنجاح" : `${tableLabel?.label_en || 'Record'} updated successfully`, description: isAr ? "انقر لعرض السجل" : "Click to view record" });
       dispatch({ type: "UPDATE_DONE", record: { table: record.table, id: record.id } });
@@ -239,13 +240,13 @@ export function useSmartImportData(isAr: boolean) {
         const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
         const payload = { ...buildEntityPayload(details), name: details.name_en || name, type: state.selectedEntityType, scope: "local" as const, status: "pending" as const, is_visible: false, is_verified: false, slug, entity_number: "", created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("culinary_entities").insert(payload).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         recordId = inserted?.id;
       } else if (state.targetTable === "companies") {
         subType = state.selectedCompanyType;
         const payload = { ...buildCompanyPayload(details), name: details.name_en || name, type: state.selectedCompanyType, status: "pending" as const, country_code: details.country_code || "SA", created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("companies").insert(payload).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         recordId = inserted?.id;
       } else if (state.targetTable === "exhibitions") {
         subType = state.selectedExhibitionType;
@@ -253,27 +254,27 @@ export function useSmartImportData(isAr: boolean) {
         const now = new Date();
         const payload = { ...buildExhibitionPayload(details), title: details.name_en || name, type: state.selectedExhibitionType, status: "pending" as const, slug, start_date: details.start_date || now.toISOString().split('T')[0], end_date: details.end_date || new Date(now.getTime() + 3 * MS_PER_DAY).toISOString().split('T')[0], created_by: user?.id || null };
         const { data: inserted, error } = await (supabase as never as { from: (t: string) => { insert: (p: unknown) => { select: (s: string) => { single: () => Promise<{ data: { id: string } | null; error: Error | null }> } } } }).from("exhibitions").insert(payload).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         recordId = inserted?.id;
       } else if (state.targetTable === "competitions") {
         subType = "competition";
         const now = new Date();
         const payload = { ...buildCompetitionPayload(details), title: details.name_en || name, status: "pending" as const, competition_start: details.start_date || now.toISOString().split('T')[0], competition_end: details.end_date || new Date(now.getTime() + 3 * MS_PER_DAY).toISOString().split('T')[0], organizer_id: user?.id || '', country_code: details.country_code || "SA", edition_year: details.edition_year || now.getFullYear() };
         const { data: inserted, error } = await (supabase as never as { from: (t: string) => { insert: (p: unknown) => { select: (s: string) => { single: () => Promise<{ data: { id: string } | null; error: Error | null }> } } } }).from("competitions").insert(payload).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         recordId = inserted?.id;
       } else if (state.targetTable === "organizers") {
         subType = "organizer";
         const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
         const payload = { ...buildOrganizerPayload(details), name: details.name_en || name, slug, status: "active", created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("organizers").insert(payload).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         recordId = inserted?.id;
       } else {
         subType = state.selectedEstablishmentType;
         const payload = { ...buildEstablishmentPayload(details), name: details.name_en || name, type: state.selectedEstablishmentType, is_active: true, is_verified: false, created_by: user?.id || null };
         const { data: inserted, error } = await supabase.from("establishments").insert(payload).select("id").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         recordId = inserted?.id;
       }
 

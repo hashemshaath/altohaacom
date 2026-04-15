@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Award, Trophy, Medal, Sparkles, Loader2, CheckCircle } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface AutoIssueCertificatesProps {
   competitionId: string;
@@ -33,7 +34,7 @@ export const AutoIssueCertificates = memo(function AutoIssueCertificates({ compe
         .select("id, title, title_ar, competition_start, competition_end, venue, venue_ar, status, country_code, organizer_id")
         .eq("id", competitionId)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

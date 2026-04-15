@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { Hash, ChevronRight, Maximize2, Minimize2, Languages, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   value: string;
@@ -119,7 +120,7 @@ export function MarkdownEditor({ value, onChange, placeholder, dir: initialDir, 
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: value, source_lang: contentLang, target_lang: targetLang, optimize_seo: true, field_type: "body" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         onTranslateContent(data.translated);
         toast({ title: isAr ? "تمت ترجمة المحتوى بالكامل" : "Full content translated" });

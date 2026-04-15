@@ -12,6 +12,7 @@ import {
   Timer, BarChart3, Download, Medal, Award,
 } from "lucide-react";
 import { downloadCSV } from "@/lib/exportUtils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -49,7 +50,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
           )
         `)
         .eq("competition_registrations.competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- complex nested join query
       return data as any[];
     },
@@ -65,7 +66,7 @@ export const LiveScoringDashboard = memo(function LiveScoringDashboard({ competi
         .eq("competition_id", competitionId)
         .eq("role", "judge")
         .eq("status", "active");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

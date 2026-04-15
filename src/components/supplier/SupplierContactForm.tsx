@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Send, Mail } from "lucide-react";
 import { FormField, FormErrorSummary, SubmitButton } from "@/components/form";
 import { useFormValidation, rules } from "@/hooks/useFormValidation";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface SupplierContactFormProps {
   companyId: string;
@@ -65,7 +66,7 @@ export const SupplierContactForm = memo(function SupplierContactForm({ companyId
         direction: "inbound",
         status: "unread",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       import("@/lib/notificationTriggers").then(({ notifySupplierInquiry }) => {
         notifySupplierInquiry({

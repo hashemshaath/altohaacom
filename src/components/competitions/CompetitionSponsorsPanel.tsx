@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { sendNotification } from "@/lib/notifications";
 import { Building, Plus, Trash2, Crown, Award, Medal, Star, CheckCircle, XCircle, Clock } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CompetitionSponsorsPanelProps {
   competitionId: string;
@@ -54,7 +55,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
         .select("*, companies(name, name_ar, logo_url), sponsorship_packages(name, name_ar, tier)")
         .eq("competition_id", competitionId)
         .order("tier");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -67,7 +68,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
         .select("id, name, name_ar, logo_url, type")
         .in("type", ["sponsor", "partner"])
         .eq("status", "active");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!isOrganizer,
@@ -81,7 +82,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
         .select("id, name, name_ar, tier, price, currency, description, description_ar, benefits, sort_order, is_active, logo_placement, logo_on_certificates, max_sponsors")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!isOrganizer,
@@ -100,7 +101,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
           status: "active",
           created_by: user?.id,
         });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-sponsors", competitionId] });
@@ -116,7 +117,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
   const removeSponsorMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("competition_sponsors").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-sponsors", competitionId] });
@@ -130,7 +131,7 @@ export const CompetitionSponsorsPanel = memo(function CompetitionSponsorsPanel({
       const { error } = await supabase.from("competition_sponsors")
         .update({ status } as any)
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Notify the company contacts
       if (companyId) {

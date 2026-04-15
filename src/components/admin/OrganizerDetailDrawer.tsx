@@ -17,6 +17,7 @@ import {
   Calendar, CheckCircle2, ExternalLink, Ticket, TrendingUp,
   ArrowUpRight, Clock, Shield, UserCircle2, BarChart3,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   organizerId: string | null;
@@ -35,7 +36,7 @@ const OrganizerDetailDrawer = memo(function OrganizerDetailDrawer({ organizerId,
         .select("id, name, name_ar, slug, description, description_ar, logo_url, cover_image_url, email, phone, website, city, city_ar, country, country_ar, country_code, address, address_ar, status, is_verified, is_featured, organizer_number, founded_year, categories, services, services_ar, targeted_sectors, social_links, key_contacts, total_exhibitions, total_views, average_rating, company_id, entity_id, gallery_urls, metadata, created_by, created_at, updated_at")
         .eq("id", organizerId!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!organizerId && open,

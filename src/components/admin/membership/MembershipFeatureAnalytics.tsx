@@ -12,6 +12,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format, subDays } from "date-fns";
 import { AdminExportButton } from "@/components/admin/AdminExportButton";
 import { useAdminExport } from "@/hooks/useAdminExport";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface FeatureUsageRow {
   access_count: number;
@@ -51,7 +52,7 @@ const MembershipFeatureAnalytics = memo(function MembershipFeatureAnalytics() {
         .select("*, membership_features!inner(name, name_ar, code, category)")
         .gte("usage_date", startDate)
         .order("access_count", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as FeatureUsageRow[];
     },
   });

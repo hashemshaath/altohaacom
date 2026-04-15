@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Languages, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface TranslatableInputProps {
   label: string;
@@ -41,7 +42,7 @@ export const TranslatableInput = memo(function TranslatableInput({
       const { data, error } = await supabase.functions.invoke("smart-translate", {
         body: { text, from: lang, to: targetLang, context: "culinary/chef profile/food industry" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         onTranslated(data.translated);
         toast({ title: targetLang === "ar" ? "تمت الترجمة للعربية" : "Translated to English" });
@@ -60,7 +61,7 @@ export const TranslatableInput = memo(function TranslatableInput({
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: value, source_lang: lang, optimize_only: true, field_type: fieldType },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.optimized) {
         onChange(data.optimized);
         toast({ title: lang === "ar" ? "تم التحسين بنجاح" : "Optimized successfully" });

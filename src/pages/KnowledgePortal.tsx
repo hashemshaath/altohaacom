@@ -17,6 +17,7 @@ import {
   BookOpen, Link, FileText, Image, Scale, Search, Folder,
   GalleryHorizontalEnd, ExternalLink, Star
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function KnowledgePortal() {
   const { language } = useLanguage();
@@ -33,7 +34,7 @@ export default function KnowledgePortal() {
         .select("*, category:knowledge_categories(name, name_ar)")
         .eq("is_published", true)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.default.staleTime,
@@ -46,7 +47,7 @@ export default function KnowledgePortal() {
         .from("knowledge_categories")
         .select("id, name, name_ar, description, description_ar, icon, sort_order, parent_id")
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.long.staleTime,
@@ -60,7 +61,7 @@ export default function KnowledgePortal() {
         .select("id, title, title_ar, description, description_ar, image_url, category, category_id, competition_category, rating, score_range_min, score_range_max, tags, sort_order, is_active, uploaded_by_name")
         .eq("is_active", true)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.long.staleTime,
@@ -74,7 +75,7 @@ export default function KnowledgePortal() {
         .select("id, title, title_ar")
         .neq("status", "draft")
         .order("competition_start", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.medium.staleTime,

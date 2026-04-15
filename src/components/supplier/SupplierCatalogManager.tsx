@@ -14,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Package, Plus, Edit, Trash2, Save, X, Image } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const CATEGORIES = [
   "kitchen-equipment", "bakery", "utensils", "uniforms", "packaging",
@@ -103,10 +104,10 @@ export const SupplierCatalogManager = memo(function SupplierCatalogManager() {
       };
       if (editingId) {
         const { error } = await supabase.from("company_catalog").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("company_catalog").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -120,7 +121,7 @@ export const SupplierCatalogManager = memo(function SupplierCatalogManager() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("company_catalog").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["supplierCatalog", companyId] });

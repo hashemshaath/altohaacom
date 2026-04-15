@@ -62,7 +62,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
         .select("id, competition_id, item_name, item_name_ar, category, quantity, unit, priority, status, notes, notes_ar, requester_id, requester_role, assigned_vendor, assigned_vendor_ar, delivery_deadline, delivery_status, admin_notes, reviewed_by, reviewed_at, created_at, updated_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.length) return [];
       const userIds = [...new Set(data.map(r => r.requester_id).filter(Boolean))];
       const { data: profiles } = await supabase
@@ -96,7 +96,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
         notes: form.notes || null,
         priority: form.priority,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
@@ -133,7 +133,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
         reviewed_by: null,
         reviewed_at: null,
       }).eq("id", editingId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
@@ -162,7 +162,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
         reviewed_at: new Date().toISOString(),
         rejection_reason: reason || null,
       }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return { id, status, reason };
     },
     onSuccess: (_, variables) => {
@@ -189,7 +189,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       const { error } = await supabase.from("order_item_requests").update({
         admin_notes: note || null,
       }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
@@ -200,7 +200,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
   const deleteRequest = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("order_item_requests").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["item-requests", competitionId] });
@@ -254,6 +254,7 @@ export const ItemRequestPanel = memo(function ItemRequestPanel({ competitionId, 
       setShowTemplates(false);
       toast({
         title: isAr ? `تم إضافة ${t.ingredients.length} عنصر من قالب "${t.nameAr}"` : `Added ${t.ingredients.length} items from "${t.name}" template`,
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
       });
       if (user && competition) {
         import("@/lib/notificationTriggers").then(({ notifyItemRequestSubmitted }) => {

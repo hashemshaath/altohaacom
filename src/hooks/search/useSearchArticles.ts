@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
 import { buildFlexibleFilter, countMatchingWords, sortByRelevance } from "./searchUtils";
 import type { ArticleResult, SearchFilters } from "./searchTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSearchArticles(searchWords: string[], debouncedQuery: string, filters: SearchFilters) {
   return useQuery({
@@ -25,7 +26,7 @@ export function useSearchArticles(searchWords: string[], debouncedQuery: string,
       }
 
       const { data, error } = await query.order("published_at", { ascending: false }).limit(30);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) return [];
 
       return sortByRelevance(

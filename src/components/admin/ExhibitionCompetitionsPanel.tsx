@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Trophy, Search, X, Check, AlertTriangle, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -35,7 +36,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
         .select("*, competitions:competition_id(id, title, title_ar, status, slug)")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data ?? [];
     },
     enabled: !!exhibitionId,
@@ -66,7 +67,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
         edition_year: editionYear,
         created_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-competitions-admin", exhibitionId] });
@@ -80,7 +81,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
   const unlinkMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_competitions").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-competitions-admin", exhibitionId] });
@@ -100,7 +101,7 @@ export const ExhibitionCompetitionsPanel = memo(function ExhibitionCompetitionsP
         exhibition_id: exhibitionId,
         created_by: user?.id,
       } as any).select("id").single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data.id;
     },
     onSuccess: async (competitionId: string) => {

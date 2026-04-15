@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Building2, CheckCircle, XCircle, Mail, Shield, Users, Clock, Loader2,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function AcceptInvite() {
   const [searchParams] = useSearchParams();
@@ -30,7 +31,7 @@ export default function AcceptInvite() {
         .select("*, companies:company_id(id, name, name_ar, logo_url, type)")
         .eq("token", token)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!token,
@@ -64,7 +65,7 @@ export default function AcceptInvite() {
     mutationFn: async () => {
       if (!invite) throw new Error("No invite");
       const { error } = await supabase.from("company_employee_invites").update({ status: "declined" }).eq("id", invite.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { toast({ title: isAr ? "تم رفض الدعوة" : "Invitation declined" }); navigate("/dashboard"); },
   });

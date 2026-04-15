@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { Briefcase, Eye, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const JobAvailabilityWidget = memo(function JobAvailabilityWidget() {
   const { user } = useAuth();
@@ -34,7 +35,7 @@ export const JobAvailabilityWidget = memo(function JobAvailabilityWidget() {
         .from("profiles")
         .update({ is_open_to_work: newValue } as any)
         .eq("user_id", user!.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_, newValue) => {
       qc.invalidateQueries({ queryKey: ["job-availability-widget"] });

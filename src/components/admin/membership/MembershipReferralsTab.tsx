@@ -15,6 +15,7 @@ import { format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ar } from "date-fns/locale";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const MembershipReferralsTab = memo(function MembershipReferralsTab() {
   const isAr = useIsAr();
@@ -30,7 +31,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
         .from("referral_codes")
         .select("*")
         .order("total_conversions", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -44,7 +45,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
         .select("*")
         .order("converted_at", { ascending: false })
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -62,7 +63,7 @@ const MembershipReferralsTab = memo(function MembershipReferralsTab() {
         query = query.eq("status", statusFilter);
       }
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

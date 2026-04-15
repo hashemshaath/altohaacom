@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { EyeOff, RefreshCw, Copy, Shield } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -32,7 +33,7 @@ export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId
         .from("blind_judging_codes")
         .select("*, competition_registrations:registration_id(participant_id, dish_name, profiles:participant_id(full_name, full_name_ar))")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: isOrganizer,
@@ -44,7 +45,7 @@ export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId
         .from("competitions")
         .update({ blind_judging_enabled: newEnabled, blind_code_prefix: prefix })
         .eq("id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition", competitionId] });
@@ -76,7 +77,7 @@ export const BlindJudgingPanel = memo(function BlindJudgingPanel({ competitionId
       if (newCodes.length === 0) throw new Error("All registrations already have codes");
 
       const { error } = await supabase.from("blind_judging_codes").insert(newCodes);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blind-codes", competitionId] });

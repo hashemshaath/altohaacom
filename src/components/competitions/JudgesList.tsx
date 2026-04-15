@@ -19,6 +19,7 @@ import { Link } from "react-router-dom";
 import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
 import React, { useState } from "react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface JudgesListProps {
   competitionId: string;
@@ -90,7 +91,7 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
           .from("competition_roles")
           .update({ status: "active", assigned_by: user?.id, assigned_at: new Date().toISOString(), revoked_at: null })
           .eq("id", existing.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         // Insert new row
         const { error } = await supabase.from("competition_roles").insert({
@@ -100,7 +101,7 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
           assigned_by: user?.id,
           status: "active",
         });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -120,7 +121,7 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
         .eq("competition_id", competitionId)
         .eq("role", "head_judge")
         .eq("status", "active");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["head-judge", competitionId] });
@@ -136,7 +137,7 @@ export const JudgesList = React.forwardRef<HTMLDivElement, JudgesListProps>(func
         .select("id, judge_id, assigned_at")
         .eq("competition_id", competitionId);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!assignments || assignments.length === 0) return [];
 
       const judgeIds = assignments.map((a) => a.judge_id);

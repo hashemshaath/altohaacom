@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Building, Ticket, Tag, Mail, Phone, Globe, Users, Star, Link, CheckCircle2 } from "lucide-react";
 import type { ExhibitionFormData } from "./types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   data: ExhibitionFormData;
@@ -27,7 +28,7 @@ export const ExhibitionOrganizerTicketsStep = memo(function ExhibitionOrganizerT
         .select("id, name, name_ar, email, phone, website, is_verified")
         .eq("status", "active")
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

@@ -14,6 +14,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { Crown, Star, Medal, Award, Package, Sparkles, Calendar, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIER_ICONS: Record<string, any> = {
   platinum: Crown, gold: Star, silver: Medal, bronze: Award, custom: Package,
@@ -43,7 +44,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
         .select("*, competitions(title, title_ar, competition_start, competition_end, status), sponsorship_packages(name, name_ar, tier, price)")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -58,7 +59,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
         .eq("company_id", companyId)
         .in("invitation_type", ["sponsorship", "exhibition_sponsor", "section_sponsor"])
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -74,7 +75,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
         .in("status", ["upcoming", "registration_open"])
         .order("competition_start", { ascending: true })
         .limit(10);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -101,7 +102,7 @@ export const CompanySponsorshipPanelEnhanced = memo(function CompanySponsorshipP
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: prompt, source_lang: isAr ? "ar" : "en", optimize_seo: false, optimize_only: true },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setAiSuggestions(data?.optimized || (isAr ? "لم يتم الحصول على توصيات" : "No suggestions available"));
     } catch {
       toast({ variant: "destructive", title: isAr ? "فشل في الحصول على التوصيات" : "Failed to get suggestions" });

@@ -33,6 +33,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ─── Types ───
 interface TranslationKey {
@@ -98,7 +99,7 @@ export default function LocalizationAdmin() {
         .select("id, key, namespace, en, ar, context, is_verified, auto_translated, updated_by, created_at, updated_at")
         .order("namespace")
         .order("key");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as TranslationKey[];
     },
   });
@@ -110,7 +111,7 @@ export default function LocalizationAdmin() {
         .from("platform_languages")
         .select("id, code, name, native_name, flag_emoji, is_enabled, is_default, is_rtl, sort_order, created_at, updated_at")
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as PlatformLanguage[];
     },
   });
@@ -125,7 +126,7 @@ export default function LocalizationAdmin() {
         ar: key.ar,
         context: key.context || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translation-keys"] });
@@ -141,7 +142,7 @@ export default function LocalizationAdmin() {
   const updateKeyMutation = useMutation({
     mutationFn: async ({ id, en, ar, context }: { id: string; en: string; ar: string; context: string }) => {
       const { error } = await supabase.from("translation_keys").update({ en, ar, context: context || null, updated_at: new Date().toISOString() }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translation-keys"] });
@@ -153,7 +154,7 @@ export default function LocalizationAdmin() {
   const deleteKeyMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("translation_keys").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translation-keys"] });
@@ -164,7 +165,7 @@ export default function LocalizationAdmin() {
   const bulkDeleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.from("translation_keys").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["translation-keys"] });
@@ -176,7 +177,7 @@ export default function LocalizationAdmin() {
   const verifyKeyMutation = useMutation({
     mutationFn: async ({ id, verified }: { id: string; verified: boolean }) => {
       const { error } = await supabase.from("translation_keys").update({ is_verified: verified }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["translation-keys"] }),
   });
@@ -184,7 +185,7 @@ export default function LocalizationAdmin() {
   const toggleLanguageMutation = useMutation({
     mutationFn: async ({ id, enabled }: { id: string; enabled: boolean }) => {
       const { error } = await supabase.from("platform_languages").update({ is_enabled: enabled }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["platform-languages"] });
@@ -196,7 +197,7 @@ export default function LocalizationAdmin() {
     mutationFn: async (id: string) => {
       await supabase.from("platform_languages").update({ is_default: false }).neq("id", id);
       const { error } = await supabase.from("platform_languages").update({ is_default: true, is_enabled: true }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["platform-languages"] });
@@ -216,7 +217,7 @@ export default function LocalizationAdmin() {
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text: sourceText, targetLanguage: targetLang, context: key.context || key.namespace },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const translated = data?.translated || data?.text || "";
       await supabase.from("translation_keys").update({
         [targetLang]: translated,
@@ -310,7 +311,7 @@ export default function LocalizationAdmin() {
         entries.map(e => ({ key: e.key, namespace: e.namespace, en: e.en, ar: e.ar })),
         { onConflict: "key" }
       );
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       queryClient.invalidateQueries({ queryKey: ["translation-keys"] });
       setShowImportDialog(false);
       setImportText("");

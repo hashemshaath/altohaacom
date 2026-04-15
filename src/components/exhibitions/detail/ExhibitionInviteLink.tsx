@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import { Link2, Copy, Check, UserPlus } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -28,7 +29,7 @@ export const ExhibitionInviteLink = memo(forwardRef<HTMLDivElement, Props>(funct
         .insert({ exhibition_id: exhibitionId, created_by: user.id, label: "Quick invite" })
         .select("code")
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data.code;
     },
     onSuccess: (code) => {

@@ -20,6 +20,7 @@ import {
 import {
   Mail, CheckCircle, XCircle, Clock, CalendarCheck, Trophy, Eye, Send, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyInvitations() {
   const { language } = useLanguage();
@@ -39,7 +40,7 @@ export default function CompanyInvitations() {
         .select("*, competitions(title, title_ar, competition_start)")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -56,7 +57,7 @@ export default function CompanyInvitations() {
           response_notes: responseNotes || null,
         })
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["companyInvitations"] });

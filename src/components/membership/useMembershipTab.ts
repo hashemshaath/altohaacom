@@ -8,6 +8,7 @@ import { useLanguage } from "@/i18n/LanguageContext";
 import { useVerificationStatus } from "@/hooks/useVerification";
 import { useToast } from "@/hooks/use-toast";
 import { Crown, Star, Shield } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIER_ORDER: Record<string, number> = { basic: 0, professional: 1, enterprise: 2 };
 const TIER_PRICES: Record<string, number> = { basic: 0, professional: 19, enterprise: 99 };
@@ -43,7 +44,7 @@ export function useMembershipTab(profile: any, userId: string, onMembershipChang
         .select("id, user_id, membership_number, verification_code, card_status, card_orientation, is_trial, trial_ends_at, expires_at, issued_at, created_at")
         .eq("user_id", userId)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -93,7 +94,7 @@ export function useMembershipTab(profile: any, userId: string, onMembershipChang
         membership_started_at: isDowngrade ? profile?.membership_started_at : now.toISOString(),
         membership_expires_at: expiresAt.toISOString(),
       }).eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       if (card) {
         await supabase.from("membership_cards").update({
@@ -187,7 +188,7 @@ export function useMembershipTab(profile: any, userId: string, onMembershipChang
         feedback: cancelFeedback || null,
         status: "pending",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast({

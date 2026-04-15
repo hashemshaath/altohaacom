@@ -15,6 +15,7 @@ import { countryFlag } from "@/lib/countryFlag";
 import { toast } from "@/hooks/use-toast";
 import { Search, Plus, Building2, X, Globe, ChevronDown, ChevronUp, Check } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const ENTITY_TYPES = [
   { value: "university", en: "University", ar: "جامعة" },
@@ -63,7 +64,7 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
         .select("id, name, name_ar, type, country, city, logo_url, website, status")
         .in("status", ["active", "pending"])
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.medium.staleTime,
@@ -124,7 +125,7 @@ export const EntitySelector = memo(function EntitySelector({ value, entityName, 
         is_visible: false,
       }).select("id, name, name_ar").single();
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data) {
         onChange(data.id, isAr ? (data.name_ar || data.name) : data.name);
         queryClient.invalidateQueries({ queryKey: ["entities-for-selector"] });

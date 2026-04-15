@@ -25,6 +25,7 @@ import {
   ShoppingCart, DollarSign, Heart, Star, Wallet, Gift, Users,
   Plus, Edit, Send, CreditCard, Package, AlertCircle, ShieldCheck, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CRMCustomerDetail() {
   const { userId } = useParams<{ userId: string }>();
@@ -48,7 +49,7 @@ export default function CRMCustomerDetail() {
         .select("user_id, full_name, avatar_url, username, email, phone, country_code, bio, specialization, account_status, wallet_balance, loyalty_points, account_number, is_verified, gender, date_of_birth, location, preferred_language, last_login_at, created_at, updated_at")
         .eq("user_id", userId!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!userId,
@@ -207,7 +208,7 @@ export default function CRMCustomerDetail() {
         user_id: userId!,
         added_by: adminUser?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["crm-customer-groups", userId] });

@@ -16,6 +16,7 @@ import { Star, MessageSquare, Send, PenLine, Shield, ThumbsUp, Image as ImageIco
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -106,7 +107,7 @@ function OrganizerResponse({ review, isAr, isOrganizer, exhibitionId }: { review
         organizer_response_at: new Date().toISOString(),
         organizer_response_by: user.id,
       }).eq("id", review.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-reviews", exhibitionId] });
@@ -173,7 +174,7 @@ function ReviewReplySection({ reviewId, isAr, isOrganizer, exhibitionCreatorId }
     mutationFn: async () => {
       if (!user || !replyText.trim()) return;
       const { error } = await supabase.from("exhibition_review_replies").insert({ review_id: reviewId, user_id: user.id, content: replyText.trim() });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["review-replies", reviewId] });
@@ -272,7 +273,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
         .eq("exhibition_id", exhibitionId)
         .order("helpful_count", { ascending: false })
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const userIds = [...new Set((data || []).map((r) => r.user_id))];
       if (userIds.length > 0) {
         const { data: profiles } = await supabase
@@ -311,7 +312,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
         const ext = file.name.split(".").pop();
         const path = `reviews/${exhibitionId}/${user.id}/${Date.now()}.${ext}`;
         const { url, error } = await uploadAndGetUrl("exhibition-files", path, file);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         urls.push(url);
       }
       setPhotoUrls(prev => [...prev, ...urls]);
@@ -334,7 +335,7 @@ export const ExhibitionReviewsTab = memo(function ExhibitionReviewsTab({ exhibit
         content: newContent || null,
         photo_urls: photoUrls.length > 0 ? photoUrls : [],
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-reviews", exhibitionId] });

@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
 import { countMatchingWords, sortByRelevance } from "./searchUtils";
 import type { PostResult } from "./searchTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSearchPosts(searchWords: string[], debouncedQuery: string) {
   return useQuery({
@@ -19,7 +20,7 @@ export function useSearchPosts(searchWords: string[], debouncedQuery: string) {
         .order("created_at", { ascending: false })
         .limit(30);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!posts?.length) return [];
 
       const scored = posts.map((p) => ({

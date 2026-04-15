@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const features = [
   {
@@ -93,7 +94,7 @@ export default function OrganizersLanding() {
         source: "organizers-landing",
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       toast({
         title: isAr ? "تم الإرسال بنجاح" : "Submitted Successfully",

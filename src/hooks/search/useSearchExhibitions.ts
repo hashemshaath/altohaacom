@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
 import { buildFlexibleFilter, countMatchingWords, sortByRelevance } from "./searchUtils";
 import type { ExhibitionResult } from "./searchTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSearchExhibitions(searchWords: string[], debouncedQuery: string) {
   return useQuery({
@@ -16,7 +17,7 @@ export function useSearchExhibitions(searchWords: string[], debouncedQuery: stri
         .or(buildFlexibleFilter(searchWords, cols))
         .order("start_date", { ascending: false })
         .limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) return [];
       return sortByRelevance(
         data.map((r) => ({

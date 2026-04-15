@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { ClipboardList, Plus, Star, Loader2, CheckCircle2, BarChart3 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -79,7 +80,7 @@ export const ExhibitionSurveyManager = memo(function ExhibitionSurveyManager({ e
         .insert({ exhibition_id: exhibitionId, title, title_ar: titleAr || title, created_by: user.id })
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const validQuestions = questions.filter(q => q.question.trim());
       if (validQuestions.length > 0) {
@@ -218,7 +219,7 @@ function SurveyCard({ survey, responded, responseCount, isAr, isOrganizer, exhib
         user_id: user.id,
         answers,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Award loyalty points for completing survey
       await supabase.from("exhibition_loyalty_actions").insert({

@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 import { Search, Plus, Trash2, Shield, Clock, User, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const MembershipUserOverrides = memo(function MembershipUserOverrides() {
   const isAr = useIsAr();
@@ -62,7 +63,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
         .select("*, membership_features(code, name, name_ar, category)")
         .eq("user_id", selectedUserId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!selectedUserId,
@@ -85,7 +86,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
         },
         { onConflict: "user_id,feature_id" }
       );
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       queryClient.invalidateQueries({ queryKey: ["user-feature-overrides", selectedUserId] });
       queryClient.invalidateQueries({ queryKey: ["userFeatureAccess"] });
@@ -106,7 +107,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
         .from("membership_feature_overrides")
         .delete()
         .eq("id", overrideId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       queryClient.invalidateQueries({ queryKey: ["user-feature-overrides", selectedUserId] });
       queryClient.invalidateQueries({ queryKey: ["userFeatureAccess"] });
       queryClient.invalidateQueries({ queryKey: ["userAllFeatures"] });
@@ -122,7 +123,7 @@ const MembershipUserOverrides = memo(function MembershipUserOverrides() {
         .from("membership_feature_overrides")
         .update({ granted: !currentGranted })
         .eq("id", overrideId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       queryClient.invalidateQueries({ queryKey: ["user-feature-overrides", selectedUserId] });
       queryClient.invalidateQueries({ queryKey: ["userFeatureAccess"] });
       toast.success(isAr ? "تم التحديث" : "Updated");

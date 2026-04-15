@@ -10,6 +10,7 @@ import { Activity, UserCheck, UserX, Shield, KeyRound, Edit, Ban, Clock } from "
 import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const ACTION_CONFIG: Record<string, { icon: typeof Activity; color: string; label: string; labelAr: string }> = {
   update_profile: { icon: Edit, color: "text-primary", label: "Profile Updated", labelAr: "تحديث الملف" },
@@ -31,7 +32,7 @@ export const UserActivityTimeline = memo(function UserActivityTimeline() {
         .select("id, action_type, created_at, details, admin_id, target_user_id")
         .order("created_at", { ascending: false })
         .limit(30);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Get unique user IDs
       const userIds = [...new Set([

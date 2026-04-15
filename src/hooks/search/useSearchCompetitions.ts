@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
 import { buildFlexibleFilter, countMatchingWords, sortByRelevance } from "./searchUtils";
 import type { CompetitionResult, SearchFilters } from "./searchTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSearchCompetitions(searchWords: string[], debouncedQuery: string, filters: SearchFilters) {
   return useQuery({
@@ -24,7 +25,7 @@ export function useSearchCompetitions(searchWords: string[], debouncedQuery: str
       }
 
       const { data, error } = await query.order("competition_start", { ascending: false }).limit(30);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) return [];
 
       return sortByRelevance(

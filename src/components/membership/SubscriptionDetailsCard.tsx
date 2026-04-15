@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface SubscriptionDetailsCardProps {
   userId: string;
@@ -42,7 +43,7 @@ export const SubscriptionDetailsCard = memo(function SubscriptionDetailsCard({ u
         .from("membership_cards")
         .update({ auto_renew: newVal } as any)
         .eq("id", card.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["membership-card-sub", userId] });

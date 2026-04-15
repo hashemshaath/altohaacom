@@ -16,6 +16,7 @@ import {
   Factory, ChevronRight, ChevronLeft, Check, Sparkles,
   Building2, Tag, Package, Phone, Image, Plus, X,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const SUPPLIER_CATEGORIES = [
   { value: "equipment", en: "Equipment", ar: "معدات" },
@@ -84,7 +85,7 @@ export const SupplierOnboardingWizard = memo(function SupplierOnboardingWizard({
           specializations: specializations.length > 0 ? specializations : null,
         } as any)
         .eq("id", companyId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyProfile", companyId] });

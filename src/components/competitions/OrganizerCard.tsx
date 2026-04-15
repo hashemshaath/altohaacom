@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { User, ExternalLink, Building2 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface OrganizerCardProps {
   organizerId: string;
@@ -26,7 +27,7 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
           .select("organizer_entity_id, organizer_company_id, organizer_user_id, organizer_type, organizer_name, organizer_name_ar, organizer_logo_url, title, title_ar")
           .eq("id", exhibitionId!)
           .single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         return data;
       },
       enabled: !!exhibitionId,
@@ -71,7 +72,7 @@ export const OrganizerCard = React.forwardRef<HTMLDivElement, OrganizerCardProps
           .select("user_id, full_name, avatar_url, username, specialization, is_verified")
           .eq("user_id", effectiveUserId)
           .single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         return data;
       },
       enabled: !!effectiveUserId && !entityOrganizer && !companyOrganizer && !exhibition?.organizer_name,

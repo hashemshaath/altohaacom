@@ -9,6 +9,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Clock, MapPin, Star, StarOff, User, Sparkles, CalendarDays } from "lucide-react";
 import { format, parseISO, isToday } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -39,7 +40,7 @@ export const ExhibitionAgendaTab = memo(function ExhibitionAgendaTab({ exhibitio
         .eq("exhibition_id", exhibitionId)
         .order("day_date", { ascending: true })
         .order("start_time", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.medium.staleTime,

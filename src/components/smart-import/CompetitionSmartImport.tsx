@@ -20,6 +20,7 @@ import {
 import type { ImportedData } from "./SmartImportDialog";
 import { SOURCE_CHANNELS } from "./types";
 import { extractTextFromFile } from "@/components/cv-import/fileParser";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CompetitionSmartImportProps {
   onImport: (data: ImportedData, mode: "create" | "update", existingId?: string) => void;
@@ -205,7 +206,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       const { data, error } = await supabase.functions.invoke("smart-import", {
         body: { query: `${query.trim()} culinary competition championship`, location: location.trim() || undefined, mode: "search" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.success) throw new Error(data?.error || "Search failed");
       setResults(data.results || []);
       setSearchTime(Date.now() - start);
@@ -222,7 +223,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       const { data, error } = await supabase.functions.invoke("smart-import", {
         body: { query: item.name, location: location.trim() || undefined, mode: "details", result_url: item.url || undefined },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.success) throw new Error(data?.error || "Details fetch failed");
       setDetailData(data.data);
       setSourcesUsed(data.sources_used || {});
@@ -241,7 +242,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       const { data, error } = await supabase.functions.invoke("smart-import", {
         body: { url: urlInput.trim(), mode: "url" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.success) throw new Error(data?.error || "URL import failed");
       setDetailData(data.data);
       setSourcesUsed(data.sources_used || {});
@@ -260,7 +261,7 @@ export const CompetitionSmartImport = memo(function CompetitionSmartImport({ onI
       const { data, error } = await supabase.functions.invoke("smart-import", {
         body: { mode: "competition_text", text_content: textContent.trim() },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.success) throw new Error(data?.error || "Text import failed");
       setDetailData(data.data);
       setSourcesUsed(data.sources_used || {});

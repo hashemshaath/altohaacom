@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageCircle, Star, ThumbsUp, AlertTriangle } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -32,7 +33,7 @@ export const CompetitionFeedbackPanel = memo(function CompetitionFeedbackPanel({
         .select("id, competition_id, registration_id, judge_id, category, comment, comment_ar, score_breakdown, is_visible, released_at, created_at")
         .eq("competition_id", competitionId)
         .eq("is_visible", true);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user,

@@ -25,6 +25,7 @@ import { ExhibitionOrganizerMessaging } from "./detail/ExhibitionOrganizerMessag
 import { ExhibitionSurveyManager } from "./detail/ExhibitionSurveyManager";
 import { ExhibitionAnalyticsDashboard } from "./detail/ExhibitionAnalyticsDashboard";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 interface Props {
   exhibitionId: string;
   exhibitionTitle: string;
@@ -67,7 +68,7 @@ export const ExhibitionOrganizerDashboard = memo(function ExhibitionOrganizerDas
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false })
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.realtime.staleTime,

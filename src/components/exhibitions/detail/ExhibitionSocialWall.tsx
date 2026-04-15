@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
 import { Heart, MessageSquare, Share2, Hash, Send, Image as ImageIcon, Pin } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -87,7 +88,7 @@ export const ExhibitionSocialWall = memo(function ExhibitionSocialWall({ exhibit
         content: newPost.trim(),
         hashtags,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       setNewPost("");

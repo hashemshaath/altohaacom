@@ -20,6 +20,7 @@ import { SupplierAnalyticsDashboard } from "@/components/supplier/SupplierAnalyt
 import { SupplierProfileCompletion } from "@/components/supplier/SupplierProfileCompletion";
 import { SupplierInquiryInbox } from "@/components/supplier/SupplierInquiryInbox";
 import { SupplierOnboardingWizard } from "@/components/supplier/SupplierOnboardingWizard";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const SUPPLIER_CATEGORIES = [
   { value: "equipment", en: "Equipment", ar: "معدات" },
@@ -82,7 +83,7 @@ export default function CompanySupplierProfile() {
           social_links: Object.keys(socialLinks).length > 0 ? socialLinks : null,
         } as any)
         .eq("id", companyId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyProfile", companyId] });

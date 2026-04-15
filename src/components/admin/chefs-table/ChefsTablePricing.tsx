@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { DollarSign, Plus, Save, Edit2, Trash2, Calculator } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface PricingPlan {
   id: string;
@@ -35,7 +36,7 @@ function useEvaluationPricing() {
         .from("evaluation_pricing" as any)
         .select("id, name, name_ar, description, description_ar, base_fee, per_chef_fee, currency, product_category, is_active")
         .order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as PricingPlan[];
     },
   });
@@ -56,13 +57,13 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
           .from("evaluation_pricing" as any)
           .update(rest as any)
           .eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { id, ...rest } = plan;
         const { error } = await supabase
           .from("evaluation_pricing" as any)
           .insert(rest as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -77,7 +78,7 @@ export const ChefsTablePricing = memo(function ChefsTablePricing() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("evaluation_pricing" as any).delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["evaluation-pricing"] });

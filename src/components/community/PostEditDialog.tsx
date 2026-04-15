@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Loader2, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import type { CommunityPost } from "./CommunityFeed";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface PostEditDialogProps {
   post: CommunityPost;
@@ -40,7 +41,7 @@ export const PostEditDialog = memo(function PostEditDialog({ post, onClose, onSa
         .eq("id", post.id)
         .eq("author_id", user.id);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       onSaved(post.id, content.trim());
       toast({ title: isAr ? "تم تعديل المنشور" : "Post updated" });

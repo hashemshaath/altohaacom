@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Award, FileText, PenTool, Send, CheckCircle, XCircle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const CertificateWorkflowTracker = memo(function CertificateWorkflowTracker() {
   const isAr = useIsAr();
@@ -18,7 +19,7 @@ export const CertificateWorkflowTracker = memo(function CertificateWorkflowTrack
       const { data, error } = await supabase
         .from("certificates")
         .select("status, type");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const statuses = { draft: 0, pending_signature: 0, signed: 0, issued: 0, revoked: 0 };
       const types: Record<string, number> = {};

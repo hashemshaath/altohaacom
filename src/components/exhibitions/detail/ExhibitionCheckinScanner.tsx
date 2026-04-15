@@ -11,6 +11,7 @@ import { ScanLine, CheckCircle2, XCircle, Search, Users, Ticket, Clock, AlertTri
 import { format } from "date-fns";
 import { useVisibleRefetchInterval } from "@/hooks/useVisibleRefetchInterval";
 import { REFETCH_INTERVAL_FAST } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -57,7 +58,7 @@ export const ExhibitionCheckinScanner = memo(function ExhibitionCheckinScanner({
         .or(`qr_code.eq.${trimmed},ticket_number.eq.${trimmed}`)
         .maybeSingle();
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!ticket) throw new Error("not_found");
       if (ticket.status !== "confirmed") throw new Error("not_confirmed");
       if (ticket.checked_in_at) throw new Error("already_checked_in");

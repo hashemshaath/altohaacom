@@ -16,6 +16,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Backlink {
   id: string;
@@ -62,7 +63,7 @@ export const SEOBacklinkMonitor = memo(function SEOBacklinkMonitor({ isAr }: { i
         .from("seo_backlinks")
         .select("*")
         .order("domain_authority", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Backlink[];
     },
   });
@@ -88,7 +89,7 @@ export const SEOBacklinkMonitor = memo(function SEOBacklinkMonitor({ isAr }: { i
         first_seen: new Date().toISOString(),
         last_checked: new Date().toISOString(),
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setNewUrl("");
       setNewAnchor("");
       qc.invalidateQueries({ queryKey: ["seo-backlinks"] });

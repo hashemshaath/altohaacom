@@ -35,6 +35,7 @@ import { format, differenceInDays, addDays, addMonths, addYears } from "date-fns
 import type { Database } from "@/integrations/supabase/types";
 import { MS_PER_DAY } from "@/lib/constants";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type MembershipTier = Database["public"]["Enums"]["membership_tier"];
 
@@ -114,7 +115,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       if (statusFilter !== "all") query = query.eq("membership_status", statusFilter as "active" | "cancelled" | "expired" | "suspended");
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as MemberProfile[];
     },
     staleTime: CACHE.short.staleTime,
@@ -193,7 +194,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       }
 
       const { error } = await supabase.from("profiles").update(updateData).eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       await logHistory(userId, prevTier, newTier, actionReason || "Admin change");
       await logAction(userId, "change_membership", { previous: prevTier, new: newTier, reason: actionReason });
@@ -251,7 +252,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         membership_expires_at: newExpiry.toISOString(),
         membership_status: "active",
       }).eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       await logAction(userId, "extend_membership", {
         previous_expiry: targetUser.membership_expires_at,
@@ -302,7 +303,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       const { error } = await supabase.from("profiles").update({
         membership_status: "suspended",
       }).eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       await logAction(userId, "suspend_membership", { reason: actionReason, tier: targetUser.membership_tier });
       await logHistory(userId, targetUser.membership_tier, targetUser.membership_tier || "basic",
@@ -339,7 +340,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
         membership_expires_at: null,
         membership_started_at: null,
       }).eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Deactivate membership card
       await supabase.from("membership_cards").update({ card_status: "suspended" }).eq("user_id", userId);
@@ -375,7 +376,7 @@ const MembershipMembersTab = memo(function MembershipMembersTab() {
       const { error } = await supabase.from("profiles").update({
         membership_status: "active",
       }).eq("user_id", userId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       await logAction(userId, "reactivate_membership", { reason: actionReason, tier: targetUser.membership_tier });
       await logHistory(userId, targetUser.membership_tier, targetUser.membership_tier || "basic",

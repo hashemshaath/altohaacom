@@ -24,6 +24,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminCommentModeration } from "@/components/admin/AdminCommentModeration";
 import { AdminTableSkeleton } from "@/components/admin/AdminTableSkeleton";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Report {
   id: string;
@@ -55,7 +56,7 @@ export default function ContentModeration() {
         .from("content_reports")
         .select("id, reporter_id, content_type, content_id, reason, status, resolution_notes, resolved_by, resolved_at, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Report[];
     },
   });
@@ -72,7 +73,7 @@ export default function ContentModeration() {
         })
         .eq("id", reportId);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Log admin action
       await supabase.from("admin_actions").insert({

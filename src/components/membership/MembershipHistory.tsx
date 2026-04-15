@@ -12,6 +12,7 @@ import {
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIER_CONFIG: Record<string, { icon: LucideIcon; color: string; label: string; labelAr: string }> = {
   basic: { icon: Zap, color: "text-muted-foreground", label: "Basic", labelAr: "الأساسي" },
@@ -47,7 +48,7 @@ export const MembershipHistory = memo(function MembershipHistory() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })
         .limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!user,

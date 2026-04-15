@@ -22,6 +22,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { useToast } from "@/hooks/use-toast";
 import { MS_PER_DAY, QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const MembershipOverview = memo(function MembershipOverview() {
   const isAr = useIsAr();
@@ -33,7 +34,7 @@ const MembershipOverview = memo(function MembershipOverview() {
       const { data, error } = await supabase.functions.invoke("check-membership-expiry", {
         body: { time: new Date().toISOString() },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: (data) => {

@@ -22,6 +22,7 @@ import { OrderSearchFilter } from "./OrderSearchFilter";
 import { BulkActionBar } from "./BulkActionBar";
 import { OrderEmptyState } from "./OrderEmptyState";
 import { ChecklistSkeleton } from "./OrderSkeletonCards";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -54,7 +55,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
         .select("id, title, title_ar, category, status")
         .eq("competition_id", competitionId)
         .order("created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.short,
@@ -69,7 +70,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
         .select("*, requirement_items(name, name_ar, category)")
         .in("list_id", lists.map(l => l.id))
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!lists?.length,
@@ -84,7 +85,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
         checked_at: checked ? new Date().toISOString() : null,
       };
       const { error } = await supabase.from("requirement_list_items").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });
@@ -99,7 +100,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
       const updates: Record<string, unknown> = { status };
       if (status === "delivered") updates.delivered_at = new Date().toISOString();
       const { error } = await supabase.from("requirement_list_items").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });
@@ -122,7 +123,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
   const updateDeadline = useMutation({
     mutationFn: async ({ id, deadline }: { id: string; deadline: string | null }) => {
       const { error } = await supabase.from("requirement_list_items").update({ deadline }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });
@@ -136,7 +137,7 @@ export const DeliveryChecklist = memo(function DeliveryChecklist({ competitionId
       const updates: Record<string, unknown> = { status };
       if (status === "delivered") updates.delivered_at = new Date().toISOString();
       const { error } = await supabase.from("requirement_list_items").update(updates).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["checklist-items", competitionId] });

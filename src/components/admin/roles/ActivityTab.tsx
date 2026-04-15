@@ -9,6 +9,7 @@ import { Activity, Download, UserPlus, UserMinus, RefreshCw } from "lucide-react
 import { format, formatDistanceToNow } from "date-fns";
 import { ar as arLocale } from "date-fns/locale";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   isAr: boolean;
@@ -31,7 +32,7 @@ export default function ActivityTab({ isAr, t }: Props) {
         .in("action_type", ["assign_role", "remove_role", "change_membership"])
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.realtime.staleTime,

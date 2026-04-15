@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /**
  * Hook to auto-translate fields after entity save.
@@ -12,7 +13,7 @@ export function useAutoTranslate() {
       const { data, error } = await supabase.functions.invoke("smart-translate", {
         body: { text, from, to, context: context || "culinary/food industry/exhibitions/events/organizers" },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data?.translated || null;
     } catch {
       return null;

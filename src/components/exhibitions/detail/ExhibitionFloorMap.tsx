@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Map, ZoomIn, ZoomOut, RotateCcw, Building, Star, Hash, MapPin, X, Mail, Phone, ExternalLink, Search } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Booth {
   id: string;
@@ -88,7 +89,7 @@ export const ExhibitionFloorMap = memo(function ExhibitionFloorMap({ exhibitionI
         .select("id, booth_number, name, name_ar, description, description_ar, category, hall, hall_ar, floor_level, size, location_x, location_y, is_featured, logo_url, website_url, contact_name, contact_email, contact_phone, status, color_hex")
         .eq("exhibition_id", exhibitionId)
         .order("booth_number");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Booth[];
     },
     staleTime: CACHE.medium.staleTime,

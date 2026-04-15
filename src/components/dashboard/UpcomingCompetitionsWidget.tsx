@@ -10,6 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Trophy, Calendar, MapPin, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidget() {
   const isAr = useIsAr();
@@ -25,7 +26,7 @@ export const UpcomingCompetitionsWidget = memo(function UpcomingCompetitionsWidg
         .order("competition_start", { ascending: true })
         .limit(3);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

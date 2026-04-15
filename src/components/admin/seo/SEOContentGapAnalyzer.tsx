@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const CHART_COLORS = [
   "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -45,7 +46,7 @@ export function SEOContentGapAnalyzer({ isAr }: Props) {
         .eq("status", "published")
         .order("published_at", { ascending: false })
         .limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -58,7 +59,7 @@ export function SEOContentGapAnalyzer({ isAr }: Props) {
         .from("seo_page_views")
         .select("path")
         .limit(1000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -71,7 +72,7 @@ export function SEOContentGapAnalyzer({ isAr }: Props) {
         .from("seo_tracked_keywords")
         .select("keyword, keyword_ar, current_position, target_page")
         .eq("is_active", true);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -218,7 +219,7 @@ Keep it concise and actionable. Use bullet points.`;
           max_tokens: 1500,
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setAiRecommendations(data?.choices?.[0]?.message?.content || data?.content || "No recommendations generated");
     } catch (e: unknown) {
       toast.error((e instanceof Error ? e.message : "") || "Failed to generate recommendations");

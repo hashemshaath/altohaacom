@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Factory, Search } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const SUPPLIER_CATEGORIES = [
   { value: "equipment", en: "Equipment", ar: "معدات" },
@@ -37,7 +38,7 @@ export const AdminSupplierControls = memo(function AdminSupplierControls() {
         .order("name");
       if (search) query = query.or(`name.ilike.%${search}%,name_ar.ilike.%${search}%`);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -45,7 +46,7 @@ export const AdminSupplierControls = memo(function AdminSupplierControls() {
   const updateMutation = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Record<string, unknown> }) => {
       const { error } = await supabase.from("companies").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminSuppliers"] });

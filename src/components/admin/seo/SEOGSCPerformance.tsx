@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const CHART_COLORS = [
   "hsl(var(--chart-1))", "hsl(var(--chart-2))", "hsl(var(--chart-3))",
@@ -45,7 +46,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
         .select("*")
         .eq("is_active", true)
         .order("current_position", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -61,7 +62,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
         .gte("recorded_at", from)
         .order("recorded_at", { ascending: true })
         .limit(1000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -77,7 +78,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
         .gte("created_at", from)
         .order("created_at", { ascending: false })
         .limit(1000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -94,7 +95,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
         .gte("created_at", from)
         .lte("created_at", to)
         .limit(1000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -110,7 +111,7 @@ export function SEOGSCPerformance({ isAr }: Props) {
       const { data, error } = await supabase.functions.invoke("gsc-sync", {
         body: { action: "search_performance", siteUrl: GSC_SITE_URL, startDate: start, endDate: end },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       toast.success(isAr ? `تم مزامنة ${data.total_queries} استعلام` : `Synced ${data.total_queries} queries`);
       refetchKw();
     } catch (e: unknown) {

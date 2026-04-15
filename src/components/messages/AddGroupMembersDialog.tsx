@@ -12,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Search, UserPlus, Loader2, Check } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { memo } from "react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface AddGroupMembersDialogProps {
   open: boolean;
@@ -47,7 +48,7 @@ export const AddGroupMembersDialog = memo(function AddGroupMembersDialog({ open,
     mutationFn: async () => {
       const rows = selected.map((uid) => ({ group_id: groupId, user_id: uid, role: "member" }));
       const { error } = await supabase.from("chat_group_members").insert(rows);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast({ title: isAr ? "تمت إضافة الأعضاء" : "Members added" });

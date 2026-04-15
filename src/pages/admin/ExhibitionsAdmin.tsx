@@ -40,6 +40,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/config/routes";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const BulkImportPanel = lazy(() => import("@/components/admin/BulkImportPanel").then(m => ({ default: m.BulkImportPanel })));
 const BatchDuplicateScanner = lazy(() => import("@/components/admin/BatchDuplicateScanner").then(m => ({ default: m.BatchDuplicateScanner })));
@@ -123,7 +124,7 @@ export default function ExhibitionsAdmin() {
         .from("exhibitions")
         .select("id, title, title_ar, slug, type, status, start_date, end_date, city, country, venue, venue_ar, organizer_name, organizer_name_ar, organizer_email, organizer_phone, organizer_website, organizer_logo_url, organizer_type, organizer_entity_id, organizer_company_id, organizer_user_id, cover_image_url, logo_url, is_virtual, is_free, is_featured, view_count, max_attendees, ticket_price, ticket_price_ar, registration_url, website_url, map_url, virtual_link, description, description_ar, tags, target_audience, includes_competitions, includes_training, includes_seminars, series_id, edition_year, exhibition_number, created_at, created_by, currency, registration_deadline")
         .order("start_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -187,7 +188,7 @@ export default function ExhibitionsAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibitions").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
@@ -201,7 +202,7 @@ export default function ExhibitionsAdmin() {
       const newSlug = (slug || "") + "-copy-" + Date.now().toString(36);
       const payload = { ...rest, title: (rest.title || "") + " (Copy)", title_ar: rest.title_ar ? rest.title_ar + " (نسخة)" : null, slug: newSlug, status: "draft" as ExhibitionStatus, view_count: 0, created_by: user?.id };
       const { error } = await supabase.from("exhibitions").insert(payload);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-exhibitions"] });
@@ -213,7 +214,7 @@ export default function ExhibitionsAdmin() {
   const approveExhibition = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibitions").update({ status: "draft" as ExhibitionStatus }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "approve_exhibition", details: { exhibition_id: id } });
     },
     onSuccess: () => {
@@ -226,7 +227,7 @@ export default function ExhibitionsAdmin() {
   const rejectExhibition = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibitions").update({ status: "cancelled" as ExhibitionStatus }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("admin_actions").insert({ admin_id: user!.id, action_type: "reject_exhibition", details: { exhibition_id: id } });
     },
     onSuccess: () => {

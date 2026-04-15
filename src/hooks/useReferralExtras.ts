@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useReferralLeaderboard() {
   return useQuery({
@@ -12,7 +13,7 @@ export function useReferralLeaderboard() {
         .gt("total_conversions", 0)
         .order("total_conversions", { ascending: false })
         .limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       if (!data || data.length === 0) return [];
 
@@ -48,7 +49,7 @@ export function useActiveBonusCampaigns() {
         .lte("starts_at", new Date().toISOString())
         .gte("ends_at", new Date().toISOString())
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     ...CACHE.short,
@@ -63,7 +64,7 @@ export function useReferralTiers() {
         .from("referral_tier_bonuses")
         .select("id, label, label_ar, min_referrals, max_referrals, bonus_points")
         .order("min_referrals");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

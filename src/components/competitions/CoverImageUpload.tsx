@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Camera, X, Loader2 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface CoverImageUploadProps {
   currentUrl: string | null;
@@ -38,7 +39,7 @@ export const CoverImageUpload = memo(function CoverImageUpload({ currentUrl, onU
       const ext = file.name.split(".").pop();
       const path = `${user.id}/${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from("competition-images").upload(path, file);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const { data } = supabase.storage.from("competition-images").getPublicUrl(path);
       setPreview(data.publicUrl);

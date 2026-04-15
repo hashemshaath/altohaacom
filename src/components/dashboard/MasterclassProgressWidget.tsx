@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { GraduationCap, BookOpen, ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const MasterclassProgressWidget = memo(function MasterclassProgressWidget() {
   const { user } = useAuth();
@@ -26,7 +27,7 @@ export const MasterclassProgressWidget = memo(function MasterclassProgressWidget
         .eq("status", "active")
         .order("enrolled_at", { ascending: false })
         .limit(3);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!user,

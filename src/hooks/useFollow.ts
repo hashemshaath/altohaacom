@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
 import { MS_PER_DAY, MS_PER_WEEK, QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useFollowStats(userId: string | undefined) {
   return useQuery({
@@ -89,7 +90,7 @@ export function useToggleFollow(targetUserId: string | undefined) {
           .delete()
           .eq("follower_id", user.id)
           .eq("following_id", targetUserId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         // Check privacy setting
         const { data: targetProfile } = await supabase
@@ -109,14 +110,14 @@ export function useToggleFollow(targetUserId: string | undefined) {
           const { error } = await supabase
             .from("follow_requests")
             .upsert({ requester_id: user.id, target_id: targetUserId, status: "pending" }, { onConflict: "requester_id,target_id" });
-          if (error) throw error;
+          if (error) throw handleSupabaseError(error);
           return { type: "request_sent" };
         }
 
         const { error } = await supabase
           .from("user_follows")
           .insert({ follower_id: user.id, following_id: targetUserId });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -140,7 +141,7 @@ export function useFollowersList(userId: string | undefined, type: "followers" |
           .eq("following_id", userId)
           .order("created_at", { ascending: false })
           .limit(100);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         const ids = data.map((d) => d.follower_id);
         if (ids.length === 0) return [];
         const { data: profiles } = await supabase
@@ -157,7 +158,7 @@ export function useFollowersList(userId: string | undefined, type: "followers" |
           .eq("follower_id", userId)
           .order("created_at", { ascending: false })
           .limit(100);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         const ids = data.map((d) => d.following_id);
         if (ids.length === 0) return [];
         const { data: profiles } = await supabase
@@ -187,7 +188,7 @@ export function useNewFollowers() {
         .gte("created_at", weekAgo)
         .order("created_at", { ascending: false })
         .limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const ids = data.map(d => d.follower_id);
       if (ids.length === 0) return [];
       const { data: profiles } = await supabase
@@ -258,7 +259,7 @@ export function useIncomingFollowRequests() {
         .eq("target_id", user.id)
         .eq("status", "pending")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const ids = data.map(d => d.requester_id);
       if (ids.length === 0) return [];
       const { data: profiles } = await supabase
@@ -318,7 +319,7 @@ export function useUpdateFollowPrivacy() {
         .from("profiles")
         .update({ follow_privacy: privacy })
         .eq("user_id", user.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["followPrivacy"] });

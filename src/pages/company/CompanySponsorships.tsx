@@ -22,6 +22,7 @@ import {
   Send, Star, Medal, Award, ArrowRight, Sparkles, Package, Eye, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIER_CONFIG: Record<string, { icon: LucideIcon; color: string; label: string; labelAr: string }> = {
   strategic_partner: { icon: Crown, color: "text-chart-4", label: "Strategic Partner", labelAr: "شريك استراتيجي" },
@@ -127,7 +128,7 @@ export default function CompanySponsorships() {
         status: "pending",
         created_by: user.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Notify competition organizer
       const { data: comp } = await supabase
@@ -163,7 +164,7 @@ export default function CompanySponsorships() {
       const { error } = await supabase.from("company_invitations")
         .update({ status, responded_at: new Date().toISOString() } as any)
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-sponsor-invitations"] });

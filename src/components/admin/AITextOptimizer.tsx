@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Sparkles, Languages } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   text: string;
@@ -32,7 +33,7 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text, source_lang: lang, optimize_only: true, field_type: fieldType, max_length: maxLength },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.optimized) {
         onOptimized?.(data.optimized);
         toast({ title: isAr ? "تم التحسين بنجاح" : "Optimized successfully" });
@@ -52,7 +53,7 @@ export const AITextOptimizer = memo(function AITextOptimizer({ text, lang, onOpt
       const { data, error } = await supabase.functions.invoke("ai-translate-seo", {
         body: { text, source_lang: lang, target_lang: targetLang, optimize_seo: false, field_type: fieldType, max_length: maxLength },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.translated) {
         onTranslated?.(data.translated);
         toast({

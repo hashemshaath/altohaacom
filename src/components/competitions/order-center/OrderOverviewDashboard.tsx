@@ -18,6 +18,7 @@ import { calcOrderStats, getItemDisplayName } from "./orderCenterUtils";
 import { OrderExportActions } from "./OrderExportActions";
 import { DashboardSkeleton } from "./OrderSkeletonCards";
 import { OrderEmptyState } from "./OrderEmptyState";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -35,7 +36,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
         .from("requirement_lists")
         .select("id, title, title_ar, category, status")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.short,
@@ -49,7 +50,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
         .from("requirement_list_items")
         .select("id, status, estimated_cost, quantity, deadline, checked, custom_name, custom_name_ar, item_id, requirement_items(name, name_ar)")
         .in("list_id", lists.map(l => l.id));
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!lists?.length,
@@ -63,7 +64,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
         .from("requirement_sponsorship_requests")
         .select("id, status, total_estimated_cost")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.short,
@@ -76,7 +77,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
         .from("requirement_suggestions")
         .select("id, status")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.short,
@@ -89,7 +90,7 @@ export const OrderOverviewDashboard = memo(function OrderOverviewDashboard({ com
         .from("order_item_requests")
         .select("id, status")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     ...CACHE.short,

@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { Upload, Trash2, Loader2, FileText, Bot, ExternalLink, Download } from "lucide-react";
 import { toEnglishDigits } from "@/lib/formatNumber";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -44,7 +45,7 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
         .select("id, exhibition_id, title, title_ar, file_url, file_type, file_size, category, uploaded_by, feed_to_ai, created_at")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!exhibitionId,
@@ -86,7 +87,7 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_documents").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-documents", exhibitionId] });
@@ -97,7 +98,7 @@ export const ExhibitionDocumentsPanel = memo(function ExhibitionDocumentsPanel({
   const toggleAiMutation = useMutation({
     mutationFn: async ({ id, val }: { id: string; val: boolean }) => {
       const { error } = await supabase.from("exhibition_documents").update({ feed_to_ai: val }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-documents", exhibitionId] });

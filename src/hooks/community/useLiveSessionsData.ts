@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface LiveSession {
   id: string;
@@ -96,7 +97,7 @@ export function useLiveSessionsData(): UseSessionsReturn {
         scheduled_at: new Date(input.scheduledAt).toISOString(),
         duration_minutes: parseInt(input.duration) || 60,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey }),
   });

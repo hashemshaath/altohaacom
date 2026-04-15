@@ -19,6 +19,7 @@ import {
   Tooltip, ResponsiveContainer, Legend, RadarChart, Radar, PolarGrid,
   PolarAngleAxis, PolarRadiusAxis,
 } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Forecast {
   metric: string;
@@ -79,7 +80,7 @@ export const MLPredictionsPanel = memo(function MLPredictionsPanel() {
       const { data: result, error } = await supabase.functions.invoke("ms-insights", {
         body: { language },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return result;
     },
     staleTime: CACHE.long.staleTime,

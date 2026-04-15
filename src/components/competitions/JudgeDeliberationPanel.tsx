@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
 import { MessageSquare, Plus, Send, CheckCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -34,7 +35,7 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
         .select("id, competition_id, topic, status, created_by, resolved_at, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -48,7 +49,7 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
         .select("id, deliberation_id, sender_id, message, created_at")
         .eq("deliberation_id", activeDeliberation)
         .order("created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!activeDeliberation,
@@ -62,7 +63,7 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
         topic: newTopic,
         created_by: user.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["deliberations", competitionId] });
@@ -79,7 +80,7 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
         sender_id: user.id,
         message: newMessage,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["deliberation-messages", activeDeliberation] });
@@ -93,7 +94,7 @@ export const JudgeDeliberationPanel = memo(function JudgeDeliberationPanel({ com
         .from("judge_deliberations")
         .update({ status: "resolved", resolved_at: new Date().toISOString() })
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["deliberations", competitionId] });

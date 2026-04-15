@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface DupRecord {
   id: string;
@@ -60,7 +61,7 @@ export function useEntityDedup(options: UseEntityDedupOptions = {}) {
           exclude_id: options.excludeId,
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setDuplicates(data?.duplicates || []);
     } catch (err: unknown) {
       console.error("Dedup check failed:", err);
@@ -80,7 +81,7 @@ export function useEntityDedup(options: UseEntityDedupOptions = {}) {
           cross_tables: crossTables || [],
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setScanGroups(data?.groups || []);
       return data?.groups || [];
     } catch (err: unknown) {
@@ -102,7 +103,7 @@ export function useEntityDedup(options: UseEntityDedupOptions = {}) {
       const { data, error } = await supabase.functions.invoke("entity-dedup", {
         body: { mode: "merge", primary_id: primaryId, merge_ids: mergeIds, table },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     } catch (err: unknown) {
       console.error("Merge failed:", err);

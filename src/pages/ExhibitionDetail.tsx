@@ -30,6 +30,7 @@ import { ExhibitionMobileActionBar } from "@/components/exhibitions/detail/Exhib
 import { ExhibitionInteractiveStats } from "@/components/exhibitions/detail/ExhibitionInteractiveStats";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // Lazy-loaded components
 const ExhibitionOverviewTab = lazy(() => import("@/components/exhibitions/detail/ExhibitionOverviewTab").then(m => ({ default: m.ExhibitionOverviewTab })));
@@ -127,7 +128,7 @@ export default function ExhibitionDetail() {
     queryKey: ["exhibition", slug],
     queryFn: async () => {
       const { data, error } = await supabase.from("exhibitions").select("id, title, title_ar, slug, description, description_ar, type, status, start_date, end_date, venue, venue_ar, address, address_ar, city, country, cover_image_url, logo_url, gallery_urls, categories, tags, target_audience, targeted_sectors, ticket_price, ticket_price_ar, is_free, is_virtual, is_featured, max_attendees, registration_deadline, registration_url, website_url, virtual_link, map_url, organizer_name, organizer_name_ar, organizer_email, organizer_phone, organizer_logo_url, organizer_website, organizer_type, organizer_id, organizer_user_id, organizer_company_id, organizer_entity_id, schedule, speakers, sponsors_info, highlights, reasons_to_attend, unique_features, sections, documents, social_links, entry_details, edition_year, edition_stats, exhibition_number, series_id, includes_competitions, includes_seminars, includes_training, currency, import_source, view_count, created_by, created_at, updated_at, venue_details, early_bird_deadline").eq("slug", slug!).maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) throw new Error("Exhibition not found");
       return data;
     },
@@ -176,7 +177,7 @@ export default function ExhibitionDetail() {
         .select(`id, title, title_ar, status, competition_start, competition_end, cover_image_url, city, country, is_virtual, registration_start, registration_end, max_participants, description, description_ar, competition_categories(id, name, name_ar, max_participants), competition_registrations(id), competition_judges(id, judge_id)`)
         .eq("exhibition_id", exhibition.id)
         .order("competition_start", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!exhibition,
@@ -195,7 +196,7 @@ export default function ExhibitionDetail() {
         .in("competition_id", competitionIds)
         .eq("status", "approved")
         .not("dish_name", "is", null);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const scored = (regs || [])
         .map((r) => ({ ...r, totalScore: (r.competition_scores || []).reduce((sum, s) => sum + Number(s.score || 0), 0), scoreCount: (r.competition_scores || []).length }))

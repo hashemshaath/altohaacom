@@ -22,6 +22,7 @@ import {
 import { RequirementListItems } from "./RequirementListItems";
 import { SponsorshipRequestPanel } from "./SponsorshipRequestPanel";
 import { ORDER_CATEGORIES } from "./order-center/OrderCenterCategories";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const LIST_CATEGORIES = ORDER_CATEGORIES.map(c => ({
   value: c.value,
@@ -60,7 +61,7 @@ export const RequirementsListPanel = memo(function RequirementsListPanel({ compe
         .select("id, competition_id, title, title_ar, description, category, status, created_by, created_at")
         .eq("competition_id", competitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -75,7 +76,7 @@ export const RequirementsListPanel = memo(function RequirementsListPanel({ compe
         category: newList.category,
         created_by: user!.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-lists", competitionId] });
@@ -89,7 +90,7 @@ export const RequirementsListPanel = memo(function RequirementsListPanel({ compe
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("requirement_lists").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-lists", competitionId] });
@@ -100,7 +101,7 @@ export const RequirementsListPanel = memo(function RequirementsListPanel({ compe
   const deleteListMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("requirement_lists").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-lists", competitionId] });

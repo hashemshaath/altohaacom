@@ -14,6 +14,7 @@ import { useState } from "react";
 import { executeEvaluationWorkflow } from "@/lib/evaluationWorkflows";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { MS_PER_DAY } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface PricingPlan {
   id: string; name: string; name_ar: string | null;
@@ -33,7 +34,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
         .from("evaluation_pricing" as any)
         .select("id, name, name_ar, base_fee, per_chef_fee, currency, product_category, is_active")
         .eq("is_active", true);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as PricingPlan[];
     },
   });
@@ -78,7 +79,7 @@ export const ChefsTableInvoiceGenerator = memo(function ChefsTableInvoiceGenerat
         } as any)
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Update session with cost and invoice
       await supabase

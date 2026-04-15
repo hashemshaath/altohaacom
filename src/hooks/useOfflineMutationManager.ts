@@ -12,6 +12,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { flushOfflineQueue, queueOfflineAction } from "@/lib/offlineCache";
 import { useToast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /**
  * Queue a mutation for later replay when the user is offline.
@@ -57,24 +58,24 @@ export function useOfflineMutationManager() {
             switch (action.type) {
               case "insert": {
                 const { error } = await db.from(table).insert(payload);
-                if (error) throw error;
+                if (error) throw handleSupabaseError(error);
                 break;
               }
               case "update": {
                 const id = payload.id as string;
                 const { id: _, ...rest } = payload;
                 const { error } = await db.from(table).update(rest).eq("id", id);
-                if (error) throw error;
+                if (error) throw handleSupabaseError(error);
                 break;
               }
               case "upsert": {
                 const { error } = await db.from(table).upsert(payload);
-                if (error) throw error;
+                if (error) throw handleSupabaseError(error);
                 break;
               }
               case "delete": {
                 const { error } = await db.from(table).delete().eq("id", payload.id as string);
-                if (error) throw error;
+                if (error) throw handleSupabaseError(error);
                 break;
               }
             }

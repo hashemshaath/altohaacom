@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Gauge, Smartphone, Monitor, Tablet, Wifi } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MS_PER_DAY, QUERY_LIMIT_MEDIUM, REFETCH_INTERVAL_SLOW } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface VitalsRow {
   lcp: number | null;
@@ -59,7 +60,7 @@ export const WebVitalsWidget = memo(function WebVitalsWidget() {
         .gte("created_at", since)
         .limit(QUERY_LIMIT_MEDIUM);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const rows = (data || []) as VitalsRow[];
 
       const avg = (arr: number[]) => arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;

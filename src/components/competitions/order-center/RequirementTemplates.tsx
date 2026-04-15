@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { ORDER_CATEGORIES } from "./OrderCenterCategories";
 import { DISH_TEMPLATES, type DishTemplate, type IngredientItem } from "@/data/dishTemplates";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -65,7 +66,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
         .select("id, name, name_ar, description, description_ar, category, items, is_public, usage_count, created_by, created_at")
         .or(`created_by.eq.${user!.id},is_public.eq.true`)
         .order("usage_count", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return data as any[];
     },
@@ -81,7 +82,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
         .select("id, title, title_ar, competition_types(name, name_ar)")
         .eq("id", competitionId)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- nested join
       return data as any;
     },
@@ -97,7 +98,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
         .eq("is_active", true)
         .order("category")
         .limit(2000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: showSupermarket,
@@ -235,12 +236,12 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
           .from("requirement_templates" as any)
           .update(payload as any)
           .eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase
           .from("requirement_templates" as any)
           .insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -280,7 +281,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
 
       if (items.length) {
         const { error } = await supabase.from("requirement_list_items").insert(items);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
 
       await supabase
@@ -300,7 +301,7 @@ export const RequirementTemplates = forwardRef<HTMLDivElement, Props>(function R
   const deleteTemplate = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("requirement_templates" as any).delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-templates"] });

@@ -13,6 +13,7 @@ import {
 import { format } from "date-fns";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -31,7 +32,7 @@ export const OrganizerSalesReport = memo(function OrganizerSalesReport({ exhibit
         .select("id, ticket_number, status, attendee_name, attendee_email, attendee_phone, checked_in_at, created_at, price_paid, ticket_type")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const all = tickets || [];
 
       const confirmed = all.filter(t => t.status === "confirmed");

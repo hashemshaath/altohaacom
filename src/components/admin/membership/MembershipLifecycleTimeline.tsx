@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface TimelineEvent {
   id: string;
@@ -81,7 +82,7 @@ const MembershipLifecycleTimeline = memo(function MembershipLifecycleTimeline() 
         .select("id, user_id, previous_tier, new_tier, reason, created_at, changed_by")
         .order("created_at", { ascending: false })
         .limit(limit);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const userIds = [...new Set((data || []).map(d => d.user_id))];
       const { data: profiles } = await supabase

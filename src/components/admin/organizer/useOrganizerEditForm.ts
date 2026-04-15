@@ -8,6 +8,7 @@ import { useEntityDedup } from "@/hooks/useEntityDedup";
 import { useFormAutoSave } from "@/hooks/useFormAutoSave";
 import { toast } from "sonner";
 import { generateSlug } from "./OrganizerFormHelpers";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /* ─── Types ─── */
 export interface KeyContact {
@@ -115,7 +116,7 @@ export function useOrganizerEditForm(organizerId: string | null | undefined, onC
     queryFn: async () => {
       if (!organizerId) return null;
       const { data, error } = await supabase.from("organizers").select("*").eq("id", organizerId).maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!organizerId,
@@ -338,10 +339,10 @@ export function useOrganizerEditForm(organizerId: string | null | undefined, onC
       };
       if (organizerId) {
         const { error } = await supabase.from("organizers").update(payload).eq("id", organizerId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("organizers").insert(payload as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -379,7 +380,7 @@ export function useOrganizerEditForm(organizerId: string | null | undefined, onC
     mutationFn: async () => {
       if (!organizerId) return;
       const { error } = await supabase.rpc("refresh_organizer_stats", { p_organizer_id: organizerId });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-organizer-edit", organizerId] });

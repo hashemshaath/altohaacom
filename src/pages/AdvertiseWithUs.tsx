@@ -22,6 +22,7 @@ import {
   Sparkles, ArrowRight, Loader2, Eye, MousePointer, DollarSign,
   Zap, Clock, Building2,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const AD_FORMATS = [
   { id: "banner", en: "Banner / Display", ar: "بانر / عرض", desc: "Classic display ads across the platform" },
@@ -132,7 +133,7 @@ export default function AdvertiseWithUs() {
         package_id: form.package_id || null,
         status: "pending",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast({ title: isAr ? "تم إرسال طلب الإعلان بنجاح!" : "Ad request submitted successfully!" });

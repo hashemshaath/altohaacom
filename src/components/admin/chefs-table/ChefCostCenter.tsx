@@ -24,6 +24,7 @@ import {
   FileText, History, Eye, ChevronDown, X,
 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ─── Types ──────────────────────────────────
 interface ChefCostProfile {
@@ -93,7 +94,7 @@ function useChefCostProfiles() {
         .from("chef_cost_profiles" as any)
         .select("id, chef_id, country_code, city, visa_required, visa_fee, visa_currency, visa_valid_until, visa_type, flight_cost_estimate, local_transport_cost, transport_currency, transport_notes, hotel_cost_per_night, accommodation_currency, preferred_hotel, preferred_hotel_ar, daily_allowance, evaluation_fee, fee_currency, estimated_total_cost, estimated_days, notes, notes_ar, is_active, created_at, updated_at, created_by")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefCostProfile[];
     },
   });
@@ -109,7 +110,7 @@ function useChefTravelRecords(chefId?: string) {
         .order("travel_date", { ascending: false });
       if (chefId) query = query.eq("chef_id", chefId);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefTravelRecord[];
     },
   });
@@ -123,7 +124,7 @@ function useChefProfiles() {
         .from("profiles")
         .select("user_id, full_name, full_name_ar, country_code, city, avatar_url")
         .order("full_name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -194,11 +195,11 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
       if (profile.id) {
         const { id, ...rest } = payload;
         const { error } = await supabase.from("chef_cost_profiles" as any).update(rest as any).eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { id, ...rest } = payload;
         const { error } = await supabase.from("chef_cost_profiles" as any).insert(rest as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -213,7 +214,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
   const deleteCostProfile = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("chef_cost_profiles" as any).delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chef-cost-profiles"] });
@@ -229,11 +230,11 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
       if (record.id) {
         const { id, ...rest } = payload;
         const { error } = await supabase.from("chef_travel_records" as any).update(rest as any).eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { id, ...rest } = payload;
         const { error } = await supabase.from("chef_travel_records" as any).insert(rest as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -248,7 +249,7 @@ export const ChefCostCenter = memo(function ChefCostCenter() {
   const deleteTravelRecord = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("chef_travel_records" as any).delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chef-travel-records"] });

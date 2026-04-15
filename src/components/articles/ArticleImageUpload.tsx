@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ImagePlus, X, Loader2, Link2, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   value: string;
@@ -43,7 +44,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
       const path = `${user.id}/${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from("article-images").upload(path, file, { upsert: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const { data: urlData } = supabase.storage.from("article-images").getPublicUrl(path);
       onChange(urlData.publicUrl);

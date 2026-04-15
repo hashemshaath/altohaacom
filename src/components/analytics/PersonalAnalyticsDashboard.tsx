@@ -18,6 +18,7 @@ import {
   TrendingDown, Minus, Eye, Star, Hash, Lightbulb, Zap, BookOpen,
   MessageSquare, Film,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface AnalyticsData {
   summary: {
@@ -71,7 +72,7 @@ export const PersonalAnalyticsDashboard = memo(function PersonalAnalyticsDashboa
     queryKey: ["personal-analytics", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("personal-analytics");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as AnalyticsData;
     },
     enabled: !!user,

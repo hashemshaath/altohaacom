@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { ORDER_CATEGORIES, ITEM_UNITS } from "./OrderCenterCategories";
 import { DISH_TEMPLATES } from "@/data/dishTemplates";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /* ── Supermarket aisle definitions ── */
 const SUPERMARKET_AISLES = [
@@ -98,7 +99,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
         .order("subcategory")
         .order("name")
         .limit(2000);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as CatalogItem[];
     },
   });
@@ -140,10 +141,10 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
     mutationFn: async (data: Record<string, any>) => {
       if (editId) {
         const { error } = await supabase.from("requirement_items").update(data as any).eq("id", editId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("requirement_items").insert({ ...data, created_by: user!.id } as any);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -157,7 +158,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
   const deleteMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.from("requirement_items").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["supermarket-catalog"] });
@@ -174,7 +175,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
         .select("id, title, title_ar, competition_id, category")
         .order("created_at", { ascending: false })
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: showListPicker,
@@ -192,7 +193,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
         added_by: user!.id,
       }));
       const { error } = await supabase.from("requirement_list_items").insert(inserts);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-list-items"] });
@@ -222,7 +223,7 @@ export const SupermarketCatalog = memo(function SupermarketCatalog() {
         created_by: user!.id,
         is_public: false,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-templates"] });

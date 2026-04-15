@@ -33,6 +33,7 @@ import { TrendingCompetitions } from "@/components/competitions/TrendingCompetit
 import { CountryDiscovery } from "@/components/competitions/CountryDiscovery";
 import { NextCompetitionCountdown } from "@/components/competitions/NextCompetitionCountdown";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TAB_FILTERS = ["all", "upcoming", "active", "past"] as const;
 type TabFilter = typeof TAB_FILTERS[number];
@@ -65,7 +66,7 @@ export default function Competitions() {
         .from("competitions")
         .select("id, title, title_ar, description, description_ar, cover_image_url, status, registration_start, registration_end, competition_start, competition_end, venue, venue_ar, city, country, country_code, is_virtual, max_participants, organizer_id, edition_year, competition_registrations(id)")
         .order("competition_start", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as CompetitionWithRegs[];
     },
     staleTime: CACHE.medium.staleTime,

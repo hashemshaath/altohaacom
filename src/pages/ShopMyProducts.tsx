@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Plus, Pencil, Trash2, ShoppingBag, Package } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function ShopMyProducts() {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ export default function ShopMyProducts() {
         .select("id, seller_id, title, title_ar, description, description_ar, product_type, category, price, currency, stock_quantity, image_url, is_active, created_at, updated_at")
         .eq("seller_id", user.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user,
@@ -65,10 +66,10 @@ export default function ShopMyProducts() {
 
       if (editingId) {
         const { error } = await supabase.from("shop_products").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("shop_products").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -84,7 +85,7 @@ export default function ShopMyProducts() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("shop_products").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-shop-products"] });
@@ -95,7 +96,7 @@ export default function ShopMyProducts() {
   const toggleActive = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("shop_products").update({ is_active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["my-shop-products"] }),
   });

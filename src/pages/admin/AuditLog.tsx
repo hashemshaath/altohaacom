@@ -32,6 +32,7 @@ import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface AdminAction {
   id: string;
@@ -73,7 +74,7 @@ export default function AuditLog() {
         .select("id, admin_id, action_type, target_user_id, details, created_at")
         .order("created_at", { ascending: false })
         .limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as AdminAction[];
     },
   });
@@ -86,7 +87,7 @@ export default function AuditLog() {
         .select("id, entity_type, entity_id, action_type, user_id, author_id, reason, reason_ar, content_snapshot, image_urls, metadata, created_at")
         .order("created_at", { ascending: false })
         .limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as ContentAuditEntry[];
     },
   });

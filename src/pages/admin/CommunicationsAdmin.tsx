@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { format, differenceInMinutes, differenceInHours } from "date-fns";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ─── Types ───────────────────────────────────────────────────
 interface Communication {
@@ -114,7 +115,7 @@ export default function CommunicationsAdmin() {
       if (tagFilter !== "all") query = query.contains("tags", [tagFilter]);
 
       const { data, error } = await query.limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Communication[];
     },
   });
@@ -125,7 +126,7 @@ export default function CommunicationsAdmin() {
     queryFn: async () => {
       if (companyIds.length === 0) return [];
       const { data, error } = await supabase.from("companies").select("id, name, name_ar").in("id", companyIds);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as CompanyInfo[];
     },
     enabled: companyIds.length > 0,
@@ -137,7 +138,7 @@ export default function CommunicationsAdmin() {
     queryKey: ["allCompaniesForCompose"],
     queryFn: async () => {
       const { data, error } = await supabase.from("companies").select("id, name, name_ar").order("name").limit(200);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as CompanyInfo[];
     },
   });
@@ -150,7 +151,7 @@ export default function CommunicationsAdmin() {
       const { data, error } = await supabase
         .from("company_communications").select("id, company_id, sender_id, subject, message, direction, status, parent_id, is_internal_note, is_archived, is_starred, tags, response_time_minutes, priority, created_at, updated_at")
         .eq("parent_id", selectedMessage.id).order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Communication[];
     },
     enabled: !!selectedMessage,
@@ -165,7 +166,7 @@ export default function CommunicationsAdmin() {
         .from("company_communications").select("id, company_id, sender_id, subject, message, direction, status, parent_id, is_internal_note, is_archived, is_starred, tags, response_time_minutes, priority, created_at, updated_at")
         .eq("parent_id", selectedMessage.id).eq("is_internal_note", true)
         .order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Communication[];
     },
     enabled: !!selectedMessage,
@@ -179,7 +180,7 @@ export default function CommunicationsAdmin() {
         .from("company_communications").select("created_at, direction, status, priority, response_time_minutes, is_internal_note")
         .is("parent_id", null).eq("is_internal_note", false)
         .order("created_at", { ascending: false }).limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: activeTab === "analytics",
@@ -209,7 +210,7 @@ export default function CommunicationsAdmin() {
         parent_id: parentId, status: "unread",
         response_time_minutes: responseTime,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminCommunications"] });
@@ -228,7 +229,7 @@ export default function CommunicationsAdmin() {
         subject: composeForm.subject, message: composeForm.message,
         direction: "incoming", priority: composeForm.priority, status: "unread",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminCommunications"] });
@@ -248,7 +249,7 @@ export default function CommunicationsAdmin() {
         direction: "incoming", priority: "normal",
         parent_id: parentId, status: "read", is_internal_note: true,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminCommNotes"] });
@@ -260,7 +261,7 @@ export default function CommunicationsAdmin() {
   const toggleStarMutation = useMutation({
     mutationFn: async ({ id, starred }: { id: string; starred: boolean }) => {
       const { error } = await supabase.from("company_communications").update({ is_starred: starred }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminCommunications"] }),
   });
@@ -268,7 +269,7 @@ export default function CommunicationsAdmin() {
   const updateTagsMutation = useMutation({
     mutationFn: async ({ id, tags }: { id: string; tags: string[] }) => {
       const { error } = await supabase.from("company_communications").update({ tags }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminCommunications"] });
@@ -281,7 +282,7 @@ export default function CommunicationsAdmin() {
     mutationFn: async () => {
       const ids = Array.from(selectedIds);
       const { error } = await supabase.from("company_communications").update({ status: "read" }).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminCommunications"] });
@@ -294,7 +295,7 @@ export default function CommunicationsAdmin() {
     mutationFn: async () => {
       const ids = Array.from(selectedIds);
       const { error } = await supabase.from("company_communications").update({ is_archived: true }).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminCommunications"] });
@@ -307,7 +308,7 @@ export default function CommunicationsAdmin() {
     mutationFn: async () => {
       const ids = Array.from(selectedIds);
       const { error } = await supabase.from("company_communications").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminCommunications"] });

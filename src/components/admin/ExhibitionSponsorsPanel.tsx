@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "@/hooks/use-toast";
 import { Plus, Trash2, Award, Building, Search, Pencil, X, Check, AlertTriangle, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TIER_OPTIONS = [
   { value: "strategic_partner", en: "Strategic Partner", ar: "شريك استراتيجي", color: "bg-chart-1/10 text-chart-1 border-chart-1/20" },
@@ -48,7 +49,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
         .select("*")
         .eq("exhibition_id", exhibitionId)
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!exhibitionId,
@@ -81,7 +82,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
           tier: form.tier, logo_url: form.logo_url || null,
           website_url: form.website_url || null, company_id: form.company_id || null,
         }).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("exhibition_sponsors").insert({
           exhibition_id: exhibitionId,
@@ -90,7 +91,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
           website_url: form.website_url || null, company_id: form.company_id || null,
           sort_order: (sponsors?.length || 0) + 1, is_active: true,
         });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -104,7 +105,7 @@ export const ExhibitionSponsorsPanel = memo(function ExhibitionSponsorsPanel({ e
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("exhibition_sponsors").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exhibition-sponsors-admin", exhibitionId] });

@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 import type { Database } from "@/integrations/supabase/types";
 import { EntityCard, typeLabels, scopeLabels } from "@/pages/entities/EntityCard";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type EntityType = Database["public"]["Enums"]["entity_type"];
 type EntityScope = Database["public"]["Enums"]["entity_scope"];
@@ -131,7 +132,7 @@ export default function Entities() {
         .eq("status", "active")
         .eq("is_visible", true)
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.medium.staleTime,

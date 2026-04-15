@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useState, useMemo } from "react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface InvoiceItem {
   name: string;
@@ -41,7 +42,7 @@ export default function CompanyInvoices() {
         .select("id, invoice_number, title, title_ar, description, description_ar, amount, subtotal, tax_amount, tax_rate, discount_amount, currency, status, due_date, paid_at, payment_method, payment_reference, items, notes, notes_ar, company_id, competition_id, order_id, session_id, user_id, issued_by, created_at, updated_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,

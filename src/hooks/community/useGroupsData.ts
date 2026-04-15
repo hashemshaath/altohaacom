@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface Group {
   id: string;
@@ -73,7 +74,7 @@ export function useGroupsData(): UseGroupsDataReturn {
         description: input.description.trim() || null, description_ar: input.description_ar.trim() || null,
         is_private: input.is_private, created_by: user.id,
       }).select().single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("group_members").insert({ group_id: data.id, user_id: user.id, role: "admin" });
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["community-groups"] }),

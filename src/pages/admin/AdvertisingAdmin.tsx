@@ -32,6 +32,7 @@ import { AdPlacementsTab } from "@/components/admin/advertising/AdPlacementsTab"
 import { AdPackagesTab } from "@/components/admin/advertising/AdPackagesTab";
 import { AdIntegrationsTab } from "@/components/admin/advertising/AdIntegrationsTab";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // Lazy analytics tabs
 const AdAnalyticsDashboard = lazy(() => import("@/components/ads/AdAnalyticsDashboard").then(m => ({ default: m.AdAnalyticsDashboard })));
@@ -51,7 +52,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     queryKey: ["admin-ad-campaigns"],
     queryFn: async () => {
       const { data, error } = await supabase.from("ad_campaigns").select("*, companies(name, name_ar, logo_url)").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -60,7 +61,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     queryKey: ["admin-ad-requests"],
     queryFn: async () => {
       const { data, error } = await supabase.from("ad_requests").select("*, companies(name, name_ar, logo_url)").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -69,7 +70,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     queryKey: ["admin-ad-placements"],
     queryFn: async () => {
       const { data, error } = await supabase.from("ad_placements").select("*").order("sort_order").limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -78,7 +79,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     queryKey: ["admin-ad-packages"],
     queryFn: async () => {
       const { data, error } = await supabase.from("ad_packages").select("*").order("sort_order").limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -87,7 +88,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
     queryKey: ["admin-ad-creatives"],
     queryFn: async () => {
       const { data, error } = await supabase.from("ad_creatives").select("*, ad_campaigns(name, companies(name, name_ar)), ad_placements(name, name_ar)").order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -123,7 +124,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const approveRequest = useMutation({
     mutationFn: async ({ id, status, notes }: { id: string; status: string; notes?: string }) => {
       const { error } = await supabase.from("ad_requests").update({ status, admin_notes: notes || null, reviewed_at: new Date().toISOString() }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const req = requests.find(r => r.id === id);
       if (req) await sendNotification(`Ad request "${req.title}" ${status}`, `طلب إعلان "${req.title_ar || req.title}" ${status === "approved" ? "تمت الموافقة" : "تم الرفض"}`, status === "approved" ? "Your ad request has been approved." : `Rejected. Reason: ${notes || "N/A"}`, status === "approved" ? "تمت الموافقة على طلب الإعلان." : `تم الرفض. السبب: ${notes || "غير محدد"}`, "ad_status_change", { request_id: id, status, company_id: req.company_id });
     },
@@ -136,7 +137,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
       if (status === "approved" || status === "active") update.approved_at = new Date().toISOString();
       if (reason) update.rejection_reason = reason;
       const { error } = await supabase.from("ad_campaigns").update(update).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-ad-campaigns"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
@@ -146,7 +147,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
       const update: Record<string, unknown> = { status };
       if (reason) update.rejection_reason = reason;
       const { error } = await supabase.from("ad_creatives").update(update).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["admin-ad-creatives"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
@@ -154,7 +155,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const toggleCreativeActive = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("ad_creatives").update({ is_active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-ad-creatives"] }),
   });
@@ -162,7 +163,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
   const togglePlacement = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("ad_placements").update({ is_active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-ad-placements"] }),
   });
@@ -184,7 +185,7 @@ const AdvertisingAdmin = forwardRef<HTMLDivElement>(function AdvertisingAdmin(_p
         items: [{ name: `Campaign: ${campaign.name}`, description: `${campaign.total_impressions || 0} impressions, ${campaign.total_clicks || 0} clicks`, quantity: 1, unit_price: amount }],
         issued_by: user.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => toast({ title: isAr ? "تم إنشاء الفاتورة" : "Invoice generated" }),
     onError: (e: Error) => toast({ title: isAr ? "خطأ" : "Error", description: e instanceof Error ? e.message : String(e), variant: "destructive" }),

@@ -30,6 +30,7 @@ import {
   Eye,
   Loader2,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Registration {
   id: string;
@@ -95,7 +96,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
         .eq("competition_id", competitionId)
         .order("registered_at", { ascending: false });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Fetch participant profiles separately
       const participantIds = data.map((r) => r.participant_id);
@@ -130,7 +131,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
         })
         .eq("id", registration.id);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Send notification to participant
       if (registration.participant?.user_id) {
@@ -182,7 +183,7 @@ export const RegistrationApprovalPanel = memo(function RegistrationApprovalPanel
         })
         .eq("id", registration.id);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Send notification to participant
       if (registration.participant?.user_id) {

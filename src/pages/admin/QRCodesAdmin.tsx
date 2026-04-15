@@ -22,6 +22,7 @@ import { AdminTablePagination } from "@/components/admin/AdminTablePagination";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Checkbox } from "@/components/ui/checkbox";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const CATEGORIES = ["all", "account", "certificate", "invoice", "competition", "company", "exhibition", "participant", "judge", "team_member", "general"];
 
@@ -45,7 +46,7 @@ export default function QRCodesAdmin() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { MS_PER_DAY, MS_PER_WEEK } from "@/lib/constants";
 import { ChefHat, Cake, Utensils, Coffee, Soup, Salad, Award, GraduationCap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const JOB_TYPE_LABELS: Record<string, { en: string; ar: string }> = {
   full_time: { en: "Full-time", ar: "دوام كامل" },
@@ -149,7 +150,7 @@ export function useJobSearchData() {
         .order("created_at", { ascending: false });
       if (jobTypeFilter !== "all") query = query.eq("job_type", jobTypeFilter);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -165,7 +166,7 @@ export function useJobSearchData() {
         .eq("is_chef_visible", true)
         .order("updated_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

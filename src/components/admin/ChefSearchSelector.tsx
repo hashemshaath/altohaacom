@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search, X, User } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ChefSearchSelectorProps {
   value?: string; // user_id
@@ -37,7 +38,7 @@ export const ChefSearchSelector = memo(function ChefSearchSelector({ value, valu
         .eq("is_chef_visible", true)
         .or(`full_name.ilike.%${search}%,full_name_ar.ilike.%${search}%`)
         .limit(15);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: search.length >= 2 && isOpen,

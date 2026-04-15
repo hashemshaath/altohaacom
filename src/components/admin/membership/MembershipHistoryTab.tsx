@@ -23,6 +23,7 @@ import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
 } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface HistoryEntry {
   id: string;
@@ -53,7 +54,7 @@ const MembershipHistoryTab = memo(function MembershipHistoryTab() {
         .select("id, user_id, previous_tier, new_tier, reason, changed_by, created_at")
         .order("created_at", { ascending: false })
         .limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Fetch profiles for all user_ids
       const userIds = [...new Set((data || []).map(h => h.user_id))];

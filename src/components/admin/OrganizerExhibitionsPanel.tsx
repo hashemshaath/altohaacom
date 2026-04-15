@@ -14,6 +14,7 @@ import { Link as LinkIcon, Plus, X, Search, Calendar, MapPin, Building2, Unlink 
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface OrganizerExhibitionsPanelProps {
   open: boolean;
@@ -42,7 +43,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
         .select("id, exhibition_id, role, sort_order, created_at")
         .eq("organizer_id", organizerId)
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.length) return [];
 
       // Fetch exhibition details
@@ -94,7 +95,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
         role: role || "organizer",
         logo_url: organizerLogo || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["organizer-exhibitions", organizerId] });
@@ -107,7 +108,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
   const unlinkMutation = useMutation({
     mutationFn: async (linkId: string) => {
       const { error } = await supabase.from("exhibition_organizers").delete().eq("id", linkId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["organizer-exhibitions", organizerId] });
@@ -120,7 +121,7 @@ export const OrganizerExhibitionsPanel = memo(function OrganizerExhibitionsPanel
   const updateRoleMutation = useMutation({
     mutationFn: async ({ linkId, role }: { linkId: string; role: string }) => {
       const { error } = await supabase.from("exhibition_organizers").update({ role }).eq("id", linkId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["organizer-exhibitions", organizerId] });

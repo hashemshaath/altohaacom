@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/hooks/use-toast";
 import { Plus, CalendarClock, Coffee, Trophy, Settings2, Scale, Clock, MapPin, Trash2 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -45,7 +46,7 @@ export const CompetitionSchedulePanel = memo(function CompetitionSchedulePanel({
         .select("id, competition_id, title, title_ar, slot_type, start_time, end_time, station_number, location, location_ar, notes, sort_order")
         .eq("competition_id", competitionId)
         .order("start_time");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -65,7 +66,7 @@ export const CompetitionSchedulePanel = memo(function CompetitionSchedulePanel({
         notes: form.notes || undefined,
         sort_order: (slots?.length || 0) + 1,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-schedule", competitionId] });
@@ -79,7 +80,7 @@ export const CompetitionSchedulePanel = memo(function CompetitionSchedulePanel({
   const deleteSlot = useMutation({
     mutationFn: async (slotId: string) => {
       const { error } = await supabase.from("competition_schedule_slots").delete().eq("id", slotId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["competition-schedule", competitionId] });

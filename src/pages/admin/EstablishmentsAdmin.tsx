@@ -38,6 +38,7 @@ import { toast } from "@/hooks/use-toast";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 import { AreaChart, Area, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RTooltip } from "recharts";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // --- Status config ---
 const statusConfig: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; en: string; ar: string }> = {
@@ -72,7 +73,7 @@ export default function EstablishmentsAdmin() {
         .from("culinary_entities")
         .select("id, name, name_ar, abbreviation, abbreviation_ar, type, scope, status, is_visible, is_verified, username, country, city, logo_url, website, email, phone, description, description_ar, entity_number, slug, created_at, entity_followers:entity_followers(id)")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -222,11 +223,11 @@ export default function EstablishmentsAdmin() {
 
       if (editingId) {
         const { error } = await supabase.from("culinary_entities").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const slug = form.name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") + "-" + Date.now().toString(36);
         const { error } = await supabase.from("culinary_entities").insert({ ...payload, slug, created_by: user?.id || null });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
 
       queryClient.invalidateQueries({ queryKey: ["admin-culinary-entities"] });

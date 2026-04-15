@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Building, MapPin, Globe, Search, LayoutGrid, Star, Hash, ArrowUpRight } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -37,7 +38,7 @@ export const ExhibitionBoothsTab = memo(function ExhibitionBoothsTab({ exhibitio
         .select("id, booth_number, name, name_ar, description, description_ar, category, hall, hall_ar, size, size_sqm, price, currency, status, booking_status, logo_url, website_url, is_featured, company_id, contact_name, floor_level")
         .eq("exhibition_id", exhibitionId)
         .order("booth_number", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.medium.staleTime,

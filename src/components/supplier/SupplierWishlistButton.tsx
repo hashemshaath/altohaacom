@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Heart } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   companyId: string;
@@ -42,12 +43,12 @@ export const SupplierWishlistButton = memo(function SupplierWishlistButton({ com
           .delete()
           .eq("user_id", user.id)
           .eq("company_id", companyId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase
           .from("supplier_wishlists")
           .insert({ user_id: user.id, company_id: companyId });
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {

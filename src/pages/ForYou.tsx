@@ -13,6 +13,7 @@ import { Sparkles, Trophy, ChefHat, BookOpen, Users, Lightbulb, ArrowRight, MapP
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface RecommendationData {
   competitions: Record<string, unknown>[];
@@ -32,7 +33,7 @@ export default function ForYou() {
     queryKey: ["smart-recommendations-full", user?.id],
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("smart-recommendations");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as RecommendationData;
     },
     enabled: !!user,

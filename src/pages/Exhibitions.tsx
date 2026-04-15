@@ -25,6 +25,7 @@ import { toEnglishDigits } from "@/lib/formatNumber";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
 
@@ -66,7 +67,7 @@ export default function Exhibitions() {
         .from("exhibitions")
         .select("id, title, title_ar, slug, description, description_ar, type, status, start_date, end_date, registration_deadline, venue, venue_ar, city, country, is_virtual, cover_image_url, logo_url, organizer_name, organizer_name_ar, is_free, ticket_price, ticket_price_ar, max_attendees, is_featured, tags, target_audience, website_url, registration_url, view_count, edition_year, series_id")
         .order("start_date", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Exhibition[];
     },
     staleTime: CACHE.default.staleTime,

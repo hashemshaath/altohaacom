@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface SendNotificationParams {
   userId: string;
@@ -32,7 +33,7 @@ export async function sendNotification(params: SendNotificationParams) {
       },
     });
 
-    if (error) throw error;
+    if (error) throw handleSupabaseError(error);
     return data;
   } catch (error: unknown) {
     console.error("Failed to send notification:", error);

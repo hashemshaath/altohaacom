@@ -19,6 +19,7 @@ import {
   CheckCircle, XCircle, AlertTriangle, RotateCcw, Ban, Printer,
 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ProfileInvoicesTabProps {
   userId: string;
@@ -71,7 +72,7 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
       }
 
       const { data, error } = await query.limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -85,7 +86,7 @@ export const ProfileInvoicesTab = memo(function ProfileInvoicesTab({ userId }: P
         .select("*, companies:company_id (id, name, name_ar, email, phone, address)")
         .eq("id", selectedInvoiceId)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!selectedInvoiceId,

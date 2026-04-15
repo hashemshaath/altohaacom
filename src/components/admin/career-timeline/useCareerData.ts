@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { SectionConfig, CareerRecord } from "./constants";
 import { DEFAULT_SECTIONS, CUSTOM_SECTION_COLORS } from "./constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useCareerData(userId: string) {
   // ── Load sections ──
@@ -11,7 +12,7 @@ export function useCareerData(userId: string) {
     queryFn: async () => {
       const { data, error } = await supabase.from("user_career_sections").select("id, user_id, section_key, is_custom, name_en, name_ar, icon, color, sort_order")
         .eq("user_id", userId).order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -69,7 +70,7 @@ export function useCareerData(userId: string) {
         .eq("user_id", userId).order("sort_order", { ascending: true })
         .order("is_current", { ascending: false })
         .order("end_date", { ascending: false, nullsFirst: true }).order("start_date", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as CareerRecord[];
     },
   });
@@ -80,7 +81,7 @@ export function useCareerData(userId: string) {
       const { data, error } = await supabase.from("entity_memberships")
         .select("*, culinary_entities(name, name_ar, logo_url, type)")
         .eq("user_id", userId).order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -91,7 +92,7 @@ export function useCareerData(userId: string) {
       const { data, error } = await supabase.from("competition_registrations")
         .select("id, registered_at, status, competitions(title, title_ar, competition_start, country_code, status)")
         .eq("participant_id", userId).order("registered_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -102,7 +103,7 @@ export function useCareerData(userId: string) {
       const { data, error } = await supabase.from("certificates")
         .select("id, issued_at, event_name, event_name_ar, achievement, achievement_ar, type, status, verification_code")
         .eq("recipient_id", userId).eq("status", "issued").order("issued_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

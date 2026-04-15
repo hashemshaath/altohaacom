@@ -11,6 +11,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { ActivityPulse } from "@/components/ui/activity-pulse";
 import { REFETCH_INTERVAL_DEFAULT } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const AdminSessionTracker = memo(function AdminSessionTracker() {
   const isAr = useIsAr();
@@ -24,7 +25,7 @@ export const AdminSessionTracker = memo(function AdminSessionTracker() {
         .eq("is_active", true)
         .order("last_active_at", { ascending: false })
         .limit(20);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),
@@ -38,7 +39,7 @@ export const AdminSessionTracker = memo(function AdminSessionTracker() {
         .select("id, event_type, severity, ip_address, user_agent, created_at, user_id")
         .order("created_at", { ascending: false })
         .limit(10);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     refetchInterval: useVisibleRefetchInterval(REFETCH_INTERVAL_DEFAULT),

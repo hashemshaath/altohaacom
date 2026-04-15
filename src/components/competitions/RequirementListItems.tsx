@@ -15,6 +15,7 @@ import { SupermarketListPicker } from "./order-center/SupermarketListPicker";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ITEM_STATUS_LABELS, PRIORITY_LABELS, getStatusLabel } from "./order-center/OrderStatusLabels";
 import { formatCurrency } from "@/lib/currencyFormatter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const PRIORITY_COLORS: Record<string, string> = {
   low: "bg-muted text-muted-foreground",
@@ -44,7 +45,7 @@ export const RequirementListItems = memo(function RequirementListItems({ listId,
         .select("*, requirement_items(*)")
         .eq("list_id", listId)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -52,7 +53,7 @@ export const RequirementListItems = memo(function RequirementListItems({ listId,
   const deleteItemMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("requirement_list_items").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["requirement-list-items", listId] });
@@ -63,7 +64,7 @@ export const RequirementListItems = memo(function RequirementListItems({ listId,
   const updateItemStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("requirement_list_items").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["requirement-list-items", listId] }),
   });

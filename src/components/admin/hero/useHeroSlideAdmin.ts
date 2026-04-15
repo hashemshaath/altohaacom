@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { QUERY_LIMIT_MEDIUM } from "@/lib/constants";
 import { HERO_TEMPLATES } from "./heroTemplates";
 import { defaultSlide, type HeroSlide } from "./heroSlideConstants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useHeroSlideAdmin() {
   const { language } = useLanguage();
@@ -26,7 +27,7 @@ export function useHeroSlideAdmin() {
     queryKey: ["hero-slides-admin"],
     queryFn: async () => {
       const { data, error } = await supabase.from("hero_slides").select("id, title, title_ar, subtitle, subtitle_ar, image_url, link_url, link_label, link_label_ar, sort_order, is_active, template, text_position, overlay_opacity, overlay_color, height_preset, custom_height, badge_text, badge_text_ar, cta_secondary_label, cta_secondary_label_ar, cta_secondary_url, text_color, accent_color, gradient_direction, autoplay_interval, animation_effect, object_fit, object_position").order("sort_order").limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as HeroSlide[];
     },
   });
@@ -49,7 +50,7 @@ export function useHeroSlideAdmin() {
     mutationFn: async (slide: HeroSlide) => {
       const { id, ...rest } = slide;
       const { error } = await supabase.from("hero_slides").update({ ...rest, updated_at: new Date().toISOString() }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_, slide) => {
       invalidateAll();
@@ -72,7 +73,7 @@ export function useHeroSlideAdmin() {
         text_position: tpl.defaultPosition,
         created_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { invalidateAll(); toast({ title: isAr ? "تمت الإضافة" : "Slide created" }); },
   });
@@ -87,7 +88,7 @@ export function useHeroSlideAdmin() {
         sort_order: slides.length,
         created_by: user?.id,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { invalidateAll(); toast({ title: isAr ? "تم النسخ" : "Duplicated" }); },
   });
@@ -95,7 +96,7 @@ export function useHeroSlideAdmin() {
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("hero_slides").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => invalidateAll(),
   });
@@ -103,7 +104,7 @@ export function useHeroSlideAdmin() {
   const reorder = useMutation({
     mutationFn: async ({ id, newOrder }: { id: string; newOrder: number }) => {
       const { error } = await supabase.from("hero_slides").update({ sort_order: newOrder }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => invalidateAll(),
   });
@@ -111,7 +112,7 @@ export function useHeroSlideAdmin() {
   const toggleActive = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("hero_slides").update({ is_active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => invalidateAll(),
   });

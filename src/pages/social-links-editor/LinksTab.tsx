@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { detectLinkType } from "@/lib/socialLinksConstants";
 import type { ExtraSettings } from "@/lib/socialLinksConstants";
 import type { LinkItem, PageForm, ItemMutation } from "./types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   items: LinkItem[];
@@ -107,7 +108,7 @@ export const LinksTab = memo(function LinksTab({
       const ext = file.name.split(".").pop();
       const path = `${userId}/link-thumb-${itemId}-${Date.now()}.${ext}`;
       const { error } = await supabase.storage.from("user-media").upload(path, file, { upsert: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const { data: urlData } = supabase.storage.from("user-media").getPublicUrl(path);
       updateItem.mutate({ id: itemId, thumbnail_url: urlData.publicUrl });
       toast({ title: isAr ? "تم رفع الصورة المصغرة" : "Thumbnail uploaded" });

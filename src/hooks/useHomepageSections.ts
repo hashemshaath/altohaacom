@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface HomepageSection {
   id: string;
@@ -55,7 +56,7 @@ export function useHomepageSections() {
         .from("homepage_sections")
         .select("*")
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as HomepageSection[];
     },
     ...CACHE.medium,
@@ -76,7 +77,7 @@ export function useUpdateHomepageSection() {
         .from("homepage_sections")
         .update(updates as any)
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
   });
@@ -91,7 +92,7 @@ export function useBulkUpdateHomepageSections() {
           .from("homepage_sections")
           .update(updates as any)
           .eq("id", id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
@@ -105,7 +106,7 @@ export function useCreateHomepageSection() {
       const { error } = await supabase
         .from("homepage_sections")
         .insert(section as any);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
   });

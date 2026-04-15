@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Brain, Send, Sparkles, User, Bot, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Message {
   role: "user" | "assistant";
@@ -65,7 +66,7 @@ export const AIAnalyticsChat = memo(function AIAnalyticsChat() {
         body: { messages: [...messages, userMsg], language },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const assistantContent = data?.response || (isAr ? "عذراً، لم أتمكن من الرد" : "Sorry, I couldn't generate a response.");
       setMessages((prev) => [...prev, { role: "assistant", content: assistantContent }]);

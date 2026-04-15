@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Building2, MapPin, Phone, Mail, Star, User, Plus, Pencil, Trash2, Save,
 } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface BranchForm {
   name: string;
@@ -66,7 +67,7 @@ export default function CompanyBranches() {
         .select("id, company_id, name, name_ar, address, address_ar, city, country, postal_code, phone, email, is_headquarters, is_active, manager_name, manager_email, manager_phone, working_hours, created_at")
         .eq("company_id", companyId)
         .order("is_headquarters", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,
@@ -95,10 +96,10 @@ export default function CompanyBranches() {
 
       if (editingId) {
         const { error } = await supabase.from("company_branches").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("company_branches").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -112,7 +113,7 @@ export default function CompanyBranches() {
   const deleteBranch = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("company_branches").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["companyBranches"] });

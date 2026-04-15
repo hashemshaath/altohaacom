@@ -17,6 +17,7 @@ import { SEOHead } from "@/components/SEOHead";
 import { ResultReveal } from "@/components/ui/result-reveal";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Winner {
   rank: number;
@@ -50,7 +51,7 @@ export default function CompetitionResults() {
       if (!data) {
         ({ data, error } = await supabase.from("competitions").select("id, title, title_ar, description, description_ar, competition_start, competition_end, venue, venue_ar, country_code, city, status, cover_image_url, organizer_name, organizer_name_ar, edition_year, competition_number, slug").eq("id", slug).maybeSingle());
       }
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) throw new Error("Competition not found");
       return data;
     },
@@ -63,7 +64,7 @@ export default function CompetitionResults() {
     queryKey: ["result-categories", competitionId],
     queryFn: async () => {
       const { data, error } = await supabase.from("competition_categories").select("id, name, name_ar").eq("competition_id", competitionId!).order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!competitionId,

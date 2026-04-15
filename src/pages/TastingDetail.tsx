@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const statusConfig: Record<string, { en: string; ar: string; color: string }> = {
   draft: { en: "Draft", ar: "مسودة", color: "bg-muted text-muted-foreground" },
@@ -71,7 +72,7 @@ export default function TastingDetail() {
         .select("id, title, title_ar, status")
         .eq("id", session!.competition_id!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!session?.competition_id,

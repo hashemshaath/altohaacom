@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { format, startOfMonth, subMonths } from "date-fns";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyTransactions() {
   const { companyId } = useCompanyAccess();
@@ -48,7 +49,7 @@ export default function CompanyTransactions() {
       if (dateTo) query = query.lte("transaction_date", dateTo.toISOString());
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!companyId,

@@ -25,6 +25,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // Lazy load heavy analytics widgets
 const LoyaltyOverviewWidget = lazy(() => import("@/components/admin/LoyaltyOverviewWidget").then(m => ({ default: m.LoyaltyOverviewWidget })));
@@ -136,7 +137,7 @@ export default memo(function LoyaltyAdmin() {
   const updateChallenge = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
       const { error } = await supabase.from("challenges").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["adminChallenges"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
@@ -144,7 +145,7 @@ export default memo(function LoyaltyAdmin() {
   const updateReward = useMutation({
     mutationFn: async ({ id, updates }: { id: string; updates: Record<string, any> }) => {
       const { error } = await supabase.from("rewards_catalog").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["adminRewards"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });
@@ -154,7 +155,7 @@ export default memo(function LoyaltyAdmin() {
       const updates: Record<string, any> = { status };
       if (status === "fulfilled") updates.fulfilled_at = new Date().toISOString();
       const { error } = await supabase.from("reward_redemptions").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["adminRedemptions"] }); toast({ title: isAr ? "تم التحديث" : "Updated" }); },
   });

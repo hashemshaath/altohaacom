@@ -9,6 +9,7 @@ import {
   CheckCircle2, AlertTriangle, XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ContentMetrics {
   id: string;
@@ -51,7 +52,7 @@ export const SEOContentAnalysis = memo(function SEOContentAnalysis({ isAr }: { i
         .eq("status", "published")
         .order("published_at", { ascending: false })
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });

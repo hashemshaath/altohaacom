@@ -15,6 +15,7 @@ import type { OrganizerValue } from "@/components/admin/OrganizerSearchSelector"
 import type { VenueValue } from "@/components/admin/VenueSearchSelector";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export type ExhibitionStatus = Database["public"]["Enums"]["exhibition_status"];
 export type ExhibitionType = Database["public"]["Enums"]["exhibition_type"];
@@ -379,11 +380,11 @@ export function useExhibitionEditForm(exhibition: any | undefined, onClose: () =
       };
       if (editingId) {
         const { error } = await supabase.from("exhibitions").update(payload).eq("id", editingId);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         return { slug, id: editingId, isNew: false };
       } else {
         const { data, error } = await supabase.from("exhibitions").insert(payload).select("id, slug").single();
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
         return { slug: data.slug, id: data.id, isNew: true };
       }
     },

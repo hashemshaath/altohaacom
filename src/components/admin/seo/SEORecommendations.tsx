@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Sparkles, Loader2, Lightbulb, TrendingUp, AlertTriangle, CheckCircle2, Target, Zap } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   isAr: boolean;
@@ -65,7 +66,7 @@ Be specific with numbers, target metrics, and implementation steps. Include both
           model: "google/gemini-2.5-flash",
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data?.content || data?.message || "No recommendations generated";
     },
     onSuccess: (data) => {

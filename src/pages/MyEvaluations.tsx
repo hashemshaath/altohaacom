@@ -14,6 +14,7 @@ import {
   DollarSign, Timer, Package, Mail, Star,
 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Invitation {
   id: string;
@@ -49,7 +50,7 @@ export default function MyEvaluations() {
         .from("evaluation_invitations" as any)
         .select("id, domain_slug, status, product_name, product_name_ar, product_description, product_description_ar, product_images, evaluation_date, evaluation_location, evaluation_location_ar, expected_duration_minutes, offered_amount, currency, response_deadline, notes, notes_ar, created_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as Invitation[];
     },
   });
@@ -64,7 +65,7 @@ export default function MyEvaluations() {
           responded_at: new Date().toISOString(),
         } as any)
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["my-evaluation-invitations"] });

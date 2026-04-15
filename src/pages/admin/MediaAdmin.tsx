@@ -25,6 +25,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminWidgetSkeleton } from "@/components/admin/AdminTableSkeleton";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function MediaAdmin() {
   const { language } = useLanguage();
@@ -52,7 +53,7 @@ export default function MediaAdmin() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -60,7 +61,7 @@ export default function MediaAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("media_library").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-media"] });

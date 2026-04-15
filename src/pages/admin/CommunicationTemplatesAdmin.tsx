@@ -34,6 +34,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { BulkActionBar } from "@/components/admin/BulkActionBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Template {
   id: string;
@@ -101,7 +102,7 @@ export default function CommunicationTemplatesAdmin() {
       if (categoryFilter !== "all") query = query.eq("category", categoryFilter);
       if (channelFilter !== "all") query = query.eq("channel", channelFilter);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Template[];
     },
   });
@@ -118,10 +119,10 @@ export default function CommunicationTemplatesAdmin() {
       };
       if (data.id) {
         const { error } = await supabase.from("communication_templates").update(payload).eq("id", data.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("communication_templates").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -137,7 +138,7 @@ export default function CommunicationTemplatesAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("communication_templates").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
@@ -149,7 +150,7 @@ export default function CommunicationTemplatesAdmin() {
   const toggleActiveMutation = useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
       const { error } = await supabase.from("communication_templates").update({ is_active }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["communication-templates"] }),
   });
@@ -158,7 +159,7 @@ export default function CommunicationTemplatesAdmin() {
     mutationFn: async (active: boolean) => {
       const ids = [...bulk.selected];
       const { error } = await supabase.from("communication_templates").update({ is_active: active }).in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });
@@ -171,7 +172,7 @@ export default function CommunicationTemplatesAdmin() {
     mutationFn: async () => {
       const ids = [...bulk.selected];
       const { error } = await supabase.from("communication_templates").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communication-templates"] });

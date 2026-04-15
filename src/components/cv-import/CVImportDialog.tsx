@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { CVData } from "./types";
 import { CVPreview } from "./CVPreview";
 import { extractTextFromFile } from "./fileParser";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   open: boolean;
@@ -96,7 +97,7 @@ export const CVImportDialog = memo(function CVImportDialog({ open, onOpenChange,
         body: { cv_text: cvText, target_user_id: targetUserId },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.error) throw new Error(data.error);
 
       setParsedData(data.data as CVData);

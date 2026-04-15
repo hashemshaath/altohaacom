@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface ContentReview {
   id: string;
@@ -27,7 +28,7 @@ export function useContentReviews(entityType: string, entityId: string) {
         .eq("is_visible", true)
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ContentReview[];
     },
     ...CACHE.default,
@@ -61,7 +62,7 @@ export function useSubmitReview() {
           } as unknown as import("@/integrations/supabase/types").Database["public"]["Tables"]["content_reviews"]["Insert"],
           { onConflict: "user_id,entity_type,entity_id" }
         );
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ["content-reviews", vars.entity_type, vars.entity_id] });
@@ -74,7 +75,7 @@ export function useDeleteReview() {
   return useMutation({
     mutationFn: async ({ id, entityType, entityId }: { id: string; entityType: string; entityId: string }) => {
       const { error } = await supabase.from("content_reviews").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return { entityType, entityId };
     },
     onSuccess: (vars) => {

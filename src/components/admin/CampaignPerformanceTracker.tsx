@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Megaphone, Target, DollarSign, TrendingUp, AlertTriangle } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const CampaignPerformanceTracker = memo(function CampaignPerformanceTracker() {
   const isAr = useIsAr();
@@ -21,7 +22,7 @@ export const CampaignPerformanceTracker = memo(function CampaignPerformanceTrack
         .eq("status", "active")
         .order("created_at", { ascending: false })
         .limit(10);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     staleTime: CACHE.short.staleTime,

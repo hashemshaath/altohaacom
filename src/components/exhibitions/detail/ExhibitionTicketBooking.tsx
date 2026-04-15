@@ -12,6 +12,7 @@ import { QRCodeDisplay } from "@/components/qr/QRCodeDisplay";
 import { toast } from "@/hooks/use-toast";
 import { Ticket, CheckCircle2, Sparkles, Shield, ChevronDown, ChevronUp, User, Mail, Phone, CreditCard } from "lucide-react";
 import { MoyasarPaymentForm } from "./MoyasarPaymentForm";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -67,7 +68,7 @@ export const ExhibitionTicketBooking = memo(function ExhibitionTicketBooking({ e
         })
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       await supabase.from("qr_codes").insert({
         code: qrCode as string,
         entity_type: "participant",

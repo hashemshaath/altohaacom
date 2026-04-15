@@ -21,6 +21,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { toEnglishDigits } from "@/lib/formatNumber";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface SupportMessage {
   id: string;
@@ -55,7 +56,7 @@ export default function CompanyAdminMessaging() {
         .select("id, company_id, sender_id, sender_type, subject, message, is_read, created_at")
         .eq("company_id", companyId)
         .order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as SupportMessage[];
     },
     enabled: !!companyId,
@@ -111,7 +112,7 @@ export default function CompanyAdminMessaging() {
         subject: subject.trim() || null,
         message: newMessage.trim(),
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setNewMessage("");
       setSubject("");
       setComposing(false);

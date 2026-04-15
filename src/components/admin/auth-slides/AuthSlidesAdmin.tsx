@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { Plus, Trash2, GripVertical, Image, Save, Loader2, Layers } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Slide {
   id: string;
@@ -37,7 +38,7 @@ export const AuthSlidesAdmin = memo(function AuthSlidesAdmin() {
         .from("auth_hero_slides")
         .select("*")
         .order("sort_order", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Slide[];
     },
   });
@@ -46,7 +47,7 @@ export const AuthSlidesAdmin = memo(function AuthSlidesAdmin() {
     mutationFn: async (slide: Partial<Slide> & { id?: string }) => {
       if (slide.id) {
         const { error } = await supabase.from("auth_hero_slides").update(slide).eq("id", slide.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("auth_hero_slides").insert([{
           title: slide.title || null,
@@ -59,7 +60,7 @@ export const AuthSlidesAdmin = memo(function AuthSlidesAdmin() {
           sort_order: slides.length,
           created_by: user?.id,
         }]);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -73,7 +74,7 @@ export const AuthSlidesAdmin = memo(function AuthSlidesAdmin() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("auth_hero_slides").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-auth-hero-slides"] });

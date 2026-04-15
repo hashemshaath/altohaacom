@@ -39,6 +39,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Communication {
   id: string;
@@ -92,7 +93,7 @@ export default function CompanyCommunications() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Communication[];
     },
     enabled: !!companyId,
@@ -107,7 +108,7 @@ export default function CompanyCommunications() {
         .select("id, company_id, sender_id, subject, message, direction, status, priority, is_starred, is_archived, is_internal_note, tags, parent_id, response_time_minutes, created_at, updated_at")
         .eq("parent_id", selectedMessage.id)
         .order("created_at", { ascending: true });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Communication[];
     },
     enabled: !!selectedMessage,
@@ -126,7 +127,7 @@ export default function CompanyCommunications() {
         parent_id: data.parentId || null,
         status: "unread",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyCommunications"] });
@@ -149,7 +150,7 @@ export default function CompanyCommunications() {
         .eq("id", id)
         .eq("status", "unread")
         .eq("direction", "incoming");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyCommunications"] });

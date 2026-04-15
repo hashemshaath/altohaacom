@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Star, Search, CheckCircle, XCircle, Eye, Flag } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
   const isAr = useIsAr();
@@ -28,7 +29,7 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
         .limit(100);
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -67,7 +68,7 @@ export const AdminReviewsModeration = memo(function AdminReviewsModeration() {
   const updateStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase.from("supplier_reviews").update({ status }).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminReviews"] });

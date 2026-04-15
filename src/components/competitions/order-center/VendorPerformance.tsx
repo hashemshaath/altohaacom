@@ -10,6 +10,7 @@ import {
   Star, Package, BarChart3,
 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   competitionId: string;
@@ -40,7 +41,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
         .from("requirement_lists")
         .select("id, category")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -53,7 +54,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
         .from("requirement_list_items")
         .select("id, list_id, status, deadline, delivered_at, assigned_at, assigned_vendor_id, requirement_items(category)")
         .in("list_id", lists.map(l => l.id));
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any -- nested join
       return data as any[];
     },
@@ -69,7 +70,7 @@ export const VendorPerformance = memo(function VendorPerformance({ competitionId
         .from("companies")
         .select("id, name, name_ar, logo_url")
         .in("id", vendorIds);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!(items?.length),

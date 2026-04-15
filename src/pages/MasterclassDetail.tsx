@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { LessonViewer } from "@/components/masterclass/LessonViewer";
 import { MasterclassReviews } from "@/components/masterclass/MasterclassReviews";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function MasterclassDetail() {
   const { id } = useParams<{ id: string }>();
@@ -38,7 +39,7 @@ export default function MasterclassDetail() {
         .select("id, title, title_ar, description, description_ar, cover_image_url, category, level, is_free, price, currency, duration_hours, instructor_id, what_you_learn, what_you_learn_ar, status")
         .eq("id", id!)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!id,
@@ -66,7 +67,7 @@ export default function MasterclassDetail() {
         .select("*, masterclass_lessons(*)")
         .eq("masterclass_id", id!)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!id,
@@ -82,7 +83,7 @@ export default function MasterclassDetail() {
         .eq("masterclass_id", id!)
         .eq("user_id", user.id)
         .maybeSingle();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!id && !!user,
@@ -96,7 +97,7 @@ export default function MasterclassDetail() {
         .from("masterclass_lesson_progress")
         .select("id, enrollment_id, lesson_id, completed, completed_at")
         .eq("enrollment_id", enrollment.id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
     enabled: !!enrollment,
@@ -108,7 +109,7 @@ export default function MasterclassDetail() {
       const { error } = await supabase
         .from("masterclass_enrollments")
         .insert({ masterclass_id: id, user_id: user.id });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["enrollment", id] });
@@ -138,7 +139,7 @@ export default function MasterclassDetail() {
           completed: true,
           completed_at: new Date().toISOString(),
         }, { onConflict: "enrollment_id,lesson_id" });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Update progress percentage
       const totalLessons = modules.reduce((sum, m) => sum + (m.masterclass_lessons?.length || 0), 0);

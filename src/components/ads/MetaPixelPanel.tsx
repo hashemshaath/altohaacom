@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Save, CheckCircle, Facebook, Instagram, Share2, ShieldCheck } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface IntegrationConfig {
   integration_type: string;
@@ -112,7 +113,7 @@ export const MetaPixelPanel = memo(function MetaPixelPanel() {
         is_active: cfg.is_active,
         updated_at: new Date().toISOString(),
       }, { onConflict: "integration_type" });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["integration-settings-meta"] });

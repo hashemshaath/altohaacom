@@ -44,6 +44,7 @@ import {
 import { format } from "date-fns";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE, QUERY_LIMIT_MEDIUM } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type CertificateType = "participation" | "winner_gold" | "winner_silver" | "winner_bronze" | "appreciation" | "organizer" | "judge" | "sponsor" | "volunteer";
 type CertificateStatus = "draft" | "pending_signature" | "signed" | "issued" | "revoked";
@@ -119,7 +120,7 @@ export default function CertificatesAdmin() {
       if (statusFilter !== "all") query = query.eq("status", statusFilter as any);
       if (typeFilter !== "all") query = query.eq("type", typeFilter as any);
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Certificate[];
     },
     staleTime: CACHE.short.staleTime,
@@ -129,7 +130,7 @@ export default function CertificatesAdmin() {
     queryKey: ["certificate-templates"],
     queryFn: async () => {
       const { data, error } = await supabase.from("certificate_templates").select("id, name, name_ar, type, is_active").eq("is_active", true).order("name").limit(QUERY_LIMIT_MEDIUM);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.long.staleTime,
@@ -139,7 +140,7 @@ export default function CertificatesAdmin() {
     queryKey: ["competitions-for-certs"],
     queryFn: async () => {
       const { data, error } = await supabase.from("competitions").select("id, title, title_ar, status, competition_end, venue, venue_ar").order("created_at", { ascending: false }).limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     staleTime: CACHE.long.staleTime,
@@ -162,7 +163,7 @@ export default function CertificatesAdmin() {
         ...data, template_id: templateId,
         verification_code: crypto.randomUUID().substring(0, 8).toUpperCase(), status: "draft",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["certificates"] });
@@ -179,7 +180,7 @@ export default function CertificatesAdmin() {
       const { error } = await supabase.from("certificates").update({
         status: "signed" as any, signed_at: new Date().toISOString(), signed_by: user?.id,
       }).in("id", draftIds);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return draftIds.length;
     },
     onSuccess: (count) => {
@@ -195,7 +196,7 @@ export default function CertificatesAdmin() {
       const { error } = await supabase.from("certificates").update({
         status: "issued" as any, issued_at: new Date().toISOString(),
       }).in("id", signedIds);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return signedIds.length;
     },
     onSuccess: (count) => {
@@ -309,7 +310,7 @@ export default function CertificatesAdmin() {
                 body_font: bodyLine?.font || "sans-serif",
                 is_active: true,
               });
-              if (error) throw error;
+              if (error) throw handleSupabaseError(error);
               queryClient.invalidateQueries({ queryKey: ["certificate-templates"] });
               toast({ title: language === "ar" ? "تم حفظ القالب" : "Template saved successfully" });
               setShowDesigner(false);

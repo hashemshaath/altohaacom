@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import type { QREntityType } from "@/lib/qrCode";
 import { CODE_PREFIXES } from "@/lib/qrCode";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export interface QRVerifyResult {
   entity_type: string;
@@ -54,7 +55,7 @@ export function useEntityQRCode(entityType: QREntityType, entityId: string | und
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return newQR;
     },
     enabled: !!entityId,
@@ -69,7 +70,7 @@ export function useVerifyQRCode(code: string | null) {
     queryFn: async () => {
       if (!code) return null;
       const { data, error } = await supabase.rpc("verify_qr_code", { p_code: code.toUpperCase() });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data || (Array.isArray(data) && data.length === 0)) return null;
       const row = Array.isArray(data) ? data[0] : data;
       return row as unknown as QRVerifyResult;

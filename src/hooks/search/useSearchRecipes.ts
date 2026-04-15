@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CACHE } from "@/lib/queryConfig";
 import { buildFlexibleFilter, countMatchingWords, sortByRelevance } from "./searchUtils";
 import type { RecipeResult } from "./searchTypes";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export function useSearchRecipes(searchWords: string[], debouncedQuery: string) {
   return useQuery({
@@ -17,7 +18,7 @@ export function useSearchRecipes(searchWords: string[], debouncedQuery: string) 
         .or(buildFlexibleFilter(searchWords, cols))
         .order("created_at", { ascending: false })
         .limit(30);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data) return [];
       return sortByRelevance(
         data.map((r: any) => ({

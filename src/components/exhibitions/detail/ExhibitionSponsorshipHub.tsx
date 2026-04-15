@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { toast } from "@/hooks/use-toast";
 import { Star, Award, Building, Crown, Gem, Medal, Send, CheckCircle, ExternalLink } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props { exhibitionId: string; isAr: boolean; }
 
@@ -76,7 +77,7 @@ export default memo(function ExhibitionSponsorshipHub({ exhibitionId, isAr }: Pr
         website_url: form.websiteUrl || null,
         message: form.message,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast({ title: t("Sponsorship application submitted! ✅", "تم إرسال طلب الرعاية! ✅") });

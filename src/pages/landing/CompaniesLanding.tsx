@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
 import { RelatedPages } from "@/components/seo/RelatedPages";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const benefits = [
   { icon: Package, titleEn: "Product Catalog", titleAr: "كتالوج المنتجات", descEn: "Showcase your products to thousands of culinary professionals", descAr: "اعرض منتجاتك لآلاف المحترفين في مجال الطهي" },
@@ -53,7 +54,7 @@ export default function CompaniesLanding() {
         message: form.message,
         source: "companies-landing",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       toast({ title: isAr ? "تم الإرسال!" : "Submitted!", description: isAr ? "سنتواصل معك قريباً" : "We'll be in touch soon" });
       setForm({ companyName: "", contactName: "", email: "", phone: "", message: "" });
     } catch {

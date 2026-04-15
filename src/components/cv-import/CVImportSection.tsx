@@ -20,6 +20,7 @@ import { CVPreview } from "@/components/cv-import/CVPreview";
 import { getFlag } from "@/components/cv-import/types";
 import { extractTextFromFile } from "@/components/cv-import/fileParser";
 import type { CVData } from "@/components/cv-import/types";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ChefResult {
   user_id: string;
@@ -79,7 +80,7 @@ export const CVImportSection = memo(function CVImportSection() {
         .order("full_name", { ascending: true })
         .limit(20);
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setResults(data || []);
     } catch (err: unknown) {
       toast({ variant: "destructive", title: isAr ? "خطأ في البحث" : "Search error", description: err instanceof Error ? err.message : String(err) });
@@ -111,7 +112,7 @@ export const CVImportSection = memo(function CVImportSection() {
           role: "chef",
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.error) throw new Error(data.error);
 
       const newUserId = data?.user_id || data?.id;
@@ -192,7 +193,7 @@ export const CVImportSection = memo(function CVImportSection() {
         body: { cv_text: cvText, target_user_id: selectedChef.user_id },
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data?.error) throw new Error(data.error);
 
       setParsedData(data.data as CVData);

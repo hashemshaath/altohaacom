@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Building2, Shield, Users, Search, Check, Gavel, Globe } from "lucide-react";
 import { useState } from "react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface SupervisingBodiesStepProps {
   supervisingBodyIds: string[];
@@ -36,7 +37,7 @@ export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
         .eq("status", "active")
         .eq("is_visible", true)
         .order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -48,7 +49,7 @@ export const SupervisingBodiesStep = memo(function SupervisingBodiesStep({
       const { data, error } = await supabase
         .from("judge_profiles")
         .select("user_id, culinary_specialties, years_of_experience, judge_level, judge_category, full_name_ar, profile_photo_url, nationality")
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });

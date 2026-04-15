@@ -16,6 +16,7 @@ import { CatalogStats } from "@/components/company/catalog/CatalogStats";
 import { CatalogTable } from "@/components/company/catalog/CatalogTable";
 import { CatalogFormDialog } from "@/components/company/catalog/CatalogFormDialog";
 import { CatalogBulkImport } from "@/components/company/catalog/CatalogBulkImport";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 export default function CompanyCatalog() {
   const { language } = useLanguage();
@@ -49,7 +50,7 @@ export default function CompanyCatalog() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as CatalogItem[];
     },
     enabled: !!companyId,
@@ -78,10 +79,10 @@ export default function CompanyCatalog() {
 
       if (editingItem) {
         const { error } = await supabase.from("company_catalog").update(payload).eq("id", editingItem.id);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       } else {
         const { error } = await supabase.from("company_catalog").insert(payload);
-        if (error) throw error;
+        if (error) throw handleSupabaseError(error);
       }
     },
     onSuccess: () => {
@@ -99,7 +100,7 @@ export default function CompanyCatalog() {
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("company_catalog").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["companyCatalog"] });

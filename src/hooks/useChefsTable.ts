@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const untypedFrom = (table: string) => supabase.from(table as any) as any;
@@ -189,7 +190,7 @@ export function useChefsTableSessions(statusFilter?: string) {
         query = query.eq("status", statusFilter);
       }
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefsTableSession[];
     },
   });
@@ -203,7 +204,7 @@ export function useChefsTableSession(id: string | undefined) {
         .select("id, request_id, company_id, session_number, title, title_ar, description, description_ar, product_name, product_name_ar, product_category, experience_type, venue, venue_ar, city, country_code, session_date, session_end, cover_image_url, status, organizer_id, chef_selection_method, max_chefs, sample_delivery_address, sample_delivery_notes, notes, notes_ar, is_published, published_at, created_at, updated_at")
         .eq("id", id!)
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as ChefsTableSession;
     },
     enabled: !!id,
@@ -218,7 +219,7 @@ export function useChefsTableRequests() {
       const { data, error } = await untypedFrom("chefs_table_requests")
         .select("id, company_id, requested_by, request_number, title, title_ar, product_name, product_name_ar, product_category, experience_type, preferred_city, preferred_country_code, preferred_date_start, preferred_date_end, budget, currency, chef_count, status, admin_notes, reviewed_at, rejection_reason, created_at, updated_at")
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefsTableRequest[];
     },
   });
@@ -231,7 +232,7 @@ export function useChefsTableInvitations(sessionId: string | undefined) {
       const { data, error } = await untypedFrom("chefs_table_invitations")
         .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, sample_tracking_number, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("session_id", sessionId!);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefsTableInvitation[];
     },
     enabled: !!sessionId,
@@ -245,7 +246,7 @@ export function useChefsTableEvaluations(sessionId: string | undefined) {
       const { data, error } = await untypedFrom("chefs_table_evaluations")
         .select("id, session_id, invitation_id, chef_id, taste_score, texture_score, aroma_score, versatility_score, value_score, presentation_score, overall_score, is_recommended, recommendation_level, review_title, review_title_ar, review_text, review_text_ar, pros, pros_ar, cons, cons_ar, usage_suggestions, usage_suggestions_ar, endorsement_text, endorsement_text_ar, allow_publish, status, submitted_at, created_at, updated_at")
         .eq("session_id", sessionId!);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefsTableEvaluation[];
     },
     enabled: !!sessionId,
@@ -260,7 +261,7 @@ export function useChefsTableMedia(sessionId: string | undefined) {
         .select("id, session_id, evaluation_id, uploaded_by, media_type, media_url, thumbnail_url, title, title_ar, description, description_ar, sort_order, is_featured, created_at")
         .eq("session_id", sessionId!)
         .order("sort_order");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefsTableMedia[];
     },
     enabled: !!sessionId,
@@ -273,7 +274,7 @@ export function useChefsTableCriteriaPresets() {
     queryFn: async () => {
       const { data, error } = await untypedFrom("chefs_table_criteria_presets")
         .select("id, preset_name, preset_name_ar, product_category, criteria, is_system, created_at");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefsTableCriteriaPreset[];
     },
   });
@@ -288,7 +289,7 @@ export function useMyChefInvitations() {
         .select("id, session_id, chef_id, invited_by, status, invitation_message, response_message, responded_at, confirmed_at, declined_reason, sample_shipped_at, cooking_date, cooking_location, cooking_location_ar, created_at, updated_at")
         .eq("chef_id", user!.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as unknown as ChefsTableInvitation[];
     },
     enabled: !!user?.id,
@@ -307,7 +308,7 @@ export function useCreateChefsTableRequest() {
         .insert({ ...request, requested_by: user?.id } as Record<string, unknown>)
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as ChefsTableRequest;
     },
     onSuccess: () => {
@@ -326,7 +327,7 @@ export function useUpdateChefsTableSession() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as ChefsTableSession;
     },
     onSuccess: (data) => {
@@ -358,7 +359,7 @@ export function useRespondToInvitation() {
         .eq("id", id)
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as ChefsTableInvitation;
     },
     onSuccess: () => {
@@ -381,7 +382,7 @@ export function useSubmitEvaluation() {
         )
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as ChefsTableEvaluation;
     },
     onSuccess: (_, vars) => {
@@ -400,7 +401,7 @@ export function useAddChefsTableMedia() {
         .insert({ ...media, uploaded_by: user?.id } as Record<string, unknown>)
         .select()
         .single();
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as unknown as ChefsTableMedia;
     },
     onSuccess: (_, vars) => {
@@ -420,7 +421,7 @@ export function useApproveRequest() {
         p_request_id: id,
         p_admin_notes: admin_notes || null,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as string; // session_id
     },
     onSuccess: () => {
@@ -439,7 +440,7 @@ export function useRejectRequest() {
         p_request_id: id,
         p_rejection_reason: rejection_reason,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["chefs-table-requests"] });

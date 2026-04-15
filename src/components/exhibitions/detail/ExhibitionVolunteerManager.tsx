@@ -14,6 +14,7 @@ import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useState } from "react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -37,7 +38,7 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
         .select("id, user_id, status, role_title, role_title_ar, skills, availability_start, availability_end, checked_in_at, checked_out_at, total_hours, created_at, notes")
         .eq("exhibition_id", exhibitionId)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -75,7 +76,7 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
       const updates: any = { status, reviewed_at: new Date().toISOString() };
       if (roleTitle) updates.role_title = roleTitle;
       const { error } = await supabase.from("exhibition_volunteers").update(updates).eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast.success(t("Updated", "تم التحديث"));
@@ -93,7 +94,7 @@ export const ExhibitionVolunteerManager = memo(function ExhibitionVolunteerManag
         description: taskDesc || null,
         priority: taskPriority,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast.success(t("Task assigned", "تم تعيين المهمة"));

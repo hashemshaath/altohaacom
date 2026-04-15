@@ -7,6 +7,7 @@ import { useEntityQRCode } from "@/hooks/useQRCode";
 import type { Database } from "@/integrations/supabase/types";
 import { CACHE } from "@/lib/queryConfig";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 type AppRole = Database["public"]["Enums"]["app_role"];
 
@@ -50,7 +51,7 @@ export function usePublicProfileData(username: string | undefined, followListOpe
     queryFn: async () => {
       // Try by username first using secure RPC
       const { data, error } = await supabase.rpc("get_public_profile", { p_username: username!.toLowerCase() });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (data) return data as unknown as PublicProfileData;
 
       // Fallback: try by user_id if it looks like a UUID

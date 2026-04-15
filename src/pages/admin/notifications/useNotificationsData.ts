@@ -7,6 +7,7 @@ import { useCSVExport } from "@/hooks/useCSVExport";
 import { useAdminBulkActions } from "@/hooks/useAdminBulkActions";
 import { format } from "date-fns";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Segment {
   id: string;
@@ -62,7 +63,7 @@ export function useNotificationsData() {
       const { data, error } = await supabase
         .from("notifications").select("id, user_id, title, title_ar, body, body_ar, type, link, is_read, channel, status, created_at, metadata")
         .order("created_at", { ascending: false }).limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -88,7 +89,7 @@ export function useNotificationsData() {
       const { data, error } = await supabase
         .from("notification_queue").select("id, user_id, channel, status, attempts, scheduled_for, error_message, created_at")
         .order("created_at", { ascending: false }).limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -99,7 +100,7 @@ export function useNotificationsData() {
       const { data, error } = await supabase
         .from("notification_templates").select("id, name, title, title_ar, body, body_ar, channels, variables, created_at")
         .order("created_at", { ascending: false }).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -110,7 +111,7 @@ export function useNotificationsData() {
       const { data, error } = await supabase
         .from("audience_segments").select("id, name, name_ar, estimated_reach, is_active")
         .eq("is_active", true).order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return (data || []) as Segment[];
     },
   });
@@ -121,7 +122,7 @@ export function useNotificationsData() {
       const { data, error } = await supabase
         .from("communication_templates").select("id, name, name_ar, slug, channel, variables")
         .eq("is_active", true).order("name");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data || [];
     },
   });
@@ -143,7 +144,7 @@ export function useNotificationsData() {
           targetRole: newNotification.targetMode === "role" ? newNotification.targetRole : undefined,
         },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     onSuccess: (data) => {
@@ -167,7 +168,7 @@ export function useNotificationsData() {
       const { error } = await supabase.from("notification_queue")
         .update({ status: "pending", attempts: 0, error_message: null })
         .in("id", ids).eq("status", "failed");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notification-queue-items"] });
@@ -182,7 +183,7 @@ export function useNotificationsData() {
       const { error } = await supabase.from("notification_queue")
         .update({ status: "failed" as const })
         .in("id", ids).eq("status", "pending");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notification-queue-items"] });
@@ -195,7 +196,7 @@ export function useNotificationsData() {
   const deleteQueueMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.from("notification_queue").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notification-queue-items"] });

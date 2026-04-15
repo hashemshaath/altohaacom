@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { SEOHead } from "@/components/SEOHead";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const benefits = [
   {
@@ -96,7 +97,7 @@ export default function SponsorsLanding() {
         source: "sponsors-landing",
       });
 
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       toast({
         title: isAr ? "تم الإرسال بنجاح" : "Submitted Successfully",

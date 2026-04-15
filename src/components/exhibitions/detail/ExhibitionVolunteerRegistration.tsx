@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { HandHeart, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   exhibitionId: string;
@@ -46,7 +47,7 @@ export const ExhibitionVolunteerRegistration = memo(forwardRef<HTMLDivElement, P
         skills: skills ? skills.split(",").map((s) => s.trim()).filter(Boolean) : null,
         notes,
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       toast.success(t("Registered as volunteer!", "تم التسجيل كمتطوع!"));

@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { format as fmtDate } from "date-fns";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 /* ─── Export Module Configs ─── */
 interface ExportModule {
@@ -242,7 +243,7 @@ const ExportTab = memo(function ExportTab() {
     try {
       const cols = Array.from(selectedColumns).join(", ");
       const { data, error } = await supabase.from(currentModule.table as any).select(cols).limit(QUERY_LIMIT_LARGE);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       if (!data?.length) {
         toast({ title: t("No data found", "لا توجد بيانات") });
         return;

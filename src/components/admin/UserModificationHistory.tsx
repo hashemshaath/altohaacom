@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { History, User, Shield, Edit, UserCheck, UserX } from "lucide-react";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   userId: string;
@@ -31,7 +32,7 @@ export const UserModificationHistory = memo(function UserModificationHistory({ u
         .eq("target_user_id", userId)
         .order("created_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       // Get admin names
       const adminIds = [...new Set(data?.map((a) => a.admin_id) || [])];

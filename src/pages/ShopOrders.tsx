@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ShoppingBag, Package, Clock } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const statusColors: Record<string, string> = {
   pending: "bg-chart-4/15 text-chart-4",
@@ -36,7 +37,7 @@ export default function ShopOrders() {
         .select("*, shop_order_items(*, shop_products(title, title_ar, image_url))")
         .eq("buyer_id", user.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
     enabled: !!user,

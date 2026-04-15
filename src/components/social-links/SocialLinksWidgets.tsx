@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { tl, type LangCode } from "@/lib/socialLinksTranslations";
 import { getVideoEmbedUrl } from "@/lib/socialLinksConstants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 // ── Animated Number ──
 export const AnimatedNumber = memo(function AnimatedNumber({ value, duration = 1200 }: { value: number; duration?: number }) {
@@ -101,7 +102,7 @@ export const ContactFormSection = memo(function ContactFormSection({ theme, lang
         body: `${form.email}: ${form.message}`, body_ar: `${form.email}: ${form.message}`,
         type: "contact_form", metadata: { sender_name: form.name, sender_email: form.email, message: form.message },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       setSent(true); setForm({ name: "", email: "", message: "" });
       toast({ title: tl("contactSent", lang) });
     } catch { toast({ title: "Error", variant: "destructive" }); }

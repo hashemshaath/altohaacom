@@ -13,6 +13,7 @@ import { Brain, RefreshCw, Sparkles, TrendingUp, AlertTriangle, Lightbulb, BarCh
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const REPORT_TYPES = [
   { value: "weekly", labelEn: "Weekly", labelAr: "أسبوعي" },
@@ -39,7 +40,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
         .select("id, report_type, language, content, data_snapshot, generated_at")
         .order("generated_at", { ascending: false })
         .limit(50);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data;
     },
   });
@@ -115,7 +116,7 @@ const AIInsightsPanel = memo(function AIInsightsPanel() {
         content: insights,
         data_snapshot: {},
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       toast.success(isAr ? "تم حفظ التقرير" : "Report saved");
       refetch();
     } catch {

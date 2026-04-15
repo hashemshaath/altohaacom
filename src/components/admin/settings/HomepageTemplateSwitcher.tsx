@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Check, LayoutGrid, Newspaper } from "lucide-react";
 import { toast } from "sonner";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const TEMPLATES = [
   {
@@ -44,7 +45,7 @@ export const HomepageTemplateSwitcher = memo(function HomepageTemplateSwitcher()
         .from("site_settings")
         .update({ value: newVal as unknown as Json })
         .eq("key", "homepage");
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["site-settings-global"] });

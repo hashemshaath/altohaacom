@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { AlertTriangle, ShieldCheck, ShieldOff, XCircle, Trash2, Loader2, Info } from "lucide-react";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Props {
   isAr: boolean;
@@ -26,7 +27,7 @@ export default function OverridesTab({ isAr, t }: Props) {
         .select("*, permissions(name, name_ar, code, category)")
         .order("created_at", { ascending: false })
         .limit(100);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       const userIds = [...new Set(data?.map(o => o.user_id) || [])];
       if (userIds.length === 0) return [];
       const { data: profiles } = await supabase
@@ -42,7 +43,7 @@ export default function OverridesTab({ isAr, t }: Props) {
   const deleteOverride = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("user_permission_overrides").delete().eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       setConfirmingDeleteId(null);

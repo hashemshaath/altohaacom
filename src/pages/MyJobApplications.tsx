@@ -14,6 +14,7 @@ import {
   Briefcase, Clock, CheckCircle2, XCircle, Eye, ChevronRight,
   Building2, MapPin, FileText, Inbox, LucideIcon } from "lucide-react";
 import { format } from "date-fns";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 const STATUS_CONFIG: Record<string, { labelEn: string; labelAr: string; color: string; icon: LucideIcon }> = {
   pending: { labelEn: "Under Review", labelAr: "قيد المراجعة", color: "bg-chart-4/10 text-chart-4 border-chart-4/20", icon: Clock },
@@ -35,7 +36,7 @@ export default function MyJobApplications() {
         .select("id, status, cover_letter, created_at, job_id, job_postings(id, title, title_ar, job_type, location, location_ar, companies(name, name_ar, logo_url))")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Array<{
         id: string;
         status: string;

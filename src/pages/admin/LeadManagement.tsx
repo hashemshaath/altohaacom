@@ -77,6 +77,7 @@ import {
 import { format, formatDistanceToNow } from "date-fns";
 import { ar, enUS } from "date-fns/locale";
 import { QUERY_LIMIT_LARGE } from "@/lib/constants";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface Lead {
   id: string;
@@ -148,7 +149,7 @@ export default function LeadManagement() {
       if (statusFilter !== "all") query = query.eq("status", statusFilter);
 
       const { data, error } = await query;
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return data as Lead[];
     },
   });
@@ -201,7 +202,7 @@ export default function LeadManagement() {
         notes: newLead.notes || null,
         status: "new",
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       await supabase.from("admin_actions").insert({
         admin_id: user!.id,
@@ -228,7 +229,7 @@ export default function LeadManagement() {
         .from("leads")
         .update({ ...updates, updated_at: new Date().toISOString() })
         .eq("id", id);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       await supabase.from("admin_actions").insert({
         admin_id: user!.id,
@@ -253,7 +254,7 @@ export default function LeadManagement() {
         .from("leads")
         .update({ status, updated_at: new Date().toISOString() })
         .in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       await supabase.from("admin_actions").insert({
         admin_id: user!.id,
@@ -274,7 +275,7 @@ export default function LeadManagement() {
   const deleteLeadMutation = useMutation({
     mutationFn: async (ids: string[]) => {
       const { error } = await supabase.from("leads").delete().in("id", ids);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminLeads"] });

@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Users, CheckCircle, Clock, XCircle, AlertTriangle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ParticipantStatsCardProps {
   competitionId: string;
@@ -22,7 +23,7 @@ export const ParticipantStatsCard = memo(function ParticipantStatsCard({ competi
         .from("competition_registrations")
         .select("status")
         .eq("competition_id", competitionId);
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
 
       const approved = data.filter((r) => r.status === "approved").length;
       const pending = data.filter((r) => r.status === "pending").length;

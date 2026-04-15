@@ -15,6 +15,7 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { CACHE } from "@/lib/queryConfig";
+import { handleSupabaseError } from "@/lib/supabaseErrorHandler";
 
 interface ChurnRisk {
   segment: string;
@@ -34,7 +35,7 @@ export const PredictiveChurnDashboard = memo(function PredictiveChurnDashboard()
       const { data: result, error } = await supabase.functions.invoke("ms-insights", {
         body: { language },
       });
-      if (error) throw error;
+      if (error) throw handleSupabaseError(error);
       return result as { churn_risks: ChurnRisk[]; health_score: { retention: number } };
     },
     staleTime: CACHE.long.staleTime,
