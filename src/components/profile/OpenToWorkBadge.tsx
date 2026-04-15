@@ -28,14 +28,12 @@ export const OpenToWorkBadge = memo(function OpenToWorkBadge({ note, noteAr, isA
 
   if (displayNote) {
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>{badge}</TooltipTrigger>
-          <TooltipContent className="max-w-xs">
-            <p className="text-xs">{displayNote}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>{badge}</TooltipTrigger>
+        <TooltipContent className="max-w-xs">
+          <p className="text-xs">{displayNote}</p>
+        </TooltipContent>
+      </Tooltip>
     );
   }
 
