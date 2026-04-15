@@ -27,7 +27,7 @@ interface OrganizerEditFormProps {
   onClose: () => void;
 }
 
-const TAB_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+const TAB_ICONS: Record<string, LucideIcon> = {
   identity: Building2, images: ImageIcon, contact: Mail, location: MapPin,
   team: Users, details: Briefcase, social: Globe, settings: Shield,
   exhibitions: Calendar, analytics: TrendingUp, notes: StickyNote,
