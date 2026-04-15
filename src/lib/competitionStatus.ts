@@ -2,6 +2,7 @@
  * Derive the real-time registration/competition status from dates.
  * This is the single source of truth for status display across the app.
  */
+import { MS_PER_DAY } from "@/lib/constants";
 
 export type DerivedStatus =
   | "registration_upcoming"

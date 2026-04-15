@@ -40,7 +40,7 @@ export function deriveExhibitionStatus(params: {
 }): ExhibitionStatusResult {
   const { dbStatus, startDate, endDate, registrationDeadline } = params;
   const now = Date.now();
-  const dayMs = 1000 * 60 * 60 * 24;
+  const dayMs = MS_PER_DAY;
 
   // Non-active statuses pass through
   if (dbStatus === "draft") {
