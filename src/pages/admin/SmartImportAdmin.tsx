@@ -398,7 +398,7 @@ export default function SmartImportAdmin() {
                             </div>
                           </div>
                           <div className="flex flex-col gap-1.5 items-end shrink-0">
-                            <Button size="default" variant="default" className="gap-2 bg-yellow-600 hover:bg-yellow-700 text-white shadow-md whitespace-nowrap" onClick={() => d.handleUpdateRecord(record)} disabled={d.updating}>
+                            <Button size="default" variant="default" className="gap-2 bg-yellow-600 hover:bg-yellow-700 text-primary-foreground shadow-md whitespace-nowrap" onClick={() => d.handleUpdateRecord(record)} disabled={d.updating}>
                               {d.updating && d.selectedExistingId === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
                               {isAr ? "تحديث المعلومات" : "Update Information"}
                             </Button>

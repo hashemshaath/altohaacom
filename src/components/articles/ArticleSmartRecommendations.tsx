@@ -145,7 +145,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
                         loading="lazy"
                       />
                       <div className="absolute top-2 start-2">
-                        <Badge className="text-[12px] rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-white border-0">
+                        <Badge className="text-[12px] rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-primary-foreground border-0">
                           {matchPct}% {isAr ? "تطابق" : "match"}
                         </Badge>
                       </div>
@@ -154,7 +154,7 @@ export const ArticleSmartRecommendations = memo(function ArticleSmartRecommendat
                     <div className="w-28 sm:w-36 bg-gradient-to-br from-chart-4/10 to-muted flex items-center justify-center shrink-0 relative">
                       <Sparkles className="h-6 w-6 text-muted-foreground/20" />
                       <div className="absolute top-2 start-2">
-                        <Badge className="text-[12px] rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-white border-0">
+                        <Badge className="text-[12px] rounded-lg px-1.5 py-0 h-4 bg-chart-4/90 text-primary-foreground border-0">
                           {matchPct}%
                         </Badge>
                       </div>

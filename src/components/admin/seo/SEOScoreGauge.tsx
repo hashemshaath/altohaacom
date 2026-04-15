@@ -64,7 +64,7 @@ export const SEOScoreGauge = memo(function SEOScoreGauge({
           {/* Details */}
           <div className="flex-1 space-y-3">
             <div className="flex items-center gap-2">
-              <Badge className={cn("text-sm font-bold px-3 py-1", grade.bg, "text-white border-0")}>
+              <Badge className={cn("text-sm font-bold px-3 py-1", grade.bg, "text-primary-foreground border-0")}>
                 {grade.label}
               </Badge>
               {diff != null && diff !== 0 && (

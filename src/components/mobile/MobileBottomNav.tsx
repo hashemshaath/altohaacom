@@ -110,7 +110,7 @@ export const MobileBottomNav = memo(function MobileBottomNav() {
                 {/* Notification badge */}
                 {showBadge && (
                   <span
-                    className="absolute -top-1.5 -end-2 flex items-center justify-center rounded-full text-white"
+                    className="absolute -top-1.5 -end-2 flex items-center justify-center rounded-full text-primary-foreground"
                     style={{
                       minWidth: 16,
                       height: 16,

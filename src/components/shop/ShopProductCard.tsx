@@ -53,7 +53,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
           {/* Top-start badges */}
           <div className="absolute start-3 top-3 flex flex-wrap gap-2 z-10">
             {product.is_featured && (
-              <Badge className="bg-chart-4 text-white shadow-lg shadow-chart-4/20 text-[12px] gap-1 px-2.5 py-1 font-bold">
+              <Badge className="bg-chart-4 text-primary-foreground shadow-lg shadow-chart-4/20 text-[12px] gap-1 px-2.5 py-1 font-bold">
                 <Star className="h-2.5 w-2.5 fill-current" />
                 {isAr ? "مميز" : "Featured"}
               </Badge>
@@ -66,7 +66,7 @@ export const ShopProductCard = memo(function ShopProductCard({ product, onAddToC
 
           {/* Discount badge */}
           {product.discount_percent > 0 && !isOutOfStock && (
-            <Badge className="absolute end-3 top-3 bg-destructive text-white shadow-lg shadow-destructive/20 text-[12px] px-2.5 py-1 font-bold">
+            <Badge className="absolute end-3 top-3 bg-destructive text-primary-foreground shadow-lg shadow-destructive/20 text-[12px] px-2.5 py-1 font-bold">
               <Percent className="me-1 h-2.5 w-2.5" />
               {product.discount_percent}% {isAr ? "خصم" : "OFF"}
             </Badge>
