@@ -64,7 +64,7 @@ export function useSocialLinkPageByUsername(username?: string) {
         .maybeSingle();
       if (pgErr) throw pgErr;
 
-      let items: Awaited<ReturnType<typeof supabase.from<"social_link_items">>>["data"] = [];
+      let items: any[] = [];
       if (page) {
         const { data: linkItems } = await supabase
           .from("social_link_items")
