@@ -50,7 +50,6 @@ function resolveEventType(type: string | null | undefined): GlobalEventType {
 }
 
 function formatEventDate(value: string, isAr: boolean) {
-  const isAr = useIsAr();
   const parsed = parseISO(value);
   if (Number.isNaN(parsed.getTime())) return isAr ? "تاريخ غير محدد" : "Date TBD";
   return format(parsed, "d MMM yyyy", { locale: isAr ? arLocale : undefined });

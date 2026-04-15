@@ -44,7 +44,6 @@ function getScoreColor(pct: number) {
 }
 
 function getScoreLabel(pct: number, isAr: boolean) {
-  const isAr = useIsAr();
   if (pct >= 90) return isAr ? "استثنائي" : "Exceptional";
   if (pct >= 80) return isAr ? "ممتاز" : "Excellent";
   if (pct >= 70) return isAr ? "جيد جداً" : "Very Good";
