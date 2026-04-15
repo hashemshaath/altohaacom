@@ -122,7 +122,7 @@ export const ChefsTableSessionsList = memo(forwardRef<HTMLElement, Props>(functi
                   {/* Image */}
                   {session.cover_image_url && (
                     <div className="relative aspect-video overflow-hidden">
-                      <img src={session.cover_image_url} alt={session.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
+                      <img src={session.cover_image_url} alt={session.title} width={640} height={360} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" decoding="async" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                       {sc && (
                         <Badge variant="outline" className={`absolute top-3 start-3 ${sc.color} font-bold text-xs border backdrop-blur-sm`}>

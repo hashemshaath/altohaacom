@@ -83,7 +83,7 @@ export const PostThread = memo(function PostThread({ postId, onClose, onPostUpda
                     {((parentPost.image_urls?.length ? parentPost.image_urls : [parentPost.image_url].filter(Boolean)) as string[])
                       .slice(0, 4)
                       .map((url: string, idx: number) => (
-                        <img key={idx} src={url} alt={`Post image ${idx + 1}`} className="w-full max-h-[400px] object-cover" loading="lazy" />
+                        <img key={idx} src={url} alt={`Post image ${idx + 1}`} width={600} height={400} className="w-full max-h-[400px] object-cover" loading="lazy" decoding="async" />
                       ))}
                   </div>
                 )}
