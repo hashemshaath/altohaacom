@@ -1,7 +1,6 @@
 import { useIsAr } from "@/hooks/useIsAr";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/integrations/supabase/client";
 import { PageShell } from "@/components/PageShell";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -20,21 +19,12 @@ import {
   Moon, Clock, Zap, Volume2, VolumeX, BellOff, BellRing,
   CheckCircle2, AlertTriangle, Globe, Palette, ToggleLeft,
 } from "lucide-react";
+import { useNotificationPreferencesData } from "@/hooks/useNotificationPreferencesData";
 import type { Database } from "@/integrations/supabase/types";
 
 type NotificationChannel = Database["public"]["Enums"]["notification_channel"];
 
-interface NotificationPreference {
-  id: string;
-  channel: NotificationChannel;
-  enabled: boolean;
-  quiet_hours_start: string | null;
-  quiet_hours_end: string | null;
-  digest_frequency: string | null;
-  muted_types: string[] | null;
-}
-
-const CHANNELS: { channel: NotificationChannel; label: string; labelAr: string; desc: string; descAr: string; icon: React.ElementType; color: string }[] = [
+const CHANNELS_CONFIG: { channel: NotificationChannel; label: string; labelAr: string; desc: string; descAr: string; icon: React.ElementType; color: string }[] = [
   { channel: "in_app", label: "In-App Notifications", labelAr: "إشعارات التطبيق", desc: "Real-time alerts inside the platform", descAr: "تنبيهات فورية داخل المنصة", icon: Bell, color: "text-primary" },
   { channel: "email", label: "Email Notifications", labelAr: "إشعارات البريد الإلكتروني", desc: "Important updates delivered to your inbox", descAr: "تحديثات مهمة تصل إلى بريدك", icon: Mail, color: "text-chart-2" },
   { channel: "sms", label: "SMS Notifications", labelAr: "الرسائل النصية", desc: "Urgent notifications via text message", descAr: "إشعارات عاجلة عبر الرسائل النصية", icon: Smartphone, color: "text-chart-3" },
@@ -63,147 +53,67 @@ export default function NotificationPreferences() {
   const isAr = useIsAr();
   const { toast } = useToast();
   const t = (en: string, ar: string) => (isAr ? ar : en);
-  const [preferences, setPreferences] = useState<NotificationPreference[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState<string | null>(null);
-  const [mutedTypes, setMutedTypes] = useState<Set<string>>(new Set());
-  const [quietStart, setQuietStart] = useState("22:00");
-  const [quietEnd, setQuietEnd] = useState("08:00");
-  const [quietEnabled, setQuietEnabled] = useState(false);
-  const [digestFrequency, setDigestFrequency] = useState("realtime");
+
+  // Local-only UI state (persisted in localStorage)
   const [soundEnabled, setSoundEnabled] = useState(() => localStorage.getItem("altoha_sound_enabled") !== "false");
   const [dndMode, setDndMode] = useState(() => localStorage.getItem("altoha_dnd") === "true");
 
-  const fetchPreferences = useCallback(async () => {
-    try {
-      const { data, error } = await supabase
-        .from("notification_preferences")
-        .select("id, channel, enabled, quiet_hours_start, quiet_hours_end, digest_frequency, muted_types")
-        .eq("user_id", user?.id);
-      if (error) throw error;
+  // All server state managed by React Query
+  const {
+    preferences,
+    isLoading: loading,
+    quietHours,
+    digestFrequency,
+    mutedTypes,
+    toggleChannel,
+    updateQuietHours,
+    updateDigest,
+    toggleCategory,
+    saving,
+  } = useNotificationPreferencesData();
 
-      const existingChannels = new Set(data?.map((p) => p.channel) || []);
-      const allPreferences: NotificationPreference[] = [];
-      if (data) allPreferences.push(...(data as NotificationPreference[]));
+  // Quiet hours local state for controlled inputs (synced from server)
+  const [localQuietStart, setLocalQuietStart] = useState(quietHours.start);
+  const [localQuietEnd, setLocalQuietEnd] = useState(quietHours.end);
 
-      for (const ch of CHANNELS) {
-        if (!existingChannels.has(ch.channel)) {
-          allPreferences.push({ id: `new_${ch.channel}`, channel: ch.channel, enabled: ch.channel === "in_app", quiet_hours_start: null, quiet_hours_end: null, digest_frequency: null, muted_types: null });
-        }
-      }
+  // Derived values — no separate state needed
+  const { enabledCount, activeCategories, completionScore } = useMemo(() => {
+    const enabled = preferences.filter((p) => p.enabled).length;
+    const active = NOTIFICATION_CATEGORIES.length - mutedTypes.size;
+    const score = Math.round(
+      ((enabled > 0 ? 25 : 0) + (quietHours.enabled ? 25 : 0) + (digestFrequency !== "realtime" ? 25 : 0) + (active > 0 ? 25 : 0))
+    );
+    return { enabledCount: enabled, activeCategories: active, completionScore: score };
+  }, [preferences, mutedTypes, quietHours.enabled, digestFrequency]);
 
-      const firstExisting = data?.find(p => p.quiet_hours_start);
-      if (firstExisting) {
-        setQuietStart((firstExisting as any).quiet_hours_start || "22:00");
-        setQuietEnd((firstExisting as any).quiet_hours_end || "08:00");
-        setQuietEnabled(true);
-      }
-      const digestPref = data?.find(p => (p as any).digest_frequency);
-      if (digestPref) setDigestFrequency((digestPref as any).digest_frequency || "realtime");
-
-      const mutedPref = data?.find(p => (p as any).muted_types?.length > 0);
-      if (mutedPref) setMutedTypes(new Set((mutedPref as any).muted_types || []));
-
-      setPreferences(allPreferences.sort((a, b) => {
-        const aIdx = CHANNELS.findIndex((c) => c.channel === a.channel);
-        const bIdx = CHANNELS.findIndex((c) => c.channel === b.channel);
-        return aIdx - bIdx;
-      }));
-    } catch {
-      toast({ title: t("Error", "خطأ"), description: t("Failed to load preferences", "فشل تحميل الإعدادات"), variant: "destructive" });
-    } finally {
-      setLoading(false);
-    }
-  }, [user?.id, toast, t]);
-
-  useEffect(() => {
-    if (!user) return;
-    fetchPreferences();
-  }, [user, fetchPreferences]);
-
-  const handleToggle = async (channel: NotificationChannel, enabled: boolean) => {
-    setSaving(channel);
-    try {
-      const existingPref = preferences.find((p) => p.channel === channel);
-      if (existingPref && !existingPref.id.startsWith("new_")) {
-        const { error } = await supabase.from("notification_preferences").update({ enabled }).eq("id", existingPref.id).eq("user_id", user?.id);
-        if (error) throw error;
-      } else {
-        const { error } = await supabase.from("notification_preferences").insert({ user_id: user?.id, channel, enabled });
-        if (error) throw error;
-      }
-      setPreferences((prev) => prev.map((p) => p.channel === channel ? { ...p, id: `saved_${channel}`, enabled } : p));
-      toast({ title: t("Saved", "تم الحفظ") });
-    } catch {
-      toast({ title: t("Error", "خطأ"), description: t("Update failed", "فشل التحديث"), variant: "destructive" });
-    } finally {
-      setSaving(null);
-    }
+  const handleToggle = (channel: NotificationChannel, enabled: boolean) => {
+    toggleChannel(channel, enabled);
+    toast({ title: t("Saved", "تم الحفظ") });
   };
 
-  const handleQuietHoursChange = async (enabled: boolean) => {
-    setQuietEnabled(enabled);
-    setSaving("quiet");
-    try {
-      const inAppPref = preferences.find(p => p.channel === "in_app" && !p.id.startsWith("new_"));
-      if (inAppPref) {
-        await supabase.from("notification_preferences").update({
-          quiet_hours_start: enabled ? quietStart : null,
-          quiet_hours_end: enabled ? quietEnd : null,
-        }).eq("id", inAppPref.id).eq("user_id", user?.id);
-      }
-      toast({ title: t("Saved", "تم الحفظ") });
-    } catch {
-      toast({ title: t("Error", "خطأ"), variant: "destructive" });
-    } finally {
-      setSaving(null);
-    }
+  const handleQuietHoursChange = (enabled: boolean) => {
+    updateQuietHours(localQuietStart, localQuietEnd, enabled);
+    toast({ title: t("Saved", "تم الحفظ") });
   };
 
-  const handleQuietTimeUpdate = async (field: "start" | "end", value: string) => {
-    if (field === "start") setQuietStart(value);
-    else setQuietEnd(value);
-    if (!quietEnabled) return;
-    const inAppPref = preferences.find(p => p.channel === "in_app" && !p.id.startsWith("new_"));
-    if (inAppPref) {
-      await supabase.from("notification_preferences").update({
-        quiet_hours_start: field === "start" ? value : quietStart,
-        quiet_hours_end: field === "end" ? value : quietEnd,
-      }).eq("id", inAppPref.id).eq("user_id", user?.id);
-    }
+  const handleQuietTimeUpdate = (field: "start" | "end", value: string) => {
+    if (field === "start") setLocalQuietStart(value);
+    else setLocalQuietEnd(value);
+    if (!quietHours.enabled) return;
+    updateQuietHours(
+      field === "start" ? value : localQuietStart,
+      field === "end" ? value : localQuietEnd,
+      true
+    );
   };
 
-  const handleDigestChange = async (value: string) => {
-    setDigestFrequency(value);
-    setSaving("digest");
-    try {
-      const emailPref = preferences.find(p => p.channel === "email" && !p.id.startsWith("new_"));
-      if (emailPref) {
-        await supabase.from("notification_preferences").update({ digest_frequency: value }).eq("id", emailPref.id).eq("user_id", user?.id);
-      }
-      toast({ title: t("Saved", "تم الحفظ") });
-    } catch {
-      toast({ title: t("Error", "خطأ"), variant: "destructive" });
-    } finally {
-      setSaving(null);
-    }
+  const handleDigestChange = (value: string) => {
+    updateDigest(value);
+    toast({ title: t("Saved", "تم الحفظ") });
   };
 
-  const handleCategoryToggle = async (categoryKey: string, enabled: boolean) => {
-    const newMuted = new Set(mutedTypes);
-    if (enabled) newMuted.delete(categoryKey);
-    else newMuted.add(categoryKey);
-    setMutedTypes(newMuted);
-    try {
-      const inAppPref = preferences.find(p => p.channel === "in_app" && !p.id.startsWith("new_"));
-      if (inAppPref) {
-        await supabase.from("notification_preferences").update({
-          muted_types: Array.from(newMuted),
-        }).eq("id", inAppPref.id).eq("user_id", user?.id);
-      }
-    } catch {
-      toast({ title: t("Error", "خطأ"), variant: "destructive" });
-    }
+  const handleCategoryToggle = (categoryKey: string, enabled: boolean) => {
+    toggleCategory(categoryKey, enabled);
   };
 
   const toggleSound = (v: boolean) => {
@@ -215,15 +125,6 @@ export default function NotificationPreferences() {
     setDndMode(v);
     try { localStorage.setItem("altoha_dnd", String(v)); } catch {}
   };
-
-  const { enabledCount, activeCategories, completionScore } = useMemo(() => {
-    const enabled = preferences.filter((p) => p.enabled).length;
-    const active = NOTIFICATION_CATEGORIES.length - mutedTypes.size;
-    const score = Math.round(
-      ((enabled > 0 ? 25 : 0) + (quietEnabled ? 25 : 0) + (digestFrequency !== "realtime" ? 25 : 0) + (active > 0 ? 25 : 0))
-    );
-    return { enabledCount: enabled, activeCategories: active, completionScore: score };
-  }, [preferences, mutedTypes, quietEnabled, digestFrequency]);
 
   return (
     <PageShell
@@ -316,7 +217,6 @@ export default function NotificationPreferences() {
 
             {/* ─── CHANNELS TAB ─── */}
             <TabsContent value="channels" className="space-y-4">
-              {/* DND Banner */}
               {dndMode && (
                 <div className="flex items-center gap-3 rounded-2xl border border-chart-4/20 bg-chart-4/[0.03] p-4">
                   <BellOff className="h-5 w-5 text-chart-4 shrink-0" />
@@ -342,7 +242,7 @@ export default function NotificationPreferences() {
                     </div>
                     <Badge variant="outline" className="text-xs gap-1">
                       <CheckCircle2 className="h-3 w-3 text-primary" />
-                      {enabledCount}/{CHANNELS.length}
+                      {enabledCount}/{CHANNELS_CONFIG.length}
                     </Badge>
                   </div>
                 </CardHeader>
@@ -353,7 +253,7 @@ export default function NotificationPreferences() {
                     </div>
                   ) : (
                     preferences.map((pref, idx) => {
-                      const config = CHANNELS.find((c) => c.channel === pref.channel);
+                      const config = CHANNELS_CONFIG.find((c) => c.channel === pref.channel);
                       if (!config) return null;
                       const Icon = config.icon;
                       return (
@@ -380,7 +280,7 @@ export default function NotificationPreferences() {
                               id={`ch-${pref.channel}`}
                               checked={pref.enabled}
                               onCheckedChange={(enabled) => handleToggle(pref.channel, enabled)}
-                              disabled={saving === pref.channel}
+                              disabled={saving}
                             />
                           </label>
                         </div>
@@ -412,9 +312,9 @@ export default function NotificationPreferences() {
                       onClick={() => {
                         if (mutedTypes.size === 0) {
                           const allKeys = NOTIFICATION_CATEGORIES.filter(c => c.priority !== "critical").map(c => c.key);
-                          setMutedTypes(new Set(allKeys));
+                          allKeys.forEach(k => toggleCategory(k, false));
                         } else {
-                          setMutedTypes(new Set());
+                          Array.from(mutedTypes).forEach(k => toggleCategory(k, true));
                         }
                       }}
                     >
@@ -465,7 +365,6 @@ export default function NotificationPreferences() {
                 </CardContent>
               </Card>
 
-              {/* Security Note */}
               <div className="flex items-start gap-3 rounded-2xl border border-chart-4/15 bg-chart-4/[0.03] p-4">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-chart-4" />
                 <div>
@@ -482,7 +381,6 @@ export default function NotificationPreferences() {
 
             {/* ─── SCHEDULE TAB ─── */}
             <TabsContent value="schedule" className="space-y-4">
-              {/* Quiet Hours */}
               <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -496,32 +394,31 @@ export default function NotificationPreferences() {
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${quietEnabled ? "bg-primary/10" : "bg-muted"}`}>
-                        <Clock className={`h-4.5 w-4.5 transition-colors ${quietEnabled ? "text-primary" : "text-muted-foreground"}`} />
+                      <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${quietHours.enabled ? "bg-primary/10" : "bg-muted"}`}>
+                        <Clock className={`h-4.5 w-4.5 transition-colors ${quietHours.enabled ? "text-primary" : "text-muted-foreground"}`} />
                       </div>
                       <div>
                         <p className="text-sm font-semibold">{t("Enable Quiet Hours", "تفعيل ساعات الهدوء")}</p>
                         <p className="text-xs text-muted-foreground">{t("No notifications during this period", "لن تتلقى إشعارات خلال هذه الفترة")}</p>
                       </div>
                     </div>
-                    <Switch checked={quietEnabled} onCheckedChange={handleQuietHoursChange} disabled={saving === "quiet"} />
+                    <Switch checked={quietHours.enabled} onCheckedChange={handleQuietHoursChange} disabled={saving} />
                   </div>
-                  {quietEnabled && (
+                  {quietHours.enabled && (
                     <div className="grid grid-cols-2 gap-4 ps-[52px] animate-in fade-in-50 slide-in-from-top-2 duration-300">
                       <div className="space-y-1.5">
                         <Label className="text-xs font-medium">{t("From", "من")}</Label>
-                        <Input type="time" value={quietStart} onChange={(e) => handleQuietTimeUpdate("start", e.target.value)} className="h-10" />
+                        <Input type="time" value={localQuietStart} onChange={(e) => handleQuietTimeUpdate("start", e.target.value)} className="h-10" />
                       </div>
                       <div className="space-y-1.5">
                         <Label className="text-xs font-medium">{t("To", "إلى")}</Label>
-                        <Input type="time" value={quietEnd} onChange={(e) => handleQuietTimeUpdate("end", e.target.value)} className="h-10" />
+                        <Input type="time" value={localQuietEnd} onChange={(e) => handleQuietTimeUpdate("end", e.target.value)} className="h-10" />
                       </div>
                     </div>
                   )}
                 </CardContent>
               </Card>
 
-              {/* Digest Frequency */}
               <Card className="rounded-2xl border-border/20 bg-card/60 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   <CardTitle className="text-base flex items-center gap-2">
@@ -538,7 +435,7 @@ export default function NotificationPreferences() {
                       <button
                         key={opt.value}
                         onClick={() => handleDigestChange(opt.value)}
-                        disabled={saving === "digest"}
+                        disabled={saving}
                         className={`rounded-2xl border p-4 text-start transition-all duration-200 hover:-translate-y-0.5 active:scale-[0.98] ${
                           digestFrequency === opt.value
                             ? "border-primary/30 bg-primary/5 ring-1 ring-primary/15 shadow-sm shadow-primary/5"
@@ -569,7 +466,6 @@ export default function NotificationPreferences() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-0">
-                  {/* Sound */}
                   <label className="flex items-center justify-between py-4 cursor-pointer" htmlFor="sound-toggle">
                     <div className="flex items-center gap-3">
                       <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${soundEnabled ? "bg-chart-5/10" : "bg-muted"}`}>
@@ -585,7 +481,6 @@ export default function NotificationPreferences() {
 
                   <Separator />
 
-                  {/* DND */}
                   <label className="flex items-center justify-between py-4 cursor-pointer" htmlFor="dnd-toggle">
                     <div className="flex items-center gap-3">
                       <div className={`flex h-10 w-10 items-center justify-center rounded-xl transition-colors ${dndMode ? "bg-chart-4/10" : "bg-muted"}`}>
@@ -601,7 +496,6 @@ export default function NotificationPreferences() {
                 </CardContent>
               </Card>
 
-              {/* Info Note */}
               <div className="flex items-start gap-3 rounded-2xl border border-border/20 bg-muted/15 p-4">
                 <Info className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
                 <div>
