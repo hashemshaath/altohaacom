@@ -374,7 +374,7 @@ export default function ProSupplierDetail() {
                   )}
                 </div>
                 {company.is_verified && (
-                  <div className="absolute -bottom-1 -end-1 flex h-7 w-7 items-center justify-center rounded-full bg-chart-5 text-white shadow-lg">
+                  <div className="absolute -bottom-1 -end-1 flex h-7 w-7 items-center justify-center rounded-full bg-chart-5 text-primary-foreground shadow-lg">
                     <CheckCircle className="h-4 w-4" />
                   </div>
                 )}
@@ -830,7 +830,7 @@ export default function ProSupplierDetail() {
                             {/* Edition & Year */}
                             <div className="absolute top-2 end-2 flex items-center gap-1">
                               {comp?.edition_year && (
-                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-white text-[10px] py-0 px-1.5">
+                                <Badge className="bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground text-[10px] py-0 px-1.5">
                                   {comp.edition_year}
                                 </Badge>
                               )}
@@ -838,7 +838,7 @@ export default function ProSupplierDetail() {
 
                             {/* Title overlay */}
                             <div className="absolute bottom-2 start-2 end-2">
-                              <h4 className="text-xs font-bold text-white line-clamp-1 drop-shadow-md">{title}</h4>
+                              <h4 className="text-xs font-bold text-primary-foreground line-clamp-1 drop-shadow-md">{title}</h4>
                             </div>
                           </div>
 

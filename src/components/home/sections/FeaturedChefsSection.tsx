@@ -127,7 +127,7 @@ const FeaturedChefsSection = memo(forwardRef<HTMLElement>(function FeaturedChefs
                           </div>
                         )}
                         {idx < 3 && (
-                          <div className={cn("absolute -top-1.5 -end-1.5 flex h-5.5 w-5.5 items-center justify-center rounded-full text-xs font-bold text-white shadow-md ring-2 ring-background bg-gradient-to-br", RANK_COLORS[idx])}>
+                          <div className={cn("absolute -top-1.5 -end-1.5 flex h-5.5 w-5.5 items-center justify-center rounded-full text-xs font-bold text-primary-foreground shadow-md ring-2 ring-background bg-gradient-to-br", RANK_COLORS[idx])}>
                             {idx + 1}
                           </div>
                         )}

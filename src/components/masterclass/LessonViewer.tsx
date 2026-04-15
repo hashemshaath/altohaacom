@@ -64,7 +64,7 @@ export const LessonViewer = memo(function LessonViewer({ lesson, isCompleted, is
 
       {/* Video Player */}
       {lesson.content_type === "video" && embedUrl && (
-        <div className="aspect-video rounded-xl overflow-hidden bg-black">
+        <div className="aspect-video rounded-xl overflow-hidden bg-foreground">
           <iframe
             src={embedUrl}
             className="w-full h-full"

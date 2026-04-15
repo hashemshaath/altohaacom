@@ -550,7 +550,7 @@ const OrganizerListItem = memo(function OrganizerListItem({ org, isAr, featured,
                 {primaryName}
               </h3>
               {featured && (
-                <Badge className="text-[12px] gap-0.5 bg-amber-500 text-white border-0 h-4">
+                <Badge className="text-[12px] gap-0.5 bg-amber-500 text-primary-foreground border-0 h-4">
                   <Star className="h-2 w-2 fill-current" />{isAr ? "مميز" : "Featured"}
                 </Badge>
               )}

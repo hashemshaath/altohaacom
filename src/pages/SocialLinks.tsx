@@ -335,7 +335,7 @@ export default function SocialLinks() {
               {isVerified && (
                 <div className="absolute -bottom-0.5 -end-0.5 h-7 w-7 rounded-full flex items-center justify-center shadow-lg"
                   style={{ background: `linear-gradient(135deg, ${theme.accent}, ${theme.accent}dd)`, boxShadow: `0 0 0 2.5px ${isLight ? "#ffffff" : "#0a0a12"}, 0 4px 12px ${theme.accentLight}` }}>
-                  <BadgeCheck className="h-4 w-4 text-white" />
+                  <BadgeCheck className="h-4 w-4 text-primary-foreground" />
                 </div>
               )}
             </div>

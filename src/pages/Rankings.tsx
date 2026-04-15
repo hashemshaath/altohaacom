@@ -232,7 +232,7 @@ export default function Rankings() {
                             )}
                           </div>
                           <div className={cn(
-                            "absolute -bottom-2 start-1/2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-black text-white shadow-lg",
+                            "absolute -bottom-2 start-1/2 -translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full text-xs font-black text-primary-foreground shadow-lg",
                             rankCircle(actualRank)
                           )}>
                             {actualRank}

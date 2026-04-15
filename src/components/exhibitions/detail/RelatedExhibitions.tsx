@@ -103,7 +103,7 @@ export const RelatedExhibitions = memo(function RelatedExhibitions({ exhibitionI
                   <Badge
                     className={cn(
                       "absolute top-2 end-2 text-[12px]",
-                      status === "live" && "bg-chart-3 text-white",
+                      status === "live" && "bg-chart-3 text-primary-foreground",
                       status === "ended" && "bg-muted text-muted-foreground",
                       status === "upcoming" && "bg-primary text-primary-foreground"
                     )}

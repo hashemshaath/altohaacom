@@ -342,7 +342,7 @@ export default function ArticleDetail() {
                 <div className="container max-w-5xl mx-auto px-5 sm:px-8 pb-10 md:pb-14">
                   {/* Breadcrumb trail */}
                   <nav className="flex items-center gap-2 mb-5 flex-wrap" aria-label="Breadcrumb">
-                    <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-white hover:bg-white/10 active:scale-95 transition-all backdrop-blur-sm">
+                    <Button variant="ghost" size="sm" asChild className="rounded-xl gap-1.5 text-xs h-8 text-white/80 hover:text-primary-foreground hover:bg-white/10 active:scale-95 transition-all backdrop-blur-sm">
                       <Link to="/blog">
                         <ArrowLeft className="h-3.5 w-3.5 rtl:rotate-180" />
                         {isAr ? "المقالات" : "Articles"}
@@ -366,7 +366,7 @@ export default function ArticleDetail() {
                   </nav>
 
                   {/* Title */}
-                  <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-white text-balance mb-5 max-w-4xl drop-shadow-2xl">
+                  <h1 className="font-serif text-3xl sm:text-4xl md:text-[2.75rem] lg:text-5xl font-extrabold leading-[1.1] tracking-tight text-primary-foreground text-balance mb-5 max-w-4xl drop-shadow-2xl">
                     {title}
                   </h1>
 
@@ -648,7 +648,7 @@ export default function ArticleDetail() {
                             decoding="async"
                           />
                           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                            <ZoomIn className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                            <ZoomIn className="h-6 w-6 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
                           </div>
                         </button>
                       ))}

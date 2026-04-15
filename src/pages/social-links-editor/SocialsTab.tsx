@@ -80,7 +80,7 @@ export const SocialsTab = memo(function SocialsTab({
               return (
                 <div key={platform.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                   <div className="flex items-center gap-3 p-3">
-                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + platform.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + platform.color + " text-primary-foreground shadow-md" : "bg-muted/80"}`}>
                       <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -160,7 +160,7 @@ export const SocialsTab = memo(function SocialsTab({
               return (
                 <div key={field.key} className={`group relative rounded-xl border-2 transition-all duration-200 ${isActive ? "border-primary/30 bg-primary/[0.03] shadow-sm" : "border-border/30 hover:border-border/60"}`}>
                   <div className="flex items-center gap-3 p-3">
-                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + field.color + " text-white shadow-md" : "bg-muted/80"}`}>
+                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-200 ${isActive ? "bg-gradient-to-br " + field.color + " text-primary-foreground shadow-md" : "bg-muted/80"}`}>
                       <Icon className={`h-4 w-4 ${isActive ? "" : "text-muted-foreground"}`} />
                     </div>
                     <div className="flex-1 min-w-0">

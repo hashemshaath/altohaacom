@@ -247,7 +247,7 @@ export const SupplierProductDetail = memo(forwardRef<HTMLDivElement, SupplierPro
             {/* Warranty badge on image */}
             {warrantyYears > 0 && (
               <div className="absolute top-3 end-3">
-                <Badge className="bg-chart-5/90 text-white font-bold text-[10px] px-2 py-1 rounded-xl shadow-md gap-1 backdrop-blur-sm">
+                <Badge className="bg-chart-5/90 text-primary-foreground font-bold text-[10px] px-2 py-1 rounded-xl shadow-md gap-1 backdrop-blur-sm">
                   <Shield className="h-3 w-3" />{isAr ? `${warrantyYears} سنوات ضمان` : `${warrantyYears}Y Warranty`}
                 </Badge>
               </div>

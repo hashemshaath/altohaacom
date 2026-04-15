@@ -292,7 +292,7 @@ export const ExhibitionOverviewTab = memo(function ExhibitionOverviewTab({
                   <img src={url} alt={`${title} ${i + 1}`} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   {i === 5 && galleryUrls.length > 6 && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-white font-bold text-sm">+{galleryUrls.length - 6}</div>
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 text-primary-foreground font-bold text-sm">+{galleryUrls.length - 6}</div>
                   )}
                 </button>
               ))}

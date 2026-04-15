@@ -435,7 +435,7 @@ export default function CompetitionDetail() {
                   </Button>
                 )}
                 {competition.status === "completed" && (
-                  <Button asChild size="sm" className="h-9 rounded-xl px-4 text-xs font-bold bg-gradient-to-r from-chart-5 to-chart-4 text-white shadow-sm">
+                  <Button asChild size="sm" className="h-9 rounded-xl px-4 text-xs font-bold bg-gradient-to-r from-chart-5 to-chart-4 text-primary-foreground shadow-sm">
                     <Link to={`/competitions/${competition.slug || competitionId}/results`}><Award className="me-1.5 h-3.5 w-3.5" />{isAr ? "النتائج" : "Results"}</Link>
                   </Button>
                 )}

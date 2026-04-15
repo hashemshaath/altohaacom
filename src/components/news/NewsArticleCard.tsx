@@ -105,7 +105,7 @@ export const NewsArticleCard = memo(function NewsArticleCard({ article, isAr, fo
             )}
             {/* Subtle bottom gradient for text readability */}
             <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/20 to-transparent" />
-            <Badge className="absolute start-3 top-3 gap-1 text-[10px] rounded-lg bg-white/15 backdrop-blur-md border-white/10 text-white font-semibold">
+            <Badge className="absolute start-3 top-3 gap-1 text-[10px] rounded-lg bg-white/15 backdrop-blur-md border-white/10 text-primary-foreground font-semibold">
               <TypeIcon className="h-2.5 w-2.5" />
               {typeBadgeLabel(article.type)}
             </Badge>

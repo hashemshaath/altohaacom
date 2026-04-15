@@ -509,7 +509,7 @@ export default function OrganizerDetail() {
                       <div key={i} className="relative aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer group" onClick={() => { d.setGalleryOpen(url); d.setGalleryIndex(i); }}>
                         <img loading="lazy" src={url} alt={`${orgName} ${i + 1}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" decoding="async" />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                          <Eye className="h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <Eye className="h-6 w-6 text-primary-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                         </div>
                       </div>
                     ))}
@@ -709,12 +709,12 @@ export default function OrganizerDetail() {
         {/* Gallery Lightbox */}
         {d.galleryOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" onClick={() => d.setGalleryOpen(null)}>
-            <Button variant="ghost" size="icon" className="absolute top-4 end-4 text-white hover:bg-white/10 z-10" onClick={() => d.setGalleryOpen(null)}><X className="h-6 w-6" /></Button>
+            <Button variant="ghost" size="icon" className="absolute top-4 end-4 text-primary-foreground hover:bg-white/10 z-10" onClick={() => d.setGalleryOpen(null)}><X className="h-6 w-6" /></Button>
             {d.galleryIndex > 0 && (
-              <Button variant="ghost" size="icon" className="absolute start-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex - 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex - 1]); }}><ChevronLeft className="h-6 w-6" /></Button>
+              <Button variant="ghost" size="icon" className="absolute start-4 top-1/2 -translate-y-1/2 text-primary-foreground hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex - 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex - 1]); }}><ChevronLeft className="h-6 w-6" /></Button>
             )}
             {d.galleryIndex < uniqueGallery.length - 1 && (
-              <Button variant="ghost" size="icon" className="absolute end-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex + 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex + 1]); }}><ChevronRight className="h-6 w-6" /></Button>
+              <Button variant="ghost" size="icon" className="absolute end-4 top-1/2 -translate-y-1/2 text-primary-foreground hover:bg-white/10 z-10" onClick={e => { e.stopPropagation(); d.setGalleryIndex(d.galleryIndex + 1); d.setGalleryOpen(uniqueGallery[d.galleryIndex + 1]); }}><ChevronRight className="h-6 w-6" /></Button>
             )}
             <img src={d.galleryOpen} alt="" className="max-h-[85vh] max-w-[90vw] object-contain rounded-xl" onClick={e => e.stopPropagation()} />
             <p className="absolute bottom-4 text-white/60 text-sm">{d.galleryIndex + 1} / {uniqueGallery.length}</p>

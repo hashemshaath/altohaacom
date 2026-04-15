@@ -285,7 +285,7 @@ export default function ProSuppliers() {
                         <img src={company.cover_image_url} className="absolute inset-0 h-full w-full object-cover opacity-30" alt={company.name} loading="lazy" />
                       )}
                       <div className="absolute top-3 end-3">
-                        <Badge className="bg-chart-4 text-white gap-1 text-[10px]">
+                        <Badge className="bg-chart-4 text-primary-foreground gap-1 text-[10px]">
                           <Crown className="h-3 w-3" />
                           {isAr ? "متميز" : "Featured"}
                         </Badge>
@@ -388,7 +388,7 @@ export default function ProSuppliers() {
                         </div>
                         <div className="absolute end-3 top-3 flex items-center gap-1.5">
                           {isFeatured && (
-                            <Badge className="bg-chart-4/90 text-white text-[10px] gap-0.5">
+                            <Badge className="bg-chart-4/90 text-primary-foreground text-[10px] gap-0.5">
                               <Star className="h-3 w-3" /> {isAr ? "مميز" : "Featured"}
                             </Badge>
                           )}

@@ -130,7 +130,7 @@ export const ChefsTableSessionsList = memo(forwardRef<HTMLElement, Props>(functi
                         </Badge>
                       )}
                       <div className="absolute top-3 end-3 flex h-8 w-8 items-center justify-center rounded-xl bg-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ArrowUpRight className="h-4 w-4 text-white" />
+                        <ArrowUpRight className="h-4 w-4 text-primary-foreground" />
                       </div>
                     </div>
                   )}

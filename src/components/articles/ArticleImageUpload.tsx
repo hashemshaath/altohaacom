@@ -90,7 +90,7 @@ export function ArticleImageUpload({ value, onChange, label, className }: Props)
             </div>
             {/* Image dimensions info */}
             <div className="absolute bottom-2 start-2 end-2 flex justify-between">
-              <span className="text-[12px] bg-black/60 text-white px-2 py-0.5 rounded-lg">{t("Cover Image", "صورة الغلاف")}</span>
+              <span className="text-[12px] bg-black/60 text-primary-foreground px-2 py-0.5 rounded-lg">{t("Cover Image", "صورة الغلاف")}</span>
             </div>
           </div>
           {/* Alt text */}

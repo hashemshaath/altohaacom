@@ -44,7 +44,7 @@ export const ChefsTableHero = memo(function ChefsTableHero({ isAr, user, onReque
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl font-black md:text-5xl lg:text-6xl tracking-tight leading-[1.1] text-white">
+          <h1 className="text-4xl font-black md:text-5xl lg:text-6xl tracking-tight leading-[1.1] text-primary-foreground">
             {isAr ? (
               <>طاولة <span className="text-primary">الشيف</span></>
             ) : (
@@ -91,7 +91,7 @@ export const ChefsTableHero = memo(function ChefsTableHero({ isAr, user, onReque
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/20">
                   <stat.icon className="h-5 w-5 text-primary" />
                 </div>
-                <span className="text-2xl font-black text-white tabular-nums">{stat.num}</span>
+                <span className="text-2xl font-black text-primary-foreground tabular-nums">{stat.num}</span>
                 <span className="text-xs font-semibold text-white/60 text-center">{isAr ? stat.ar : stat.en}</span>
               </div>
             ))}

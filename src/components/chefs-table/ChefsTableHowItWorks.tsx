@@ -8,7 +8,7 @@ interface ChefsTableHowItWorksProps {
 const steps = [
   {
     icon: Building2,
-    color: "bg-chart-1 text-white",
+    color: "bg-chart-1 text-primary-foreground",
     en: "Submit Your Request",
     ar: "قدّم طلبك",
     descEn: "Fill out a simple form with your product details, brand info, and preferred evaluation method.",
@@ -16,7 +16,7 @@ const steps = [
   },
   {
     icon: ChefHat,
-    color: "bg-chart-2 text-white",
+    color: "bg-chart-2 text-primary-foreground",
     en: "We Select the Right Chefs",
     ar: "نختار الطهاة المناسبين",
     descEn: "Our platform matches your product with specialist chefs — meat experts, pastry masters, or spice connoisseurs.",
@@ -24,7 +24,7 @@ const steps = [
   },
   {
     icon: Package,
-    color: "bg-chart-3 text-white",
+    color: "bg-chart-3 text-primary-foreground",
     en: "Cook & Document",
     ar: "الطهي والتوثيق",
     descEn: "Chefs prepare real dishes using your products. The entire experience is documented with professional photos and videos.",
@@ -32,7 +32,7 @@ const steps = [
   },
   {
     icon: Star,
-    color: "bg-chart-4 text-white",
+    color: "bg-chart-4 text-primary-foreground",
     en: "Detailed Evaluation",
     ar: "تقييم مفصل",
     descEn: "Each chef scores your product on taste, texture, aroma, versatility, value, and presentation.",
@@ -40,7 +40,7 @@ const steps = [
   },
   {
     icon: FileCheck,
-    color: "bg-chart-5 text-white",
+    color: "bg-chart-5 text-primary-foreground",
     en: "Full Report & Analysis",
     ar: "تقرير كامل وتحليل",
     descEn: "Receive a comprehensive report with ingredient analysis, cooking insights, and improvement suggestions.",
