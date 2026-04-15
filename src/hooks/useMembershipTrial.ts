@@ -57,7 +57,7 @@ export function useStartTrial() {
         p_duration_days: durationDays,
       });
       if (error) throw error;
-      const result = data as any;
+      const result = data as { success?: boolean; error?: string } | null;
       if (!result?.success) throw new Error(result?.error || "Failed to start trial");
       return result;
     },
