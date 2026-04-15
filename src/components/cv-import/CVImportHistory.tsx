@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo, memo } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState, useMemo, memo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,22 +7,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   History, FileText, User, Calendar, ChevronDown, ChevronUp,
-  Download, Search, BarChart3, CheckCircle2, XCircle, Filter,
+  Download, Search, BarChart3, CheckCircle2,
 } from "lucide-react";
 import { downloadCSV, downloadJSON } from "@/lib/exportUtils";
-
-interface CVImportRecord {
-  id: string;
-  chef_id: string;
-  imported_by: string;
-  status: string;
-  file_name: string | null;
-  input_method: string;
-  sections_imported: string[];
-  records_created: number;
-  created_at: string;
-  extracted_data: any;
-}
+import { useCVImportHistory } from "@/hooks/useCVImportHistory";
+import { formatShortDateTime } from "@/lib/dateUtils";
 
 interface Props {
   isAr: boolean;
@@ -31,52 +19,13 @@ interface Props {
 }
 
 export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrigger }: Props) {
-  const [imports, setImports] = useState<CVImportRecord[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data, isLoading: loading } = useCVImportHistory(isAr, refreshTrigger);
+  const imports = data?.imports ?? [];
+  const chefNames = data?.chefNames ?? {};
+
   const [expanded, setExpanded] = useState(false);
-  const [chefNames, setChefNames] = useState<Record<string, string>>({});
   const [searchFilter, setSearchFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "completed" | "failed">("all");
-
-  const loadHistory = async (signal?: { cancelled: boolean }) => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from("cv_imports")
-        .select("id, chef_id, imported_by, status, file_name, input_method, sections_imported, records_created, created_at, extracted_data")
-        .order("created_at", { ascending: false })
-        .limit(50);
-
-      if (error) throw error;
-      if (signal?.cancelled) return;
-      setImports(data || []);
-
-      const chefIds = [...new Set((data || []).map(d => d.chef_id))];
-      if (chefIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from("profiles")
-          .select("user_id, full_name, full_name_ar")
-          .in("user_id", chefIds);
-
-        if (!signal?.cancelled && profiles) {
-          const names: Record<string, string> = {};
-          profiles.forEach(p => {
-            names[p.user_id] = isAr ? (p.full_name_ar || p.full_name || "—") : (p.full_name || "—");
-          });
-          setChefNames(names);
-        }
-      }
-    } catch (err: unknown) {
-      console.error("Failed to load import history:", err);
-    }
-    if (!signal?.cancelled) setLoading(false);
-  };
-
-  useEffect(() => {
-    const signal = { cancelled: false };
-    loadHistory(signal);
-    return () => { signal.cancelled = true; };
-  }, [refreshTrigger]);
 
   const sectionLabel = (s: string) => {
     const labels: Record<string, { en: string; ar: string }> = {
@@ -90,13 +39,26 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
     return isAr ? (labels[s]?.ar || s) : (labels[s]?.en || s);
   };
 
-  // Stats
+  // Derived stats — no separate state needed
   const { totalImports, completedImports, totalRecords, uniqueChefs } = useMemo(() => ({
     totalImports: imports.length,
     completedImports: imports.filter(i => i.status === "completed").length,
     totalRecords: imports.reduce((sum, i) => sum + (i.records_created || 0), 0),
     uniqueChefs: new Set(imports.map(i => i.chef_id)).size,
   }), [imports]);
+
+  // Derived filtered list — no separate state
+  const filtered = useMemo(() => imports.filter(imp => {
+    if (statusFilter !== "all" && imp.status !== statusFilter) return false;
+    if (searchFilter.trim()) {
+      const q = searchFilter.toLowerCase();
+      const name = chefNames[imp.chef_id]?.toLowerCase() || "";
+      return name.includes(q) || imp.chef_id.includes(q);
+    }
+    return true;
+  }), [imports, statusFilter, searchFilter, chefNames]);
+
+  const displayed = expanded ? filtered : filtered.slice(0, 5);
 
   if (loading) {
     return (
@@ -111,19 +73,6 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
 
   if (imports.length === 0) return null;
 
-  // Filter
-  const filtered = imports.filter(imp => {
-    if (statusFilter !== "all" && imp.status !== statusFilter) return false;
-    if (searchFilter.trim()) {
-      const q = searchFilter.toLowerCase();
-      const name = chefNames[imp.chef_id]?.toLowerCase() || "";
-      return name.includes(q) || imp.chef_id.includes(q);
-    }
-    return true;
-  });
-
-  const displayed = expanded ? filtered : filtered.slice(0, 5);
-
   const handleExportHistory = () => {
     const rows = imports.map(imp => ({
       chef_name: chefNames[imp.chef_id] || imp.chef_id,
@@ -131,7 +80,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
       records_created: imp.records_created,
       sections: imp.sections_imported?.join(", "),
       input_method: imp.input_method,
-      date: new Date(imp.created_at).toLocaleString(),
+      date: formatShortDateTime(imp.created_at, isAr),
     }));
     downloadCSV(rows, "cv-import-history", [
       { key: "chef_name", label: isAr ? "الشيف" : "Chef" },
@@ -154,9 +103,6 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
           <div className="flex items-center gap-1.5">
             <Button variant="ghost" size="sm" onClick={handleExportHistory} className="text-xs h-7 gap-1">
               <Download className="h-3 w-3" /> {isAr ? "تصدير" : "Export"}
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => loadHistory()} className="text-xs h-7">
-              {isAr ? "تحديث" : "Refresh"}
             </Button>
           </div>
         </div>
@@ -228,7 +174,7 @@ export const CVImportHistory = memo(function CVImportHistory({ isAr, refreshTrig
                     <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
                       <span className="text-muted-foreground flex items-center gap-0.5">
                         <Calendar className="h-2.5 w-2.5" />
-                        {new Date(imp.created_at).toLocaleDateString(isAr ? "ar-SA" : "en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        {formatShortDateTime(imp.created_at, isAr)}
                       </span>
                       <span className="text-muted-foreground">•</span>
                       <span>{imp.records_created} {isAr ? "سجل" : "records"}</span>
